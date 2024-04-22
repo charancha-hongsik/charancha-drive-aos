@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Install-time permissions -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- API 버전 28 이하 -->
+    <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
+
+
+
+
+
+    <!-- Runtime Permission -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
+    <!-- API 버전 28 이상 -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!-- API 버전 29 이상 -->
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+    <!-- API 버전 32  이상 -->
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <!-- API 버전 33  이상 -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- API 버전 34 이상-->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+
+
+    <!-- Special Permissions -->
+    <!-- API 버전 29 이상 -->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+
+
+
+    <!-- TEST Permissions -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+
+
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Charanchadriveaos"
+        tools:targetApi="31">
+
+        <activity
+            android:name=".SplashActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".PermissionActivity"
+            android:exported="true"/>
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"/>
+
+    </application>
+
+</manifest>
