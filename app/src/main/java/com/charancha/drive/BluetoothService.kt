@@ -215,17 +215,14 @@ class BluetoothService : Service() {
             }
             val connectionState = response.getInt(carConnectionTypeColumn)
             if (connectionState == CONNECTION_TYPE_NOT_CONNECTED) {
-                stopService(Intent(this@BluetoothService, SensorService::class.java))
-
+                stopSensorService()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     exportToFile("CONNECTION_TYPE_NOT_CONNECTED",getCurrent()+"\n\n")
                 }else{
                     generateNoteOnSD("CONNECTION_TYPE_NOT_CONNECTED",getCurrent()+"\n\n")
                 }
             } else {
-                val intent = Intent(this@BluetoothService, SensorService::class.java)
-                startForegroundService(intent)
-
+                startSensorService()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     exportToFile("CONNECTION_TYPE_CONNECTED",getCurrent()+"\n\n")
                 }else{
@@ -234,6 +231,15 @@ class BluetoothService : Service() {
 
             }
         }
+    }
+
+    private fun startSensorService(){
+        val intent = Intent(this@BluetoothService, SensorService::class.java)
+        startForegroundService(intent)
+    }
+
+    private fun stopSensorService(){
+        stopService(Intent(this@BluetoothService, SensorService::class.java))
     }
 
 
@@ -260,17 +266,12 @@ class BluetoothService : Service() {
                             } else{
                                 generateNoteOnSD("IN_VEHICLE ENTER " + getCurrent(),getCurrent()+"\n\n")
                             }
-
-                            val intent = Intent(this@BluetoothService, SensorService::class.java)
-                            startForegroundService(intent)
-
                         } else{
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 exportToFile("IN_VEHICLE EXIT",getCurrent()+"\n\n")
                             } else{
                                 generateNoteOnSD("IN_VEHICLE EXIT " + getCurrent(),getCurrent()+"\n\n")
                             }
-                            stopService(Intent(this@BluetoothService, SensorService::class.java))
                         }
                     }
                 }
