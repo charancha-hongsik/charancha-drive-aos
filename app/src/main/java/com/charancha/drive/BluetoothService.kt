@@ -285,8 +285,12 @@ class BluetoothService : Service() {
                 pairedDevices?.forEach { device ->
 
 
-                    Log.d("testsetestestset","testsetsetset device.bluetoothClass.name :: " + device.name)
-                    Log.d("testsetestestset","testsetsetset device.bluetoothClass.toString :: " + device.bluetoothClass.toString())
+                    Log.d("testsetestestset","testsetsetset device name :: " + device.name)
+                    Log.d("testsetestestset","testsetsetset device CoD :: " + device.bluetoothClass.toString())
+                    Log.d("testsetestestset","testsetsetset device deviceClass :: " + device.bluetoothClass.deviceClass)
+                    Log.d("testsetestestset","testsetsetset device majorDeviceClass :: " + device.bluetoothClass.majorDeviceClass)
+
+
 
 
                     if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_CAR_AUDIO){
