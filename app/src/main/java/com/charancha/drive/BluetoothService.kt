@@ -300,7 +300,7 @@ class BluetoothService : Service() {
                                 generateNoteOnSD("IN_VEHICLE ENTER " + getCurrent(),getCurrent()+"\n\n")
                             }
 
-                            var intent = Intent(this@BluetoothService, TestService::class.java)
+                            var intent = Intent(this@BluetoothService, SensorService::class.java)
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                                 startForegroundService(intent)
                             } else{
@@ -312,7 +312,7 @@ class BluetoothService : Service() {
                             } else{
                                 generateNoteOnSD("IN_VEHICLE EXIT " + getCurrent(),getCurrent()+"\n\n")
                             }
-                            stopService(Intent(this@BluetoothService, TestService::class.java))
+                            stopService(Intent(this@BluetoothService, SensorService::class.java))
                         }
                     }
                 }

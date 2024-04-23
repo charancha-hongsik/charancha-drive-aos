@@ -21,13 +21,11 @@ import android.os.IBinder
 import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import com.google.android.gms.location.*
 import java.io.File
-import java.io.FileOutputStream
 import java.io.FileWriter
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -38,7 +36,7 @@ import kotlin.concurrent.timerTask
 /**
  * The Service will only run in one instance. However, everytime you start the service, the onStartCommand() method is called.
  */
-class TestService : Service() {
+class SensorService : Service() {
 
     private lateinit var sensorManager: SensorManager
     private lateinit var fusedLocationClient :FusedLocationProviderClient

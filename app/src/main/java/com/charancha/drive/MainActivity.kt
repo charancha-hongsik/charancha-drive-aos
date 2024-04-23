@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import androidx.annotation.RequiresApi
@@ -54,16 +53,16 @@ class MainActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setBtn(){
-        btnStart = findViewById(R.id.video_capture_button)
+        btnStart = findViewById(R.id.btn_start)
         btnStart.setText("센서 시작")
 
         btnStart.setOnClickListener{
             if(btnStatus){
-                stopService(Intent(this, TestService::class.java))
+                stopService(Intent(this, SensorService::class.java))
                 btnStart.setText("센서 시작")
                 btnStatus = !btnStatus
             } else {
-                var intent = Intent(this, TestService::class.java)
+                var intent = Intent(this, SensorService::class.java)
                 if(et_seconds.text.isNotEmpty())  intent.putExtra("interval",(et_seconds.text.toString().toLong()*1000))
 
                 startForegroundService(intent)
