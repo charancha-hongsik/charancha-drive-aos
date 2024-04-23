@@ -122,59 +122,12 @@ class BluetoothService : Service() {
     }
 
 
-    fun sendNotification(no:Int,contents:String) {
-
-        val CHANNEL_ID = "my_channel_01"
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                CHANNEL_ID,
-                "check blueToothConnect",
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-
-            (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
-                channel
-            )
-
-            val builder = NotificationCompat.Builder(this,"bluetooth")
-            builder.setSmallIcon(android.R.drawable.ic_dialog_alert)
-            val intent = Intent(this, MainActivity::class.java)
-            intent.putExtra("activityType",no)
-            val pendingIntent = PendingIntent.getActivity(this, 0, intent, FLAG_MUTABLE)
-            builder.setChannelId(CHANNEL_ID)
-            builder.setContentIntent(pendingIntent)
-            builder.setLargeIcon(BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
-            builder.setContentTitle("Notifications Title")
-            builder.setContentText(contents)
-            builder.setSubText("Tap to view the website.")
-            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-
-            // Will display the notification in the notification bar
-            notificationManager.notify(2, builder.build())
-
-        } else {
-            TODO("VERSION.SDK_INT < O")
-        }
-    }
-
     private fun registerActivityTransitionUpdates() {
         ActivityRecognition.getClient(this)
             .requestActivityTransitionUpdates(request, pendingIntent)
             .addOnSuccessListener {
 
             }.addOnFailureListener { e ->
-
-            }
-    }
-
-    private fun unregisterActivityTransitionUpdates() {
-        ActivityRecognition.getClient(this)
-            .removeActivityTransitionUpdates(pendingIntent)
-            .addOnSuccessListener {
-
-            }
-            .addOnFailureListener { e ->
 
             }
     }
@@ -251,33 +204,33 @@ class BluetoothService : Service() {
         // notify new queryed connection status when query complete
         override fun onQueryComplete(token: Int, cookie: Any?, response: Cursor?) {
             if (response == null) {
-                Log.d(TAG, "testsetsetsetse Null response from content provider when checking connection to the car, treating as disconnected")
                 return
             }
             val carConnectionTypeColumn = response.getColumnIndex(CAR_CONNECTION_STATE)
             if (carConnectionTypeColumn < 0) {
-                Log.d(TAG, "testsetsetsetse Connection to car response is missing the connection type, treating as disconnected")
                 return
             }
             if (!response.moveToNext()) {
-                Log.d(TAG, "testsetsetsetse Connection to car response is empty, treating as disconnected")
                 return
             }
             val connectionState = response.getInt(carConnectionTypeColumn)
             if (connectionState == CONNECTION_TYPE_NOT_CONNECTED) {
-
-                Log.d(TAG, "testsetsetsetse CONNECTION_TYPE_NOT_CONNECTED")
-
+                stopService(Intent(this@BluetoothService, SensorService::class.java))
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     exportToFile("CONNECTION_TYPE_NOT_CONNECTED",getCurrent()+"\n\n")
+                }else{
+                    generateNoteOnSD("CONNECTION_TYPE_NOT_CONNECTED",getCurrent()+"\n\n")
                 }
             } else {
+                val intent = Intent(this@BluetoothService, SensorService::class.java)
+                startForegroundService(intent)
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     exportToFile("CONNECTION_TYPE_CONNECTED",getCurrent()+"\n\n")
+                }else{
+                    generateNoteOnSD("CONNECTION_TYPE_CONNECTED",getCurrent()+"\n\n")
                 }
-
-                Log.d(TAG, "testsetsetsetse CONNECTION_TYPE_NOT_CONNECTED")
 
             }
         }
@@ -287,25 +240,30 @@ class BluetoothService : Service() {
     inner class TransitionsReceiver : BroadcastReceiver() {
         @SuppressLint("MissingPermission")
         override fun onReceive(context: Context?, intent: Intent?) {
+            intent?.let {
+                it.action?.let {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        exportToFile(it,getCurrent()+"\n\n")
+                    }else{
+                        generateNoteOnSD(it,getCurrent()+"\n\n")
+                    }
+                }
+            }
 
             if (ActivityTransitionResult.hasResult(intent)) {
                 val result: ActivityTransitionResult = ActivityTransitionResult.extractResult(intent) ?: return
                 for (event in result.transitionEvents) {
                     if(event.activityType == DetectedActivity.IN_VEHICLE){
                         if(event.transitionType.equals(ACTIVITY_TRANSITION_ENTER)){
-//                            sendNotification(DetectedActivity.IN_VEHICLE, "IN_VEHICLE... ")
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 exportToFile("IN_VEHICLE ENTER",getCurrent()+"\n\n")
                             } else{
                                 generateNoteOnSD("IN_VEHICLE ENTER " + getCurrent(),getCurrent()+"\n\n")
                             }
 
-                            var intent = Intent(this@BluetoothService, SensorService::class.java)
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                startForegroundService(intent)
-                            } else{
-                                startService(intent)
-                            }
+                            val intent = Intent(this@BluetoothService, SensorService::class.java)
+                            startForegroundService(intent)
+
                         } else{
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 exportToFile("IN_VEHICLE EXIT",getCurrent()+"\n\n")
@@ -325,9 +283,9 @@ class BluetoothService : Service() {
                         if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_CAR_AUDIO){
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 exportToFile("Bluetooth AUDIO_VIDEO_CAR_AUDIO CONNECTED",getCurrent()+"\n\n")
+                            } else{
+                                generateNoteOnSD("Bluetooth AUDIO_VIDEO_CAR_AUDIO CONNECTED" + getCurrent(),getCurrent()+"\n\n")
                             }
-                        } else {
-
                         }
                 }
             } else if(intent?.action == BluetoothDevice.ACTION_ACL_DISCONNECTED){
@@ -339,13 +297,13 @@ class BluetoothService : Service() {
                     if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_CAR_AUDIO){
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                             exportToFile("Bluetooth AUDIO_VIDEO_CAR_AUDIO DISCONNECTED",getCurrent()+"\n\n")
+                        }else{
+                            generateNoteOnSD("Bluetooth AUDIO_VIDEO_CAR_AUDIO DISCONNECTED" + getCurrent(),getCurrent()+"\n\n")
                         }
-                    } else {
-
                     }
                 }
             } else{
-//                queryForState()
+                queryForState()
             }
         }
     }
