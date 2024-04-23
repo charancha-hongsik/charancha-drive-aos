@@ -5,6 +5,7 @@ import android.app.*
 import android.app.PendingIntent.FLAG_MUTABLE
 import android.bluetooth.*
 import android.bluetooth.BluetoothClass.Device.AUDIO_VIDEO_CAR_AUDIO
+import android.bluetooth.BluetoothClass.Service.*
 import android.content.*
 import android.database.Cursor
 import android.graphics.BitmapFactory
@@ -277,9 +278,18 @@ class BluetoothService : Service() {
                 val bluetoothManager: BluetoothManager = getSystemService(BluetoothManager::class.java)
                 val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
 
+
+
                 val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
+
                 pairedDevices?.forEach { device ->
-                        if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_CAR_AUDIO){
+
+
+                    Log.d("testsetestestset","testsetsetset device.bluetoothClass.name :: " + device.name)
+                    Log.d("testsetestestset","testsetsetset device.bluetoothClass.toString :: " + device.bluetoothClass.toString())
+
+
+                    if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_CAR_AUDIO){
                             startSensorService()
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 exportToFile("Bluetooth AUDIO_VIDEO_CAR_AUDIO CONNECTED",getCurrent()+"\n\n")
