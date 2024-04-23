@@ -1,72 +1,123 @@
 package com.charancha.drive
 
-import android.Manifest
+import android.Manifest.permission.*
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
+    lateinit var btnStart:Button
+    lateinit var et_seconds:EditText
+    var btnStatus:Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        if(allPermissionsGranted()){
+            setBtn()
+            checkDeeplink()
+        } else{
+
+        }
     }
 
-    companion object {
-        private val REQUIRED_PERMISSIONS =
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+    private fun checkDeeplink(){
+        if(intent != null){
+            if(intent.hasExtra("activityType")){
                 /**
-                 * OS 33 이상
+                 * startForegroundService TestService
                  */
-                mutableListOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACTIVITY_RECOGNITION,
-                    Manifest.permission.BLUETOOTH_CONNECT,
-                    Manifest.permission.POST_NOTIFICATIONS
-                ).apply {
-
-                }.toTypedArray()
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                /**
-                 * OS 31, 32
-                 */
-                mutableListOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACTIVITY_RECOGNITION,
-                    Manifest.permission.BLUETOOTH_CONNECT
-                ).apply {
-
-                }.toTypedArray()
-            }else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                /**
-                 * OS 29, 30
-                 */
-                mutableListOf (
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACTIVITY_RECOGNITION
-                ).apply {
-
-                }.toTypedArray()
-            } else {
-                /**
-                 * OS 28
-                 */
-                mutableListOf (
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ).apply {
-
-                }.toTypedArray()
+                btnStart.performClick()
+            } else{
+                val intent = Intent(this, BluetoothService::class.java)
+                startForegroundService(intent)
             }
+        } else{
+            val intent = Intent(this, BluetoothService::class.java)
+            startForegroundService(intent)
+        }
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setBtn(){
+        btnStart = findViewById(R.id.video_capture_button)
+        btnStart.setText("센서 시작")
+
+        btnStart.setOnClickListener{
+            if(btnStatus){
+                stopService(Intent(this, TestService::class.java))
+                btnStart.setText("센서 시작")
+                btnStatus = !btnStatus
+            } else {
+                var intent = Intent(this, TestService::class.java)
+                if(et_seconds.text.isNotEmpty())  intent.putExtra("interval",(et_seconds.text.toString().toLong()*1000))
+
+                startForegroundService(intent)
+                btnStart.setText("센서 멈춤")
+                btnStatus = !btnStatus
+            }
+        }
+
+        et_seconds = findViewById(R.id.et_seconds)
+
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
             baseContext, it) == PackageManager.PERMISSION_GRANTED
+    }
+
+
+    companion object {
+        private val REQUIRED_PERMISSIONS =
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                mutableListOf(
+                    ACCESS_FINE_LOCATION,
+                    ACCESS_COARSE_LOCATION,
+                    ACTIVITY_RECOGNITION,
+                    BLUETOOTH_CONNECT,
+                    POST_NOTIFICATIONS
+                ).apply {
+
+                }.toTypedArray()
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                mutableListOf(
+                    ACCESS_FINE_LOCATION,
+                    ACCESS_COARSE_LOCATION,
+                    ACTIVITY_RECOGNITION,
+                    BLUETOOTH_CONNECT
+                ).apply {
+
+                }.toTypedArray()
+            }else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                mutableListOf (
+                    ACCESS_FINE_LOCATION,
+                    ACCESS_COARSE_LOCATION,
+                    ACTIVITY_RECOGNITION
+                ).apply {
+
+                }.toTypedArray()
+            } else {
+                mutableListOf (
+                    ACCESS_FINE_LOCATION,
+                    ACCESS_COARSE_LOCATION,
+                ).apply {
+
+                }.toTypedArray()
+            }
     }
 }

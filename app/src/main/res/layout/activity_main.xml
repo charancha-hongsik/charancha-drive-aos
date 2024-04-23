@@ -1,18 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
+    <Button
+        android:id="@+id/video_capture_button"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginLeft="30dp"
+        android:elevation="2dp"
+        android:text="센서 시작"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintLeft_toLeftOf="parent" />
 
+    <EditText
+        android:id="@+id/et_seconds"
+        android:layout_width="0dp"
+        android:layout_height="110dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginRight="20dp"
+        android:elevation="2dp"
+        android:hint="Interval(Seconds)을 입력해주세요."
+        android:textSize="12dp"
+        android:paddingLeft="12dp"
+        android:textColor="@color/black"
+        android:textColorHint="#8C8C8C"
+        android:inputType="number"
+        android:layout_marginLeft="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/video_capture_button"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

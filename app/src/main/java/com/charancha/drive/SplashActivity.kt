@@ -16,6 +16,7 @@ class SplashActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        startActivity(Intent(this, PermissionActivity::class.java))
+        startActivity(Intent(this, BetaInfoActivity::class.java))
+        finish()
     }
 }

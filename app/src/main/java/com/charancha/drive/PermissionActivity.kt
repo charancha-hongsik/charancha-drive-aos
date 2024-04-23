@@ -18,6 +18,43 @@ class PermissionActivity: AppCompatActivity(){
         private const val PERMISSION_ACTIVITY_RECOGNITION = 1002
         private const val PERMISSION_BLUETOOTH_CONNECT = 1003
         private const val PERMISSION_POST_NOTIFICATIONS = 1004
+
+        private val REQUIRED_PERMISSIONS =
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                mutableListOf(
+                    ACCESS_FINE_LOCATION,
+                    ACCESS_COARSE_LOCATION,
+                    ACTIVITY_RECOGNITION,
+                    BLUETOOTH_CONNECT,
+                    POST_NOTIFICATIONS
+                ).apply {
+
+                }.toTypedArray()
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                mutableListOf(
+                    ACCESS_FINE_LOCATION,
+                    ACCESS_COARSE_LOCATION,
+                    ACTIVITY_RECOGNITION,
+                    BLUETOOTH_CONNECT
+                ).apply {
+
+                }.toTypedArray()
+            }else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                mutableListOf (
+                    ACCESS_FINE_LOCATION,
+                    ACCESS_COARSE_LOCATION,
+                    ACTIVITY_RECOGNITION
+                ).apply {
+
+                }.toTypedArray()
+            } else {
+                mutableListOf (
+                    ACCESS_FINE_LOCATION,
+                    ACCESS_COARSE_LOCATION,
+                ).apply {
+
+                }.toTypedArray()
+            }
     }
 
     private lateinit var tvPermission: TextView
@@ -53,15 +90,23 @@ class PermissionActivity: AppCompatActivity(){
                      * OS 28 이상
                      */
                     PERMISSION_ACCESS_FINE_LOCATION -> {
-                        checkPermission(mutableListOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION).toTypedArray(), PERMISSION_ACCESS_FINE_LOCATION)
+                        if(ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+                            checkPermission(mutableListOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION).toTypedArray(), PERMISSION_ACCESS_FINE_LOCATION)
+                        }else{
+                            setNextOfFineLocationPermission()
+                        }
                     }
 
                     /**
                      * OS 29 이상
                      */
                     PERMISSION_ACCESS_BACKGROUND_LOCATION -> {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                            checkPermission(mutableListOf(ACCESS_BACKGROUND_LOCATION).toTypedArray(), PERMISSION_ACCESS_BACKGROUND_LOCATION)
+                        if(ContextCompat.checkSelfPermission(this, ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED){
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                checkPermission(mutableListOf(ACCESS_BACKGROUND_LOCATION).toTypedArray(), PERMISSION_ACCESS_BACKGROUND_LOCATION)
+                            }
+                        }else{
+                            setNextOfBackgroundLocationPermission()
                         }
                     }
 
@@ -69,8 +114,12 @@ class PermissionActivity: AppCompatActivity(){
                      * OS 29 이상
                      */
                     PERMISSION_ACTIVITY_RECOGNITION -> {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                            checkPermission(mutableListOf(ACTIVITY_RECOGNITION).toTypedArray(), PERMISSION_ACTIVITY_RECOGNITION)
+                        if(ContextCompat.checkSelfPermission(this, ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED){
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                checkPermission(mutableListOf(ACTIVITY_RECOGNITION).toTypedArray(), PERMISSION_ACTIVITY_RECOGNITION)
+                            }
+                        }else{
+                            setNextOfActivityRecognition()
                         }
                     }
 
@@ -78,23 +127,92 @@ class PermissionActivity: AppCompatActivity(){
                      * OS 31 이상
                      */
                     PERMISSION_BLUETOOTH_CONNECT -> {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                            checkPermission(mutableListOf(BLUETOOTH_CONNECT).toTypedArray(), PERMISSION_BLUETOOTH_CONNECT)
+                        if(ContextCompat.checkSelfPermission(this, BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED){
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                checkPermission(mutableListOf(BLUETOOTH_CONNECT).toTypedArray(), PERMISSION_BLUETOOTH_CONNECT)
+                            }
+                        }else{
+                            setNextOfBluetoothConnect()
                         }
+
                     }
 
                     /**
                      * OS 33 이상
                      */
                     PERMISSION_POST_NOTIFICATIONS -> {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            checkPermission(mutableListOf(POST_NOTIFICATIONS).toTypedArray(), PERMISSION_POST_NOTIFICATIONS)
+                        if(ContextCompat.checkSelfPermission(this, POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED){
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                checkPermission(mutableListOf(POST_NOTIFICATIONS).toTypedArray(), PERMISSION_POST_NOTIFICATIONS)
+                            }
+                        }else{
+                            setNextOfPostNotifications()
                         }
                     }
-
                 }
             }
         }
+    }
+
+    private fun setNextOfFineLocationPermission(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if(ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+                // OS 29 이상 -> PERMISSION_ACCESS_BACKGROUND_LOCATION 요청 UI로 수정
+                tvPermission.text = "PERMISSION_ACCESS_BACKGROUND_LOCATION"
+                permissionNo = PERMISSION_ACCESS_BACKGROUND_LOCATION
+            }else{
+                // OS 29 이상 -> PERMISSION_BLUETOOTH_CONNECT 요청 UI로 수정
+                tvPermission.text = "PERMISSION_ACTIVITY_RECOGNITION"
+                permissionNo = PERMISSION_ACTIVITY_RECOGNITION
+            }
+
+        } else{
+            // OS 29 미만 -> 시작하기 UI로 수정
+            tvPermission.text = "시작하세요."
+            btnPermission.text = "시작하기"
+        }
+    }
+
+    private fun setNextOfBackgroundLocationPermission(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            // OS 29 이상 -> PERMISSION_ACTIVITY_RECOGNITION 요청 UI로 수정
+            tvPermission.text = "PERMISSION_ACTIVITY_RECOGNITION"
+            permissionNo = PERMISSION_ACTIVITY_RECOGNITION
+        } else{
+            // OS 29 미만 -> 시작하기 UI로 수정
+            tvPermission.text = "시작하세요."
+            btnPermission.text = "시작하기"
+        }
+    }
+
+    private fun setNextOfActivityRecognition(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            // OS 31 이상 -> PERMISSION_BLUETOOTH_CONNECT 요청 UI로 수정
+            tvPermission.text = "PERMISSION_BLUETOOTH_CONNECT"
+            permissionNo = PERMISSION_BLUETOOTH_CONNECT
+        } else{
+            // OS 31 미만 -> 시작하기 UI로 수정
+            tvPermission.text = "시작하세요."
+            btnPermission.text = "시작하기"
+        }
+    }
+
+    private fun setNextOfBluetoothConnect(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // OS 33 이상 -> PERMISSION_POST_NOTIFICATIONS 요청 UI로 수정
+            tvPermission.text = "PERMISSION_POST_NOTIFICATIONS"
+            permissionNo = PERMISSION_POST_NOTIFICATIONS
+        } else{
+            // OS 33 미만 -> 시작하기 UI로 수정
+            tvPermission.text = "시작하세요."
+            btnPermission.text = "시작하기"
+        }
+    }
+
+    private fun setNextOfPostNotifications(){
+        // 시작하기 UI로 수정
+        tvPermission.text = "시작하세요."
+        btnPermission.text = "시작하기"
     }
 
     override fun onRequestPermissionsResult(
@@ -103,66 +221,15 @@ class PermissionActivity: AppCompatActivity(){
         grantResults: IntArray
     ) {
         when(requestCode){
-            PERMISSION_ACCESS_FINE_LOCATION -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                        // OS 29 이상 -> PERMISSION_ACCESS_BACKGROUND_LOCATION 요청 UI로 수정
-                        tvPermission.text = "PERMISSION_ACCESS_BACKGROUND_LOCATION"
-                        permissionNo = PERMISSION_ACCESS_BACKGROUND_LOCATION
-                    }else{
-                        // OS 29 이상 -> PERMISSION_BLUETOOTH_CONNECT 요청 UI로 수정
-                        tvPermission.text = "PERMISSION_ACTIVITY_RECOGNITION"
-                        permissionNo = PERMISSION_ACTIVITY_RECOGNITION
-                    }
+            PERMISSION_ACCESS_FINE_LOCATION -> { setNextOfFineLocationPermission() }
 
-                } else{
-                    // OS 29 미만 -> 시작하기 UI로 수정
-                    tvPermission.text = "시작하세요."
-                    btnPermission.text = "시작하기"
-                }
-            }
+            PERMISSION_ACCESS_BACKGROUND_LOCATION -> { setNextOfBackgroundLocationPermission() }
 
-            PERMISSION_ACCESS_BACKGROUND_LOCATION -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    // OS 29 이상 -> PERMISSION_ACTIVITY_RECOGNITION 요청 UI로 수정
-                    tvPermission.text = "PERMISSION_ACTIVITY_RECOGNITION"
-                    permissionNo = PERMISSION_ACTIVITY_RECOGNITION
-                } else{
-                    // OS 29 미만 -> 시작하기 UI로 수정
-                    tvPermission.text = "시작하세요."
-                    btnPermission.text = "시작하기"
-                }
-            }
+            PERMISSION_ACTIVITY_RECOGNITION -> { setNextOfActivityRecognition() }
 
-            PERMISSION_ACTIVITY_RECOGNITION -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    // OS 31 이상 -> PERMISSION_BLUETOOTH_CONNECT 요청 UI로 수정
-                    tvPermission.text = "PERMISSION_BLUETOOTH_CONNECT"
-                    permissionNo = PERMISSION_BLUETOOTH_CONNECT
-                } else{
-                    // OS 31 미만 -> 시작하기 UI로 수정
-                    tvPermission.text = "시작하세요."
-                    btnPermission.text = "시작하기"
-                }
-            }
+            PERMISSION_BLUETOOTH_CONNECT -> { setNextOfBluetoothConnect() }
 
-            PERMISSION_BLUETOOTH_CONNECT -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    // OS 33 이상 -> PERMISSION_POST_NOTIFICATIONS 요청 UI로 수정
-                    tvPermission.text = "PERMISSION_POST_NOTIFICATIONS"
-                    permissionNo = PERMISSION_POST_NOTIFICATIONS
-                } else{
-                    // OS 33 미만 -> 시작하기 UI로 수정
-                    tvPermission.text = "시작하세요."
-                    btnPermission.text = "시작하기"
-                }
-            }
-
-            PERMISSION_POST_NOTIFICATIONS -> {
-                // 시작하기 UI로 수정
-                tvPermission.text = "시작하세요."
-                btnPermission.text = "시작하기"
-            }
+            PERMISSION_POST_NOTIFICATIONS -> { setNextOfPostNotifications() }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
@@ -172,5 +239,10 @@ class PermissionActivity: AppCompatActivity(){
             ActivityCompat.requestPermissions(this, permissions,code)
             return
         }
+    }
+
+    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
+        ContextCompat.checkSelfPermission(
+            baseContext, it) == PackageManager.PERMISSION_GRANTED
     }
 }
