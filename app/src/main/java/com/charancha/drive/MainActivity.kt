@@ -5,11 +5,13 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.charancha.drive.PreferenceUtil.HAVE_BEEN_HOME
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -20,6 +22,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // 홈화면 진입 여부 체크
+        PreferenceUtil.putBooleanPref(this, HAVE_BEEN_HOME, true)
 
         if(allPermissionsGranted()){
             setBtn()
@@ -70,11 +75,6 @@ class MainActivity : AppCompatActivity() {
         et_seconds = findViewById(R.id.et_seconds)
 
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
