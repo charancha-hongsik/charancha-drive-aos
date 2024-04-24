@@ -316,7 +316,7 @@ class BluetoothService : Service() {
 
 
                     if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
-                        if(isConnected(device)){
+                        if(!isConnected(device)){
                             stopSensorService()
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 exportToFile("Bluetooth AUDIO_VIDEO_CAR_AUDIO DISCONNECTED",getCurrent()+"\n\n")
