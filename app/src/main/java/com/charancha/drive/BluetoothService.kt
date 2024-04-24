@@ -39,6 +39,8 @@ class BluetoothService : Service() {
 
         const val TAG = "AutoConnectionDetector"
 
+        const val HANDS_FREE = "240408"
+
         // columnName for provider to query on connection status
         const val CAR_CONNECTION_STATE = "CarConnectionState"
 
@@ -287,11 +289,9 @@ class BluetoothService : Service() {
                 pairedDevices?.forEach { device ->
                     Log.d("testsetestestset","testsetsetset device name :: " + device.name)
                     Log.d("testsetestestset","testsetsetset device CoD :: " + device.bluetoothClass.toString())
-                    Log.d("testsetestestset","testsetsetset device deviceClass :: " + device.bluetoothClass.deviceClass)
-                    Log.d("testsetestestset","testsetsetset device majorDeviceClass :: " + device.bluetoothClass.majorDeviceClass)
-                    Log.d("tetsetsetsetset","testsetsetset connected :: " + isConnected(device))
 
-                    if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_CAR_AUDIO){
+                    if(device.bluetoothClass.toString() == HANDS_FREE){
+                        if(isConnected(device)){
                             startSensorService()
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 exportToFile("Bluetooth AUDIO_VIDEO_CAR_AUDIO CONNECTED",getCurrent()+"\n\n")
@@ -299,6 +299,7 @@ class BluetoothService : Service() {
                                 generateNoteOnSD("Bluetooth AUDIO_VIDEO_CAR_AUDIO CONNECTED" + getCurrent(),getCurrent()+"\n\n")
                             }
                         }
+                    }
                 }
 
             } else if(intent?.action == BluetoothDevice.ACTION_ACL_DISCONNECTED){
@@ -310,16 +311,16 @@ class BluetoothService : Service() {
 
                     Log.d("testsetestestset","testsetsetset device name :: " + device.name)
                     Log.d("testsetestestset","testsetsetset device CoD :: " + device.bluetoothClass.toString())
-                    Log.d("testsetestestset","testsetsetset device deviceClass :: " + device.bluetoothClass.deviceClass)
-                    Log.d("testsetestestset","testsetsetset device majorDeviceClass :: " + device.bluetoothClass.majorDeviceClass)
-                    Log.d("tetsetsetsetset","testsetsetset connected :: " + isConnected(device))
 
-                    if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_CAR_AUDIO){
-                        stopSensorService()
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                            exportToFile("Bluetooth AUDIO_VIDEO_CAR_AUDIO DISCONNECTED",getCurrent()+"\n\n")
-                        }else{
-                            generateNoteOnSD("Bluetooth AUDIO_VIDEO_CAR_AUDIO DISCONNECTED" + getCurrent(),getCurrent()+"\n\n")
+
+                    if(device.bluetoothClass.toString() == HANDS_FREE){
+                        if(isConnected(device)){
+                            stopSensorService()
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                exportToFile("Bluetooth AUDIO_VIDEO_CAR_AUDIO DISCONNECTED",getCurrent()+"\n\n")
+                            }else{
+                                generateNoteOnSD("Bluetooth AUDIO_VIDEO_CAR_AUDIO DISCONNECTED" + getCurrent(),getCurrent()+"\n\n")
+                            }
                         }
                     }
                 }
