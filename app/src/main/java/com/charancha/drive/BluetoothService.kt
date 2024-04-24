@@ -289,6 +289,8 @@ class BluetoothService : Service() {
                 pairedDevices?.forEach { device ->
                     Log.d("testsetestestset","testsetsetset device name :: " + device.name)
                     Log.d("testsetestestset","testsetsetset device CoD :: " + device.bluetoothClass.toString())
+                    Log.d("testsetestestset","testsetsetset device contentDeepToString :: " + device.uuids.contentDeepToString())
+
 
                     if(device.bluetoothClass.toString() == HANDS_FREE){
                         if(isConnected(device)){
@@ -311,6 +313,7 @@ class BluetoothService : Service() {
 
                     Log.d("testsetestestset","testsetsetset device name :: " + device.name)
                     Log.d("testsetestestset","testsetsetset device CoD :: " + device.bluetoothClass.toString())
+                    Log.d("testsetestestset","testsetsetset device contentDeepToString :: " + device.uuids.contentDeepToString())
 
 
                     if(device.bluetoothClass.toString() == HANDS_FREE){
