@@ -7,6 +7,7 @@ import android.app.PendingIntent.FLAG_MUTABLE
 import android.bluetooth.*
 import android.bluetooth.BluetoothAdapter.STATE_CONNECTED
 import android.bluetooth.BluetoothClass.Device.AUDIO_VIDEO_CAR_AUDIO
+import android.bluetooth.BluetoothClass.Device.AUDIO_VIDEO_HANDSFREE
 import android.bluetooth.BluetoothClass.Service.*
 import android.content.*
 import android.content.pm.PackageManager
@@ -38,8 +39,6 @@ class BluetoothService : Service() {
         const val TRANSITIONS_RECEIVER_ACTION = "TRANSITIONS_RECEIVER_ACTION"
 
         const val TAG = "AutoConnectionDetector"
-
-        const val HANDS_FREE = "240408"
 
         // columnName for provider to query on connection status
         const val CAR_CONNECTION_STATE = "CarConnectionState"
@@ -292,7 +291,7 @@ class BluetoothService : Service() {
                     Log.d("testsetestestset","testsetsetset device contentDeepToString :: " + device.uuids.contentDeepToString())
 
 
-                    if(device.bluetoothClass.toString() == HANDS_FREE){
+                    if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
                         if(isConnected(device)){
                             startSensorService()
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -316,7 +315,7 @@ class BluetoothService : Service() {
                     Log.d("testsetestestset","testsetsetset device contentDeepToString :: " + device.uuids.contentDeepToString())
 
 
-                    if(device.bluetoothClass.toString() == HANDS_FREE){
+                    if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
                         if(isConnected(device)){
                             stopSensorService()
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
