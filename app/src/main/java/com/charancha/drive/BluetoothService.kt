@@ -1,14 +1,16 @@
 package com.charancha.drive
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.*
 import android.app.PendingIntent.FLAG_MUTABLE
 import android.bluetooth.*
+import android.bluetooth.BluetoothAdapter.STATE_CONNECTED
 import android.bluetooth.BluetoothClass.Device.AUDIO_VIDEO_CAR_AUDIO
 import android.bluetooth.BluetoothClass.Service.*
 import android.content.*
+import android.content.pm.PackageManager
 import android.database.Cursor
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -16,12 +18,14 @@ import android.os.IBinder
 import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import com.google.android.gms.location.*
 import com.google.android.gms.location.ActivityTransition.ACTIVITY_TRANSITION_ENTER
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
+import java.lang.reflect.Method
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -278,20 +282,14 @@ class BluetoothService : Service() {
                 val bluetoothManager: BluetoothManager = getSystemService(BluetoothManager::class.java)
                 val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
 
-
-
                 val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
 
                 pairedDevices?.forEach { device ->
-
-
                     Log.d("testsetestestset","testsetsetset device name :: " + device.name)
                     Log.d("testsetestestset","testsetsetset device CoD :: " + device.bluetoothClass.toString())
                     Log.d("testsetestestset","testsetsetset device deviceClass :: " + device.bluetoothClass.deviceClass)
                     Log.d("testsetestestset","testsetsetset device majorDeviceClass :: " + device.bluetoothClass.majorDeviceClass)
-
-
-
+                    Log.d("tetsetsetsetset","testsetsetset connected :: " + isConnected(device))
 
                     if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_CAR_AUDIO){
                             startSensorService()
@@ -302,12 +300,20 @@ class BluetoothService : Service() {
                             }
                         }
                 }
+
             } else if(intent?.action == BluetoothDevice.ACTION_ACL_DISCONNECTED){
                 val bluetoothManager: BluetoothManager = getSystemService(BluetoothManager::class.java)
                 val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
 
                 val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
                 pairedDevices?.forEach { device ->
+
+                    Log.d("testsetestestset","testsetsetset device name :: " + device.name)
+                    Log.d("testsetestestset","testsetsetset device CoD :: " + device.bluetoothClass.toString())
+                    Log.d("testsetestestset","testsetsetset device deviceClass :: " + device.bluetoothClass.deviceClass)
+                    Log.d("testsetestestset","testsetsetset device majorDeviceClass :: " + device.bluetoothClass.majorDeviceClass)
+                    Log.d("tetsetsetsetset","testsetsetset connected :: " + isConnected(device))
+
                     if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_CAR_AUDIO){
                         stopSensorService()
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -320,6 +326,15 @@ class BluetoothService : Service() {
             } else{
                 queryForState()
             }
+        }
+    }
+
+    private fun isConnected(device: BluetoothDevice): Boolean {
+        return try {
+            val m: Method = device.javaClass.getMethod("isConnected")
+            m.invoke(device) as Boolean
+        } catch (e: Exception) {
+            throw IllegalStateException(e)
         }
     }
 
