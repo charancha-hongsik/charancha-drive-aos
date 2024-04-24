@@ -46,6 +46,13 @@ dependencies {
     implementation "com.google.android.gms:play-services-location:17.0.0"
 
     // Room
+    implementation "androidx.room:room-runtime:2.4.0"
+    annotationProcessor "androidx.room:room-compiler:2.4.0"
+    androidTestImplementation "androidx.room:room-testing:2.4.0"
 
     // LiveData,
+
+    // 안드로이드 오토
+    implementation 'androidx.car.app:app:1.1.0'
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
 }
