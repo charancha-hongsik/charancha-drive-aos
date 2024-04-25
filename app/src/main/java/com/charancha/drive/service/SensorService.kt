@@ -619,14 +619,14 @@ class SensorService : Service() {
      */
     private fun getSpeed(location: Location) {
         speedInfoFromGps =
-            speedInfoFromGps + "Date : " + getCurrent() + "\n" + "speed : " + (location.speed*MS_TO_KH) + "\n\n"
+            speedInfoFromGps + getCurrent() + "," + (location.speed*MS_TO_KH) + "\n"
 
         if(maxSpeed < location.speed*MS_TO_KH){
             maxSpeed = location.speed*MS_TO_KH
         }
 
         accelerationInfo =
-            accelerationInfo + "Date : " + getCurrent() + "\n" + "acceleration : " + ((location.speed*MS_TO_KH) - (pastSpeed*MS_TO_KH)) + "\n\n"
+            accelerationInfo + getCurrent() + "," + ((location.speed*MS_TO_KH) - (pastSpeed*MS_TO_KH)) + "\n"
 
         pastSpeed = (location.speed*MS_TO_KH)
     }
@@ -644,17 +644,17 @@ class SensorService : Service() {
      */
     private fun getPathLocation(location: Location) {
         pathLocationInfoFromGps =
-            pathLocationInfoFromGps + "Date : " + getCurrent() + "\n" + "latitude : " + location.latitude + "\n" + "longitude : " + location.longitude + "\n\n"
+            pathLocationInfoFromGps + getCurrent() + "," + location.latitude + "," + location.longitude + "\n\n"
 
         if(pastLocation != null){
             Location.distanceBetween(location.latitude, location.longitude, pastLocation!!.latitude, pastLocation!!.longitude, distanceBetween)
             val distanceTo: Float = pastLocation!!.distanceTo(location)
 
             distanceInfoFromGps =
-                distanceInfoFromGps + "Date : " + getCurrent() + "\n" + "distance : " + distanceBetween[0] + "\n\n"
+                distanceInfoFromGps + getCurrent() + "," + distanceBetween[0] + "\n"
 
             distanceToInfoFromGps =
-                distanceToInfoFromGps +  "Date : " + getCurrent() + "\n" + "distanceTo : " + distanceTo + "\n\n"
+                distanceToInfoFromGps + getCurrent() + "," + distanceTo + "\n"
 
             distanceSum += distanceBetween[0]
             distanceToSum += distanceTo
@@ -678,7 +678,7 @@ class SensorService : Service() {
      */
     private fun getAltitude(location: Location) {
         altitudeInfoFromGps =
-            altitudeInfoFromGps + "Date : " + getCurrent() + "\n" + " altitude : " + location.altitude + "\n\n"
+            altitudeInfoFromGps + getCurrent() + "," + location.altitude + "\n"
     }
 
     private fun makeAltitudeFromGpsInfo() {
@@ -689,13 +689,13 @@ class SensorService : Service() {
      * TYPE_ACCELEROMETER
      */
     private fun getAcceleration() {
-        linearAccelerationInfo = linearAccelerationInfo + "Date : " + getCurrent() + "\n"
+        linearAccelerationInfo = linearAccelerationInfo + getCurrent()
         var perAltitudeInfoFromGps = ""
         for ((index, value) in linearAccelerometerReading.withIndex()) {
 
-            perAltitudeInfoFromGps = perAltitudeInfoFromGps + "$index, $value\n"
+            perAltitudeInfoFromGps = perAltitudeInfoFromGps + ",$value"
         }
-        linearAccelerationInfo = linearAccelerationInfo + perAltitudeInfoFromGps + "\n\n"
+        linearAccelerationInfo = linearAccelerationInfo + perAltitudeInfoFromGps + "\n"
     }
 
     private fun makeLinearAccelerationInfo() {
@@ -706,12 +706,12 @@ class SensorService : Service() {
      * TYPE_ROTATION_VECTOR
      */
     private fun getRotationAngle() {
-        rotationAngleInfo = rotationAngleInfo + "Date : " + getCurrent() + "\n"
+        rotationAngleInfo = rotationAngleInfo + getCurrent()
         var perRotationAngleInfo = ""
         for ((index, value) in rotationReading.withIndex()) {
-            perRotationAngleInfo = perRotationAngleInfo + "$index, $value\n"
+            perRotationAngleInfo = perRotationAngleInfo + ",$value"
         }
-        rotationAngleInfo = rotationAngleInfo + perRotationAngleInfo + "\n\n"
+        rotationAngleInfo = rotationAngleInfo + perRotationAngleInfo + "\n"
     }
 
     private fun makeRotationVectorInfo() {
@@ -734,13 +734,13 @@ class SensorService : Service() {
         SensorManager.getOrientation(rotationMatrix, orientationAngles)
 
 
-        inclineInfo = inclineInfo + "Date : " + getCurrent() + "\n"
+        inclineInfo = inclineInfo + getCurrent()
         var perInclineInfo = ""
 
         for ((index, value) in orientationAngles.withIndex()) {
-            perInclineInfo = perInclineInfo + "$index, $value\n"
+            perInclineInfo = perInclineInfo + ", $value"
         }
-        inclineInfo = inclineInfo + perInclineInfo + "\n\n"
+        inclineInfo = inclineInfo + perInclineInfo + "\n"
 
     }
 
@@ -754,7 +754,7 @@ class SensorService : Service() {
      */
     private fun getAltitude() {
         altitudeInfo =
-            altitudeInfo + "Date : " + getCurrent() + "\n" + "altitude : " + altitude + "\n\n"
+            altitudeInfo + getCurrent() + "," + altitude + "\n"
     }
 
     private fun makeAltitudeInfo() {
