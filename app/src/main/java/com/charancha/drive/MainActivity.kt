@@ -33,12 +33,6 @@ class MainActivity : AppCompatActivity() {
         // 홈화면 진입 여부 체크
         PreferenceUtil.putBooleanPref(this, HAVE_BEEN_HOME, true)
 
-        mainViewModel.init(applicationContext)
-        mainViewModel.getAllDrive()
-        mainViewModel.getAllDriveDate()
-
-
-
         if(allPermissionsGranted()){
             setBtn()
             checkDeeplink()

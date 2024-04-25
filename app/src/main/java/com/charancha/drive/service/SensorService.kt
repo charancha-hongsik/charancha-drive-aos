@@ -572,7 +572,7 @@ class SensorService : Service() {
                         distance = pastLocation!!.distanceTo(location)
                     }
 
-                    writeToRoom(location.latitude, location.longitude, location.speed,distance,(location.speed*MS_TO_KH) - (pastSpeed*MS_TO_KH))
+//                    writeToRoom(location.latitude, location.longitude, location.speed,distance,(location.speed*MS_TO_KH) - (pastSpeed*MS_TO_KH))
 
                 }catch (e:Exception){
 
