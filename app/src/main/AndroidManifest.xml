@@ -73,6 +73,10 @@
             android:name=".MainActivity"
             android:exported="true"/>
 
+        <activity
+            android:name=".activity.MyDriveHistoryAvtivity"
+            android:exported="true"/>
+
         <service
             android:name=".service.SensorService"
             android:enabled="true"

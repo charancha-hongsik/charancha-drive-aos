@@ -26,6 +26,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import com.charancha.drive.room.database.DriveDatabase
 import com.charancha.drive.room.entity.Drive
+import com.charancha.drive.room.entity.DriveDate
 import com.google.android.gms.location.*
 import java.io.File
 import java.io.FileWriter
@@ -644,7 +645,7 @@ class SensorService : Service() {
      */
     private fun getPathLocation(location: Location) {
         pathLocationInfoFromGps =
-            pathLocationInfoFromGps + getCurrent() + "," + location.latitude + "," + location.longitude + "\n\n"
+            pathLocationInfoFromGps + getCurrent() + "," + location.latitude + "," + location.longitude + "\n"
 
         if(pastLocation != null){
             Location.distanceBetween(location.latitude, location.longitude, pastLocation!!.latitude, pastLocation!!.longitude, distanceBetween)
@@ -885,15 +886,15 @@ class SensorService : Service() {
 
     fun writeToRoom(latitude:Double, longtitude:Double, speed:Float, distance:Float, acceleration:Float){
         val now = System.currentTimeMillis()
-        val date = 20240425
 
         val format = SimpleDateFormat("yyyyMMdd")
         format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
         val time = Date()
-        format.format(time)
 
-        val drive = Drive(date, now, latitude, longtitude, speed, distance, acceleration)
+
+        val drive = Drive(format.format(time).toInt(), now, latitude, longtitude, speed, distance, acceleration)
         driveDatabase?.driveDao()?.insert(drive)
+        driveDatabase?.driveDateDao()?.insert(DriveDate(format.format(time).toInt()))
     }
 
     private fun getCurrent(): String {

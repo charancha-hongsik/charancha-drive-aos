@@ -1,4 +1,4 @@
-package com.charancha.drive
+package com.charancha.drive.viewmodel
 
 import android.content.Context
 import android.util.Log
@@ -17,7 +17,19 @@ class MainViewModel: ViewModel() {
         viewModelScope.launch {
             val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(context)
             driveDatabase.driveDao().allDrive?.let {
-                Log.d("testestststest","testsetsetsetsets size :: " + it.size)
+                for(drive in it)
+                    Log.d("testestestest","testsetsetset drive :: " + drive.toString())
+            }
+        }
+    }
+
+    fun getAllDriveDate(){
+        viewModelScope.launch {
+            val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(context)
+            driveDatabase.driveDateDao().allDriveDate?.let {
+                for(driveDate in it)
+                    Log.d("testestestest","testsetsetset driveDate :: " + driveDate.toString())
+
             }
         }
     }

@@ -5,23 +5,18 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.charancha.drive.room.entity.Drive
+import com.charancha.drive.room.entity.DriveDate
 
 @Dao
-interface DriveDao {
+interface DriveDateDao {
     // allowing the insert of the same word multiple times by passing a
     // conflict resolution strategy
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(drive: Drive?)
+    fun insert(driveDate: DriveDate?)
 
-    @Query("DELETE FROM drive")
+    @Query("DELETE FROM drive_date")
     fun deleteAll()
 
-    @get:Query("SELECT * FROM drive ORDER BY timeStamp DESC")
-    val allDrive: List<Drive?>?
-
-    /**
-     * 특정 날짜의 Drive 값 모두 가져오기
-     */
-    @Query("SELECT * FROM drive WHERE date = :day")
-    fun allDriveOfDay(day: Int): List<Drive>
+    @get:Query("SELECT * FROM drive_date ORDER BY date DESC")
+    val allDriveDate: List<DriveDate?>?
 }

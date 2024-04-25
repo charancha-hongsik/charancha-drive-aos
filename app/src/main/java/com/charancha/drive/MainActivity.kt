@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import androidx.activity.viewModels
@@ -13,18 +12,18 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.charancha.drive.PreferenceUtil.HAVE_BEEN_HOME
-import com.charancha.drive.room.database.DriveDatabase
+import com.charancha.drive.activity.MyDriveHistoryAvtivity
 import com.charancha.drive.service.BluetoothService
 import com.charancha.drive.service.SensorService
-import java.text.SimpleDateFormat
+import com.charancha.drive.viewmodel.MainViewModel
 import java.util.*
-import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
     lateinit var btnStart:Button
     lateinit var et_seconds:EditText
+    lateinit var btnHistory:Button
     var btnStatus:Boolean = false
-    private val introViewModel: MainViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,8 +33,11 @@ class MainActivity : AppCompatActivity() {
         // 홈화면 진입 여부 체크
         PreferenceUtil.putBooleanPref(this, HAVE_BEEN_HOME, true)
 
-        introViewModel.init(applicationContext)
-        introViewModel.getAllDrive()
+        mainViewModel.init(applicationContext)
+        mainViewModel.getAllDrive()
+        mainViewModel.getAllDriveDate()
+
+
 
         if(allPermissionsGranted()){
             setBtn()
@@ -84,6 +86,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         et_seconds = findViewById(R.id.et_seconds)
+
+        btnHistory = findViewById(R.id.btn_history)
+        btnHistory.setOnClickListener {
+            startActivity(Intent(this, MyDriveHistoryAvtivity::class.java))
+        }
 
     }
 
