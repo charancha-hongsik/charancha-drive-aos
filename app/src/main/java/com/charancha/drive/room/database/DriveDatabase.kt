@@ -19,7 +19,7 @@ abstract class DriveDatabase : RoomDatabase() {
         fun getDatabase(context: Context): DriveDatabase {
             // if the Instance is not null, return it, otherwise create a new database instance.
             return Instance ?: synchronized(this) {
-                Room.databaseBuilder(context, DriveDatabase::class.java, "drive_database")
+                Room.databaseBuilder(context, DriveDatabase::class.java, "drive_database").allowMainThreadQueries()
                     .build()
                     .also { Instance = it }
             }

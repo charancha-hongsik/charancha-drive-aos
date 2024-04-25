@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -23,17 +24,18 @@ class MainActivity : AppCompatActivity() {
     lateinit var btnStart:Button
     lateinit var et_seconds:EditText
     var btnStatus:Boolean = false
+    private val introViewModel: MainViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val driveDatabase: DriveDatabase= DriveDatabase.getDatabase(this)
-        driveDatabase?.driveDao()?.allDrive?.let {
-            Log.d("testestststest","testsetsetsetsets size :: " + it.size)
-        }
 
         // 홈화면 진입 여부 체크
         PreferenceUtil.putBooleanPref(this, HAVE_BEEN_HOME, true)
+
+        introViewModel.init(applicationContext)
+        introViewModel.getAllDrive()
 
         if(allPermissionsGranted()){
             setBtn()
