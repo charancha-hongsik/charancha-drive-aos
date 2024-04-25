@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id "org.jetbrains.kotlin.kapt"
 }
 
 android {
@@ -47,7 +48,8 @@ dependencies {
 
     // Room
     implementation "androidx.room:room-runtime:2.4.0"
-    annotationProcessor "androidx.room:room-compiler:2.4.0"
+    kapt "androidx.room:room-compiler:2.4.0"
+    implementation "androidx.room:room-ktx:2.4.0"
     androidTestImplementation "androidx.room:room-testing:2.4.0"
 
     // LiveData,
@@ -55,4 +57,6 @@ dependencies {
     // 안드로이드 오토
     implementation 'androidx.car.app:app:1.1.0'
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
+
+
 }

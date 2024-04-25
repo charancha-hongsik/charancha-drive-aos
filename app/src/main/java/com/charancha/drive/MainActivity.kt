@@ -5,15 +5,19 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.charancha.drive.PreferenceUtil.HAVE_BEEN_HOME
+import com.charancha.drive.room.database.DriveDatabase
 import com.charancha.drive.service.BluetoothService
 import com.charancha.drive.service.SensorService
+import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
     lateinit var btnStart:Button
@@ -23,6 +27,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val driveDatabase: DriveDatabase= DriveDatabase.getDatabase(this)
+        driveDatabase?.driveDao()?.allDrive?.let {
+            Log.d("testestststest","testsetsetsetsets size :: " + it.size)
+        }
 
         // 홈화면 진입 여부 체크
         PreferenceUtil.putBooleanPref(this, HAVE_BEEN_HOME, true)

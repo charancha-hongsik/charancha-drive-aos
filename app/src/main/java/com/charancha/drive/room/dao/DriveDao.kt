@@ -11,11 +11,11 @@ interface DriveDao {
     // allowing the insert of the same word multiple times by passing a
     // conflict resolution strategy
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(recentCarEntity: Drive?)
+    fun insert(drive: Drive?)
 
-    @Query("DELETE FROM Drive")
+    @Query("DELETE FROM drive")
     fun deleteAll()
 
-    @get:Query("SELECT * FROM Drive ORDER BY timeStamp DESC")
+    @get:Query("SELECT * FROM drive ORDER BY timeStamp DESC")
     val allDrive: List<Drive?>?
 }

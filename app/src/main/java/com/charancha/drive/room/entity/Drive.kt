@@ -4,12 +4,12 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "drive")
-class Drive(
-    var date: String,
-    @field:PrimaryKey var timeStamp: String,
-    var latitude: String,
-    var longtitude: String,
-    var speed: String,
-    var distance:String,
-    var acceleration: String
+data class Drive(
+    var date: Int,
+    @field:PrimaryKey var timeStamp: Long,
+    var latitude: Double,
+    var longtitude: Double,
+    var speed: Float,
+    var distance:Float,
+    var acceleration: Float
 )

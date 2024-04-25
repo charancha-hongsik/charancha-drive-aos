@@ -25,6 +25,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import com.charancha.drive.room.database.DriveDatabase
+import com.charancha.drive.room.entity.Drive
 import com.google.android.gms.location.*
 import java.io.File
 import java.io.FileWriter
@@ -565,6 +566,13 @@ class SensorService : Service() {
                     getPathLocation(location)
                     getSpeed(location)
 
+                    var distance = 0f
+                    if(pastLocation != null){
+                        distance = pastLocation!!.distanceTo(location)
+                    }
+
+                    writeToRoom(location.latitude, location.longitude, location.speed,distance,(location.speed*MS_TO_KH) - (pastSpeed*MS_TO_KH))
+
                 }catch (e:Exception){
 
                 }
@@ -873,6 +881,19 @@ class SensorService : Service() {
 
             generateNoteOnSD(fileName, contents)
         }
+    }
+
+    fun writeToRoom(latitude:Double, longtitude:Double, speed:Float, distance:Float, acceleration:Float){
+        val now = System.currentTimeMillis()
+        val date = 20240425
+
+        val format = SimpleDateFormat("yyyyMMdd")
+        format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
+        val time = Date()
+        format.format(time)
+
+        val drive = Drive(date, now, latitude, longtitude, speed, distance, acceleration)
+        driveDatabase?.driveDao()?.insert(drive)
     }
 
     private fun getCurrent(): String {
