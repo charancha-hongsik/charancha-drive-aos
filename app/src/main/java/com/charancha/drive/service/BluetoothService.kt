@@ -292,9 +292,9 @@ class BluetoothService : Service() {
                         if(isConnected(device)){
                             startSensorService()
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                exportToFile("Bluetooth AUDIO_VIDEO_CAR_AUDIO CONNECTED",getCurrent()+"\n\n")
+                                exportToFile("Bluetooth AUDIO_VIDEO_HANDSFREE CONNECTED",getCurrent()+"\n\n")
                             } else{
-                                generateNoteOnSD("Bluetooth AUDIO_VIDEO_CAR_AUDIO CONNECTED" + getCurrent(),getCurrent()+"\n\n")
+                                generateNoteOnSD("Bluetooth AUDIO_VIDEO_HANDSFREE CONNECTED" + getCurrent(),getCurrent()+"\n\n")
                             }
                         }
                     }
@@ -316,9 +316,9 @@ class BluetoothService : Service() {
                         if(!isConnected(device)){
                             stopSensorService()
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                exportToFile("Bluetooth AUDIO_VIDEO_CAR_AUDIO DISCONNECTED",getCurrent()+"\n\n")
+                                exportToFile("Bluetooth AUDIO_VIDEO_HANDSFREE DISCONNECTED",getCurrent()+"\n\n")
                             }else{
-                                generateNoteOnSD("Bluetooth AUDIO_VIDEO_CAR_AUDIO DISCONNECTED" + getCurrent(),getCurrent()+"\n\n")
+                                generateNoteOnSD("Bluetooth AUDIO_VIDEO_HANDSFREE DISCONNECTED" + getCurrent(),getCurrent()+"\n\n")
                             }
                         }
                     }
