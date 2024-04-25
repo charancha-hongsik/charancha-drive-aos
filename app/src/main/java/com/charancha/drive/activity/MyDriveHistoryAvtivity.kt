@@ -37,8 +37,6 @@ class MyDriveHistoryAvtivity: AppCompatActivity() {
             lvHistory.setAdapter(adapter)
         })
 
-        historyViewModel.getAllDriveDate()
-
 
     }
 }

@@ -26,7 +26,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import com.charancha.drive.room.database.DriveDatabase
 import com.charancha.drive.room.entity.Drive
-import com.charancha.drive.room.entity.DriveDate
 import com.google.android.gms.location.*
 import java.io.File
 import java.io.FileWriter

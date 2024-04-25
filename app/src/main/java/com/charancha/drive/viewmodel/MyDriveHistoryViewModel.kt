@@ -7,7 +7,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.charancha.drive.room.database.DriveDatabase
-import com.charancha.drive.room.entity.DriveDate
 import kotlinx.coroutines.launch
 
 class MyDriveHistoryViewModel: ViewModel() {
@@ -25,19 +24,6 @@ class MyDriveHistoryViewModel: ViewModel() {
             driveDatabase.driveDao().allDrive?.let {
                 for(drive in it)
                     Log.d("testestestest","testsetsetset drive :: " + drive.toString())
-            }
-        }
-    }
-
-    fun getAllDriveDate(){
-        viewModelScope.launch {
-            val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(context)
-            driveDatabase.driveDateDao().allDriveDate?.let {
-                var list:MutableList<String> = mutableListOf()
-                for(driveDate in it)
-                    list.add(driveDate?.date.toString())
-
-                setAllDriveDate.value = Event(list)
             }
         }
     }
