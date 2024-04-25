@@ -1,4 +1,4 @@
-package com.charancha.drive
+package com.charancha.drive.service
 
 import android.Manifest
 import android.app.Notification
@@ -24,6 +24,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
+import com.charancha.drive.room.database.DriveDatabase
 import com.google.android.gms.location.*
 import java.io.File
 import java.io.FileWriter
@@ -37,6 +38,8 @@ import kotlin.concurrent.timerTask
  * The Service will only run in one instance. However, everytime you start the service, the onStartCommand() method is called.
  */
 class SensorService : Service() {
+
+    private var driveDatabase:DriveDatabase? = null
 
     private lateinit var sensorManager: SensorManager
     private lateinit var fusedLocationClient :FusedLocationProviderClient
@@ -127,6 +130,8 @@ class SensorService : Service() {
 
         sharedPreferences = getSharedPreferences("sensor", Context.MODE_PRIVATE)
         editor = sharedPreferences.edit()
+
+        driveDatabase = DriveDatabase.getDatabase(this)
 
         if (Build.VERSION.SDK_INT >= 26) {
             val CHANNEL_ID = "my_channel_01"

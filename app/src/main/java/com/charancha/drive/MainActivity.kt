@@ -11,6 +11,8 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.charancha.drive.PreferenceUtil.HAVE_BEEN_HOME
+import com.charancha.drive.service.BluetoothService
+import com.charancha.drive.service.SensorService
 import java.util.*
 
 class MainActivity : AppCompatActivity() {

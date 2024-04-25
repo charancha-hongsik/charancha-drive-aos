@@ -1,16 +1,12 @@
-package com.charancha.drive
+package com.charancha.drive.service
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.*
 import android.app.PendingIntent.FLAG_MUTABLE
 import android.bluetooth.*
-import android.bluetooth.BluetoothAdapter.STATE_CONNECTED
-import android.bluetooth.BluetoothClass.Device.AUDIO_VIDEO_CAR_AUDIO
 import android.bluetooth.BluetoothClass.Device.AUDIO_VIDEO_HANDSFREE
 import android.bluetooth.BluetoothClass.Service.*
 import android.content.*
-import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
 import android.os.Build
@@ -19,7 +15,6 @@ import android.os.IBinder
 import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import com.google.android.gms.location.*
 import com.google.android.gms.location.ActivityTransition.ACTIVITY_TRANSITION_ENTER
@@ -59,7 +54,9 @@ class BluetoothService : Service() {
 
         private const val CAR_CONNECTION_AUTHORITY = "androidx.car.app.connection"
 
-        private val PROJECTION_HOST_URI = Uri.Builder().scheme("content").authority(CAR_CONNECTION_AUTHORITY).build()
+        private val PROJECTION_HOST_URI = Uri.Builder().scheme("content").authority(
+            CAR_CONNECTION_AUTHORITY
+        ).build()
     }
 
     private lateinit var carConnectionQueryHandler: CarConnectionQueryHandler
