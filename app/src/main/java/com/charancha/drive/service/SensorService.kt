@@ -601,7 +601,7 @@ class SensorService : Service() {
                         distance = pastLocation!!.distanceTo(location)
                     }
 
-                    gpsInfo.add(EachGpsDto(System.currentTimeMillis(), location.latitude, location.longitude, location.speed,distance,(location.speed*MS_TO_KH) - (pastSpeed*MS_TO_KH)))
+                    gpsInfo.add(EachGpsDto(System.currentTimeMillis(), location.latitude, location.longitude, location.speed,distance,location.altitude, (location.speed*MS_TO_KH) - (pastSpeed*MS_TO_KH)))
 
                 }catch (e:Exception){
 

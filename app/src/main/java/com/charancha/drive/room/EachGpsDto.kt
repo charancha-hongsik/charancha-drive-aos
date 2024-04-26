@@ -10,5 +10,6 @@ data class EachGpsDto(
     var longtitude: Double,
     var speed: Float,
     var distance:Float,
+    var altitude:Double,
     var acceleration: Float
 )
