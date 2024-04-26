@@ -29,6 +29,7 @@ import com.charancha.drive.room.EachGpsDto
 import com.charancha.drive.room.database.DriveDatabase
 import com.charancha.drive.room.entity.Drive
 import com.google.android.gms.location.*
+import com.google.gson.Gson
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
@@ -142,8 +143,8 @@ class SensorService : Service() {
         format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
         val time = Date()
 
-        driveDto = DriveDto(format.format(time).toString(), startTimeStamp, "B",0f,0L,0f,0,0,null)
         gpsInfo = mutableListOf()
+        driveDto = DriveDto(format.format(time).toString(), startTimeStamp, "B",0f,0L,0f,0,0,gpsInfo)
     }
 
     override fun onCreate() {
@@ -181,6 +182,8 @@ class SensorService : Service() {
         makeRotationVectorInfo()
         makeInclineInfo()
         makeAltitudeInfo()
+
+        writeToRoom()
 
         timer.cancel()
 
@@ -904,13 +907,13 @@ class SensorService : Service() {
     }
 
     fun writeToRoom(){
+        driveDto.rawData = gpsInfo
         driveDto.distance = distanceSum
         driveDto.maxSpeed = maxSpeed
         driveDto.time = startTimeStamp - System.currentTimeMillis()
 
-
-//        val drive = Drive(format.format(time).toInt(), now, latitude, longtitude, speed, distance, acceleration)
-//        driveDatabase?.driveDao()?.insert(drive)
+        val drive = Drive(driveDto.tracking_id, driveDto.timeStamp, driveDto.rank, driveDto.distance, driveDto.time, driveDto.rapid1, driveDto.rapid2, Gson().toJson(driveDto))
+        driveDatabase?.driveDao()?.insert(drive)
     }
 
 
