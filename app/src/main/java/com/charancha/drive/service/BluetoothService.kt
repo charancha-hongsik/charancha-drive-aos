@@ -50,6 +50,13 @@ class BluetoothService : Service() {
         // phone is connected to Android Auto
         const val CONNECTION_TYPE_PROJECTION = 2
 
+        const val L4 = "L4"
+        const val L3 = "L3"
+        const val L2 = "L2"
+        const val L1 = "L1"
+
+
+
         private const val QUERY_TOKEN = 42
 
         private const val CAR_CONNECTION_AUTHORITY = "androidx.car.app.connection"
@@ -234,8 +241,9 @@ class BluetoothService : Service() {
         }
     }
 
-    private fun startSensorService(){
+    private fun startSensorService(level: String){
         val intent = Intent(this@BluetoothService, SensorService::class.java)
+        intent.putExtra("level",level)
         startForegroundService(intent)
     }
 
@@ -262,7 +270,7 @@ class BluetoothService : Service() {
                 for (event in result.transitionEvents) {
                     if(event.activityType == DetectedActivity.IN_VEHICLE){
                         if(event.transitionType.equals(ACTIVITY_TRANSITION_ENTER)){
-                            startSensorService()
+                            startSensorService(L1)
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 exportToFile("IN_VEHICLE ENTER",getCurrent()+"\n\n")
                             } else{
@@ -292,6 +300,7 @@ class BluetoothService : Service() {
 
                     if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
                         if(isConnected(device)){
+//                            startSensorService(L2)
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 exportToFile("Bluetooth AUDIO_VIDEO_HANDSFREE CONNECTED",getCurrent()+"\n\n")
                             } else{
@@ -315,6 +324,7 @@ class BluetoothService : Service() {
 
                     if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
                         if(!isConnected(device)){
+//                            stopSensorService()
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 exportToFile("Bluetooth AUDIO_VIDEO_HANDSFREE DISCONNECTED",getCurrent()+"\n\n")
                             }else{

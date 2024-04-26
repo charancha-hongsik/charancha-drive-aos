@@ -123,7 +123,14 @@ class SensorService : Service() {
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
 
-        initDriveData()
+        var level = "L1"
+
+        intent.getStringExtra("level")?.let {
+            level = it
+        }
+
+
+        initDriveData(level)
 
         if(intent.hasExtra("interval"))
             INTERVAL = intent.getLongExtra("interval",1000L)
@@ -136,7 +143,7 @@ class SensorService : Service() {
         return super.onStartCommand(intent, flags, startId)
     }
 
-    private fun initDriveData(){
+    private fun initDriveData(level:String){
         startTimeStamp = System.currentTimeMillis()
 
         val format = SimpleDateFormat("yyyyMMddhhmmss")
@@ -144,7 +151,7 @@ class SensorService : Service() {
         val time = Date()
 
         gpsInfo = mutableListOf()
-        driveDto = DriveDto(format.format(time).toString(), startTimeStamp, "B",0f,0L,0f,0,0,gpsInfo)
+        driveDto = DriveDto(format.format(time).toString(), startTimeStamp, level,0f,0L,0f,0,0,gpsInfo)
     }
 
     override fun onCreate() {
