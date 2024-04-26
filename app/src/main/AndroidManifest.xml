@@ -50,6 +50,10 @@
         android:theme="@style/Theme.Charanchadriveaos"
         tools:targetApi="31">
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDvhAX3KfrDG8Xi9U_OhmHhpwXWGL5af7M"/>
+
         <activity
             android:name=".activity.SplashActivity"
             android:exported="true">

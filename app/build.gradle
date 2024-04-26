@@ -68,5 +68,8 @@ dependencies {
     // Gson
     implementation 'com.google.code.gson:gson:2.10.1'
 
+    // google map
+    implementation 'com.google.android.gms:play-services-maps:18.2.0'
+
 
 }
