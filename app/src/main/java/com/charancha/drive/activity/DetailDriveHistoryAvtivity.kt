@@ -1,15 +1,15 @@
 package com.charancha.drive.activity
 
 import android.os.Bundle
-import android.util.Log
-import android.widget.ArrayAdapter
-import android.widget.ListView
 import android.widget.TextView
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.charancha.drive.R
+import com.charancha.drive.room.DriveDto
+import com.charancha.drive.room.EachGpsDto
 import com.charancha.drive.room.entity.Drive
-import com.charancha.drive.viewmodel.MyDriveHistoryViewModel
+import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.PolylineOptions
 import com.google.gson.Gson
 
 
@@ -23,6 +23,9 @@ class DetailDriveHistoryAvtivity: AppCompatActivity() {
     lateinit var tvRapid2:TextView
 
     lateinit var drive:Drive
+    val polylines:MutableList<LatLng> = mutableListOf()
+
+    private val mMap: GoogleMap? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +46,12 @@ class DetailDriveHistoryAvtivity: AppCompatActivity() {
 
         drive = Gson().fromJson(intent.getStringExtra("drive"), Drive::class.java)
 
+        val driveDto = Gson().fromJson(drive.jsonData, DriveDto::class.java)
+        for(raw in driveDto.rawData){
+            polylines.add(LatLng(raw.latitude,raw.longtitude))
+        }
+
+
         tvTrackingId.text = "id : " + drive.tracking_id
         tvTimestamp.text = "주행시작 : " + drive.timeStamp
         tvRank.text = "랭크 : " + drive.rank
@@ -50,7 +59,30 @@ class DetailDriveHistoryAvtivity: AppCompatActivity() {
         tvTime.text = "주행 시간 : " + drive.time
         tvRapid1.text = "주행 종료 : " + (drive.timeStamp + drive.time)
 
+        setMapData()
+    }
+
+    private fun setMapData(){
+        // Get the SupportMapFragment and request notification when the map is ready to be used.
+        val mapFragment = supportFragmentManager
+            .findFragmentById(R.id.map) as SupportMapFragment?
+        mapFragment?.getMapAsync(OnMapReadyCallback {
+            // Add polylines to the map.
+            // Polylines are useful to show a route or some other connection between points.
 
 
+            it.addPolyline(
+                PolylineOptions()
+                    .clickable(true)
+                    .addAll(polylines))
+
+            // Position the map's camera near Alice Springs in the center of Australia,
+            // and set the zoom factor so most of Australia shows on the screen.
+            it.moveCamera(CameraUpdateFactory.newLatLngZoom(polylines.get(polylines.size/2), 10f))
+
+//            // Set listeners for click events.
+//            it.setOnPolylineClickListener(this)
+//            it.setOnPolygonClickListener(this)
+        })
     }
 }

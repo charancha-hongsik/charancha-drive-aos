@@ -6,6 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity">
 
+    <fragment
+        android:id="@+id/map"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/tv_tracking_id" />
+
+
     <TextView
         android:id="@+id/tv_tracking_id"
         android:layout_width="match_parent"
