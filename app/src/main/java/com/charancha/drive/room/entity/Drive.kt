@@ -5,11 +5,12 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "drive")
 data class Drive(
-    var date: Int,
-    @field:PrimaryKey var timeStamp: Long,
-    var latitude: Double,
-    var longtitude: Double,
-    var speed: Float,
-    var distance:Float,
-    var acceleration: Float
+    @field:PrimaryKey var tracking_id: String, // 20240417190026
+    var timeStamp: Long, // 1714087621
+    var rank: String, // A,B,C,S
+    var distance: Double, // 12533.736734857148
+    var time: Double, // 2015.6142109632492
+    var rapid1: Int, // 0,1,2
+    var rapid2: Int, // 0,1,2
+    var jsonData: String // 원시 데이터
 )

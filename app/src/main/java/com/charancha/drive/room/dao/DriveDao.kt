@@ -22,6 +22,6 @@ interface DriveDao {
     /**
      * 특정 날짜의 Drive 값 모두 가져오기
      */
-    @Query("SELECT * FROM drive WHERE date = :day")
-    fun allDriveOfDay(day: Int): List<Drive>
+    @Query("SELECT * FROM drive WHERE timeStamp BETWEEN :minTimeStamp AND :maxTimeStamp1")
+    fun allDriveBetween(minTimeStamp: Long, maxTimeStamp1: Long): List<Drive>
 }

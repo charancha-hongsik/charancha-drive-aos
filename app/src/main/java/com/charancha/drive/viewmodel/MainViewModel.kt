@@ -23,15 +23,6 @@ class MainViewModel: ViewModel() {
         }
     }
 
-    fun getAllDriveDate(){
-        viewModelScope.launch {
-            val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(context)
-            driveDatabase.driveDateDao().allDriveDate?.let {
-                for(driveDate in it)
-                    Log.d("testestestest","testsetsetset driveDate :: " + driveDate.toString())
 
-            }
-        }
-    }
 
 }

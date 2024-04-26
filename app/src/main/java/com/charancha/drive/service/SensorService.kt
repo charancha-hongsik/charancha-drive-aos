@@ -24,6 +24,8 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
+import com.charancha.drive.room.DriveDto
+import com.charancha.drive.room.EachGpsDto
 import com.charancha.drive.room.database.DriveDatabase
 import com.charancha.drive.room.entity.Drive
 import com.google.android.gms.location.*
@@ -63,11 +65,6 @@ class SensorService : Service() {
     private var pastLocation: Location? = null
     private var pastSpeed: Float = 0f
 
-    private var distanceSum: Float = 0f
-    private var distanceToSum: Float = 0f
-
-    private var maxSpeed: Float = 0f
-
     /**
      * 움직임 감지 센서
      */
@@ -106,6 +103,16 @@ class SensorService : Service() {
     lateinit var sharedPreferences : SharedPreferences
     lateinit var editor: Editor
 
+    /**
+     * room 데이터
+     */
+    lateinit var driveDto: DriveDto
+    lateinit var gpsInfo: MutableList<EachGpsDto>
+    private var maxSpeed: Float = 0f
+    private var distanceSum: Float = 0f
+    private var distanceToSum: Float = 0f
+    private var startTimeStamp: Long = 0
+
 
 
     override fun onBind(p0: Intent?): IBinder? {
@@ -114,6 +121,8 @@ class SensorService : Service() {
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
+
+        initDriveData()
 
         if(intent.hasExtra("interval"))
             INTERVAL = intent.getLongExtra("interval",1000L)
@@ -124,6 +133,17 @@ class SensorService : Service() {
         setTimer()
 
         return super.onStartCommand(intent, flags, startId)
+    }
+
+    private fun initDriveData(){
+        startTimeStamp = System.currentTimeMillis()
+
+        val format = SimpleDateFormat("yyyyMMddhhmmss")
+        format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
+        val time = Date()
+
+        driveDto = DriveDto(format.format(time).toString(), startTimeStamp, "B",0f,0L,0f,0,0,null)
+        gpsInfo = mutableListOf()
     }
 
     override fun onCreate() {
@@ -571,7 +591,7 @@ class SensorService : Service() {
                         distance = pastLocation!!.distanceTo(location)
                     }
 
-//                    writeToRoom(location.latitude, location.longitude, location.speed,distance,(location.speed*MS_TO_KH) - (pastSpeed*MS_TO_KH))
+                    gpsInfo.add(EachGpsDto(System.currentTimeMillis(), location.latitude, location.longitude, location.speed,distance,(location.speed*MS_TO_KH) - (pastSpeed*MS_TO_KH)))
 
                 }catch (e:Exception){
 
@@ -883,18 +903,17 @@ class SensorService : Service() {
         }
     }
 
-    fun writeToRoom(latitude:Double, longtitude:Double, speed:Float, distance:Float, acceleration:Float){
-        val now = System.currentTimeMillis()
-
-        val format = SimpleDateFormat("yyyyMMdd")
-        format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
-        val time = Date()
+    fun writeToRoom(){
+        driveDto.distance = distanceSum
+        driveDto.maxSpeed = maxSpeed
+        driveDto.time = startTimeStamp - System.currentTimeMillis()
 
 
-        val drive = Drive(format.format(time).toInt(), now, latitude, longtitude, speed, distance, acceleration)
-        driveDatabase?.driveDao()?.insert(drive)
-        driveDatabase?.driveDateDao()?.insert(DriveDate(format.format(time).toInt()))
+//        val drive = Drive(format.format(time).toInt(), now, latitude, longtitude, speed, distance, acceleration)
+//        driveDatabase?.driveDao()?.insert(drive)
     }
+
+
 
     private fun getCurrent(): String {
         val format = SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss")
