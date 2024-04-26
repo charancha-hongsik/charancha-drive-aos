@@ -1,4 +1,4 @@
-package com.charancha.drive
+package com.charancha.drive.activity
 
 import android.Manifest.permission.*
 import android.content.Intent
@@ -11,8 +11,9 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.PreferenceUtil.HAVE_BEEN_HOME
-import com.charancha.drive.activity.MyDriveHistoryAvtivity
+import com.charancha.drive.R
 import com.charancha.drive.service.BluetoothService
 import com.charancha.drive.service.SensorService
 import com.charancha.drive.viewmodel.MainViewModel

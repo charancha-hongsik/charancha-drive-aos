@@ -10,7 +10,7 @@ import com.charancha.drive.R
 import com.charancha.drive.viewmodel.MyDriveHistoryViewModel
 
 
-class MyDriveHistoryAvtivity: AppCompatActivity() {
+class DetailDriveHistoryAvtivity: AppCompatActivity() {
     lateinit var lvHistory:ListView
     private val historyViewModel: MyDriveHistoryViewModel by viewModels()
 
@@ -25,7 +25,7 @@ class MyDriveHistoryAvtivity: AppCompatActivity() {
         historyViewModel.init(applicationContext)
 
 
-        historyViewModel.setAllDriveDate.observe(this@MyDriveHistoryAvtivity, MyDriveHistoryViewModel.EventObserver {
+        historyViewModel.setAllDriveDate.observe(this@DetailDriveHistoryAvtivity, MyDriveHistoryViewModel.EventObserver {
             var id_list:MutableList<String> = mutableListOf()
                 for(drive in it)
                     id_list.add(drive.tracking_id)

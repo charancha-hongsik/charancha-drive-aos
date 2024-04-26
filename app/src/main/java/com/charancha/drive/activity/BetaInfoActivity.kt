@@ -1,16 +1,10 @@
-package com.charancha.drive
+package com.charancha.drive.activity
 
-import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import com.charancha.drive.R
 
 class BetaInfoActivity: AppCompatActivity() {
     private lateinit var btnStart: Button

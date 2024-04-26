@@ -1,4 +1,4 @@
-package com.charancha.drive
+package com.charancha.drive.activity
 
 import android.Manifest.permission.*
 import android.content.Intent
@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.charancha.drive.R
 
 class PermissionActivity: AppCompatActivity(){
     companion object {

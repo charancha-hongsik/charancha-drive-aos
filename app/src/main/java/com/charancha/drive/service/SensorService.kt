@@ -910,7 +910,7 @@ class SensorService : Service() {
         driveDto.rawData = gpsInfo
         driveDto.distance = distanceSum
         driveDto.maxSpeed = maxSpeed
-        driveDto.time = startTimeStamp - System.currentTimeMillis()
+        driveDto.time = System.currentTimeMillis() - startTimeStamp
 
         val drive = Drive(driveDto.tracking_id, driveDto.timeStamp, driveDto.rank, driveDto.distance, driveDto.time, driveDto.rapid1, driveDto.rapid2, Gson().toJson(driveDto))
         driveDatabase?.driveDao()?.insert(drive)
