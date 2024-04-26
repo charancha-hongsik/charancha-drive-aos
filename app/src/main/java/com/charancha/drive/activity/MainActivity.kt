@@ -127,7 +127,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 mutableListOf (
                     ACCESS_FINE_LOCATION,
-                    ACCESS_COARSE_LOCATION,
+                    ACCESS_COARSE_LOCATION
                 ).apply {
 
                 }.toTypedArray()

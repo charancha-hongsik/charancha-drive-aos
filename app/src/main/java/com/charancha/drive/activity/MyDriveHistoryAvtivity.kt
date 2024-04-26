@@ -1,5 +1,6 @@
 package com.charancha.drive.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
@@ -8,6 +9,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.charancha.drive.R
 import com.charancha.drive.viewmodel.MyDriveHistoryViewModel
+import com.google.gson.Gson
 
 
 class MyDriveHistoryAvtivity: AppCompatActivity() {
@@ -34,7 +36,9 @@ class MyDriveHistoryAvtivity: AppCompatActivity() {
                 ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, id_list)
 
             lvHistory.setOnItemClickListener { adapterView, view, i, l ->
-                Log.d("testsetsetse","testsetsetsetse time :: " + it.get(i).time)
+                var intent = Intent(this@MyDriveHistoryAvtivity, DetailDriveHistoryAvtivity::class.java)
+                intent.putExtra("drive",Gson().toJson(it.get(i)))
+                startActivity(intent)
             }
 
             // listView에 adapter 연결
