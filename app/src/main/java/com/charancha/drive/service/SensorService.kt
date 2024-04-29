@@ -592,7 +592,7 @@ class SensorService : Service() {
 
         locationRequest.setInterval(INTERVAL) // 10초마다 업데이트 요청
         locationRequest.setFastestInterval(FASTEST_INTERVAL)
-        locationRequest.setMaxWaitTime(MAX_WAIT_TIME)
+//        locationRequest.setMaxWaitTime(MAX_WAIT_TIME)
 
 
         // 위치 업데이트 리스너 생성
