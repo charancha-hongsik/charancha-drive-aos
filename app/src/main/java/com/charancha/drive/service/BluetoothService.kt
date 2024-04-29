@@ -99,14 +99,10 @@ class BluetoothService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if(intent != null){
-            registerActivityTransitionUpdates()
-            registerReceiver(transitionReceiver, filter)
 
-            return super.onStartCommand(intent, flags, startId)
-        }
-
-        return START_STICKY
+        registerActivityTransitionUpdates()
+        registerReceiver(transitionReceiver, filter)
+        return START_REDELIVER_INTENT
 
     }
 
@@ -115,21 +111,21 @@ class BluetoothService : Service() {
 
         carConnectionQueryHandler = CarConnectionQueryHandler(contentResolver)
 
-        if (Build.VERSION.SDK_INT >= 26) {
-            val CHANNEL_ID = "my_channel_02"
-            val channel = NotificationChannel(
-                CHANNEL_ID,
-                "check blueToothConnect",
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-            (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
-                channel
-            )
-            val notification: Notification = NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("")
-                .setContentText("").build()
-            startForeground(1, notification)
-        }
+        val CHANNEL_ID = "my_channel_02"
+        val channel = NotificationChannel(
+            CHANNEL_ID,
+            "check blueToothConnect",
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
+            channel
+        )
+
+        val notification: Notification = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setSmallIcon(android.R.drawable.btn_star_big_off)
+            .setContentTitle("bluetooth 관찰중..")
+            .setContentText("bluetooth 관찰중..").build()
+        startForeground(1, notification)
 
         request = ActivityTransitionRequest(transitions)
         val intent = Intent(TRANSITIONS_RECEIVER_ACTION)
@@ -275,14 +271,14 @@ class BluetoothService : Service() {
                 for (event in result.transitionEvents) {
                     if(event.activityType == DetectedActivity.IN_VEHICLE){
                         if(event.transitionType.equals(ACTIVITY_TRANSITION_ENTER)){
-//                            startSensorService(L1)
+                            startSensorService(L1)
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 exportToFile("IN_VEHICLE ENTER",getCurrent()+"\n\n")
                             } else{
                                 generateNoteOnSD("IN_VEHICLE ENTER " + getCurrent(),getCurrent()+"\n\n")
                             }
                         } else{
-//                            stopSensorService()
+                            stopSensorService()
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 exportToFile("IN_VEHICLE EXIT",getCurrent()+"\n\n")
                             } else{
@@ -305,7 +301,7 @@ class BluetoothService : Service() {
 
                     if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
                         if(isConnected(device)){
-                            startSensorService(L2)
+//                            startSensorService(L2)
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 exportToFile("Bluetooth AUDIO_VIDEO_HANDSFREE CONNECTED",getCurrent()+"\n\n")
                             } else{
@@ -329,7 +325,7 @@ class BluetoothService : Service() {
 
                     if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
                         if(!isConnected(device)){
-                            stopSensorService()
+//                            stopSensorService()
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 exportToFile("Bluetooth AUDIO_VIDEO_HANDSFREE DISCONNECTED",getCurrent()+"\n\n")
                             }else{

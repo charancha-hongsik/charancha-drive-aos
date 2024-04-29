@@ -57,7 +57,9 @@ class DetailDriveHistoryActivity: AppCompatActivity() {
         tvTime.text = "주행 시간 : " + driveDto.time
         tvRapid1.text = "주행 종료 : " + (driveDto.timeStamp + driveDto.time)
 
-        setMapData()
+        if(polylines.size != 0){
+            setMapData()
+        }
     }
 
     private fun setMapData(){

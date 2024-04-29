@@ -140,7 +140,7 @@ class SensorService : Service() {
         setLocation()
         setTimer()
 
-        return super.onStartCommand(intent, flags, startId)
+        return START_REDELIVER_INTENT
     }
 
     private fun initDriveData(level:String){
@@ -162,21 +162,20 @@ class SensorService : Service() {
 
         driveDatabase = DriveDatabase.getDatabase(this)
 
-        if (Build.VERSION.SDK_INT >= 26) {
-            val CHANNEL_ID = "my_channel_01"
-            val channel = NotificationChannel(
-                CHANNEL_ID,
-                "Channel human readable title",
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-            (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
-                channel
-            )
-            val notification: Notification = NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("")
-                .setContentText("").build()
-            startForeground(2, notification)
-        }
+        val CHANNEL_ID = "my_channel_01"
+        val channel = NotificationChannel(
+            CHANNEL_ID,
+            "Channel human readable title",
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
+            channel
+        )
+        val notification: Notification = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setSmallIcon(android.R.drawable.ic_media_play)
+            .setContentTitle("sensor 데이터 수집중..")
+            .setContentText("sensor 데이터 수집중..").build()
+        startForeground(2, notification)
     }
 
     override fun onDestroy() {
