@@ -5,7 +5,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.charancha.drive.R
 import com.charancha.drive.room.DriveDto
-import com.charancha.drive.room.EachGpsDto
 import com.charancha.drive.room.entity.Drive
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
@@ -13,7 +12,7 @@ import com.google.android.gms.maps.model.PolylineOptions
 import com.google.gson.Gson
 
 
-class DetailDriveHistoryAvtivity: AppCompatActivity() {
+class DetailDriveHistoryActivity: AppCompatActivity() {
     lateinit var tvTrackingId:TextView
     lateinit var tvTimestamp:TextView
     lateinit var tvRank:TextView
@@ -22,7 +21,7 @@ class DetailDriveHistoryAvtivity: AppCompatActivity() {
     lateinit var tvRapid1:TextView
     lateinit var tvRapid2:TextView
 
-    lateinit var drive:Drive
+    lateinit var driveDto:DriveDto
     val polylines:MutableList<LatLng> = mutableListOf()
 
     private val mMap: GoogleMap? = null
@@ -44,20 +43,19 @@ class DetailDriveHistoryAvtivity: AppCompatActivity() {
         tvRapid1 = findViewById(R.id.tv_rapid1)
         tvRapid2 = findViewById(R.id.tv_rapid2)
 
-        drive = Gson().fromJson(intent.getStringExtra("drive"), Drive::class.java)
+        driveDto = intent.getSerializableExtra("driveDto") as DriveDto
 
-        val driveDto = Gson().fromJson(drive.jsonData, DriveDto::class.java)
         for(raw in driveDto.rawData){
             polylines.add(LatLng(raw.latitude,raw.longtitude))
         }
 
 
-        tvTrackingId.text = "id : " + drive.tracking_id
-        tvTimestamp.text = "주행시작 : " + drive.timeStamp
-        tvRank.text = "랭크 : " + drive.rank
-        tvDistance.text = "주행거리(m) : " + drive.distance
-        tvTime.text = "주행 시간 : " + drive.time
-        tvRapid1.text = "주행 종료 : " + (drive.timeStamp + drive.time)
+        tvTrackingId.text = "id : " + driveDto.tracking_id
+        tvTimestamp.text = "주행시작 : " + driveDto.timeStamp
+        tvRank.text = "랭크 : " + driveDto.rank
+        tvDistance.text = "주행거리(m) : " + driveDto.distance
+        tvTime.text = "주행 시간 : " + driveDto.time
+        tvRapid1.text = "주행 종료 : " + (driveDto.timeStamp + driveDto.time)
 
         setMapData()
     }

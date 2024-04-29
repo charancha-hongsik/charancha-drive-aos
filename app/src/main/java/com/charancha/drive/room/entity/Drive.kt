@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 data class Drive(
     @field:PrimaryKey var tracking_id: String, // 20240417190026
     var timeStamp: Long, // 1714087621
-    var rank: String, // A,B,C,S
+    var rank: String, // L1, L2, L3, L4
     var distance: Float, // 12533.736734857148
     var time: Long, // 2015.6142109632492
     var rapid1: Int, // 0,1,2

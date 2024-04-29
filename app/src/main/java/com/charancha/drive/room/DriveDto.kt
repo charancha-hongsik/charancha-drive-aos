@@ -8,8 +8,7 @@ data class DriveDto(
     var rank: String, // A,B,C,S
     var distance: Float, // 12533.736734857148
     var time: Long, // 2015.6142109632492
-    var maxSpeed:Float,
     var rapid1: Int, // 0,1,2
     var rapid2: Int, // 0,1,2
     var rawData: List<EachGpsDto> // 원시 데이터
-)
+) : java.io.Serializable

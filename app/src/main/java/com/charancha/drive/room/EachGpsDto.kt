@@ -12,4 +12,4 @@ data class EachGpsDto(
     var distance:Float,
     var altitude:Double,
     var acceleration: Float
-)
+) : java.io.Serializable

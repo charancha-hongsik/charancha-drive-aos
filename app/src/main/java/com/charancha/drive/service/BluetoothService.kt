@@ -98,11 +98,16 @@ class BluetoothService : Service() {
         TODO("Not yet implemented")
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        registerActivityTransitionUpdates()
-        registerReceiver(transitionReceiver, filter)
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if(intent != null){
+            registerActivityTransitionUpdates()
+            registerReceiver(transitionReceiver, filter)
 
-        return super.onStartCommand(intent, flags, startId)
+            return super.onStartCommand(intent, flags, startId)
+        }
+
+        return START_STICKY
+
     }
 
     override fun onCreate() {

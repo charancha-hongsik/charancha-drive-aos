@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity() {
 
         btnHistory = findViewById(R.id.btn_history)
         btnHistory.setOnClickListener {
-            startActivity(Intent(this, MyDriveHistoryAvtivity::class.java))
+            startActivity(Intent(this, MyDriveHistoryActivity::class.java))
         }
 
     }

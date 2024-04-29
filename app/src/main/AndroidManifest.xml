@@ -78,11 +78,11 @@
             android:exported="true"/>
 
         <activity
-            android:name=".activity.MyDriveHistoryAvtivity"
+            android:name=".activity.MyDriveHistoryActivity"
             android:exported="true"/>
 
         <activity
-            android:name=".activity.DetailDriveHistoryAvtivity"
+            android:name=".activity.DetailDriveHistoryActivity"
             android:exported="true"/>
 
         <service

@@ -151,7 +151,7 @@ class SensorService : Service() {
         val time = Date()
 
         gpsInfo = mutableListOf()
-        driveDto = DriveDto(format.format(time).toString(), startTimeStamp, level,0f,0L,0f,0,0,gpsInfo)
+        driveDto = DriveDto(format.format(time).toString(), startTimeStamp, level,0f,0L,0,0,gpsInfo)
     }
 
     override fun onCreate() {
@@ -916,7 +916,7 @@ class SensorService : Service() {
     fun writeToRoom(){
         driveDto.rawData = gpsInfo
         driveDto.distance = distanceSum
-        driveDto.maxSpeed = maxSpeed
+//        driveDto.maxSpeed = maxSpeed
         driveDto.time = System.currentTimeMillis() - startTimeStamp
 
         val drive = Drive(driveDto.tracking_id, driveDto.timeStamp, driveDto.rank, driveDto.distance, driveDto.time, driveDto.rapid1, driveDto.rapid2, Gson().toJson(driveDto))

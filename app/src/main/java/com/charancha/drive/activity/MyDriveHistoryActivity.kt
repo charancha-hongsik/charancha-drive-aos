@@ -2,17 +2,17 @@ package com.charancha.drive.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.charancha.drive.R
+import com.charancha.drive.room.DriveDto
 import com.charancha.drive.viewmodel.MyDriveHistoryViewModel
 import com.google.gson.Gson
 
 
-class MyDriveHistoryAvtivity: AppCompatActivity() {
+class MyDriveHistoryActivity: AppCompatActivity() {
     lateinit var lvHistory:ListView
     private val historyViewModel: MyDriveHistoryViewModel by viewModels()
 
@@ -27,7 +27,7 @@ class MyDriveHistoryAvtivity: AppCompatActivity() {
         historyViewModel.init(applicationContext)
 
 
-        historyViewModel.setAllDriveDate.observe(this@MyDriveHistoryAvtivity, MyDriveHistoryViewModel.EventObserver {
+        historyViewModel.setAllDriveDate.observe(this@MyDriveHistoryActivity, MyDriveHistoryViewModel.EventObserver {
             var id_list:MutableList<String> = mutableListOf()
                 for(drive in it)
                     id_list.add(drive.tracking_id)
@@ -36,8 +36,8 @@ class MyDriveHistoryAvtivity: AppCompatActivity() {
                 ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, id_list)
 
             lvHistory.setOnItemClickListener { adapterView, view, i, l ->
-                var intent = Intent(this@MyDriveHistoryAvtivity, DetailDriveHistoryAvtivity::class.java)
-                intent.putExtra("drive",Gson().toJson(it.get(i)))
+                var intent = Intent(this@MyDriveHistoryActivity, DetailDriveHistoryActivity::class.java)
+                intent.putExtra("driveDto",Gson().fromJson(it.get(i).jsonData, DriveDto::class.java))
                 startActivity(intent)
             }
 
