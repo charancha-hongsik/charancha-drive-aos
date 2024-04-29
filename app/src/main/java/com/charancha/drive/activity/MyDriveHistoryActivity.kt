@@ -30,7 +30,7 @@ class MyDriveHistoryActivity: AppCompatActivity() {
         historyViewModel.setAllDriveDate.observe(this@MyDriveHistoryActivity, MyDriveHistoryViewModel.EventObserver {
             var id_list:MutableList<String> = mutableListOf()
                 for(drive in it)
-                    id_list.add(drive.tracking_id)
+                    id_list.add(drive.tracking_id.subSequence(0,4).toString() + "-" + drive.tracking_id.subSequence(4,8).toString() + " / " + drive.distance + "m")
 
             val adapter: ArrayAdapter<String> =
                 ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, id_list)

@@ -10,6 +10,9 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.gson.Gson
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 class DetailDriveHistoryActivity: AppCompatActivity() {
@@ -51,15 +54,23 @@ class DetailDriveHistoryActivity: AppCompatActivity() {
 
 
         tvTrackingId.text = "id : " + driveDto.tracking_id
-        tvTimestamp.text = "주행시작 : " + driveDto.timeStamp
+        tvTimestamp.text = "주행시작 : " + getDateFromTimeStamp(driveDto.timeStamp)
         tvRank.text = "랭크 : " + driveDto.rank
         tvDistance.text = "주행거리(m) : " + driveDto.distance
-        tvTime.text = "주행 시간 : " + driveDto.time
-        tvRapid1.text = "주행 종료 : " + (driveDto.timeStamp + driveDto.time)
+        tvTime.text = "주행 시간 : " + (TimeUnit.MILLISECONDS.toSeconds(driveDto.time)/60) + "분 " + (TimeUnit.MILLISECONDS.toSeconds(driveDto.time)%60) + "초"
+        tvRapid1.text = "주행 종료 : " + getDateFromTimeStamp((driveDto.timeStamp + driveDto.time))
 
         if(polylines.size != 0){
             setMapData()
         }
+    }
+
+    private fun getDateFromTimeStamp(timeStamp:Long) : String{
+        val format = SimpleDateFormat("yyyy-MM-dd / hh:mm:ss")
+        format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
+        val time = Date()
+
+        return format.format(timeStamp).toString()
     }
 
     private fun setMapData(){
