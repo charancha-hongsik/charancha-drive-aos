@@ -97,7 +97,17 @@ class SensorService : Service() {
     private var altitude = 0f
     private var writeTextPossible = false
 
-    private var INTERVAL = 10000L
+    private var FASTEST_INTERVAL = 10000L
+    private var INTERVAL = 20000L
+    private val MAX_WAIT_TIME = 60000L
+
+    /**
+     *         locationRequest.setInterval(INTERVAL) // 10초마다 업데이트 요청
+     *         locationRequest.setFastestInterval(INTERVAL)
+     *         locationRequest.setMaxWaitTime(INTERVAL*10)
+
+     */
+
     val MS_TO_KH = 3.6f
 
     lateinit var timer: Timer
@@ -133,7 +143,7 @@ class SensorService : Service() {
         initDriveData(level)
 
         if(intent.hasExtra("interval"))
-            INTERVAL = intent.getLongExtra("interval",1000L)
+            INTERVAL = intent.getLongExtra("interval",20000L)
 
         setListener()
         setSensor()
@@ -581,6 +591,8 @@ class SensorService : Service() {
 //        locationRequest.setSmallestDisplacement(10f)
 
         locationRequest.setInterval(INTERVAL) // 10초마다 업데이트 요청
+        locationRequest.setFastestInterval(FASTEST_INTERVAL)
+        locationRequest.setMaxWaitTime(MAX_WAIT_TIME)
 
 
         // 위치 업데이트 리스너 생성
