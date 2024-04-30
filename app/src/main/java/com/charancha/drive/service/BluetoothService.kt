@@ -16,6 +16,7 @@ import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import com.charancha.drive.PreferenceUtil
 import com.google.android.gms.location.*
 import com.google.android.gms.location.ActivityTransition.ACTIVITY_TRANSITION_ENTER
 import java.io.File
@@ -234,7 +235,7 @@ class BluetoothService : Service() {
             }
             val connectionState = response.getInt(carConnectionTypeColumn)
             if (connectionState == CONNECTION_TYPE_NOT_CONNECTED) {
-                stopSensorService()
+                stopSensorService(L3)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     exportToFile("CONNECTION_TYPE_NOT_CONNECTED",getCurrent()+"\n\n")
                 }else{
@@ -255,9 +256,18 @@ class BluetoothService : Service() {
     private fun startSensorService(level: String){
         if(!isMyServiceRunning(SensorService::class.java)){
             val intent = Intent(this@BluetoothService, SensorService::class.java)
-            intent.putExtra("level",level)
+            intent.putExtra("level", level)
             startForegroundService(intent)
+
+            PreferenceUtil.putPref(this, PreferenceUtil.RUNNING_LEVEL, level)
+
         }
+    }
+
+    private fun stopSensorService(level: String){
+        if(!isMyServiceRunning(SensorService::class.java))
+            if(level == PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL, ""))
+                stopService(Intent(this@BluetoothService, SensorService::class.java))
     }
 
     private fun stopSensorService(){
@@ -291,7 +301,7 @@ class BluetoothService : Service() {
                                 generateNoteOnSD("IN_VEHICLE ENTER " + getCurrent(),getCurrent()+"\n\n")
                             }
                         } else{
-                            stopSensorService()
+                            stopSensorService(L1)
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 exportToFile("IN_VEHICLE EXIT",getCurrent()+"\n\n")
                             } else{
@@ -342,7 +352,7 @@ class BluetoothService : Service() {
                 pairedDevices?.forEach { device ->
                     if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
                         if(!isConnected(device)){
-                            stopSensorService()
+                            stopSensorService(L2)
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 exportToFile("Bluetooth AUDIO_VIDEO_HANDSFREE DISCONNECTED",getCurrent()+"\n\n")
                             }else{
