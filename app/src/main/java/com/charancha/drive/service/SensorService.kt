@@ -102,7 +102,7 @@ class SensorService : Service() {
     private val MAX_WAIT_TIME = 60000L
 
     /**
-     *         locationRequest.setInterval(INTERVAL) // 10초마다 업데이트 요청
+     *         locationRequest.setInterval(INTERVAL) // 20초마다 업데이트 요청
      *         locationRequest.setFastestInterval(INTERVAL)
      *         locationRequest.setMaxWaitTime(INTERVAL*10)
 
