@@ -103,9 +103,9 @@ class SensorService : Service() {
 
     /**
      *         locationRequest.setInterval(INTERVAL) // 20초마다 업데이트 요청
-     *         locationRequest.setFastestInterval(INTERVAL)
-     *         locationRequest.setMaxWaitTime(INTERVAL*10)
-
+     *         locationRequest.setFastestInterval(FASTEST_INTERVAL) 다른 앱에서 연산된 위치를 수신
+     *         setinterval() 메서드를 사용하여 앱을 위해 위치를 연산하는 간격을 지정합니다.
+     *         setFastestInterval()을 사용하여 다른 앱에서 연산된 위치를 수신하는 간격을 지정합니다.
      */
 
     val MS_TO_KH = 3.6f

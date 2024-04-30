@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/default_background"
     tools:context=".activity.MainActivity">
 
     <TextView
@@ -46,7 +47,7 @@
         android:hint="Interval(Seconds)을 입력해주세요."
         android:textSize="12dp"
         android:paddingLeft="12dp"
-        android:textColor="@color/black"
+        android:textColor="@color/default_black"
         android:textColorHint="#8C8C8C"
         android:inputType="number"
         android:visibility="gone"
