@@ -32,7 +32,7 @@
         android:layout_marginLeft="30dp"
         android:elevation="2dp"
         android:text="센서 시작"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
 
@@ -49,7 +49,7 @@
         android:textColor="@color/black"
         android:textColorHint="#8C8C8C"
         android:inputType="number"
-        android:visibility="visible"
+        android:visibility="gone"
         android:layout_marginLeft="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"

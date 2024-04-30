@@ -77,6 +77,14 @@ class BluetoothService : Service() {
             ActivityTransition.Builder()
                 .setActivityType(DetectedActivity.IN_VEHICLE)
                 .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
+                .build(),
+            ActivityTransition.Builder()
+                .setActivityType(DetectedActivity.WALKING)
+                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                .build(),
+            ActivityTransition.Builder()
+                .setActivityType(DetectedActivity.WALKING)
+                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
                 .build()
         )
     }
@@ -226,12 +234,14 @@ class BluetoothService : Service() {
             }
             val connectionState = response.getInt(carConnectionTypeColumn)
             if (connectionState == CONNECTION_TYPE_NOT_CONNECTED) {
+                stopSensorService()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     exportToFile("CONNECTION_TYPE_NOT_CONNECTED",getCurrent()+"\n\n")
                 }else{
                     generateNoteOnSD("CONNECTION_TYPE_NOT_CONNECTED",getCurrent()+"\n\n")
                 }
             } else {
+                startSensorService(L3)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     exportToFile("CONNECTION_TYPE_CONNECTED",getCurrent()+"\n\n")
                 }else{
@@ -243,13 +253,16 @@ class BluetoothService : Service() {
     }
 
     private fun startSensorService(level: String){
-        val intent = Intent(this@BluetoothService, SensorService::class.java)
-        intent.putExtra("level",level)
-        startForegroundService(intent)
+        if(!isMyServiceRunning(SensorService::class.java)){
+            val intent = Intent(this@BluetoothService, SensorService::class.java)
+            intent.putExtra("level",level)
+            startForegroundService(intent)
+        }
     }
 
     private fun stopSensorService(){
-        stopService(Intent(this@BluetoothService, SensorService::class.java))
+        if(!isMyServiceRunning(SensorService::class.java))
+            stopService(Intent(this@BluetoothService, SensorService::class.java))
     }
 
 
@@ -285,6 +298,21 @@ class BluetoothService : Service() {
                                 generateNoteOnSD("IN_VEHICLE EXIT " + getCurrent(),getCurrent()+"\n\n")
                             }
                         }
+                    } else if(event.activityType == DetectedActivity.WALKING){
+                        if(event.transitionType.equals(ACTIVITY_TRANSITION_ENTER)){
+                            stopSensorService()
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                exportToFile("WALKING_ENTER",getCurrent()+"\n\n")
+                            } else{
+                                generateNoteOnSD("WALKING_ENTER" + getCurrent(),getCurrent()+"\n\n")
+                            }
+                        } else{
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                exportToFile("WALKING_EXIT",getCurrent()+"\n\n")
+                            } else{
+                                generateNoteOnSD("WALKING_EXIT " + getCurrent(),getCurrent()+"\n\n")
+                            }
+                        }
                     }
                 }
             } else if(intent?.action == BluetoothDevice.ACTION_ACL_CONNECTED){
@@ -294,14 +322,9 @@ class BluetoothService : Service() {
                 val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
 
                 pairedDevices?.forEach { device ->
-                    Log.d("testsetestestset","testsetsetset device name :: " + device.name)
-                    Log.d("testsetestestset","testsetsetset device CoD :: " + device.bluetoothClass.toString())
-                    Log.d("testsetestestset","testsetsetset device contentDeepToString :: " + device.uuids.contentDeepToString())
-
-
                     if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
                         if(isConnected(device)){
-//                            startSensorService(L2)
+                            startSensorService(L2)
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 exportToFile("Bluetooth AUDIO_VIDEO_HANDSFREE CONNECTED",getCurrent()+"\n\n")
                             } else{
@@ -317,15 +340,9 @@ class BluetoothService : Service() {
 
                 val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
                 pairedDevices?.forEach { device ->
-
-                    Log.d("testsetestestset","testsetsetset device name :: " + device.name)
-                    Log.d("testsetestestset","testsetsetset device CoD :: " + device.bluetoothClass.toString())
-                    Log.d("testsetestestset","testsetsetset device contentDeepToString :: " + device.uuids.contentDeepToString())
-
-
                     if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
                         if(!isConnected(device)){
-//                            stopSensorService()
+                            stopSensorService()
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 exportToFile("Bluetooth AUDIO_VIDEO_HANDSFREE DISCONNECTED",getCurrent()+"\n\n")
                             }else{
@@ -375,5 +392,15 @@ class BluetoothService : Service() {
             null,
             null
         )
+    }
+
+    private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
+        val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+            if (serviceClass.name == service.service.className) {
+                return true
+            }
+        }
+        return false
     }
 }

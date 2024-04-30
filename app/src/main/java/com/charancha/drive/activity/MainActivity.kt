@@ -53,7 +53,9 @@ class MainActivity : AppCompatActivity() {
             setBtn()
             checkDeeplink()
         } else{
-
+            /**
+             * 허용되지 않은 경우 -> 팝업 노출?
+             */
         }
     }
 
