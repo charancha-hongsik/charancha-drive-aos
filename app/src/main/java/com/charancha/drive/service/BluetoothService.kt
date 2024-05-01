@@ -82,10 +82,6 @@ class BluetoothService : Service() {
             ActivityTransition.Builder()
                 .setActivityType(DetectedActivity.WALKING)
                 .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                .build(),
-            ActivityTransition.Builder()
-                .setActivityType(DetectedActivity.WALKING)
-                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
                 .build()
         )
     }
@@ -268,11 +264,23 @@ class BluetoothService : Service() {
         if(isMyServiceRunning(SensorService::class.java))
             if(level == PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL, ""))
                 stopService(Intent(this@BluetoothService, SensorService::class.java))
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            exportToFile("stopSensorService",getCurrent()+ isMyServiceRunning(SensorService::class.java) + PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL, "") +"\n\n")
+        } else{
+            generateNoteOnSD("stopSensorService " ,getCurrent() + isMyServiceRunning(SensorService::class.java) + PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL, "") +"\n\n")
+        }
     }
 
     private fun stopSensorService(){
         if(isMyServiceRunning(SensorService::class.java))
             stopService(Intent(this@BluetoothService, SensorService::class.java))
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            exportToFile("stopSensorService",getCurrent()+ isMyServiceRunning(SensorService::class.java) +"\n\n")
+        } else{
+            generateNoteOnSD("stopSensorService " ,getCurrent() + isMyServiceRunning(SensorService::class.java) +"\n\n")
+        }
     }
 
 
