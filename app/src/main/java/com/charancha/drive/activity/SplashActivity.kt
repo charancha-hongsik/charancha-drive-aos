@@ -12,13 +12,6 @@ class SplashActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        Log.d("testsetestestest","testestsetestset :: " + PreferenceUtil.getBooleanPref(
-            this,
-            PreferenceUtil.HAVE_BEEN_HOME,
-            false
-        )
-        )
-
         if(PreferenceUtil.getBooleanPref(this, PreferenceUtil.HAVE_BEEN_HOME, false)){
             startActivity(Intent(this, MainActivity::class.java))
             finish()

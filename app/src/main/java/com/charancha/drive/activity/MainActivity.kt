@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import androidx.activity.viewModels

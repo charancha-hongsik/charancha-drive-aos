@@ -235,14 +235,14 @@ class BluetoothService : Service() {
             }
             val connectionState = response.getInt(carConnectionTypeColumn)
             if (connectionState == CONNECTION_TYPE_NOT_CONNECTED) {
-                stopSensorService(L3)
+//                stopSensorService(L3)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     exportToFile("CONNECTION_TYPE_NOT_CONNECTED",getCurrent()+"\n\n")
                 }else{
                     generateNoteOnSD("CONNECTION_TYPE_NOT_CONNECTED",getCurrent()+"\n\n")
                 }
             } else {
-                startSensorService(L3)
+//                startSensorService(L3)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     exportToFile("CONNECTION_TYPE_CONNECTED",getCurrent()+"\n\n")
                 }else{
@@ -265,13 +265,13 @@ class BluetoothService : Service() {
     }
 
     private fun stopSensorService(level: String){
-        if(!isMyServiceRunning(SensorService::class.java))
+        if(isMyServiceRunning(SensorService::class.java))
             if(level == PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL, ""))
                 stopService(Intent(this@BluetoothService, SensorService::class.java))
     }
 
     private fun stopSensorService(){
-        if(!isMyServiceRunning(SensorService::class.java))
+        if(isMyServiceRunning(SensorService::class.java))
             stopService(Intent(this@BluetoothService, SensorService::class.java))
     }
 
@@ -312,17 +312,12 @@ class BluetoothService : Service() {
                         if(event.transitionType.equals(ACTIVITY_TRANSITION_ENTER)){
                             stopSensorService()
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                exportToFile("WALKING_ENTER",getCurrent()+"\n\n")
+                                exportToFile("WALKING ENTER",getCurrent()+"\n\n")
                             } else{
-                                generateNoteOnSD("WALKING_ENTER" + getCurrent(),getCurrent()+"\n\n")
-                            }
-                        } else{
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                exportToFile("WALKING_EXIT",getCurrent()+"\n\n")
-                            } else{
-                                generateNoteOnSD("WALKING_EXIT " + getCurrent(),getCurrent()+"\n\n")
+                                generateNoteOnSD("WALKING ENTER " + getCurrent(),getCurrent()+"\n\n")
                             }
                         }
+
                     }
                 }
             } else if(intent?.action == BluetoothDevice.ACTION_ACL_CONNECTED){
