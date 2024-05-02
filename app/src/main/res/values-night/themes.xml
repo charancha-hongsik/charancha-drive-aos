@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Charanchadriveaos" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.Charanchadriveaos" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/default_background</item>
         <item name="android:windowLightStatusBar">true</item>

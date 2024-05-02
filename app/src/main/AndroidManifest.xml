@@ -49,6 +49,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.Charanchadriveaos"
+        android:screenOrientation="portrait"
         tools:targetApi="31">
 
         <meta-data
@@ -67,23 +68,28 @@
 
         <activity
             android:name=".activity.BetaInfoActivity"
+            android:screenOrientation="portrait"
             android:exported="true"/>
 
 
         <activity
             android:name=".activity.PermissionActivity"
+            android:screenOrientation="portrait"
             android:exported="true"/>
 
         <activity
             android:name=".activity.MainActivity"
+            android:screenOrientation="portrait"
             android:exported="true"/>
 
         <activity
             android:name=".activity.MyDriveHistoryActivity"
+            android:screenOrientation="portrait"
             android:exported="true"/>
 
         <activity
             android:name=".activity.DetailDriveHistoryActivity"
+            android:screenOrientation="portrait"
             android:exported="true"/>
 
         <service
