@@ -104,11 +104,9 @@ class BluetoothService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-
         registerActivityTransitionUpdates()
         registerReceiver(transitionReceiver, filter)
         return START_REDELIVER_INTENT
-
     }
 
     override fun onCreate() {
@@ -250,6 +248,7 @@ class BluetoothService : Service() {
     }
 
     private fun startSensorService(level: String){
+        // SensorService가 실행중이지 않으면
         if(!isMyServiceRunning(SensorService::class.java)){
             val intent = Intent(this@BluetoothService, SensorService::class.java)
             intent.putExtra("level", level)
@@ -261,6 +260,7 @@ class BluetoothService : Service() {
     }
 
     private fun stopSensorService(level: String){
+        // SensorService가 실행중이면
         if(isMyServiceRunning(SensorService::class.java))
             if(level == PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL, ""))
                 stopService(Intent(this@BluetoothService, SensorService::class.java))
@@ -273,6 +273,7 @@ class BluetoothService : Service() {
     }
 
     private fun stopSensorService(){
+        // SensorService가 실행중이면
         if(isMyServiceRunning(SensorService::class.java))
             stopService(Intent(this@BluetoothService, SensorService::class.java))
 
@@ -316,7 +317,7 @@ class BluetoothService : Service() {
                                 generateNoteOnSD("IN_VEHICLE EXIT " + getCurrent(),getCurrent()+"\n\n")
                             }
 
-                            stopSensorService(L1)
+//                            stopSensorService(L1)
 
                         }
                     } else if(event.activityType == DetectedActivity.WALKING){

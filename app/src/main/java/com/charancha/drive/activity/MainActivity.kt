@@ -1,6 +1,8 @@
 package com.charancha.drive.activity
 
 import android.Manifest.permission.*
+import android.app.ActivityManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -9,6 +11,8 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
 import android.util.Log
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.Button
 import android.widget.EditText
 import androidx.activity.viewModels
@@ -81,21 +85,10 @@ class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setBtn(){
         btnStart = findViewById(R.id.btn_start)
-        btnStart.setText("센서 시작")
+        btnStart.setText("센서 종료")
 
         btnStart.setOnClickListener{
-            if(btnStatus){
-                stopService(Intent(this, SensorService::class.java))
-                btnStart.setText("센서 시작")
-                btnStatus = !btnStatus
-            } else {
-                var intent = Intent(this, SensorService::class.java)
-                if(et_seconds.text.isNotEmpty())  intent.putExtra("interval",(et_seconds.text.toString().toLong()*1000))
-
-                startForegroundService(intent)
-                btnStart.setText("센서 멈춤")
-                btnStatus = !btnStatus
-            }
+            stopService(Intent(this, SensorService::class.java))
         }
 
         et_seconds = findViewById(R.id.et_seconds)
@@ -107,9 +100,29 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        if(isMyServiceRunning(SensorService::class.java)){
+            btnStart.visibility = VISIBLE
+        } else{
+            btnStart.visibility = GONE
+        }
+    }
+
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
             baseContext, it) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
+        val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+            if (serviceClass.name == service.service.className) {
+                return true
+            }
+        }
+        return false
     }
 
 

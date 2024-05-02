@@ -588,11 +588,12 @@ class SensorService : Service() {
         // 위치 업데이트 요청 설정
         locationRequest = LocationRequest.create()
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-//        locationRequest.setSmallestDisplacement(10f)
-
-        locationRequest.setInterval(INTERVAL) // 10초마다 업데이트 요청
+        locationRequest.setInterval(INTERVAL) // INTERVAL 마다 업데이트 요청
         locationRequest.setFastestInterval(FASTEST_INTERVAL)
+
+
 //        locationRequest.setMaxWaitTime(MAX_WAIT_TIME)
+//        locationRequest.setSmallestDisplacement(10f)
 
 
         // 위치 업데이트 리스너 생성
