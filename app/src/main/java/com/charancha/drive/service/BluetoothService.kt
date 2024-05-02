@@ -126,8 +126,8 @@ class BluetoothService : Service() {
 
         val notification: Notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.btn_star_big_off)
-            .setContentTitle("bluetooth 관찰중..")
-            .setContentText("bluetooth 관찰중..").build()
+            .setContentTitle("주행 관찰중..")
+            .setContentText("주행 관찰중..").build()
         startForeground(1, notification)
 
         request = ActivityTransitionRequest(transitions)

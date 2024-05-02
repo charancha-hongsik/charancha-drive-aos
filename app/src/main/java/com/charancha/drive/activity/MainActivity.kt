@@ -5,12 +5,8 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.PowerManager
-import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Button
@@ -29,7 +25,7 @@ import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
-    lateinit var btnStart:Button
+    lateinit var btnStop:Button
     lateinit var et_seconds:EditText
     lateinit var btnHistory:Button
     var btnStatus:Boolean = false
@@ -70,7 +66,7 @@ class MainActivity : AppCompatActivity() {
                 /**
                  * startForegroundService TestService
                  */
-                btnStart.performClick()
+                btnStop.performClick()
             } else{
                 val intent = Intent(this, BluetoothService::class.java)
                 startForegroundService(intent)
@@ -84,11 +80,12 @@ class MainActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setBtn(){
-        btnStart = findViewById(R.id.btn_start)
-        btnStart.setText("센서 종료")
+        btnStop = findViewById(R.id.btn_stop)
+        btnStop.setText("센서 종료")
 
-        btnStart.setOnClickListener{
+        btnStop.setOnClickListener{
             stopService(Intent(this, SensorService::class.java))
+            btnStop.visibility = GONE
         }
 
         et_seconds = findViewById(R.id.et_seconds)
@@ -104,9 +101,9 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
 
         if(isMyServiceRunning(SensorService::class.java)){
-            btnStart.visibility = VISIBLE
+            btnStop.visibility = VISIBLE
         } else{
-            btnStart.visibility = GONE
+            btnStop.visibility = GONE
         }
     }
 
