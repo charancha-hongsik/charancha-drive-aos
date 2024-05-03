@@ -317,7 +317,7 @@ class BluetoothService : Service() {
                                 generateNoteOnSD("IN_VEHICLE EXIT " + getCurrent(),getCurrent()+"\n\n")
                             }
 
-//                            stopSensorService(L1)
+                            stopSensorService(L1)
 
                         }
                     } else if(event.activityType == DetectedActivity.WALKING){
@@ -330,7 +330,6 @@ class BluetoothService : Service() {
 
                             stopSensorService()
                         }
-
                     }
                 }
             } else if(intent?.action == BluetoothDevice.ACTION_ACL_CONNECTED){
