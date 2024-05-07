@@ -674,11 +674,11 @@ class SensorService : Service() {
     }
 
     private fun makeSpeedInfo() {
-        writeToFile("SpeedFromGps", "$speedInfoFromGps\n\n maxSpeed : $maxSpeed \n\n")
+        writeToFile("speed (gps)", "$speedInfoFromGps\n\n maxSpeed : $maxSpeed \n\n")
     }
 
     private fun makeAccelerationInfo() {
-        writeToFile("AccelerationInfo", accelerationInfo)
+        writeToFile("Acceleration (gps)", accelerationInfo)
     }
 
     /**
@@ -706,12 +706,11 @@ class SensorService : Service() {
     }
 
     private fun makePathLocationInfo() {
-        writeToFile("pathLocationInfoFromGps", pathLocationInfoFromGps)
+        writeToFile("Latitude, Longitude (gps)", pathLocationInfoFromGps)
     }
 
     private fun makeDistanceBetween(){
-        writeToFile("distanceBetween", "$distanceInfoFromGps\n\n distanceSum : $distanceSum \n\n")
-        writeToFile("distanceTo", "$distanceToInfoFromGps\n\n distanceSum : $distanceToSum \n\n")
+        writeToFile("Distance (gps)", "$distanceInfoFromGps\n\n distanceSum : $distanceSum \n\n")
     }
 
 
@@ -724,7 +723,7 @@ class SensorService : Service() {
     }
 
     private fun makeAltitudeFromGpsInfo() {
-        writeToFile("AltitudeFromGps", altitudeInfoFromGps)
+        writeToFile("Altitude (gps)", altitudeInfoFromGps)
     }
 
     /**
@@ -741,7 +740,7 @@ class SensorService : Service() {
     }
 
     private fun makeLinearAccelerationInfo() {
-        writeToFile("TYPE_LINEAR_ACCELEROMETER", linearAccelerationInfo)
+        writeToFile("Acceleration (acs)", linearAccelerationInfo)
     }
 
     /**
@@ -757,7 +756,7 @@ class SensorService : Service() {
     }
 
     private fun makeRotationVectorInfo() {
-        writeToFile("TYPE_ROTATION_VECTOR", rotationAngleInfo)
+        writeToFile("Rotation (gyro)", rotationAngleInfo)
     }
 
 
@@ -787,7 +786,7 @@ class SensorService : Service() {
     }
 
     private fun makeInclineInfo() {
-        writeToFile("incline", inclineInfo)
+        writeToFile("Incline (gyro)", inclineInfo)
     }
 
 
@@ -800,7 +799,7 @@ class SensorService : Service() {
     }
 
     private fun makeAltitudeInfo() {
-        writeToFile("TYPE_PRESSURE", altitudeInfo)
+        writeToFile("Pressure (baro)", altitudeInfo)
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
@@ -896,7 +895,7 @@ class SensorService : Service() {
             if (!root.exists()) {
                 root.mkdirs()
             }
-            val gpxfile = File(root, "$sFileName " + getCurrent() + ".txt")
+            val gpxfile = File(root, "$sFileName.txt")
             val writer = FileWriter(gpxfile)
             writer.append(sBody)
             writer.flush()

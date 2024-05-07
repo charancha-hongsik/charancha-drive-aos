@@ -306,7 +306,7 @@ class BluetoothService : Service() {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 exportToFile("IN_VEHICLE ENTER",getCurrent()+"\n\n")
                             } else{
-                                generateNoteOnSD("IN_VEHICLE ENTER " + getCurrent(),getCurrent()+"\n\n")
+                                generateNoteOnSD("IN_VEHICLE ENTER" + getCurrent(),getCurrent()+"\n\n")
                             }
 
                             startSensorService(L1)
@@ -314,7 +314,7 @@ class BluetoothService : Service() {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 exportToFile("IN_VEHICLE EXIT",getCurrent()+"\n\n")
                             } else{
-                                generateNoteOnSD("IN_VEHICLE EXIT " + getCurrent(),getCurrent()+"\n\n")
+                                generateNoteOnSD("IN_VEHICLE EXIT",getCurrent()+"\n\n")
                             }
 
                             stopSensorService(L1)
@@ -325,7 +325,7 @@ class BluetoothService : Service() {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 exportToFile("WALKING ENTER",getCurrent()+"\n\n")
                             } else{
-                                generateNoteOnSD("WALKING ENTER " + getCurrent(),getCurrent()+"\n\n")
+                                generateNoteOnSD("WALKING ENTER",getCurrent()+"\n\n")
                             }
 
                             stopSensorService()
@@ -344,7 +344,7 @@ class BluetoothService : Service() {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 exportToFile("Bluetooth AUDIO_VIDEO_HANDSFREE CONNECTED",getCurrent()+"\n\n")
                             } else{
-                                generateNoteOnSD("Bluetooth AUDIO_VIDEO_HANDSFREE CONNECTED" + getCurrent(),getCurrent()+"\n\n")
+                                generateNoteOnSD("Bluetooth AUDIO_VIDEO_HANDSFREE CONNECTED",getCurrent()+"\n\n")
                             }
                             startSensorService(L2)
 
@@ -363,7 +363,7 @@ class BluetoothService : Service() {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                 exportToFile("Bluetooth AUDIO_VIDEO_HANDSFREE DISCONNECTED",getCurrent()+"\n\n")
                             }else{
-                                generateNoteOnSD("Bluetooth AUDIO_VIDEO_HANDSFREE DISCONNECTED" + getCurrent(),getCurrent()+"\n\n")
+                                generateNoteOnSD("Bluetooth AUDIO_VIDEO_HANDSFREE DISCONNECTED",getCurrent()+"\n\n")
                             }
                             stopSensorService(L2)
 
@@ -391,7 +391,7 @@ class BluetoothService : Service() {
             if (!root.exists()) {
                 root.mkdirs()
             }
-            val gpxfile = File(root, "$sFileName " + getCurrent() + ".txt")
+            val gpxfile = File(root, "$sFileName.txt")
             val writer = FileWriter(gpxfile)
             writer.append(sBody)
             writer.flush()
