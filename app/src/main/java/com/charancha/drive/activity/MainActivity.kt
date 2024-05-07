@@ -95,12 +95,16 @@ class MainActivity : AppCompatActivity() {
                  */
                 btnStop.performClick()
             } else{
+                if(!isMyServiceRunning(BluetoothService::class.java)){
+                    val intent = Intent(this, BluetoothService::class.java)
+                    startForegroundService(intent)
+                }
+            }
+        } else{
+            if(!isMyServiceRunning(BluetoothService::class.java)){
                 val intent = Intent(this, BluetoothService::class.java)
                 startForegroundService(intent)
             }
-        } else{
-            val intent = Intent(this, BluetoothService::class.java)
-            startForegroundService(intent)
         }
     }
 
@@ -188,4 +192,5 @@ class MainActivity : AppCompatActivity() {
                 }.toTypedArray()
             }
     }
+
 }
