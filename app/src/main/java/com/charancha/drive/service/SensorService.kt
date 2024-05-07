@@ -668,9 +668,9 @@ class SensorService : Service() {
         }
 
         accelerationInfo =
-            accelerationInfo + getCurrent() + "," + ((location.speed*MS_TO_KH) - (pastSpeed*MS_TO_KH)) + "\n"
+            accelerationInfo + getCurrent() + "," + ((location.speed) - (pastSpeed)) + "\n"
 
-        pastSpeed = (location.speed*MS_TO_KH)
+        pastSpeed = (location.speed)
     }
 
     private fun makeSpeedInfo() {
