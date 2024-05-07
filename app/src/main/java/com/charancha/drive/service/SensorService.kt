@@ -131,6 +131,26 @@ class SensorService : Service() {
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+        sharedPreferences = getSharedPreferences("sensor", Context.MODE_PRIVATE)
+        editor = sharedPreferences.edit()
+
+        driveDatabase = DriveDatabase.getDatabase(this)
+
+        val CHANNEL_ID = "my_channel_01"
+        val channel = NotificationChannel(
+            CHANNEL_ID,
+            "Channel human readable title",
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
+            channel
+        )
+        val notification: Notification = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setSmallIcon(android.R.drawable.ic_media_play)
+            .setContentTitle("sensor 데이터 수집중..")
+            .setContentText("sensor 데이터 수집중..").build()
+        startForeground(2, notification)
+
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
 
         var level = "L1"
@@ -166,26 +186,6 @@ class SensorService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-
-        sharedPreferences = getSharedPreferences("sensor", Context.MODE_PRIVATE)
-        editor = sharedPreferences.edit()
-
-        driveDatabase = DriveDatabase.getDatabase(this)
-
-        val CHANNEL_ID = "my_channel_01"
-        val channel = NotificationChannel(
-            CHANNEL_ID,
-            "Channel human readable title",
-            NotificationManager.IMPORTANCE_DEFAULT
-        )
-        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
-            channel
-        )
-        val notification: Notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(android.R.drawable.ic_media_play)
-            .setContentTitle("sensor 데이터 수집중..")
-            .setContentText("sensor 데이터 수집중..").build()
-        startForeground(2, notification)
     }
 
     override fun onDestroy() {

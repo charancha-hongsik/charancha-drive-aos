@@ -104,14 +104,6 @@ class BluetoothService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        registerActivityTransitionUpdates()
-        registerReceiver(transitionReceiver, filter)
-        return START_REDELIVER_INTENT
-    }
-
-    override fun onCreate() {
-        super.onCreate()
-
         carConnectionQueryHandler = CarConnectionQueryHandler(contentResolver)
 
         val CHANNEL_ID = "my_channel_02"
@@ -133,6 +125,14 @@ class BluetoothService : Service() {
         request = ActivityTransitionRequest(transitions)
         val intent = Intent(TRANSITIONS_RECEIVER_ACTION)
         pendingIntent = PendingIntent.getBroadcast(this, 0, intent, FLAG_MUTABLE)
+
+        registerActivityTransitionUpdates()
+        registerReceiver(transitionReceiver, filter)
+        return START_REDELIVER_INTENT
+    }
+
+    override fun onCreate() {
+        super.onCreate()
     }
 
 
