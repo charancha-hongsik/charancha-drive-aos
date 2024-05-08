@@ -219,7 +219,7 @@ class BluetoothService : Service() {
         val channel = NotificationChannel(
             CHANNEL_ID,
             "check blueToothConnect",
-            NotificationManager.IMPORTANCE_DEFAULT
+            NotificationManager.IMPORTANCE_HIGH
         )
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
             channel
@@ -360,6 +360,8 @@ class BluetoothService : Service() {
 
     private fun startSensor(level:String){
         if(!sensorState){
+            fusedLocationClient2.removeLocationUpdates(locationCallback2)
+
             sensorState = true
             PreferenceUtil.putPref(this, PreferenceUtil.RUNNING_LEVEL, level)
             driveDatabase = DriveDatabase.getDatabase(this)
@@ -369,6 +371,8 @@ class BluetoothService : Service() {
             setSensor()
             setLocation()
             setTimer()
+
+
         }
     }
 
@@ -393,6 +397,8 @@ class BluetoothService : Service() {
 
                 sensorManager.unregisterListener(sensorEventListener)
                 fusedLocationClient.removeLocationUpdates(locationCallback)
+
+                setLocation2()
             }
         }
     }
@@ -417,6 +423,9 @@ class BluetoothService : Service() {
 
             sensorManager.unregisterListener(sensorEventListener)
             fusedLocationClient.removeLocationUpdates(locationCallback)
+
+            setLocation2()
+
         }
     }
 
