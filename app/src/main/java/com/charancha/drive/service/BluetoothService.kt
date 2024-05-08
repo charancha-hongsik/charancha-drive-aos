@@ -430,7 +430,6 @@ class BluetoothService : Service() {
     }
 
     private fun initDriveData(level:String){
-        startTimeStamp = System.currentTimeMillis()
 
         val format = SimpleDateFormat("yyyyMMddhhmmss")
         format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
@@ -439,7 +438,7 @@ class BluetoothService : Service() {
         maxSpeed = 0f
         distanceSum = 0f
         distanceToSum = 0f
-        startTimeStamp = 0L
+        startTimeStamp = System.currentTimeMillis()
         gpsInfo = mutableListOf()
         driveDto = DriveDto(format.format(time).toString(), startTimeStamp, level,0f,0L,0,0,gpsInfo)
     }
