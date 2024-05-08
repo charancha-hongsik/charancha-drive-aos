@@ -11,7 +11,6 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS
 import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-import android.util.Log
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Button
@@ -24,7 +23,6 @@ import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.PreferenceUtil.HAVE_BEEN_HOME
 import com.charancha.drive.R
 import com.charancha.drive.service.BluetoothService
-import com.charancha.drive.service.SensorService
 import com.charancha.drive.viewmodel.MainViewModel
 import java.util.*
 
