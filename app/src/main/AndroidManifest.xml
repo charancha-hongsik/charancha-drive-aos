@@ -92,12 +92,6 @@
             android:exported="true"/>
 
         <service
-            android:name=".service.SensorService"
-            android:enabled="true"
-            android:exported="true"
-            android:foregroundServiceType="location"></service>
-
-        <service
             android:name=".service.BluetoothService"
             android:enabled="true"
             android:exported="true"
