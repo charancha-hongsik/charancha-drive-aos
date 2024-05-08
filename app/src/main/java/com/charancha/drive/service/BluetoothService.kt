@@ -131,6 +131,11 @@ class BluetoothService : Service() {
     // 위치 업데이트 요청 설정
     private var sensorEventListener: SensorEventListener? = null
 
+    private lateinit var fusedLocationClient2 :FusedLocationProviderClient
+    // 위치 업데이트 요청 설정
+    private lateinit var locationRequest2: LocationRequest
+    private lateinit var locationCallback2: LocationCallback
+
     /**
      * 위치 센서
      */
@@ -178,6 +183,8 @@ class BluetoothService : Service() {
     private var INTERVAL = 20000L
     private val MAX_WAIT_TIME = 60000L
 
+    private var INTERVAL2 = 60000L * 15
+
     /**
      *         locationRequest.setInterval(INTERVAL) // 20초마다 업데이트 요청
      *         locationRequest.setFastestInterval(FASTEST_INTERVAL) 다른 앱에서 연산된 위치를 수신
@@ -197,7 +204,7 @@ class BluetoothService : Service() {
     private var maxSpeed: Float = 0f
     private var distanceSum: Float = 0f
     private var distanceToSum: Float = 0f
-    private var startTimeStamp: Long = 0
+    private var startTimeStamp: Long = 0L
 
 
 
@@ -234,6 +241,7 @@ class BluetoothService : Service() {
     }
 
     override fun onCreate() {
+        setLocation2()
         super.onCreate()
     }
 
@@ -419,6 +427,10 @@ class BluetoothService : Service() {
         format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
         val time = Date()
 
+        maxSpeed = 0f
+        distanceSum = 0f
+        distanceToSum = 0f
+        startTimeStamp = 0L
         gpsInfo = mutableListOf()
         driveDto = DriveDto(format.format(time).toString(), startTimeStamp, level,0f,0L,0,0,gpsInfo)
     }
@@ -928,6 +940,67 @@ class BluetoothService : Service() {
             )
         }
     }
+
+    private fun setLocation2() {
+        // FusedLocationProviderClient 초기화
+        fusedLocationClient2 = LocationServices.getFusedLocationProviderClient(this)
+
+        // 위치 업데이트 요청 설정
+        locationRequest2 = LocationRequest.create()
+        locationRequest2.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
+        locationRequest2.setInterval(INTERVAL2) // INTERVAL 마다 업데이트 요청
+
+
+
+
+        // 위치 업데이트 리스너 생성
+        locationCallback2 = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                Log.d("testestest","teststestests getCurrent :: " + getCurrent())
+
+                try{
+                    val location: Location = locationResult.lastLocation
+                }catch (e:Exception){
+
+                }
+            }
+        }
+
+        // 위치 업데이트 요청 시작
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
+
+        // 마지막 위치 처리
+        fusedLocationClient2.lastLocation
+            .addOnSuccessListener { location: Location? ->
+                if (location != null) {
+                    Log.d("testeststs", "testsets altitude :: " + location.altitude)
+                    Log.d("testeststs", "testsets latitude :: " + location.latitude)
+                }
+            }
+
+        fusedLocationClient2.requestLocationUpdates(
+            locationRequest2,
+            locationCallback2,
+            Looper.getMainLooper()
+        )
+    }
+
 
     /**
      * PRIORITY_BALANCED_POWER_ACCURACY 도시 블록 내의 위치 정밀도 요청. 정확도는 대략 100미터. Wi-Fi 정보와 휴대폰 기지국 위치를 사용할 수 있음. 대략적인 수준의 정확성으로 전력을 비교적 적게 사용함.
