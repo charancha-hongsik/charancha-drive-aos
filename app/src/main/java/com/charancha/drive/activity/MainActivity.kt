@@ -112,11 +112,6 @@ class MainActivity : AppCompatActivity() {
         btnStop = findViewById(R.id.btn_stop)
         btnStop.setText("센서 종료")
 
-        btnStop.setOnClickListener{
-            stopService(Intent(this, SensorService::class.java))
-            btnStop.visibility = GONE
-        }
-
         et_seconds = findViewById(R.id.et_seconds)
 
         btnHistory = findViewById(R.id.btn_history)
@@ -129,11 +124,6 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        if(isMyServiceRunning(SensorService::class.java)){
-            btnStop.visibility = VISIBLE
-        } else{
-            btnStop.visibility = GONE
-        }
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
