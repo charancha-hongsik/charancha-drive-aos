@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
             setBtn()
             checkDeeplink()
         } else{
-            TODO("허용되지 않은 경우 -> 팝업 노출?")
+
         }
     }
 
@@ -88,8 +88,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-
-        TODO("허용되지 않은 경우 -> 팝업 노출?")
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
