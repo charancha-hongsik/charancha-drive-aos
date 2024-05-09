@@ -50,39 +50,6 @@ class MainActivity : AppCompatActivity() {
              * 허용되지 않은 경우 -> 팝업 노출?
              */
         }
-
-//        val intent = Intent()
-//        intent.action = ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-//        intent.data = Uri.parse("package:" + packageName)
-//        startActivity(intent)
-
-
-//        val i = Intent()
-//        val pm = getSystemService(POWER_SERVICE) as PowerManager
-//
-//        if(!pm.isIgnoringBatteryOptimizations(packageName)) {
-//            i.action = ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-//            i.data = Uri.parse("package:$packageName")
-//
-//            startActivity(i)
-//        }
-
-        val intent = Intent()
-        val pm : PowerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
-
-        if (!pm.isIgnoringBatteryOptimizations(packageName)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                // OS 29 이상 -> PERMISSION_ACTIVITY_RECOGNITION 요청 UI로 수정
-                intent.action = ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-                intent.data = Uri.parse("package:${packageName}")
-            } else{
-                // OS 29 미만 -> 시작하기 UI로 수정
-                intent.action = ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS
-            }
-
-            startActivity(intent)
-        }
-
     }
 
     private fun checkDeeplink(){
