@@ -368,6 +368,7 @@ class BluetoothService : Service() {
 
 
             sensorState = true
+            PreferenceUtil.putBooleanPref(this, PreferenceUtil.SENSOR_STATE, sensorState)
             PreferenceUtil.putPref(this, PreferenceUtil.RUNNING_LEVEL, level)
             driveDatabase = DriveDatabase.getDatabase(this)
             sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
@@ -383,6 +384,7 @@ class BluetoothService : Service() {
         if(sensorState){
             if(level == PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL, "")){
                 sensorState = false
+                PreferenceUtil.putBooleanPref(this, PreferenceUtil.SENSOR_STATE, sensorState)
 
                 makeSpeedInfo()
                 makeAccelerationInfo()
@@ -410,6 +412,7 @@ class BluetoothService : Service() {
     private fun stopSensor(){
         if(sensorState){
             sensorState = false
+            PreferenceUtil.putBooleanPref(this, PreferenceUtil.SENSOR_STATE, sensorState)
 
             makeSpeedInfo()
             makeAccelerationInfo()

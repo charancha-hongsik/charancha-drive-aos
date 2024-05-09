@@ -11,8 +11,7 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS
 import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-import android.view.View.GONE
-import android.view.View.VISIBLE
+import android.view.View.*
 import android.widget.Button
 import android.widget.EditText
 import androidx.activity.viewModels
@@ -83,11 +82,17 @@ class MainActivity : AppCompatActivity() {
         btnHistory.setOnClickListener {
             startActivity(Intent(this, MyDriveHistoryActivity::class.java))
         }
-
     }
 
     override fun onResume() {
         super.onResume()
+
+        if(PreferenceUtil.getBooleanPref(this, PreferenceUtil.SENSOR_STATE, false)){
+            btnStop.visibility = VISIBLE
+        } else{
+            btnStop.visibility = INVISIBLE
+
+        }
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
