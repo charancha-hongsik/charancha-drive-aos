@@ -1,6 +1,10 @@
 package com.charancha.drive.activity
 
+import android.animation.ValueAnimator
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.animation.LinearInterpolator
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.charancha.drive.R
@@ -8,6 +12,8 @@ import com.charancha.drive.room.DriveDto
 import com.charancha.drive.room.entity.Drive
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.gson.Gson
 import java.text.SimpleDateFormat
@@ -28,6 +34,7 @@ class DetailDriveHistoryActivity: AppCompatActivity() {
     val polylines:MutableList<LatLng> = mutableListOf()
 
     private val mMap: GoogleMap? = null
+    private var currentMarker: Marker? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,11 +96,81 @@ class DetailDriveHistoryActivity: AppCompatActivity() {
 
             // Position the map's camera near Alice Springs in the center of Australia,
             // and set the zoom factor so most of Australia shows on the screen.
-            it.moveCamera(CameraUpdateFactory.newLatLngZoom(polylines.get(polylines.size/2), 10f))
+            it.moveCamera(CameraUpdateFactory.newLatLngZoom(polylines.get(polylines.size/2), 13f))
 
-//            // Set listeners for click events.
-//            it.setOnPolylineClickListener(this)
-//            it.setOnPolygonClickListener(this)
+
+            // 마커를 추가합니다.
+            val markerPosition = LatLng(polylines[0].latitude, polylines[0].longitude)
+            currentMarker = it.addMarker(MarkerOptions().position(markerPosition).title("marker"))
+
+            // 첫 번째 마커부터 시작하여 나머지 마커를 이동시키는 애니메이션을 시작합니다.
+            moveMarkerAlongPolyline(it, 0)
+
         })
+    }
+
+    // Polyline을 따라 마커를 이동시키는 애니메이션을 생성합니다.
+    private fun moveMarkerAlongPolyline(googleMap: GoogleMap,  index: Int) {
+        val startPosition = polylines[index]
+        val endPosition = polylines[(index + 1) % polylines.size]
+        val duration = 50L // 애니메이션의 지속 시간 (3초)
+        val handler = Handler(Looper.getMainLooper())
+
+        val valueAnimator = ValueAnimator.ofFloat(0f, 1f)
+        valueAnimator.duration = duration
+        valueAnimator.addUpdateListener { animation ->
+            val fraction = animation.animatedFraction
+            val newPosition = LatLng(
+                startPosition.latitude + (endPosition.latitude - startPosition.latitude) * fraction,
+                startPosition.longitude + (endPosition.longitude - startPosition.longitude) * fraction
+            )
+            currentMarker?.position = newPosition // 현재 마커의 위치 업데이트
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(newPosition))
+        }
+        valueAnimator.start()
+
+        // 다음 지점으로 이동합니다.
+        handler.postDelayed({
+            val nextIndex = (index + 1) % polylines.size
+            if(nextIndex != 0)
+                moveMarkerAlongPolyline(googleMap, nextIndex)
+        }, duration)
+    }
+
+    private fun animateMarkerToGB(marker: Marker, finalPosition: LatLng, hideMarker: Boolean) {
+        val startPosition = marker.position
+        val endPosition = finalPosition
+        val startRotation = marker.rotation
+        val latLngInterpolator = LatLngInterpolator.Linear()
+        val valueAnimator = ValueAnimator.ofFloat(0f, 1f)
+        valueAnimator.duration = 10000 // 애니메이션 지속 시간 (10초)
+        valueAnimator.interpolator = LinearInterpolator()
+        valueAnimator.addUpdateListener { animation ->
+            val v = animation.animatedFraction
+            val newPosition = latLngInterpolator.interpolate(v, startPosition, endPosition)
+            marker.position = newPosition
+            marker.rotation = computeRotation(v, startRotation, 0f)
+        }
+        valueAnimator.start()
+    }
+
+    // 두 지점 사이의 회전 각도를 계산하는 함수
+    private fun computeRotation(fraction: Float, start: Float, end: Float): Float {
+        val normalizedEndDegrees = end - start
+        val direction = if (normalizedEndDegrees > 180 || normalizedEndDegrees < -180) -1 else 1
+        return start + direction * fraction * 360
+    }
+
+    // LatLng 객체 사이의 보간을 담당하는 인터페이스
+    interface LatLngInterpolator {
+        fun interpolate(fraction: Float, a: LatLng, b: LatLng): LatLng
+
+        class Linear : LatLngInterpolator {
+            override fun interpolate(fraction: Float, a: LatLng, b: LatLng): LatLng {
+                val lat = (b.latitude - a.latitude) * fraction + a.latitude
+                val lng = (b.longitude - a.longitude) * fraction + a.longitude
+                return LatLng(lat, lng)
+            }
+        }
     }
 }
