@@ -84,17 +84,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        if(PreferenceUtil.getBooleanPref(this, PreferenceUtil.SENSOR_STATE, false)){
-            btnStop.visibility = VISIBLE
-        } else{
-            btnStop.visibility = INVISIBLE
-
-        }
-    }
-
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(
             baseContext, it) == PackageManager.PERMISSION_GRANTED

@@ -362,13 +362,13 @@ class BluetoothService : Service() {
 
 
     private fun startSensor(level:String){
+        writeToFile("startSensor sensorState and level" + getCurrent(), getCurrent() + ", " + sensorState + ", " + level + "\n")
+
         if(!sensorState){
             fusedLocationClient2?.removeLocationUpdates(locationCallback2)
             fusedLocationClient2 = null
 
-
             sensorState = true
-            PreferenceUtil.putBooleanPref(this, PreferenceUtil.SENSOR_STATE, sensorState)
             PreferenceUtil.putPref(this, PreferenceUtil.RUNNING_LEVEL, level)
             driveDatabase = DriveDatabase.getDatabase(this)
             sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
@@ -381,10 +381,11 @@ class BluetoothService : Service() {
     }
 
     private fun stopSensor(level:String){
+        writeToFile("stopSensor sensorState and level" + getCurrent(), getCurrent() + ", " + sensorState + ", " + level + ", " + PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL,"") + "\n")
+
         if(sensorState){
             if(level == PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL, "")){
                 sensorState = false
-                PreferenceUtil.putBooleanPref(this, PreferenceUtil.SENSOR_STATE, sensorState)
 
                 makeSpeedInfo()
                 makeAccelerationInfo()
@@ -410,9 +411,10 @@ class BluetoothService : Service() {
     }
 
     private fun stopSensor(){
+        writeToFile("stopSensor sensorState and level" + getCurrent(), getCurrent() + ", " + sensorState + ", " + PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL,"") + "\n")
+
         if(sensorState){
             sensorState = false
-            PreferenceUtil.putBooleanPref(this, PreferenceUtil.SENSOR_STATE, sensorState)
 
             makeSpeedInfo()
             makeAccelerationInfo()
