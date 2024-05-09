@@ -230,6 +230,10 @@ class BluetoothService : Service() {
             .setContentText("주행 관찰중..").build()
         startForeground(1, notification)
 
+        setLocation2()
+
+        sensorState = false
+
         request = ActivityTransitionRequest(transitions)
         val intent = Intent(TRANSITIONS_RECEIVER_ACTION)
         pendingIntent = PendingIntent.getBroadcast(this, 0, intent, FLAG_MUTABLE)
@@ -240,7 +244,6 @@ class BluetoothService : Service() {
     }
 
     override fun onCreate() {
-        setLocation2()
         super.onCreate()
     }
 
@@ -344,7 +347,7 @@ class BluetoothService : Service() {
             if (connectionState == CONNECTION_TYPE_NOT_CONNECTED) {
                 stopSensor(L3)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    exportToFile("CONNECTION_TYPE_NOT_CONNECTED" + getCurrent(),getCurrent()+"\n\n")
+                    exportToFile("CONNECTION_TYPE_NOT_CONNECTED",getCurrent()+"\n\n")
                 }else{
                     generateNoteOnSD("CONNECTION_TYPE_NOT_CONNECTED",getCurrent()+"\n\n")
                 }
@@ -352,7 +355,7 @@ class BluetoothService : Service() {
                 startSensor(L3)
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    exportToFile("CONNECTION_TYPE_CONNECTED" + getCurrent(),getCurrent()+"\n\n")
+                    exportToFile("CONNECTION_TYPE_CONNECTED",getCurrent()+"\n\n")
                 }else{
                     generateNoteOnSD("CONNECTION_TYPE_CONNECTED",getCurrent()+"\n\n")
                 }
@@ -362,7 +365,7 @@ class BluetoothService : Service() {
 
 
     private fun startSensor(level:String){
-        writeToFile("startSensor sensorState and level" + getCurrent(), getCurrent() + ", " + sensorState + ", " + level + "\n")
+        writeToFile("startSensor sensorState and level", getCurrent() + ", " + sensorState + ", " + level + "\n")
 
         if(!sensorState){
             fusedLocationClient2?.removeLocationUpdates(locationCallback2)
@@ -381,7 +384,7 @@ class BluetoothService : Service() {
     }
 
     private fun stopSensor(level:String){
-        writeToFile("stopSensor sensorState and level" + getCurrent(), getCurrent() + ", " + sensorState + ", " + level + ", " + PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL,"") + "\n")
+        writeToFile("stopSensor sensorState and level", getCurrent() + ", " + sensorState + ", " + level + ", " + PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL,"") + "\n")
 
         if(sensorState){
             if(level == PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL, "")){
@@ -411,7 +414,7 @@ class BluetoothService : Service() {
     }
 
     private fun stopSensor(){
-        writeToFile("stopSensor sensorState and level" + getCurrent(), getCurrent() + ", " + sensorState + ", " + PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL,"") + "\n")
+        writeToFile("stopSensor sensorState and level", getCurrent() + ", " + sensorState + ", " + PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL,"") + "\n")
 
         if(sensorState){
             sensorState = false
@@ -467,16 +470,6 @@ class BluetoothService : Service() {
     inner class TransitionsReceiver : BroadcastReceiver() {
         @SuppressLint("MissingPermission")
         override fun onReceive(context: Context?, intent: Intent?) {
-            intent?.let {
-                it.action?.let {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        exportToFile(it + getCurrent(),getCurrent()+"\n\n")
-                    }else{
-                        generateNoteOnSD(it,getCurrent()+"\n\n")
-                    }
-                }
-            }
-
             if (ActivityTransitionResult.hasResult(intent)) {
                 val result: ActivityTransitionResult = ActivityTransitionResult.extractResult(intent) ?: return
                 for (event in result.transitionEvents) {
@@ -484,13 +477,13 @@ class BluetoothService : Service() {
                         if(event.transitionType.equals(ACTIVITY_TRANSITION_ENTER)){
                             startSensor(L1)
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                exportToFile("IN_VEHICLE ENTER" + getCurrent(),getCurrent()+"\n\n")
+                                exportToFile("IN_VEHICLE ENTER",getCurrent()+"\n\n")
                             } else{
                                 generateNoteOnSD("IN_VEHICLE ENTER" + getCurrent(),getCurrent()+"\n\n")
                             }
                         } else{
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                exportToFile("IN_VEHICLE EXIT" + getCurrent(),getCurrent()+"\n\n")
+                                exportToFile("IN_VEHICLE EXIT",getCurrent()+"\n\n")
                             } else{
                                 generateNoteOnSD("IN_VEHICLE EXIT",getCurrent()+"\n\n")
                             }
@@ -501,11 +494,10 @@ class BluetoothService : Service() {
                         if(event.transitionType.equals(ACTIVITY_TRANSITION_ENTER)){
                             stopSensor()
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                exportToFile("WALKING ENTER" + getCurrent(),getCurrent()+"\n\n")
+                                exportToFile("WALKING ENTER",getCurrent()+"\n\n")
                             } else{
                                 generateNoteOnSD("WALKING ENTER",getCurrent()+"\n\n")
                             }
-
                         }
                     }
                 }
@@ -520,9 +512,9 @@ class BluetoothService : Service() {
                         if(isConnected(device)){
                             startSensor(L2)
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                exportToFile("Bluetooth AUDIO_VIDEO_HANDSFREE CONNECTED" + getCurrent(),getCurrent()+"\n\n")
+                                exportToFile("Bluetooth AUDIO_VIDEO_HANDSFREE CONNECTED",getCurrent()+"\n\n")
                             } else{
-                                generateNoteOnSD("Bluetooth AUDIO_VIDEO_HANDSFREE CONNECTED" + getCurrent(),getCurrent()+"\n\n")
+                                generateNoteOnSD("Bluetooth AUDIO_VIDEO_HANDSFREE CONNECTED",getCurrent()+"\n\n")
                             }
 
                         }
@@ -977,14 +969,12 @@ class BluetoothService : Service() {
         locationRequest2.setInterval(INTERVAL2) // INTERVAL 마다 업데이트 요청
 
 
-
-
         // 위치 업데이트 리스너 생성
         locationCallback2 = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 try{
                     val location: Location = locationResult.lastLocation
-                    writeToFile("fused2" + getCurrent(),getCurrent() + "," + location.altitude + ", "+ location.longitude + "\n")
+                    writeToFile("fused2",getCurrent() + "," + location.altitude + ", "+ location.longitude + "\n")
                 }catch (e:Exception){
 
                 }
@@ -1126,11 +1116,11 @@ class BluetoothService : Service() {
     }
 
     private fun makeSpeedInfo() {
-        writeToFile("speed (gps)" + getCurrent(), "$speedInfoFromGps\n\n maxSpeed : $maxSpeed \n\n")
+        writeToFile("speed (gps)", "$speedInfoFromGps\n\n maxSpeed : $maxSpeed \n\n")
     }
 
     private fun makeAccelerationInfo() {
-        writeToFile("Acceleration (gps)" + getCurrent(), accelerationInfo)
+        writeToFile("Acceleration (gps)", accelerationInfo)
     }
 
     /**
@@ -1158,11 +1148,11 @@ class BluetoothService : Service() {
     }
 
     private fun makePathLocationInfo() {
-        writeToFile("Latitude, Longitude (gps)" + getCurrent(), pathLocationInfoFromGps)
+        writeToFile("Latitude, Longitude (gps)", pathLocationInfoFromGps)
     }
 
     private fun makeDistanceBetween(){
-        writeToFile("Distance (gps)" + getCurrent(), "$distanceInfoFromGps\n\n distanceSum : $distanceSum \n\n")
+        writeToFile("Distance (gps)", "$distanceInfoFromGps\n\n distanceSum : $distanceSum \n\n")
     }
 
 
@@ -1175,7 +1165,7 @@ class BluetoothService : Service() {
     }
 
     private fun makeAltitudeFromGpsInfo() {
-        writeToFile("Altitude (gps)" + getCurrent(), altitudeInfoFromGps)
+        writeToFile("Altitude (gps)", altitudeInfoFromGps)
     }
 
     /**
@@ -1192,7 +1182,7 @@ class BluetoothService : Service() {
     }
 
     private fun makeLinearAccelerationInfo() {
-        writeToFile("Acceleration (acs)" + getCurrent(), linearAccelerationInfo)
+        writeToFile("Acceleration (acs)", linearAccelerationInfo)
     }
 
     /**
@@ -1208,7 +1198,7 @@ class BluetoothService : Service() {
     }
 
     private fun makeRotationVectorInfo() {
-        writeToFile("Rotation (gyro)" + getCurrent(), rotationAngleInfo)
+        writeToFile("Rotation (gyro)", rotationAngleInfo)
     }
 
 
@@ -1238,7 +1228,7 @@ class BluetoothService : Service() {
     }
 
     private fun makeInclineInfo() {
-        writeToFile("Incline (gyro)" + getCurrent(), inclineInfo)
+        writeToFile("Incline (gyro)", inclineInfo)
     }
 
 
@@ -1251,7 +1241,7 @@ class BluetoothService : Service() {
     }
 
     private fun makeAltitudeInfo() {
-        writeToFile("Pressure (baro)" + getCurrent(), altitudeInfo)
+        writeToFile("Pressure (baro)", altitudeInfo)
     }
 
     fun writeToFile(fileName: String, contents: String) {
