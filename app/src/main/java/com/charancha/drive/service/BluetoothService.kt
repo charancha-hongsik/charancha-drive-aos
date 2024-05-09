@@ -968,10 +968,9 @@ class BluetoothService : Service() {
         // 위치 업데이트 리스너 생성
         locationCallback2 = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
-                Log.d("testestest","teststestests getCurrent :: " + getCurrent())
-
                 try{
                     val location: Location = locationResult.lastLocation
+                    writeToFile("fused2",getCurrent() + "," + location.altitude + ", "+ location.longitude)
                 }catch (e:Exception){
 
                 }
@@ -1001,8 +1000,7 @@ class BluetoothService : Service() {
         fusedLocationClient2.lastLocation
             .addOnSuccessListener { location: Location? ->
                 if (location != null) {
-                    Log.d("testeststs", "testsets altitude :: " + location.altitude)
-                    Log.d("testeststs", "testsets latitude :: " + location.latitude)
+
                 }
             }
 
