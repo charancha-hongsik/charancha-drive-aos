@@ -181,7 +181,6 @@ class BluetoothService : Service() {
 
     private var FASTEST_INTERVAL = 10000L
     private var INTERVAL = 20000L
-    private val MAX_WAIT_TIME = 60000L
 
     private var INTERVAL2 = 60000L * 15
 
@@ -375,8 +374,6 @@ class BluetoothService : Service() {
             setSensor()
             setLocation()
             setTimer()
-
-
         }
     }
 
@@ -970,7 +967,7 @@ class BluetoothService : Service() {
             override fun onLocationResult(locationResult: LocationResult) {
                 try{
                     val location: Location = locationResult.lastLocation
-                    writeToFile("fused2",getCurrent() + "," + location.altitude + ", "+ location.longitude)
+                    writeToFile("fused2",getCurrent() + "," + location.altitude + ", "+ location.longitude + "\n")
                 }catch (e:Exception){
 
                 }
@@ -1021,6 +1018,7 @@ class BluetoothService : Service() {
     private fun setLocation() {
         // FusedLocationProviderClient 초기화
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
 
         // 위치 업데이트 요청 설정
         locationRequest = LocationRequest.create()
