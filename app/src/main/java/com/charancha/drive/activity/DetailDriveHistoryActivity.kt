@@ -132,8 +132,11 @@ class DetailDriveHistoryActivity: AppCompatActivity() {
         // 다음 지점으로 이동합니다.
         handler.postDelayed({
             val nextIndex = (index + 1) % polylines.size
-            if(nextIndex != 0)
+            if(nextIndex >= polylines.size-1)
+
+            else
                 moveMarkerAlongPolyline(googleMap, nextIndex)
+
         }, duration)
     }
 
