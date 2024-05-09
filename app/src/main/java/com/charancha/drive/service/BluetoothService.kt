@@ -39,6 +39,7 @@ import java.io.IOException
 import java.lang.reflect.Method
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.concurrent.timer
 import kotlin.concurrent.timerTask
 
 
@@ -205,6 +206,12 @@ class BluetoothService : Service() {
     private var distanceToSum: Float = 0f
     private var startTimeStamp: Long = 0L
 
+    /**
+     *     타이머 상태 및 1시간마다의 거리 합을 저장할 변수
+     */
+    var distanceSumForAnHourState = false
+    var distanceSumForAnHour = 0f
+    lateinit var distanceSumForAnHourTimer:Timer
 
 
     override fun onBind(p0: Intent?): IBinder? {
@@ -371,6 +378,8 @@ class BluetoothService : Service() {
             fusedLocationClient2?.removeLocationUpdates(locationCallback2)
             fusedLocationClient2 = null
 
+            startDistanceTimer()
+
             sensorState = true
             PreferenceUtil.putPref(this, PreferenceUtil.RUNNING_LEVEL, level)
             driveDatabase = DriveDatabase.getDatabase(this)
@@ -379,7 +388,7 @@ class BluetoothService : Service() {
             setListener()
             setSensor()
             setLocation()
-            setTimer()
+            setWriteTextTimer()
         }
     }
 
@@ -403,6 +412,7 @@ class BluetoothService : Service() {
                 writeToRoom()
 
                 timer.cancel()
+                distanceSumForAnHourTimer.cancel()
 
                 sensorManager.unregisterListener(sensorEventListener)
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
@@ -432,6 +442,7 @@ class BluetoothService : Service() {
             writeToRoom()
 
             timer.cancel()
+            distanceSumForAnHourTimer.cancel()
 
             sensorManager.unregisterListener(sensorEventListener)
             fusedLocationClient?.removeLocationUpdates(locationCallback)
@@ -592,7 +603,23 @@ class BluetoothService : Service() {
         return false
     }
 
-    private fun setTimer() {
+    private fun startDistanceTimer(){
+        distanceSumForAnHourState = true
+        distanceSumForAnHour = 0f
+        distanceSumForAnHourTimer = timer(period = 3600000) {
+            // 타이머가 동작 중인 동안 1시간 동안의 거리를 합산
+
+            if(distanceSumForAnHour <= 500f){
+                stopSensor()
+                distanceSumForAnHourState = false
+                distanceSumForAnHour = 0f
+            } else{
+                startDistanceTimer()
+            }
+        }
+    }
+
+    private fun setWriteTextTimer() {
 
         timer = Timer()
         timer.schedule(
