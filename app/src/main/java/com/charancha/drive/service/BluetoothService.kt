@@ -442,6 +442,17 @@ class BluetoothService : Service() {
         format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
         val time = Date()
 
+        speedInfoFromGps = ""
+        distanceInfoFromGps = ""
+        distanceToInfoFromGps = ""
+        pathLocationInfoFromGps = ""
+        altitudeInfoFromGps = ""
+        altitudeInfo = ""
+        linearAccelerationInfo = ""
+        rotationAngleInfo = ""
+        inclineInfo = ""
+        accelerationInfo = ""
+
         maxSpeed = 0f
         distanceSum = 0f
         distanceToSum = 0f
