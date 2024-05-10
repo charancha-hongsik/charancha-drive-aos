@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<font-family xmlns:android="http://schemas.android.com/apk/res/android">
+    <font name="B1-R" android:font="@font/pretendardregular">
+        <item name="android:textSize">16dp</item>
+        <item name="lineHeight">22dp</item>
+        <item name="android:letterSpacing">0</item>
+    </font>
+
+    <font name="B1-M" android:font="@font/pretendardmedium">
+        <item name="android:textSize">16dp</item>
+        <item name="lineHeight">22dp</item>
+        <item name="android:letterSpacing">0</item>
+    </font>
+
+    <font name="B1-SB" android:font="@font/pretendardsemibold">
+        <item name="android:textSize">16dp</item>
+        <item name="lineHeight">22dp</item>
+        <item name="android:letterSpacing">0</item>
+    </font>
+
+    <font name="B2-R" android:font="@font/pretendardregular">
+        <item name="android:textSize">14dp</item>
+        <item name="lineHeight">18dp</item>
+        <item name="android:letterSpacing">0</item>
+    </font>
+
+    <font name="B2-M" android:font="@font/pretendardmedium">
+        <item name="android:textSize">14dp</item>
+        <item name="lineHeight">18dp</item>
+        <item name="android:letterSpacing">0</item>
+    </font>
+
+    <font name="B2-SB" android:font="@font/pretendardsemibold">
+        <item name="android:textSize">14dp</item>
+        <item name="lineHeight">18dp</item>
+        <item name="android:letterSpacing">0</item>
+    </font>
+
+</font-family>
