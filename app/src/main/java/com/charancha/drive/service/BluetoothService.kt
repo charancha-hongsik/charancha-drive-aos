@@ -209,10 +209,18 @@ class BluetoothService : Service() {
     /**
      *     타이머 상태 및 1시간마다의 거리 합을 저장할 변수
      */
-    var distanceSumForAnHourState = false
     var distanceSumForAnHour = 0f
     lateinit var distanceSumForAnHourTimer:Timer
 
+    /**
+     * notification 관련
+     */
+    val CHANNEL_ID = "my_channel_02"
+    val channel = NotificationChannel(
+        CHANNEL_ID,
+        "check blueToothConnect",
+        NotificationManager.IMPORTANCE_HIGH
+    )
 
     override fun onBind(p0: Intent?): IBinder? {
         TODO("Not yet implemented")
@@ -221,12 +229,6 @@ class BluetoothService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         carConnectionQueryHandler = CarConnectionQueryHandler(contentResolver)
 
-        val CHANNEL_ID = "my_channel_02"
-        val channel = NotificationChannel(
-            CHANNEL_ID,
-            "check blueToothConnect",
-            NotificationManager.IMPORTANCE_HIGH
-        )
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
             channel
         )
@@ -370,7 +372,9 @@ class BluetoothService : Service() {
         }
     }
 
-
+    /**
+     * sensor가 이미 켜져있으면 켜지지않음.
+     */
     private fun startSensor(level:String){
         writeToFile("startSensor sensorState and level", getCurrent() + ", " + sensorState + ", " + level + "\n")
 
@@ -392,6 +396,10 @@ class BluetoothService : Service() {
         }
     }
 
+    /**
+     * sensor 상태가 On일 때 끌 수 있음.
+     * level이 같아야 끌 수 있음.
+     */
     private fun stopSensor(level:String){
         writeToFile("stopSensor sensorState and level", getCurrent() + ", " + sensorState + ", " + level + ", " + PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL,"") + "\n")
 
@@ -412,7 +420,7 @@ class BluetoothService : Service() {
                 writeToRoom()
 
                 timer.cancel()
-                distanceSumForAnHourTimer.cancel()
+                stopDistanceTimer()
 
                 sensorManager.unregisterListener(sensorEventListener)
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
@@ -442,7 +450,7 @@ class BluetoothService : Service() {
             writeToRoom()
 
             timer.cancel()
-            distanceSumForAnHourTimer.cancel()
+            stopDistanceTimer()
 
             sensorManager.unregisterListener(sensorEventListener)
             fusedLocationClient?.removeLocationUpdates(locationCallback)
@@ -604,19 +612,22 @@ class BluetoothService : Service() {
     }
 
     private fun startDistanceTimer(){
-        distanceSumForAnHourState = true
         distanceSumForAnHour = 0f
         distanceSumForAnHourTimer = timer(period = 3600000) {
             // 타이머가 동작 중인 동안 1시간 동안의 거리를 합산
 
             if(distanceSumForAnHour <= 500f){
                 stopSensor()
-                distanceSumForAnHourState = false
                 distanceSumForAnHour = 0f
             } else{
                 startDistanceTimer()
             }
         }
+    }
+
+    private fun stopDistanceTimer(){
+        distanceSumForAnHour = 0f
+        distanceSumForAnHourTimer.cancel()
     }
 
     private fun setWriteTextTimer() {
@@ -1168,6 +1179,7 @@ class BluetoothService : Service() {
                 distanceToInfoFromGps + getCurrent() + "," + distanceTo + "\n"
 
             distanceSum += distanceBetween[0]
+            distanceSumForAnHour += distanceBetween[0]
             distanceToSum += distanceTo
         }
 
