@@ -620,6 +620,7 @@ class BluetoothService : Service() {
                 stopSensor()
                 distanceSumForAnHour = 0f
             } else{
+                distanceSumForAnHour = 0f
                 startDistanceTimer()
             }
         }
