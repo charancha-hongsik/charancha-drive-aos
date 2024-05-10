@@ -3,4 +3,107 @@
     <color name="default_background">#F8F8F8</color>
     <color name="default_black">#000000</color>
     <color name="logo_black">#101010</color>
+
+    <color name="pri_950">#2B2177</color>
+    <color name="pri_900">#342890</color>
+    <color name="pri_800">#4132B0</color>
+    <color name="pri_700">#4836CD</color>
+    <color name="pri_600">#533CDA</color>
+    <color name="pri_500">#6947F2</color>
+    <color name="pri_400">#9289FC</color>
+    <color name="pri_300">#B6B3FF</color>
+    <color name="pri_200">#D5D5FF</color>
+    <color name="pri_100">#E9E9FE</color>
+    <color name="pri_50">#F3F3FF</color>
+
+    <color name="sec_950">#882600</color>
+    <color name="sec_900">#A03700</color>
+    <color name="sec_800">#C8520F</color>
+    <color name="sec_700">#DE630F</color>
+    <color name="sec_600">#F2751E</color>
+    <color name="sec_500">#FF8127</color>
+    <color name="sec_400">#FF9448</color>
+    <color name="sec_300">#FFB571</color>
+    <color name="sec_200">#FFD4A8</color>
+    <color name="sec_100">#FFECD4</color>
+    <color name="sec_50">#FFF1E4</color>
+
+    <color name="gray_950">#100E12</color>
+    <color name="gray_900">#3D3D47</color>
+    <color name="gray_800">#51515B</color>
+    <color name="gray_700">#76747B</color>
+    <color name="gray_600">#96969B</color>
+    <color name="gray_500">#B0B0B3</color>
+    <color name="gray_400">#C9CACB</color>
+    <color name="gray_300">#DBDBE0</color>
+    <color name="gray_200">#E6E6EB</color>
+    <color name="gray_100">#F1F1F6</color>
+    <color name="gray_50">#F7F6F9</color>
+
+    <color name="white_op_100">#FFFFFFFF</color>
+    <color name="white_op_90">#E6FFFFFF</color>
+    <color name="white_op_80">#CCFFFFFF</color>
+    <color name="white_op_70">#B3FFFFFF</color>
+    <color name="white_op_60">#99FFFFFF</color>
+    <color name="white_op_50">#80FFFFFF</color>
+    <color name="white_op_40">#66FFFFFF</color>
+    <color name="white_op_30">#4DFFFFFF</color>
+    <color name="white_op_20">#33FFFFFF</color>
+    <color name="white_op_10">#1AFFFFFF</color>
+    <color name="white_op_5">#0DFFFFFF</color>
+
+    <color name="black_op_100">#FF000000</color>
+    <color name="black_op_90">#E6000000</color>
+    <color name="black_op_80">#CC000000</color>
+    <color name="black_op_70">#B3000000</color>
+    <color name="black_op_60">#99000000</color>
+    <color name="black_op_50">#80000000</color>
+    <color name="black_op_40">#66000000</color>
+    <color name="black_op_30">#4D000000</color>
+    <color name="black_op_20">#33000000</color>
+    <color name="black_op_10">#1A000000</color>
+    <color name="black_op_5">#0D000000</color>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </resources>
