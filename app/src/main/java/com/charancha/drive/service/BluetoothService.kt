@@ -332,7 +332,7 @@ class BluetoothService : Service() {
 
 
     private fun getCurrent(): String {
-        val format = SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss")
+        val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
         format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
         val time = Date()
         return format.format(time)
