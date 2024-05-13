@@ -62,7 +62,7 @@ class DetailDriveHistoryActivity: AppCompatActivity() {
 
         tvTrackingId.text = "id : " + driveDto.tracking_id
         tvTimestamp.text = "주행시작 : " + getDateFromTimeStamp(driveDto.timeStamp)
-        tvRank.text = "랭크 : " + driveDto.rank
+        tvRank.text = "랭크 : " + driveDto.verification
         tvDistance.text = "주행거리(m) : " + driveDto.distance
         tvTime.text = "주행 시간 : " + (TimeUnit.MILLISECONDS.toSeconds(driveDto.time)/60) + "분 " + (TimeUnit.MILLISECONDS.toSeconds(driveDto.time)%60) + "초"
         tvRapid1.text = "주행 종료 : " + getDateFromTimeStamp((driveDto.timeStamp + driveDto.time))

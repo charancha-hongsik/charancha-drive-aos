@@ -2,6 +2,7 @@ package com.charancha.drive.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.activity.viewModels
@@ -31,6 +32,8 @@ class MyDriveHistoryActivity: AppCompatActivity() {
             var id_list:MutableList<String> = mutableListOf()
                 for(drive in it)
                     id_list.add(drive.tracking_id.subSequence(0,4).toString() + "-" + drive.tracking_id.subSequence(4,8).toString() + " / " + drive.distance + "m")
+
+            Log.d("testsetestestset","testestsetsetsetset :: " +  it[0].toString())
 
             val adapter: ArrayAdapter<String> =
                 ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, id_list)

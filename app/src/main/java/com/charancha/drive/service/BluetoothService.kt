@@ -482,7 +482,7 @@ class BluetoothService : Service() {
         distanceToSum = 0f
         startTimeStamp = System.currentTimeMillis()
         gpsInfo = mutableListOf()
-        driveDto = DriveDto(format.format(time).toString(), startTimeStamp, level,0f,0L,0,0,gpsInfo)
+        driveDto = DriveDto(format.format(time).toString(), startTimeStamp, level,0f,0L,0,0,0,0,0f,0f,0f,gpsInfo)
     }
 
 
@@ -613,7 +613,7 @@ class BluetoothService : Service() {
 
     private fun startDistanceTimer(){
         distanceSumForAnHour = 0f
-        distanceSumForAnHourTimer = timer(period = 3600000) {
+        distanceSumForAnHourTimer = timer(period = 3600000, initialDelay = 3600000) {
             // 타이머가 동작 중인 동안 1시간 동안의 거리를 합산
 
             if(distanceSumForAnHour <= 500f){
@@ -621,7 +621,6 @@ class BluetoothService : Service() {
                 distanceSumForAnHour = 0f
             } else{
                 distanceSumForAnHour = 0f
-                startDistanceTimer()
             }
         }
     }
@@ -1298,7 +1297,7 @@ class BluetoothService : Service() {
 //        driveDto.maxSpeed = maxSpeed
         driveDto.time = System.currentTimeMillis() - startTimeStamp
 
-        val drive = Drive(driveDto.tracking_id, driveDto.timeStamp, driveDto.rank, driveDto.distance, driveDto.time, driveDto.rapid1, driveDto.rapid2, Gson().toJson(driveDto))
+        val drive = Drive(driveDto.tracking_id, driveDto.timeStamp, driveDto.verification, driveDto.distance, driveDto.time, driveDto.sudden_deceleration, driveDto.sudden_stop, driveDto.sudden_acceleration, driveDto.sudden_start, driveDto.high_speed_driving, driveDto.low_speed_driving, driveDto.constant_speed_driving, Gson().toJson(driveDto))
         driveDatabase?.driveDao()?.insert(drive)
     }
 }
