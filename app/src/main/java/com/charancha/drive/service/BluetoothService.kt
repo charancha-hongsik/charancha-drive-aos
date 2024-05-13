@@ -179,11 +179,9 @@ class BluetoothService : Service() {
      */
     private var altitude = 0f
     private var writeTextPossible = false
+    private var INTERVAL = 1000L
 
-    private var FASTEST_INTERVAL = 10000L
-    private var INTERVAL = 20000L
-
-    private var INTERVAL2 = 60000L * 15
+    private var INTERVAL2 = 60000L * 10
 
     /**
      *         locationRequest.setInterval(INTERVAL) // 20초마다 업데이트 요청
@@ -229,6 +227,14 @@ class BluetoothService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         carConnectionQueryHandler = CarConnectionQueryHandler(contentResolver)
 
+        request = ActivityTransitionRequest(transitions)
+
+        val intent = Intent(TRANSITIONS_RECEIVER_ACTION)
+        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, FLAG_MUTABLE)
+
+        registerActivityTransitionUpdates()
+        registerReceiver(transitionReceiver, filter)
+
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
             channel
         )
@@ -243,12 +249,6 @@ class BluetoothService : Service() {
 
         sensorState = false
 
-        request = ActivityTransitionRequest(transitions)
-        val intent = Intent(TRANSITIONS_RECEIVER_ACTION)
-        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, FLAG_MUTABLE)
-
-        registerActivityTransitionUpdates()
-        registerReceiver(transitionReceiver, filter)
         return START_REDELIVER_INTENT
     }
 
@@ -379,9 +379,6 @@ class BluetoothService : Service() {
         writeToFile("startSensor sensorState and level", getCurrent() + ", " + sensorState + ", " + level + "\n")
 
         if(!sensorState){
-            fusedLocationClient2?.removeLocationUpdates(locationCallback2)
-            fusedLocationClient2 = null
-
             startDistanceTimer()
 
             sensorState = true
@@ -425,8 +422,6 @@ class BluetoothService : Service() {
                 sensorManager.unregisterListener(sensorEventListener)
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
-
-                setLocation2()
             }
         }
     }
@@ -454,8 +449,6 @@ class BluetoothService : Service() {
 
             sensorManager.unregisterListener(sensorEventListener)
             fusedLocationClient?.removeLocationUpdates(locationCallback)
-
-            setLocation2()
 
         }
     }
@@ -1069,7 +1062,6 @@ class BluetoothService : Service() {
         locationRequest = LocationRequest.create()
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
         locationRequest.setInterval(INTERVAL) // INTERVAL 마다 업데이트 요청
-        locationRequest.setFastestInterval(FASTEST_INTERVAL)
 
 
 //        locationRequest.setMaxWaitTime(MAX_WAIT_TIME)

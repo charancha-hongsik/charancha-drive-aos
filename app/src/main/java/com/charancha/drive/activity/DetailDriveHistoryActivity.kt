@@ -59,7 +59,20 @@ class DetailDriveHistoryActivity: AppCompatActivity() {
             polylines.add(LatLng(raw.latitude,raw.longtitude))
         }
 
-
+        /**
+         * timeStamp
+         * Verification
+         * distance
+         * time
+         * sudden_stop (count)
+         * sudden_acceleration (count)
+         * sudden_deceleration (count)
+         * sudden_start (count)
+         * high_speed_driving (m)
+         * low_speed_driving (m)
+         * constant_speed_driving (m)
+         * harsh_driving (m)
+         */
         tvTrackingId.text = "id : " + driveDto.tracking_id
         tvTimestamp.text = "주행시작 : " + getDateFromTimeStamp(driveDto.timeStamp)
         tvRank.text = "랭크 : " + driveDto.verification
