@@ -140,25 +140,10 @@ class BluetoothService : Service() {
     /**
      * 위치 센서
      */
-    private val gameRotationReading = FloatArray(3)
-    private val geomagneticRotationReading = FloatArray(3)
-    private val magneticReading = FloatArray(3)
-    private val magneticUncalibratedReading = FloatArray(6)
-    private val proximityReading = FloatArray(1)
     private val distanceBetween = FloatArray(3)
     private var pastLocation: Location? = null
     private var pastSpeed: Float = 0f
 
-    /**
-     * 움직임 감지 센서
-     */
-    private val accelerometerReading = FloatArray(3)
-    private val accelerometerUncalibratedReading = FloatArray(6)
-    private val gravityReading = FloatArray(3)
-    private val gyroscopeReading = FloatArray(3)
-    private val gyroscopeUncalibratedReading = FloatArray(6)
-    private val linearAccelerometerReading = FloatArray(3)
-    private val rotationReading = FloatArray(4)
 
     /**
      * textFile 저장 용도
@@ -168,19 +153,10 @@ class BluetoothService : Service() {
     private var distanceToInfoFromGps: String = ""
     private var pathLocationInfoFromGps: String = ""
     private var altitudeInfoFromGps: String = ""
-    private var altitudeInfo: String = ""
-    private var linearAccelerationInfo: String = ""
-    private var rotationAngleInfo: String = ""
-    private var inclineInfo: String = ""
     private var accelerationInfo: String = ""
 
-    /**
-     * 환경 센서
-     */
-    private var altitude = 0f
-    private var writeTextPossible = false
-    private var INTERVAL = 1000L
 
+    private var INTERVAL = 1000L
     private var INTERVAL2 = 60000L * 10
 
     /**
@@ -386,10 +362,7 @@ class BluetoothService : Service() {
             driveDatabase = DriveDatabase.getDatabase(this)
             sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
             initDriveData(level)
-            setListener()
-            setSensor()
             setLocation()
-            setWriteTextTimer()
         }
     }
 
@@ -409,10 +382,6 @@ class BluetoothService : Service() {
                 makePathLocationInfo()
                 makeDistanceBetween()
                 makeAltitudeFromGpsInfo()
-                makeLinearAccelerationInfo()
-                makeRotationVectorInfo()
-                makeInclineInfo()
-                makeAltitudeInfo()
 
                 writeToRoom()
 
@@ -437,10 +406,6 @@ class BluetoothService : Service() {
             makePathLocationInfo()
             makeDistanceBetween()
             makeAltitudeFromGpsInfo()
-            makeLinearAccelerationInfo()
-            makeRotationVectorInfo()
-            makeInclineInfo()
-            makeAltitudeInfo()
 
             writeToRoom()
 
@@ -465,10 +430,6 @@ class BluetoothService : Service() {
         distanceToInfoFromGps = ""
         pathLocationInfoFromGps = ""
         altitudeInfoFromGps = ""
-        altitudeInfo = ""
-        linearAccelerationInfo = ""
-        rotationAngleInfo = ""
-        inclineInfo = ""
         accelerationInfo = ""
 
         maxSpeed = 0f
@@ -624,372 +585,6 @@ class BluetoothService : Service() {
         distanceSumForAnHourTimer.cancel()
     }
 
-    private fun setWriteTextTimer() {
-
-        timer = Timer()
-        timer.schedule(
-            timerTask {
-
-                writeTextPossible = true
-            },
-            0,
-            INTERVAL
-        )
-    }
-
-    private fun setListener() {
-        sensorEventListener = object : SensorEventListener {
-            override fun onSensorChanged(event: SensorEvent) {
-                if (event.sensor.type == Sensor.TYPE_GAME_ROTATION_VECTOR) {
-                    System.arraycopy(
-                        event.values,
-                        0,
-                        gameRotationReading,
-                        0,
-                        gameRotationReading.size
-                    )
-
-                    for ((index, value) in gameRotationReading.withIndex()) {
-                        Log.d(
-                            "onSensorChanged",
-                            "onSensorChanged TYPE_GAME_ROTATION_VECTOR :: $index , $value"
-                        )
-                    }
-
-                } else if (event.sensor.type == Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR) {
-                    System.arraycopy(
-                        event.values,
-                        0,
-                        geomagneticRotationReading,
-                        0,
-                        geomagneticRotationReading.size
-                    )
-
-                    for ((index, value) in geomagneticRotationReading.withIndex()) {
-                        Log.d(
-                            "onSensorChanged",
-                            "onSensorChanged TYPE_GEOMAGNETIC_ROTATION_VECTOR :: $index , $value"
-                        )
-                    }
-
-                } else if (event.sensor.type == Sensor.TYPE_MAGNETIC_FIELD) {
-                    System.arraycopy(event.values, 0, magneticReading, 0, magneticReading.size)
-
-                    for ((index, value) in magneticReading.withIndex()) {
-                        Log.d(
-                            "onSensorChanged",
-                            "onSensorChanged TYPE_MAGNETIC_FIELD :: $index , $value"
-                        )
-                    }
-
-                } else if (event.sensor.type == Sensor.TYPE_MAGNETIC_FIELD_UNCALIBRATED) {
-                    System.arraycopy(
-                        event.values,
-                        0,
-                        magneticUncalibratedReading,
-                        0,
-                        magneticUncalibratedReading.size
-                    )
-
-                    for ((index, value) in magneticUncalibratedReading.withIndex()) {
-                        Log.d(
-                            "onSensorChanged",
-                            "onSensorChanged TYPE_MAGNETIC_FIELD_UNCALIBRATED :: $index , $value"
-                        )
-                    }
-
-                } else if (event.sensor.type == Sensor.TYPE_PROXIMITY) {
-                    System.arraycopy(event.values, 0, proximityReading, 0, proximityReading.size)
-
-                    for ((index, value) in proximityReading.withIndex()) {
-                        Log.d(
-                            "onSensorChanged",
-                            "onSensorChanged TYPE_PROXIMITY :: $index , $value"
-                        )
-                    }
-
-                } else if (event.sensor.type == Sensor.TYPE_ACCELEROMETER) {
-                    System.arraycopy(
-                        event.values,
-                        0,
-                        accelerometerReading,
-                        0,
-                        accelerometerReading.size
-                    )
-                    for ((index, value) in accelerometerReading.withIndex()) {
-                        Log.d(
-                            "onSensorChanged",
-                            "onSensorChanged TYPE_ACCELEROMETER :: $index , $value"
-                        )
-                    }
-
-                } else if (event.sensor.type == Sensor.TYPE_ACCELEROMETER_UNCALIBRATED) {
-                    System.arraycopy(
-                        event.values,
-                        0,
-                        accelerometerUncalibratedReading,
-                        0,
-                        accelerometerUncalibratedReading.size
-                    )
-
-                    for ((index, value) in accelerometerUncalibratedReading.withIndex()) {
-                        Log.d(
-                            "onSensorChanged",
-                            "onSensorChanged TYPE_ACCELEROMETER_UNCALIBRATED :: $index , $value"
-                        )
-                    }
-
-                } else if (event.sensor.type == Sensor.TYPE_GRAVITY) {
-                    System.arraycopy(event.values, 0, gravityReading, 0, gravityReading.size)
-                    for ((index, value) in gravityReading.withIndex()) {
-                        Log.d("onSensorChanged", "onSensorChanged TYPE_GRAVITY :: $index , $value")
-                    }
-
-                } else if (event.sensor.type == Sensor.TYPE_GYROSCOPE) {
-                    System.arraycopy(event.values, 0, gyroscopeReading, 0, gyroscopeReading.size)
-                    for ((index, value) in gyroscopeReading.withIndex()) {
-                        Log.d(
-                            "onSensorChanged",
-                            "onSensorChanged TYPE_GYROSCOPE :: $index , $value"
-                        )
-                    }
-
-                } else if (event.sensor.type == Sensor.TYPE_GYROSCOPE_UNCALIBRATED) {
-                    System.arraycopy(
-                        event.values,
-                        0,
-                        gyroscopeUncalibratedReading,
-                        0,
-                        gyroscopeUncalibratedReading.size
-                    )
-                    for ((index, value) in gyroscopeUncalibratedReading.withIndex()) {
-                        Log.d(
-                            "onSensorChanged",
-                            "onSensorChanged TYPE_GYROSCOPE_UNCALIBRATED :: $index , $value"
-                        )
-                    }
-                } else if (event.sensor.type == Sensor.TYPE_LINEAR_ACCELERATION) {
-                    System.arraycopy(
-                        event.values,
-                        0,
-                        linearAccelerometerReading,
-                        0,
-                        linearAccelerometerReading.size
-                    )
-                    for ((index, value) in linearAccelerometerReading.withIndex()) {
-                        Log.d(
-                            "onSensorChanged",
-                            "onSensorChanged TYPE_LINEAR_ACCELERATION :: $index , $value"
-                        )
-                    }
-
-                } else if (event.sensor.type == Sensor.TYPE_ROTATION_VECTOR) {
-                    System.arraycopy(event.values, 0, rotationReading, 0, rotationReading.size)
-                    for ((index, value) in rotationReading.withIndex()) {
-                        Log.d(
-                            "onSensorChanged",
-                            "onSensorChanged TYPE_ROTATION_VECTOR :: $index , $value"
-                        )
-                    }
-                } else if (event.sensor.type == Sensor.TYPE_PRESSURE) {
-                    altitude = event.values[0]
-                }
-
-                if (writeTextPossible) {
-                    /**
-                     * 기압
-                     */
-                    getAltitude()
-
-                    /**
-                     * 가속력
-                     */
-                    getAcceleration()
-
-                    /**
-                     * 회전 각도
-                     */
-                    getRotationAngle()
-
-                    /**
-                     * 기울기
-                     */
-                    if (magneticReading.isEmpty() || accelerometerReading.isEmpty()) return
-                    getIncline()
-
-                    writeTextPossible = false;
-                }
-
-
-            }
-
-            override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
-
-            }
-
-        }
-    }
-
-
-    private fun setSensor() {
-        /**
-         * 위치 센서
-         */
-        setGameRotation()
-        setGeomagneticRotation()
-        setMagneticField()
-        setMagneticFieldUncalibrated()
-        setProximity()
-
-
-        /**
-         * 움직임 감지 센서
-         */
-        setAccelerometer()
-        setAccelerometerUncalibrated()
-        setGravity()
-        setGyroscope()
-        setGyroscopeUncalibrated()
-        setLinearAccelerometer()
-        setRotation()
-
-        /**
-         * 환경 센서
-         */
-        setPressure()
-
-    }
-
-    private fun setGameRotation() {
-        sensorManager.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR)?.also { gameRotation ->
-            sensorManager.registerListener(
-                sensorEventListener,
-                gameRotation,
-                SensorManager.SENSOR_DELAY_NORMAL
-            )
-        }
-    }
-
-    private fun setGeomagneticRotation() {
-        sensorManager.getDefaultSensor(Sensor.TYPE_GEOMAGNETIC_ROTATION_VECTOR)?.also { geoVector ->
-            sensorManager.registerListener(
-                sensorEventListener,
-                geoVector,
-                SensorManager.SENSOR_DELAY_NORMAL
-            )
-        }
-    }
-
-    private fun setMagneticField() {
-        sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)?.also { magneticField ->
-            sensorManager.registerListener(
-                sensorEventListener,
-                magneticField,
-                SensorManager.SENSOR_DELAY_NORMAL
-            )
-        }
-    }
-
-    private fun setMagneticFieldUncalibrated() {
-        sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD_UNCALIBRATED)
-            ?.also { magneticFieldUncalibrated ->
-                sensorManager.registerListener(
-                    sensorEventListener,
-                    magneticFieldUncalibrated,
-                    SensorManager.SENSOR_DELAY_NORMAL
-                )
-            }
-    }
-
-    private fun setProximity() {
-        sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY)?.also { proximity ->
-            sensorManager.registerListener(
-                sensorEventListener,
-                proximity,
-                SensorManager.SENSOR_DELAY_NORMAL
-            )
-        }
-    }
-
-    private fun setAccelerometer() {
-        sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)?.also { accelerometer ->
-            sensorManager.registerListener(
-                sensorEventListener,
-                accelerometer,
-                SensorManager.SENSOR_DELAY_NORMAL
-            )
-        }
-    }
-
-    private fun setAccelerometerUncalibrated() {
-        sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER_UNCALIBRATED)?.also {
-            sensorManager.registerListener(
-                sensorEventListener,
-                it,
-                SensorManager.SENSOR_DELAY_NORMAL
-            )
-        }
-    }
-
-    private fun setGravity() {
-        sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY)?.also {
-            sensorManager.registerListener(
-                sensorEventListener,
-                it,
-                SensorManager.SENSOR_DELAY_NORMAL
-            )
-        }
-    }
-
-    private fun setGyroscope() {
-        sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)?.also {
-            sensorManager.registerListener(
-                sensorEventListener,
-                it,
-                SensorManager.SENSOR_DELAY_NORMAL
-            )
-        }
-    }
-
-    private fun setGyroscopeUncalibrated() {
-        sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE_UNCALIBRATED)?.also {
-            sensorManager.registerListener(
-                sensorEventListener,
-                it,
-                SensorManager.SENSOR_DELAY_NORMAL
-            )
-        }
-    }
-
-    private fun setLinearAccelerometer() {
-        sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)?.also {
-            sensorManager.registerListener(
-                sensorEventListener,
-                it,
-                SensorManager.SENSOR_DELAY_NORMAL
-            )
-        }
-    }
-
-    private fun setRotation() {
-        sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)?.also {
-            sensorManager.registerListener(
-                sensorEventListener,
-                it,
-                SensorManager.SENSOR_DELAY_NORMAL
-            )
-        }
-    }
-
-    private fun setPressure() {
-        sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE)?.also {
-            sensorManager.registerListener(
-                sensorEventListener,
-                it,
-                SensorManager.SENSOR_DELAY_NORMAL
-            )
-        }
-    }
 
     private fun setLocation2() {
         // FusedLocationProviderClient 초기화
@@ -1198,82 +793,6 @@ class BluetoothService : Service() {
 
     private fun makeAltitudeFromGpsInfo() {
         writeToFile("Altitude (gps)", altitudeInfoFromGps)
-    }
-
-    /**
-     * TYPE_ACCELEROMETER
-     */
-    private fun getAcceleration() {
-        linearAccelerationInfo = linearAccelerationInfo + getCurrent()
-        var perAltitudeInfoFromGps = ""
-        for ((index, value) in linearAccelerometerReading.withIndex()) {
-
-            perAltitudeInfoFromGps = perAltitudeInfoFromGps + ",$value"
-        }
-        linearAccelerationInfo = linearAccelerationInfo + perAltitudeInfoFromGps + "\n"
-    }
-
-    private fun makeLinearAccelerationInfo() {
-        writeToFile("Acceleration (acs)", linearAccelerationInfo)
-    }
-
-    /**
-     * TYPE_ROTATION_VECTOR
-     */
-    private fun getRotationAngle() {
-        rotationAngleInfo = rotationAngleInfo + getCurrent()
-        var perRotationAngleInfo = ""
-        for ((index, value) in rotationReading.withIndex()) {
-            perRotationAngleInfo = perRotationAngleInfo + ",$value"
-        }
-        rotationAngleInfo = rotationAngleInfo + perRotationAngleInfo + "\n"
-    }
-
-    private fun makeRotationVectorInfo() {
-        writeToFile("Rotation (gyro)", rotationAngleInfo)
-    }
-
-
-    /**
-     * getOrientation
-     */
-    private fun getIncline() {
-        val rotationMatrix = FloatArray(9)
-        SensorManager.getRotationMatrix(
-            rotationMatrix,
-            FloatArray(9),
-            accelerometerReading,
-            magneticReading
-        )
-        val orientationAngles = FloatArray(3)
-        SensorManager.getOrientation(rotationMatrix, orientationAngles)
-
-
-        inclineInfo = inclineInfo + getCurrent()
-        var perInclineInfo = ""
-
-        for ((index, value) in orientationAngles.withIndex()) {
-            perInclineInfo = perInclineInfo + ", $value"
-        }
-        inclineInfo = inclineInfo + perInclineInfo + "\n"
-
-    }
-
-    private fun makeInclineInfo() {
-        writeToFile("Incline (gyro)", inclineInfo)
-    }
-
-
-    /**
-     * TYPE_PRESSURE
-     */
-    private fun getAltitude() {
-        altitudeInfo =
-            altitudeInfo + getCurrent() + "," + altitude + "\n"
-    }
-
-    private fun makeAltitudeInfo() {
-        writeToFile("Pressure (baro)", altitudeInfo)
     }
 
     fun writeToFile(fileName: String, contents: String) {
