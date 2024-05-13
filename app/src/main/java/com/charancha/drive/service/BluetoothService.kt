@@ -449,6 +449,7 @@ class BluetoothService : Service() {
 
             sensorManager.unregisterListener(sensorEventListener)
             fusedLocationClient?.removeLocationUpdates(locationCallback)
+            fusedLocationClient = null
 
         }
     }
