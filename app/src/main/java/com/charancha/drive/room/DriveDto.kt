@@ -15,5 +15,6 @@ data class DriveDto(
     var high_speed_driving: Float, // 12533.736734857148
     var low_speed_driving: Float, // 12533.736734857148
     var constant_speed_driving: Float, // 12533.736734857148
+    var harsh_driving:Float,
     var rawData: List<EachGpsDto> // 원시 데이터
 ) : java.io.Serializable

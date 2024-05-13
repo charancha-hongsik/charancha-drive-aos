@@ -482,7 +482,7 @@ class BluetoothService : Service() {
         distanceToSum = 0f
         startTimeStamp = System.currentTimeMillis()
         gpsInfo = mutableListOf()
-        driveDto = DriveDto(format.format(time).toString(), startTimeStamp, level,0f,0L,0,0,0,0,0f,0f,0f,gpsInfo)
+        driveDto = DriveDto(format.format(time).toString(), startTimeStamp, level,0f,0L,0,0,0,0,0f,0f,0f,0f,gpsInfo)
     }
 
 
@@ -1297,7 +1297,7 @@ class BluetoothService : Service() {
 //        driveDto.maxSpeed = maxSpeed
         driveDto.time = System.currentTimeMillis() - startTimeStamp
 
-        val drive = Drive(driveDto.tracking_id, driveDto.timeStamp, driveDto.verification, driveDto.distance, driveDto.time, driveDto.sudden_deceleration, driveDto.sudden_stop, driveDto.sudden_acceleration, driveDto.sudden_start, driveDto.high_speed_driving, driveDto.low_speed_driving, driveDto.constant_speed_driving, Gson().toJson(driveDto))
+        val drive = Drive(driveDto.tracking_id, driveDto.timeStamp, driveDto.verification, driveDto.distance, driveDto.time, driveDto.sudden_deceleration, driveDto.sudden_stop, driveDto.sudden_acceleration, driveDto.sudden_start, driveDto.high_speed_driving, driveDto.low_speed_driving, driveDto.constant_speed_driving,driveDto.harsh_driving, Gson().toJson(driveDto))
         driveDatabase?.driveDao()?.insert(drive)
     }
 }

@@ -3,7 +3,7 @@ package com.charancha.drive.room.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "drive2")
+@Entity(tableName = "drive3")
 data class Drive(
     @field:PrimaryKey var tracking_id: String, // 20240417190026
     var timeStamp: Long, // 1714087621
@@ -17,6 +17,7 @@ data class Drive(
     var high_speed_driving: Float, // 12533.736734857148
     var low_speed_driving: Float, // 12533.736734857148
     var constant_speed_driving: Float, // 12533.736734857148
+    var harsh_driving:Float,
     var jsonData: String // 원시 데이터
 )
 

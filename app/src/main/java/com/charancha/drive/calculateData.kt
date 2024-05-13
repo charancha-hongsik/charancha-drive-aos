@@ -5,8 +5,8 @@ object calculateData {
      * 평균 주행 거리
      * n일간 총 주행거리 / n일간 총 주행 일수
      */
-    fun getAverageDistance(): Float{
-        return 0f
+    fun getAverageDistance(driveDistance:Float, driveDay:Int): Float{
+        return driveDistance/driveDay
     }
 
     /**

@@ -13,15 +13,15 @@ interface DriveDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(drive: Drive?)
 
-    @Query("DELETE FROM drive2")
+    @Query("DELETE FROM drive3")
     fun deleteAll()
 
-    @get:Query("SELECT * FROM drive2 ORDER BY timeStamp DESC")
+    @get:Query("SELECT * FROM drive3 ORDER BY timeStamp DESC")
     val allDrive: List<Drive>?
 
     /**
      * 특정 날짜의 Drive 값 모두 가져오기
      */
-    @Query("SELECT * FROM drive2 WHERE timeStamp BETWEEN :minTimeStamp AND :maxTimeStamp1")
+    @Query("SELECT * FROM drive3 WHERE timeStamp BETWEEN :minTimeStamp AND :maxTimeStamp1")
     fun allDriveBetween(minTimeStamp: Long, maxTimeStamp1: Long): List<Drive>
 }
