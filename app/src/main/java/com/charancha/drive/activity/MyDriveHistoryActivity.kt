@@ -37,9 +37,6 @@ class MyDriveHistoryActivity: AppCompatActivity() {
                             .toString() + "-" + drive.tracking_id.subSequence(4, 8)
                             .toString() + " / " + drive.distance + "m"
                     )
-
-                    calculateData.getSuddenDeceleration(drive.jsonData)
-
                 }
 
 

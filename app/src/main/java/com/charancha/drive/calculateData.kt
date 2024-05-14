@@ -1,17 +1,33 @@
 package com.charancha.drive
 
-import android.util.Log
-import com.charancha.drive.room.DriveDto
+
 import com.charancha.drive.room.EachGpsDto
-import com.charancha.drive.room.entity.Drive
 import com.google.gson.Gson
-import java.lang.Math.*
-import kotlin.math.pow
 
 
 /**
- * 1. 기본 전제 데이터를 계산하기 위한 함수 모음
- * 2. Room DB에 들어가있는 기본 전제 데이터들로 지표 데이터 구하는 함수 모음
+ *
+ *      1. 기본 전제 데이터를 계산하기 위한 함수 모음
+ *
+ *     @field:PrimaryKey var tracking_id: String, // 20240417190026
+ *      ->
+ *     var timeStamp: Long, // 1714087621
+ *      -> 시작 시간
+ *
+ *     var verification: String, // L1, L2, L3, L4
+ *      ->
+ *
+ *     var distance: Float, // 12533.736
+ *      -> 총 거리
+ *
+ *     var time: Long, // 2015.614
+ *      -> 총 시간
+ *
+ *     var jsonData: String // 원시 데이터
+ *      ->
+ *
+ *
+ *      2. Room DB에 들어가있는 기본 전제 데이터들로 지표 데이터 구하는 함수 모음
  */
 object calculateData {
     val MS_TO_KH = 3.6f
@@ -22,19 +38,176 @@ object calculateData {
      *  -> 초당 14km/h이상 감속 운행하고 속도가 6.0km/h 이상인 경우
      *  -> 초당 14km/h ->
      */
-    fun getSuddenDeceleration(rawData: String):Int{
-        val gpsInfo = Gson().fromJson(rawData, DriveDto::class.java).rawData.toMutableList()
-
+    fun getSuddenDeceleration(gpsInfo:MutableList<EachGpsDto>):Int{
         var count:Int = 0
-
         for(info in gpsInfo){
             if(info.speed * MS_TO_KH >= 6f && info.acceleration * MS_TO_KH <= -14f){
                 count++
             }
         }
 
+
         return count
     }
+
+
+    /**
+     *  var sudden_stop: Int, // 0,1,2
+     *  -> 급정지 (count)
+     *  -> 초당 14km/h이상 감속 운행하고 속도가 5.0km/h 이하인 경우
+     */
+    fun getSuddenStop(gpsInfo:MutableList<EachGpsDto>):Int{
+        var count:Int = 0
+
+        for(info in gpsInfo){
+            if(info.speed * MS_TO_KH >= 5f && info.acceleration * MS_TO_KH <= -14f){
+                count++
+            }
+        }
+
+        return count
+    }
+
+    /**
+     *  var sudden_acceleration: Int, // 0,1,2
+     *  -> 급가속 (count)
+     *  -> 10km/h 초과 속도에서 초당 10km/h 이상 가속 운행한 경우
+     */
+    fun getSuddenAcceleration(gpsInfo:MutableList<EachGpsDto>):Int{
+        var count:Int = 0
+
+        for(info in gpsInfo){
+            if(info.speed * MS_TO_KH >= 10f && info.acceleration * MS_TO_KH >= 10f){
+                count++
+            }
+        }
+
+        return count
+    }
+
+    /**
+     * var sudden_start: Int, // 0,1,2
+     *  -> 급출발 (count)
+     *  -> 5.0km/h 이하 속도에서 출발하여 초당 10km/h이상 가속 운행한 경우
+     */
+    fun getSuddenStart(gpsInfo:MutableList<EachGpsDto>):Int{
+        var count:Int = 0
+        var pastSpeed = 0f
+
+        for(info in gpsInfo){
+            if(pastSpeed * MS_TO_KH <= 5f && info.acceleration * MS_TO_KH >= 10f){
+                count++
+            }
+            pastSpeed = info.speed
+        }
+
+        return count
+    }
+
+    /**
+     *  var high_speed_driving: Float, // 12533.736
+     *  -> 고속 주행 거리 (distance)
+     *  -> 80km/h 이상 ~ 150km/h 이하 속력으로 주행한 거리의 총합
+     */
+    fun getHighSpeedDriving(gpsInfo:MutableList<EachGpsDto>):Float{
+        var distanceSum = 0f
+
+        for(info in gpsInfo){
+            if(info.speed * MS_TO_KH in 80f..150f){
+                distanceSum += info.distance
+            }
+        }
+
+        return distanceSum
+    }
+
+    /**
+     *  var low_speed_driving: Float, // 12533.736
+     *  -> 저속 주행 거리 (distance)
+     *  -> 40km/h 미만 속력으로 주행한 거리의 총합
+     */
+    fun getLowSpeedDriving(gpsInfo:MutableList<EachGpsDto>):Float{
+        var distanceSum = 0f
+
+        for(info in gpsInfo){
+            if(info.speed * MS_TO_KH in 0f..39f){
+                distanceSum += info.distance
+            }
+        }
+
+        return distanceSum
+    }
+
+
+    /**
+     *  var constant_speed_driving: Float, // 12533.736
+     *  -> 항속 주행 거리 (distance)
+     *  -> 3분 이상 속도가 시속 10km/h 이내로 변동하는 구간을 '일정한 속도로 운행한 거리'
+     *  -> 속도 범위: 60km/h이상 140km/h이하
+     */
+    fun getConstantSpeedDriving(gpsInfo:MutableList<EachGpsDto>):Float{
+        var distanceSum = 0f
+        var distanceSumofSum = 0f
+        var firstTimeStamp = 0L
+        var pastSpeed = 0f
+
+        for(info in gpsInfo) {
+            if(info.speed * MS_TO_KH in 60f..140f && (pastSpeed * MS_TO_KH) - (info.speed * MS_TO_KH) in -10f..10f){
+                if(firstTimeStamp == 0L)
+                    firstTimeStamp = info.timeStamp
+
+                distanceSum += info.distance
+
+            } else{
+                if((info.timeStamp - firstTimeStamp) >= 60000*3)
+                    distanceSumofSum += distanceSum
+
+                distanceSum = 0f
+            }
+
+            pastSpeed = info.speed
+        }
+
+        if(distanceSum != 0f){
+            if((gpsInfo[gpsInfo.size-1].timeStamp - firstTimeStamp) >= 60000*3)
+                distanceSumofSum += distanceSum
+        }
+
+        return distanceSumofSum
+    }
+
+    /**
+     *  var harsh_driving:Float, // 12533.736
+     *  -> 가혹 주행 거리 (distance)
+     */
+    fun getHarshDriving(gpsInfo:MutableList<EachGpsDto>):Float{
+        var distanceSum = 0f
+        var pastSpeed = 0f
+
+
+        for(info in gpsInfo){
+            if(info.speed * MS_TO_KH >= 6f && info.acceleration * MS_TO_KH <= -14f){
+                distanceSum += info.distance
+            }
+
+            if(info.speed * MS_TO_KH >= 5f && info.acceleration * MS_TO_KH <= -14f){
+                distanceSum += info.distance
+            }
+
+            if(info.speed * MS_TO_KH >= 10f && info.acceleration * MS_TO_KH >= 10f){
+                distanceSum += info.distance
+            }
+
+            if(pastSpeed * MS_TO_KH <= 5f && info.acceleration * MS_TO_KH >= 10f){
+                distanceSum += info.distance
+            }
+
+            pastSpeed = info.speed
+        }
+
+        return distanceSum
+    }
+
 
     /**
      * 평균 주행 거리
