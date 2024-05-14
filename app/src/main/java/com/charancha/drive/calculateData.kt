@@ -28,70 +28,13 @@ object calculateData {
         var count:Int = 0
 
         for(info in gpsInfo){
-            if(info.speed * MS_TO_KH >= 6f && info.acceleration <= -14f){
-                Log.d("testsetsetest","testestesteestset speed :: " + info.speed)
-                Log.d("testsetsetest","testestesteestset acceleration :: " + info.acceleration)
-
+            if(info.speed * MS_TO_KH >= 6f && info.acceleration * MS_TO_KH <= -14f){
                 count++
             }
         }
 
         return count
     }
-
-    fun getDistanceFromHaversine(drive: Drive):String{
-        val gpsInfo = Gson().fromJson(drive.jsonData, DriveDto::class.java).rawData.toMutableList()
-        val title = drive.tracking_id
-        if(title == "20240514120935"){
-            Log.d("testsetsetset","testsetsetsetset :: 20240514120935")
-
-            var contents:String = ""
-            var maximumDistance = 0.0
-            val firstLatitude = gpsInfo[10].latitude
-            val firstAltitude = gpsInfo[10].longtitude
-
-
-
-            for(info in gpsInfo){
-                contents = contents + "(" + firstLatitude + " ," + firstAltitude +")" + "(" +info.latitude + " ," + info.longtitude + ")" + " 사이 거리 : " + haversine(firstLatitude, firstAltitude, info.latitude, info.longtitude).toString() + "\n"
-                if(haversine(firstLatitude, firstAltitude, info.latitude, info.longtitude) > maximumDistance){
-                    maximumDistance = haversine(firstLatitude, firstAltitude, info.latitude, info.longtitude)
-                }
-            }
-
-
-            contents = contents + "maxDistance :: " + maximumDistance
-            Log.d("testsetsetset","testsetsetsetset :: " + contents)
-            return contents
-        } else{
-            return ""
-        }
-    }
-
-
-    fun haversine(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
-        val R = 6371.0 // 지구 반지름 (킬로미터 단위)
-
-        // 위도와 경도를 라디안으로 변환
-        val lat1Rad = Math.toRadians(lat1)
-        val lon1Rad = Math.toRadians(lon1)
-        val lat2Rad = Math.toRadians(lat2)
-        val lon2Rad = Math.toRadians(lon2)
-
-        // 하버사인 공식 적용
-        val dlon = lon2Rad - lon1Rad
-        val dlat = lat2Rad - lat1Rad
-
-        val a = sin(dlat / 2).pow(2) + cos(lat1Rad) * cos(lat2Rad) * sin(dlon / 2).pow(2)
-        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
-
-        // 거리 계산 (킬로미터 단위)
-        val distanceKm = R * c
-
-        // 거리를 미터 단위로 변환
-        return distanceKm * 1000
-    }
-
 
     /**
      * 평균 주행 거리
