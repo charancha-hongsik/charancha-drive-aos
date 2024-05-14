@@ -119,6 +119,7 @@ class BluetoothService : Service() {
      * ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ SensorService 관련 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
      */
 
+
     private var sensorState:Boolean = false
 
     private var driveDatabase: DriveDatabase? = null
@@ -177,14 +178,14 @@ class BluetoothService : Service() {
     lateinit var gpsInfo: MutableList<EachGpsDto>
     private var maxSpeed: Float = 0f
     private var distanceSum: Float = 0f
-    private var distanceToSum: Float = 0f
     private var startTimeStamp: Long = 0L
 
     /**
-     *     타이머 상태 및 1시간마다의 거리 합을 저장할 변수
+     *  타이머 시간동안 최대 반경을 구하기 위한 변수들
      */
-    var distanceSumForAnHour = 0f
     lateinit var distanceSumForAnHourTimer:Timer
+    var firstLocation: Location? = null
+    var maxDistance = 0f
 
     /**
      * notification 관련
@@ -434,7 +435,6 @@ class BluetoothService : Service() {
 
         maxSpeed = 0f
         distanceSum = 0f
-        distanceToSum = 0f
         startTimeStamp = System.currentTimeMillis()
         gpsInfo = mutableListOf()
         driveDto = DriveDto(format.format(time).toString(), startTimeStamp, level,0f,0L,0,0,0,0,0f,0f,0f,0f,gpsInfo)
@@ -567,21 +567,20 @@ class BluetoothService : Service() {
     }
 
     private fun startDistanceTimer(){
-        distanceSumForAnHour = 0f
+        maxDistance = 0f
+        firstLocation = null
         distanceSumForAnHourTimer = timer(period = 3600000, initialDelay = 3600000) {
             // 타이머가 동작 중인 동안 1시간 동안의 거리를 합산
 
-            if(distanceSumForAnHour <= 500f){
+            if(maxDistance <= 300f){
                 stopSensor()
-                distanceSumForAnHour = 0f
-            } else{
-                distanceSumForAnHour = 0f
             }
+            maxDistance = 0f
+            firstLocation = null
         }
     }
 
     private fun stopDistanceTimer(){
-        distanceSumForAnHour = 0f
         distanceSumForAnHourTimer.cancel()
     }
 
@@ -660,17 +659,19 @@ class BluetoothService : Service() {
         locationRequest.setInterval(INTERVAL) // INTERVAL 마다 업데이트 요청
 
 
-//        locationRequest.setMaxWaitTime(MAX_WAIT_TIME)
-//        locationRequest.setSmallestDisplacement(10f)
-
-
         // 위치 업데이트 리스너 생성
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
-                Log.d("testestest","teststestests getCurrent :: " + getCurrent())
-
                 try{
                     val location: Location = locationResult.lastLocation
+
+                    if(firstLocation == null){
+                        firstLocation = location
+                    }
+
+                    if(location.distanceTo(firstLocation!!) > maxDistance){
+                        maxDistance = location.distanceTo(firstLocation!!)
+                    }
 
                     getAltitude(location)
                     getPathLocation(location)
@@ -767,10 +768,7 @@ class BluetoothService : Service() {
                 distanceToInfoFromGps + getCurrent() + "," + distanceTo + "\n"
 
             distanceSum += distanceBetween[0]
-            distanceSumForAnHour += distanceBetween[0]
-            distanceToSum += distanceTo
         }
-
         pastLocation = location
     }
 
@@ -782,10 +780,6 @@ class BluetoothService : Service() {
         writeToFile("Distance (gps)", "$distanceInfoFromGps\n\n distanceSum : $distanceSum \n\n")
     }
 
-
-    /**
-     * AltitudeFromGps
-     */
     private fun getAltitude(location: Location) {
         altitudeInfoFromGps =
             altitudeInfoFromGps + getCurrent() + "," + location.altitude + "\n"
