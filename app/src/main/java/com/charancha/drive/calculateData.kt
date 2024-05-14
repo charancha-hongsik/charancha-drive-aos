@@ -1,6 +1,98 @@
 package com.charancha.drive
 
+import android.util.Log
+import com.charancha.drive.room.DriveDto
+import com.charancha.drive.room.EachGpsDto
+import com.charancha.drive.room.entity.Drive
+import com.google.gson.Gson
+import java.lang.Math.*
+import kotlin.math.pow
+
+
+/**
+ * 1. 기본 전제 데이터를 계산하기 위한 함수 모음
+ * 2. Room DB에 들어가있는 기본 전제 데이터들로 지표 데이터 구하는 함수 모음
+ */
 object calculateData {
+    val MS_TO_KH = 3.6f
+
+    /**
+     *  var sudden_deceleration: Int, // 0,1,2
+     *  -> 급감속 (count)
+     *  -> 초당 14km/h이상 감속 운행하고 속도가 6.0km/h 이상인 경우
+     *  -> 초당 14km/h ->
+     */
+    fun getSuddenDeceleration(rawData: String):Int{
+        val gpsInfo = Gson().fromJson(rawData, DriveDto::class.java).rawData.toMutableList()
+
+        var count:Int = 0
+
+        for(info in gpsInfo){
+            if(info.speed * MS_TO_KH >= 6f && info.acceleration <= -14f){
+                Log.d("testsetsetest","testestesteestset speed :: " + info.speed)
+                Log.d("testsetsetest","testestesteestset acceleration :: " + info.acceleration)
+
+                count++
+            }
+        }
+
+        return count
+    }
+
+    fun getDistanceFromHaversine(drive: Drive):String{
+        val gpsInfo = Gson().fromJson(drive.jsonData, DriveDto::class.java).rawData.toMutableList()
+        val title = drive.tracking_id
+        if(title == "20240514120935"){
+            Log.d("testsetsetset","testsetsetsetset :: 20240514120935")
+
+            var contents:String = ""
+            var maximumDistance = 0.0
+            val firstLatitude = gpsInfo[10].latitude
+            val firstAltitude = gpsInfo[10].longtitude
+
+
+
+            for(info in gpsInfo){
+                contents = contents + "(" + firstLatitude + " ," + firstAltitude +")" + "(" +info.latitude + " ," + info.longtitude + ")" + " 사이 거리 : " + haversine(firstLatitude, firstAltitude, info.latitude, info.longtitude).toString() + "\n"
+                if(haversine(firstLatitude, firstAltitude, info.latitude, info.longtitude) > maximumDistance){
+                    maximumDistance = haversine(firstLatitude, firstAltitude, info.latitude, info.longtitude)
+                }
+            }
+
+
+            contents = contents + "maxDistance :: " + maximumDistance
+            Log.d("testsetsetset","testsetsetsetset :: " + contents)
+            return contents
+        } else{
+            return ""
+        }
+    }
+
+
+    fun haversine(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+        val R = 6371.0 // 지구 반지름 (킬로미터 단위)
+
+        // 위도와 경도를 라디안으로 변환
+        val lat1Rad = Math.toRadians(lat1)
+        val lon1Rad = Math.toRadians(lon1)
+        val lat2Rad = Math.toRadians(lat2)
+        val lon2Rad = Math.toRadians(lon2)
+
+        // 하버사인 공식 적용
+        val dlon = lon2Rad - lon1Rad
+        val dlat = lat2Rad - lat1Rad
+
+        val a = sin(dlat / 2).pow(2) + cos(lat1Rad) * cos(lat2Rad) * sin(dlon / 2).pow(2)
+        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+        // 거리 계산 (킬로미터 단위)
+        val distanceKm = R * c
+
+        // 거리를 미터 단위로 변환
+        return distanceKm * 1000
+    }
+
+
     /**
      * 평균 주행 거리
      * n일간 총 주행거리 / n일간 총 주행 일수

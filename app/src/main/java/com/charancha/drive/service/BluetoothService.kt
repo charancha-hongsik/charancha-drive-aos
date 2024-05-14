@@ -158,7 +158,7 @@ class BluetoothService : Service() {
 
 
     private var INTERVAL = 1000L
-    private var INTERVAL2 = 60000L * 10
+    private var INTERVAL2 = 60000L * 5
 
     /**
      *         locationRequest.setInterval(INTERVAL) // 20초마다 업데이트 요청
@@ -682,7 +682,9 @@ class BluetoothService : Service() {
                         distance = pastLocation!!.distanceTo(location)
                     }
 
-                    gpsInfo.add(EachGpsDto(System.currentTimeMillis(), location.latitude, location.longitude, location.speed,distance,location.altitude, (location.speed*MS_TO_KH) - (pastSpeed*MS_TO_KH)))
+                    gpsInfo.add(EachGpsDto(System.currentTimeMillis(), location.latitude, location.longitude, location.speed,distance,location.altitude, (location.speed) - (pastSpeed)))
+                    pastSpeed = location.speed
+                    pastLocation = location
 
                 }catch (e:Exception){
 
@@ -738,8 +740,6 @@ class BluetoothService : Service() {
 
         accelerationInfo =
             accelerationInfo + getCurrent() + "," + ((location.speed) - (pastSpeed)) + "\n"
-
-        pastSpeed = (location.speed)
     }
 
     private fun makeSpeedInfo() {
@@ -769,7 +769,6 @@ class BluetoothService : Service() {
 
             distanceSum += distanceBetween[0]
         }
-        pastLocation = location
     }
 
     private fun makePathLocationInfo() {

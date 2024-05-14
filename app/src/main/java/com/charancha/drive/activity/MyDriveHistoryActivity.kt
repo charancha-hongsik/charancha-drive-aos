@@ -8,6 +8,7 @@ import android.widget.ListView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.charancha.drive.R
+import com.charancha.drive.calculateData
 import com.charancha.drive.room.DriveDto
 import com.charancha.drive.viewmodel.MyDriveHistoryViewModel
 import com.google.gson.Gson
@@ -30,10 +31,17 @@ class MyDriveHistoryActivity: AppCompatActivity() {
 
         historyViewModel.setAllDriveDate.observe(this@MyDriveHistoryActivity, MyDriveHistoryViewModel.EventObserver {
             var id_list:MutableList<String> = mutableListOf()
-                for(drive in it)
-                    id_list.add(drive.tracking_id.subSequence(0,4).toString() + "-" + drive.tracking_id.subSequence(4,8).toString() + " / " + drive.distance + "m")
+                for(drive in it) {
+                    id_list.add(
+                        drive.tracking_id.subSequence(0, 4)
+                            .toString() + "-" + drive.tracking_id.subSequence(4, 8)
+                            .toString() + " / " + drive.distance + "m"
+                    )
 
-            Log.d("testsetestestset","testestsetsetsetset :: " +  it[0].toString())
+                    calculateData.getSuddenDeceleration(drive.jsonData)
+
+                }
+
 
             val adapter: ArrayAdapter<String> =
                 ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, id_list)
