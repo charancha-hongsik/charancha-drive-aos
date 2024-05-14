@@ -78,7 +78,21 @@ class DetailDriveHistoryActivity: AppCompatActivity() {
         tvRank.text = "랭크 : " + driveDto.verification
         tvDistance.text = "주행거리(m) : " + driveDto.distance
         tvTime.text = "주행 시간 : " + (TimeUnit.MILLISECONDS.toSeconds(driveDto.time)/60) + "분 " + (TimeUnit.MILLISECONDS.toSeconds(driveDto.time)%60) + "초"
-        tvRapid1.text = "주행 종료 : " + getDateFromTimeStamp((driveDto.timeStamp + driveDto.time))
+
+        var contents = ""
+        contents = contents + "주행 종료 : " + getDateFromTimeStamp((driveDto.timeStamp + driveDto.time)) + "\n"
+        contents = contents +  "급감속 횟수 : " + driveDto.sudden_deceleration + "\n"
+        contents = contents +  "급정지 횟수 : " + driveDto.sudden_stop + "\n"
+        contents = contents +  "급가속 횟수 : " + driveDto.sudden_acceleration + "\n"
+        contents = contents +  "급출발 횟수 : " + driveDto.sudden_start + "\n"
+        contents = contents +  "고속 주행 거리 : " + driveDto.high_speed_driving + "\n"
+        contents = contents +  "저속 주행 거리 : " + driveDto.low_speed_driving + "\n"
+        contents = contents +  "항속 주행 거리 : " + driveDto.constant_speed_driving + "\n"
+        contents = contents + "Harsh Driving 거리: " + driveDto.harsh_driving + "\n"
+
+
+
+        tvRapid1.text = contents
 
         if(polylines.size != 0){
             setMapData()
