@@ -36,18 +36,21 @@ object calculateData {
      *  var sudden_deceleration: Int, // 0,1,2
      *  -> 급감속 (count)
      *  -> 초당 14km/h이상 감속 운행하고 속도가 6.0km/h 이상인 경우
-     *  -> 초당 14km/h ->
      */
     fun getSuddenDeceleration(gpsInfo:MutableList<EachGpsDto>):Int{
-        var count:Int = 0
-        for(info in gpsInfo){
-            if(info.speed * MS_TO_KH >= 6f && info.acceleration * MS_TO_KH <= -14f){
-                count++
+        try {
+            var count: Int = 0
+            for (info in gpsInfo) {
+                if (info.speed * MS_TO_KH >= 6f && info.acceleration * MS_TO_KH <= -14f) {
+                    count++
+                }
             }
+
+
+            return count
+        }catch (e:Exception){
+            return 0
         }
-
-
-        return count
     }
 
 
@@ -57,15 +60,19 @@ object calculateData {
      *  -> 초당 14km/h이상 감속 운행하고 속도가 5.0km/h 이하인 경우
      */
     fun getSuddenStop(gpsInfo:MutableList<EachGpsDto>):Int{
-        var count:Int = 0
+        try {
+            var count: Int = 0
 
-        for(info in gpsInfo){
-            if(info.speed * MS_TO_KH >= 5f && info.acceleration * MS_TO_KH <= -14f){
-                count++
+            for (info in gpsInfo) {
+                if (info.speed * MS_TO_KH >= 5f && info.acceleration * MS_TO_KH <= -14f) {
+                    count++
+                }
             }
-        }
 
-        return count
+            return count
+        } catch (e:Exception){
+            return 0
+        }
     }
 
     /**
@@ -74,15 +81,19 @@ object calculateData {
      *  -> 10km/h 초과 속도에서 초당 10km/h 이상 가속 운행한 경우
      */
     fun getSuddenAcceleration(gpsInfo:MutableList<EachGpsDto>):Int{
-        var count:Int = 0
+        try {
+            var count: Int = 0
 
-        for(info in gpsInfo){
-            if(info.speed * MS_TO_KH >= 10f && info.acceleration * MS_TO_KH >= 10f){
-                count++
+            for (info in gpsInfo) {
+                if (info.speed * MS_TO_KH >= 10f && info.acceleration * MS_TO_KH >= 10f) {
+                    count++
+                }
             }
-        }
 
-        return count
+            return count
+        }catch (e:Exception){
+            return 0
+        }
     }
 
     /**
@@ -91,17 +102,21 @@ object calculateData {
      *  -> 5.0km/h 이하 속도에서 출발하여 초당 10km/h이상 가속 운행한 경우
      */
     fun getSuddenStart(gpsInfo:MutableList<EachGpsDto>):Int{
-        var count:Int = 0
-        var pastSpeed = 0f
+        try {
+            var count: Int = 0
+            var pastSpeed = 0f
 
-        for(info in gpsInfo){
-            if(pastSpeed * MS_TO_KH <= 5f && info.acceleration * MS_TO_KH >= 10f){
-                count++
+            for (info in gpsInfo) {
+                if (pastSpeed * MS_TO_KH <= 5f && info.acceleration * MS_TO_KH >= 10f) {
+                    count++
+                }
+                pastSpeed = info.speed
             }
-            pastSpeed = info.speed
-        }
 
-        return count
+            return count
+        }catch (e:Exception){
+            return 0
+        }
     }
 
     /**
@@ -110,15 +125,19 @@ object calculateData {
      *  -> 80km/h 이상 ~ 150km/h 이하 속력으로 주행한 거리의 총합
      */
     fun getHighSpeedDriving(gpsInfo:MutableList<EachGpsDto>):Float{
-        var distanceSum = 0f
+        try {
+            var distanceSum = 0f
 
-        for(info in gpsInfo){
-            if(info.speed * MS_TO_KH in 80f..150f){
-                distanceSum += info.distance
+            for (info in gpsInfo) {
+                if (info.speed * MS_TO_KH in 80f..150f) {
+                    distanceSum += info.distance
+                }
             }
-        }
 
-        return distanceSum
+            return distanceSum
+        }catch (e:Exception){
+            return 0f
+        }
     }
 
     /**
@@ -127,15 +146,19 @@ object calculateData {
      *  -> 40km/h 미만 속력으로 주행한 거리의 총합
      */
     fun getLowSpeedDriving(gpsInfo:MutableList<EachGpsDto>):Float{
-        var distanceSum = 0f
+        try {
+            var distanceSum = 0f
 
-        for(info in gpsInfo){
-            if(info.speed * MS_TO_KH in 0f..39f){
-                distanceSum += info.distance
+            for (info in gpsInfo) {
+                if (info.speed * MS_TO_KH in 0f..39f) {
+                    distanceSum += info.distance
+                }
             }
-        }
 
-        return distanceSum
+            return distanceSum
+        }catch (e:Exception){
+            return 0f
+        }
     }
 
 
@@ -146,34 +169,38 @@ object calculateData {
      *  -> 속도 범위: 60km/h이상 140km/h이하
      */
     fun getConstantSpeedDriving(gpsInfo:MutableList<EachGpsDto>):Float{
-        var distanceSum = 0f
-        var distanceSumofSum = 0f
-        var firstTimeStamp = 0L
-        var pastSpeed = 0f
+        try {
+            var distanceSum = 0f
+            var distanceSumofSum = 0f
+            var firstTimeStamp = 0L
+            var pastSpeed = 0f
 
-        for(info in gpsInfo) {
-            if(info.speed * MS_TO_KH in 60f..140f && (pastSpeed * MS_TO_KH) - (info.speed * MS_TO_KH) in -10f..10f){
-                if(firstTimeStamp == 0L)
-                    firstTimeStamp = info.timeStamp
+            for (info in gpsInfo) {
+                if (info.speed * MS_TO_KH in 60f..140f && (pastSpeed * MS_TO_KH) - (info.speed * MS_TO_KH) in -10f..10f) {
+                    if (firstTimeStamp == 0L)
+                        firstTimeStamp = info.timeStamp
 
-                distanceSum += info.distance
+                    distanceSum += info.distance
 
-            } else{
-                if((info.timeStamp - firstTimeStamp) >= 60000*3)
-                    distanceSumofSum += distanceSum
+                } else {
+                    if ((info.timeStamp - firstTimeStamp) >= 60000 * 3)
+                        distanceSumofSum += distanceSum
 
-                distanceSum = 0f
+                    distanceSum = 0f
+                }
+
+                pastSpeed = info.speed
             }
 
-            pastSpeed = info.speed
-        }
+            if (distanceSum != 0f) {
+                if ((gpsInfo[gpsInfo.size - 1].timeStamp - firstTimeStamp) >= 60000 * 3)
+                    distanceSumofSum += distanceSum
+            }
 
-        if(distanceSum != 0f){
-            if((gpsInfo[gpsInfo.size-1].timeStamp - firstTimeStamp) >= 60000*3)
-                distanceSumofSum += distanceSum
+            return distanceSumofSum
+        } catch (e:Exception){
+            return 0f
         }
-
-        return distanceSumofSum
     }
 
     /**
@@ -181,32 +208,40 @@ object calculateData {
      *  -> 가혹 주행 거리 (distance)
      */
     fun getHarshDriving(gpsInfo:MutableList<EachGpsDto>):Float{
-        var distanceSum = 0f
-        var pastSpeed = 0f
+        try {
+            var distanceSum = 0f
+            var pastSpeed = 0f
 
 
-        for(info in gpsInfo){
-            if(info.speed * MS_TO_KH >= 6f && info.acceleration * MS_TO_KH <= -14f){
-                distanceSum += info.distance
+            for (info in gpsInfo) {
+                if (info.speed * MS_TO_KH >= 6f && info.acceleration * MS_TO_KH <= -14f) {
+                    distanceSum += info.distance
+                }
+
+                if (info.speed * MS_TO_KH >= 5f && info.acceleration * MS_TO_KH <= -14f) {
+                    distanceSum += info.distance
+                }
+
+                if (info.speed * MS_TO_KH >= 10f && info.acceleration * MS_TO_KH >= 10f) {
+                    distanceSum += info.distance
+                }
+
+                if (pastSpeed * MS_TO_KH <= 5f && info.acceleration * MS_TO_KH >= 10f) {
+                    distanceSum += info.distance
+                }
+
+                pastSpeed = info.speed
             }
 
-            if(info.speed * MS_TO_KH >= 5f && info.acceleration * MS_TO_KH <= -14f){
-                distanceSum += info.distance
-            }
-
-            if(info.speed * MS_TO_KH >= 10f && info.acceleration * MS_TO_KH >= 10f){
-                distanceSum += info.distance
-            }
-
-            if(pastSpeed * MS_TO_KH <= 5f && info.acceleration * MS_TO_KH >= 10f){
-                distanceSum += info.distance
-            }
-
-            pastSpeed = info.speed
+            return distanceSum
+        } catch (e:Exception){
+            return 0f
         }
-
-        return distanceSum
     }
+
+
+
+
 
 
     /**

@@ -140,7 +140,7 @@ class DetailDriveHistoryActivity: AppCompatActivity() {
     private fun moveMarkerAlongPolyline(googleMap: GoogleMap,  index: Int) {
         val startPosition = polylines[index]
         val endPosition = polylines[(index + 1) % polylines.size]
-        val duration = 50L // 애니메이션의 지속 시간 (3초)
+        val duration = 10L // 애니메이션의 지속 시간
         val handler = Handler(Looper.getMainLooper())
 
         val valueAnimator = ValueAnimator.ofFloat(0f, 1f)

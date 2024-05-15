@@ -26,6 +26,15 @@ import com.charancha.drive.viewmodel.MainViewModel
 import java.util.*
 
 
+/**
+ * 홈화면에 필요한 데이터
+ * 1. 평균 주행 거리 (지난 30일간)
+ * 2. 평균 주행 시간 (지난 30일간)
+ * 3. 최근 관리 점수
+ * 4. 평균 점수
+ * 5. 최근 주행 총점
+ * 6.
+ */
 class MainActivity : AppCompatActivity() {
     lateinit var btnStop:Button
     lateinit var et_seconds:EditText
