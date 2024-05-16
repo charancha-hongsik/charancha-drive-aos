@@ -82,25 +82,25 @@
     <style name="H1SB" android:font="@font/pretendardsemibold">
         <item name="android:textSize">44dp</item>
         <item name="lineHeight">56dp</item>
-        <item name="android:letterSpacing">-0.07</item>
+        <item name="android:letterSpacing">-0.05</item>
     </style>
 
     <style name="H1B" android:font="@font/pretendardbold">
         <item name="android:textSize">44dp</item>
         <item name="lineHeight">56dp</item>
-        <item name="android:letterSpacing">-0.07</item>
+        <item name="android:letterSpacing">-0.05</item>
     </style>
 
     <style name="H2SB" android:font="@font/pretendardsemibold">
         <item name="android:textSize">36dp</item>
         <item name="lineHeight">46dp</item>
-        <item name="android:letterSpacing">-0.07</item>
+        <item name="android:letterSpacing">-0.06</item>
     </style>
 
     <style name="H2B" android:font="@font/pretendardbold">
         <item name="android:textSize">36dp</item>
         <item name="lineHeight">46dp</item>
-        <item name="android:letterSpacing">-0.07</item>
+        <item name="android:letterSpacing">-0.06</item>
     </style>
 
     <style name="H3SB" android:font="@font/pretendardsemibold">
