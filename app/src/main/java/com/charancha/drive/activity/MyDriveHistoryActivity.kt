@@ -39,6 +39,7 @@ class MyDriveHistoryActivity: AppCompatActivity() {
                     )
 
                     Log.d("testeststest","testestststse :: " + drive.tracking_id)
+                    Log.d("testeststest","testestststse :: " + drive.timeStamp)
                 }
 
 
