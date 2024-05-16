@@ -273,6 +273,56 @@
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/layout_average_distance">
 
+                    <TextView
+                        android:id="@+id/tv_recent_score_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="최근 관리 점수"
+                        android:layout_marginLeft="16dp"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_recent_score"
+                        android:layout_width="13dp"
+                        android:layout_height="28dp"
+                        android:layout_marginRight="2dp"
+                        android:text="0"
+                        android:gravity="center"
+                        android:textAppearance="@style/ST1M"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintRight_toLeftOf="@+id/tv_score_unit"/>
+
+                    <TextView
+                        android:id="@+id/tv_score_unit"
+                        android:layout_width="10dp"
+                        android:layout_height="14dp"
+                        android:text="점"
+                        android:gravity="center"
+                        android:textAppearance="@style/C2R"
+                        android:textColor="@color/gray_950"
+                        android:layout_marginRight="8dp"
+                        app:layout_constraintRight_toLeftOf="@+id/iv_arrow"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+
+
+                    <ImageView
+                        android:id="@+id/iv_arrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/arrow"
+                        android:layout_marginRight="16dp"
+                        android:padding="0dp"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
