@@ -1,3 +1,40 @@
 <resources>
     <string name="app_name">마일로그</string>
+    <string name="with_milelog">마일로그와 함께한지</string>
+    <string name="days">일째</string>
+    <string name="average_srore">평균 점수</string>
+    <string name="up_points">점 증가</string>
+    <string name="down_points">n점 감소</string>
+    <string name="no_change">변동 없음</string>
+    <string name="last_30_days">지난 30일간</string>
+    <string name="average_driving_distance">평균 주행거리</string>
+    <string name="average_driving_time">평균 주행시간</string>
+    <string name="recent_score">최근 관리 점수</string>
+    <string name="overview_of_my_car">내 차 한눈에 보기</string>
+    <string name="recent_driving_score">최근 주행 총점</string>
+    <string name="one_month_average">1개월 평균</string>
+    <string name="six_months_average">6개월 평균</string>
+    <string name="one_year_average">1년 평균</string>
+    <string name="score">점</string>
+    <string name="no_data_shall_we_go">아직 데이터가 없어요. 함께 달려볼까요?</string>
+    <string name="no_change_in_score">점수 변동이 없어요.</string>
+    <string name="its_disappointing_the_score_decreased">아쉬워요. 지난 주행보다 -n점 하락했어요.</string>
+    <string name="amazing_the_score_increased_by">굉장해요. 지난 주행보다 +n점 얻었어요!</string>
+    <string name="recent_driving">최근 주행</string>
+    <string name="one_month">1개월</string>
+    <string name="six_months">6개월</string>
+    <string name="one_year">1년</string>
+    <string name="engine">엔진</string>
+    <string name="tires">타이어</string>
+    <string name="brakes">브레이크</string>
+    <string name="guidance">안내</string>
+    <string name="the_driving_data_provided_by">마일로그에서 제공하는 주행 데이터는 이용 환경에 따라 실제와 다를 수 있습니다.</string>
+    <string name="perfect_condition_youre_a_car">완벽한 상태! 자동차 전문가네요!</string>
+    <string name="youve_been_maintaining_it_well">꾸준히 잘 관리하고 있어요!</string>
+    <string name="its_okay_lets_start_maintaining">괜찮아요. 이제부터 관리해봐요!</string>
+    <string name="average_distance_per_driv">1회 평균 주행거리</string>
+    <string name="high_speed_driving">고속 주행</string>
+
+
+
 </resources>

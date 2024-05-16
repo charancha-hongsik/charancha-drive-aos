@@ -1,3 +1,40 @@
 <resources>
-    <string name="app_name">milelog</string>
+    <string name="app_name">마일로그</string>
+    <string name="with_milelog">With MileLog</string>
+    <string name="days">Days</string>
+    <string name="average_srore">Average score</string>
+    <string name="up_points">Up n points</string>
+    <string name="down_points">Down n points</string>
+    <string name="no_change">No change</string>
+    <string name="last_30_days">Last 30 days</string>
+    <string name="average_driving_distance">Average driving distance</string>
+    <string name="average_driving_time">Average driving time</string>
+    <string name="recent_score">Recent score</string>
+    <string name="overview_of_my_car">Overview of my car</string>
+    <string name="recent_driving_score">Recent driving score</string>
+    <string name="one_month_average">1 month average</string>
+    <string name="six_months_average">6 months average</string>
+    <string name="one_year_average">1 year average</string>
+    <string name="score">score</string>
+    <string name="no_data_shall_we_go">No data. Shall we go for a drive?</string>
+    <string name="no_change_in_score">No change in score.</string>
+    <string name="its_disappointing_the_score_decreased"> It\'s disappointing. The score decreased by n points from the last drive.</string>
+    <string name="amazing_the_score_increased_by">Amazing! The score increased by n points from the last drive!</string>
+    <string name="recent_driving">Recent driving</string>
+    <string name="one_month">1 month</string>
+    <string name="six_months">6 months</string>
+    <string name="one_year">1 year</string>
+    <string name="engine">Engine</string>
+    <string name="tires">Tires</string>
+    <string name="brakes">Brakes</string>
+    <string name="guidance">Guidance</string>
+    <string name="the_driving_data_provided_by">The driving data provided by MileLog may vary from actual conditions depending on the usage environment.</string>
+    <string name="perfect_condition_youre_a_car">Perfect condition! You\'re a car expert!</string>
+    <string name="youve_been_maintaining_it_well">You\'ve been maintaining it well!</string>
+    <string name="its_okay_lets_start_maintaining">It\'s okay. Let\'s start maintaining it now!</string>
+    <string name="average_distance_per_driv">Average distance per drive</string>
+    <string name="high_speed_driving">High speed driving</string>
+
+
+
 </resources>
