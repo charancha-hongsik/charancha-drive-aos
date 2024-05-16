@@ -189,6 +189,8 @@ class BluetoothService : Service() {
     var firstLocation: Location? = null
     var maxDistance = 0f
 
+    var firstLineState = false
+
     /**
      * notification 관련
      */
@@ -358,6 +360,10 @@ class BluetoothService : Service() {
         writeToFile("startSensor sensorState and level", getCurrent() + ", " + sensorState + ", " + level + "\n")
 
         if(!sensorState){
+            /**
+             * W0D-74 1행 데이터 삭제
+             */
+            firstLineState = true
             startDistanceTimer()
 
             sensorState = true
@@ -379,6 +385,7 @@ class BluetoothService : Service() {
         if(sensorState){
             if(level == PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL, "")){
                 sensorState = false
+                firstLineState = false
 
                 makeSpeedInfo()
                 makeAccelerationInfo()
@@ -403,6 +410,7 @@ class BluetoothService : Service() {
 
         if(sensorState){
             sensorState = false
+            firstLineState = false
 
             makeSpeedInfo()
             makeAccelerationInfo()
@@ -662,28 +670,39 @@ class BluetoothService : Service() {
                      * W0D-78 중복시간 삭제
                      */
                     if(pastTimeStamp/1000 != timeStamp/1000){
-                        if(firstLocation == null){
-                            firstLocation = location
+                        /**
+                         * W0D-74 1행 데이터 삭제
+                         */
+                        if(!firstLineState){
+                            /**
+                             * W0D-48 최후 종료 조건 추가
+                             * firstLocation은 반경을 계산하기 위한 location 값
+                             */
+                            if(firstLocation == null){
+                                firstLocation = location
+                            }
+
+                            if(location.distanceTo(firstLocation!!) > maxDistance){
+                                maxDistance = location.distanceTo(firstLocation!!)
+                            }
+
+                            getAltitude(location)
+                            getPathLocation(location)
+                            getSpeed(location)
+
+                            var distance = 0f
+                            if(pastLocation != null){
+                                distance = pastLocation!!.distanceTo(location)
+                            }
+
+                            gpsInfo.add(EachGpsDto(timeStamp, location.latitude, location.longitude, location.speed,distance,location.altitude, (location.speed) - (pastSpeed)))
+
+                            pastTimeStamp = timeStamp
+                            pastSpeed = location.speed
+                            pastLocation = location
+                        } else{
+                            firstLineState = false
                         }
-
-                        if(location.distanceTo(firstLocation!!) > maxDistance){
-                            maxDistance = location.distanceTo(firstLocation!!)
-                        }
-
-                        getAltitude(location)
-                        getPathLocation(location)
-                        getSpeed(location)
-
-                        var distance = 0f
-                        if(pastLocation != null){
-                            distance = pastLocation!!.distanceTo(location)
-                        }
-
-                        gpsInfo.add(EachGpsDto(timeStamp, location.latitude, location.longitude, location.speed,distance,location.altitude, (location.speed) - (pastSpeed)))
-
-                        pastTimeStamp = timeStamp
-                        pastSpeed = location.speed
-                        pastLocation = location
                     }
                 }catch (e:Exception){
 
