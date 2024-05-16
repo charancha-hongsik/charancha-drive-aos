@@ -145,6 +145,7 @@ class BluetoothService : Service() {
     private val distanceBetween = FloatArray(3)
     private var pastLocation: Location? = null
     private var pastSpeed: Float = 0f
+    private var pastTimeStamp = 0L
 
 
     /**
@@ -557,16 +558,6 @@ class BluetoothService : Service() {
         )
     }
 
-    private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
-        val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
-            if (serviceClass.name == service.service.className) {
-                return true
-            }
-        }
-        return false
-    }
-
     private fun startDistanceTimer(){
         maxDistance = 0f
         firstLocation = null
@@ -665,28 +656,35 @@ class BluetoothService : Service() {
             override fun onLocationResult(locationResult: LocationResult) {
                 try{
                     val location: Location = locationResult.lastLocation
+                    val timeStamp = System.currentTimeMillis()
 
-                    if(firstLocation == null){
-                        firstLocation = location
+                    /**
+                     * W0D-78 중복시간 삭제
+                     */
+                    if(pastTimeStamp/1000 != timeStamp/1000){
+                        if(firstLocation == null){
+                            firstLocation = location
+                        }
+
+                        if(location.distanceTo(firstLocation!!) > maxDistance){
+                            maxDistance = location.distanceTo(firstLocation!!)
+                        }
+
+                        getAltitude(location)
+                        getPathLocation(location)
+                        getSpeed(location)
+
+                        var distance = 0f
+                        if(pastLocation != null){
+                            distance = pastLocation!!.distanceTo(location)
+                        }
+
+                        gpsInfo.add(EachGpsDto(timeStamp, location.latitude, location.longitude, location.speed,distance,location.altitude, (location.speed) - (pastSpeed)))
+
+                        pastTimeStamp = timeStamp
+                        pastSpeed = location.speed
+                        pastLocation = location
                     }
-
-                    if(location.distanceTo(firstLocation!!) > maxDistance){
-                        maxDistance = location.distanceTo(firstLocation!!)
-                    }
-
-                    getAltitude(location)
-                    getPathLocation(location)
-                    getSpeed(location)
-
-                    var distance = 0f
-                    if(pastLocation != null){
-                        distance = pastLocation!!.distanceTo(location)
-                    }
-
-                    gpsInfo.add(EachGpsDto(System.currentTimeMillis(), location.latitude, location.longitude, location.speed,distance,location.altitude, (location.speed) - (pastSpeed)))
-                    pastSpeed = location.speed
-                    pastLocation = location
-
                 }catch (e:Exception){
 
                 }
