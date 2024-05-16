@@ -82,37 +82,37 @@
     <style name="H1SB" android:font="@font/pretendardsemibold">
         <item name="android:textSize">44dp</item>
         <item name="lineHeight">56dp</item>
-        <item name="android:letterSpacing">0</item>
+        <item name="android:letterSpacing">-0.07</item>
     </style>
 
     <style name="H1B" android:font="@font/pretendardbold">
         <item name="android:textSize">44dp</item>
         <item name="lineHeight">56dp</item>
-        <item name="android:letterSpacing">0</item>
+        <item name="android:letterSpacing">-0.07</item>
     </style>
 
     <style name="H2SB" android:font="@font/pretendardsemibold">
         <item name="android:textSize">36dp</item>
         <item name="lineHeight">46dp</item>
-        <item name="android:letterSpacing">0</item>
+        <item name="android:letterSpacing">-0.07</item>
     </style>
 
     <style name="H2B" android:font="@font/pretendardbold">
         <item name="android:textSize">36dp</item>
         <item name="lineHeight">46dp</item>
-        <item name="android:letterSpacing">0</item>
+        <item name="android:letterSpacing">-0.07</item>
     </style>
 
     <style name="H3SB" android:font="@font/pretendardsemibold">
         <item name="android:textSize">32dp</item>
         <item name="lineHeight">42dp</item>
-        <item name="android:letterSpacing">0</item>
+        <item name="android:letterSpacing">-0.07</item>
     </style>
 
     <style name="H3B" android:font="@font/pretendardbold">
         <item name="android:textSize">32dp</item>
         <item name="lineHeight">42dp</item>
-        <item name="android:letterSpacing">0</item>
+        <item name="android:letterSpacing">-0.07</item>
     </style>
 
     <style name="ST1R" android:font="@font/pretendardregular">
@@ -133,6 +133,12 @@
         <item name="android:letterSpacing">0</item>
     </style>
 
+    <style name="ST1B" android:font="@font/pretendardbold">
+        <item name="android:textSize">20dp</item>
+        <item name="lineHeight">28dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
     <style name="ST2R" android:font="@font/pretendardregular">
         <item name="android:textSize">18dp</item>
         <item name="lineHeight">26dp</item>
@@ -148,6 +154,12 @@
     <style name="ST2SB" android:font="@font/pretendardsemibold">
         <item name="android:textSize">18dp</item>
         <item name="lineHeight">26dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="ST2B" android:font="@font/pretendardbold">
+        <item name="android:textSize">20dp</item>
+        <item name="lineHeight">28dp</item>
         <item name="android:letterSpacing">0</item>
     </style>
 
