@@ -176,9 +176,10 @@ object calculateData {
             var pastSpeed = 0f
 
             for (info in gpsInfo) {
+                if (firstTimeStamp == 0L)
+                    firstTimeStamp = info.timeStamp
+
                 if (info.speed * MS_TO_KH in 60f..140f && (pastSpeed * MS_TO_KH) - (info.speed * MS_TO_KH) in -10f..10f) {
-                    if (firstTimeStamp == 0L)
-                        firstTimeStamp = info.timeStamp
 
                     distanceSum += info.distance
 
