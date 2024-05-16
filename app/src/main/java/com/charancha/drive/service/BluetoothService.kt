@@ -423,7 +423,7 @@ class BluetoothService : Service() {
 
     private fun initDriveData(level:String){
 
-        val format = SimpleDateFormat("yyyyMMddhhmmss")
+        val format = SimpleDateFormat("yyyyMMddHHmmss")
         format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
         val time = Date()
 

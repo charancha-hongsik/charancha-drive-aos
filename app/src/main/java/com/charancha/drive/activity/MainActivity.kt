@@ -50,6 +50,11 @@ class MainActivity : AppCompatActivity() {
 
         if(allPermissionsGranted()){
             setBtn()
+
+            if(!isMyServiceRunning(BluetoothService::class.java)){
+                val intent = Intent(this, BluetoothService::class.java)
+                startForegroundService(intent)
+            }
         } else{
 
         }

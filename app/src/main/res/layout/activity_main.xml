@@ -14,7 +14,7 @@
         android:background="@color/gray_50"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
-        android:layout_marginBottom="60dp"
+        android:clipToPadding="false"
         android:scrollbars="none">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -374,6 +374,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:paddingBottom="60dp"
                 android:text="마일로그에서 제공하는 주행 데이터는 이용 환경에 따라 실제와 다를 수 있습니다."
                 android:textAppearance="@style/C1R"
                 android:textColor="@color/gray_700"

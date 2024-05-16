@@ -100,7 +100,7 @@ class DetailDriveHistoryActivity: AppCompatActivity() {
     }
 
     private fun getDateFromTimeStamp(timeStamp:Long) : String{
-        val format = SimpleDateFormat("yyyy-MM-dd / hh:mm:ss")
+        val format = SimpleDateFormat("yyyy-MM-dd / HH:mm:ss")
         format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
         val time = Date()
 
