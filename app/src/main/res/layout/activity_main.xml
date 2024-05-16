@@ -276,23 +276,29 @@
                     <TextView
                         android:id="@+id/tv_recent_score_title"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="18dp"
                         android:text="최근 관리 점수"
+                        android:textAppearance="@style/B2R"
+                        android:textColor="@color/gray_600"
+                        android:gravity="center_vertical"
                         android:layout_marginLeft="16dp"
+                        app:layout_constraintRight_toLeftOf="@+id/tv_recent_score"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/tv_recent_score"
-                        android:layout_width="13dp"
+                        android:layout_width="0dp"
                         android:layout_height="28dp"
                         android:layout_marginRight="2dp"
+                        android:layout_marginLeft="10dp"
                         android:text="0"
-                        android:gravity="center"
+                        android:gravity="center_vertical|right"
                         android:textAppearance="@style/ST1M"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/tv_recent_score_title"
                         app:layout_constraintRight_toLeftOf="@+id/tv_score_unit"/>
 
                     <TextView
