@@ -41,6 +41,7 @@
     <color name="gray_50">#F7F6F9</color>
 
     <color name="white_op_100">#FFFFFFFF</color>
+    <color name="white_op_95">#F2FFFFFF</color>
     <color name="white_op_90">#E6FFFFFF</color>
     <color name="white_op_80">#CCFFFFFF</color>
     <color name="white_op_70">#B3FFFFFF</color>

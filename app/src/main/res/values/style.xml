@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <style name="C1R" android:font="@font/pretendardregular">
+        <item name="android:textSize">13dp</item>
+        <item name="lineHeight">18dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="C1M" android:font="@font/pretendardmedium">
+        <item name="android:textSize">13dp</item>
+        <item name="lineHeight">18dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="C1SB" android:font="@font/pretendardsemibold">
+        <item name="android:textSize">13dp</item>
+        <item name="lineHeight">18dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="C2R" android:font="@font/pretendardregular">
+        <item name="android:textSize">11dp</item>
+        <item name="lineHeight">14dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="C2M" android:font="@font/pretendardmedium">
+        <item name="android:textSize">11dp</item>
+        <item name="lineHeight">14dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="C2SB" android:font="@font/pretendardsemibold">
+        <item name="android:textSize">11dp</item>
+        <item name="lineHeight">14dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+
+    <style name="B1R" android:font="@font/pretendardregular">
+        <item name="android:textSize">16dp</item>
+        <item name="lineHeight">22dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="B1M" android:font="@font/pretendardmedium">
+        <item name="android:textSize">16dp</item>
+        <item name="lineHeight">22dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="B1SB" android:font="@font/pretendardsemibold">
+        <item name="android:textSize">16dp</item>
+        <item name="lineHeight">22dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="B2R" android:font="@font/pretendardregular">
+        <item name="android:textSize">14dp</item>
+        <item name="lineHeight">18dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="B2M" android:font="@font/pretendardmedium">
+        <item name="android:textSize">14dp</item>
+        <item name="lineHeight">18dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="B2SB" android:font="@font/pretendardsemibold">
+        <item name="android:textSize">14dp</item>
+        <item name="lineHeight">18dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="B2B" android:font="@font/pretendardbold">
+        <item name="android:textSize">14dp</item>
+        <item name="lineHeight">18dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="H1SB" android:font="@font/pretendardsemibold">
+        <item name="android:textSize">44dp</item>
+        <item name="lineHeight">56dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="H1B" android:font="@font/pretendardbold">
+        <item name="android:textSize">44dp</item>
+        <item name="lineHeight">56dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="H2SB" android:font="@font/pretendardsemibold">
+        <item name="android:textSize">36dp</item>
+        <item name="lineHeight">46dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="H2B" android:font="@font/pretendardbold">
+        <item name="android:textSize">36dp</item>
+        <item name="lineHeight">46dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="H3SB" android:font="@font/pretendardsemibold">
+        <item name="android:textSize">32dp</item>
+        <item name="lineHeight">42dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="H3B" android:font="@font/pretendardbold">
+        <item name="android:textSize">32dp</item>
+        <item name="lineHeight">42dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="ST1R" android:font="@font/pretendardregular">
+        <item name="android:textSize">20dp</item>
+        <item name="lineHeight">28dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="ST1M" android:font="@font/pretendardmedium">
+        <item name="android:textSize">20dp</item>
+        <item name="lineHeight">28dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="ST1SB" android:font="@font/pretendardsemibold">
+        <item name="android:textSize">20dp</item>
+        <item name="lineHeight">28dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="ST2R" android:font="@font/pretendardregular">
+        <item name="android:textSize">18dp</item>
+        <item name="lineHeight">26dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="ST2M" android:font="@font/pretendardmedium">
+        <item name="android:textSize">18dp</item>
+        <item name="lineHeight">26dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="ST2SB" android:font="@font/pretendardsemibold">
+        <item name="android:textSize">18dp</item>
+        <item name="lineHeight">26dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="T1R" android:font="@font/pretendardregular">
+        <item name="android:textSize">24dp</item>
+        <item name="lineHeight">32dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="T1M" android:font="@font/pretendardmedium">
+        <item name="android:textSize">24dp</item>
+        <item name="lineHeight">32dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="T1SB" android:font="@font/pretendardsemibold">
+        <item name="android:textSize">24dp</item>
+        <item name="lineHeight">32dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="T2R" android:font="@font/pretendardregular">
+        <item name="android:textSize">22dp</item>
+        <item name="lineHeight">30dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="T2M" android:font="@font/pretendardmedium">
+        <item name="android:textSize">22dp</item>
+        <item name="lineHeight">30dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="T2SB" android:font="@font/pretendardsemibold">
+        <item name="android:textSize">22dp</item>
+        <item name="lineHeight">30dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+
+
+</resources>

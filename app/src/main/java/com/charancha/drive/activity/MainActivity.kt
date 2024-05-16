@@ -14,6 +14,7 @@ import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
 import android.view.View.*
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -36,10 +37,7 @@ import java.util.*
  * 6.
  */
 class MainActivity : AppCompatActivity() {
-    lateinit var btnStop:Button
-    lateinit var et_seconds:EditText
-    lateinit var btnHistory:Button
-    var btnStatus:Boolean = false
+    lateinit var btnHistory: ImageButton
     private val mainViewModel: MainViewModel by viewModels()
 
 
@@ -52,41 +50,14 @@ class MainActivity : AppCompatActivity() {
 
         if(allPermissionsGranted()){
             setBtn()
-            checkDeeplink()
         } else{
 
-        }
-    }
-
-    private fun checkDeeplink(){
-        if(intent != null){
-            if(intent.hasExtra("activityType")){
-                /**
-                 * startForegroundService TestService
-                 */
-                btnStop.performClick()
-            } else{
-                if(!isMyServiceRunning(BluetoothService::class.java)){
-                    val intent = Intent(this, BluetoothService::class.java)
-                    startForegroundService(intent)
-                }
-            }
-        } else{
-            if(!isMyServiceRunning(BluetoothService::class.java)){
-                val intent = Intent(this, BluetoothService::class.java)
-                startForegroundService(intent)
-            }
         }
     }
 
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setBtn(){
-        btnStop = findViewById(R.id.btn_stop)
-        btnStop.setText("센서 종료")
-
-        et_seconds = findViewById(R.id.et_seconds)
-
         btnHistory = findViewById(R.id.btn_history)
         btnHistory.setOnClickListener {
             startActivity(Intent(this, MyDriveHistoryActivity::class.java))
