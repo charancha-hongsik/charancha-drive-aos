@@ -663,46 +663,36 @@ class BluetoothService : Service() {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 try{
-                    val location: Location = locationResult.lastLocation
-                    val timeStamp = System.currentTimeMillis()
-
                     /**
-                     * W0D-78 중복시간 삭제
+                     * W0D-74 1행 데이터 삭제
                      */
-                    if(pastTimeStamp/1000 != timeStamp/1000){
+                    if(!firstLineState){
+
+                        val location: Location = locationResult.lastLocation
+                        val timeStamp = System.currentTimeMillis()
+
                         /**
-                         * W0D-74 1행 데이터 삭제
+                         * W0D-78 중복시간 삭제
                          */
-                        if(!firstLineState){
+                        if(pastTimeStamp/1000 != timeStamp/1000){
+
+
                             /**
-                             * W0D-48 최후 종료 조건 추가
-                             * firstLocation은 반경을 계산하기 위한 location 값
+                             * W0D-75 1초간 이동거리 70m 이상이면 제외
                              */
-                            if(firstLocation == null){
-                                firstLocation = location
+                            if(pastLocation!=null){
+                                if((pastLocation!!.distanceTo(location) / ((pastTimeStamp-timeStamp)/1000)) > 70){
+
+                                } else {
+                                    processLocationCallback(location, timeStamp)
+                                }
+                            } else{
+                                processLocationCallback(location, timeStamp)
                             }
-
-                            if(location.distanceTo(firstLocation!!) > maxDistance){
-                                maxDistance = location.distanceTo(firstLocation!!)
-                            }
-
-                            getAltitude(location)
-                            getPathLocation(location)
-                            getSpeed(location)
-
-                            var distance = 0f
-                            if(pastLocation != null){
-                                distance = pastLocation!!.distanceTo(location)
-                            }
-
-                            gpsInfo.add(EachGpsDto(timeStamp, location.latitude, location.longitude, location.speed,distance,location.altitude, (location.speed) - (pastSpeed)))
-
-                            pastTimeStamp = timeStamp
-                            pastSpeed = location.speed
-                            pastLocation = location
-                        } else{
-                            firstLineState = false
                         }
+
+                    }else{
+                        firstLineState = false
                     }
                 }catch (e:Exception){
 
@@ -743,6 +733,34 @@ class BluetoothService : Service() {
             locationCallback,
             Looper.getMainLooper()
         )
+    }
+
+    private fun processLocationCallback(location:Location, timeStamp:Long){
+        /**
+         * W0D-48 최후 종료 조건 추가
+         * firstLocation은 반경을 계산하기 위한 location 값
+         */
+        if(firstLocation == null){
+            firstLocation = location
+        }
+        if(location.distanceTo(firstLocation!!) > maxDistance){
+            maxDistance = location.distanceTo(firstLocation!!)
+        }
+
+        getAltitude(location)
+        getPathLocation(location)
+        getSpeed(location)
+
+        var distance = 0f
+        if(pastLocation != null){
+            distance = pastLocation!!.distanceTo(location)
+        }
+
+        gpsInfo.add(EachGpsDto(timeStamp, location.latitude, location.longitude, location.speed,distance,location.altitude, (location.speed) - (pastSpeed)))
+
+        pastTimeStamp = timeStamp
+        pastSpeed = location.speed
+        pastLocation = location
     }
 
     /**
