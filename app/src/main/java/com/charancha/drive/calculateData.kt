@@ -106,13 +106,11 @@ object calculateData {
     fun getSuddenStart(gpsInfo:MutableList<EachGpsDto>):Int{
         try {
             var count: Int = 0
-            var pastSpeed = 0f
 
             for (info in gpsInfo) {
-                if (pastSpeed * MS_TO_KH <= 5f && info.acceleration * MS_TO_KH >= 10f) {
+                if (info.speed * MS_TO_KH <= 5f && info.acceleration * MS_TO_KH >= 10f) {
                     count++
                 }
-                pastSpeed = info.speed
             }
 
             return count
@@ -152,7 +150,7 @@ object calculateData {
             var distanceSum = 0f
 
             for (info in gpsInfo) {
-                if (info.speed * MS_TO_KH in 0f..39f) {
+                if (info.speed * MS_TO_KH in 0f..39.9999f) {
                     distanceSum += info.distance
                 }
             }

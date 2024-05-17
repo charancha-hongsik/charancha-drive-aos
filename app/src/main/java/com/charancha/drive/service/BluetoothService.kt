@@ -24,7 +24,6 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import com.charancha.drive.PreferenceUtil
-import com.charancha.drive.calculateData
 import com.charancha.drive.room.DriveDto
 import com.charancha.drive.room.EachGpsDto
 import com.charancha.drive.room.database.DriveDatabase
@@ -88,10 +87,6 @@ class BluetoothService : Service() {
             ActivityTransition.Builder()
                 .setActivityType(DetectedActivity.IN_VEHICLE)
                 .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                .build(),
-            ActivityTransition.Builder()
-                .setActivityType(DetectedActivity.IN_VEHICLE)
-                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
                 .build(),
             ActivityTransition.Builder()
                 .setActivityType(DetectedActivity.WALKING)
@@ -193,7 +188,7 @@ class BluetoothService : Service() {
      * notification 관련
      */
 
-    lateinit var notification: Notification
+    lateinit var notification: NotificationCompat.Builder
     val CHANNEL_ID = "my_channel_02"
     val channel = NotificationChannel(
         CHANNEL_ID,
@@ -221,20 +216,23 @@ class BluetoothService : Service() {
         )
 
         notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(android.R.drawable.btn_star_big_off)
+
+
+        startForeground(1, notification.setSmallIcon(android.R.drawable.btn_star_big_off)
             .setAutoCancel(false)
             .setOngoing(true)
-            .setContentTitle("주행 관찰중..")
-            .setContentText("주행 관찰중..").build()
-        startForeground(1, notification)
+            .setContentText("주행 관찰중.." + getCurrent())
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setOnlyAlertOnce(true)
+            .build())
 
         setLocation2()
 
         sensorState = false
 
-        // 주기적으로 알림 갱신
-        alarmTimer = timer(period = 3600000, initialDelay = 3600000) {
-            getSystemService(NotificationManager::class.java).notify(1, notification)
+//         주기적으로 알림 갱신
+        alarmTimer = timer(period = 1800000, initialDelay = 1800000 ) {
+            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중.." + getCurrent()).build())
         }
 
         return START_REDELIVER_INTENT
@@ -343,19 +341,8 @@ class BluetoothService : Service() {
             val connectionState = response.getInt(carConnectionTypeColumn)
             if (connectionState == CONNECTION_TYPE_NOT_CONNECTED) {
                 stopSensor(L3)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    exportToFile("CONNECTION_TYPE_NOT_CONNECTED",getCurrent()+"\n\n")
-                }else{
-                    generateNoteOnSD("CONNECTION_TYPE_NOT_CONNECTED",getCurrent()+"\n\n")
-                }
             } else {
                 startSensor(L3)
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    exportToFile("CONNECTION_TYPE_CONNECTED",getCurrent()+"\n\n")
-                }else{
-                    generateNoteOnSD("CONNECTION_TYPE_CONNECTED",getCurrent()+"\n\n")
-                }
             }
         }
     }
@@ -364,8 +351,6 @@ class BluetoothService : Service() {
      * sensor가 이미 켜져있으면 켜지지않음.
      */
     private fun startSensor(level:String){
-        writeToFile("startSensor sensorState and level", getCurrent() + ", " + sensorState + ", " + level + "\n")
-
         if(!sensorState){
             /**
              * W0D-74 1행 데이터 삭제
@@ -387,8 +372,6 @@ class BluetoothService : Service() {
      * level이 같아야 끌 수 있음.
      */
     private fun stopSensor(level:String){
-        writeToFile("stopSensor sensorState and level", getCurrent() + ", " + sensorState + ", " + level + ", " + PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL,"") + "\n")
-
         if(sensorState){
             if(level == PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL, "")){
                 sensorState = false
@@ -413,8 +396,6 @@ class BluetoothService : Service() {
     }
 
     private fun stopSensor(){
-        writeToFile("stopSensor sensorState and level", getCurrent() + ", " + sensorState + ", " + PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL,"") + "\n")
-
         if(sensorState){
             sensorState = false
             firstLineState = false
@@ -467,28 +448,10 @@ class BluetoothService : Service() {
                     if(event.activityType == DetectedActivity.IN_VEHICLE){
                         if(event.transitionType.equals(ACTIVITY_TRANSITION_ENTER)){
                             startSensor(L1)
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                exportToFile("IN_VEHICLE ENTER",getCurrent()+"\n\n")
-                            } else{
-                                generateNoteOnSD("IN_VEHICLE ENTER" + getCurrent(),getCurrent()+"\n\n")
-                            }
-                        } else{
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                exportToFile("IN_VEHICLE EXIT",getCurrent()+"\n\n")
-                            } else{
-                                generateNoteOnSD("IN_VEHICLE EXIT",getCurrent()+"\n\n")
-                            }
-
-
                         }
                     } else if(event.activityType == DetectedActivity.WALKING){
                         if(event.transitionType.equals(ACTIVITY_TRANSITION_ENTER)){
                             stopSensor()
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                exportToFile("WALKING ENTER",getCurrent()+"\n\n")
-                            } else{
-                                generateNoteOnSD("WALKING ENTER",getCurrent()+"\n\n")
-                            }
                         }
                     }
                 }
@@ -502,12 +465,6 @@ class BluetoothService : Service() {
                     if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
                         if(isConnected(device)){
                             startSensor(L2)
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                exportToFile("Bluetooth AUDIO_VIDEO_HANDSFREE CONNECTED",getCurrent()+"\n\n")
-                            } else{
-                                generateNoteOnSD("Bluetooth AUDIO_VIDEO_HANDSFREE CONNECTED",getCurrent()+"\n\n")
-                            }
-
                         }
                     }
                 }
@@ -521,12 +478,6 @@ class BluetoothService : Service() {
                     if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
                         if(!isConnected(device)){
                             stopSensor(L2)
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                exportToFile("Bluetooth AUDIO_VIDEO_HANDSFREE DISCONNECTED" + getCurrent(),getCurrent()+"\n\n")
-                            }else{
-                                generateNoteOnSD("Bluetooth AUDIO_VIDEO_HANDSFREE DISCONNECTED",getCurrent()+"\n\n")
-                            }
-
                         }
                     }
                 }
@@ -607,7 +558,7 @@ class BluetoothService : Service() {
             override fun onLocationResult(locationResult: LocationResult) {
                 try{
                     val location: Location = locationResult.lastLocation
-                    writeToFile("fused2",getCurrent() + "," + location.altitude + ", "+ location.longitude + "\n")
+//                    writeToFile("fused2",getCurrent() + "," + location.altitude + ", "+ location.longitude + "\n")
                 }catch (e:Exception){
 
                 }
@@ -785,11 +736,11 @@ class BluetoothService : Service() {
     }
 
     private fun makeSpeedInfo() {
-        writeToFile("speed (gps)", "$speedInfoFromGps\n\n maxSpeed : $maxSpeed \n\n")
+//        writeToFile("speed (gps)", "$speedInfoFromGps\n\n maxSpeed : $maxSpeed \n\n")
     }
 
     private fun makeAccelerationInfo() {
-        writeToFile("Acceleration (gps)", accelerationInfo)
+//        writeToFile("Acceleration (gps)", accelerationInfo)
     }
 
     /**
@@ -814,11 +765,11 @@ class BluetoothService : Service() {
     }
 
     private fun makePathLocationInfo() {
-        writeToFile("Latitude, Longitude (gps)", pathLocationInfoFromGps)
+//        writeToFile("Latitude, Longitude (gps)", pathLocationInfoFromGps)
     }
 
     private fun makeDistanceBetween(){
-        writeToFile("Distance (gps)", "$distanceInfoFromGps\n\n distanceSum : $distanceSum \n\n")
+//        writeToFile("Distance (gps)", "$distanceInfoFromGps\n\n distanceSum : $distanceSum \n\n")
     }
 
     private fun getAltitude(location: Location) {
@@ -827,24 +778,43 @@ class BluetoothService : Service() {
     }
 
     private fun makeAltitudeFromGpsInfo() {
-        writeToFile("Altitude (gps)", altitudeInfoFromGps)
+//        writeToFile("Altitude (gps)", altitudeInfoFromGps)
     }
 
-    fun writeToFile(fileName: String, contents: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            exportToFile(fileName, contents)
-        } else{
-            generateNoteOnSD(fileName, contents)
-        }
-    }
+//    fun writeToFile(fileName: String, contents: String) {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+//            exportToFile(fileName, contents)
+//        } else{
+//            generateNoteOnSD(fileName, contents)
+//        }
+//    }
 
     fun writeToRoom(){
-        driveDto.rawData = gpsInfo
-        driveDto.distance = distanceSum
-//        driveDto.maxSpeed = maxSpeed
-        driveDto.time = System.currentTimeMillis() - startTimeStamp
+        try {
+            driveDto.rawData = gpsInfo
+            driveDto.distance = distanceSum
+            driveDto.time = System.currentTimeMillis() - startTimeStamp
 
-        val drive = Drive(driveDto.tracking_id, driveDto.timeStamp, driveDto.verification, driveDto.distance, driveDto.time, calculateData.getSuddenDeceleration(gpsInfo), calculateData.getSuddenStop(gpsInfo), calculateData.getSuddenAcceleration(gpsInfo), calculateData.getSuddenStart(gpsInfo), calculateData.getHighSpeedDriving(gpsInfo), calculateData.getLowSpeedDriving(gpsInfo), calculateData.getConstantSpeedDriving(gpsInfo),calculateData.getHarshDriving(gpsInfo), Gson().toJson(driveDto))
-        driveDatabase?.driveDao()?.insert(drive)
+            val drive = Drive(
+                driveDto.tracking_id,
+                driveDto.timeStamp,
+                driveDto.verification,
+                driveDto.distance,
+                driveDto.time,
+                0,
+                0,
+                0,
+                0,
+                0f,
+                0f,
+                0f,
+                0f,
+                Gson().toJson(driveDto)
+            )
+
+            driveDatabase?.driveDao()?.insert(drive)
+        } catch (e:Exception){
+
+        }
     }
 }
