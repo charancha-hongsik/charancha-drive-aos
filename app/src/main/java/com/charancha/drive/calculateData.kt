@@ -213,26 +213,40 @@ object calculateData {
         try {
             var distanceSum = 0f
             var pastSpeed = 0f
+            var pastTimeStamp = 0L
 
 
             for (info in gpsInfo) {
                 if (info.speed * MS_TO_KH >= 6f && info.acceleration * MS_TO_KH <= -14f) {
+                    Log.d("testsetsetests","testestsetestsetset 급감속 :: " + info.distance)
+                    Log.d("testsetsetests","testestsetestsetset 시간 :: " + (info.timeStamp - pastTimeStamp))
+
                     distanceSum += info.distance
                 }
 
                 if (info.speed * MS_TO_KH >= 5f && info.acceleration * MS_TO_KH <= -14f) {
+                    Log.d("testsetsetests","testestsetestsetset 급정지 :: " + info.distance)
+                    Log.d("testsetsetests","testestsetestsetset 시간 :: " + (info.timeStamp - pastTimeStamp))
+
                     distanceSum += info.distance
                 }
 
                 if (info.speed * MS_TO_KH >= 10f && info.acceleration * MS_TO_KH >= 10f) {
+                    Log.d("testsetsetests","testestsetestsetset 급가속 :: " + info.distance)
+                    Log.d("testsetsetests","testestsetestsetset 시간 :: " + (info.timeStamp - pastTimeStamp))
+
                     distanceSum += info.distance
                 }
 
                 if (pastSpeed * MS_TO_KH <= 5f && info.acceleration * MS_TO_KH >= 10f) {
+                    Log.d("testsetsetests","testestsetestsetset 급출발 :: " + info.distance)
+                    Log.d("testsetsetests","testestsetestsetset 시간 :: " + (info.timeStamp - pastTimeStamp))
+
                     distanceSum += info.distance
                 }
 
                 pastSpeed = info.speed
+                pastTimeStamp = info.timeStamp
             }
 
             return distanceSum

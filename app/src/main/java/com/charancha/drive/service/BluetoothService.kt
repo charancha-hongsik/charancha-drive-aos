@@ -10,8 +10,6 @@ import android.bluetooth.BluetoothClass.Service.*
 import android.content.*
 import android.content.pm.PackageManager
 import android.database.Cursor
-import android.hardware.Sensor
-import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.location.Location
@@ -41,7 +39,6 @@ import java.lang.reflect.Method
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.concurrent.timer
-import kotlin.concurrent.timerTask
 
 
 /**
@@ -186,6 +183,7 @@ class BluetoothService : Service() {
      *  타이머 시간동안 최대 반경을 구하기 위한 변수들
      */
     lateinit var distanceSumForAnHourTimer:Timer
+    lateinit var alarmTimer:Timer
     var firstLocation: Location? = null
     var maxDistance = 0f
 
@@ -194,6 +192,8 @@ class BluetoothService : Service() {
     /**
      * notification 관련
      */
+
+    lateinit var notification: Notification
     val CHANNEL_ID = "my_channel_02"
     val channel = NotificationChannel(
         CHANNEL_ID,
@@ -220,8 +220,10 @@ class BluetoothService : Service() {
             channel
         )
 
-        val notification: Notification = NotificationCompat.Builder(this, CHANNEL_ID)
+        notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.btn_star_big_off)
+            .setAutoCancel(false)
+            .setOngoing(true)
             .setContentTitle("주행 관찰중..")
             .setContentText("주행 관찰중..").build()
         startForeground(1, notification)
@@ -229,6 +231,11 @@ class BluetoothService : Service() {
         setLocation2()
 
         sensorState = false
+
+        // 주기적으로 알림 갱신
+        alarmTimer = timer(period = 3600000, initialDelay = 3600000) {
+            getSystemService(NotificationManager::class.java).notify(1, notification)
+        }
 
         return START_REDELIVER_INTENT
     }
@@ -675,7 +682,6 @@ class BluetoothService : Service() {
                          * W0D-78 중복시간 삭제
                          */
                         if(pastTimeStamp/1000 != timeStamp/1000){
-
 
                             /**
                              * W0D-75 1초간 이동거리 70m 이상이면 제외
