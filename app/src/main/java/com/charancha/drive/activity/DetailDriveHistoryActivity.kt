@@ -4,10 +4,12 @@ import android.animation.ValueAnimator
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.animation.LinearInterpolator
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.charancha.drive.R
+import com.charancha.drive.calculateData
 import com.charancha.drive.room.DriveDto
 import com.charancha.drive.room.entity.Drive
 import com.google.android.gms.maps.*
@@ -81,16 +83,14 @@ class DetailDriveHistoryActivity: AppCompatActivity() {
 
         var contents = ""
         contents = contents + "주행 종료 : " + getDateFromTimeStamp((driveDto.timeStamp + driveDto.time)) + "\n"
-        contents = contents +  "급감속 횟수 : " + driveDto.sudden_deceleration + "\n"
-        contents = contents +  "급정지 횟수 : " + driveDto.sudden_stop + "\n"
-        contents = contents +  "급가속 횟수 : " + driveDto.sudden_acceleration + "\n"
-        contents = contents +  "급출발 횟수 : " + driveDto.sudden_start + "\n"
-        contents = contents +  "고속 주행 거리 : " + driveDto.high_speed_driving + "\n"
-        contents = contents +  "저속 주행 거리 : " + driveDto.low_speed_driving + "\n"
-        contents = contents +  "항속 주행 거리 : " + driveDto.constant_speed_driving + "\n"
-        contents = contents + "Harsh Driving 거리: " + driveDto.harsh_driving + "\n"
-
-
+        contents = contents +  "급감속 횟수 : " + calculateData.getSuddenDeceleration(driveDto.rawData.toMutableList()) + "\n"
+        contents = contents +  "급정지 횟수 : " + calculateData.getSuddenStop(driveDto.rawData.toMutableList()) + "\n"
+        contents = contents +  "급가속 횟수 : " + calculateData.getSuddenAcceleration(driveDto.rawData.toMutableList()) + "\n"
+        contents = contents +  "급출발 횟수 : " + calculateData.getSuddenStart(driveDto.rawData.toMutableList()) + "\n"
+        contents = contents +  "고속 주행 거리 : " + calculateData.getHighSpeedDriving(driveDto.rawData.toMutableList()) + "\n"
+        contents = contents +  "저속 주행 거리 : " + calculateData.getLowSpeedDriving(driveDto.rawData.toMutableList()) + "\n"
+        contents = contents +  "항속 주행 거리 : " + calculateData.getConstantSpeedDriving(driveDto.rawData.toMutableList()) + "\n"
+        contents = contents + "Harsh Driving 거리: " + calculateData.getHarshDriving(driveDto.rawData.toMutableList()) + "\n"
 
         tvRapid1.text = contents
 

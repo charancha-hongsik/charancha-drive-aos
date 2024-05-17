@@ -37,9 +37,6 @@ class MyDriveHistoryActivity: AppCompatActivity() {
                             .toString() + "-" + drive.tracking_id.subSequence(4, 8)
                             .toString() + " / " + drive.distance + "m"
                     )
-
-                    Log.d("testeststest","testestststse :: " + drive.tracking_id)
-                    Log.d("testeststest","testestststse :: " + drive.timeStamp)
                 }
 
 

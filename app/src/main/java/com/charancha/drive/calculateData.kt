@@ -1,6 +1,7 @@
 package com.charancha.drive
 
 
+import android.util.Log
 import com.charancha.drive.room.EachGpsDto
 import com.google.gson.Gson
 
@@ -48,6 +49,7 @@ object calculateData {
 
 
             return count
+
         }catch (e:Exception){
             return 0
         }
@@ -180,7 +182,6 @@ object calculateData {
                     firstTimeStamp = info.timeStamp
 
                 if (info.speed * MS_TO_KH in 60f..140f && (pastSpeed * MS_TO_KH) - (info.speed * MS_TO_KH) in -10f..10f) {
-
                     distanceSum += info.distance
 
                 } else {

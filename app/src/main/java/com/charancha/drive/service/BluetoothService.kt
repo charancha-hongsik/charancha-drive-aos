@@ -775,7 +775,7 @@ class BluetoothService : Service() {
         }
 
         accelerationInfo =
-            accelerationInfo + getCurrent() + "," + ((location.speed) - (pastSpeed)) + "\n"
+            accelerationInfo + getCurrent() + "," + ((location.speed*MS_TO_KH) - (pastSpeed*MS_TO_KH)) + "\n"
     }
 
     private fun makeSpeedInfo() {
