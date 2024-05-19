@@ -24,6 +24,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import com.charancha.drive.PreferenceUtil
+import com.charancha.drive.calculateData
 import com.charancha.drive.room.DriveDto
 import com.charancha.drive.room.EachGpsDto
 import com.charancha.drive.room.database.DriveDatabase
@@ -554,7 +555,7 @@ class BluetoothService : Service() {
             override fun onLocationResult(locationResult: LocationResult) {
                 try{
                     val location: Location = locationResult.lastLocation
-                    writeToFile("fused2",getCurrent() + "," + location.altitude + ", "+ location.longitude + "\n")
+//                    writeToFile("fused2",getCurrent() + "," + location.altitude + ", "+ location.longitude + "\n")
                 }catch (e:Exception){
 
                 }
@@ -797,16 +798,15 @@ class BluetoothService : Service() {
                 driveDto.verification,
                 driveDto.distance,
                 driveDto.time,
-                0,
-                0,
-                0,
-                0,
-                0f,
-                0f,
-                0f,
-                0f,
-                Gson().toJson(driveDto)
-            )
+                calculateData.getSuddenDeceleration(gpsInfo),
+                calculateData.getSuddenStop(gpsInfo),
+                calculateData.getSuddenAcceleration(gpsInfo),
+                calculateData.getSuddenStart(gpsInfo),
+                calculateData.getHighSpeedDriving(gpsInfo),
+                calculateData.getLowSpeedDriving(gpsInfo),
+                calculateData.getConstantSpeedDriving(gpsInfo),
+                calculateData.getHarshDriving(gpsInfo),
+                Gson().toJson(driveDto))
 
             driveDatabase?.driveDao()?.insert(drive)
         } catch (e:Exception){
