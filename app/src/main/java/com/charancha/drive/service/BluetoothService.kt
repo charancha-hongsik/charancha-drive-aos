@@ -163,8 +163,6 @@ class BluetoothService : Service() {
 
     val MS_TO_KH = 3.6f
 
-    lateinit var timer: Timer
-
     /**
      * room 데이터
      */
@@ -385,7 +383,6 @@ class BluetoothService : Service() {
 
                 writeToRoom()
 
-                timer.cancel()
                 stopDistanceTimer()
 
                 sensorManager.unregisterListener(sensorEventListener)
@@ -408,7 +405,6 @@ class BluetoothService : Service() {
 
             writeToRoom()
 
-            timer.cancel()
             stopDistanceTimer()
 
             sensorManager.unregisterListener(sensorEventListener)
@@ -781,13 +777,13 @@ class BluetoothService : Service() {
 //        writeToFile("Altitude (gps)", altitudeInfoFromGps)
     }
 
-//    fun writeToFile(fileName: String, contents: String) {
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//            exportToFile(fileName, contents)
-//        } else{
-//            generateNoteOnSD(fileName, contents)
-//        }
-//    }
+    fun writeToFile(fileName: String, contents: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            exportToFile(fileName, contents)
+        } else{
+            generateNoteOnSD(fileName, contents)
+        }
+    }
 
     fun writeToRoom(){
         try {
@@ -814,7 +810,7 @@ class BluetoothService : Service() {
 
             driveDatabase?.driveDao()?.insert(drive)
         } catch (e:Exception){
-
+            writeToFile("exception",e.toString())
         }
     }
 }
