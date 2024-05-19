@@ -444,10 +444,12 @@ class BluetoothService : Service() {
                 for (event in result.transitionEvents) {
                     if(event.activityType == DetectedActivity.IN_VEHICLE){
                         if(event.transitionType.equals(ACTIVITY_TRANSITION_ENTER)){
+                            writeToFile("IN_VEHICLE", getCurrent())
                             startSensor(L1)
                         }
                     } else if(event.activityType == DetectedActivity.WALKING){
                         if(event.transitionType.equals(ACTIVITY_TRANSITION_ENTER)){
+                            writeToFile("Walking", getCurrent())
                             stopSensor()
                         }
                     }
@@ -461,6 +463,7 @@ class BluetoothService : Service() {
                 pairedDevices?.forEach { device ->
                     if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
                         if(isConnected(device)){
+                            writeToFile("HANDSFREE ON", getCurrent())
                             startSensor(L2)
                         }
                     }
@@ -474,6 +477,7 @@ class BluetoothService : Service() {
                 pairedDevices?.forEach { device ->
                     if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
                         if(!isConnected(device)){
+                            writeToFile("HANDSFREE OFF", getCurrent())
                             stopSensor(L2)
                         }
                     }
