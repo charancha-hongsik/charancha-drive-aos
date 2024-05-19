@@ -554,7 +554,7 @@ class BluetoothService : Service() {
             override fun onLocationResult(locationResult: LocationResult) {
                 try{
                     val location: Location = locationResult.lastLocation
-//                    writeToFile("fused2",getCurrent() + "," + location.altitude + ", "+ location.longitude + "\n")
+                    writeToFile("fused2",getCurrent() + "," + location.altitude + ", "+ location.longitude + "\n")
                 }catch (e:Exception){
 
                 }
@@ -732,11 +732,11 @@ class BluetoothService : Service() {
     }
 
     private fun makeSpeedInfo() {
-//        writeToFile("speed (gps)", "$speedInfoFromGps\n\n maxSpeed : $maxSpeed \n\n")
+        writeToFile("speed (gps)", "$speedInfoFromGps\n\n maxSpeed : $maxSpeed \n\n")
     }
 
     private fun makeAccelerationInfo() {
-//        writeToFile("Acceleration (gps)", accelerationInfo)
+        writeToFile("Acceleration (gps)", accelerationInfo)
     }
 
     /**
@@ -761,11 +761,11 @@ class BluetoothService : Service() {
     }
 
     private fun makePathLocationInfo() {
-//        writeToFile("Latitude, Longitude (gps)", pathLocationInfoFromGps)
+        writeToFile("Latitude, Longitude (gps)", pathLocationInfoFromGps)
     }
 
     private fun makeDistanceBetween(){
-//        writeToFile("Distance (gps)", "$distanceInfoFromGps\n\n distanceSum : $distanceSum \n\n")
+        writeToFile("Distance (gps)", "$distanceInfoFromGps\n\n distanceSum : $distanceSum \n\n")
     }
 
     private fun getAltitude(location: Location) {
@@ -774,7 +774,7 @@ class BluetoothService : Service() {
     }
 
     private fun makeAltitudeFromGpsInfo() {
-//        writeToFile("Altitude (gps)", altitudeInfoFromGps)
+        writeToFile("Altitude (gps)", altitudeInfoFromGps)
     }
 
     fun writeToFile(fileName: String, contents: String) {
