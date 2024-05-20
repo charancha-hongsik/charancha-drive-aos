@@ -238,8 +238,12 @@ class BluetoothService : Service() {
         sensorState = false
 
 //         주기적으로 알림 갱신
-        alarmTimer = timer(period = 1800000, initialDelay = 1800000 ) {
-            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중.." + getCurrent()).build())
+        alarmTimer = timer(period = 600000, initialDelay = 600000 ) {
+            if(sensorState){
+                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 중..($distanceSum m)").build())
+            } else{
+                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중.." + getCurrent()).build())
+            }
         }
 
         return START_REDELIVER_INTENT
