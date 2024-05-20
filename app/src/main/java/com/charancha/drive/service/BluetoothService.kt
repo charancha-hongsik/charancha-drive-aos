@@ -90,8 +90,16 @@ class BluetoothService : Service() {
                 .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
                 .build(),
             ActivityTransition.Builder()
+                .setActivityType(DetectedActivity.IN_VEHICLE)
+                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
+                .build(),
+            ActivityTransition.Builder()
                 .setActivityType(DetectedActivity.WALKING)
                 .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                .build(),
+            ActivityTransition.Builder()
+                .setActivityType(DetectedActivity.WALKING)
+                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
                 .build()
         )
     }
@@ -452,6 +460,9 @@ class BluetoothService : Service() {
                             writeToFile("Walking", getCurrent())
                             stopSensor()
                         }
+                    } else{
+                        writeToFile("else", getCurrent())
+
                     }
                 }
             } else if(intent?.action == BluetoothDevice.ACTION_ACL_CONNECTED){
