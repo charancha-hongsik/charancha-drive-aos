@@ -319,7 +319,7 @@ class BluetoothService : Service() {
                 }
             }
         }catch (e:Exception){
-
+            writeToFile("exception1",e.toString())
         }
     }
 
@@ -358,19 +358,23 @@ class BluetoothService : Service() {
      * sensor가 이미 켜져있으면 켜지지않음.
      */
     private fun startSensor(level:String){
-        if(!sensorState){
-            /**
-             * W0D-74 1행 데이터 삭제
-             */
-            firstLineState = true
-            startDistanceTimer()
+        try {
+            if (!sensorState) {
+                /**
+                 * W0D-74 1행 데이터 삭제
+                 */
+                firstLineState = true
+                startDistanceTimer()
 
-            sensorState = true
-            PreferenceUtil.putPref(this, PreferenceUtil.RUNNING_LEVEL, level)
-            driveDatabase = DriveDatabase.getDatabase(this)
-            sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
-            initDriveData(level)
-            setLocation()
+                sensorState = true
+                PreferenceUtil.putPref(this, PreferenceUtil.RUNNING_LEVEL, level)
+                driveDatabase = DriveDatabase.getDatabase(this)
+                sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
+                initDriveData(level)
+                setLocation()
+            }
+        } catch(e:Exception){
+            writeToFile("exception5",e.toString())
         }
     }
 
@@ -379,8 +383,36 @@ class BluetoothService : Service() {
      * level이 같아야 끌 수 있음.
      */
     private fun stopSensor(level:String){
-        if(sensorState){
-            if(level == PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL, "")){
+        try {
+            if (sensorState) {
+                if (level == PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL, "")) {
+                    sensorState = false
+                    firstLineState = false
+
+                    makeSpeedInfo()
+                    makeAccelerationInfo()
+                    makePathLocationInfo()
+                    makeDistanceBetween()
+                    makeAltitudeFromGpsInfo()
+
+                    writeToRoom()
+
+                    stopDistanceTimer()
+
+                    sensorManager.unregisterListener(sensorEventListener)
+                    fusedLocationClient?.removeLocationUpdates(locationCallback)
+                    fusedLocationClient = null
+                }
+            }
+        }catch (e:Exception){
+            writeToFile("exception2",e.toString())
+
+        }
+    }
+
+    private fun stopSensor(){
+        try {
+            if (sensorState) {
                 sensorState = false
                 firstLineState = false
 
@@ -397,28 +429,10 @@ class BluetoothService : Service() {
                 sensorManager.unregisterListener(sensorEventListener)
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
+
             }
-        }
-    }
-
-    private fun stopSensor(){
-        if(sensorState){
-            sensorState = false
-            firstLineState = false
-
-            makeSpeedInfo()
-            makeAccelerationInfo()
-            makePathLocationInfo()
-            makeDistanceBetween()
-            makeAltitudeFromGpsInfo()
-
-            writeToRoom()
-
-            stopDistanceTimer()
-
-            sensorManager.unregisterListener(sensorEventListener)
-            fusedLocationClient?.removeLocationUpdates(locationCallback)
-            fusedLocationClient = null
+        }catch(e:Exception){
+            writeToFile("exception3",e.toString())
 
         }
     }
@@ -452,17 +466,14 @@ class BluetoothService : Service() {
                 for (event in result.transitionEvents) {
                     if(event.activityType == DetectedActivity.IN_VEHICLE){
                         if(event.transitionType.equals(ACTIVITY_TRANSITION_ENTER)){
-                            writeToFile("IN_VEHICLE", getCurrent())
                             startSensor(L1)
+                            writeToFile("IN_VEHICLE", getCurrent())
                         }
                     } else if(event.activityType == DetectedActivity.WALKING){
                         if(event.transitionType.equals(ACTIVITY_TRANSITION_ENTER)){
-                            writeToFile("Walking", getCurrent())
                             stopSensor()
+                            writeToFile("Walking", getCurrent())
                         }
-                    } else{
-                        writeToFile("else", getCurrent())
-
                     }
                 }
             } else if(intent?.action == BluetoothDevice.ACTION_ACL_CONNECTED){
@@ -474,8 +485,8 @@ class BluetoothService : Service() {
                 pairedDevices?.forEach { device ->
                     if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
                         if(isConnected(device)){
-                            writeToFile("HANDSFREE ON", getCurrent())
                             startSensor(L2)
+                            writeToFile("HANDSFREE ON", getCurrent())
                         }
                     }
                 }
@@ -488,8 +499,8 @@ class BluetoothService : Service() {
                 pairedDevices?.forEach { device ->
                     if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
                         if(!isConnected(device)){
-                            writeToFile("HANDSFREE OFF", getCurrent())
                             stopSensor(L2)
+                            writeToFile("HANDSFREE OFF", getCurrent())
                         }
                     }
                 }
@@ -520,7 +531,7 @@ class BluetoothService : Service() {
             writer.flush()
             writer.close()
         } catch (e: IOException) {
-            e.printStackTrace()
+            writeToFile("exception4",e.toString())
         }
     }
 
