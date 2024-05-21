@@ -7,8 +7,8 @@
     <string name="down_points">Down n points</string>
     <string name="no_change">No change</string>
     <string name="last_30_days">Last 30 days</string>
-    <string name="average_driving_distance">Average driving distance</string>
-    <string name="average_driving_time">Average driving time</string>
+    <string name="average_driving_distance">Average driving distance > </string>
+    <string name="average_driving_time">Average driving time ></string>
     <string name="recent_score">Recent score</string>
     <string name="overview_of_my_car">Overview of my car</string>
     <string name="recent_driving_score">Recent driving score</string>
