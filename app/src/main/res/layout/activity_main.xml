@@ -59,6 +59,7 @@
                 android:layout_marginTop="12dp"
                 android:textAppearance="@style/ST2M"
                 android:textColor="@color/gray_950"
+                android:textFontWeight="500"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/layout_topbar" />
 
@@ -67,6 +68,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="1일째"
+                android:textFontWeight="600"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="2dp"
                 android:textAppearance="@style/H3SB"
@@ -95,6 +97,7 @@
                     android:text="BMW 5시리즈 530i"
                     android:textColor="@color/gray_950"
                     android:textAppearance="@style/ST2SB"
+                    android:textFontWeight="600"
                     app:layout_constraintRight_toLeftOf="@+id/btn_edit"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent"/>
@@ -113,7 +116,8 @@
                     android:id="@+id/tv_car_no"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="123가 456"
+                    android:text="123가456"
+                    android:textFontWeight="400"
                     android:textColor="@color/gray_600"
                     android:textAppearance="@style/B2R"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -135,6 +139,7 @@
                     android:layout_height="wrap_content"
                     android:text="지난 30일간"
                     android:textColor="@color/gray_950"
+                    android:textFontWeight="400"
                     android:textAppearance="@style/C1R"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/layout_summary"/>
@@ -158,6 +163,7 @@
                         android:layout_marginTop="15dp"
                         android:text="@string/average_driving_distance"
                         android:textAppearance="@style/C1R"
+                        android:textFontWeight="400"
                         android:textColor="@color/gray_600"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
@@ -169,6 +175,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
                         android:text="0km"
+                        android:textFontWeight="500"
                         android:textAppearance="@style/ST1M"
                         android:textColor="@color/gray_950"
                         app:layout_constraintLeft_toLeftOf="parent"
@@ -221,6 +228,7 @@
                         android:text="@string/average_driving_time"
                         android:textAppearance="@style/C1R"
                         android:textColor="@color/gray_600"
+                        android:textFontWeight="400"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent"/>
@@ -283,6 +291,7 @@
                         android:textAppearance="@style/B2R"
                         android:textColor="@color/gray_600"
                         android:gravity="center_vertical"
+                        android:textFontWeight="400"
                         android:layout_marginLeft="16dp"
                         app:layout_constraintRight_toLeftOf="@+id/tv_recent_score"
                         app:layout_constraintLeft_toLeftOf="parent"
@@ -296,6 +305,7 @@
                         android:layout_marginRight="2dp"
                         android:layout_marginLeft="10dp"
                         android:text="0"
+                        android:textFontWeight="500"
                         android:gravity="center_vertical|right"
                         android:textAppearance="@style/ST1M"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -309,6 +319,7 @@
                         android:layout_height="14dp"
                         android:text="@string/score"
                         android:gravity="center"
+                        android:textFontWeight="400"
                         android:textAppearance="@style/C2R"
                         android:textColor="@color/gray_950"
                         android:layout_marginRight="8dp"
@@ -344,6 +355,8 @@
                 android:text="@string/overview_of_my_car"
                 android:textAppearance="@style/ST2SB"
                 android:layout_marginTop="36dp"
+                android:textFontWeight="600"
+                android:textColor="@color/gray_950"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/layout_summary_info"/>
@@ -351,7 +364,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_summary_info2"
                 android:layout_width="match_parent"
-                android:layout_height="492dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
                 android:paddingTop="20dp"
                 android:paddingLeft="20dp"
@@ -367,6 +380,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/recent_driving_score"
+                    android:textFontWeight="500"
                     android:textAppearance="@style/B2M"
                     android:textColor="@color/gray_950"
                     app:layout_constraintTop_toTopOf="parent"
@@ -383,11 +397,12 @@
                     <TextView
                         android:id="@+id/tv_recent_score2"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="46dp"
                         android:text="0"
                         android:textAppearance="@style/H2SB"
                         android:gravity="center_vertical"
                         android:textColor="@color/gray_950"
+                        android:textFontWeight="600"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent" />
 
@@ -397,6 +412,7 @@
                         android:text="@string/score"
                         android:textAppearance="@style/B1R"
                         android:layout_marginBottom="3dp"
+                        android:textFontWeight="400"
                         android:layout_marginLeft="3dp"
                         android:textColor="@color/gray_950"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -416,6 +432,117 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/layout_score"/>
 
+                <TextView
+                    android:id="@+id/btn_recent"
+                    android:text="@string/recent_driving"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:layout_marginTop="32dp"
+                    android:gravity="center"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="10dp"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:textColor="@color/white_op_95"
+                    android:background="@drawable/radius4_clicked"
+                    android:textAppearance="@style/C1SB"
+                    android:textFontWeight="600"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_recent_info_text"
+                    app:layout_constraintLeft_toLeftOf="parent"/>
+
+                <TextView
+                    android:id="@+id/btn_one_month"
+                    android:text="@string/one_month"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:layout_marginTop="32dp"
+                    android:gravity="center"
+                    android:layout_marginLeft="6dp"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="10dp"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:textColor="@color/recent_score"
+                    android:background="@drawable/recent_score"
+                    android:textAppearance="@style/C1R"
+                    android:textFontWeight="400"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_recent_info_text"
+                    app:layout_constraintLeft_toRightOf="@id/btn_recent"/>
+
+                <TextView
+                    android:id="@+id/btn_six_month"
+                    android:text="@string/six_months"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:layout_marginTop="32dp"
+                    android:gravity="center"
+                    android:layout_marginLeft="6dp"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="10dp"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:textColor="@color/recent_score"
+                    android:background="@drawable/radius4_unclicked"
+                    android:textFontWeight="400"
+                    android:textAppearance="@style/C1R"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_recent_info_text"
+                    app:layout_constraintLeft_toRightOf="@id/btn_one_month"/>
+
+                <TextView
+                    android:id="@+id/btn_one_year"
+                    android:text="@string/one_year"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:layout_marginTop="32dp"
+                    android:gravity="center"
+                    android:layout_marginLeft="6dp"
+                    android:paddingRight="10dp"
+                    android:paddingLeft="10dp"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:textColor="@color/recent_score"
+                    android:background="@drawable/radius4_unclicked"
+                    android:textFontWeight="400"
+                    android:textAppearance="@style/C1R"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_recent_info_text"
+                    app:layout_constraintLeft_toRightOf="@id/btn_six_month"/>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_engine"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:layout_marginTop="19dp"
+                    android:background="@drawable/radius6"
+                    app:layout_constraintTop_toBottomOf="@+id/btn_recent"
+                    app:layout_constraintLeft_toLeftOf="parent">
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_tire"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/radius6"
+                    app:layout_constraintTop_toBottomOf="@+id/layout_engine"
+                    app:layout_constraintLeft_toLeftOf="parent">
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_break"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/radius6"
+                    app:layout_constraintTop_toBottomOf="@+id/layout_tire"
+                    app:layout_constraintLeft_toLeftOf="parent">
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
@@ -423,7 +550,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
+                android:textFontWeight="700"
                 android:text="@string/guidance"
+                android:textColor="@color/gray_800"
                 android:textAppearance="@style/B2B"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -435,6 +564,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:paddingBottom="60dp"
+                android:textFontWeight="400"
                 android:text="@string/the_driving_data_provided_by"
                 android:textAppearance="@style/C1R"
                 android:textColor="@color/gray_700"
