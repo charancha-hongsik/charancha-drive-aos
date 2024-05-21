@@ -5,15 +5,10 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.os.PowerManager
-import android.provider.Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS
-import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
 import android.view.View.*
-import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageButton
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -24,6 +19,12 @@ import com.charancha.drive.PreferenceUtil.HAVE_BEEN_HOME
 import com.charancha.drive.R
 import com.charancha.drive.service.BluetoothService
 import com.charancha.drive.viewmodel.MainViewModel
+import com.github.mikephil.charting.animation.ChartAnimator
+import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.utils.ViewPortHandler
 import java.util.*
 
 
@@ -40,10 +41,13 @@ class MainActivity : AppCompatActivity() {
     lateinit var btnHistory: ImageButton
     private val mainViewModel: MainViewModel by viewModels()
 
+    private var chart: PieChart? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        setPieChart()
 
         // 홈화면 진입 여부 체크
         PreferenceUtil.putBooleanPref(this, HAVE_BEEN_HOME, true)
@@ -122,6 +126,34 @@ class MainActivity : AppCompatActivity() {
 
                 }.toTypedArray()
             }
+    }
+
+    private fun setPieChart(){
+
+        chart = findViewById(R.id.chart1)
+
+        val entries: ArrayList<PieEntry> = ArrayList()
+        entries.add(PieEntry(70f, ""))
+        entries.add(PieEntry(30f, ""))
+
+        val dataSet = PieDataSet(entries, "")
+        dataSet.setColors(ContextCompat.getColor(this, R.color.gray_50))
+        dataSet.setDrawValues(false)
+
+        val data = PieData(dataSet)
+        chart?.setData(data)
+
+        // 차트 설정
+        chart?.setDrawHoleEnabled(true)
+        chart?.setMaxAngle(180f)
+        chart?.setRotationAngle(180f)
+        chart?.setHoleColor(Color.TRANSPARENT)
+        chart?.setHoleRadius(70f)
+        chart?.setTransparentCircleRadius(0f)
+        chart?.getDescription()?.isEnabled = false
+        chart?.getLegend()?.isEnabled = false
+        chart?.animateY(1000)
+        chart?.invalidate()
     }
 
 }
