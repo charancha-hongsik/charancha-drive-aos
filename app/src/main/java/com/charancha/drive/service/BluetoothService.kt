@@ -666,7 +666,7 @@ class BluetoothService : Service() {
                              */
                             if(pastLocation!=null){
                                 if((pastLocation!!.distanceTo(location) / ((pastTimeStamp-timeStamp)/1000)) > 70){
-
+                                    pastLocation = location
                                 } else {
                                     processLocationCallback(location, timeStamp)
                                 }
