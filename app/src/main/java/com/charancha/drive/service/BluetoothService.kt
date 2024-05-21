@@ -817,30 +817,32 @@ class BluetoothService : Service() {
     }
 
     fun writeToRoom(){
-        try {
-            driveDto.rawData = gpsInfo
-            driveDto.distance = distanceSum
-            driveDto.time = System.currentTimeMillis() - startTimeStamp
+        Thread{
+            try {
+                driveDto.rawData = gpsInfo
+                driveDto.distance = distanceSum
+                driveDto.time = System.currentTimeMillis() - startTimeStamp
 
-            val drive = Drive(
-                driveDto.tracking_id,
-                driveDto.timeStamp,
-                driveDto.verification,
-                driveDto.distance,
-                driveDto.time,
-                calculateData.getSuddenDeceleration(gpsInfo),
-                calculateData.getSuddenStop(gpsInfo),
-                calculateData.getSuddenAcceleration(gpsInfo),
-                calculateData.getSuddenStart(gpsInfo),
-                calculateData.getHighSpeedDriving(gpsInfo),
-                calculateData.getLowSpeedDriving(gpsInfo),
-                calculateData.getConstantSpeedDriving(gpsInfo),
-                calculateData.getHarshDriving(gpsInfo),
-                Gson().toJson(driveDto))
+                val drive = Drive(
+                    driveDto.tracking_id,
+                    driveDto.timeStamp,
+                    driveDto.verification,
+                    driveDto.distance,
+                    driveDto.time,
+                    calculateData.getSuddenDeceleration(gpsInfo),
+                    calculateData.getSuddenStop(gpsInfo),
+                    calculateData.getSuddenAcceleration(gpsInfo),
+                    calculateData.getSuddenStart(gpsInfo),
+                    calculateData.getHighSpeedDriving(gpsInfo),
+                    calculateData.getLowSpeedDriving(gpsInfo),
+                    calculateData.getConstantSpeedDriving(gpsInfo),
+                    calculateData.getHarshDriving(gpsInfo),
+                    Gson().toJson(driveDto))
 
-            driveDatabase?.driveDao()?.insert(drive)
-        } catch (e:Exception){
-            writeToFile("exception",e.toString())
-        }
+                driveDatabase?.driveDao()?.insert(drive)
+            } catch (e:Exception){
+                writeToFile("exception",e.toString())
+            }
+        }.start()
     }
 }
