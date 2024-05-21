@@ -447,6 +447,7 @@
                     android:background="@drawable/radius4_clicked"
                     android:textAppearance="@style/C1SB"
                     android:textFontWeight="600"
+                    android:clickable="true"
                     app:layout_constraintTop_toBottomOf="@+id/tv_recent_info_text"
                     app:layout_constraintLeft_toLeftOf="parent"/>
 
@@ -466,6 +467,7 @@
                     android:background="@drawable/recent_score"
                     android:textAppearance="@style/C1R"
                     android:textFontWeight="400"
+                    android:clickable="true"
                     app:layout_constraintTop_toBottomOf="@+id/tv_recent_info_text"
                     app:layout_constraintLeft_toRightOf="@id/btn_recent"/>
 
@@ -482,9 +484,10 @@
                     android:paddingBottom="5dp"
                     android:paddingTop="5dp"
                     android:textColor="@color/recent_score"
-                    android:background="@drawable/radius4_unclicked"
+                    android:background="@drawable/recent_score"
                     android:textFontWeight="400"
                     android:textAppearance="@style/C1R"
+                    android:clickable="true"
                     app:layout_constraintTop_toBottomOf="@+id/tv_recent_info_text"
                     app:layout_constraintLeft_toRightOf="@id/btn_one_month"/>
 
@@ -501,9 +504,10 @@
                     android:paddingBottom="5dp"
                     android:paddingTop="5dp"
                     android:textColor="@color/recent_score"
-                    android:background="@drawable/radius4_unclicked"
+                    android:background="@drawable/recent_score"
                     android:textFontWeight="400"
                     android:textAppearance="@style/C1R"
+                    android:clickable="true"
                     app:layout_constraintTop_toBottomOf="@+id/tv_recent_info_text"
                     app:layout_constraintLeft_toRightOf="@id/btn_six_month"/>
 
@@ -515,6 +519,64 @@
                     android:background="@drawable/radius6"
                     app:layout_constraintTop_toBottomOf="@+id/btn_recent"
                     app:layout_constraintLeft_toLeftOf="parent">
+
+                    <TextView
+                        android:id="@+id/tv_engine"
+                        android:layout_width="wrap_content"
+                        android:layout_height="18dp"
+                        android:text="@string/engine"
+                        android:minWidth="50dp"
+                        android:layout_marginLeft="16dp"
+                        android:textAppearance="@style/B2R"
+                        android:textFontWeight="400"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/gray_600"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/tv_engine_score"
+                        android:layout_width="0dp"
+                        android:layout_height="28dp"
+                        android:layout_marginRight="2dp"
+                        android:layout_marginLeft="10dp"
+                        android:text="0"
+                        android:textFontWeight="500"
+                        android:gravity="center_vertical|right"
+                        android:textAppearance="@style/ST1M"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/tv_engine"
+                        app:layout_constraintRight_toLeftOf="@+id/tv_score_unit_for_engine"/>
+
+                    <TextView
+                        android:id="@+id/tv_score_unit_for_engine"
+                        android:layout_width="10dp"
+                        android:layout_height="14dp"
+                        android:text="@string/score"
+                        android:gravity="center"
+                        android:textFontWeight="400"
+                        android:textAppearance="@style/C2R"
+                        android:textColor="@color/gray_950"
+                        android:layout_marginRight="8dp"
+                        app:layout_constraintRight_toLeftOf="@+id/iv_arrow_for_engine"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+
+
+                    <ImageView
+                        android:id="@+id/iv_arrow_for_engine"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/arrow"
+                        android:layout_marginRight="16dp"
+                        android:padding="0dp"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -528,17 +590,132 @@
                     app:layout_constraintTop_toBottomOf="@+id/layout_engine"
                     app:layout_constraintLeft_toLeftOf="parent">
 
+                    <TextView
+                        android:id="@+id/tv_tire"
+                        android:layout_width="wrap_content"
+                        android:layout_height="18dp"
+                        android:minWidth="50dp"
+                        android:text="@string/tires"
+                        android:layout_marginLeft="16dp"
+                        android:textAppearance="@style/B2R"
+                        android:textFontWeight="400"
+                        android:textColor="@color/gray_600"
+                        android:gravity="center_vertical"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/tv_tire_score"
+                        android:layout_width="0dp"
+                        android:layout_height="28dp"
+                        android:layout_marginRight="2dp"
+                        android:layout_marginLeft="10dp"
+                        android:text="0"
+                        android:textFontWeight="500"
+                        android:gravity="center_vertical|right"
+                        android:textAppearance="@style/ST1M"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/tv_tire"
+                        app:layout_constraintRight_toLeftOf="@+id/tv_score_unit_for_tire"/>
+
+                    <TextView
+                        android:id="@+id/tv_score_unit_for_tire"
+                        android:layout_width="10dp"
+                        android:layout_height="14dp"
+                        android:text="@string/score"
+                        android:gravity="center"
+                        android:textFontWeight="400"
+                        android:textAppearance="@style/C2R"
+                        android:textColor="@color/gray_950"
+                        android:layout_marginRight="8dp"
+                        app:layout_constraintRight_toLeftOf="@+id/iv_arrow_for_tire"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+
+
+                    <ImageView
+                        android:id="@+id/iv_arrow_for_tire"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/arrow"
+                        android:layout_marginRight="16dp"
+                        android:padding="0dp"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/layout_break"
+                    android:id="@+id/layout_brakes"
                     android:layout_width="match_parent"
                     android:layout_height="64dp"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/radius6"
                     app:layout_constraintTop_toBottomOf="@+id/layout_tire"
                     app:layout_constraintLeft_toLeftOf="parent">
+
+                    <TextView
+                        android:id="@+id/tv_brakes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="18dp"
+                        android:minWidth="50dp"
+                        android:text="@string/brakes"
+                        android:layout_marginLeft="16dp"
+                        android:textAppearance="@style/B2R"
+                        android:textFontWeight="400"
+                        android:textColor="@color/gray_600"
+                        android:gravity="center_vertical"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/tv_brakes_score"
+                        android:layout_width="0dp"
+                        android:layout_height="28dp"
+                        android:layout_marginRight="2dp"
+                        android:layout_marginLeft="10dp"
+                        android:text="0"
+                        android:textFontWeight="500"
+                        android:gravity="center_vertical|right"
+                        android:textAppearance="@style/ST1M"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/tv_brakes"
+                        app:layout_constraintRight_toLeftOf="@+id/tv_score_unit_for_brakes"/>
+
+                    <TextView
+                        android:id="@+id/tv_score_unit_for_brakes"
+                        android:layout_width="10dp"
+                        android:layout_height="14dp"
+                        android:text="@string/score"
+                        android:gravity="center"
+                        android:textFontWeight="400"
+                        android:textAppearance="@style/C2R"
+                        android:textColor="@color/gray_950"
+                        android:layout_marginRight="8dp"
+                        app:layout_constraintRight_toLeftOf="@+id/iv_arrow_for_brakes"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+
+
+                    <ImageView
+                        android:id="@+id/iv_arrow_for_brakes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/arrow"
+                        android:layout_marginRight="16dp"
+                        android:padding="0dp"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
