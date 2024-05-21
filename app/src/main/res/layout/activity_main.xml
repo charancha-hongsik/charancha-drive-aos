@@ -131,14 +131,60 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_car_no">
 
-                    <com.github.mikephil.charting.charts.PieChart
-                        android:id="@+id/chart1"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
+                        app:layout_constraintBottom_toBottomOf="parent">
+
+                        <com.github.mikephil.charting.charts.PieChart
+                            android:id="@+id/chart1"
+                            android:layout_width="444dp"
+                            android:layout_height="222dp"
+                            android:layout_gravity="center_horizontal" />
+                    </FrameLayout>
+                    
+                    <TextView
+                        android:id="@+id/tv_increase"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="5점 증가"
+                        android:textColor="@color/pri_500"
+                        android:textFontWeight="600"
+                        android:textAppearance="@style/C1SB"
+                        android:layout_marginBottom="32dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/tv_average_score"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="420"
+                        android:textColor="@color/gray_950"
+                        android:textFontWeight="600"
+                        android:textAppearance="@style/H1SB"
+                        android:layout_marginBottom="46dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/tv_average_score_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="평균 점수 > "
+                        android:textColor="@color/gray_600"
+                        android:textFontWeight="400"
+                        android:textAppearance="@style/B2R"
+                        android:layout_marginBottom="99dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"/>
+
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

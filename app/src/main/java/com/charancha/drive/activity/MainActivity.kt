@@ -19,12 +19,10 @@ import com.charancha.drive.PreferenceUtil.HAVE_BEEN_HOME
 import com.charancha.drive.R
 import com.charancha.drive.service.BluetoothService
 import com.charancha.drive.viewmodel.MainViewModel
-import com.github.mikephil.charting.animation.ChartAnimator
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
-import com.github.mikephil.charting.utils.ViewPortHandler
 import java.util.*
 
 
@@ -137,13 +135,14 @@ class MainActivity : AppCompatActivity() {
         entries.add(PieEntry(30f, ""))
 
         val dataSet = PieDataSet(entries, "")
-        dataSet.setColors(ContextCompat.getColor(this, R.color.gray_50))
+        dataSet.setColors(ContextCompat.getColor(this, R.color.gray_500), ContextCompat.getColor(this, R.color.gray_50))
         dataSet.setDrawValues(false)
 
         val data = PieData(dataSet)
         chart?.setData(data)
 
         // 차트 설정
+        chart?.setTouchEnabled(false)
         chart?.setDrawHoleEnabled(true)
         chart?.setMaxAngle(180f)
         chart?.setRotationAngle(180f)

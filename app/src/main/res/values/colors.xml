@@ -65,14 +65,8 @@
     <color name="black_op_10">#1A000000</color>
     <color name="black_op_5">#0D000000</color>
 
-
-
-
-
-
-
-
-
+    <color name="pie_gradient_start_color">#100E12</color>
+    <color name="pie_gradient_end_color">#5C5676</color>
 
 
 
