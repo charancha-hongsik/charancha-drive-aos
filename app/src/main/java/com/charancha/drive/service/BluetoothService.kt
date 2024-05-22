@@ -691,7 +691,7 @@ class BluetoothService : Service() {
                         /**
                          * W0D-78 중복시간 삭제
                          */
-                        if(pastTimeStamp/1000 != timeStamp/1000){
+                        if(getDateFromTimeStampToSS(pastTimeStamp) != getDateFromTimeStampToSS(timeStamp)){
 
                             /**
                              * W0D-75 1초간 이동거리 70m 이상이면 제외
@@ -964,5 +964,13 @@ class BluetoothService : Service() {
 
         return format.format(timeStamp).toInt()
     }
+
+    private fun getDateFromTimeStampToSS(timeStamp:Long) : Int{
+        val format = SimpleDateFormat("ss")
+        format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
+
+        return format.format(timeStamp).toInt()
+    }
+
 
 }
