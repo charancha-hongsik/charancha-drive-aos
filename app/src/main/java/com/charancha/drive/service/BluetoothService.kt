@@ -220,8 +220,6 @@ class BluetoothService : Service() {
         val intent = Intent(TRANSITIONS_RECEIVER_ACTION)
         pendingIntent = PendingIntent.getBroadcast(this, 0, intent, FLAG_MUTABLE)
 
-        registerActivityTransitionUpdates()
-        registerReceiver(transitionReceiver, filter)
 
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
             channel
@@ -782,6 +780,72 @@ class BluetoothService : Service() {
         }
 
         gpsInfo.add(EachGpsDto(timeStamp, location.latitude, location.longitude, location.speed,distance,location.altitude, (location.speed) - (pastSpeed)))
+
+        /**
+         * 거리 계산
+         */
+        distance_array[getDateFromTimeStamp(timeStamp)] = distance_array[getDateFromTimeStamp(timeStamp)] + distance
+
+
+        /**
+         * 현재 시간 - 이전 시간 = 2초 이상이면, 데이터 제외한다.
+         * 이전 속력, 현재 속력이 0인 경우 데이터 제외한다.
+         */
+        if(timeStamp-pastTimeStamp < 2000){
+            if(location.speed != 0f){
+                if (pastLocation?.speed != 0f){
+                    /**
+                     * 급감속 계산
+                     */
+                    if (location.speed * calculateData.MS_TO_KH >= 6f && ((location.speed*MS_TO_KH) - (pastSpeed*MS_TO_KH)) <= -14f) {
+                        sudden_deceleration_array[getDateFromTimeStamp(timeStamp)]++
+                        harsh_driving_array[getDateFromTimeStamp(timeStamp)] = harsh_driving_array[getDateFromTimeStamp(timeStamp)] + distance
+
+                    }
+
+                    /**
+                     * 급가속 계산
+                     */
+                    if (location.speed * calculateData.MS_TO_KH >= 10f && ((location.speed*MS_TO_KH) - (pastSpeed*MS_TO_KH)) >= 10f) {
+                        sudden_acceleration_array[getDateFromTimeStamp(timeStamp)]++
+                        harsh_driving_array[getDateFromTimeStamp(timeStamp)] = harsh_driving_array[getDateFromTimeStamp(timeStamp)] + distance
+                    }
+
+
+                    /**
+                     * 급정지 계산
+                     */
+                    if (location.speed * calculateData.MS_TO_KH >= 5f && ((location.speed*MS_TO_KH) - (pastSpeed*MS_TO_KH)) <= -14f) {
+                        sudden_stop_array[getDateFromTimeStamp(timeStamp)]++
+                        harsh_driving_array[getDateFromTimeStamp(timeStamp)] = harsh_driving_array[getDateFromTimeStamp(timeStamp)] + distance
+                    }
+
+                    /**
+                     * 급출발 계산
+                     */
+                    if (location.speed * calculateData.MS_TO_KH <= 5f && ((location.speed*MS_TO_KH) - (pastSpeed*MS_TO_KH)) >= 10f) {
+                        sudden_start_array[getDateFromTimeStamp(timeStamp)]++
+                        harsh_driving_array[getDateFromTimeStamp(timeStamp)] = harsh_driving_array[getDateFromTimeStamp(timeStamp)] + distance
+                    }
+
+                }
+            }
+        }
+
+        /**
+         * 고속주행 거리 계산
+         */
+        if (location.speed * calculateData.MS_TO_KH in 80f..150f) {
+            high_speed_driving_array[getDateFromTimeStamp(timeStamp)] = high_speed_driving_array[getDateFromTimeStamp(timeStamp)] + distance
+        }
+
+        /**
+         * 저속주행 거리 계산
+         */
+        if (location.speed * calculateData.MS_TO_KH in 0f..39.9999f) {
+            low_speed_driving_array[getDateFromTimeStamp(timeStamp)] = low_speed_driving_array[getDateFromTimeStamp(timeStamp)] + distance
+        }
+
 
         pastTimeStamp = timeStamp
         pastSpeed = location.speed
