@@ -126,6 +126,7 @@ class BluetoothService : Service() {
     var low_speed_driving_array = MutableList(23) { 0f } // 23개 시간대의 low_speed_driving 거리
     var constant_speed_driving_array = MutableList(23) { 0f } // 23개 시간대의 constant_speed_driving 거리
     var harsh_driving_array = MutableList(23) { 0f } // 23개 시간대의 harsh_driving 거리
+    var sumSuddenDecelerationDistance = 0f
 
     private var sensorState:Boolean = false
 
@@ -469,6 +470,7 @@ class BluetoothService : Service() {
         low_speed_driving_array = MutableList(23) { 0f } // 23개 시간대의 low_speed_driving 거리
         constant_speed_driving_array = MutableList(23) { 0f } // 23개 시간대의 constant_speed_driving 거리
         harsh_driving_array = MutableList(23) { 0f } // 23개 시간대의 harsh_driving 거리
+        sumSuddenDecelerationDistance = 0f
 
         maxSpeed = 0f
         distanceSum = 0f
@@ -800,6 +802,7 @@ class BluetoothService : Service() {
                     if (location.speed * calculateData.MS_TO_KH >= 6f && ((location.speed*MS_TO_KH) - (pastSpeed*MS_TO_KH)) <= -14f) {
                         sudden_deceleration_array[getDateFromTimeStamp(timeStamp)]++
                         harsh_driving_array[getDateFromTimeStamp(timeStamp)] = harsh_driving_array[getDateFromTimeStamp(timeStamp)] + distance
+                        sumSuddenDecelerationDistance += distance
 
                     }
 
@@ -809,6 +812,7 @@ class BluetoothService : Service() {
                     if (location.speed * calculateData.MS_TO_KH >= 10f && ((location.speed*MS_TO_KH) - (pastSpeed*MS_TO_KH)) >= 10f) {
                         sudden_acceleration_array[getDateFromTimeStamp(timeStamp)]++
                         harsh_driving_array[getDateFromTimeStamp(timeStamp)] = harsh_driving_array[getDateFromTimeStamp(timeStamp)] + distance
+                        sumSuddenDecelerationDistance += distance
                     }
 
 
@@ -940,8 +944,8 @@ class BluetoothService : Service() {
                     high_speed_driving_array.toList(),
                     low_speed_driving_array.toList(),
                     calculateData.getConstantSpeedDriving(gpsInfo),
-                    calculateData.getHarshDriving(gpsInfo),
-                    calculateData.getSumSuddenDecelerationDistance(gpsInfo),
+                    harsh_driving_array.toList(),
+                    sumSuddenDecelerationDistance,
                     gpsInfo)
 
                 driveDatabase?.driveDao()?.insert(drive)
