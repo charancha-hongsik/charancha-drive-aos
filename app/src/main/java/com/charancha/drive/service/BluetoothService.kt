@@ -117,6 +117,15 @@ class BluetoothService : Service() {
      * ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ SensorService 관련 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
      */
 
+    var distance_array = MutableList(23) { 0f } // 23개 시간대의 distance
+    var sudden_deceleration_array = MutableList(23) { 0 } // 23개 시간대의 sudden_deceleration 갯수
+    var sudden_stop_array = MutableList(23) { 0 } // 23개 시간대의 sudden_stop 갯수
+    var sudden_acceleration_array = MutableList(23) { 0 }// 23개 시간대의 sudden_acceleration 갯수
+    var sudden_start_array= MutableList(23) { 0 }  // 23개 시간대의 sudden_start 갯수
+    var high_speed_driving_array = MutableList(23) { 0f } // 23개 시간대의 high_speed_driving 거리
+    var low_speed_driving_array = MutableList(23) { 0f } // 23개 시간대의 low_speed_driving 거리
+    var constant_speed_driving_array = MutableList(23) { 0f } // 23개 시간대의 constant_speed_driving 거리
+    var harsh_driving_array = MutableList(23) { 0f } // 23개 시간대의 harsh_driving 거리
 
     private var sensorState:Boolean = false
 
@@ -211,6 +220,8 @@ class BluetoothService : Service() {
         val intent = Intent(TRANSITIONS_RECEIVER_ACTION)
         pendingIntent = PendingIntent.getBroadcast(this, 0, intent, FLAG_MUTABLE)
 
+        registerActivityTransitionUpdates()
+        registerReceiver(transitionReceiver, filter)
 
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
             channel
@@ -451,27 +462,40 @@ class BluetoothService : Service() {
         altitudeInfoFromGps = ""
         accelerationInfo = ""
 
+        distance_array = MutableList(23) { 0f } // 23개 시간대의 distance
+        sudden_deceleration_array = MutableList(23) { 0 } // 23개 시간대의 sudden_deceleration 갯수
+        sudden_stop_array = MutableList(23) { 0 } // 23개 시간대의 sudden_stop 갯수
+        sudden_acceleration_array = MutableList(23) { 0 }// 23개 시간대의 sudden_acceleration 갯수
+        sudden_start_array = MutableList(23) { 0 }  // 23개 시간대의 sudden_start 갯수
+        high_speed_driving_array = MutableList(23) { 0f } // 23개 시간대의 high_speed_driving 거리
+        low_speed_driving_array = MutableList(23) { 0f } // 23개 시간대의 low_speed_driving 거리
+        constant_speed_driving_array = MutableList(23) { 0f } // 23개 시간대의 constant_speed_driving 거리
+        harsh_driving_array = MutableList(23) { 0f } // 23개 시간대의 harsh_driving 거리
+
         maxSpeed = 0f
         distanceSum = 0f
         startTimeStamp = System.currentTimeMillis()
         gpsInfo = mutableListOf()
-        driveDto = DriveDto(format.format(time).toString(), startTimeStamp, level,0f,0L,0,0,0,0,0f,0f,0f,0f,gpsInfo)
+        driveDto = DriveDto(
+            format.format(time).toString(),
+            startTimeStamp,
+            level,
+            listOf(),0L, listOf(),
+            listOf(),
+            listOf(),
+            listOf(),
+            listOf(),
+            listOf(),
+            listOf(),
+            listOf(),
+            0f,
+            gpsInfo)
     }
 
 
     inner class TransitionsReceiver : BroadcastReceiver() {
         @SuppressLint("MissingPermission")
         override fun onReceive(context: Context?, intent: Intent?) {
-            intent?.let {
-                it.action?.let {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        exportToFile(it,getCurrent()+"\n\n")
-                    }else{
-                        generateNoteOnSD(it,getCurrent()+"\n\n")
-                    }
-                }
-            }
-
             if (ActivityTransitionResult.hasResult(intent)) {
                 val result: ActivityTransitionResult = ActivityTransitionResult.extractResult(intent) ?: return
                 for (event in result.transitionEvents) {
@@ -836,25 +860,25 @@ class BluetoothService : Service() {
     fun writeToRoom(){
         Thread{
             try {
-                driveDto.rawData = gpsInfo
-                driveDto.distance = distanceSum
+                driveDto.jsonData = gpsInfo
                 driveDto.time = System.currentTimeMillis() - startTimeStamp
 
                 val drive = Drive(
                     driveDto.tracking_id,
                     driveDto.timeStamp,
                     driveDto.verification,
-                    driveDto.distance,
+                    distance_array.toList(),
                     driveDto.time,
-                    calculateData.getSuddenDeceleration(gpsInfo),
-                    calculateData.getSuddenStop(gpsInfo),
-                    calculateData.getSuddenAcceleration(gpsInfo),
-                    calculateData.getSuddenStart(gpsInfo),
-                    calculateData.getHighSpeedDriving(gpsInfo),
-                    calculateData.getLowSpeedDriving(gpsInfo),
+                    sudden_deceleration_array.toList(),
+                    sudden_stop_array.toList(),
+                    sudden_acceleration_array.toList(),
+                    sudden_start_array.toList(),
+                    high_speed_driving_array.toList(),
+                    low_speed_driving_array.toList(),
                     calculateData.getConstantSpeedDriving(gpsInfo),
                     calculateData.getHarshDriving(gpsInfo),
-                    Gson().toJson(driveDto))
+                    calculateData.getSumSuddenDecelerationDistance(gpsInfo),
+                    gpsInfo)
 
                 driveDatabase?.driveDao()?.insert(drive)
             } catch (e:Exception){
@@ -862,4 +886,12 @@ class BluetoothService : Service() {
             }
         }.start()
     }
+
+    private fun getDateFromTimeStamp(timeStamp:Long) : Int{
+        val format = SimpleDateFormat("HH")
+        format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
+
+        return format.format(timeStamp).toInt()
+    }
+
 }

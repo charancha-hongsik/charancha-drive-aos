@@ -4,6 +4,8 @@ package com.charancha.drive
 import android.util.Log
 import com.charancha.drive.room.EachGpsDto
 import com.google.gson.Gson
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 /**
@@ -33,25 +35,50 @@ import com.google.gson.Gson
 object calculateData {
     val MS_TO_KH = 3.6f
 
+    private fun getDateFromTimeStamp(timeStamp:Long) : Int{
+        val format = SimpleDateFormat("HH")
+        format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
+
+        return format.format(timeStamp).toInt()
+    }
+
+    /**
+     * distance
+     */
+    fun getDistance(gpsInfo:MutableList<EachGpsDto>):List<Float>{
+        try {
+            val list = MutableList(23) { 0f }
+            for (info in gpsInfo) {
+                list[getDateFromTimeStamp(info.timeStamp)] = list[getDateFromTimeStamp(info.timeStamp)] + info.distance
+            }
+
+
+            return list.toList()
+
+        }catch (e:Exception){
+            return List(23){0f}
+        }
+    }
+
     /**
      *  var sudden_deceleration: Int, // 0,1,2
      *  -> 급감속 (count)
      *  -> 초당 14km/h이상 감속 운행하고 속도가 6.0km/h 이상인 경우
      */
-    fun getSuddenDeceleration(gpsInfo:MutableList<EachGpsDto>):Int{
+    fun getSuddenDeceleration(gpsInfo:MutableList<EachGpsDto>):List<Int>{
         try {
-            var count: Int = 0
+            val list = MutableList(23) { 0 }
             for (info in gpsInfo) {
                 if (info.speed * MS_TO_KH >= 6f && info.acceleration * MS_TO_KH <= -14f) {
-                    count++
+                    list[getDateFromTimeStamp(info.timeStamp)]++
                 }
             }
 
 
-            return count
+            return list.toList()
 
         }catch (e:Exception){
-            return 0
+            return List(23){0}
         }
     }
 
@@ -61,19 +88,19 @@ object calculateData {
      *  -> 급정지 (count)
      *  -> 초당 14km/h이상 감속 운행하고 속도가 5.0km/h 이하인 경우
      */
-    fun getSuddenStop(gpsInfo:MutableList<EachGpsDto>):Int{
+    fun getSuddenStop(gpsInfo:MutableList<EachGpsDto>):List<Int>{
         try {
-            var count: Int = 0
+            val list = MutableList(23) { 0 }
 
             for (info in gpsInfo) {
                 if (info.speed * MS_TO_KH >= 5f && info.acceleration * MS_TO_KH <= -14f) {
-                    count++
+                    list[getDateFromTimeStamp(info.timeStamp)]++
                 }
             }
 
-            return count
+            return list.toList()
         } catch (e:Exception){
-            return 0
+            return List(23){0}
         }
     }
 
@@ -82,19 +109,19 @@ object calculateData {
      *  -> 급가속 (count)
      *  -> 10km/h 초과 속도에서 초당 10km/h 이상 가속 운행한 경우
      */
-    fun getSuddenAcceleration(gpsInfo:MutableList<EachGpsDto>):Int{
+    fun getSuddenAcceleration(gpsInfo:MutableList<EachGpsDto>):List<Int>{
         try {
-            var count: Int = 0
+            val list = MutableList(23) { 0 }
 
             for (info in gpsInfo) {
                 if (info.speed * MS_TO_KH >= 10f && info.acceleration * MS_TO_KH >= 10f) {
-                    count++
+                    list[getDateFromTimeStamp(info.timeStamp)]++
                 }
             }
 
-            return count
+            return list.toList()
         }catch (e:Exception){
-            return 0
+            return List(23){0}
         }
     }
 
@@ -103,19 +130,19 @@ object calculateData {
      *  -> 급출발 (count)
      *  -> 5.0km/h 이하 속도에서 출발하여 초당 10km/h이상 가속 운행한 경우
      */
-    fun getSuddenStart(gpsInfo:MutableList<EachGpsDto>):Int{
+    fun getSuddenStart(gpsInfo:MutableList<EachGpsDto>):List<Int>{
         try {
-            var count: Int = 0
+            val list = MutableList(23) { 0 }
 
             for (info in gpsInfo) {
                 if (info.speed * MS_TO_KH <= 5f && info.acceleration * MS_TO_KH >= 10f) {
-                    count++
+                    list[getDateFromTimeStamp(info.timeStamp)]++
                 }
             }
 
-            return count
+            return list.toList()
         }catch (e:Exception){
-            return 0
+            return List(23){0}
         }
     }
 
@@ -124,19 +151,19 @@ object calculateData {
      *  -> 고속 주행 거리 (distance)
      *  -> 80km/h 이상 ~ 150km/h 이하 속력으로 주행한 거리의 총합
      */
-    fun getHighSpeedDriving(gpsInfo:MutableList<EachGpsDto>):Float{
+    fun getHighSpeedDriving(gpsInfo:MutableList<EachGpsDto>):List<Float>{
         try {
-            var distanceSum = 0f
+            val list = MutableList(23) { 0f }
 
             for (info in gpsInfo) {
                 if (info.speed * MS_TO_KH in 80f..150f) {
-                    distanceSum += info.distance
+                    list[getDateFromTimeStamp(info.timeStamp)] = list[getDateFromTimeStamp(info.timeStamp)] + info.distance
                 }
             }
 
-            return distanceSum
+            return list.toList()
         }catch (e:Exception){
-            return 0f
+            return List(23){0f}
         }
     }
 
@@ -145,19 +172,19 @@ object calculateData {
      *  -> 저속 주행 거리 (distance)
      *  -> 40km/h 미만 속력으로 주행한 거리의 총합
      */
-    fun getLowSpeedDriving(gpsInfo:MutableList<EachGpsDto>):Float{
+    fun getLowSpeedDriving(gpsInfo:MutableList<EachGpsDto>):List<Float>{
         try {
-            var distanceSum = 0f
+            val list = MutableList(23) { 0f }
 
             for (info in gpsInfo) {
                 if (info.speed * MS_TO_KH in 0f..39.9999f) {
-                    distanceSum += info.distance
+                    list[getDateFromTimeStamp(info.timeStamp)] = list[getDateFromTimeStamp(info.timeStamp)] + info.distance
                 }
             }
 
-            return distanceSum
+            return list.toList()
         }catch (e:Exception){
-            return 0f
+            return List(23){0f}
         }
     }
 
@@ -168,8 +195,10 @@ object calculateData {
      *  -> 3분 이상 속도가 시속 10km/h 이내로 변동하는 구간을 '일정한 속도로 운행한 거리'
      *  -> 속도 범위: 60km/h이상 140km/h이하
      */
-    fun getConstantSpeedDriving(gpsInfo:MutableList<EachGpsDto>):Float{
+    fun getConstantSpeedDriving(gpsInfo:MutableList<EachGpsDto>):List<Float>{
         try {
+            val list = MutableList(23) { 0f }
+
             var distanceSum = 0f
             var distanceSumofSum = 0f
             var firstTimeStamp = 0L
@@ -197,9 +226,9 @@ object calculateData {
                     distanceSumofSum += distanceSum
             }
 
-            return distanceSumofSum
+            return list.toList()
         } catch (e:Exception){
-            return 0f
+            return List(23){0f}
         }
     }
 
@@ -207,48 +236,59 @@ object calculateData {
      *  var harsh_driving:Float, // 12533.736
      *  -> 가혹 주행 거리 (distance)
      */
-    fun getHarshDriving(gpsInfo:MutableList<EachGpsDto>):Float{
+    fun getHarshDriving(gpsInfo:MutableList<EachGpsDto>):List<Float>{
         try {
-            var distanceSum = 0f
+            val list = MutableList(23) { 0f }
+
             var pastSpeed = 0f
-            var pastTimeStamp = 0L
 
 
             for (info in gpsInfo) {
                 if (info.speed * MS_TO_KH >= 6f && info.acceleration * MS_TO_KH <= -14f) {
-                    Log.d("testsetsetests","testestsetestsetset 급감속 :: " + info.distance)
-                    Log.d("testsetsetests","testestsetestsetset 시간 :: " + (info.timeStamp - pastTimeStamp))
-
-                    distanceSum += info.distance
+                    list[getDateFromTimeStamp(info.timeStamp)] = list[getDateFromTimeStamp(info.timeStamp)] + info.distance
                 }
 
                 if (info.speed * MS_TO_KH >= 5f && info.acceleration * MS_TO_KH <= -14f) {
-                    Log.d("testsetsetests","testestsetestsetset 급정지 :: " + info.distance)
-                    Log.d("testsetsetests","testestsetestsetset 시간 :: " + (info.timeStamp - pastTimeStamp))
+                    list[getDateFromTimeStamp(info.timeStamp)] = list[getDateFromTimeStamp(info.timeStamp)] + info.distance
+                }
 
+                if (info.speed * MS_TO_KH >= 10f && info.acceleration * MS_TO_KH >= 10f) {
+                    list[getDateFromTimeStamp(info.timeStamp)] = list[getDateFromTimeStamp(info.timeStamp)] + info.distance
+                }
+
+                if (pastSpeed * MS_TO_KH <= 5f && info.acceleration * MS_TO_KH >= 10f) {
+                    list[getDateFromTimeStamp(info.timeStamp)] = list[getDateFromTimeStamp(info.timeStamp)] + info.distance
+                }
+
+                pastSpeed = info.speed
+            }
+
+            return list.toList()
+        } catch (e:Exception){
+            return MutableList(23) { 0f }
+        }
+    }
+
+    /**
+     * 급감속 속력의 총 합
+     */
+    fun getSumSuddenDecelerationDistance(gpsInfo:MutableList<EachGpsDto>):Float{
+        try {
+            var distanceSum = 0f
+            for (info in gpsInfo) {
+                if (info.speed * MS_TO_KH >= 6f && info.acceleration * MS_TO_KH <= -14f) {
                     distanceSum += info.distance
                 }
 
                 if (info.speed * MS_TO_KH >= 10f && info.acceleration * MS_TO_KH >= 10f) {
-                    Log.d("testsetsetests","testestsetestsetset 급가속 :: " + info.distance)
-                    Log.d("testsetsetests","testestsetestsetset 시간 :: " + (info.timeStamp - pastTimeStamp))
-
                     distanceSum += info.distance
                 }
-
-                if (pastSpeed * MS_TO_KH <= 5f && info.acceleration * MS_TO_KH >= 10f) {
-                    Log.d("testsetsetests","testestsetestsetset 급출발 :: " + info.distance)
-                    Log.d("testsetsetests","testestsetestsetset 시간 :: " + (info.timeStamp - pastTimeStamp))
-
-                    distanceSum += info.distance
-                }
-
-                pastSpeed = info.speed
-                pastTimeStamp = info.timeStamp
             }
 
+
             return distanceSum
-        } catch (e:Exception){
+
+        }catch (e:Exception){
             return 0f
         }
     }

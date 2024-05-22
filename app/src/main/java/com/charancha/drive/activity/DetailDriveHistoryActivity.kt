@@ -57,7 +57,7 @@ class DetailDriveHistoryActivity: AppCompatActivity() {
 
         driveDto = intent.getSerializableExtra("driveDto") as DriveDto
 
-        for(raw in driveDto.rawData){
+        for(raw in driveDto.jsonData){
             polylines.add(LatLng(raw.latitude,raw.longtitude))
         }
 
@@ -78,19 +78,13 @@ class DetailDriveHistoryActivity: AppCompatActivity() {
         tvTrackingId.text = "id : " + driveDto.tracking_id
         tvTimestamp.text = "주행시작 : " + getDateFromTimeStamp(driveDto.timeStamp)
         tvRank.text = "랭크 : " + driveDto.verification
-        tvDistance.text = "주행거리(m) : " + driveDto.distance
+        tvDistance.text = "주행거리(m) : " + driveDto.distance_array.sum()
         tvTime.text = "주행 시간 : " + (TimeUnit.MILLISECONDS.toSeconds(driveDto.time)/60) + "분 " + (TimeUnit.MILLISECONDS.toSeconds(driveDto.time)%60) + "초"
 
         var contents = ""
         contents = contents + "주행 종료 : " + getDateFromTimeStamp((driveDto.timeStamp + driveDto.time)) + "\n"
-        contents = contents +  "급감속 횟수 : " + calculateData.getSuddenDeceleration(driveDto.rawData.toMutableList()) + "\n"
-        contents = contents +  "급정지 횟수 : " + calculateData.getSuddenStop(driveDto.rawData.toMutableList()) + "\n"
-        contents = contents +  "급가속 횟수 : " + calculateData.getSuddenAcceleration(driveDto.rawData.toMutableList()) + "\n"
-        contents = contents +  "급출발 횟수 : " + calculateData.getSuddenStart(driveDto.rawData.toMutableList()) + "\n"
-        contents = contents +  "고속 주행 거리 : " + calculateData.getHighSpeedDriving(driveDto.rawData.toMutableList()) + "\n"
-        contents = contents +  "저속 주행 거리 : " + calculateData.getLowSpeedDriving(driveDto.rawData.toMutableList()) + "\n"
-        contents = contents +  "항속 주행 거리 : " + calculateData.getConstantSpeedDriving(driveDto.rawData.toMutableList()) + "\n"
-        contents = contents + "Harsh Driving 거리: " + calculateData.getHarshDriving(driveDto.rawData.toMutableList()) + "\n"
+        contents = contents +  "항속 주행 거리 : " + calculateData.getConstantSpeedDriving(driveDto.jsonData.toMutableList()).sum() + "\n"
+        contents = contents + "Harsh Driving 거리: " + calculateData.getHarshDriving(driveDto.jsonData.toMutableList()).sum() + "\n"
 
         tvRapid1.text = contents
 

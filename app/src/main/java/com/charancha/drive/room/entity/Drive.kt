@@ -2,22 +2,23 @@ package com.charancha.drive.room.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.charancha.drive.room.EachGpsDto
 
-@Entity(tableName = "drive3")
+@Entity(tableName = "drive")
 data class Drive(
     @field:PrimaryKey var tracking_id: String, // 20240417190026
     var timeStamp: Long, // 1714087621
     var verification: String, // L1, L2, L3, L4
-    var distance: Float, // 12533.736734857148
+    var distance_array: List<Float>, // 23개 시간대의 distance
     var time: Long, // 2015.6142109632492
-    var sudden_deceleration: Int, // 0,1,2
-    var sudden_stop: Int, // 0,1,2
-    var sudden_acceleration: Int, // 0,1,2
-    var sudden_start: Int, // 0,1,2
-    var high_speed_driving: Float, // 12533.736734857148
-    var low_speed_driving: Float, // 12533.736734857148
-    var constant_speed_driving: Float, // 12533.736734857148
-    var harsh_driving:Float,
-    var jsonData: String // 원시 데이터
+    var sudden_deceleration_array: List<Int>, // 23개 시간대의 sudden_deceleration 갯수
+    var sudden_stop_array: List<Int>, // 23개 시간대의 sudden_stop 갯수
+    var sudden_acceleration_array: List<Int>, // 23개 시간대의 sudden_acceleration 갯수
+    var sudden_start_array: List<Int>,  // 23개 시간대의 sudden_start 갯수
+    var high_speed_driving_array: List<Float>, // 23개 시간대의 high_speed_driving 거리
+    var low_speed_driving_array: List<Float>, // 23개 시간대의 low_speed_driving 거리
+    var constant_speed_driving_array: List<Float>, // 23개 시간대의 constant_speed_driving 거리
+    var harsh_driving_array:List<Float>, // 23개 시간대의 harsh_driving 거리
+    var sum_sudden_deceleration_speed:Float,
+    var jsonData: List<EachGpsDto> // 원시 데이터
 )
-
