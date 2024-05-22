@@ -3,6 +3,7 @@ package com.charancha.drive.service
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.*
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.app.PendingIntent.FLAG_MUTABLE
 import android.bluetooth.*
 import android.bluetooth.BluetoothClass.Device.AUDIO_VIDEO_HANDSFREE
@@ -219,7 +220,7 @@ class BluetoothService : Service() {
         request = ActivityTransitionRequest(transitions)
 
         val intent = Intent(TRANSITIONS_RECEIVER_ACTION)
-        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, FLAG_MUTABLE)
+        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, FLAG_IMMUTABLE)
 
 
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
@@ -783,10 +784,12 @@ class BluetoothService : Service() {
 
         gpsInfo.add(EachGpsDto(timeStamp, location.latitude, location.longitude, location.speed,distance,location.altitude, (location.speed) - (pastSpeed)))
 
+        var HH = getDateFromTimeStamp(timeStamp)
+
         /**
          * 거리 계산
          */
-        distance_array[getDateFromTimeStamp(timeStamp)] = distance_array[getDateFromTimeStamp(timeStamp)] + distance
+        distance_array[HH] = distance_array[HH] + distance
 
 
         /**
@@ -800,8 +803,8 @@ class BluetoothService : Service() {
                      * 급감속 계산
                      */
                     if (location.speed * calculateData.MS_TO_KH >= 6f && ((location.speed*MS_TO_KH) - (pastSpeed*MS_TO_KH)) <= -14f) {
-                        sudden_deceleration_array[getDateFromTimeStamp(timeStamp)]++
-                        harsh_driving_array[getDateFromTimeStamp(timeStamp)] = harsh_driving_array[getDateFromTimeStamp(timeStamp)] + distance
+                        sudden_deceleration_array[HH]++
+                        harsh_driving_array[HH] = harsh_driving_array[HH] + distance
                         sumSuddenDecelerationDistance += distance
 
                     }
@@ -810,8 +813,8 @@ class BluetoothService : Service() {
                      * 급가속 계산
                      */
                     if (location.speed * calculateData.MS_TO_KH >= 10f && ((location.speed*MS_TO_KH) - (pastSpeed*MS_TO_KH)) >= 10f) {
-                        sudden_acceleration_array[getDateFromTimeStamp(timeStamp)]++
-                        harsh_driving_array[getDateFromTimeStamp(timeStamp)] = harsh_driving_array[getDateFromTimeStamp(timeStamp)] + distance
+                        sudden_acceleration_array[HH]++
+                        harsh_driving_array[HH] = harsh_driving_array[HH] + distance
                         sumSuddenDecelerationDistance += distance
                     }
 
@@ -820,16 +823,16 @@ class BluetoothService : Service() {
                      * 급정지 계산
                      */
                     if (location.speed * calculateData.MS_TO_KH >= 5f && ((location.speed*MS_TO_KH) - (pastSpeed*MS_TO_KH)) <= -14f) {
-                        sudden_stop_array[getDateFromTimeStamp(timeStamp)]++
-                        harsh_driving_array[getDateFromTimeStamp(timeStamp)] = harsh_driving_array[getDateFromTimeStamp(timeStamp)] + distance
+                        sudden_stop_array[HH]++
+                        harsh_driving_array[HH] = harsh_driving_array[HH] + distance
                     }
 
                     /**
                      * 급출발 계산
                      */
                     if (location.speed * calculateData.MS_TO_KH <= 5f && ((location.speed*MS_TO_KH) - (pastSpeed*MS_TO_KH)) >= 10f) {
-                        sudden_start_array[getDateFromTimeStamp(timeStamp)]++
-                        harsh_driving_array[getDateFromTimeStamp(timeStamp)] = harsh_driving_array[getDateFromTimeStamp(timeStamp)] + distance
+                        sudden_start_array[HH]++
+                        harsh_driving_array[HH] = harsh_driving_array[HH] + distance
                     }
 
                 }
@@ -840,14 +843,14 @@ class BluetoothService : Service() {
          * 고속주행 거리 계산
          */
         if (location.speed * calculateData.MS_TO_KH in 80f..150f) {
-            high_speed_driving_array[getDateFromTimeStamp(timeStamp)] = high_speed_driving_array[getDateFromTimeStamp(timeStamp)] + distance
+            high_speed_driving_array[HH] = high_speed_driving_array[HH] + distance
         }
 
         /**
          * 저속주행 거리 계산
          */
         if (location.speed * calculateData.MS_TO_KH in 0f..39.9999f) {
-            low_speed_driving_array[getDateFromTimeStamp(timeStamp)] = low_speed_driving_array[getDateFromTimeStamp(timeStamp)] + distance
+            low_speed_driving_array[HH] = low_speed_driving_array[HH] + distance
         }
 
 
