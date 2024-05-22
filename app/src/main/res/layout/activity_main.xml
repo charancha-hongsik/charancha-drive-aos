@@ -591,6 +591,15 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"/>
 
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/chart_line_engine"
+                        android:layout_width="69dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/tv_engine"
+                        />
+
                     <TextView
                         android:id="@+id/tv_engine_score"
                         android:layout_width="0dp"
@@ -603,7 +612,7 @@
                         android:textAppearance="@style/ST1M"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintLeft_toRightOf="@+id/tv_engine"
+                        app:layout_constraintLeft_toRightOf="@+id/chart_line_engine"
                         app:layout_constraintRight_toLeftOf="@+id/tv_score_unit_for_engine"/>
 
                     <TextView
@@ -661,6 +670,15 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"/>
 
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/chart_line_tire"
+                        android:layout_width="69dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/tv_tire"
+                        />
+
                     <TextView
                         android:id="@+id/tv_tire_score"
                         android:layout_width="0dp"
@@ -673,7 +691,7 @@
                         android:textAppearance="@style/ST1M"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintLeft_toRightOf="@+id/tv_tire"
+                        app:layout_constraintLeft_toRightOf="@+id/chart_line_tire"
                         app:layout_constraintRight_toLeftOf="@+id/tv_score_unit_for_tire"/>
 
                     <TextView
@@ -731,6 +749,16 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"/>
 
+
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/chart_line_brakes"
+                        android:layout_width="69dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/tv_brakes"
+                        />
+
                     <TextView
                         android:id="@+id/tv_brakes_score"
                         android:layout_width="0dp"
@@ -743,7 +771,7 @@
                         android:textAppearance="@style/ST1M"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintLeft_toRightOf="@+id/tv_brakes"
+                        app:layout_constraintLeft_toRightOf="@+id/chart_line_brakes"
                         app:layout_constraintRight_toLeftOf="@+id/tv_score_unit_for_brakes"/>
 
                     <TextView

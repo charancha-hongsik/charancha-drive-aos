@@ -19,10 +19,11 @@ import com.charancha.drive.PreferenceUtil.HAVE_BEEN_HOME
 import com.charancha.drive.R
 import com.charancha.drive.service.BluetoothService
 import com.charancha.drive.viewmodel.MainViewModel
+import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.data.PieData
-import com.github.mikephil.charting.data.PieDataSet
-import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.YAxis
+import com.github.mikephil.charting.data.*
 import java.util.*
 
 
@@ -39,13 +40,17 @@ class MainActivity : AppCompatActivity() {
     lateinit var btnHistory: ImageButton
     private val mainViewModel: MainViewModel by viewModels()
 
-    private var chart: PieChart? = null
+    lateinit var chart: PieChart
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         setPieChart()
+        setLineChartForBrakes(findViewById(R.id.chart_line_brakes))
+        setLineChartForEngine(findViewById(R.id.chart_line_engine))
+        setLineChartForTire(findViewById(R.id.chart_line_tire))
+
 
         // 홈화면 진입 여부 체크
         PreferenceUtil.putBooleanPref(this, HAVE_BEEN_HOME, true)
@@ -135,7 +140,7 @@ class MainActivity : AppCompatActivity() {
         entries.add(PieEntry(30f, ""))
 
         val dataSet = PieDataSet(entries, "")
-        dataSet.setColors(ContextCompat.getColor(this, R.color.gray_500), ContextCompat.getColor(this, R.color.gray_50))
+        dataSet.setColors(ContextCompat.getColor(this, R.color.gray_900), ContextCompat.getColor(this, R.color.gray_50))
         dataSet.setDrawValues(false)
 
         val data = PieData(dataSet)
@@ -153,6 +158,244 @@ class MainActivity : AppCompatActivity() {
         chart?.getLegend()?.isEnabled = false
         chart?.animateY(1000)
         chart?.invalidate()
+    }
+
+    private fun setLineChartForEngine(chart:LineChart){
+
+        // 데이터 설정
+
+        // 데이터 설정
+        val entries = ArrayList<Entry>()
+        entries.add(Entry(0f, 0f))
+        entries.add(Entry(1f, 32f))
+        entries.add(Entry(2f, 25f))
+        entries.add(Entry(3f, 31f))
+        entries.add(Entry(4f, 30f))
+        entries.add(Entry(5f, 26f))
+        entries.add(Entry(6f, 21f))
+        entries.add(Entry(7f, 14f))
+        entries.add(Entry(8f, 23f))
+        entries.add(Entry(9f, 32f))
+        entries.add(Entry(10f, 12f))
+        entries.add(Entry(11f, 29f))
+        entries.add(Entry(12f, 1f))
+        entries.add(Entry(13f, 5f))
+        entries.add(Entry(14f, 17f))
+        entries.add(Entry(15f, 9f))
+
+        val dataSet = LineDataSet(entries, "")
+        dataSet.color = ContextCompat.getColor(this, R.color.pri_600)
+        dataSet.lineWidth = 1f
+        dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER // 베지어 곡선 활성화
+
+        dataSet.setDrawFilled(true) // 영역 색칠 활성화
+
+
+        dataSet.fillDrawable = ContextCompat.getDrawable(this, R.drawable.fade_red_engine) // 영역 색상으로 설정
+
+
+        dataSet.fillAlpha = 50 // 영역 투명도 지정
+
+        dataSet.setDrawValues(false)
+        dataSet.setDrawCircles(false)
+
+        val lineData = LineData(dataSet)
+        chart.setData(lineData)
+
+        // 차트 설정
+
+        // 차트 설정
+        chart.getDescription().setEnabled(false)
+        chart.setTouchEnabled(false)
+        chart.setDragEnabled(false)
+        chart.setScaleEnabled(false)
+        chart.setPinchZoom(true)
+        chart.setDrawGridBackground(false)
+        chart.getLegend().setEnabled(false)
+
+        chart.setExtraOffsets(0f, 0f, 0f, 0f);
+
+        val xAxis: XAxis = chart.getXAxis()
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawLabels(false)
+        xAxis.setDrawAxisLine(false)
+        xAxis.isEnabled = false
+
+
+        val yAxisLeft: YAxis = chart.getAxisLeft()
+        yAxisLeft.axisMinimum = 0f
+        yAxisLeft.axisMaximum = 50f
+        yAxisLeft.isEnabled = false
+
+
+        chart.getAxisRight().setDrawLabels(false)
+        chart.getAxisRight().setAxisMaximum(100f)
+        chart.getAxisRight().setDrawAxisLine(false)
+        chart.getAxisRight().setDrawGridLines(false)
+        chart.animateX(1500)
+        chart.invalidate()
+
+    }
+
+    private fun setLineChartForTire(chart:LineChart){
+
+        // 데이터 설정
+
+        // 데이터 설정
+        val entries = ArrayList<Entry>()
+        entries.add(Entry(0f, 0f))
+        entries.add(Entry(1f, 32f))
+        entries.add(Entry(2f, 25f))
+        entries.add(Entry(3f, 31f))
+        entries.add(Entry(4f, 30f))
+        entries.add(Entry(5f, 26f))
+        entries.add(Entry(6f, 21f))
+        entries.add(Entry(7f, 14f))
+        entries.add(Entry(8f, 23f))
+        entries.add(Entry(9f, 32f))
+        entries.add(Entry(10f, 12f))
+        entries.add(Entry(11f, 29f))
+        entries.add(Entry(12f, 1f))
+        entries.add(Entry(13f, 5f))
+        entries.add(Entry(14f, 17f))
+        entries.add(Entry(15f, 9f))
+
+        val dataSet = LineDataSet(entries, "")
+        dataSet.color = ContextCompat.getColor(this, R.color.sec_500)
+        dataSet.lineWidth = 1f
+        dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER // 베지어 곡선 활성화
+
+        dataSet.setDrawFilled(true) // 영역 색칠 활성화
+
+
+        dataSet.fillDrawable = ContextCompat.getDrawable(this, R.drawable.fade_red_tire) // 영역 색상으로 설정
+
+
+        dataSet.fillAlpha = 50 // 영역 투명도 지정
+
+        dataSet.setDrawValues(false)
+        dataSet.setDrawCircles(false)
+
+        val lineData = LineData(dataSet)
+        chart.setData(lineData)
+
+        // 차트 설정
+
+        // 차트 설정
+        chart.getDescription().setEnabled(false)
+        chart.setTouchEnabled(false)
+        chart.setDragEnabled(false)
+        chart.setScaleEnabled(false)
+        chart.setPinchZoom(true)
+        chart.setDrawGridBackground(false)
+        chart.getLegend().setEnabled(false)
+
+        chart.setExtraOffsets(0f, 0f, 0f, 0f);
+
+        val xAxis: XAxis = chart.getXAxis()
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawLabels(false)
+        xAxis.setDrawAxisLine(false)
+        xAxis.isEnabled = false
+
+
+        val yAxisLeft: YAxis = chart.getAxisLeft()
+        yAxisLeft.axisMinimum = 0f
+        yAxisLeft.axisMaximum = 50f
+        yAxisLeft.isEnabled = false
+
+
+        chart.getAxisRight().setDrawLabels(false)
+        chart.getAxisRight().setAxisMaximum(100f)
+        chart.getAxisRight().setDrawAxisLine(false)
+        chart.getAxisRight().setDrawGridLines(false)
+        chart.animateX(1500)
+        chart.invalidate()
+    }
+
+    private fun setLineChartForBrakes(chart:LineChart){
+
+        // 데이터 설정
+
+        // 데이터 설정
+        val entries = ArrayList<Entry>()
+        entries.add(Entry(0f, 0f))
+        entries.add(Entry(1f, 32f))
+        entries.add(Entry(2f, 25f))
+        entries.add(Entry(3f, 31f))
+        entries.add(Entry(4f, 30f))
+        entries.add(Entry(5f, 26f))
+        entries.add(Entry(6f, 21f))
+        entries.add(Entry(7f, 14f))
+        entries.add(Entry(8f, 23f))
+        entries.add(Entry(9f, 32f))
+        entries.add(Entry(10f, 12f))
+        entries.add(Entry(11f, 29f))
+        entries.add(Entry(12f, 1f))
+        entries.add(Entry(13f, 5f))
+        entries.add(Entry(14f, 17f))
+        entries.add(Entry(15f, 9f))
+        entries.add(Entry(15f, 9f))
+        entries.add(Entry(15f, 49f))
+        entries.add(Entry(15f, 4f))
+        entries.add(Entry(15f, 33f))
+        entries.add(Entry(15f, 12f))
+        entries.add(Entry(15f, 12f))
+        entries.add(Entry(15f, 1f))
+
+
+
+
+        val dataSet = LineDataSet(entries, "")
+        dataSet.color = ContextCompat.getColor(this, R.color.gray_950)
+        dataSet.lineWidth = 1f
+        dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER // 베지어 곡선 활성화
+
+        dataSet.setDrawFilled(true) // 영역 색칠 활성화
+
+
+        dataSet.fillDrawable = ContextCompat.getDrawable(this, R.drawable.fade_red_brakes) // 영역 색상으로 설정
+
+
+        dataSet.fillAlpha = 50 // 영역 투명도 지정
+
+        dataSet.setDrawValues(false)
+        dataSet.setDrawCircles(false)
+
+        val lineData = LineData(dataSet)
+        chart.setData(lineData)
+
+        // 차트 설정
+
+        // 차트 설정
+        chart.getDescription().setEnabled(false)
+        chart.setTouchEnabled(false)
+        chart.setDragEnabled(false)
+        chart.setScaleEnabled(false)
+        chart.setPinchZoom(true)
+        chart.setDrawGridBackground(false)
+        chart.getLegend().setEnabled(false)
+
+
+        val xAxis: XAxis = chart.getXAxis()
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawLabels(false)
+        xAxis.setDrawAxisLine(false)
+        xAxis.isEnabled = false
+
+
+        val yAxisLeft: YAxis = chart.getAxisLeft()
+        yAxisLeft.axisMinimum = 0f
+        yAxisLeft.axisMaximum = 50f
+        yAxisLeft.isEnabled = false
+
+
+        chart.getAxisRight().setDrawLabels(false)
+        chart.getAxisRight().setAxisMaximum(100f)
+        chart.getAxisRight().setDrawAxisLine(false)
+        chart.getAxisRight().setDrawGridLines(false)
+        chart.animateX(1500)
+        chart.invalidate()
     }
 
 }
