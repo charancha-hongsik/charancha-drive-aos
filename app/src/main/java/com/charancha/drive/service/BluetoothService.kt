@@ -96,10 +96,6 @@ class BluetoothService : Service() {
             ActivityTransition.Builder()
                 .setActivityType(DetectedActivity.WALKING)
                 .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                .build(),
-            ActivityTransition.Builder()
-                .setActivityType(DetectedActivity.WALKING)
-                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
                 .build()
         )
     }
@@ -215,8 +211,6 @@ class BluetoothService : Service() {
         val intent = Intent(TRANSITIONS_RECEIVER_ACTION)
         pendingIntent = PendingIntent.getBroadcast(this, 0, intent, FLAG_MUTABLE)
 
-        registerActivityTransitionUpdates()
-        registerReceiver(transitionReceiver, filter)
 
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
             channel
@@ -245,6 +239,9 @@ class BluetoothService : Service() {
                 (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중.." + getCurrent()).build())
             }
         }
+
+        registerActivityTransitionUpdates()
+        registerReceiver(transitionReceiver, filter)
 
         return START_REDELIVER_INTENT
     }
@@ -465,6 +462,16 @@ class BluetoothService : Service() {
     inner class TransitionsReceiver : BroadcastReceiver() {
         @SuppressLint("MissingPermission")
         override fun onReceive(context: Context?, intent: Intent?) {
+            intent?.let {
+                it.action?.let {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        exportToFile(it,getCurrent()+"\n\n")
+                    }else{
+                        generateNoteOnSD(it,getCurrent()+"\n\n")
+                    }
+                }
+            }
+
             if (ActivityTransitionResult.hasResult(intent)) {
                 val result: ActivityTransitionResult = ActivityTransitionResult.extractResult(intent) ?: return
                 for (event in result.transitionEvents) {
