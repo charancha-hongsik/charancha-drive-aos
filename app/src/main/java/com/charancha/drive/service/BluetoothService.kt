@@ -220,7 +220,7 @@ class BluetoothService : Service() {
         request = ActivityTransitionRequest(transitions)
 
         val intent = Intent(TRANSITIONS_RECEIVER_ACTION)
-        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, FLAG_IMMUTABLE)
+        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, FLAG_MUTABLE)
 
 
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
