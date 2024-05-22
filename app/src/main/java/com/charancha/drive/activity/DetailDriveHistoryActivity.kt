@@ -80,11 +80,27 @@ class DetailDriveHistoryActivity: AppCompatActivity() {
         tvRank.text = "랭크 : " + driveDto.verification
         tvDistance.text = "주행거리(m) : " + driveDto.distance_array.sum()
         tvTime.text = "주행 시간 : " + (TimeUnit.MILLISECONDS.toSeconds(driveDto.time)/60) + "분 " + (TimeUnit.MILLISECONDS.toSeconds(driveDto.time)%60) + "초"
+        tvTime.text = "주행 시간 : " + (TimeUnit.MILLISECONDS.toSeconds(driveDto.time)/60) + "분 " + (TimeUnit.MILLISECONDS.toSeconds(driveDto.time)%60) + "초"
+
 
         var contents = ""
         contents = contents + "주행 종료 : " + getDateFromTimeStamp((driveDto.timeStamp + driveDto.time)) + "\n"
         contents = contents +  "항속 주행 거리 : " + calculateData.getConstantSpeedDriving(driveDto.jsonData.toMutableList()).sum() + "\n"
-        contents = contents + "Harsh Driving 거리: " + calculateData.getHarshDriving(driveDto.jsonData.toMutableList()).sum() + "\n"
+        contents = contents + "Harsh Driving 거리: " + driveDto.harsh_driving_array.sum() + "\n"
+        contents = contents + "저속 주행거리: " + driveDto.low_speed_driving_array.sum() + "\n"
+        contents = contents + "고속 주행거리: " + driveDto.high_speed_driving_array.sum() + "\n"
+        contents = contents + "급출발 횟수: " + driveDto.sudden_start_array.sum() + "\n"
+        contents = contents + "급정지 횟수: " + driveDto.sudden_stop_array.sum() + "\n"
+        contents = contents + "급감속 횟수: " + driveDto.sudden_deceleration_array.sum() + "\n"
+        contents = contents + "급가속 횟수: " + driveDto.sudden_acceleration_array.sum() + "\n"
+        contents = contents + "급가감속 거리: " + driveDto.sum_sudden_deceleration_speed + "\n"
+
+
+
+
+
+
+
 
         tvRapid1.text = contents
 
