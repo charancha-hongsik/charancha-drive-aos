@@ -672,7 +672,7 @@ class BluetoothService : Service() {
                              * W0D-75 1초간 이동거리 70m 이상이면 제외
                              */
                             if(pastLocation!=null){
-                                if((pastLocation!!.distanceTo(location) / ((pastTimeStamp-timeStamp)/1000)) > 70){
+                                if((pastLocation!!.distanceTo(location) / ((timeStamp-pastTimeStamp)/1000)) > 70){
                                     writeToFile("deleted path","distance : " + pastLocation!!.distanceTo(location))
                                     pastTimeStamp = timeStamp
                                     pastLocation = location
@@ -692,6 +692,8 @@ class BluetoothService : Service() {
 
                     }else{
                         firstLineState = false
+                        pastTimeStamp = System.currentTimeMillis()
+                        pastLocation = locationResult.lastLocation
                     }
                 }catch (e:Exception){
 
