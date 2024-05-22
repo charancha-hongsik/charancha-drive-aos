@@ -682,6 +682,12 @@ class BluetoothService : Service() {
                             } else{
                                 processLocationCallback(location, timeStamp)
                             }
+                        }else{
+                            if(pastLocation != null){
+                                writeToFile("deleted path","distance : " + pastLocation!!.distanceTo(location))
+                            }
+                            pastTimeStamp = timeStamp
+                            pastLocation = location
                         }
 
                     }else{
