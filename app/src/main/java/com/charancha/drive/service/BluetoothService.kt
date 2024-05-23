@@ -174,7 +174,7 @@ class BluetoothService : Service() {
 
 
     private var INTERVAL = 1000L
-    private var INTERVAL2 = 60000L
+    private var INTERVAL2 = 60000L * 5
 
     /**
      *         locationRequest.setInterval(INTERVAL) // 20초마다 업데이트 요청
@@ -272,10 +272,9 @@ class BluetoothService : Service() {
         ActivityRecognition.getClient(this)
             .requestActivityTransitionUpdates(request, pendingIntent)
             .addOnSuccessListener {
-                writeToFile("addOnSuccessListener",getCurrent())
 
             }.addOnFailureListener { e ->
-                writeToFile("addOnFailureListener",getCurrent() + " :: "+ e.toString() + "\n")
+
             }
     }
 
@@ -633,7 +632,7 @@ class BluetoothService : Service() {
             override fun onLocationResult(locationResult: LocationResult) {
                 try{
                     val location: Location = locationResult.lastLocation
-                    writeToFile("fused2",getCurrent() + "," + location.altitude + ", "+ location.longitude + "\n")
+//                    writeToFile("fused2",getCurrent() + "," + location.altitude + ", "+ location.longitude + "\n")
                 }catch (e:Exception){
 
                 }
