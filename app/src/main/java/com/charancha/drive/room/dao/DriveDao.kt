@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.charancha.drive.room.dto.DistanceData
 import com.charancha.drive.room.entity.Drive
 
 @Dao
@@ -35,8 +34,8 @@ interface DriveDao {
     /**
      * 특정 날짜 사이의 거리 리스트 모두 가져오기
      */
-    @Query("SELECT timeStamp,distance_array FROM drive WHERE timeStamp BETWEEN :minTimeStamp AND :maxTimeStamp1 ORDER BY timeStamp DESC")
-    fun getAllDistanceArrays(minTimeStamp: Long, maxTimeStamp1: Long): List<DistanceData>
+    @Query("SELECT distance_array FROM drive WHERE timeStamp BETWEEN :minTimeStamp AND :maxTimeStamp1 ORDER BY timeStamp DESC")
+    fun getAllDistanceArrays(minTimeStamp: Long, maxTimeStamp1: Long): List<String>
 
     /**
      * 특정 날짜 사이의 급감속 리스트 모두 가져오기

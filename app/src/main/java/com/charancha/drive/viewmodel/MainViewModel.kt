@@ -4,7 +4,10 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.charancha.drive.room.dao.DriveDao
 import com.charancha.drive.room.database.DriveDatabase
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
 
 class MainViewModel: ViewModel() {
@@ -26,23 +29,23 @@ class MainViewModel: ViewModel() {
     fun getAllDistance(){
         viewModelScope.launch {
             val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(context)
-            Log.d("testestsetest","testsetsetestsetse :: " + driveDatabase.driveDao().getAllDistanceArrays(1716446441000, 1716446461000).size)
+            Log.d("testestsetest","testsetsetestsetse :: " + getAllFloatList(driveDatabase.driveDao()))
         }
 
     }
 
-//    fun getAllFloatList(driveDao: DriveDao): List<List<Float>> {
-//        val gson = Gson()
-//        val listType = object : TypeToken<List<Float>>() {}.type
-//
-//        // JSON 문자열 리스트를 가져옵니다.
-//        val jsonStringList = driveDao.getAllDistanceArrays(1716446441000, 1716446461000)
-//
-//        // JSON 문자열 리스트를 List<List<Float>>로 변환합니다.
-//        return jsonStringList.map { jsonString ->
-//            gson.fromJson(jsonString, listType)
-//        }
-//    }
+    fun getAllFloatList(driveDao: DriveDao): List<List<Float>> {
+        val gson = Gson()
+        val listType = object : TypeToken<List<Float>>() {}.type
+
+        // JSON 문자열 리스트를 가져옵니다.
+        val jsonStringList = driveDao.getAllDistanceArrays(1716446441000, 1716446461000)
+
+        // JSON 문자열 리스트를 List<List<Float>>로 변환합니다.
+        return jsonStringList.map { jsonString ->
+            gson.fromJson(jsonString, listType)
+        }
+    }
 
 
 

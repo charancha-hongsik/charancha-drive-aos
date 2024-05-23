@@ -280,65 +280,65 @@ class BluetoothService : Service() {
 
     @RequiresApi(Build.VERSION_CODES.Q)
     fun exportToFile(fileName: String, content: String) {
-        try {
-            val contentValues = ContentValues().apply {
-                put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
-                put(MediaStore.MediaColumns.MIME_TYPE, "text/plain")
-                put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
-            }
-
-            val extVolumeUri: Uri = MediaStore.Files.getContentUri("external")
-
-            // query for the file
-            val cursor: Cursor? = contentResolver.query(
-                extVolumeUri,
-                arrayOf(MediaStore.Downloads.DISPLAY_NAME, MediaStore.Downloads._ID),
-                null,
-                null,
-                null
-            )
-
-
-            var fileUri: Uri? = null
-
-            // if file found
-            if (cursor != null && cursor.count > 0) {
-                // get URI
-                while (cursor.moveToNext()) {
-                    val nameIndex = cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME)
-                    if (nameIndex > -1) {
-                        val displayName = cursor.getString(nameIndex)
-                        if (displayName == "$fileName.txt") {
-                            val idIndex = cursor.getColumnIndex(MediaStore.MediaColumns._ID)
-                            if (idIndex > -1) {
-                                val id = cursor.getLong(idIndex)
-                                fileUri = ContentUris.withAppendedId(extVolumeUri, id)
-                            }
-                        }
-                    }
-                }
-
-                cursor.close()
-            } else {
-                // insert new file otherwise
-                fileUri = contentResolver.insert(extVolumeUri, contentValues)
-            }
-
-            if (fileUri == null) {
-                fileUri = contentResolver.insert(extVolumeUri, contentValues)
-            }
-
-            if (fileUri != null) {
-                val os = contentResolver.openOutputStream(fileUri, "wa")
-
-                if (os != null) {
-                    os.write(content.toByteArray())
-                    os.close()
-                }
-            }
-        }catch (e:Exception){
-//            writeToFile("exception1",e.toString())
-        }
+//        try {
+//            val contentValues = ContentValues().apply {
+//                put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+//                put(MediaStore.MediaColumns.MIME_TYPE, "text/plain")
+//                put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
+//            }
+//
+//            val extVolumeUri: Uri = MediaStore.Files.getContentUri("external")
+//
+//            // query for the file
+//            val cursor: Cursor? = contentResolver.query(
+//                extVolumeUri,
+//                arrayOf(MediaStore.Downloads.DISPLAY_NAME, MediaStore.Downloads._ID),
+//                null,
+//                null,
+//                null
+//            )
+//
+//
+//            var fileUri: Uri? = null
+//
+//            // if file found
+//            if (cursor != null && cursor.count > 0) {
+//                // get URI
+//                while (cursor.moveToNext()) {
+//                    val nameIndex = cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME)
+//                    if (nameIndex > -1) {
+//                        val displayName = cursor.getString(nameIndex)
+//                        if (displayName == "$fileName.txt") {
+//                            val idIndex = cursor.getColumnIndex(MediaStore.MediaColumns._ID)
+//                            if (idIndex > -1) {
+//                                val id = cursor.getLong(idIndex)
+//                                fileUri = ContentUris.withAppendedId(extVolumeUri, id)
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                cursor.close()
+//            } else {
+//                // insert new file otherwise
+//                fileUri = contentResolver.insert(extVolumeUri, contentValues)
+//            }
+//
+//            if (fileUri == null) {
+//                fileUri = contentResolver.insert(extVolumeUri, contentValues)
+//            }
+//
+//            if (fileUri != null) {
+//                val os = contentResolver.openOutputStream(fileUri, "wa")
+//
+//                if (os != null) {
+//                    os.write(content.toByteArray())
+//                    os.close()
+//                }
+//            }
+//        }catch (e:Exception){
+////            writeToFile("exception1",e.toString())
+//        }
     }
 
 
@@ -571,19 +571,19 @@ class BluetoothService : Service() {
     }
 
     fun generateNoteOnSD(sFileName: String?, sBody: String?) {
-        try {
-            val root = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "Notes")
-            if (!root.exists()) {
-                root.mkdirs()
-            }
-            val gpxfile = File(root, "$sFileName.txt")
-            val writer = FileWriter(gpxfile)
-            writer.append(sBody)
-            writer.flush()
-            writer.close()
-        } catch (e: IOException) {
-//            writeToFile("exception4",e.toString())
-        }
+//        try {
+//            val root = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "Notes")
+//            if (!root.exists()) {
+//                root.mkdirs()
+//            }
+//            val gpxfile = File(root, "$sFileName.txt")
+//            val writer = FileWriter(gpxfile)
+//            writer.append(sBody)
+//            writer.flush()
+//            writer.close()
+//        } catch (e: IOException) {
+////            writeToFile("exception4",e.toString())
+//        }
     }
 
     private fun queryForState() {
