@@ -254,8 +254,6 @@ class BluetoothService : Service() {
                 (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 중..($distanceSum m)").setPriority(NotificationCompat.PRIORITY_HIGH).build())
             } else{
                 (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중.." + getCurrent()).setPriority(NotificationCompat.PRIORITY_HIGH).build())
-                registerActivityTransitionUpdates()
-                registerReceiver(transitionReceiver, filter)
             }
         }
 
