@@ -35,4 +35,16 @@ class Converters {
         val listType = object : TypeToken<List<EachGpsDto>>() {}.type
         return Gson().fromJson(value, listType)
     }
+
+    @TypeConverter
+    fun fromString(value: String): List<List<Float>> {
+        val listType = object : TypeToken<List<List<Float>>>() {}.type
+        return Gson().fromJson(value, listType)
+    }
+
+    @TypeConverter
+    fun fromList(list: List<List<Float>>): String {
+        return Gson().toJson(list)
+    }
+
 }
