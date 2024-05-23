@@ -129,6 +129,13 @@ class BluetoothService : Service() {
     var harsh_driving_array = MutableList(23) { 0f } // 23개 시간대의 harsh_driving 거리
     var sumSuddenDecelerationDistance = 0f
 
+    var constantList1 = MutableList(23) {0f}
+    var constantList2 = MutableList(23) {0f}
+    var constantList3 = MutableList(23) {0f}
+    var constantList4 = MutableList(23) {0f}
+    var constantList5 = MutableList(23) {0f}
+    var firstConstantTimeStamp = 0L
+
     private var sensorState:Boolean = false
 
     private var driveDatabase: DriveDatabase? = null
@@ -155,7 +162,6 @@ class BluetoothService : Service() {
     private var pastSpeed: Float = 0f
     private var pastTimeStamp = 0L
 
-
     /**
      * textFile 저장 용도
      */
@@ -168,7 +174,7 @@ class BluetoothService : Service() {
 
 
     private var INTERVAL = 1000L
-    private var INTERVAL2 = 60000L * 5
+    private var INTERVAL2 = 60000L
 
     /**
      *         locationRequest.setInterval(INTERVAL) // 20초마다 업데이트 요청
@@ -245,9 +251,11 @@ class BluetoothService : Service() {
 //         주기적으로 알림 갱신
         alarmTimer = timer(period = 600000, initialDelay = 600000 ) {
             if(sensorState){
-                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 중..($distanceSum m)").build())
+                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 중..($distanceSum m)").setPriority(NotificationCompat.PRIORITY_HIGH).build())
             } else{
-                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중.." + getCurrent()).build())
+                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중.." + getCurrent()).setPriority(NotificationCompat.PRIORITY_HIGH).build())
+                registerActivityTransitionUpdates()
+                registerReceiver(transitionReceiver, filter)
             }
         }
 
@@ -266,9 +274,10 @@ class BluetoothService : Service() {
         ActivityRecognition.getClient(this)
             .requestActivityTransitionUpdates(request, pendingIntent)
             .addOnSuccessListener {
+                writeToFile("addOnSuccessListener",getCurrent())
 
             }.addOnFailureListener { e ->
-
+                writeToFile("addOnFailureListener",getCurrent() + " :: "+ e.toString() + "\n")
             }
     }
 
@@ -473,6 +482,13 @@ class BluetoothService : Service() {
         harsh_driving_array = MutableList(23) { 0f } // 23개 시간대의 harsh_driving 거리
         sumSuddenDecelerationDistance = 0f
 
+        constantList1 = MutableList(23) {0f}
+        constantList2 = MutableList(23) {0f}
+        constantList3 = MutableList(23) {0f}
+        constantList4 = MutableList(23) {0f}
+        constantList5 = MutableList(23) {0f}
+        firstConstantTimeStamp = 0L
+
         maxSpeed = 0f
         distanceSum = 0f
         startTimeStamp = System.currentTimeMillis()
@@ -617,7 +633,7 @@ class BluetoothService : Service() {
             override fun onLocationResult(locationResult: LocationResult) {
                 try{
                     val location: Location = locationResult.lastLocation
-//                    writeToFile("fused2",getCurrent() + "," + location.altitude + ", "+ location.longitude + "\n")
+                    writeToFile("fused2",getCurrent() + "," + location.altitude + ", "+ location.longitude + "\n")
                 }catch (e:Exception){
 
                 }
@@ -853,6 +869,90 @@ class BluetoothService : Service() {
             low_speed_driving_array[HH] = low_speed_driving_array[HH] + distance
         }
 
+        /**
+         * 항속 주행거리 계산
+         */
+        if(firstConstantTimeStamp == 0L){
+            // 첫 3분 시작 시점
+            firstConstantTimeStamp = timeStamp
+            if (location.speed * MS_TO_KH in 61f..80f) {
+                constantList1[getDateFromTimeStamp(timeStamp)] = constantList1[getDateFromTimeStamp(
+                    timeStamp
+                )] + distance
+            } else if(location.speed * MS_TO_KH in 81f..100f){
+                constantList2[getDateFromTimeStamp(timeStamp)] = constantList1[getDateFromTimeStamp(
+                    timeStamp
+                )] + distance
+            } else if(location.speed * MS_TO_KH in 101f..120f){
+                constantList3[getDateFromTimeStamp(timeStamp)] = constantList1[getDateFromTimeStamp(
+                    timeStamp
+                )] + distance
+            } else if(location.speed * MS_TO_KH in 121f..140f){
+                constantList4[getDateFromTimeStamp(timeStamp)] = constantList1[getDateFromTimeStamp(
+                    timeStamp
+                )] + distance
+            } else{
+                constantList5[getDateFromTimeStamp(timeStamp)] =
+                    constantList5[getDateFromTimeStamp(timeStamp)] + distance
+            }
+
+
+        } else if(timeStamp - firstConstantTimeStamp >= 180000){
+            var sumofsum = constantList1.sum() + constantList2.sum() + constantList3.sum() + constantList4.sum() + constantList5.sum()
+            // n번째 3분 시작 시점
+
+            if(constantList1.sum()/sumofsum >= 0.8f || constantList2.sum()/sumofsum >= 0.8f || constantList3.sum()/sumofsum >= 0.8f || constantList4.sum()/sumofsum >= 0.8f){
+                for(i: Int in 0..22){
+                    constant_speed_driving_array[i] = constant_speed_driving_array[i] + constantList1[i] + constantList2[i] + constantList3[i] + constantList4[i]
+                }
+            }
+
+            firstConstantTimeStamp = timeStamp
+            constantList1 = MutableList(24) {0f}
+            constantList2 = MutableList(24) {0f}
+            constantList3 = MutableList(24) {0f}
+            constantList4 = MutableList(24) {0f}
+            constantList5 = MutableList(24) {0f}
+
+            // 3분 간격 동안 계속 쌓기
+            if (location.speed * MS_TO_KH in 61f..80f) {
+                constantList1[getDateFromTimeStamp(timeStamp)] =
+                    constantList1[getDateFromTimeStamp(timeStamp)] + distance
+            } else if (location.speed * MS_TO_KH in 81f..100f) {
+                constantList2[getDateFromTimeStamp(timeStamp)] =
+                    constantList3[getDateFromTimeStamp(timeStamp)] + distance
+            } else if (location.speed * MS_TO_KH in 101f..120f) {
+                constantList3[getDateFromTimeStamp(timeStamp)] =
+                    constantList4[getDateFromTimeStamp(timeStamp)] + distance
+            } else if (location.speed * MS_TO_KH in 121f..140f) {
+                constantList4[getDateFromTimeStamp(timeStamp)] =
+                    constantList4[getDateFromTimeStamp(timeStamp)] + distance
+            } else{
+                constantList5[getDateFromTimeStamp(timeStamp)] =
+                    constantList5[getDateFromTimeStamp(timeStamp)] + distance
+            }
+
+
+        } else {
+            // 3분 간격 동안 계속 쌓기
+            if (location.speed * MS_TO_KH in 61f..80f) {
+                constantList1[getDateFromTimeStamp(timeStamp)] =
+                    constantList1[getDateFromTimeStamp(timeStamp)] + distance
+            } else if (location.speed * MS_TO_KH in 81f..100f) {
+                constantList2[getDateFromTimeStamp(timeStamp)] =
+                    constantList3[getDateFromTimeStamp(timeStamp)] + distance
+            } else if (location.speed * MS_TO_KH in 101f..120f) {
+                constantList3[getDateFromTimeStamp(timeStamp)] =
+                    constantList4[getDateFromTimeStamp(timeStamp)] + distance
+            } else if (location.speed * MS_TO_KH in 121f..140f) {
+                constantList4[getDateFromTimeStamp(timeStamp)] =
+                    constantList4[getDateFromTimeStamp(timeStamp)] + distance
+            } else{
+                constantList5[getDateFromTimeStamp(timeStamp)] =
+                    constantList5[getDateFromTimeStamp(timeStamp)] + distance
+            }
+        }
+
 
         pastTimeStamp = timeStamp
         pastSpeed = location.speed
@@ -946,7 +1046,7 @@ class BluetoothService : Service() {
                     sudden_start_array.toList(),
                     high_speed_driving_array.toList(),
                     low_speed_driving_array.toList(),
-                    calculateData.getConstantSpeedDriving(gpsInfo),
+                    constant_speed_driving_array.toList(),
                     harsh_driving_array.toList(),
                     sumSuddenDecelerationDistance,
                     gpsInfo)

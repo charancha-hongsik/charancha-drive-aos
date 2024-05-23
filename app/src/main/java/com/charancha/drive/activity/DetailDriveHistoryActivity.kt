@@ -85,7 +85,7 @@ class DetailDriveHistoryActivity: AppCompatActivity() {
 
         var contents = ""
         contents = contents + "주행 종료 : " + getDateFromTimeStamp((driveDto.timeStamp + driveDto.time)) + "\n"
-        contents = contents +  "항속 주행 거리 : " + calculateData.getConstantSpeedDriving(driveDto.jsonData.toMutableList()).sum() + "\n"
+        contents = contents +  "항속 주행 거리 : " + driveDto.constant_speed_driving_array.sum() + "\n"
         contents = contents + "Harsh Driving 거리: " + driveDto.harsh_driving_array.sum() + "\n"
         contents = contents + "저속 주행거리: " + driveDto.low_speed_driving_array.sum() + "\n"
         contents = contents + "고속 주행거리: " + driveDto.high_speed_driving_array.sum() + "\n"
@@ -94,13 +94,6 @@ class DetailDriveHistoryActivity: AppCompatActivity() {
         contents = contents + "급감속 횟수: " + driveDto.sudden_deceleration_array.sum() + "\n"
         contents = contents + "급가속 횟수: " + driveDto.sudden_acceleration_array.sum() + "\n"
         contents = contents + "급가감속 거리: " + driveDto.sum_sudden_deceleration_speed + "\n"
-
-
-
-
-
-
-
 
         tvRapid1.text = contents
 

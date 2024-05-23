@@ -190,40 +190,103 @@ object calculateData {
 
 
     /**
-     *  var constant_speed_driving: Float, // 12533.736
-     *  -> 항속 주행 거리 (distance)
-     *  -> 3분 이상 속도가 시속 10km/h 이내로 변동하는 구간을 '일정한 속도로 운행한 거리'
-     *  -> 속도 범위: 60km/h이상 140km/h이하
+     * 항속 주행거리
+     * 주행 시작 시 3분마다 체크한다.
+     * 속도 61이상 ~ 141미만
+     * 속도 범위 중 1개가 80%이상 비중을 차지한다.
+     *
+     * 속도 범위
+     * 61 이상 ~ 81 미만
+     * 81 이상 ~ 101 미만
+     * 101 이상 ~ 121 미만
+     * 121 이상 ~ 141 미만
      */
     fun getConstantSpeedDriving(gpsInfo:MutableList<EachGpsDto>):List<Float>{
         try {
             val list = MutableList(23) { 0f }
-
-            var distanceSum = 0f
-            var distanceSumofSum = 0f
-            var firstTimeStamp = 0L
-            var pastSpeed = 0f
+            var constantList1 = MutableList(23) {0f}
+            var constantList2 = MutableList(23) {0f}
+            var constantList3 = MutableList(23) {0f}
+            var constantList4 = MutableList(23) {0f}
+            var constantList5 = MutableList(23) {0f}
+            var firstConstantTimeStamp = 0L
 
             for (info in gpsInfo) {
-                if (firstTimeStamp == 0L)
-                    firstTimeStamp = info.timeStamp
 
-                if (info.speed * MS_TO_KH in 60f..140f && (pastSpeed * MS_TO_KH) - (info.speed * MS_TO_KH) in -10f..10f) {
-                    distanceSum += info.distance
+                if(firstConstantTimeStamp == 0L){
+                    // 첫 3분 시작 시점
+                    firstConstantTimeStamp = info.timeStamp
+                    if (info.speed * MS_TO_KH in 61f..80f) {
+                        constantList1[getDateFromTimeStamp(info.timeStamp)] = constantList1[getDateFromTimeStamp(info.timeStamp)] + info.distance
+                    } else if(info.speed * MS_TO_KH in 81f..100f){
+                        constantList2[getDateFromTimeStamp(info.timeStamp)] = constantList1[getDateFromTimeStamp(info.timeStamp)] + info.distance
+                    } else if(info.speed * MS_TO_KH in 101f..120f){
+                        constantList3[getDateFromTimeStamp(info.timeStamp)] = constantList1[getDateFromTimeStamp(info.timeStamp)] + info.distance
+                    } else if(info.speed * MS_TO_KH in 121f..140f){
+                        constantList4[getDateFromTimeStamp(info.timeStamp)] = constantList1[getDateFromTimeStamp(info.timeStamp)] + info.distance
+                    } else{
+                        constantList5[getDateFromTimeStamp(info.timeStamp)] =
+                            constantList5[getDateFromTimeStamp(info.timeStamp)] + info.distance
+                    }
+
+
+                } else if(info.timeStamp - firstConstantTimeStamp >= 180000){
+                    var sumofsum = constantList1.sum() + constantList2.sum() + constantList3.sum() + constantList4.sum() + constantList5.sum()
+                    // n번째 3분 시작 시점
+
+                    if(constantList1.sum()/sumofsum >= 0.8f || constantList2.sum()/sumofsum >= 0.8f || constantList3.sum()/sumofsum >= 0.8f || constantList4.sum()/sumofsum >= 0.8f){
+                        for(i: Int in 0..22){
+                            list[i] = list[i] + constantList1[i] + constantList2[i] + constantList3[i] + constantList4[i]
+                        }
+                    }
+
+                    firstConstantTimeStamp = info.timeStamp
+                    constantList1 = MutableList(24) {0f}
+                    constantList2 = MutableList(24) {0f}
+                    constantList3 = MutableList(24) {0f}
+                    constantList4 = MutableList(24) {0f}
+                    constantList5 = MutableList(24) {0f}
+
+                    // 3분 간격 동안 계속 쌓기
+                    if (info.speed * MS_TO_KH in 61f..80f) {
+                        constantList1[getDateFromTimeStamp(info.timeStamp)] =
+                            constantList1[getDateFromTimeStamp(info.timeStamp)] + info.distance
+                    } else if (info.speed * MS_TO_KH in 81f..100f) {
+                        constantList2[getDateFromTimeStamp(info.timeStamp)] =
+                            constantList3[getDateFromTimeStamp(info.timeStamp)] + info.distance
+                    } else if (info.speed * MS_TO_KH in 101f..120f) {
+                        constantList3[getDateFromTimeStamp(info.timeStamp)] =
+                            constantList4[getDateFromTimeStamp(info.timeStamp)] + info.distance
+                    } else if (info.speed * MS_TO_KH in 121f..140f) {
+                        constantList4[getDateFromTimeStamp(info.timeStamp)] =
+                            constantList4[getDateFromTimeStamp(info.timeStamp)] + info.distance
+                    } else{
+                        constantList5[getDateFromTimeStamp(info.timeStamp)] =
+                            constantList5[getDateFromTimeStamp(info.timeStamp)] + info.distance
+                    }
+
 
                 } else {
-                    if ((info.timeStamp - firstTimeStamp) >= 60000 * 3)
-                        distanceSumofSum += distanceSum
-
-                    distanceSum = 0f
+                    // 3분 간격 동안 계속 쌓기
+                    if (info.speed * MS_TO_KH in 61f..80f) {
+                        constantList1[getDateFromTimeStamp(info.timeStamp)] =
+                            constantList1[getDateFromTimeStamp(info.timeStamp)] + info.distance
+                    } else if (info.speed * MS_TO_KH in 81f..100f) {
+                        constantList2[getDateFromTimeStamp(info.timeStamp)] =
+                            constantList3[getDateFromTimeStamp(info.timeStamp)] + info.distance
+                    } else if (info.speed * MS_TO_KH in 101f..120f) {
+                        constantList3[getDateFromTimeStamp(info.timeStamp)] =
+                            constantList4[getDateFromTimeStamp(info.timeStamp)] + info.distance
+                    } else if (info.speed * MS_TO_KH in 121f..140f) {
+                        constantList4[getDateFromTimeStamp(info.timeStamp)] =
+                            constantList4[getDateFromTimeStamp(info.timeStamp)] + info.distance
+                    } else{
+                        constantList5[getDateFromTimeStamp(info.timeStamp)] =
+                            constantList5[getDateFromTimeStamp(info.timeStamp)] + info.distance
+                    }
                 }
 
-                pastSpeed = info.speed
-            }
 
-            if (distanceSum != 0f) {
-                if ((gpsInfo[gpsInfo.size - 1].timeStamp - firstTimeStamp) >= 60000 * 3)
-                    distanceSumofSum += distanceSum
             }
 
             return list.toList()
@@ -629,6 +692,7 @@ object calculateData {
     fun getAverageSuddenDecelerationSpeed():Float{
         return 0f
     }
+
 
 
 
