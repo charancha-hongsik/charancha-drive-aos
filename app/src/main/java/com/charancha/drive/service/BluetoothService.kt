@@ -338,7 +338,7 @@ class BluetoothService : Service() {
                 }
             }
         }catch (e:Exception){
-            writeToFile("exception1",e.toString())
+//            writeToFile("exception1",e.toString())
         }
     }
 
@@ -393,7 +393,7 @@ class BluetoothService : Service() {
                 setLocation()
             }
         } catch(e:Exception){
-            writeToFile("exception5",e.toString())
+//            writeToFile("exception5",e.toString())
         }
     }
 
@@ -424,7 +424,7 @@ class BluetoothService : Service() {
                 }
             }
         }catch (e:Exception){
-            writeToFile("exception2",e.toString())
+//            writeToFile("exception2",e.toString())
 
         }
     }
@@ -451,7 +451,7 @@ class BluetoothService : Service() {
 
             }
         }catch(e:Exception){
-            writeToFile("exception3",e.toString())
+//            writeToFile("exception3",e.toString())
 
         }
     }
@@ -561,11 +561,13 @@ class BluetoothService : Service() {
     }
 
     private fun isConnected(device: BluetoothDevice): Boolean {
-        return try {
+        try {
             val m: Method = device.javaClass.getMethod("isConnected")
             m.invoke(device) as Boolean
-        } catch (e: Exception) {
-            throw IllegalStateException(e)
+
+            return m.invoke(device) as Boolean
+        } catch (e:Exception){
+            return false
         }
     }
 
@@ -581,7 +583,7 @@ class BluetoothService : Service() {
             writer.flush()
             writer.close()
         } catch (e: IOException) {
-            writeToFile("exception4",e.toString())
+//            writeToFile("exception4",e.toString())
         }
     }
 
@@ -1051,7 +1053,7 @@ class BluetoothService : Service() {
 
                 driveDatabase?.driveDao()?.insert(drive)
             } catch (e:Exception){
-                writeToFile("exception",e.toString())
+//                writeToFile("exception",e.toString())
             }
         }.start()
     }
