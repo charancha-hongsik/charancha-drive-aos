@@ -231,10 +231,10 @@ object calculateData {
 
 
                 } else if(info.timeStamp - firstConstantTimeStamp >= 180000){
-                    var sumofsum = constantList1.sum() + constantList2.sum() + constantList3.sum() + constantList4.sum() + constantList5.sum()
+                    var countSum = constantList1.count() + constantList2.count() + constantList3.count() + constantList4.count() + constantList5.count()
                     // n번째 3분 시작 시점
 
-                    if(constantList1.sum()/sumofsum >= 0.8f || constantList2.sum()/sumofsum >= 0.8f || constantList3.sum()/sumofsum >= 0.8f || constantList4.sum()/sumofsum >= 0.8f){
+                    if(constantList1.count()/countSum >= 0.8f || constantList2.count()/countSum >= 0.8f || constantList3.count()/countSum >= 0.8f || constantList4.count()/countSum >= 0.8f){
                         for(i: Int in 0..22){
                             list[i] = list[i] + constantList1[i] + constantList2[i] + constantList3[i] + constantList4[i]
                         }
