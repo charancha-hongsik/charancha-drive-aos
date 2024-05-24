@@ -2,7 +2,9 @@ package com.charancha.drive.activity
 
 import android.Manifest.permission.*
 import android.app.ActivityManager
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -45,20 +47,37 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var chart: PieChart
 
+    private fun promptForBatteryOptimization() {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        builder.setTitle("Battery Optimization")
+        builder.setMessage("이 앱은 올바르게 작동하기 위해 배터리 최적화에서 제외되어야 합니다. 이 앱을 배터리 최적화에서 제외하시겠습니까?")
+        builder.setPositiveButton("Yes",
+            DialogInterface.OnClickListener { dialog, which ->
+                val intent = Intent()
+                intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+                intent.data = Uri.parse("package:$packageName")
+                startActivity(intent)
+            })
+        builder.setNegativeButton("No",
+            DialogInterface.OnClickListener { dialog, which -> dialog.dismiss() })
+        builder.show()
+    }
+
+    private fun requestBatteryOptimizationException() {
+        val packageName = packageName
+        val pm = getSystemService(POWER_SERVICE) as PowerManager
+        if (pm.isIgnoringBatteryOptimizations(packageName)) {
+
+        } else {
+            promptForBatteryOptimization()
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val intent = Intent()
-            val packageName = packageName
-            val pm = getSystemService(POWER_SERVICE) as PowerManager
-            if (pm.isIgnoringBatteryOptimizations(packageName)) intent.action =
-                Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS else {
-                intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-                intent.data = Uri.parse("package:$packageName")
-            }
-            startActivity(intent)
+            requestBatteryOptimizationException()
         }
 
 
