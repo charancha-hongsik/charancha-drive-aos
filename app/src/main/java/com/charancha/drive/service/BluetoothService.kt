@@ -3,8 +3,7 @@ package com.charancha.drive.service
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.*
-import android.app.PendingIntent.FLAG_IMMUTABLE
-import android.app.PendingIntent.FLAG_MUTABLE
+import android.app.PendingIntent.*
 import android.bluetooth.*
 import android.bluetooth.BluetoothClass.Device.AUDIO_VIDEO_HANDSFREE
 import android.bluetooth.BluetoothClass.Service.*
@@ -84,22 +83,8 @@ class BluetoothService : Service() {
 
     private lateinit var carConnectionQueryHandler: CarConnectionQueryHandler
 
-    private val transitions: List<ActivityTransition> by lazy {
-        listOf(
-            ActivityTransition.Builder()
-                .setActivityType(DetectedActivity.IN_VEHICLE)
-                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                .build(),
-            ActivityTransition.Builder()
-                .setActivityType(DetectedActivity.IN_VEHICLE)
-                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                .build(),
-            ActivityTransition.Builder()
-                .setActivityType(DetectedActivity.WALKING)
-                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                .build()
-        )
-    }
+    var transitions : MutableList<ActivityTransition> = mutableListOf<ActivityTransition>()
+
     private val transitionReceiver by lazy {
         TransitionsReceiver()
     }
@@ -118,22 +103,22 @@ class BluetoothService : Service() {
      * ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ SensorService 관련 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
      */
 
-    var distance_array = MutableList(23) { 0f } // 23개 시간대의 distance
-    var sudden_deceleration_array = MutableList(23) { 0 } // 23개 시간대의 sudden_deceleration 갯수
-    var sudden_stop_array = MutableList(23) { 0 } // 23개 시간대의 sudden_stop 갯수
-    var sudden_acceleration_array = MutableList(23) { 0 }// 23개 시간대의 sudden_acceleration 갯수
-    var sudden_start_array= MutableList(23) { 0 }  // 23개 시간대의 sudden_start 갯수
-    var high_speed_driving_array = MutableList(23) { 0f } // 23개 시간대의 high_speed_driving 거리
-    var low_speed_driving_array = MutableList(23) { 0f } // 23개 시간대의 low_speed_driving 거리
-    var constant_speed_driving_array = MutableList(23) { 0f } // 23개 시간대의 constant_speed_driving 거리
-    var harsh_driving_array = MutableList(23) { 0f } // 23개 시간대의 harsh_driving 거리
+    var distance_array = MutableList(24) { 0f } // 24개 시간대의 distance
+    var sudden_deceleration_array = MutableList(24) { 0 } // 24개 시간대의 sudden_deceleration 갯수
+    var sudden_stop_array = MutableList(24) { 0 } // 24개 시간대의 sudden_stop 갯수
+    var sudden_acceleration_array = MutableList(24) { 0 }// 24개 시간대의 sudden_acceleration 갯수
+    var sudden_start_array= MutableList(24) { 0 }  // 24개 시간대의 sudden_start 갯수
+    var high_speed_driving_array = MutableList(24) { 0f } // 24개 시간대의 high_speed_driving 거리
+    var low_speed_driving_array = MutableList(24) { 0f } // 24개 시간대의 low_speed_driving 거리
+    var constant_speed_driving_array = MutableList(24) { 0f } // 24개 시간대의 constant_speed_driving 거리
+    var harsh_driving_array = MutableList(24) { 0f } // 24개 시간대의 harsh_driving 거리
     var sumSuddenDecelerationDistance = 0f
 
-    var constantList1 = MutableList(23) {0f}
-    var constantList2 = MutableList(23) {0f}
-    var constantList3 = MutableList(23) {0f}
-    var constantList4 = MutableList(23) {0f}
-    var constantList5 = MutableList(23) {0f}
+    var constantList1 = MutableList(24) {0f}
+    var constantList2 = MutableList(24) {0f}
+    var constantList3 = MutableList(24) {0f}
+    var constantList4 = MutableList(24) {0f}
+    var constantList5 = MutableList(24) {0f}
     var firstConstantTimeStamp = 0L
 
     private var sensorState:Boolean = false
@@ -221,13 +206,48 @@ class BluetoothService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        transitions.add(
+            ActivityTransition.Builder()
+                .setActivityType(DetectedActivity.WALKING)
+                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                .build()) // 걷기에 돌입하면 이벤트 발생
+        transitions.add(
+            ActivityTransition.Builder()
+                .setActivityType(DetectedActivity.WALKING)
+                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
+                .build()) // 걷기를 멈추면 이벤트 발생
+        transitions.add(
+            ActivityTransition.Builder()
+                .setActivityType(DetectedActivity.IN_VEHICLE)
+                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                .build()) // 한곳에 머물기 시작하면 이벤트 발생
+        transitions.add(
+            ActivityTransition.Builder()
+                .setActivityType(DetectedActivity.IN_VEHICLE)
+                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
+                .build()) // 다른 곳으로 이동하기 시작하면 이벤트 발생
+        transitions.add(
+            ActivityTransition.Builder()
+                .setActivityType(DetectedActivity.STILL)
+                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                .build()) // 한곳에 머물기 시작하면 이벤트 발생
+        transitions.add(
+            ActivityTransition.Builder()
+                .setActivityType(DetectedActivity.STILL)
+                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
+                .build()) // 다른 곳으로 이동하기 시작하면 이벤트 발생
+
         carConnectionQueryHandler = CarConnectionQueryHandler(contentResolver)
 
         request = ActivityTransitionRequest(transitions)
 
-        val intent = Intent(TRANSITIONS_RECEIVER_ACTION)
-        pendingIntent = PendingIntent.getBroadcast(this, 0, intent, FLAG_MUTABLE)
+        var intent = Intent(TRANSITIONS_RECEIVER_ACTION)
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
+            pendingIntent = getBroadcast(this, 0, intent, FLAG_MUTABLE)
+        }else{
+            pendingIntent = getBroadcast(this, 0, intent, FLAG_UPDATE_CURRENT)
 
+        }
 
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
             channel
@@ -257,8 +277,8 @@ class BluetoothService : Service() {
             }
         }
 
+        registerReceiver(TransitionsReceiver(), filter)
         registerActivityTransitionUpdates()
-        registerReceiver(transitionReceiver, filter)
 
         return START_REDELIVER_INTENT
     }
@@ -277,70 +297,6 @@ class BluetoothService : Service() {
 
             }
     }
-
-    @RequiresApi(Build.VERSION_CODES.Q)
-    fun exportToFile(fileName: String, content: String) {
-//        try {
-//            val contentValues = ContentValues().apply {
-//                put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
-//                put(MediaStore.MediaColumns.MIME_TYPE, "text/plain")
-//                put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
-//            }
-//
-//            val extVolumeUri: Uri = MediaStore.Files.getContentUri("external")
-//
-//            // query for the file
-//            val cursor: Cursor? = contentResolver.query(
-//                extVolumeUri,
-//                arrayOf(MediaStore.Downloads.DISPLAY_NAME, MediaStore.Downloads._ID),
-//                null,
-//                null,
-//                null
-//            )
-//
-//
-//            var fileUri: Uri? = null
-//
-//            // if file found
-//            if (cursor != null && cursor.count > 0) {
-//                // get URI
-//                while (cursor.moveToNext()) {
-//                    val nameIndex = cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME)
-//                    if (nameIndex > -1) {
-//                        val displayName = cursor.getString(nameIndex)
-//                        if (displayName == "$fileName.txt") {
-//                            val idIndex = cursor.getColumnIndex(MediaStore.MediaColumns._ID)
-//                            if (idIndex > -1) {
-//                                val id = cursor.getLong(idIndex)
-//                                fileUri = ContentUris.withAppendedId(extVolumeUri, id)
-//                            }
-//                        }
-//                    }
-//                }
-//
-//                cursor.close()
-//            } else {
-//                // insert new file otherwise
-//                fileUri = contentResolver.insert(extVolumeUri, contentValues)
-//            }
-//
-//            if (fileUri == null) {
-//                fileUri = contentResolver.insert(extVolumeUri, contentValues)
-//            }
-//
-//            if (fileUri != null) {
-//                val os = contentResolver.openOutputStream(fileUri, "wa")
-//
-//                if (os != null) {
-//                    os.write(content.toByteArray())
-//                    os.close()
-//                }
-//            }
-//        }catch (e:Exception){
-////            writeToFile("exception1",e.toString())
-//        }
-    }
-
 
     private fun getCurrent(): String {
         val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
@@ -392,7 +348,6 @@ class BluetoothService : Service() {
                 setLocation()
             }
         } catch(e:Exception){
-//            writeToFile("exception5",e.toString())
         }
     }
 
@@ -423,8 +378,6 @@ class BluetoothService : Service() {
                 }
             }
         }catch (e:Exception){
-//            writeToFile("exception2",e.toString())
-
         }
     }
 
@@ -450,8 +403,6 @@ class BluetoothService : Service() {
 
             }
         }catch(e:Exception){
-//            writeToFile("exception3",e.toString())
-
         }
     }
 
@@ -468,22 +419,22 @@ class BluetoothService : Service() {
         altitudeInfoFromGps = ""
         accelerationInfo = ""
 
-        distance_array = MutableList(23) { 0f } // 23개 시간대의 distance
-        sudden_deceleration_array = MutableList(23) { 0 } // 23개 시간대의 sudden_deceleration 갯수
-        sudden_stop_array = MutableList(23) { 0 } // 23개 시간대의 sudden_stop 갯수
-        sudden_acceleration_array = MutableList(23) { 0 }// 23개 시간대의 sudden_acceleration 갯수
-        sudden_start_array = MutableList(23) { 0 }  // 23개 시간대의 sudden_start 갯수
-        high_speed_driving_array = MutableList(23) { 0f } // 23개 시간대의 high_speed_driving 거리
-        low_speed_driving_array = MutableList(23) { 0f } // 23개 시간대의 low_speed_driving 거리
-        constant_speed_driving_array = MutableList(23) { 0f } // 23개 시간대의 constant_speed_driving 거리
-        harsh_driving_array = MutableList(23) { 0f } // 23개 시간대의 harsh_driving 거리
+        distance_array = MutableList(24) { 0f } // 23개 시간대의 distance
+        sudden_deceleration_array = MutableList(24) { 0 } // 23개 시간대의 sudden_deceleration 갯수
+        sudden_stop_array = MutableList(24) { 0 } // 23개 시간대의 sudden_stop 갯수
+        sudden_acceleration_array = MutableList(24) { 0 }// 23개 시간대의 sudden_acceleration 갯수
+        sudden_start_array = MutableList(24) { 0 }  // 23개 시간대의 sudden_start 갯수
+        high_speed_driving_array = MutableList(24) { 0f } // 23개 시간대의 high_speed_driving 거리
+        low_speed_driving_array = MutableList(24) { 0f } // 23개 시간대의 low_speed_driving 거리
+        constant_speed_driving_array = MutableList(24) { 0f } // 23개 시간대의 constant_speed_driving 거리
+        harsh_driving_array = MutableList(24) { 0f } // 23개 시간대의 harsh_driving 거리
         sumSuddenDecelerationDistance = 0f
 
-        constantList1 = MutableList(23) {0f}
-        constantList2 = MutableList(23) {0f}
-        constantList3 = MutableList(23) {0f}
-        constantList4 = MutableList(23) {0f}
-        constantList5 = MutableList(23) {0f}
+        constantList1 = MutableList(24) {0f}
+        constantList2 = MutableList(24) {0f}
+        constantList3 = MutableList(24) {0f}
+        constantList4 = MutableList(24) {0f}
+        constantList5 = MutableList(24) {0f}
         firstConstantTimeStamp = 0L
 
         maxSpeed = 0f
@@ -510,18 +461,24 @@ class BluetoothService : Service() {
     inner class TransitionsReceiver : BroadcastReceiver() {
         @SuppressLint("MissingPermission")
         override fun onReceive(context: Context?, intent: Intent?) {
+
             if (ActivityTransitionResult.hasResult(intent)) {
-                val result: ActivityTransitionResult = ActivityTransitionResult.extractResult(intent) ?: return
-                for (event in result.transitionEvents) {
-                    if(event.activityType == DetectedActivity.IN_VEHICLE){
-                        if(event.transitionType.equals(ACTIVITY_TRANSITION_ENTER)){
-                            startSensor(L1)
-                            writeToFile("IN_VEHICLE", getCurrent())
-                        }
-                    } else if(event.activityType == DetectedActivity.WALKING){
-                        if(event.transitionType.equals(ACTIVITY_TRANSITION_ENTER)){
-                            stopSensor()
-                            writeToFile("Walking", getCurrent())
+                val result = ActivityTransitionResult.extractResult(intent)
+                result?.let {
+                    for (event in it.transitionEvents) {
+                        val activityType = event.activityType
+                        val transitionType = event.transitionType
+
+                        if (activityType == DetectedActivity.WALKING) {
+                            if (transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
+                                // Walking 활동에 들어감
+                                stopSensor()
+                            }
+                        } else{
+                            if (transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
+                                // Vehicle 활동에 들어감
+                                startSensor(L1)
+                            }
                         }
                     }
                 }
@@ -529,13 +486,13 @@ class BluetoothService : Service() {
                 val bluetoothManager: BluetoothManager = getSystemService(BluetoothManager::class.java)
                 val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
 
+
                 val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
 
                 pairedDevices?.forEach { device ->
                     if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
                         if(isConnected(device)){
                             startSensor(L2)
-                            writeToFile("HANDSFREE ON", getCurrent())
                         }
                     }
                 }
@@ -549,7 +506,6 @@ class BluetoothService : Service() {
                     if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
                         if(!isConnected(device)){
                             stopSensor(L2)
-                            writeToFile("HANDSFREE OFF", getCurrent())
                         }
                     }
                 }
@@ -568,22 +524,6 @@ class BluetoothService : Service() {
         } catch (e:Exception){
             return false
         }
-    }
-
-    fun generateNoteOnSD(sFileName: String?, sBody: String?) {
-//        try {
-//            val root = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "Notes")
-//            if (!root.exists()) {
-//                root.mkdirs()
-//            }
-//            val gpxfile = File(root, "$sFileName.txt")
-//            val writer = FileWriter(gpxfile)
-//            writer.append(sBody)
-//            writer.flush()
-//            writer.close()
-//        } catch (e: IOException) {
-////            writeToFile("exception4",e.toString())
-//        }
     }
 
     private fun queryForState() {
@@ -632,7 +572,6 @@ class BluetoothService : Service() {
             override fun onLocationResult(locationResult: LocationResult) {
                 try{
                     val location: Location = locationResult.lastLocation
-//                    writeToFile("fused2",getCurrent() + "," + location.altitude + ", "+ location.longitude + "\n")
                 }catch (e:Exception){
 
                 }
@@ -701,19 +640,22 @@ class BluetoothService : Service() {
                     if(!firstLineState){
 
                         val location: Location = locationResult.lastLocation
-                        val timeStamp = System.currentTimeMillis()
+                        val timeStamp = location.time
+
 
                         /**
                          * W0D-78 중복시간 삭제
                          */
+                        Log.d("testsetsetest","testsetsetsetse compare :: " + (getDateFromTimeStampToSS(pastTimeStamp) != getDateFromTimeStampToSS(timeStamp)))
+
                         if(getDateFromTimeStampToSS(pastTimeStamp) != getDateFromTimeStampToSS(timeStamp)){
 
                             /**
                              * W0D-75 1초간 이동거리 70m 이상이면 제외
                              */
+
                             if(pastLocation!=null){
-                                if((pastLocation!!.distanceTo(location) / ((timeStamp-pastTimeStamp)/1000)) > 70){
-                                    writeToFile("deleted path","distance : " + pastLocation!!.distanceTo(location))
+                                if((pastLocation!!.distanceTo(location) * 1000 / (timeStamp-pastTimeStamp)) > 70){
                                     pastTimeStamp = timeStamp
                                     pastLocation = location
                                 } else {
@@ -723,17 +665,16 @@ class BluetoothService : Service() {
                                 processLocationCallback(location, timeStamp)
                             }
                         }else{
-                            if(pastLocation != null){
-                                writeToFile("deleted path","distance : " + pastLocation!!.distanceTo(location))
-                            }
-                            pastTimeStamp = timeStamp
                             pastLocation = location
+                            pastTimeStamp = location.time
+
                         }
 
                     }else{
                         firstLineState = false
-                        pastTimeStamp = System.currentTimeMillis()
                         pastLocation = locationResult.lastLocation
+                        pastTimeStamp = locationResult.lastLocation.time
+
                     }
                 }catch (e:Exception){
 
@@ -764,8 +705,7 @@ class BluetoothService : Service() {
         fusedLocationClient?.lastLocation!!
             .addOnSuccessListener { location: Location? ->
                 if (location != null) {
-                    Log.d("testeststs", "testsets altitude :: " + location.altitude)
-                    Log.d("testeststs", "testsets latitude :: " + location.latitude)
+
                 }
             }
 
@@ -974,11 +914,9 @@ class BluetoothService : Service() {
     }
 
     private fun makeSpeedInfo() {
-        writeToFile("speed (gps)", "$speedInfoFromGps\n\n maxSpeed : $maxSpeed \n\n")
     }
 
     private fun makeAccelerationInfo() {
-        writeToFile("Acceleration (gps)", accelerationInfo)
     }
 
     /**
@@ -1003,11 +941,9 @@ class BluetoothService : Service() {
     }
 
     private fun makePathLocationInfo() {
-        writeToFile("Latitude, Longitude (gps)", pathLocationInfoFromGps)
     }
 
     private fun makeDistanceBetween(){
-        writeToFile("Distance (gps)", "$distanceInfoFromGps\n\n distanceSum : $distanceSum \n\n")
     }
 
     private fun getAltitude(location: Location) {
@@ -1016,15 +952,6 @@ class BluetoothService : Service() {
     }
 
     private fun makeAltitudeFromGpsInfo() {
-        writeToFile("Altitude (gps)", altitudeInfoFromGps)
-    }
-
-    fun writeToFile(fileName: String, contents: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            exportToFile(fileName, contents)
-        } else{
-            generateNoteOnSD(fileName, contents)
-        }
     }
 
     fun writeToRoom(){
@@ -1052,7 +979,6 @@ class BluetoothService : Service() {
 
                 driveDatabase?.driveDao()?.insert(drive)
             } catch (e:Exception){
-//                writeToFile("exception",e.toString())
             }
         }.start()
     }

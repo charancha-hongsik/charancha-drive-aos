@@ -9,6 +9,7 @@
 
 
     <!-- Runtime Permission -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
@@ -87,8 +88,8 @@
         <service
             android:name=".service.BluetoothService"
             android:enabled="true"
-            android:exported="true"
-            android:foregroundServiceType="location"></service>
+            android:exported="false"
+            android:foregroundServiceType="location|dataSync" />
 
     </application>
 
