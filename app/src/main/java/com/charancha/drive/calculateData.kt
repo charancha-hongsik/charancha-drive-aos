@@ -203,12 +203,12 @@ object calculateData {
      */
     fun getConstantSpeedDriving(gpsInfo:MutableList<EachGpsDto>):List<Float>{
         try {
-            val list = MutableList(23) { 0f }
-            var constantList1 = MutableList(23) {0f}
-            var constantList2 = MutableList(23) {0f}
-            var constantList3 = MutableList(23) {0f}
-            var constantList4 = MutableList(23) {0f}
-            var constantList5 = MutableList(23) {0f}
+            val list = MutableList(24) { 0f }
+            var constantList1 = MutableList(24) {0f}
+            var constantList2 = MutableList(24) {0f}
+            var constantList3 = MutableList(24) {0f}
+            var constantList4 = MutableList(24) {0f}
+            var constantList5 = MutableList(24) {0f}
             var firstConstantTimeStamp = 0L
 
             for (info in gpsInfo) {
@@ -231,11 +231,12 @@ object calculateData {
 
 
                 } else if(info.timeStamp - firstConstantTimeStamp >= 180000){
-                    var countSum = constantList1.count() + constantList2.count() + constantList3.count() + constantList4.count() + constantList5.count()
+                    var countSum = constantList1.sum() + constantList2.sum() + constantList3.sum() + constantList4.sum() + constantList5.sum()
                     // n번째 3분 시작 시점
 
-                    if(constantList1.count()/countSum >= 0.8f || constantList2.count()/countSum >= 0.8f || constantList3.count()/countSum >= 0.8f || constantList4.count()/countSum >= 0.8f){
-                        for(i: Int in 0..22){
+
+                    if(constantList1.sum()/countSum >= 0.8f || constantList2.sum()/countSum >= 0.8f || constantList3.sum()/countSum >= 0.8f || constantList4.sum()/countSum >= 0.8f){
+                        for(i: Int in 0..23){
                             list[i] = list[i] + constantList1[i] + constantList2[i] + constantList3[i] + constantList4[i]
                         }
                     }
