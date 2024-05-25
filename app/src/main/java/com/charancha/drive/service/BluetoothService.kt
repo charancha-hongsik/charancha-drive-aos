@@ -375,6 +375,9 @@ class BluetoothService : Service() {
                     sensorManager.unregisterListener(sensorEventListener)
                     fusedLocationClient?.removeLocationUpdates(locationCallback)
                     fusedLocationClient = null
+
+                    (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중.." + getCurrent()).build())
+
                 }
             }
         }catch (e:Exception){
@@ -646,7 +649,6 @@ class BluetoothService : Service() {
                         /**
                          * W0D-78 중복시간 삭제
                          */
-                        Log.d("testsetsetest","testsetsetsetse compare :: " + (getDateFromTimeStampToSS(pastTimeStamp) != getDateFromTimeStampToSS(timeStamp)))
 
                         if(getDateFromTimeStampToSS(pastTimeStamp) != getDateFromTimeStampToSS(timeStamp)){
 
