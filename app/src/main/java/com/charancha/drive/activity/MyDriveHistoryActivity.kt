@@ -60,7 +60,7 @@ class MyDriveHistoryActivity: AppCompatActivity() {
                     it.get(i).constant_speed_driving_array,
                     it.get(i).harsh_driving_array,
                     it.get(i).sum_sudden_deceleration_speed,
-                    it.get(i).jsonData
+                    listOf()
                     )
                 )
                 startActivity(intent)

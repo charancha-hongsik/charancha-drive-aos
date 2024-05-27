@@ -99,6 +99,9 @@ class BluetoothService : Service() {
     private lateinit var request: ActivityTransitionRequest
     private lateinit var pendingIntent: PendingIntent
 
+    private lateinit var activityRecognitionClient: ActivityRecognitionClient
+    private lateinit var pendingIntent2: PendingIntent
+
     /**
      * ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ SensorService 관련 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
      */
@@ -277,6 +280,16 @@ class BluetoothService : Service() {
             }
         }
 
+        activityRecognitionClient = ActivityRecognition.getClient(this)
+        val intent2 = Intent(this, ActivityRecognitionReceiver::class.java)
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
+            pendingIntent2 = getService(this, 1, intent2, PendingIntent.FLAG_MUTABLE)
+        }else{
+            pendingIntent2 = getService(this, 1, intent2, PendingIntent.FLAG_UPDATE_CURRENT)
+
+        }
+        startActivityRecognition()
+
         registerReceiver(TransitionsReceiver(), filter)
         registerActivityTransitionUpdates()
 
@@ -303,6 +316,55 @@ class BluetoothService : Service() {
         format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
         val time = Date()
         return format.format(time)
+    }
+
+    private fun startActivityRecognition() {
+        val detectionIntervalMillis = 30000L // 30초 간격으로 업데이트 요청
+        activityRecognitionClient.requestActivityUpdates(detectionIntervalMillis, pendingIntent2)
+            .addOnSuccessListener {
+                // 업데이트 요청 성공
+            }
+            .addOnFailureListener {
+                // 업데이트 요청 실패
+            }
+    }
+
+    inner class ActivityRecognitionReceiver : BroadcastReceiver() {
+
+        override fun onReceive(context: Context, intent: Intent) {
+            if (ActivityRecognitionResult.hasResult(intent)) {
+                val result = ActivityRecognitionResult.extractResult(intent)
+                val detectedActivities = result.probableActivities
+                for (activity in detectedActivities) {
+                    when (activity.type) {
+                        DetectedActivity.IN_VEHICLE -> {
+                            startSensor(L1)
+                        }
+                        DetectedActivity.ON_BICYCLE -> {
+                            // 자전거 이동 감지
+                        }
+                        DetectedActivity.ON_FOOT -> {
+                            stopSensor()
+                        }
+                        DetectedActivity.STILL -> {
+                            // 정지 상태 감지
+                        }
+                        DetectedActivity.UNKNOWN -> {
+                            // 알 수 없는 활동 감지
+                        }
+                        DetectedActivity.TILTING -> {
+                            // 기울임 감지
+                        }
+                        DetectedActivity.WALKING -> {
+                            stopSensor()
+                        }
+                        DetectedActivity.RUNNING -> {
+                            // 달리기 감지
+                        }
+                    }
+                }
+            }
+        }
     }
 
     inner class CarConnectionQueryHandler(resolver: ContentResolver?) : AsyncQueryHandler(resolver) {
@@ -346,6 +408,9 @@ class BluetoothService : Service() {
                 sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
                 initDriveData(level)
                 setLocation()
+
+                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 중..($distanceSum m)").build())
+
             }
         } catch(e:Exception){
         }
