@@ -529,11 +529,10 @@ class BluetoothService : Service() {
         }
 
         private fun requestDistanceUpdate() {
-            maxDistance = 0f
-            firstLocation = null
             if(maxDistance <= 300f){
                 stopSensor()
             }
+
             maxDistance = 0f
             firstLocation = null
         }
