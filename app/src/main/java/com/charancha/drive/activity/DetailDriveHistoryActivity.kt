@@ -7,11 +7,14 @@ import android.os.Looper
 import android.util.Log
 import android.view.animation.LinearInterpolator
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.charancha.drive.R
 import com.charancha.drive.calculateData
 import com.charancha.drive.room.DriveDto
 import com.charancha.drive.room.entity.Drive
+import com.charancha.drive.viewmodel.DetailDriveHistoryViewModel
+import com.charancha.drive.viewmodel.MyDriveHistoryViewModel
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
@@ -38,10 +41,15 @@ class DetailDriveHistoryActivity: AppCompatActivity() {
     private val mMap: GoogleMap? = null
     private var currentMarker: Marker? = null
 
+    private val detailDriveHistoryViewModel: DetailDriveHistoryViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_drive_history)
+
+        detailDriveHistoryViewModel.init(applicationContext)
+
 
         init()
     }
