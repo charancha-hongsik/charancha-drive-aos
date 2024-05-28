@@ -25,15 +25,15 @@ class Converters {
         return value.split(",").map { it.toInt() }
     }
 
+
     @TypeConverter
-    fun fromEachGpsDtoList(value: List<EachGpsDto>): String {
-        return Gson().toJson(value)
+    fun fromEachGpsDtoList(value: List<EachGpsDto>?): String {
+        return Gson().toJson(value ?: emptyList<EachGpsDto>())
     }
 
     @TypeConverter
-    fun toEachGpsDtoList(value: String): List<EachGpsDto> {
-        val listType = object : TypeToken<List<EachGpsDto>>() {}.type
-        return Gson().fromJson(value, listType)
+    fun toEachGpsDtoList(value: String?): List<EachGpsDto> {
+        return if (value == null) emptyList() else Gson().fromJson(value, object : TypeToken<List<EachGpsDto>>() {}.type)
     }
 
     @TypeConverter

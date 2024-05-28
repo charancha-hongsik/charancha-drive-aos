@@ -44,7 +44,7 @@ class MyDriveHistoryActivity: AppCompatActivity() {
 
             lvHistory.setOnItemClickListener { adapterView, view, i, l ->
                 var intent = Intent(this@MyDriveHistoryActivity, DetailDriveHistoryActivity::class.java)
-                intent.putExtra("tracking_id",
+                intent.putExtra("driveDto",
                     DriveDto(
                     it.get(i).tracking_id,
                     it.get(i).timeStamp,

@@ -215,29 +215,10 @@ class BluetoothService : Service() {
                 .build()) // 걷기에 돌입하면 이벤트 발생
         transitions.add(
             ActivityTransition.Builder()
-                .setActivityType(DetectedActivity.WALKING)
-                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                .build()) // 걷기를 멈추면 이벤트 발생
-        transitions.add(
-            ActivityTransition.Builder()
                 .setActivityType(DetectedActivity.IN_VEHICLE)
                 .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
                 .build()) // 한곳에 머물기 시작하면 이벤트 발생
-        transitions.add(
-            ActivityTransition.Builder()
-                .setActivityType(DetectedActivity.IN_VEHICLE)
-                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                .build()) // 다른 곳으로 이동하기 시작하면 이벤트 발생
-        transitions.add(
-            ActivityTransition.Builder()
-                .setActivityType(DetectedActivity.STILL)
-                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                .build()) // 한곳에 머물기 시작하면 이벤트 발생
-        transitions.add(
-            ActivityTransition.Builder()
-                .setActivityType(DetectedActivity.STILL)
-                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                .build()) // 다른 곳으로 이동하기 시작하면 이벤트 발생
+
 
         carConnectionQueryHandler = CarConnectionQueryHandler(contentResolver)
 
@@ -269,15 +250,6 @@ class BluetoothService : Service() {
         setLocation2()
 
         sensorState = false
-
-//         주기적으로 알림 갱신
-        alarmTimer = timer(period = 600000, initialDelay = 600000 ) {
-            if(sensorState){
-                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 중..($distanceSum m)").build())
-            } else{
-                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중.." + getCurrent()).build())
-            }
-        }
 
         registerReceiver(TransitionsReceiver(), filter)
         registerActivityTransitionUpdates()
@@ -485,6 +457,13 @@ class BluetoothService : Service() {
 
         override fun doWork(): Result {
             requestActivityUpdates()
+
+            if(sensorState){
+                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 중..($distanceSum m)").build())
+            } else{
+                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중.." + getCurrent()).build())
+            }
+
             return Result.success()
         }
 
