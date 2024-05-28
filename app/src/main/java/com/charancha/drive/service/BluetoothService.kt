@@ -48,8 +48,6 @@ import kotlin.concurrent.timer
  */
 class BluetoothService : Service() {
     companion object {
-        const val TRANSITIONS_RECEIVER_ACTION = "TRANSITIONS_RECEIVER_ACTION"
-
         const val TAG = "AutoConnectionDetector"
 
         // columnName for provider to query on connection status
@@ -85,21 +83,11 @@ class BluetoothService : Service() {
 
     private lateinit var carConnectionQueryHandler: CarConnectionQueryHandler
 
-    var transitions : MutableList<ActivityTransition> = mutableListOf<ActivityTransition>()
-
-    private val transitionReceiver by lazy {
-        TransitionsReceiver()
-    }
-
     val filter = IntentFilter().apply {
         addAction(BluetoothDevice.ACTION_ACL_CONNECTED)
         addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED)
-        addAction(TRANSITIONS_RECEIVER_ACTION)
         addAction(ACTION_CAR_CONNECTION_UPDATED)
     }
-
-    private lateinit var request: ActivityTransitionRequest
-    private lateinit var pendingIntent: PendingIntent
 
     /**
      * ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ SensorService 관련 ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
@@ -135,12 +123,6 @@ class BluetoothService : Service() {
 
     // 위치 업데이트 요청 설정
     private var sensorEventListener: SensorEventListener? = null
-
-    private var fusedLocationClient2 :FusedLocationProviderClient? = null
-    // 위치 업데이트 요청 설정
-    private lateinit var locationRequest2: LocationRequest
-    private lateinit var locationCallback2: LocationCallback
-
     /**
      * 위치 센서
      */
@@ -161,8 +143,6 @@ class BluetoothService : Service() {
 
 
     private var INTERVAL = 1000L
-    private var INTERVAL2 = 60000L * 5
-
     /**
      *         locationRequest.setInterval(INTERVAL) // 20초마다 업데이트 요청
      *         locationRequest.setFastestInterval(FASTEST_INTERVAL) 다른 앱에서 연산된 위치를 수신
@@ -185,7 +165,6 @@ class BluetoothService : Service() {
      *  타이머 시간동안 최대 반경을 구하기 위한 변수들
      */
     lateinit var distanceSumForAnHourTimer:Timer
-    lateinit var alarmTimer:Timer
     var firstLocation: Location? = null
     var maxDistance = 0f
 
@@ -208,34 +187,11 @@ class BluetoothService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        transitions.add(
-            ActivityTransition.Builder()
-                .setActivityType(DetectedActivity.WALKING)
-                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                .build()) // 걷기에 돌입하면 이벤트 발생
-        transitions.add(
-            ActivityTransition.Builder()
-                .setActivityType(DetectedActivity.IN_VEHICLE)
-                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                .build()) // 한곳에 머물기 시작하면 이벤트 발생
-
-
         carConnectionQueryHandler = CarConnectionQueryHandler(contentResolver)
-
-        request = ActivityTransitionRequest(transitions)
-
-        var intent = Intent(TRANSITIONS_RECEIVER_ACTION)
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
-            pendingIntent = getBroadcast(this, 0, intent, FLAG_MUTABLE)
-        }else{
-            pendingIntent = getBroadcast(this, 0, intent, FLAG_UPDATE_CURRENT)
-
-        }
 
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
             channel
         )
-
         notification = NotificationCompat.Builder(this, CHANNEL_ID)
 
 
@@ -247,13 +203,9 @@ class BluetoothService : Service() {
             .setOnlyAlertOnce(true)
             .build())
 
-        setLocation2()
-
         sensorState = false
 
         registerReceiver(TransitionsReceiver(), filter)
-        registerActivityTransitionUpdates()
-
         scheduleWalkingDetectWork()
 
         return START_REDELIVER_INTENT
@@ -263,16 +215,6 @@ class BluetoothService : Service() {
         super.onCreate()
     }
 
-
-    private fun registerActivityTransitionUpdates() {
-        ActivityRecognition.getClient(this)
-            .requestActivityTransitionUpdates(request, pendingIntent)
-            .addOnSuccessListener {
-
-            }.addOnFailureListener { e ->
-
-            }
-    }
 
     private fun getCurrent(): String {
         val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
@@ -313,7 +255,7 @@ class BluetoothService : Service() {
                  * W0D-74 1행 데이터 삭제
                  */
                 firstLineState = true
-                startDistanceTimer()
+                scheduleDistanceWork()
 
                 sensorState = true
                 PreferenceUtil.putPref(this, PreferenceUtil.RUNNING_LEVEL, level)
@@ -347,8 +289,7 @@ class BluetoothService : Service() {
                     makeAltitudeFromGpsInfo()
 
                     writeToRoom()
-
-                    stopDistanceTimer()
+                    stopDistanceWork()
 
                     sensorManager.unregisterListener(sensorEventListener)
                     fusedLocationClient?.removeLocationUpdates(locationCallback)
@@ -375,8 +316,7 @@ class BluetoothService : Service() {
                 makeAltitudeFromGpsInfo()
 
                 writeToRoom()
-
-                stopDistanceTimer()
+                stopDistanceWork()
 
                 sensorManager.unregisterListener(sensorEventListener)
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
@@ -548,28 +488,7 @@ class BluetoothService : Service() {
     inner class TransitionsReceiver : BroadcastReceiver() {
         @SuppressLint("MissingPermission")
         override fun onReceive(context: Context?, intent: Intent?) {
-
-            if (ActivityTransitionResult.hasResult(intent)) {
-                val result = ActivityTransitionResult.extractResult(intent)
-                result?.let {
-                    for (event in it.transitionEvents) {
-                        val activityType = event.activityType
-                        val transitionType = event.transitionType
-
-                        if (activityType == DetectedActivity.WALKING) {
-                            if (transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
-                                // Walking 활동에 들어감
-                                stopSensor()
-                            }
-                        } else{
-                            if (transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
-                                // Vehicle 활동에 들어감
-                                startSensor(L1)
-                            }
-                        }
-                    }
-                }
-            } else if(intent?.action == BluetoothDevice.ACTION_ACL_CONNECTED){
+            if(intent?.action == BluetoothDevice.ACTION_ACL_CONNECTED){
                 val bluetoothManager: BluetoothManager = getSystemService(BluetoothManager::class.java)
                 val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
 
@@ -600,6 +519,41 @@ class BluetoothService : Service() {
                 queryForState()
             }
         }
+    }
+
+    inner class DistanceTimerWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
+
+        override fun doWork(): Result {
+            requestDistanceUpdate()
+            return Result.success()
+        }
+
+        private fun requestDistanceUpdate() {
+            maxDistance = 0f
+            firstLocation = null
+            if(maxDistance <= 300f){
+                stopSensor()
+            }
+            maxDistance = 0f
+            firstLocation = null
+        }
+    }
+
+    fun scheduleDistanceWork() {
+        val workRequest = PeriodicWorkRequest.Builder(
+            DistanceTimerWorker::class.java,
+            1, TimeUnit.HOURS
+        ).setInitialDelay(1,TimeUnit.HOURS).build()
+
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+            "DistanceWork",
+            ExistingPeriodicWorkPolicy.KEEP,
+            workRequest
+        )
+    }
+
+    fun stopDistanceWork() {
+        WorkManager.getInstance(this).cancelUniqueWork("DistanceWork")
     }
 
     private fun isConnected(device: BluetoothDevice): Boolean {
@@ -642,63 +596,6 @@ class BluetoothService : Service() {
     private fun stopDistanceTimer(){
         distanceSumForAnHourTimer.cancel()
     }
-
-
-    private fun setLocation2() {
-        // FusedLocationProviderClient 초기화
-        fusedLocationClient2 = LocationServices.getFusedLocationProviderClient(this)
-
-        // 위치 업데이트 요청 설정
-        locationRequest2 = LocationRequest.create()
-        locationRequest2.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
-        locationRequest2.setInterval(INTERVAL2) // INTERVAL 마다 업데이트 요청
-
-
-        // 위치 업데이트 리스너 생성
-        locationCallback2 = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult) {
-                try{
-                    val location: Location = locationResult.lastLocation
-                }catch (e:Exception){
-
-                }
-            }
-        }
-
-        // 위치 업데이트 요청 시작
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return
-        }
-
-        // 마지막 위치 처리
-        fusedLocationClient2?.lastLocation!!
-            .addOnSuccessListener { location: Location? ->
-                if (location != null) {
-
-                }
-            }
-
-        fusedLocationClient2?.requestLocationUpdates(
-            locationRequest2,
-            locationCallback2,
-            Looper.getMainLooper()
-        )
-    }
-
 
     /**
      * PRIORITY_BALANCED_POWER_ACCURACY 도시 블록 내의 위치 정밀도 요청. 정확도는 대략 100미터. Wi-Fi 정보와 휴대폰 기지국 위치를 사용할 수 있음. 대략적인 수준의 정확성으로 전력을 비교적 적게 사용함.
