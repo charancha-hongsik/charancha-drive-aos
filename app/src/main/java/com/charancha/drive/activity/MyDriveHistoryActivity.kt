@@ -44,25 +44,7 @@ class MyDriveHistoryActivity: AppCompatActivity() {
 
             lvHistory.setOnItemClickListener { adapterView, view, i, l ->
                 var intent = Intent(this@MyDriveHistoryActivity, DetailDriveHistoryActivity::class.java)
-                intent.putExtra("driveDto",
-                    DriveDto(
-                    it.get(i).tracking_id,
-                    it.get(i).timeStamp,
-                    it.get(i).verification,
-                    it.get(i).distance_array,
-                    it.get(i).time,
-                    it.get(i).sudden_deceleration_array,
-                    it.get(i).sudden_stop_array,
-                    it.get(i).sudden_acceleration_array,
-                    it.get(i).sudden_start_array,
-                    it.get(i).high_speed_driving_array,
-                    it.get(i).low_speed_driving_array,
-                    it.get(i).constant_speed_driving_array,
-                    it.get(i).harsh_driving_array,
-                    it.get(i).sum_sudden_deceleration_speed,
-                    listOf()
-                    )
-                )
+                intent.putExtra("tracking_id", it[i].tracking_id)
                 startActivity(intent)
             }
 

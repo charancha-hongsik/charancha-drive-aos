@@ -1,11 +1,13 @@
 package com.charancha.drive.activity
 
 import android.animation.ValueAnimator
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.animation.LinearInterpolator
+import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -35,7 +37,8 @@ class DetailDriveHistoryActivity: AppCompatActivity() {
     lateinit var tvRapid1:TextView
     lateinit var tvRapid2:TextView
 
-    lateinit var driveDto:DriveDto
+    lateinit var tracking_id:String
+
     val polylines:MutableList<LatLng> = mutableListOf()
 
     private val mMap: GoogleMap? = null
@@ -52,6 +55,7 @@ class DetailDriveHistoryActivity: AppCompatActivity() {
 
 
         init()
+
     }
 
     private fun init(){
@@ -63,51 +67,53 @@ class DetailDriveHistoryActivity: AppCompatActivity() {
         tvRapid1 = findViewById(R.id.tv_rapid1)
         tvRapid2 = findViewById(R.id.tv_rapid2)
 
-        driveDto = intent.getSerializableExtra("driveDto") as DriveDto
+        detailDriveHistoryViewModel.setDrive.observe(this@DetailDriveHistoryActivity, DetailDriveHistoryViewModel.EventObserver {
+            for(raw in it.jsonData){
+                polylines.add(LatLng(raw.latitude,raw.longtitude))
+            }
 
-        for(raw in driveDto.jsonData){
-            polylines.add(LatLng(raw.latitude,raw.longtitude))
-        }
-
-        /**
-         * timeStamp
-         * Verification
-         * distance
-         * time
-         * sudden_stop (count)
-         * sudden_acceleration (count)
-         * sudden_deceleration (count)
-         * sudden_start (count)
-         * high_speed_driving (m)
-         * low_speed_driving (m)
-         * constant_speed_driving (m)
-         * harsh_driving (m)
-         */
-        tvTrackingId.text = "id : " + driveDto.tracking_id
-        tvTimestamp.text = "주행시작 : " + getDateFromTimeStamp(driveDto.timeStamp)
-        tvRank.text = "랭크 : " + driveDto.verification
-        tvDistance.text = "주행거리(m) : " + driveDto.distance_array.sum()
-        tvTime.text = "주행 시간 : " + (TimeUnit.MILLISECONDS.toSeconds(driveDto.time)/60) + "분 " + (TimeUnit.MILLISECONDS.toSeconds(driveDto.time)%60) + "초"
-        tvTime.text = "주행 시간 : " + (TimeUnit.MILLISECONDS.toSeconds(driveDto.time)/60) + "분 " + (TimeUnit.MILLISECONDS.toSeconds(driveDto.time)%60) + "초"
+            /**
+             * timeStamp
+             * Verification
+             * distance
+             * time
+             * sudden_stop (count)
+             * sudden_acceleration (count)
+             * sudden_deceleration (count)
+             * sudden_start (count)
+             * high_speed_driving (m)
+             * low_speed_driving (m)
+             * constant_speed_driving (m)
+             * harsh_driving (m)
+             */
+            tvTrackingId.text = "id : " + it.tracking_id
+            tvTimestamp.text = "주행시작 : " + getDateFromTimeStamp(it.timeStamp)
+            tvRank.text = "랭크 : " + it.verification
+            tvDistance.text = "주행거리(m) : " + it.distance_array.sum()
+            tvTime.text = "주행 시간 : " + (TimeUnit.MILLISECONDS.toSeconds(it.time)/60) + "분 " + (TimeUnit.MILLISECONDS.toSeconds(it.time)%60) + "초"
+            tvTime.text = "주행 시간 : " + (TimeUnit.MILLISECONDS.toSeconds(it.time)/60) + "분 " + (TimeUnit.MILLISECONDS.toSeconds(it.time)%60) + "초"
 
 
-        var contents = ""
-        contents = contents + "주행 종료 : " + getDateFromTimeStamp((driveDto.timeStamp + driveDto.time)) + "\n"
-        contents = contents +  "항속 주행 거리 : " + driveDto.constant_speed_driving_array.sum() + "\n"
-        contents = contents + "Harsh Driving 거리: " + driveDto.harsh_driving_array.sum() + "\n"
-        contents = contents + "저속 주행거리: " + driveDto.low_speed_driving_array.sum() + "\n"
-        contents = contents + "고속 주행거리: " + driveDto.high_speed_driving_array.sum() + "\n"
-        contents = contents + "급출발 횟수: " + driveDto.sudden_start_array.sum() + "\n"
-        contents = contents + "급정지 횟수: " + driveDto.sudden_stop_array.sum() + "\n"
-        contents = contents + "급감속 횟수: " + driveDto.sudden_deceleration_array.sum() + "\n"
-        contents = contents + "급가속 횟수: " + driveDto.sudden_acceleration_array.sum() + "\n"
-        contents = contents + "급가감속 거리: " + driveDto.sum_sudden_deceleration_speed + "\n"
+            var contents = ""
+            contents = contents + "주행 종료 : " + getDateFromTimeStamp((it.timeStamp + it.time)) + "\n"
+            contents = contents +  "항속 주행 거리 : " + it.constant_speed_driving_array.sum() + "\n"
+            contents = contents + "Harsh Driving 거리: " + it.harsh_driving_array.sum() + "\n"
+            contents = contents + "저속 주행거리: " + it.low_speed_driving_array.sum() + "\n"
+            contents = contents + "고속 주행거리: " + it.high_speed_driving_array.sum() + "\n"
+            contents = contents + "급출발 횟수: " + it.sudden_start_array.sum() + "\n"
+            contents = contents + "급정지 횟수: " + it.sudden_stop_array.sum() + "\n"
+            contents = contents + "급감속 횟수: " + it.sudden_deceleration_array.sum() + "\n"
+            contents = contents + "급가속 횟수: " + it.sudden_acceleration_array.sum() + "\n"
+            contents = contents + "급가감속 거리: " + it.sum_sudden_deceleration_speed + "\n"
 
-        tvRapid1.text = contents
+            tvRapid1.text = contents
 
-        if(polylines.size != 0){
-            setMapData()
-        }
+            if(polylines.size != 0){
+                setMapData()
+            }
+        })
+        tracking_id = intent.getStringExtra("tracking_id").toString()
+        detailDriveHistoryViewModel.getDrive(tracking_id)
     }
 
     private fun getDateFromTimeStamp(timeStamp:Long) : String{
