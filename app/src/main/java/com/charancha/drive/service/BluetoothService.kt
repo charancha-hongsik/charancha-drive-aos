@@ -43,6 +43,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.timer
 
+
 /**
  * The Service will only run in one instance. However, everytime you start the service, the onStartCommand() method is called.
  */
@@ -216,6 +217,13 @@ class BluetoothService : Service() {
         super.onCreate()
     }
 
+    fun refreshNotiText(){
+        if(sensorState)
+            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 중..($distanceSum m)").build())
+        else
+            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중....." + getCurrent()).build())
+    }
+
 
     private fun getCurrent(): String {
         val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
@@ -302,7 +310,7 @@ class BluetoothService : Service() {
         }
     }
 
-    private fun stopSensor(){
+    fun stopSensor(){
         try {
             if (sensorState) {
                 sensorState = false
@@ -416,6 +424,14 @@ class BluetoothService : Service() {
                 ActivityTransition.Builder()
                     .setActivityType(DetectedActivity.IN_VEHICLE)
                     .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
+                    .build(),
+                ActivityTransition.Builder()
+                    .setActivityType(DetectedActivity.STILL)
+                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                    .build(),
+                ActivityTransition.Builder()
+                    .setActivityType(DetectedActivity.STILL)
+                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
                     .build()
             )
 
@@ -475,6 +491,16 @@ class BluetoothService : Service() {
                         }
                     }
                 }
+                DetectedActivity.STILL -> {
+                    when (event.transitionType) {
+                        ActivityTransition.ACTIVITY_TRANSITION_ENTER -> {
+                            refreshNotiText()
+                        }
+                        ActivityTransition.ACTIVITY_TRANSITION_EXIT -> {
+                            refreshNotiText()
+                        }
+                    }
+                }
             }
         }
     }
@@ -515,32 +541,6 @@ class BluetoothService : Service() {
             }
         }
     }
-
-    fun requestDistanceUpdate() {
-        if(maxDistance <= 300f){
-            stopSensor()
-        }
-
-        maxDistance = 0f
-        firstLocation = null
-    }
-
-//    fun scheduleDistanceWork() {
-//        val workRequest = PeriodicWorkRequest.Builder(
-//            DistanceTimerWorker::class.java,
-//            1, TimeUnit.HOURS
-//        ).setInitialDelay(1,TimeUnit.HOURS).build()
-//
-//        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-//            "DistanceWork",
-//            ExistingPeriodicWorkPolicy.KEEP,
-//            workRequest
-//        )
-//    }
-//
-//    fun stopDistanceWork() {
-//        WorkManager.getInstance(this).cancelUniqueWork("DistanceWork")
-//    }
 
     private fun isConnected(device: BluetoothDevice): Boolean {
         try {
