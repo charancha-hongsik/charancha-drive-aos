@@ -25,6 +25,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.work.*
 import com.charancha.drive.PreferenceUtil
+import com.charancha.drive.activity.PermissionActivity
 import com.charancha.drive.calculateData
 import com.charancha.drive.room.DriveDto
 import com.charancha.drive.room.EachGpsDto
@@ -41,7 +42,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.timer
-
 
 /**
  * The Service will only run in one instance. However, everytime you start the service, the onStartCommand() method is called.
@@ -186,6 +186,7 @@ class BluetoothService : Service() {
         TODO("Not yet implemented")
     }
 
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         carConnectionQueryHandler = CarConnectionQueryHandler(contentResolver)
 
@@ -255,7 +256,6 @@ class BluetoothService : Service() {
                  * W0D-74 1행 데이터 삭제
                  */
                 firstLineState = true
-                scheduleDistanceWork()
 
                 sensorState = true
                 PreferenceUtil.putPref(this, PreferenceUtil.RUNNING_LEVEL, level)
@@ -289,7 +289,6 @@ class BluetoothService : Service() {
                     makeAltitudeFromGpsInfo()
 
                     writeToRoom()
-                    stopDistanceWork()
 
                     sensorManager.unregisterListener(sensorEventListener)
                     fusedLocationClient?.removeLocationUpdates(locationCallback)
@@ -316,7 +315,6 @@ class BluetoothService : Service() {
                 makeAltitudeFromGpsInfo()
 
                 writeToRoom()
-                stopDistanceWork()
 
                 sensorManager.unregisterListener(sensorEventListener)
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
@@ -391,18 +389,12 @@ class BluetoothService : Service() {
         )
     }
 
-    inner class WalkingDetectWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
+    class WalkingDetectWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
 
         private val activityRecognitionClient: ActivityRecognitionClient = ActivityRecognition.getClient(context)
 
         override fun doWork(): Result {
             requestActivityUpdates()
-
-            if(sensorState){
-                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 중..($distanceSum m)").build())
-            } else{
-                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중.." + getCurrent()).build())
-            }
 
             return Result.success()
         }
@@ -430,12 +422,15 @@ class BluetoothService : Service() {
             val request = ActivityTransitionRequest(transitions)
 
             val intent = Intent(applicationContext, WalkingDetectReceiver::class.java)
+            var flag = FLAG_UPDATE_CURRENT
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                flag = FLAG_MUTABLE
+            }
             val pendingIntent = PendingIntent.getBroadcast(
                 applicationContext,
                 0,
                 intent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
+                flag            )
 
             activityRecognitionClient.requestActivityTransitionUpdates(request, pendingIntent)
                 .addOnSuccessListener {
@@ -521,39 +516,31 @@ class BluetoothService : Service() {
         }
     }
 
-    inner class DistanceTimerWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
-
-        override fun doWork(): Result {
-            requestDistanceUpdate()
-            return Result.success()
+    fun requestDistanceUpdate() {
+        if(maxDistance <= 300f){
+            stopSensor()
         }
 
-        private fun requestDistanceUpdate() {
-            if(maxDistance <= 300f){
-                stopSensor()
-            }
-
-            maxDistance = 0f
-            firstLocation = null
-        }
+        maxDistance = 0f
+        firstLocation = null
     }
 
-    fun scheduleDistanceWork() {
-        val workRequest = PeriodicWorkRequest.Builder(
-            DistanceTimerWorker::class.java,
-            1, TimeUnit.HOURS
-        ).setInitialDelay(1,TimeUnit.HOURS).build()
-
-        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-            "DistanceWork",
-            ExistingPeriodicWorkPolicy.KEEP,
-            workRequest
-        )
-    }
-
-    fun stopDistanceWork() {
-        WorkManager.getInstance(this).cancelUniqueWork("DistanceWork")
-    }
+//    fun scheduleDistanceWork() {
+//        val workRequest = PeriodicWorkRequest.Builder(
+//            DistanceTimerWorker::class.java,
+//            1, TimeUnit.HOURS
+//        ).setInitialDelay(1,TimeUnit.HOURS).build()
+//
+//        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+//            "DistanceWork",
+//            ExistingPeriodicWorkPolicy.KEEP,
+//            workRequest
+//        )
+//    }
+//
+//    fun stopDistanceWork() {
+//        WorkManager.getInstance(this).cancelUniqueWork("DistanceWork")
+//    }
 
     private fun isConnected(device: BluetoothDevice): Boolean {
         try {
@@ -578,23 +565,6 @@ class BluetoothService : Service() {
         )
     }
 
-    private fun startDistanceTimer(){
-        maxDistance = 0f
-        firstLocation = null
-        distanceSumForAnHourTimer = timer(period = 3600000, initialDelay = 3600000) {
-            // 타이머가 동작 중인 동안 1시간 동안의 거리를 합산
-
-            if(maxDistance <= 300f){
-                stopSensor()
-            }
-            maxDistance = 0f
-            firstLocation = null
-        }
-    }
-
-    private fun stopDistanceTimer(){
-        distanceSumForAnHourTimer.cancel()
-    }
 
     /**
      * PRIORITY_BALANCED_POWER_ACCURACY 도시 블록 내의 위치 정밀도 요청. 정확도는 대략 100미터. Wi-Fi 정보와 휴대폰 기지국 위치를 사용할 수 있음. 대략적인 수준의 정확성으로 전력을 비교적 적게 사용함.
