@@ -191,60 +191,6 @@ class BluetoothService : Service() {
         TODO("Not yet implemented")
     }
 
-    inner class ActivityRecognitionReceiver2 : BroadcastReceiver() {
-
-        override fun onReceive(context: Context, intent: Intent) {
-            if (ActivityRecognitionResult.hasResult(intent)) {
-                val result = ActivityRecognitionResult.extractResult(intent)
-                val detectedActivities = result.probableActivities
-                for (activity in detectedActivities) {
-                    when (activity.type) {
-                        DetectedActivity.IN_VEHICLE -> {
-                            startSensor(L1)
-                            Log.d("testsetsetest","testestsetsetset IN_VEHICLE")
-
-                        }
-                        DetectedActivity.ON_BICYCLE -> {
-                            // 자전거 이동 감지
-                            Log.d("testsetsetest","testestsetsetset ON_BICYCLE")
-
-                        }
-                        DetectedActivity.ON_FOOT -> {
-                            stopSensor()
-                            Log.d("testsetsetest","testestsetsetset ON_FOOT")
-
-                        }
-                        DetectedActivity.STILL -> {
-                            // 정지 상태 감지
-                            Log.d("testsetsetest","testestsetsetset STILL")
-
-                        }
-                        DetectedActivity.UNKNOWN -> {
-                            // 알 수 없는 활동 감지
-                            Log.d("testsetsetest","testestsetsetset UNKNOWN")
-
-                        }
-                        DetectedActivity.TILTING -> {
-                            // 기울임 감지
-                            Log.d("testsetsetest","testestsetsetset TILTING")
-
-                        }
-                        DetectedActivity.WALKING -> {
-                            stopSensor()
-                            Log.d("testsetsetest","testestsetsetset WALKING")
-
-                        }
-                        DetectedActivity.RUNNING -> {
-                            // 달리기 감지
-                            Log.d("testsetsetest","testestsetsetset RUNNING")
-
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     inner class ActivityRecognitionReceiver : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {
@@ -321,7 +267,7 @@ class BluetoothService : Service() {
         sensorState = false
 
         activityRecognitionClient = ActivityRecognition.getClient(this)
-        val intent2 = Intent(this, ActivityRecognitionReceiver2::class.java)
+        val intent2 = Intent(this, ActivityRecognitionReceiver::class.java)
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
             pendingIntent2 = getService(this, 2, intent2, PendingIntent.FLAG_MUTABLE)
         }else{
@@ -531,7 +477,7 @@ class BluetoothService : Service() {
                 workRequest
             )
         }catch (e:Exception){
-            Log.d("testestsetsetest","testsetsetestse exception :: " + e.toString())
+
         }
 
 
@@ -543,37 +489,8 @@ class BluetoothService : Service() {
 
         override fun doWork(): Result {
             requestActivityUpdates()
-            requestActivityUpdates2()
 
             return Result.success()
-        }
-
-        private fun requestActivityUpdates2(){
-
-            var activityRecognitionClient: ActivityRecognitionClient
-            var pendingIntent2: PendingIntent
-
-            activityRecognitionClient = ActivityRecognition.getClient(applicationContext)
-            val intent2 = Intent(applicationContext, ActivityRecognitionReceiver::class.java)
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
-                pendingIntent2 = getService(applicationContext, 1, intent2, PendingIntent.FLAG_MUTABLE)
-            }else{
-                pendingIntent2 = getService(applicationContext, 1, intent2, PendingIntent.FLAG_UPDATE_CURRENT)
-
-            }
-
-            val detectionIntervalMillis = 30000L // 30초 간격으로 업데이트 요청
-            activityRecognitionClient.requestActivityUpdates(detectionIntervalMillis, pendingIntent2)
-                .addOnSuccessListener {
-                    // 업데이트 요청 성공
-                    Log.d("testsetsetest","testestsetsetset registered2")
-
-                }
-                .addOnFailureListener {
-                    // 업데이트 요청 실패
-                    Log.d("testsetsetest","testestsetsetset failed2 " + it)
-
-                }
         }
 
         private fun requestActivityUpdates() {
@@ -627,16 +544,13 @@ class BluetoothService : Service() {
                 applicationContext,
                 0,
                 intent,
-                flag            )
+                flag
+            )
 
             activityRecognitionClient.requestActivityTransitionUpdates(request, pendingIntent)
                 .addOnSuccessListener {
-                    Log.d("testsetsetest","testestsetsetset registered")
                 }
                 .addOnFailureListener {
-                    Log.d("testsetsetest","testestsetsetset " + it)
-
-                    // Failed to register
                 }
         }
     }
@@ -677,20 +591,15 @@ class BluetoothService : Service() {
                 DetectedActivity.STILL -> {
                     when (event.transitionType) {
                         ActivityTransition.ACTIVITY_TRANSITION_ENTER -> {
-                            Log.d("testsetsetest","testestsetsetset STILL ENTER")
-
                             refreshNotiText()
                         }
                         ActivityTransition.ACTIVITY_TRANSITION_EXIT -> {
-                            Log.d("testsetsetest","testestsetsetset STILL EXIT")
-
                             refreshNotiText()
                         }
                     }
                 } else ->{
-                Log.d("testsetsetest","testestsetsetset else")
 
-            }
+                }
             }
         }
     }
