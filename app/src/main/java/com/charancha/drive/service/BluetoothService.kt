@@ -43,6 +43,9 @@ class BluetoothService : Service() {
         // columnName for provider to query on connection status
         const val CAR_CONNECTION_STATE = "CarConnectionState"
 
+        const val TRANSITIONS_RECEIVER_ACTION = "TRANSITIONS_RECEIVER_ACTION"
+
+
         // auto app on your phone will send broadcast with this action when connection state changes
         const val ACTION_CAR_CONNECTION_UPDATED = "androidx.car.app.connection.action.CAR_CONNECTION_UPDATED"
 
@@ -197,9 +200,9 @@ class BluetoothService : Service() {
 
         sensorState = false
 
-        registerReceiver(WalkingDetectReceiver(), IntentFilter("com.charancha.drive.BluetoothService.WalkingDetectReceiver"))
-
-        registerReceiver(ActivityRecognitionReceiver(), IntentFilter("com.charancha.drive.BluetoothService.ActivityRecognitionReceiver"))
+        registerReceiver(WalkingDetectReceiver(),IntentFilter().apply {
+            addAction(TRANSITIONS_RECEIVER_ACTION)
+        })
 
         registerReceiver(TransitionsReceiver(), filter)
         scheduleWalkingDetectWork()
@@ -225,46 +228,6 @@ class BluetoothService : Service() {
         }
     }
 
-    inner class ActivityRecognitionReceiver : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            if (ActivityRecognitionResult.hasResult(intent)) {
-                refreshNotiText()
-                val result = ActivityRecognitionResult.extractResult(intent)
-                val detectedActivities = result.probableActivities
-                for (activity in detectedActivities) {
-                    when (activity.type) {
-                        DetectedActivity.IN_VEHICLE -> {
-                            startSensor(L1)
-                        }
-                        DetectedActivity.ON_BICYCLE -> {
-                            // 자전거 이동 감지
-                        }
-                        DetectedActivity.ON_FOOT -> {
-                            stopSensor()
-                        }
-                        DetectedActivity.STILL -> {
-                            // 정지 상태 감지
-                        }
-                        DetectedActivity.UNKNOWN -> {
-                            // 알 수 없는 활동 감지
-                        }
-                        DetectedActivity.TILTING -> {
-                            // 기울임 감지
-                        }
-                        DetectedActivity.WALKING -> {
-                            stopSensor()
-
-                        }
-                        DetectedActivity.RUNNING -> {
-                            // 달리기 감지
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-
 
 
     class WalkingDetectWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
@@ -273,34 +236,8 @@ class BluetoothService : Service() {
 
         override fun doWork(): Result {
             requestActivityUpdates()
-            requestActivityUpdates2()
 
             return Result.success()
-        }
-
-        private fun requestActivityUpdates2(){
-
-            var activityRecognitionClient: ActivityRecognitionClient
-            var pendingIntent2: PendingIntent
-
-            activityRecognitionClient = ActivityRecognition.getClient(applicationContext)
-            val intent2 = Intent(applicationContext, ActivityRecognitionReceiver::class.java)
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
-                pendingIntent2 = getService(applicationContext, 1, intent2, PendingIntent.FLAG_MUTABLE)
-            }else{
-                pendingIntent2 = getService(applicationContext, 1, intent2, PendingIntent.FLAG_UPDATE_CURRENT)
-
-            }
-
-            val detectionIntervalMillis = 30000L // 30초 간격으로 업데이트 요청
-            activityRecognitionClient.requestActivityUpdates(detectionIntervalMillis, pendingIntent2)
-                .addOnSuccessListener {
-                    // 업데이트 요청 성공
-
-                }
-                .addOnFailureListener {
-                    // 업데이트 요청 실패
-                }
         }
 
         private fun requestActivityUpdates() {
@@ -345,7 +282,7 @@ class BluetoothService : Service() {
 
             val request = ActivityTransitionRequest(transitions)
 
-            val intent = Intent(applicationContext, WalkingDetectReceiver::class.java)
+            val intent = Intent(TRANSITIONS_RECEIVER_ACTION)
             var flag = FLAG_UPDATE_CURRENT
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 flag = FLAG_MUTABLE
@@ -377,47 +314,27 @@ class BluetoothService : Service() {
     inner class WalkingDetectReceiver : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {
-            if (ActivityTransitionResult.hasResult(intent)) {
-                val result = ActivityTransitionResult.extractResult(intent)
-                result?.transitionEvents?.forEach { event ->
-                    handleActivityTransitionEvent(context,event)
-                }
-            }
-        }
 
-        private fun handleActivityTransitionEvent(context:Context,event: ActivityTransitionEvent) {
-            when (event.activityType) {
-                DetectedActivity.WALKING -> {
-                    when (event.transitionType) {
-                        ActivityTransition.ACTIVITY_TRANSITION_ENTER -> {
-                            stopSensor()
-                        }
-                        ActivityTransition.ACTIVITY_TRANSITION_EXIT -> {
-                            // User stopped walking
-                        }
-                    }
-                }
-                DetectedActivity.IN_VEHICLE -> {
-                    when (event.transitionType) {
-                        ActivityTransition.ACTIVITY_TRANSITION_ENTER -> {
-                            startSensor(L1)
-                        }
-                        ActivityTransition.ACTIVITY_TRANSITION_EXIT -> {
-                            // User stopped driving
-                        }
-                    }
-                }
-                DetectedActivity.STILL -> {
-                    when (event.transitionType) {
-                        ActivityTransition.ACTIVITY_TRANSITION_ENTER -> {
-                            refreshNotiText()
-                        }
-                        ActivityTransition.ACTIVITY_TRANSITION_EXIT -> {
-                            refreshNotiText()
-                        }
-                    }
-                } else ->{
+            if (ActivityTransitionResult.hasResult(intent)) {
                 refreshNotiText()
+                val result = ActivityTransitionResult.extractResult(intent)
+                result?.let {
+                    for (event in it.transitionEvents) {
+                        val activityType = event.activityType
+                        val transitionType = event.transitionType
+
+                        if (activityType == DetectedActivity.WALKING) {
+                            if (transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
+                                // Walking 활동에 들어감
+                                stopSensor()
+                            }
+                        } else if(activityType == DetectedActivity.IN_VEHICLE){
+                            if (transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
+                                // Vehicle 활동에 들어감
+                                startSensor(L1)
+                            }
+                        }
+                    }
                 }
             }
         }
