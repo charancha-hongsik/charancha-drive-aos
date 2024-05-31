@@ -228,6 +228,44 @@ class BluetoothService : Service() {
         }
     }
 
+    private fun scheduleDistanceTimeWork() {
+        try {
+            val workRequest = PeriodicWorkRequest.Builder(
+                DistanceTimerWorker::class.java,
+                1, TimeUnit.HOURS
+            ).setInitialDelay(1,TimeUnit.HOURS).build()
+
+            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "DistanceTimerWorker",
+                ExistingPeriodicWorkPolicy.REPLACE,
+                workRequest
+            )
+        }catch (e:Exception){
+
+        }
+    }
+
+    fun stopDistanceWork() {
+        WorkManager.getInstance(this).cancelUniqueWork("DistanceTimerWorker")
+    }
+
+    inner class DistanceTimerWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
+
+        override fun doWork(): Result {
+            requestDistanceUpdate()
+            return Result.success()
+        }
+
+        private fun requestDistanceUpdate() {
+            if(maxDistance <= 300f){
+                stopSensor()
+            }
+
+            maxDistance = 0f
+            firstLocation = null
+        }
+    }
+
 
 
     class WalkingDetectWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
@@ -382,6 +420,8 @@ class BluetoothService : Service() {
                  */
                 firstLineState = true
 
+                scheduleDistanceTimeWork()
+
                 sensorState = true
                 PreferenceUtil.putPref(this, PreferenceUtil.RUNNING_LEVEL, level)
                 driveDatabase = DriveDatabase.getDatabase(this)
@@ -413,6 +453,8 @@ class BluetoothService : Service() {
                     makeDistanceBetween()
                     makeAltitudeFromGpsInfo()
 
+                    stopDistanceWork()
+
                     writeToRoom()
 
                     sensorManager.unregisterListener(sensorEventListener)
@@ -440,6 +482,8 @@ class BluetoothService : Service() {
                 makePathLocationInfo()
                 makeDistanceBetween()
                 makeAltitudeFromGpsInfo()
+
+                stopDistanceWork()
 
                 writeToRoom()
 
@@ -675,6 +719,7 @@ class BluetoothService : Service() {
         }
         if(location.distanceTo(firstLocation!!) > maxDistance){
             maxDistance = location.distanceTo(firstLocation!!)
+
         }
 
         getAltitude(location)
