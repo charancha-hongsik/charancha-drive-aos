@@ -597,8 +597,11 @@ class BluetoothService : Service() {
         override fun doWork(): Result {
             requestActivityUpdates()
 
+
             return Result.success()
         }
+
+
 
         private fun requestActivityUpdates() {
             val transitions = listOf(
@@ -797,6 +800,7 @@ class BluetoothService : Service() {
                     sensorState = false
                     firstLineState = false
                     refreshTextCount = 0
+                    firstLocation = null
 
                     makeSpeedInfo()
                     makeAccelerationInfo()
@@ -821,6 +825,7 @@ class BluetoothService : Service() {
                 sensorState = false
                 firstLineState = false
                 refreshTextCount = 0
+                firstLocation = null
 
                 makeSpeedInfo()
                 makeAccelerationInfo()
@@ -845,6 +850,7 @@ class BluetoothService : Service() {
                 sensorState = false
                 firstLineState = false
                 refreshTextCount = 0
+                firstLocation = null
 
                 (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중.." + getCurrent()).build())
 
