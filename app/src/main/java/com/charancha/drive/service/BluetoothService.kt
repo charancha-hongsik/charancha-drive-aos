@@ -209,6 +209,7 @@ class BluetoothService : Service() {
         scheduleWalkingDetectWork()
         scheduleWalkingDetectWork2()
         scheduleWalkingDetectWork3()
+        scheduleWalkingDetectWork4()
 
         return START_REDELIVER_INTENT
     }
@@ -231,12 +232,30 @@ class BluetoothService : Service() {
         }
     }
 
+    private fun scheduleWalkingDetectWork4() {
+        try {
+            val workRequest = PeriodicWorkRequest.Builder(
+                WalkingDetectWorker4::class.java,
+                15, TimeUnit.MINUTES
+            ).setInitialDelay(11,TimeUnit.MINUTES).build()
+
+            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "WalkingDetectWorker4",
+                ExistingPeriodicWorkPolicy.REPLACE,
+                workRequest
+            )
+        }catch (e:Exception){
+
+        }
+    }
+
+
     private fun scheduleWalkingDetectWork3() {
         try {
             val workRequest = PeriodicWorkRequest.Builder(
                 WalkingDetectWorker3::class.java,
                 15, TimeUnit.MINUTES
-            ).setInitialDelay(10,TimeUnit.MINUTES).build()
+            ).setInitialDelay(7,TimeUnit.MINUTES).build()
 
             WorkManager.getInstance(this).enqueueUniquePeriodicWork(
                 "WalkingDetectWorker3",
@@ -253,7 +272,7 @@ class BluetoothService : Service() {
             val workRequest = PeriodicWorkRequest.Builder(
                 WalkingDetectWorker2::class.java,
                 15, TimeUnit.MINUTES
-            ).setInitialDelay(5,TimeUnit.MINUTES).build()
+            ).setInitialDelay(4,TimeUnit.MINUTES).build()
 
             WorkManager.getInstance(this).enqueueUniquePeriodicWork(
                 "WalkingDetectWorker2",
@@ -265,44 +284,77 @@ class BluetoothService : Service() {
         }
     }
 
-    private fun scheduleDistanceTimeWork() {
-        try {
-            val workRequest = PeriodicWorkRequest.Builder(
-                DistanceTimerWorker::class.java,
-                1, TimeUnit.HOURS
-            ).setInitialDelay(1,TimeUnit.HOURS).build()
+    class WalkingDetectWorker4(context: Context, params: WorkerParameters) : Worker(context, params) {
 
-            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                "DistanceTimerWorker",
-                ExistingPeriodicWorkPolicy.REPLACE,
-                workRequest
-            )
-        }catch (e:Exception){
-
-        }
-    }
-
-    fun stopDistanceWork() {
-        WorkManager.getInstance(this).cancelUniqueWork("DistanceTimerWorker")
-    }
-
-    inner class DistanceTimerWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
+        private val activityRecognitionClient: ActivityRecognitionClient = ActivityRecognition.getClient(context)
 
         override fun doWork(): Result {
-            requestDistanceUpdate()
+            requestActivityUpdates()
+
             return Result.success()
         }
 
-        private fun requestDistanceUpdate() {
-            if(maxDistance <= 300f){
-                stopSensor()
-            }
+        private fun requestActivityUpdates() {
+            val transitions = listOf(
+                ActivityTransition.Builder()
+                    .setActivityType(DetectedActivity.WALKING)
+                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                    .build(),
+                ActivityTransition.Builder()
+                    .setActivityType(DetectedActivity.WALKING)
+                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
+                    .build(),
+                ActivityTransition.Builder()
+                    .setActivityType(DetectedActivity.IN_VEHICLE)
+                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                    .build(),
+                ActivityTransition.Builder()
+                    .setActivityType(DetectedActivity.IN_VEHICLE)
+                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
+                    .build(),
+                ActivityTransition.Builder()
+                    .setActivityType(DetectedActivity.STILL)
+                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                    .build(),
+                ActivityTransition.Builder()
+                    .setActivityType(DetectedActivity.STILL)
+                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
+                    .build(),
+                ActivityTransition.Builder()
+                    .setActivityType(DetectedActivity.ON_BICYCLE)
+                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                    .build(),
+                ActivityTransition.Builder()
+                    .setActivityType(DetectedActivity.RUNNING)
+                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                    .build(),
+                ActivityTransition.Builder()
+                    .setActivityType(DetectedActivity.ON_FOOT)
+                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                    .build()
+            )
 
-            maxDistance = 0f
-            firstLocation = null
+            val request = ActivityTransitionRequest(transitions)
+
+            val intent = Intent(TRANSITIONS_RECEIVER_ACTION)
+            var flag = FLAG_UPDATE_CURRENT
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                flag = FLAG_MUTABLE
+            }
+            val pendingIntent = getBroadcast(
+                applicationContext,
+                0,
+                intent,
+                flag
+            )
+
+            activityRecognitionClient.requestActivityTransitionUpdates(request, pendingIntent)
+                .addOnSuccessListener {
+                }
+                .addOnFailureListener {
+                }
         }
     }
-
     class WalkingDetectWorker3(context: Context, params: WorkerParameters) : Worker(context, params) {
 
         private val activityRecognitionClient: ActivityRecognitionClient = ActivityRecognition.getClient(context)
@@ -524,9 +576,12 @@ class BluetoothService : Service() {
     fun checkDistanceForAnHour(){
         if(sensorState){
             refreshTextCount++
-            if((refreshTextCount != 0) && (refreshTextCount % 4 == 0)){
+            if((refreshTextCount != 0) && (refreshTextCount % 16 == 0)){
                 if(maxDistance < 300f)
                     stopSensor()
+
+                maxDistance = 0f
+                firstLocation = null
             }
         }
     }
@@ -621,8 +676,6 @@ class BluetoothService : Service() {
                  */
                 firstLineState = true
 
-                scheduleDistanceTimeWork()
-
                 sensorState = true
                 PreferenceUtil.putPref(this, PreferenceUtil.RUNNING_LEVEL, level)
                 driveDatabase = DriveDatabase.getDatabase(this)
@@ -655,8 +708,6 @@ class BluetoothService : Service() {
                     makeDistanceBetween()
                     makeAltitudeFromGpsInfo()
 
-                    stopDistanceWork()
-
                     writeToRoom()
 
                     sensorManager.unregisterListener(sensorEventListener)
@@ -685,8 +736,6 @@ class BluetoothService : Service() {
                 makePathLocationInfo()
                 makeDistanceBetween()
                 makeAltitudeFromGpsInfo()
-
-                stopDistanceWork()
 
                 writeToRoom()
 
