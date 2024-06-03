@@ -576,7 +576,13 @@ class BluetoothService : Service() {
     fun checkDistanceForAnHour(){
         if(sensorState){
             refreshTextCount++
-            if((refreshTextCount != 0) && (refreshTextCount % 16 == 0)){
+            if(refreshTextCount == 16){
+                if(maxDistance < 300f)
+                    stopSensorNotSave()
+
+                maxDistance = 0f
+                firstLocation = null
+            } else if((refreshTextCount != 0) && (refreshTextCount % 16 == 0)){
                 if(maxDistance < 300f)
                     stopSensor()
 
@@ -738,6 +744,30 @@ class BluetoothService : Service() {
                 makeAltitudeFromGpsInfo()
 
                 writeToRoom()
+
+                sensorManager.unregisterListener(sensorEventListener)
+                fusedLocationClient?.removeLocationUpdates(locationCallback)
+                fusedLocationClient = null
+
+            }
+        }catch(e:Exception){
+        }
+    }
+
+    fun stopSensorNotSave(){
+        try {
+            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중.." + getCurrent()).build())
+
+            if (sensorState) {
+                sensorState = false
+                firstLineState = false
+                refreshTextCount = 0
+
+                makeSpeedInfo()
+                makeAccelerationInfo()
+                makePathLocationInfo()
+                makeDistanceBetween()
+                makeAltitudeFromGpsInfo()
 
                 sensorManager.unregisterListener(sensorEventListener)
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
