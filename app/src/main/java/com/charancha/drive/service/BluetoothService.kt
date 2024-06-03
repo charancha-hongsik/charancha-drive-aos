@@ -809,9 +809,6 @@ class BluetoothService : Service() {
                     sensorManager.unregisterListener(sensorEventListener)
                     fusedLocationClient?.removeLocationUpdates(locationCallback)
                     fusedLocationClient = null
-
-                    (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중.." + getCurrent()).build())
-
                 }
             }
         }catch (e:Exception){
@@ -820,8 +817,6 @@ class BluetoothService : Service() {
 
     fun stopSensor(){
         try {
-            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중.." + getCurrent()).build())
-
             if (sensorState) {
                 sensorState = false
                 firstLineState = false
