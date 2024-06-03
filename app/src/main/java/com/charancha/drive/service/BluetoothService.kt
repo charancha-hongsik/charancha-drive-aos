@@ -846,12 +846,12 @@ class BluetoothService : Service() {
 
     fun stopSensorNotSave(){
         try {
-            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중.." + getCurrent()).build())
-
             if (sensorState) {
                 sensorState = false
                 firstLineState = false
                 refreshTextCount = 0
+
+                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중.." + getCurrent()).build())
 
                 makeSpeedInfo()
                 makeAccelerationInfo()
