@@ -720,6 +720,12 @@ class BluetoothService : Service() {
                             if (transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
                                 // Walking 활동에 들어감
                                 stopSensor()
+
+                                scheduleWalkingDetectWork()
+                                scheduleWalkingDetectWork2()
+                                scheduleWalkingDetectWork3()
+                                scheduleWalkingDetectWork4()
+                                scheduleWalkingDetectWork5()
                             }
                         } else if(activityType == DetectedActivity.IN_VEHICLE){
                             if (transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
