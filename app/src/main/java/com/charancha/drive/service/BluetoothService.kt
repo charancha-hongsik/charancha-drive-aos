@@ -163,6 +163,7 @@ class BluetoothService : Service() {
     var maxDistance = 0f
 
     var firstLineState = false
+    var refreshTextCount = 0
 
     /**
      * notification 관련
@@ -206,6 +207,8 @@ class BluetoothService : Service() {
 
         registerReceiver(TransitionsReceiver(), filter)
         scheduleWalkingDetectWork()
+        scheduleWalkingDetectWork2()
+        scheduleWalkingDetectWork3()
 
         return START_REDELIVER_INTENT
     }
@@ -220,6 +223,40 @@ class BluetoothService : Service() {
 
             WorkManager.getInstance(this).enqueueUniquePeriodicWork(
                 "WalkingDetectWork",
+                ExistingPeriodicWorkPolicy.REPLACE,
+                workRequest
+            )
+        }catch (e:Exception){
+
+        }
+    }
+
+    private fun scheduleWalkingDetectWork3() {
+        try {
+            val workRequest = PeriodicWorkRequest.Builder(
+                WalkingDetectWorker3::class.java,
+                15, TimeUnit.MINUTES
+            ).setInitialDelay(10,TimeUnit.MINUTES).build()
+
+            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "WalkingDetectWorker3",
+                ExistingPeriodicWorkPolicy.REPLACE,
+                workRequest
+            )
+        }catch (e:Exception){
+
+        }
+    }
+
+    private fun scheduleWalkingDetectWork2() {
+        try {
+            val workRequest = PeriodicWorkRequest.Builder(
+                WalkingDetectWorker2::class.java,
+                15, TimeUnit.MINUTES
+            ).setInitialDelay(5,TimeUnit.MINUTES).build()
+
+            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "WalkingDetectWorker2",
                 ExistingPeriodicWorkPolicy.REPLACE,
                 workRequest
             )
@@ -263,6 +300,150 @@ class BluetoothService : Service() {
 
             maxDistance = 0f
             firstLocation = null
+        }
+    }
+
+    class WalkingDetectWorker3(context: Context, params: WorkerParameters) : Worker(context, params) {
+
+        private val activityRecognitionClient: ActivityRecognitionClient = ActivityRecognition.getClient(context)
+
+        override fun doWork(): Result {
+            requestActivityUpdates()
+
+            return Result.success()
+        }
+
+        private fun requestActivityUpdates() {
+            val transitions = listOf(
+                ActivityTransition.Builder()
+                    .setActivityType(DetectedActivity.WALKING)
+                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                    .build(),
+                ActivityTransition.Builder()
+                    .setActivityType(DetectedActivity.WALKING)
+                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
+                    .build(),
+                ActivityTransition.Builder()
+                    .setActivityType(DetectedActivity.IN_VEHICLE)
+                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                    .build(),
+                ActivityTransition.Builder()
+                    .setActivityType(DetectedActivity.IN_VEHICLE)
+                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
+                    .build(),
+                ActivityTransition.Builder()
+                    .setActivityType(DetectedActivity.STILL)
+                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                    .build(),
+                ActivityTransition.Builder()
+                    .setActivityType(DetectedActivity.STILL)
+                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
+                    .build(),
+                ActivityTransition.Builder()
+                    .setActivityType(DetectedActivity.ON_BICYCLE)
+                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                    .build(),
+                ActivityTransition.Builder()
+                    .setActivityType(DetectedActivity.RUNNING)
+                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                    .build(),
+                ActivityTransition.Builder()
+                    .setActivityType(DetectedActivity.ON_FOOT)
+                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                    .build()
+            )
+
+            val request = ActivityTransitionRequest(transitions)
+
+            val intent = Intent(TRANSITIONS_RECEIVER_ACTION)
+            var flag = FLAG_UPDATE_CURRENT
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                flag = FLAG_MUTABLE
+            }
+            val pendingIntent = getBroadcast(
+                applicationContext,
+                0,
+                intent,
+                flag
+            )
+
+            activityRecognitionClient.requestActivityTransitionUpdates(request, pendingIntent)
+                .addOnSuccessListener {
+                }
+                .addOnFailureListener {
+                }
+        }
+    }
+
+    class WalkingDetectWorker2(context: Context, params: WorkerParameters) : Worker(context, params) {
+
+        private val activityRecognitionClient: ActivityRecognitionClient = ActivityRecognition.getClient(context)
+
+        override fun doWork(): Result {
+            requestActivityUpdates()
+
+            return Result.success()
+        }
+
+        private fun requestActivityUpdates() {
+            val transitions = listOf(
+                ActivityTransition.Builder()
+                    .setActivityType(DetectedActivity.WALKING)
+                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                    .build(),
+                ActivityTransition.Builder()
+                    .setActivityType(DetectedActivity.WALKING)
+                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
+                    .build(),
+                ActivityTransition.Builder()
+                    .setActivityType(DetectedActivity.IN_VEHICLE)
+                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                    .build(),
+                ActivityTransition.Builder()
+                    .setActivityType(DetectedActivity.IN_VEHICLE)
+                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
+                    .build(),
+                ActivityTransition.Builder()
+                    .setActivityType(DetectedActivity.STILL)
+                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                    .build(),
+                ActivityTransition.Builder()
+                    .setActivityType(DetectedActivity.STILL)
+                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
+                    .build(),
+                ActivityTransition.Builder()
+                    .setActivityType(DetectedActivity.ON_BICYCLE)
+                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                    .build(),
+                ActivityTransition.Builder()
+                    .setActivityType(DetectedActivity.RUNNING)
+                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                    .build(),
+                ActivityTransition.Builder()
+                    .setActivityType(DetectedActivity.ON_FOOT)
+                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                    .build()
+            )
+
+            val request = ActivityTransitionRequest(transitions)
+
+            val intent = Intent(TRANSITIONS_RECEIVER_ACTION)
+            var flag = FLAG_UPDATE_CURRENT
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                flag = FLAG_MUTABLE
+            }
+            val pendingIntent = getBroadcast(
+                applicationContext,
+                0,
+                intent,
+                flag
+            )
+
+            activityRecognitionClient.requestActivityTransitionUpdates(request, pendingIntent)
+                .addOnSuccessListener {
+                }
+                .addOnFailureListener {
+                }
         }
     }
 
@@ -340,12 +521,29 @@ class BluetoothService : Service() {
         }
     }
 
+    fun checkDistanceForAnHour(){
+        if(sensorState){
+            refreshTextCount++
+            if((refreshTextCount != 0) && (refreshTextCount % 4 == 0)){
+                if(maxDistance < 300f)
+                    stopSensor()
+            }
+        }
+    }
+
 
     fun refreshNotiText(){
         if(sensorState)
-            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 중..($distanceSum m)").build())
+            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 중..($distanceSum m) " + getCurrent()).build())
         else
             (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중....." + getCurrent()).build())
+    }
+
+    fun refreshNotiText(event:String){
+        if(sensorState)
+            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 중..($distanceSum m) " + event + ", " + getCurrent()).build())
+        else
+            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중....." + event + ", " + getCurrent()).build())
     }
 
 
@@ -355,11 +553,14 @@ class BluetoothService : Service() {
 
             if (ActivityTransitionResult.hasResult(intent)) {
                 refreshNotiText()
+                checkDistanceForAnHour()
                 val result = ActivityTransitionResult.extractResult(intent)
                 result?.let {
                     for (event in it.transitionEvents) {
                         val activityType = event.activityType
                         val transitionType = event.transitionType
+
+                        refreshNotiText(activityType.toString())
 
                         if (activityType == DetectedActivity.WALKING) {
                             if (transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
@@ -446,6 +647,7 @@ class BluetoothService : Service() {
                 if (level == PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL, "")) {
                     sensorState = false
                     firstLineState = false
+                    refreshTextCount = 0
 
                     makeSpeedInfo()
                     makeAccelerationInfo()
@@ -476,6 +678,7 @@ class BluetoothService : Service() {
             if (sensorState) {
                 sensorState = false
                 firstLineState = false
+                refreshTextCount = 0
 
                 makeSpeedInfo()
                 makeAccelerationInfo()
@@ -721,6 +924,10 @@ class BluetoothService : Service() {
             maxDistance = location.distanceTo(firstLocation!!)
 
         }
+
+
+        // 1717370784111
+        // 1717370780111
 
         getAltitude(location)
         getPathLocation(location)
