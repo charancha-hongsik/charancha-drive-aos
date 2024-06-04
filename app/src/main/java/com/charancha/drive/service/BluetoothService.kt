@@ -201,12 +201,12 @@ class BluetoothService : Service() {
 
         sensorState = false
 
-        // 알람 설정
-        setDailyAlarm(this)
-
         // AlarmReceiver 동적으로 등록
         val alarmReceiverFilter = IntentFilter("AlarmReceiver")
         registerReceiver(AlarmReceiver(), alarmReceiverFilter)
+
+        // 알람 설정
+        setDailyAlarm(this)
 
         registerReceiver(WalkingDetectReceiver(),IntentFilter().apply {
             addAction(TRANSITIONS_RECEIVER_ACTION)
@@ -673,25 +673,6 @@ class BluetoothService : Service() {
     }
 
 
-    fun checkDistanceForAnHour(){
-        if(sensorState){
-            refreshTextCount++
-            if(refreshTextCount == 16){
-                if(maxDistance < 300f)
-                    stopSensorNotSave()
-
-                maxDistance = 0f
-                firstLocation = null
-            } else if((refreshTextCount != 0) && (refreshTextCount % 16 == 0)){
-                if(maxDistance < 300f)
-                    stopSensor()
-
-                maxDistance = 0f
-                firstLocation = null
-            }
-        }
-    }
-
 
     fun refreshNotiText(){
         if(sensorState)
@@ -714,7 +695,6 @@ class BluetoothService : Service() {
 
             if (ActivityTransitionResult.hasResult(intent)) {
                 refreshNotiText()
-                checkDistanceForAnHour()
                 val result = ActivityTransitionResult.extractResult(intent)
                 result?.let {
                     for (event in it.transitionEvents) {
@@ -801,6 +781,7 @@ class BluetoothService : Service() {
                 sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
                 initDriveData(level)
                 setLocation()
+                setAnHourAlarm(this@BluetoothService)
 
                 (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 중..($distanceSum m)").build())
 
@@ -819,14 +800,15 @@ class BluetoothService : Service() {
                 if (level == PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL, "")) {
                     sensorState = false
                     firstLineState = false
-                    refreshTextCount = 0
                     firstLocation = null
+                    maxDistance = 0f
 
                     makeSpeedInfo()
                     makeAccelerationInfo()
                     makePathLocationInfo()
                     makeDistanceBetween()
                     makeAltitudeFromGpsInfo()
+                    cancelAnHourAlarm(this@BluetoothService)
 
                     writeToRoom()
 
@@ -844,8 +826,8 @@ class BluetoothService : Service() {
             if (sensorState) {
                 sensorState = false
                 firstLineState = false
-                refreshTextCount = 0
                 firstLocation = null
+                maxDistance = 0f
 
                 makeSpeedInfo()
                 makeAccelerationInfo()
@@ -854,6 +836,9 @@ class BluetoothService : Service() {
                 makeAltitudeFromGpsInfo()
 
                 writeToRoom()
+
+                cancelAnHourAlarm(this@BluetoothService)
+
 
                 sensorManager.unregisterListener(sensorEventListener)
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
@@ -869,8 +854,8 @@ class BluetoothService : Service() {
             if (sensorState) {
                 sensorState = false
                 firstLineState = false
-                refreshTextCount = 0
                 firstLocation = null
+                maxDistance = 0f
 
                 (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중.. NotSave" + getCurrent()).build())
 
@@ -887,6 +872,51 @@ class BluetoothService : Service() {
             }
         }catch(e:Exception){
         }
+    }
+
+    fun setAnHourAlarm(context: Context) {
+        var flag = FLAG_UPDATE_CURRENT
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            flag = FLAG_MUTABLE
+        }
+
+        val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val alarmIntent = Intent(context, AlarmReceiver2::class.java).let { intent ->
+            getBroadcast(context, 103, intent, flag)
+        }
+
+        // 1시간마다 알람을 설정합니다.
+        val intervalMillis = 60L * 60L * 1000L // 1시간을 밀리초 단위로 변환
+        val triggerAtMillis = System.currentTimeMillis() + intervalMillis
+
+        // 알람을 설정합니다.
+        alarmMgr.setRepeating(
+            AlarmManager.RTC_WAKEUP,
+            triggerAtMillis,
+            intervalMillis,
+            alarmIntent
+        )
+
+        // AlarmReceiver 동적으로 등록
+        val alarmReceiverFilter = IntentFilter("AlarmReceiver2")
+        registerReceiver(AlarmReceiver2(), alarmReceiverFilter)
+    }
+
+    fun cancelAnHourAlarm(context: Context) {
+        var flag = FLAG_UPDATE_CURRENT
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            flag = FLAG_MUTABLE
+        }
+        val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val alarmIntent = Intent(context, AlarmReceiver2::class.java).let { intent ->
+            getBroadcast(context, 103, intent, flag)
+        }
+
+        // 알람을 해제합니다.
+        alarmMgr.cancel(alarmIntent)
+
+        // AlarmReceiver 등록 해제
+        context.unregisterReceiver(AlarmReceiver2())
     }
 
     private fun initDriveData(level:String){
@@ -1280,35 +1310,6 @@ class BluetoothService : Service() {
             }
         }
 
-        if(firstLocation != null) {
-            // firstLocation 23시
-            // location 0시
-            if(getDateFromTimeStampToHH(firstLocation!!.time) == 23 && getDateFromTimeStampToHH(location.time) == 0){
-                maxDistance = 0f
-                firstLocation = null
-            } else{
-                if ((getDateFromTimeStampToHHMM(location.time) - getDateFromTimeStampToHHMM(firstLocation!!.time)) == 100
-                    && (getDateFromTimeStampToSS(location.time) == getDateFromTimeStampToSS(firstLocation!!.time))) {
-                    if (maxDistance < 300f) {
-                        stopSensorNotSave()
-                    }
-
-                    maxDistance = 0f
-                    firstLocation = null
-                } else if((getDateFromTimeStampToHHMM(location.time) - getDateFromTimeStampToHHMM(firstLocation!!.time)) != 0
-                    && (getDateFromTimeStampToHHMM(location.time) - getDateFromTimeStampToHHMM(firstLocation!!.time)) % 100 == 0
-                    && (getDateFromTimeStampToSS(location.time) == getDateFromTimeStampToSS(firstLocation!!.time))) {
-                    if (maxDistance < 300f) {
-                        stopSensor()
-                    }
-
-                    maxDistance = 0f
-                    firstLocation = null
-                }
-            }
-        }
-
-
         pastTimeStamp = timeStamp
         pastSpeed = location.speed
         pastLocation = location
@@ -1440,7 +1441,7 @@ class BluetoothService : Service() {
 
         val calendar = Calendar.getInstance().apply {
             timeInMillis = System.currentTimeMillis()
-            set(Calendar.HOUR_OF_DAY, 7)  // 아침 6시 설정
+            set(Calendar.HOUR_OF_DAY, 7)  // 아침 7시 설정
             set(Calendar.MINUTE, 0)
             set(Calendar.SECOND, 0)
         }
@@ -1465,6 +1466,14 @@ class BluetoothService : Service() {
             scheduleWalkingDetectWork3()
             scheduleWalkingDetectWork4()
             scheduleWalkingDetectWork5()
+        }
+    }
+
+    inner class AlarmReceiver2 : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if(maxDistance < 300f){
+                stopSensor()
+            }
         }
     }
 
