@@ -201,6 +201,13 @@ class BluetoothService : Service() {
 
         sensorState = false
 
+        // 알람 설정
+        setDailyAlarm(this)
+
+        // AlarmReceiver 동적으로 등록
+        val alarmReceiverFilter = IntentFilter("AlarmReceiver")
+        registerReceiver(AlarmReceiver(), alarmReceiverFilter)
+
         registerReceiver(WalkingDetectReceiver(),IntentFilter().apply {
             addAction(TRANSITIONS_RECEIVER_ACTION)
         })
@@ -1381,5 +1388,44 @@ class BluetoothService : Service() {
         return format.format(timeStamp).toInt()
     }
 
+    fun setDailyAlarm(context: Context) {
+        val intent = Intent(context, AlarmReceiver::class.java)
+        var flag = FLAG_UPDATE_CURRENT
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            flag = FLAG_MUTABLE
+        }
+
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val pendingIntent = getBroadcast(context, 0, intent,flag)
+
+        val calendar = Calendar.getInstance().apply {
+            timeInMillis = System.currentTimeMillis()
+            set(Calendar.HOUR_OF_DAY, 7)  // 아침 6시 설정
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+        }
+
+        // 현재 시간이 아침 7시 이후라면 다음날 아침 7시로 설정
+        if (calendar.timeInMillis < System.currentTimeMillis()) {
+            calendar.add(Calendar.DAY_OF_YEAR, 1)
+        }
+
+        alarmManager.setInexactRepeating(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+            AlarmManager.INTERVAL_DAY,
+            pendingIntent
+        )
+    }
+
+    inner class AlarmReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            scheduleWalkingDetectWork()
+            scheduleWalkingDetectWork2()
+            scheduleWalkingDetectWork3()
+            scheduleWalkingDetectWork4()
+            scheduleWalkingDetectWork5()
+        }
+    }
 
 }
