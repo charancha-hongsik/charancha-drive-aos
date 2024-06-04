@@ -1112,7 +1112,6 @@ class BluetoothService : Service() {
         }
         if(location.distanceTo(firstLocation!!) > maxDistance){
             maxDistance = location.distanceTo(firstLocation!!)
-
         }
 
 
@@ -1130,7 +1129,7 @@ class BluetoothService : Service() {
 
         gpsInfo.add(EachGpsDto(timeStamp, location.latitude, location.longitude, location.speed,distance,location.altitude, (location.speed) - (pastSpeed)))
 
-        var HH = getDateFromTimeStamp(timeStamp)
+        var HH = getDateFromTimeStampToHH(timeStamp)
 
         /**
          * 거리 계산
@@ -1164,7 +1163,6 @@ class BluetoothService : Service() {
                         sumSuddenDecelerationDistance += distance
                     }
 
-
                     /**
                      * 급정지 계산
                      */
@@ -1180,7 +1178,6 @@ class BluetoothService : Service() {
                         sudden_start_array[HH]++
                         harsh_driving_array[HH] = harsh_driving_array[HH] + distance
                     }
-
                 }
             }
         }
@@ -1206,24 +1203,24 @@ class BluetoothService : Service() {
             // 첫 3분 시작 시점
             firstConstantTimeStamp = timeStamp
             if (location.speed * MS_TO_KH in 61f..80f) {
-                constantList1[getDateFromTimeStamp(timeStamp)] = constantList1[getDateFromTimeStamp(
+                constantList1[getDateFromTimeStampToHH(timeStamp)] = constantList1[getDateFromTimeStampToHH(
                     timeStamp
                 )] + distance
             } else if(location.speed * MS_TO_KH in 81f..100f){
-                constantList2[getDateFromTimeStamp(timeStamp)] = constantList1[getDateFromTimeStamp(
+                constantList2[getDateFromTimeStampToHH(timeStamp)] = constantList1[getDateFromTimeStampToHH(
                     timeStamp
                 )] + distance
             } else if(location.speed * MS_TO_KH in 101f..120f){
-                constantList3[getDateFromTimeStamp(timeStamp)] = constantList1[getDateFromTimeStamp(
+                constantList3[getDateFromTimeStampToHH(timeStamp)] = constantList1[getDateFromTimeStampToHH(
                     timeStamp
                 )] + distance
             } else if(location.speed * MS_TO_KH in 121f..140f){
-                constantList4[getDateFromTimeStamp(timeStamp)] = constantList1[getDateFromTimeStamp(
+                constantList4[getDateFromTimeStampToHH(timeStamp)] = constantList1[getDateFromTimeStampToHH(
                     timeStamp
                 )] + distance
             } else{
-                constantList5[getDateFromTimeStamp(timeStamp)] =
-                    constantList5[getDateFromTimeStamp(timeStamp)] + distance
+                constantList5[getDateFromTimeStampToHH(timeStamp)] =
+                    constantList5[getDateFromTimeStampToHH(timeStamp)] + distance
             }
 
 
@@ -1246,40 +1243,68 @@ class BluetoothService : Service() {
 
             // 3분 간격 동안 계속 쌓기
             if (location.speed * MS_TO_KH in 61f..80f) {
-                constantList1[getDateFromTimeStamp(timeStamp)] =
-                    constantList1[getDateFromTimeStamp(timeStamp)] + distance
+                constantList1[getDateFromTimeStampToHH(timeStamp)] =
+                    constantList1[getDateFromTimeStampToHH(timeStamp)] + distance
             } else if (location.speed * MS_TO_KH in 81f..100f) {
-                constantList2[getDateFromTimeStamp(timeStamp)] =
-                    constantList3[getDateFromTimeStamp(timeStamp)] + distance
+                constantList2[getDateFromTimeStampToHH(timeStamp)] =
+                    constantList3[getDateFromTimeStampToHH(timeStamp)] + distance
             } else if (location.speed * MS_TO_KH in 101f..120f) {
-                constantList3[getDateFromTimeStamp(timeStamp)] =
-                    constantList4[getDateFromTimeStamp(timeStamp)] + distance
+                constantList3[getDateFromTimeStampToHH(timeStamp)] =
+                    constantList4[getDateFromTimeStampToHH(timeStamp)] + distance
             } else if (location.speed * MS_TO_KH in 121f..140f) {
-                constantList4[getDateFromTimeStamp(timeStamp)] =
-                    constantList4[getDateFromTimeStamp(timeStamp)] + distance
+                constantList4[getDateFromTimeStampToHH(timeStamp)] =
+                    constantList4[getDateFromTimeStampToHH(timeStamp)] + distance
             } else{
-                constantList5[getDateFromTimeStamp(timeStamp)] =
-                    constantList5[getDateFromTimeStamp(timeStamp)] + distance
+                constantList5[getDateFromTimeStampToHH(timeStamp)] =
+                    constantList5[getDateFromTimeStampToHH(timeStamp)] + distance
             }
 
 
         } else {
             // 3분 간격 동안 계속 쌓기
             if (location.speed * MS_TO_KH in 61f..80f) {
-                constantList1[getDateFromTimeStamp(timeStamp)] =
-                    constantList1[getDateFromTimeStamp(timeStamp)] + distance
+                constantList1[getDateFromTimeStampToHH(timeStamp)] =
+                    constantList1[getDateFromTimeStampToHH(timeStamp)] + distance
             } else if (location.speed * MS_TO_KH in 81f..100f) {
-                constantList2[getDateFromTimeStamp(timeStamp)] =
-                    constantList3[getDateFromTimeStamp(timeStamp)] + distance
+                constantList2[getDateFromTimeStampToHH(timeStamp)] =
+                    constantList3[getDateFromTimeStampToHH(timeStamp)] + distance
             } else if (location.speed * MS_TO_KH in 101f..120f) {
-                constantList3[getDateFromTimeStamp(timeStamp)] =
-                    constantList4[getDateFromTimeStamp(timeStamp)] + distance
+                constantList3[getDateFromTimeStampToHH(timeStamp)] =
+                    constantList4[getDateFromTimeStampToHH(timeStamp)] + distance
             } else if (location.speed * MS_TO_KH in 121f..140f) {
-                constantList4[getDateFromTimeStamp(timeStamp)] =
-                    constantList4[getDateFromTimeStamp(timeStamp)] + distance
+                constantList4[getDateFromTimeStampToHH(timeStamp)] =
+                    constantList4[getDateFromTimeStampToHH(timeStamp)] + distance
             } else{
-                constantList5[getDateFromTimeStamp(timeStamp)] =
-                    constantList5[getDateFromTimeStamp(timeStamp)] + distance
+                constantList5[getDateFromTimeStampToHH(timeStamp)] =
+                    constantList5[getDateFromTimeStampToHH(timeStamp)] + distance
+            }
+        }
+
+        if(firstLocation != null) {
+            // firstLocation 23시
+            // location 0시
+            if(getDateFromTimeStampToHH(firstLocation!!.time) == 23 && getDateFromTimeStampToHH(location.time) == 0){
+                maxDistance = 0f
+                firstLocation = null
+            } else{
+                if ((getDateFromTimeStampToHHMM(location.time) - getDateFromTimeStampToHHMM(firstLocation!!.time)) == 100
+                    && (getDateFromTimeStampToSS(location.time) == getDateFromTimeStampToSS(firstLocation!!.time))) {
+                    if (maxDistance < 300f) {
+                        stopSensorNotSave()
+                    }
+
+                    maxDistance = 0f
+                    firstLocation = null
+                } else if((getDateFromTimeStampToHHMM(location.time) - getDateFromTimeStampToHHMM(firstLocation!!.time)) != 0
+                    && (getDateFromTimeStampToHHMM(location.time) - getDateFromTimeStampToHHMM(firstLocation!!.time)) % 100 == 0
+                    && (getDateFromTimeStampToSS(location.time) == getDateFromTimeStampToSS(firstLocation!!.time))) {
+                    if (maxDistance < 300f) {
+                        stopSensor()
+                    }
+
+                    maxDistance = 0f
+                    firstLocation = null
+                }
             }
         }
 
@@ -1374,15 +1399,30 @@ class BluetoothService : Service() {
         }.start()
     }
 
-    private fun getDateFromTimeStamp(timeStamp:Long) : Int{
+    private fun getDateFromTimeStampToHH(timeStamp:Long) : Int{
         val format = SimpleDateFormat("HH")
         format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
 
         return format.format(timeStamp).toInt()
     }
 
+    private fun getDateFromTimeStampToHHMM(timeStamp:Long) : Int{
+        val format = SimpleDateFormat("HHmm")
+        format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
+
+        return format.format(timeStamp).toInt()
+    }
+
+
     private fun getDateFromTimeStampToSS(timeStamp:Long) : Int{
         val format = SimpleDateFormat("ss")
+        format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
+
+        return format.format(timeStamp).toInt()
+    }
+
+    private fun getDateFromTimeStampToMM(timeStamp:Long) : Int{
+        val format = SimpleDateFormat("mm")
         format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
 
         return format.format(timeStamp).toInt()
