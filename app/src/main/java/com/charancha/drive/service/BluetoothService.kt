@@ -32,6 +32,7 @@ import java.lang.reflect.Method
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.concurrent.timer
 
 
 /**
@@ -175,6 +176,12 @@ class BluetoothService : Service() {
         "check blueToothConnect",
         NotificationManager.IMPORTANCE_HIGH
     )
+
+
+    /**
+     *  타이머 시간동안 최대 반경을 구하기 위한 변수들
+     */
+    lateinit var distanceSumForAnHourTimer:Timer
 
     override fun onBind(p0: Intent?): IBinder? {
         TODO("Not yet implemented")
@@ -768,6 +775,8 @@ class BluetoothService : Service() {
                  */
                 firstLineState = true
 
+                startDistanceTimer()
+
                 sensorState = true
                 PreferenceUtil.putPref(this, PreferenceUtil.RUNNING_LEVEL, level)
                 driveDatabase = DriveDatabase.getDatabase(this)
@@ -795,6 +804,8 @@ class BluetoothService : Service() {
                     firstLocation = null
                     maxDistance = 0f
 
+                    stopDistanceTimer()
+
                     makeSpeedInfo()
                     makeAccelerationInfo()
                     makePathLocationInfo()
@@ -812,6 +823,20 @@ class BluetoothService : Service() {
         }
     }
 
+    private fun startDistanceTimer(){
+        distanceSumForAnHourTimer = timer(period = 3600000, initialDelay = 3600000) {
+            if(maxDistance <= 300f){
+                stopSensor()
+            }
+            maxDistance = 0f
+            firstLocation = null
+        }
+    }
+
+    private fun stopDistanceTimer(){
+        distanceSumForAnHourTimer.cancel()
+    }
+
     fun stopSensor(){
         try {
             if (sensorState) {
@@ -819,6 +844,8 @@ class BluetoothService : Service() {
                 firstLineState = false
                 firstLocation = null
                 maxDistance = 0f
+
+                stopDistanceTimer()
 
                 makeSpeedInfo()
                 makeAccelerationInfo()
@@ -844,6 +871,8 @@ class BluetoothService : Service() {
                 firstLineState = false
                 firstLocation = null
                 maxDistance = 0f
+
+                stopDistanceTimer()
 
                 (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중.. NotSave" + getCurrent()).build())
 
