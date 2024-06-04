@@ -719,17 +719,24 @@ class BluetoothService : Service() {
                         if (activityType == DetectedActivity.WALKING) {
                             if (transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
                                 // Walking 활동에 들어감
-                                stopSensor()
-
                                 scheduleWalkingDetectWork()
                                 scheduleWalkingDetectWork2()
                                 scheduleWalkingDetectWork3()
                                 scheduleWalkingDetectWork4()
                                 scheduleWalkingDetectWork5()
+
+                                stopSensor()
                             }
                         } else if(activityType == DetectedActivity.IN_VEHICLE){
                             if (transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
                                 // Vehicle 활동에 들어감
+                                if(!sensorState){
+                                    scheduleWalkingDetectWork()
+                                    scheduleWalkingDetectWork2()
+                                    scheduleWalkingDetectWork3()
+                                    scheduleWalkingDetectWork4()
+                                    scheduleWalkingDetectWork5()
+                                }
                                 startSensor(L1)
                             }
                         }
@@ -858,7 +865,7 @@ class BluetoothService : Service() {
                 refreshTextCount = 0
                 firstLocation = null
 
-                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중.." + getCurrent()).build())
+                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중.. NotSave" + getCurrent()).build())
 
                 makeSpeedInfo()
                 makeAccelerationInfo()
