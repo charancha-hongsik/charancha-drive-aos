@@ -17,6 +17,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.IBinder
 import android.os.Looper
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.work.*
@@ -158,12 +159,10 @@ class BluetoothService : Service() {
     /**
      *  타이머 시간동안 최대 반경을 구하기 위한 변수들
      */
-    lateinit var distanceSumForAnHourTimer:Timer
     var firstLocation: Location? = null
     var maxDistance = 0f
 
     var firstLineState = false
-    var refreshTextCount = 0
 
     /**
      * notification 관련
@@ -201,12 +200,6 @@ class BluetoothService : Service() {
 
         sensorState = false
 
-        // AlarmReceiver 동적으로 등록
-        val alarmReceiverFilter = IntentFilter("AlarmReceiver")
-        registerReceiver(AlarmReceiver(), alarmReceiverFilter)
-
-        // 알람 설정
-        setDailyAlarm(this)
 
         registerReceiver(WalkingDetectReceiver(),IntentFilter().apply {
             addAction(TRANSITIONS_RECEIVER_ACTION)
@@ -781,7 +774,6 @@ class BluetoothService : Service() {
                 sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
                 initDriveData(level)
                 setLocation()
-                setAnHourAlarm(this@BluetoothService)
 
                 (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 중..($distanceSum m)").build())
 
@@ -808,7 +800,6 @@ class BluetoothService : Service() {
                     makePathLocationInfo()
                     makeDistanceBetween()
                     makeAltitudeFromGpsInfo()
-                    cancelAnHourAlarm(this@BluetoothService)
 
                     writeToRoom()
 
@@ -836,9 +827,6 @@ class BluetoothService : Service() {
                 makeAltitudeFromGpsInfo()
 
                 writeToRoom()
-
-                cancelAnHourAlarm(this@BluetoothService)
-
 
                 sensorManager.unregisterListener(sensorEventListener)
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
@@ -872,51 +860,6 @@ class BluetoothService : Service() {
             }
         }catch(e:Exception){
         }
-    }
-
-    fun setAnHourAlarm(context: Context) {
-        var flag = FLAG_UPDATE_CURRENT
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            flag = FLAG_MUTABLE
-        }
-
-        val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val alarmIntent = Intent(context, AlarmReceiver2::class.java).let { intent ->
-            getBroadcast(context, 103, intent, flag)
-        }
-
-        // 1시간마다 알람을 설정합니다.
-        val intervalMillis = 60L * 60L * 1000L // 1시간을 밀리초 단위로 변환
-        val triggerAtMillis = System.currentTimeMillis() + intervalMillis
-
-        // 알람을 설정합니다.
-        alarmMgr.setRepeating(
-            AlarmManager.RTC_WAKEUP,
-            triggerAtMillis,
-            intervalMillis,
-            alarmIntent
-        )
-
-        // AlarmReceiver 동적으로 등록
-        val alarmReceiverFilter = IntentFilter("AlarmReceiver2")
-        registerReceiver(AlarmReceiver2(), alarmReceiverFilter)
-    }
-
-    fun cancelAnHourAlarm(context: Context) {
-        var flag = FLAG_UPDATE_CURRENT
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            flag = FLAG_MUTABLE
-        }
-        val alarmMgr = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val alarmIntent = Intent(context, AlarmReceiver2::class.java).let { intent ->
-            getBroadcast(context, 103, intent, flag)
-        }
-
-        // 알람을 해제합니다.
-        alarmMgr.cancel(alarmIntent)
-
-        // AlarmReceiver 등록 해제
-        context.unregisterReceiver(AlarmReceiver2())
     }
 
     private fun initDriveData(level:String){
@@ -1428,53 +1371,4 @@ class BluetoothService : Service() {
 
         return format.format(timeStamp).toInt()
     }
-
-    fun setDailyAlarm(context: Context) {
-        val intent = Intent(context, AlarmReceiver::class.java)
-        var flag = FLAG_UPDATE_CURRENT
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            flag = FLAG_MUTABLE
-        }
-
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val pendingIntent = getBroadcast(context, 0, intent,flag)
-
-        val calendar = Calendar.getInstance().apply {
-            timeInMillis = System.currentTimeMillis()
-            set(Calendar.HOUR_OF_DAY, 7)  // 아침 7시 설정
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-        }
-
-        // 현재 시간이 아침 7시 이후라면 다음날 아침 7시로 설정
-        if (calendar.timeInMillis < System.currentTimeMillis()) {
-            calendar.add(Calendar.DAY_OF_YEAR, 1)
-        }
-
-        alarmManager.setInexactRepeating(
-            AlarmManager.RTC_WAKEUP,
-            calendar.timeInMillis,
-            AlarmManager.INTERVAL_DAY,
-            pendingIntent
-        )
-    }
-
-    inner class AlarmReceiver : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            scheduleWalkingDetectWork()
-            scheduleWalkingDetectWork2()
-            scheduleWalkingDetectWork3()
-            scheduleWalkingDetectWork4()
-            scheduleWalkingDetectWork5()
-        }
-    }
-
-    inner class AlarmReceiver2 : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            if(maxDistance < 300f){
-                stopSensor()
-            }
-        }
-    }
-
 }
