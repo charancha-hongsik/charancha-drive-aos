@@ -13,6 +13,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
+import android.util.Log
 import android.view.View.*
 import android.widget.ImageButton
 import androidx.activity.viewModels
@@ -22,6 +23,7 @@ import androidx.core.content.ContextCompat
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.PreferenceUtil.HAVE_BEEN_HOME
 import com.charancha.drive.R
+import com.charancha.drive.retrofit.ApiServiceInterface
 import com.charancha.drive.service.BluetoothService
 import com.charancha.drive.viewmodel.MainViewModel
 import com.github.mikephil.charting.charts.LineChart
@@ -29,6 +31,14 @@ import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
+import com.google.gson.JsonObject
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 
 
@@ -79,6 +89,17 @@ class MainActivity : AppCompatActivity() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             requestBatteryOptimizationException()
         }
+
+//        apiService().sections().enqueue(object :Callback<JsonObject>{
+//            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+//                Log.d("testsetsets","testsetsetsetes onResponse :: " + response.body())
+//            }
+//
+//            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+//                Log.d("testsetsets","testsetsetsetes :: error ")
+//            }
+//
+//        })
 
 
         setPieChart()
@@ -431,6 +452,16 @@ class MainActivity : AppCompatActivity() {
         chart.getAxisRight().setDrawGridLines(false)
         chart.animateX(1500)
         chart.invalidate()
+    }
+
+    fun apiService(): ApiServiceInterface {
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client: OkHttpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
+        return Retrofit.Builder().baseUrl("https://dev.charancha.com/").client(client)
+            .addConverterFactory(GsonConverterFactory.create()).build().create(
+                ApiServiceInterface::class.java
+            )
     }
 
 }

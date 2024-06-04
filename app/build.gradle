@@ -13,7 +13,7 @@ android {
         minSdk 28
         targetSdk 33
         versionCode 3
-        versionName "1.4.1"
+        versionName "1.4.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -75,6 +75,14 @@ dependencies {
 
     // workManager
     implementation 'androidx.work:work-runtime:2.7.1'
+
+    // Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.6.4'
+
+    // OkHttp
+    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.10.0'
 
 
 }
