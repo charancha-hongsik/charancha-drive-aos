@@ -1253,6 +1253,34 @@ class BluetoothService : Service() {
             }
         }
 
+        if(firstLocation != null) {
+            // firstLocation 23시
+            // location 0시
+            if(getDateFromTimeStampToHH(firstLocation!!.time) == 23 && getDateFromTimeStampToHH(location.time) == 0){
+                maxDistance = 0f
+                firstLocation = null
+            } else{
+                if ((getDateFromTimeStampToHHMM(location.time) - getDateFromTimeStampToHHMM(firstLocation!!.time)) == 100
+                    && (getDateFromTimeStampToSS(location.time) == getDateFromTimeStampToSS(firstLocation!!.time))) {
+                    if (maxDistance < 300f) {
+                        stopSensorNotSave()
+                    }
+
+                    maxDistance = 0f
+                    firstLocation = null
+                } else if((getDateFromTimeStampToHHMM(location.time) - getDateFromTimeStampToHHMM(firstLocation!!.time)) != 0
+                    && (getDateFromTimeStampToHHMM(location.time) - getDateFromTimeStampToHHMM(firstLocation!!.time)) % 100 == 0
+                    && (getDateFromTimeStampToSS(location.time) == getDateFromTimeStampToSS(firstLocation!!.time))) {
+                    if (maxDistance < 300f) {
+                        stopSensor()
+                    }
+
+                    maxDistance = 0f
+                    firstLocation = null
+                }
+            }
+        }
+
         pastTimeStamp = timeStamp
         pastSpeed = location.speed
         pastLocation = location
