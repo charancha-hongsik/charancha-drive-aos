@@ -1090,7 +1090,11 @@ class BluetoothService : Service() {
             firstLocation = location
         }
 
-        maxDistance.add(location.distanceTo(firstLocation!!))
+        if(pastLocation != null){
+            for(i in 0..(location.time-pastLocation!!.time)/1000) {
+                maxDistance.add(location.distanceTo(firstLocation!!))
+            }
+        }
 
         // 1717370784111
         // 1717370780111
@@ -1104,7 +1108,7 @@ class BluetoothService : Service() {
             distance = pastLocation!!.distanceTo(location)
         }
 
-        gpsInfo.add(EachGpsDto(timeStamp, location.latitude, location.longitude, location.speed,distance,location.altitude, (location.speed) - (pastSpeed)))
+        gpsInfo.add(EachGpsDto(timeStamp, location.latitude, location.longitude, String.format("%.2f",location.speed).toFloat(),String.format("%.2f",distance).toFloat(),String.format("%.2f", location.altitude).toDouble(), String.format("%.2f",(location.speed) - (pastSpeed)).toFloat()))
 
         var HH = getDateFromTimeStampToHH(timeStamp)
 
@@ -1257,7 +1261,7 @@ class BluetoothService : Service() {
             }
         }
 
-        if(maxDistance.size > 3000){
+        if(maxDistance.size > 1800){
             if (maxDistance.max() < 300f) {
                 if(pastMaxDistance.size != 0)
                     stopSensor()
