@@ -16,6 +16,7 @@ import android.provider.Settings
 import android.util.Log
 import android.view.View.*
 import android.widget.ImageButton
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -56,6 +57,8 @@ class MainActivity : AppCompatActivity() {
     private val mainViewModel: MainViewModel by viewModels()
 
     lateinit var chart: PieChart
+    lateinit var btn_edit:ImageButton
+    var tv_car_name:TextView? = null
 
     private fun promptForBatteryOptimization() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
@@ -82,6 +85,14 @@ class MainActivity : AppCompatActivity() {
             promptForBatteryOptimization()
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        if(tv_car_name != null && PreferenceUtil.getPref(this, PreferenceUtil.USER_NAME, "") != ""){
+            tv_car_name!!.text = PreferenceUtil.getPref(this, PreferenceUtil.USER_NAME, "")
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -89,6 +100,14 @@ class MainActivity : AppCompatActivity() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             requestBatteryOptimizationException()
         }
+
+
+//        Log.d("testestest","testestsetes device model name :: " + Build.MODEL)
+//        Log.d("testestest","testestsetes os version :: " + Build.VERSION.RELEASE)
+//        Log.d("testestest","testestsetes manufacturer name :: " + Build.MANUFACTURER)
+//        Log.d("testestest","testestsetes uuid  :: " + UUID.randomUUID().toString())
+
+
 
 //        apiService().sections().enqueue(object :Callback<JsonObject>{
 //            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
@@ -130,6 +149,13 @@ class MainActivity : AppCompatActivity() {
         btnHistory.setOnClickListener {
             startActivity(Intent(this, MyDriveHistoryActivity::class.java))
         }
+
+        btn_edit = findViewById(R.id.btn_edit)
+        btn_edit.setOnClickListener{
+            startActivity(Intent(this, InputNameActivity::class.java))
+        }
+
+        tv_car_name = findViewById(R.id.tv_car_name)
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {

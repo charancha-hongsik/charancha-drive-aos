@@ -10,6 +10,8 @@ object PreferenceUtil {
     var pref_name = "charancha_pref" //저장소명
     var HAVE_BEEN_HOME = "have_been_home"
     var RUNNING_LEVEL = "running_level"
+    var USER_NAME = "username"
+
     var SENSOR_STATE = "sensor_state"
 
 
