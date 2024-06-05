@@ -26,6 +26,7 @@ import com.charancha.drive.PreferenceUtil.HAVE_BEEN_HOME
 import com.charancha.drive.R
 import com.charancha.drive.retrofit.ApiServiceInterface
 import com.charancha.drive.service.BluetoothService
+import com.charancha.drive.service.CallApiService
 import com.charancha.drive.viewmodel.MainViewModel
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.charts.PieChart
@@ -101,26 +102,6 @@ class MainActivity : AppCompatActivity() {
             requestBatteryOptimizationException()
         }
 
-
-//        Log.d("testestest","testestsetes device model name :: " + Build.MODEL)
-//        Log.d("testestest","testestsetes os version :: " + Build.VERSION.RELEASE)
-//        Log.d("testestest","testestsetes manufacturer name :: " + Build.MANUFACTURER)
-//        Log.d("testestest","testestsetes uuid  :: " + UUID.randomUUID().toString())
-
-
-
-//        apiService().sections().enqueue(object :Callback<JsonObject>{
-//            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-//                Log.d("testsetsets","testsetsetsetes onResponse :: " + response.body())
-//            }
-//
-//            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-//                Log.d("testsetsets","testsetsetsetes :: error ")
-//            }
-//
-//        })
-
-
         setPieChart()
         setLineChartForBrakes(findViewById(R.id.chart_line_brakes))
         setLineChartForEngine(findViewById(R.id.chart_line_engine))
@@ -137,9 +118,14 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this, BluetoothService::class.java)
                 startForegroundService(intent)
             }
+
+            val intent = Intent(this, CallApiService::class.java)
+            startForegroundService(intent)
+
         } else{
 
         }
+
     }
 
 
@@ -479,15 +465,4 @@ class MainActivity : AppCompatActivity() {
         chart.animateX(1500)
         chart.invalidate()
     }
-
-    fun apiService(): ApiServiceInterface {
-        val interceptor = HttpLoggingInterceptor()
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-        val client: OkHttpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
-        return Retrofit.Builder().baseUrl("https://dev.charancha.com/").client(client)
-            .addConverterFactory(GsonConverterFactory.create()).build().create(
-                ApiServiceInterface::class.java
-            )
-    }
-
 }
