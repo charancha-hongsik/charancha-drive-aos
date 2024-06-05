@@ -1091,7 +1091,7 @@ class BluetoothService : Service() {
         }
 
         if(pastLocation != null){
-            for(i in 0..(location.time-pastLocation!!.time)/1000) {
+            for(i in 1..(location.time-pastLocation!!.time)/1000) {
                 maxDistance.add(location.distanceTo(firstLocation!!))
             }
         }
@@ -1391,4 +1391,6 @@ class BluetoothService : Service() {
 
         return format.format(timeStamp).toInt()
     }
+
+
 }
