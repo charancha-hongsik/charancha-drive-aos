@@ -9,13 +9,16 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.charancha.drive.room.Converters
 import com.charancha.drive.room.dao.DriveDao
+import com.charancha.drive.room.dao.DriveForApiDao
 import com.charancha.drive.room.entity.Drive
+import com.charancha.drive.room.entity.DriveForApi
 
-@Database(entities = [Drive::class], version = 1, exportSchema = false)
+@Database(entities = [Drive::class, DriveForApi::class], version = 2, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class DriveDatabase : RoomDatabase() {
 
     abstract fun driveDao(): DriveDao
+    abstract fun driveForApiDao(): DriveForApiDao
 
     companion object {
         @Volatile

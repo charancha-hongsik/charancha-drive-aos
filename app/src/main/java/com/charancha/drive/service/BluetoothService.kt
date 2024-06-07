@@ -24,9 +24,12 @@ import androidx.work.*
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.calculateData
 import com.charancha.drive.room.DriveDto
+import com.charancha.drive.room.DriveDtoForApi
 import com.charancha.drive.room.EachGpsDto
+import com.charancha.drive.room.EachGpsDtoForApi
 import com.charancha.drive.room.database.DriveDatabase
 import com.charancha.drive.room.entity.Drive
+import com.charancha.drive.room.entity.DriveForApi
 import com.google.android.gms.location.*
 import java.lang.reflect.Method
 import java.text.SimpleDateFormat
@@ -153,6 +156,8 @@ class BluetoothService : Service() {
      */
     lateinit var driveDto: DriveDto
     lateinit var gpsInfo: MutableList<EachGpsDto>
+    lateinit var driveDtoForApi: DriveDtoForApi
+    lateinit var gpsInfoForApi: MutableList<EachGpsDtoForApi>
     private var maxSpeed: Float = 0f
     private var distanceSum: Float = 0f
     private var startTimeStamp: Long = 0L
@@ -708,7 +713,16 @@ class BluetoothService : Service() {
                                 scheduleWalkingDetectWork4()
                                 scheduleWalkingDetectWork5()
 
-                                stopSensor()
+                                if(sensorState){
+                                    if (maxDistance.size > 1800) {
+                                        if (maxDistance.max() < 300f) {
+                                            if (pastMaxDistance.size != 0)
+                                                stopSensor()
+                                            else
+                                                stopSensorNotSave()
+                                        }
+                                    }
+                                }
                             }
                         } else if(activityType == DetectedActivity.IN_VEHICLE){
                             if (transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
@@ -806,6 +820,7 @@ class BluetoothService : Service() {
                     makeAltitudeFromGpsInfo()
 
                     writeToRoom()
+                    writeToRoomForApi()
 
                     sensorManager.unregisterListener(sensorEventListener)
                     fusedLocationClient?.removeLocationUpdates(locationCallback)
@@ -832,6 +847,7 @@ class BluetoothService : Service() {
                 makeAltitudeFromGpsInfo()
 
                 writeToRoom()
+                writeToRoomForApi()
 
                 sensorManager.unregisterListener(sensorEventListener)
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
@@ -903,6 +919,7 @@ class BluetoothService : Service() {
         distanceSum = 0f
         startTimeStamp = System.currentTimeMillis()
         gpsInfo = mutableListOf()
+        gpsInfoForApi = mutableListOf()
         driveDto = DriveDto(
             format.format(time).toString(),
             startTimeStamp,
@@ -917,6 +934,21 @@ class BluetoothService : Service() {
             listOf(),
             0f,
             gpsInfo)
+
+
+        driveDtoForApi = DriveDtoForApi(
+            Build.MANUFACTURER,
+            Build.VERSION.RELEASE,
+            Build.MODEL,
+            UUID.randomUUID().toString(),
+            PreferenceUtil.getPref(this, PreferenceUtil.USER_NAME, "")!!,
+            format.format(time).toString(),
+            startTimeStamp,
+            0L,
+            level,
+            gpsInfoForApi,
+        )
+
     }
 
     inner class TransitionsReceiver : BroadcastReceiver() {
@@ -1109,6 +1141,8 @@ class BluetoothService : Service() {
         }
 
         gpsInfo.add(EachGpsDto(timeStamp, location.latitude, location.longitude, String.format("%.2f",location.speed).toFloat(),String.format("%.2f",distance).toFloat(),String.format("%.2f", location.altitude).toDouble(), String.format("%.2f",(location.speed) - (pastSpeed)).toFloat()))
+        gpsInfoForApi.add(EachGpsDtoForApi(timeStamp, String.format("%.2f",location.speed).toFloat(),String.format("%.2f",distance).toFloat(),String.format("%.2f", location.altitude).toDouble(), String.format("%.2f",(location.speed) - (pastSpeed)).toFloat()))
+
 
         var HH = getDateFromTimeStampToHH(timeStamp)
 
@@ -1362,6 +1396,31 @@ class BluetoothService : Service() {
             }
         }.start()
     }
+
+    fun writeToRoomForApi(){
+        Thread{
+            try {
+                driveDtoForApi.gpses = gpsInfoForApi
+                driveDtoForApi.endTimestamp = System.currentTimeMillis()
+
+                val driveForAPi = DriveForApi(
+                    driveDtoForApi.tracking_id,
+                    driveDtoForApi.manufacturer,
+                    driveDtoForApi.version,
+                    driveDtoForApi.deviceModel,
+                    driveDtoForApi.deviceUuid,
+                    driveDtoForApi.username,
+                    driveDtoForApi.startTimeStamp,
+                    driveDtoForApi.endTimestamp,
+                    driveDtoForApi.verification,
+                    driveDtoForApi.gpses)
+
+                driveDatabase?.driveForApiDao()?.insert(driveForAPi)
+            } catch (e:Exception){
+            }
+        }.start()
+    }
+
 
     private fun getDateFromTimeStampToHH(timeStamp:Long) : Int{
         val format = SimpleDateFormat("HH")

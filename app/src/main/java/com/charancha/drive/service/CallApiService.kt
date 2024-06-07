@@ -12,6 +12,8 @@ import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.charancha.drive.retrofit.ApiServiceInterface
+import com.charancha.drive.room.database.DriveDatabase
+import com.charancha.drive.viewmodel.DetailDriveHistoryViewModel
 import com.google.gson.JsonObject
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -37,30 +39,7 @@ class CallApiService: Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         setNotification()
-        if(isInternetConnected(this@CallApiService)){
-            apiService().sections().enqueue(object : Callback<JsonObject> {
-                override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                    Log.d("testsetset","testsetsetestestse onResponse")
-                    val intent = Intent(this@CallApiService, CallApiService::class.java)
-                    stopService(intent)
-                }
-
-                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                    Log.d("testsetset","testsetsetestestse onFailure")
-                    val intent = Intent(this@CallApiService, CallApiService::class.java)
-                    stopService(intent)
-                }
-            })
-        }else{
-
-        }
-
-//        Log.d("testestest","testestsetes device model name :: " + Build.MODEL)
-//        Log.d("testestest","testestsetes os version :: " + Build.VERSION.RELEASE)
-//        Log.d("testestest","testestsetes manufacturer name :: " + Build.MANUFACTURER)
-//        Log.d("testestest","testestsetes uuid  :: " + UUID.randomUUID().toString())
-
-
+        callApi()
 
         return super.onStartCommand(intent, flags, startId)
     }
@@ -79,6 +58,36 @@ class CallApiService: Service() {
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setOnlyAlertOnce(true)
             .build())
+
+
+
+    }
+
+    fun callApi(){
+        if(isInternetConnected(this@CallApiService)){
+            val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(this@CallApiService)
+            driveDatabase.driveDao().allDriveLimit3?.let {
+                if(it.isNotEmpty()){
+                    apiService().sections().enqueue(object : Callback<JsonObject> {
+                        override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                            // 보낸 데이터 삭제
+                            callApi()
+                        }
+
+                        override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                            val intent = Intent(this@CallApiService, CallApiService::class.java)
+                            stopService(intent)
+                        }
+                    })
+                }else{
+                    val intent = Intent(this@CallApiService, CallApiService::class.java)
+                    stopService(intent)
+                }
+            }
+
+        }else{
+
+        }
     }
 
     // 인터넷 연결 상태를 확인하는 함수

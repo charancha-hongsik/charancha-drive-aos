@@ -23,6 +23,12 @@ interface DriveDao {
     @get:Query("SELECT * FROM drive ORDER BY timeStamp DESC")
     val allDrive: List<Drive>?
 
+    /**
+     * 모든 Drving 값 가져오기
+     */
+    @get:Query("SELECT * FROM drive ORDER BY timeStamp DESC LIMIT 3")
+    val allDriveLimit3: List<Drive>?
+
     @Query("SELECT * FROM drive WHERE tracking_id = :trackingId")
     fun getDriveByTrackingId(trackingId: String): Drive?
 

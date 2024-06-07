@@ -1,0 +1,27 @@
+package com.charancha.drive.room.dao
+
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import com.charancha.drive.room.entity.Drive
+import com.charancha.drive.room.entity.DriveForApi
+
+@Dao
+interface DriveForApiDao {
+    // allowing the insert of the same word multiple times by passing a
+    // conflict resolution strategy
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insert(drive: DriveForApi?)
+
+    @Query("DELETE FROM driveForApi")
+    fun deleteAll()
+
+
+    /**
+     * 모든 Drving 값 가져오기
+     */
+    @get:Query("SELECT * FROM driveForApi ORDER BY startTimeStamp DESC")
+    val allDrive: List<DriveForApi>?
+
+}
