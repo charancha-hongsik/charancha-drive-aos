@@ -1,6 +1,4 @@
-package com.charancha.drive.room
-
-import androidx.room.PrimaryKey
+package com.charancha.drive.room.dto
 
 
 // 시작했을 떄 클래스 생성

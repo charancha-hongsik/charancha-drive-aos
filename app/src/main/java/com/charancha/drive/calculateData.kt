@@ -1,9 +1,7 @@
 package com.charancha.drive
 
 
-import android.util.Log
-import com.charancha.drive.room.EachGpsDto
-import com.google.gson.Gson
+import com.charancha.drive.room.dto.EachGpsDto
 import java.text.SimpleDateFormat
 import java.util.*
 

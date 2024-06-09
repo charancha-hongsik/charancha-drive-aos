@@ -2,16 +2,12 @@ package com.charancha.drive.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.charancha.drive.R
-import com.charancha.drive.calculateData
-import com.charancha.drive.room.DriveDto
 import com.charancha.drive.viewmodel.MyDriveHistoryViewModel
-import com.google.gson.Gson
 
 
 class MyDriveHistoryActivity: AppCompatActivity() {

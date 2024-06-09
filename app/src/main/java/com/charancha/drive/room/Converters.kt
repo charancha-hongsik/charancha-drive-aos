@@ -1,6 +1,7 @@
 package com.charancha.drive.room
 
 import androidx.room.TypeConverter
+import com.charancha.drive.room.dto.EachGpsDto
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 

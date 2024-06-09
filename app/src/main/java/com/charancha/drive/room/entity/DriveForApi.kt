@@ -3,8 +3,7 @@ package com.charancha.drive.room.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.charancha.drive.room.EachGpsDto
-import com.charancha.drive.room.EachGpsDtoForApi
+import com.charancha.drive.room.dto.EachGpsDtoForApi
 
 @Entity(tableName = "driveForApi")
 data class DriveForApi(

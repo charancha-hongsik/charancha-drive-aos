@@ -1,4 +1,4 @@
-package com.charancha.drive.room
+package com.charancha.drive.room.dto
 
 data class DriveDtoForApi(
     var manufacturer:String,

@@ -13,29 +13,38 @@ import android.database.Cursor
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.location.Location
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
 import android.os.IBinder
 import android.os.Looper
-import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.work.*
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.calculateData
-import com.charancha.drive.room.DriveDto
-import com.charancha.drive.room.DriveDtoForApi
-import com.charancha.drive.room.EachGpsDto
-import com.charancha.drive.room.EachGpsDtoForApi
+import com.charancha.drive.retrofit.ApiServiceInterface
+import com.charancha.drive.room.dto.DriveDto
+import com.charancha.drive.room.dto.DriveDtoForApi
+import com.charancha.drive.room.dto.EachGpsDto
+import com.charancha.drive.room.dto.EachGpsDtoForApi
 import com.charancha.drive.room.database.DriveDatabase
 import com.charancha.drive.room.entity.Drive
 import com.charancha.drive.room.entity.DriveForApi
 import com.google.android.gms.location.*
+import com.google.gson.JsonObject
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.reflect.Method
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.concurrent.timer
 
 
 /**
@@ -707,21 +716,22 @@ class BluetoothService : Service() {
                         if (activityType == DetectedActivity.WALKING) {
                             if (transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
                                 // Walking 활동에 들어감
-                                scheduleWalkingDetectWork()
-                                scheduleWalkingDetectWork2()
-                                scheduleWalkingDetectWork3()
-                                scheduleWalkingDetectWork4()
-                                scheduleWalkingDetectWork5()
-
                                 if(sensorState){
-                                    if (maxDistance.size > 1800) {
-                                        if (maxDistance.max() < 300f) {
-                                            if (pastMaxDistance.size != 0)
-                                                stopSensor()
-                                            else
-                                                stopSensorNotSave()
-                                        }
+                                    scheduleWalkingDetectWork()
+                                    scheduleWalkingDetectWork2()
+                                    scheduleWalkingDetectWork3()
+                                    scheduleWalkingDetectWork4()
+                                    scheduleWalkingDetectWork5()
+
+                                    if (maxDistance.max() < 300f) {
+                                        if (pastMaxDistance.size != 0)
+                                            stopSensor()
+                                        else
+                                            stopSensorNotSave()
+                                    }else{
+                                        stopSensor()
                                     }
+
                                 }
                             }
                         } else if(activityType == DetectedActivity.IN_VEHICLE){
@@ -1397,6 +1407,30 @@ class BluetoothService : Service() {
         }.start()
     }
 
+    fun callApi(){
+        if(isInternetConnected(this@BluetoothService)){
+            val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(this@BluetoothService)
+            driveDatabase.driveDao().allDriveLimit3?.let {
+                if(it.isNotEmpty()){
+                    apiService().sections().enqueue(object : Callback<JsonObject> {
+                        override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+
+                        }
+
+                        override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                            writeToRoomForApi()
+                        }
+                    })
+                }else{
+
+                }
+            }
+
+        }else{
+
+        }
+    }
+
     fun writeToRoomForApi(){
         Thread{
             try {
@@ -1450,6 +1484,27 @@ class BluetoothService : Service() {
 
         return format.format(timeStamp).toInt()
     }
+
+    fun apiService(): ApiServiceInterface {
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client: OkHttpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
+        return Retrofit.Builder().baseUrl("https://dev.charancha.com/").client(client)
+            .addConverterFactory(GsonConverterFactory.create()).build().create(
+                ApiServiceInterface::class.java
+            )
+    }
+
+    fun isInternetConnected(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        val network = connectivityManager.activeNetwork ?: return false
+        val capabilities =
+            connectivityManager.getNetworkCapabilities(network) ?: return false
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    }
+
 
 
 }

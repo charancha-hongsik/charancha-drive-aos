@@ -1,4 +1,4 @@
-package com.charancha.drive.room
+package com.charancha.drive.room.dto
 
 import androidx.room.PrimaryKey
 
