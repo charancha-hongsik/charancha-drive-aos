@@ -71,13 +71,10 @@ class CallApiService: Service() {
                 driveDatabase.driveForApiDao().allDriveLimit5?.let {
                     if (it.isNotEmpty()) {
                         for (drive in it) {
-
-
                             val gson = Gson()
                             val jsonParam = gson.toJson(drive)
 
-
-                            apiService().sections().enqueue(object : Callback<JsonObject> {
+                            apiService().postDrivingInfo(jsonParam).enqueue(object : Callback<JsonObject> {
                                 override fun onResponse(
                                     call: Call<JsonObject>,
                                     response: Response<JsonObject>
