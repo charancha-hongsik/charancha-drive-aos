@@ -17,6 +17,15 @@ interface DriveForApiDao {
     @Query("DELETE FROM driveForApi")
     fun deleteAll()
 
+    @Query("DELETE FROM driveForApi WHERE tracking_id = :trackingId")
+    fun deleteByTrackingId(trackingId: String)
+
+    /**
+     * 모든 Drving 값 가져오기
+     */
+    @get:Query("SELECT * FROM driveForApi ORDER BY startTimeStamp DESC LIMIT 5")
+    val allDriveLimit5: List<DriveForApi>?
+
 
     /**
      * 모든 Drving 값 가져오기

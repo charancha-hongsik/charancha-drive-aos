@@ -14,6 +14,7 @@ import androidx.core.app.NotificationCompat
 import com.charancha.drive.retrofit.ApiServiceInterface
 import com.charancha.drive.room.database.DriveDatabase
 import com.charancha.drive.viewmodel.DetailDriveHistoryViewModel
+import com.google.gson.Gson
 import com.google.gson.JsonObject
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -65,28 +66,48 @@ class CallApiService: Service() {
 
     fun callApi(){
         if(isInternetConnected(this@CallApiService)){
-            val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(this@CallApiService)
-            driveDatabase.driveDao().allDriveLimit3?.let {
-                if(it.isNotEmpty()){
-                    apiService().sections().enqueue(object : Callback<JsonObject> {
-                        override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                            // 보낸 데이터 삭제
-                            callApi()
-                        }
+            Thread {
+                val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(this@CallApiService)
+                driveDatabase.driveForApiDao().allDriveLimit5?.let {
+                    if (it.isNotEmpty()) {
+                        for (drive in it) {
 
-                        override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                            val intent = Intent(this@CallApiService, CallApiService::class.java)
-                            stopService(intent)
+
+                            val gson = Gson()
+                            val jsonParam = gson.toJson(drive)
+
+
+                            apiService().sections().enqueue(object : Callback<JsonObject> {
+                                override fun onResponse(
+                                    call: Call<JsonObject>,
+                                    response: Response<JsonObject>
+                                ) {
+                                    // 보낸 데이터 삭제
+                                    driveDatabase.driveForApiDao().deleteByTrackingId(drive.tracking_id)
+
+
+                                    if(drive.tracking_id == it.last().tracking_id){
+                                        val intent = Intent(this@CallApiService, CallApiService::class.java)
+                                        stopService(intent)
+                                    }
+                                }
+
+                                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                                    val intent = Intent(this@CallApiService, CallApiService::class.java)
+                                    stopService(intent)
+                                }
+                            })
                         }
-                    })
-                }else{
-                    val intent = Intent(this@CallApiService, CallApiService::class.java)
-                    stopService(intent)
+                    } else {
+                        val intent = Intent(this@CallApiService, CallApiService::class.java)
+                        stopService(intent)
+                    }
                 }
-            }
+            }.start()
 
         }else{
-
+            val intent = Intent(this@CallApiService, CallApiService::class.java)
+            stopService(intent)
         }
     }
 

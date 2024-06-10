@@ -92,6 +92,9 @@ class MainActivity : AppCompatActivity() {
         if(tv_car_name != null && PreferenceUtil.getPref(this, PreferenceUtil.USER_NAME, "") != ""){
             tv_car_name!!.text = PreferenceUtil.getPref(this, PreferenceUtil.USER_NAME, "")
         }
+
+        val intent = Intent(this, CallApiService::class.java)
+        startForegroundService(intent)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
