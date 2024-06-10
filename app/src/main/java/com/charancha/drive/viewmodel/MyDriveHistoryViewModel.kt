@@ -25,6 +25,10 @@ class MyDriveHistoryViewModel: ViewModel() {
             driveDatabase.driveDao().allDrive?.let {
                 setAllDriveDate.value = Event(it.toMutableList())
             }
+
+            driveDatabase.driveForApiDao().allDrive?.let {
+                Log.d("testsetsetsetset","testsetsetsetse size:: " + it.size)
+            }
         }
     }
 

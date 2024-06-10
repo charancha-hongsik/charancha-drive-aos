@@ -27,9 +27,30 @@ abstract class DriveDatabase : RoomDatabase() {
         fun getDatabase(context: Context): DriveDatabase {
             // if the Instance is not null, return it, otherwise create a new database instance.
             return Instance ?: synchronized(this) {
-                Room.databaseBuilder(context, DriveDatabase::class.java, "drive_database").allowMainThreadQueries()
+                Room.databaseBuilder(context, DriveDatabase::class.java, "drive_database").allowMainThreadQueries().addMigrations(MIGRATION_1_2)
                     .build()
                     .also { Instance = it }
+            }
+        }
+
+        private val MIGRATION_1_2 = object : Migration(1, 2) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // Create the new table
+                database.execSQL("""
+                    CREATE TABLE IF NOT EXISTS `driveForApi` (
+                        `tracking_id` TEXT NOT NULL,
+                        `manufacturer` TEXT NOT NULL,
+                        `version` TEXT NOT NULL,
+                        `deviceModel` TEXT NOT NULL,
+                        `deviceUuid` TEXT NOT NULL,
+                        `username` TEXT NOT NULL,
+                        `startTimeStamp` INTEGER NOT NULL,
+                        `endTimestamp` INTEGER NOT NULL,
+                        `verification` TEXT NOT NULL,
+                        `gpses` TEXT NOT NULL,
+                        PRIMARY KEY(`tracking_id`)
+                    )
+                """.trimIndent())
             }
         }
 

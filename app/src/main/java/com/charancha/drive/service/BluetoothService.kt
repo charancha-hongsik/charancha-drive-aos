@@ -830,7 +830,7 @@ class BluetoothService : Service() {
                     makeAltitudeFromGpsInfo()
 
                     writeToRoom()
-                    writeToRoomForApi()
+                    callApi()
 
                     sensorManager.unregisterListener(sensorEventListener)
                     fusedLocationClient?.removeLocationUpdates(locationCallback)
@@ -857,7 +857,7 @@ class BluetoothService : Service() {
                 makeAltitudeFromGpsInfo()
 
                 writeToRoom()
-                writeToRoomForApi()
+                callApi()
 
                 sensorManager.unregisterListener(sensorEventListener)
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
@@ -1407,49 +1407,43 @@ class BluetoothService : Service() {
         }.start()
     }
 
-    fun callApi(){
+    private fun callApi(){
+        driveDtoForApi.gpses = gpsInfoForApi
+        driveDtoForApi.endTimestamp = System.currentTimeMillis()
+
+        val driveForApi = DriveForApi(
+            driveDtoForApi.tracking_id,
+            driveDtoForApi.manufacturer,
+            driveDtoForApi.version,
+            driveDtoForApi.deviceModel,
+            driveDtoForApi.deviceUuid,
+            driveDtoForApi.username,
+            driveDtoForApi.startTimeStamp,
+            driveDtoForApi.endTimestamp,
+            driveDtoForApi.verification,
+            driveDtoForApi.gpses)
+
         if(isInternetConnected(this@BluetoothService)){
-            val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(this@BluetoothService)
-            driveDatabase.driveDao().allDriveLimit3?.let {
-                if(it.isNotEmpty()){
-                    apiService().sections().enqueue(object : Callback<JsonObject> {
-                        override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-
-                        }
-
-                        override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                            writeToRoomForApi()
-                        }
-                    })
-                }else{
+            apiService().sections().enqueue(object : Callback<JsonObject> {
+                override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
 
                 }
-            }
+
+                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                    writeToRoomForApi(driveForApi)
+                }
+            })
 
         }else{
-
+            writeToRoomForApi(driveForApi)
         }
     }
 
-    fun writeToRoomForApi(){
+    fun writeToRoomForApi(driveForApi:DriveForApi){
         Thread{
             try {
-                driveDtoForApi.gpses = gpsInfoForApi
-                driveDtoForApi.endTimestamp = System.currentTimeMillis()
+                driveDatabase?.driveForApiDao()?.insert(driveForApi)
 
-                val driveForAPi = DriveForApi(
-                    driveDtoForApi.tracking_id,
-                    driveDtoForApi.manufacturer,
-                    driveDtoForApi.version,
-                    driveDtoForApi.deviceModel,
-                    driveDtoForApi.deviceUuid,
-                    driveDtoForApi.username,
-                    driveDtoForApi.startTimeStamp,
-                    driveDtoForApi.endTimestamp,
-                    driveDtoForApi.verification,
-                    driveDtoForApi.gpses)
-
-                driveDatabase?.driveForApiDao()?.insert(driveForAPi)
             } catch (e:Exception){
             }
         }.start()

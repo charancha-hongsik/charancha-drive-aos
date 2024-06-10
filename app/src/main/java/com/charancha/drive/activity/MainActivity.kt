@@ -118,10 +118,6 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this, BluetoothService::class.java)
                 startForegroundService(intent)
             }
-
-            val intent = Intent(this, CallApiService::class.java)
-            startForegroundService(intent)
-
         } else{
 
         }
