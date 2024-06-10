@@ -10,8 +10,6 @@ import android.bluetooth.BluetoothClass.Service.*
 import android.content.*
 import android.content.pm.PackageManager
 import android.database.Cursor
-import android.hardware.SensorEventListener
-import android.hardware.SensorManager
 import android.location.Location
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -25,11 +23,11 @@ import androidx.work.*
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.calculateData
 import com.charancha.drive.retrofit.ApiServiceInterface
+import com.charancha.drive.room.database.DriveDatabase
 import com.charancha.drive.room.dto.DriveDto
 import com.charancha.drive.room.dto.DriveDtoForApi
 import com.charancha.drive.room.dto.EachGpsDto
 import com.charancha.drive.room.dto.EachGpsDtoForApi
-import com.charancha.drive.room.database.DriveDatabase
 import com.charancha.drive.room.entity.Drive
 import com.charancha.drive.room.entity.DriveForApi
 import com.google.android.gms.location.*
@@ -45,6 +43,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.reflect.Method
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
 
@@ -123,14 +122,17 @@ class BluetoothService : Service() {
 
     private var driveDatabase: DriveDatabase? = null
 
-    private lateinit var sensorManager: SensorManager
     private var fusedLocationClient :FusedLocationProviderClient? = null
     // 위치 업데이트 요청 설정
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
 
+    private var fusedLocationClient2 :FusedLocationProviderClient? = null
     // 위치 업데이트 요청 설정
-    private var sensorEventListener: SensorEventListener? = null
+    private lateinit var locationRequest2: LocationRequest
+    private lateinit var locationCallback2: LocationCallback
+
+
     /**
      * 위치 센서
      */
@@ -152,6 +154,8 @@ class BluetoothService : Service() {
 
 
     private var INTERVAL = 1000L
+    private var INTERVAL2 = 180000L
+
     /**
      *         locationRequest.setInterval(INTERVAL) // 20초마다 업데이트 요청
      *         locationRequest.setFastestInterval(FASTEST_INTERVAL) 다른 앱에서 연산된 위치를 수신
@@ -205,6 +209,8 @@ class BluetoothService : Service() {
             channel
         )
         notification = NotificationCompat.Builder(this, CHANNEL_ID)
+
+        setLocation2()
 
 
         startForeground(1, notification.setSmallIcon(android.R.drawable.btn_star_big_off)
@@ -714,7 +720,7 @@ class BluetoothService : Service() {
 
                         refreshNotiText(activityType.toString())
 
-                        if (activityType == DetectedActivity.WALKING) {
+                        if(activityType == DetectedActivity.WALKING) {
                             if (transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
                                 // Walking 활동에 들어감
                                 if(sensorState){
@@ -724,7 +730,7 @@ class BluetoothService : Service() {
                                     scheduleWalkingDetectWork4()
                                     scheduleWalkingDetectWork5()
 
-                                    if (maxDistance.max() < 300f) {
+                                    if(maxDistance.max() < 300f) {
                                         if (pastMaxDistance.size != 0)
                                             stopSensor()
                                         else
@@ -799,7 +805,6 @@ class BluetoothService : Service() {
                 sensorState = true
                 PreferenceUtil.putPref(this, PreferenceUtil.RUNNING_LEVEL, level)
                 driveDatabase = DriveDatabase.getDatabase(this)
-                sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
                 initDriveData(level)
                 setLocation()
 
@@ -833,7 +838,6 @@ class BluetoothService : Service() {
                     writeToRoom()
                     callApi()
 
-                    sensorManager.unregisterListener(sensorEventListener)
                     fusedLocationClient?.removeLocationUpdates(locationCallback)
                     fusedLocationClient = null
                 }
@@ -860,7 +864,6 @@ class BluetoothService : Service() {
                 writeToRoom()
                 callApi()
 
-                sensorManager.unregisterListener(sensorEventListener)
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
 
@@ -886,7 +889,6 @@ class BluetoothService : Service() {
                 makeDistanceBetween()
                 makeAltitudeFromGpsInfo()
 
-                sensorManager.unregisterListener(sensorEventListener)
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
 
@@ -1021,6 +1023,68 @@ class BluetoothService : Service() {
         )
     }
 
+    private fun setLocation2() {
+        // FusedLocationProviderClient 초기화
+        fusedLocationClient2 = LocationServices.getFusedLocationProviderClient(this)
+
+
+        // 위치 업데이트 요청 설정
+        locationRequest2 = LocationRequest.create()
+        locationRequest2.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+        locationRequest2.setInterval(INTERVAL2) // INTERVAL 마다 업데이트 요청
+
+
+        // 위치 업데이트 리스너 생성
+        locationCallback2 = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                val location: Location = locationResult.lastLocation
+
+                if(location.speed*MS_TO_KH > 30f){
+                    if(!sensorState){
+                        scheduleWalkingDetectWork()
+                        scheduleWalkingDetectWork2()
+                        scheduleWalkingDetectWork3()
+                        scheduleWalkingDetectWork4()
+                        scheduleWalkingDetectWork5()
+                    }
+                }
+            }
+        }
+
+        // 위치 업데이트 요청 시작
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
+
+        // 마지막 위치 처리
+        fusedLocationClient2?.lastLocation!!
+            .addOnSuccessListener { location: Location? ->
+                if (location != null) {
+
+                }
+            }
+
+        fusedLocationClient2?.requestLocationUpdates(
+            locationRequest2,
+            locationCallback2,
+            Looper.getMainLooper()
+        )
+    }
+
 
     /**
      * PRIORITY_BALANCED_POWER_ACCURACY 도시 블록 내의 위치 정밀도 요청. 정확도는 대략 100미터. Wi-Fi 정보와 휴대폰 기지국 위치를 사용할 수 있음. 대략적인 수준의 정확성으로 전력을 비교적 적게 사용함.
@@ -1151,8 +1215,12 @@ class BluetoothService : Service() {
             distance = pastLocation!!.distanceTo(location)
         }
 
-        gpsInfo.add(EachGpsDto(timeStamp, location.latitude, location.longitude, String.format("%.2f",location.speed).toFloat(),String.format("%.2f",distance).toFloat(),String.format("%.2f", location.altitude).toDouble(), String.format("%.2f",(location.speed) - (pastSpeed)).toFloat()))
-        gpsInfoForApi.add(EachGpsDtoForApi(timeStamp, String.format("%.2f",location.speed).toFloat(),String.format("%.2f",distance).toFloat(),String.format("%.2f", location.altitude).toDouble(), String.format("%.2f",(location.speed) - (pastSpeed)).toFloat()))
+        val speed = location.speed * MS_TO_KH
+        val acceleration = (location.speed * MS_TO_KH) - (pastSpeed * MS_TO_KH)
+
+
+        gpsInfo.add(EachGpsDto(timeStamp, location.latitude, location.longitude, String.format("%.2f",location.speed * MS_TO_KH).toFloat(),String.format("%.2f",distance).toFloat(),String.format("%.2f", location.altitude).toDouble(), String.format("%.2f",(location.speed * MS_TO_KH) - (pastSpeed * MS_TO_KH)).toFloat()))
+        gpsInfoForApi.add(EachGpsDtoForApi(timeStamp, String.format("%.2f",speed).toFloat() ,String.format("%.2f",distance).toFloat(),String.format("%.2f", location.altitude).toDouble(), String.format("%.2f",acceleration).toFloat()))
 
 
         var HH = getDateFromTimeStampToHH(timeStamp)
@@ -1380,7 +1448,7 @@ class BluetoothService : Service() {
     }
 
     fun writeToRoom(){
-        Thread{
+        Executors.newSingleThreadExecutor().execute{
             try {
                 driveDto.jsonData = gpsInfo
                 driveDto.time = System.currentTimeMillis() - startTimeStamp
@@ -1405,52 +1473,58 @@ class BluetoothService : Service() {
                 driveDatabase?.driveDao()?.insert(drive)
             } catch (e:Exception){
             }
-        }.start()
+        }
     }
 
     private fun callApi(){
-        driveDtoForApi.gpses = gpsInfoForApi
-        driveDtoForApi.endTimestamp = System.currentTimeMillis()
+        Executors.newSingleThreadExecutor().execute{
+            driveDtoForApi.gpses = gpsInfoForApi
+            driveDtoForApi.endTimestamp = System.currentTimeMillis()
 
-        val driveForApi = DriveForApi(
-            driveDtoForApi.tracking_id,
-            driveDtoForApi.manufacturer,
-            driveDtoForApi.version,
-            driveDtoForApi.deviceModel,
-            driveDtoForApi.deviceUuid,
-            driveDtoForApi.username,
-            driveDtoForApi.startTimeStamp,
-            driveDtoForApi.endTimestamp,
-            driveDtoForApi.verification,
-            driveDtoForApi.gpses)
+            val driveForApi = DriveForApi(
+                driveDtoForApi.tracking_id,
+                driveDtoForApi.manufacturer,
+                driveDtoForApi.version,
+                driveDtoForApi.deviceModel,
+                driveDtoForApi.deviceUuid,
+                driveDtoForApi.username,
+                driveDtoForApi.startTimeStamp,
+                driveDtoForApi.endTimestamp,
+                driveDtoForApi.verification,
+                driveDtoForApi.gpses
+            )
 
-        val gson = Gson()
-        val jsonParam = gson.toJson(driveForApi)
+            val gson = Gson()
+            val jsonParam = gson.toJson(driveForApi)
 
-        if(isInternetConnected(this@BluetoothService)){
-            apiService().postDrivingInfo(jsonParam).enqueue(object : Callback<JsonObject> {
-                override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+            if (isInternetConnected(this@BluetoothService)) {
+                apiService().postDrivingInfo(jsonParam).enqueue(object : Callback<JsonObject> {
+                    override fun onResponse(
+                        call: Call<JsonObject>,
+                        response: Response<JsonObject>
+                    ) {
 
-                }
+                    }
 
-                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                    writeToRoomForApi(driveForApi)
-                }
-            })
+                    override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                        writeToRoomForApi(driveForApi)
+                    }
+                })
 
-        }else{
-            writeToRoomForApi(driveForApi)
+            } else {
+                writeToRoomForApi(driveForApi)
+            }
         }
     }
 
     fun writeToRoomForApi(driveForApi:DriveForApi){
-        Thread{
+        Executors.newSingleThreadExecutor().execute {
             try {
                 driveDatabase?.driveForApiDao()?.insert(driveForApi)
 
             } catch (e:Exception){
             }
-        }.start()
+        }
     }
 
 
@@ -1486,7 +1560,12 @@ class BluetoothService : Service() {
     fun apiService(): ApiServiceInterface {
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-        val client: OkHttpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(interceptor)
+            .connectTimeout(1, TimeUnit.MINUTES)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(15, TimeUnit.SECONDS)
+            .build()
         return Retrofit.Builder().baseUrl("https://dev.charancha.com/").client(client)
             .addConverterFactory(GsonConverterFactory.create()).build().create(
                 ApiServiceInterface::class.java

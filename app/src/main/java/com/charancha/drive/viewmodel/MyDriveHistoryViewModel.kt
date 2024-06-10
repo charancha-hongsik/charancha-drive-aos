@@ -27,7 +27,21 @@ class MyDriveHistoryViewModel: ViewModel() {
             }
 
             driveDatabase.driveForApiDao().allDrive?.let {
-                Log.d("testsetsetsetset","testsetsetsetse size:: " + it.size)
+                Log.d("testsetsetsetset","testsetsetsetse1233 drive size:: " +it.size)
+
+//                for(drive in it){
+//                    Log.d("testsetsetsetset","testsetsetsetse1233 tracking_id:: " + drive.tracking_id)
+//                    Log.d("testsetsetsetset","testsetsetsetse1233 deviceModel:: " + drive.deviceModel)
+//                    Log.d("testsetsetsetset","testsetsetsetse1233 deviceUuid:: " + drive.deviceUuid)
+//                    Log.d("testsetsetsetset","testsetsetsetse1233 verification:: " + drive.verification)
+//                    Log.d("testsetsetsetset","testsetsetsetse1233 username:: " + drive.username)
+//                    Log.d("testsetsetsetset","testsetsetsetse1233 endTimestamp:: " + drive.endTimestamp)
+//
+//                    for(data in drive.gpses){
+//                        Log.d("testsetsetsetset", "testsetsetsetse1233 drive:: $data")
+//
+//                    }
+//                }
             }
         }
     }
