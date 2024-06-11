@@ -2,7 +2,10 @@ package com.charancha.drive.activity
 
 import android.Manifest.permission.*
 import android.app.ActivityManager
+import android.app.AlarmManager
 import android.app.AlertDialog
+import android.app.PendingIntent
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -21,6 +24,7 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startForegroundService
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.PreferenceUtil.HAVE_BEEN_HOME
 import com.charancha.drive.R
@@ -93,8 +97,11 @@ class MainActivity : AppCompatActivity() {
             tv_car_name!!.text = PreferenceUtil.getPref(this, PreferenceUtil.USER_NAME, "")
         }
 
-        val intent = Intent(this, CallApiService::class.java)
-        startForegroundService(intent)
+        val bluetoothIntent = Intent(this, BluetoothService::class.java)
+        startForegroundService(bluetoothIntent)
+
+        val callApiIntent = Intent(this, CallApiService::class.java)
+        startForegroundService(callApiIntent)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -117,14 +124,41 @@ class MainActivity : AppCompatActivity() {
         if(allPermissionsGranted()){
             setBtn()
 
-            if(!isMyServiceRunning(BluetoothService::class.java)){
-                val intent = Intent(this, BluetoothService::class.java)
-                startForegroundService(intent)
-            }
         } else{
 
         }
 
+        setAlarm()
+
+    }
+
+    private fun setAlarm(){
+        var flag = PendingIntent.FLAG_UPDATE_CURRENT
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            flag = PendingIntent.FLAG_MUTABLE
+        }
+
+        // 알람 매니저 초기화
+        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
+        // 알람이 트리거될 때 브로드캐스트를 발생시킬 인텐트 생성
+        val intent = Intent(this, AlarmReceiver::class.java)
+        val alarmIntent = PendingIntent.getBroadcast(this, 0, intent, flag)
+
+        // 주기적으로 알람 예약
+        val calendar: Calendar = Calendar.getInstance().apply {
+            timeInMillis = System.currentTimeMillis()
+            add(Calendar.MINUTE, 1)
+            add(Calendar.HOUR_OF_DAY, 4)
+        }
+
+        // RTC_WAKEUP을 사용하여 디바이스를 깨웁니다.
+        alarmManager.setRepeating(
+            AlarmManager.RTC_WAKEUP,
+            calendar.timeInMillis,
+             4 * 60 * 60 * 1000,
+            alarmIntent
+        )
     }
 
 
@@ -464,4 +498,16 @@ class MainActivity : AppCompatActivity() {
         chart.animateX(1500)
         chart.invalidate()
     }
+
+    class AlarmReceiver : BroadcastReceiver() {
+
+        override fun onReceive(context: Context, intent: Intent) {
+            // 알람이 트리거될 때 수행할 작업을 여기에 추가
+            Log.d("testestsetest","testestsesetestestsetsetset AlarmReceiver")
+
+            val bluetoothIntent = Intent(context, BluetoothService::class.java)
+            context.startForegroundService(bluetoothIntent)
+        }
+    }
+
 }

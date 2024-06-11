@@ -15,6 +15,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
+import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import androidx.core.app.ActivityCompat
@@ -203,38 +204,40 @@ class BluetoothService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        carConnectionQueryHandler = CarConnectionQueryHandler(contentResolver)
+        if(!sensorState){
+            carConnectionQueryHandler = CarConnectionQueryHandler(contentResolver)
 
-        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
-            channel
-        )
-        notification = NotificationCompat.Builder(this, CHANNEL_ID)
+            (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
+                channel
+            )
+            notification = NotificationCompat.Builder(this, CHANNEL_ID)
 
-        setLocation2()
-
-
-        startForeground(1, notification.setSmallIcon(android.R.drawable.btn_star_big_off)
-            .setAutoCancel(false)
-            .setOngoing(true)
-            .setContentText("주행 관찰중.." + getCurrent())
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setOnlyAlertOnce(true)
-            .build())
+            setLocation2()
 
 
-        sensorState = false
+            startForeground(1, notification.setSmallIcon(android.R.drawable.btn_star_big_off)
+                .setAutoCancel(false)
+                .setOngoing(true)
+                .setContentText("주행 관찰중.." + getCurrent())
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setOnlyAlertOnce(true)
+                .build())
 
 
-        registerReceiver(WalkingDetectReceiver(),IntentFilter().apply {
-            addAction(TRANSITIONS_RECEIVER_ACTION)
-        })
+            sensorState = false
 
-        registerReceiver(TransitionsReceiver(), filter)
-        scheduleWalkingDetectWork()
-        scheduleWalkingDetectWork2()
-        scheduleWalkingDetectWork3()
-        scheduleWalkingDetectWork4()
-        scheduleWalkingDetectWork5()
+
+            registerReceiver(WalkingDetectReceiver(),IntentFilter().apply {
+                addAction(TRANSITIONS_RECEIVER_ACTION)
+            })
+
+            registerReceiver(TransitionsReceiver(), filter)
+            scheduleWalkingDetectWork()
+            scheduleWalkingDetectWork2()
+            scheduleWalkingDetectWork3()
+            scheduleWalkingDetectWork4()
+            scheduleWalkingDetectWork5()
+        }
 
         return START_REDELIVER_INTENT
     }
@@ -242,16 +245,21 @@ class BluetoothService : Service() {
 
     private fun scheduleWalkingDetectWork() {
         try {
-            val workRequest = PeriodicWorkRequest.Builder(
-                WalkingDetectWorker::class.java,
-                15, TimeUnit.MINUTES
-            ).build()
+            WorkManager.getInstance(this@BluetoothService).cancelUniqueWork("WalkingDetectWork")
 
-            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                "WalkingDetectWork",
-                ExistingPeriodicWorkPolicy.REPLACE,
-                workRequest
-            )
+            Handler(Looper.getMainLooper()).postDelayed({
+                val workRequest = PeriodicWorkRequest.Builder(
+                    WalkingDetectWorker::class.java,
+                    15, TimeUnit.MINUTES
+                ).build()
+
+                WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                    "WalkingDetectWork",
+                    ExistingPeriodicWorkPolicy.REPLACE,
+                    workRequest
+                )
+            },1000)
+
         }catch (e:Exception){
 
         }
@@ -259,16 +267,21 @@ class BluetoothService : Service() {
 
     private fun scheduleWalkingDetectWork2() {
         try {
-            val workRequest = PeriodicWorkRequest.Builder(
-                WalkingDetectWorker2::class.java,
-                15, TimeUnit.MINUTES
-            ).setInitialDelay(3,TimeUnit.MINUTES).build()
+            WorkManager.getInstance(this@BluetoothService).cancelUniqueWork("WalkingDetectWorker2")
 
-            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                "WalkingDetectWorker2",
-                ExistingPeriodicWorkPolicy.REPLACE,
-                workRequest
-            )
+            Handler(Looper.getMainLooper()).postDelayed({
+                val workRequest = PeriodicWorkRequest.Builder(
+                    WalkingDetectWorker2::class.java,
+                    15, TimeUnit.MINUTES
+                ).setInitialDelay(3,TimeUnit.MINUTES).build()
+
+                WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                    "WalkingDetectWorker2",
+                    ExistingPeriodicWorkPolicy.REPLACE,
+                    workRequest
+                )
+            },1000)
+
         }catch (e:Exception){
 
         }
@@ -277,16 +290,23 @@ class BluetoothService : Service() {
 
     private fun scheduleWalkingDetectWork3() {
         try {
-            val workRequest = PeriodicWorkRequest.Builder(
-                WalkingDetectWorker3::class.java,
-                15, TimeUnit.MINUTES
-            ).setInitialDelay(6,TimeUnit.MINUTES).build()
+            WorkManager.getInstance(this@BluetoothService).cancelUniqueWork("WalkingDetectWorker3")
 
-            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                "WalkingDetectWorker3",
-                ExistingPeriodicWorkPolicy.REPLACE,
-                workRequest
-            )
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                val workRequest = PeriodicWorkRequest.Builder(
+                    WalkingDetectWorker3::class.java,
+                    15, TimeUnit.MINUTES
+                ).setInitialDelay(6,TimeUnit.MINUTES).build()
+
+                WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                    "WalkingDetectWorker3",
+                    ExistingPeriodicWorkPolicy.REPLACE,
+                    workRequest
+                )
+            },1000)
+
+
         }catch (e:Exception){
 
         }
@@ -294,16 +314,21 @@ class BluetoothService : Service() {
 
     private fun scheduleWalkingDetectWork4() {
         try {
-            val workRequest = PeriodicWorkRequest.Builder(
-                WalkingDetectWorker4::class.java,
-                15, TimeUnit.MINUTES
-            ).setInitialDelay(9,TimeUnit.MINUTES).build()
+            WorkManager.getInstance(this@BluetoothService).cancelUniqueWork("WalkingDetectWorker4")
 
-            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                "WalkingDetectWorker4",
-                ExistingPeriodicWorkPolicy.REPLACE,
-                workRequest
-            )
+            Handler(Looper.getMainLooper()).postDelayed({
+                val workRequest = PeriodicWorkRequest.Builder(
+                    WalkingDetectWorker3::class.java,
+                    15, TimeUnit.MINUTES
+                ).setInitialDelay(9,TimeUnit.MINUTES).build()
+
+                WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                    "WalkingDetectWorker4",
+                    ExistingPeriodicWorkPolicy.REPLACE,
+                    workRequest
+                )
+            },1000)
+
         }catch (e:Exception){
 
         }
@@ -311,16 +336,21 @@ class BluetoothService : Service() {
 
     private fun scheduleWalkingDetectWork5() {
         try {
-            val workRequest = PeriodicWorkRequest.Builder(
-                WalkingDetectWorker5::class.java,
-                15, TimeUnit.MINUTES
-            ).setInitialDelay(12,TimeUnit.MINUTES).build()
+            WorkManager.getInstance(this@BluetoothService).cancelUniqueWork("WalkingDetectWorker5")
 
-            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                "WalkingDetectWorker5",
-                ExistingPeriodicWorkPolicy.REPLACE,
-                workRequest
-            )
+            Handler(Looper.getMainLooper()).postDelayed({
+                val workRequest = PeriodicWorkRequest.Builder(
+                    WalkingDetectWorker5::class.java,
+                    15, TimeUnit.MINUTES
+                ).setInitialDelay(12,TimeUnit.MINUTES).build()
+
+                WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                    "WalkingDetectWorker5",
+                    ExistingPeriodicWorkPolicy.REPLACE,
+                    workRequest
+                )
+            },1000)
+
         }catch (e:Exception){
 
         }
@@ -733,8 +763,6 @@ class BluetoothService : Service() {
                                     if(maxDistance.max() < 300f) {
                                         if (pastMaxDistance.size != 0)
                                             stopSensor()
-                                        else
-                                            stopSensorNotSave()
                                     }else{
                                         stopSensor()
                                     }
@@ -836,7 +864,7 @@ class BluetoothService : Service() {
                     makeAltitudeFromGpsInfo()
 
                     writeToRoom()
-                    callApi()
+//                    callApi()
 
                     fusedLocationClient?.removeLocationUpdates(locationCallback)
                     fusedLocationClient = null
@@ -862,7 +890,7 @@ class BluetoothService : Service() {
                 makeAltitudeFromGpsInfo()
 
                 writeToRoom()
-                callApi()
+//                callApi()
 
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
@@ -1378,8 +1406,6 @@ class BluetoothService : Service() {
             if (maxDistance.max() < 300f) {
                 if(pastMaxDistance.size != 0)
                     stopSensor()
-                else
-                    stopSensorNotSave()
             }
             pastMaxDistance = maxDistance.toMutableList()
             maxDistance = mutableListOf()
