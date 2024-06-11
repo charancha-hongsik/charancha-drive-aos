@@ -763,6 +763,8 @@ class BluetoothService : Service() {
                                     if(maxDistance.max() < 300f) {
                                         if (pastMaxDistance.size != 0)
                                             stopSensor()
+                                        else
+                                            stopSensorNotSave()
                                     }else{
                                         stopSensor()
                                     }
@@ -1406,6 +1408,8 @@ class BluetoothService : Service() {
             if (maxDistance.max() < 300f) {
                 if(pastMaxDistance.size != 0)
                     stopSensor()
+                else
+                    stopSensorNotSave()
             }
             pastMaxDistance = maxDistance.toMutableList()
             maxDistance = mutableListOf()
