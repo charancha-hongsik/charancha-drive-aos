@@ -149,14 +149,14 @@ class MainActivity : AppCompatActivity() {
         val calendar: Calendar = Calendar.getInstance().apply {
             timeInMillis = System.currentTimeMillis()
             add(Calendar.MINUTE, 1)
-            add(Calendar.HOUR_OF_DAY, 4)
+            add(Calendar.HOUR_OF_DAY, 1)
         }
 
         // RTC_WAKEUP을 사용하여 디바이스를 깨웁니다.
         alarmManager.setRepeating(
             AlarmManager.RTC_WAKEUP,
             calendar.timeInMillis,
-             4 * 60 * 60 * 1000,
+              1 * 60 * 60 * 1000,
             alarmIntent
         )
     }
