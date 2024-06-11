@@ -864,7 +864,7 @@ class BluetoothService : Service() {
                     makeAltitudeFromGpsInfo()
 
                     writeToRoom()
-//                    callApi()
+                    callApi()
 
                     fusedLocationClient?.removeLocationUpdates(locationCallback)
                     fusedLocationClient = null
@@ -890,7 +890,7 @@ class BluetoothService : Service() {
                 makeAltitudeFromGpsInfo()
 
                 writeToRoom()
-//                callApi()
+                callApi()
 
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
@@ -1588,9 +1588,9 @@ class BluetoothService : Service() {
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         val client: OkHttpClient = OkHttpClient.Builder()
             .addInterceptor(interceptor)
-            .connectTimeout(1, TimeUnit.MINUTES)
+            .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(15, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
             .build()
         return Retrofit.Builder().baseUrl("https://dev.charancha.com/").client(client)
             .addConverterFactory(GsonConverterFactory.create()).build().create(

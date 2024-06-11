@@ -23,6 +23,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.Executors
 
 class CallApiService: Service() {
 
@@ -66,7 +67,7 @@ class CallApiService: Service() {
 
     fun callApi(){
         if(isInternetConnected(this@CallApiService)){
-            Thread {
+            Executors.newSingleThreadExecutor().execute {
                 val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(this@CallApiService)
                 driveDatabase.driveForApiDao().allDriveLimit5?.let {
                     if (it.isNotEmpty()) {
@@ -74,33 +75,39 @@ class CallApiService: Service() {
                             val gson = Gson()
                             val jsonParam = gson.toJson(drive)
 
-                            apiService().postDrivingInfo(jsonParam).enqueue(object : Callback<JsonObject> {
-                                override fun onResponse(
-                                    call: Call<JsonObject>,
-                                    response: Response<JsonObject>
-                                ) {
-                                    // 보낸 데이터 삭제
-                                    driveDatabase.driveForApiDao().deleteByTrackingId(drive.tracking_id)
+                            apiService().postDrivingInfo(jsonParam)
+                                .enqueue(object : Callback<JsonObject> {
+                                    override fun onResponse(
+                                        call: Call<JsonObject>,
+                                        response: Response<JsonObject>
+                                    ) {
+                                        // 보낸 데이터 삭제
+                                        driveDatabase.driveForApiDao()
+                                            .deleteByTrackingId(drive.tracking_id)
 
 
-                                    if(drive.tracking_id == it.last().tracking_id){
-                                        val intent = Intent(this@CallApiService, CallApiService::class.java)
+                                        if (drive.tracking_id == it.last().tracking_id) {
+                                            val intent = Intent(
+                                                this@CallApiService,
+                                                CallApiService::class.java
+                                            )
+                                            stopService(intent)
+                                        }
+                                    }
+
+                                    override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                                        val intent =
+                                            Intent(this@CallApiService, CallApiService::class.java)
                                         stopService(intent)
                                     }
-                                }
-
-                                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                                    val intent = Intent(this@CallApiService, CallApiService::class.java)
-                                    stopService(intent)
-                                }
-                            })
+                                })
                         }
                     } else {
                         val intent = Intent(this@CallApiService, CallApiService::class.java)
                         stopService(intent)
                     }
                 }
-            }.start()
+            }
 
         }else{
             val intent = Intent(this@CallApiService, CallApiService::class.java)
