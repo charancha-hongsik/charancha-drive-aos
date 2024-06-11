@@ -16,5 +16,6 @@ data class DriveForApi(
     @ColumnInfo(name="startTimeStamp") var startTimeStamp: Long, // 1714087621
     @ColumnInfo(name="endTimestamp") var endTimestamp: Long,
     @ColumnInfo(name="verification") var verification:String,
+    @ColumnInfo(name="automobile") var automobile:Boolean,
     @ColumnInfo(name="gpses") var gpses: List<EachGpsDtoForApi> // 원시 데이터
 )

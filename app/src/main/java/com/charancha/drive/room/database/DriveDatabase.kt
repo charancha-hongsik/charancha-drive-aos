@@ -13,7 +13,7 @@ import com.charancha.drive.room.dao.DriveForApiDao
 import com.charancha.drive.room.entity.Drive
 import com.charancha.drive.room.entity.DriveForApi
 
-@Database(entities = [Drive::class, DriveForApi::class], version = 2, exportSchema = false)
+@Database(entities = [Drive::class, DriveForApi::class], version = 3, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class DriveDatabase : RoomDatabase() {
 
@@ -27,7 +27,10 @@ abstract class DriveDatabase : RoomDatabase() {
         fun getDatabase(context: Context): DriveDatabase {
             // if the Instance is not null, return it, otherwise create a new database instance.
             return Instance ?: synchronized(this) {
-                Room.databaseBuilder(context, DriveDatabase::class.java, "drive_database").allowMainThreadQueries().addMigrations(MIGRATION_1_2)
+                Room.databaseBuilder(context, DriveDatabase::class.java, "drive_database")
+                    .allowMainThreadQueries()
+                    .addMigrations(MIGRATION_1_2)
+                    .addMigrations(MIGRATION_2_3)
                     .build()
                     .also { Instance = it }
             }
@@ -51,6 +54,12 @@ abstract class DriveDatabase : RoomDatabase() {
                         PRIMARY KEY(`tracking_id`)
                     )
                 """.trimIndent())
+            }
+        }
+
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE driveForApi ADD COLUMN automobile INTEGER NOT NULL DEFAULT 1")
             }
         }
 

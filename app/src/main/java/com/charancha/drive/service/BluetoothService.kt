@@ -763,8 +763,6 @@ class BluetoothService : Service() {
                                     if(maxDistance.max() < 300f) {
                                         if (pastMaxDistance.size != 0)
                                             stopSensor()
-                                        else
-                                            stopSensorNotSave()
                                     }else{
                                         stopSensor()
                                     }
@@ -989,6 +987,7 @@ class BluetoothService : Service() {
             startTimeStamp,
             0L,
             level,
+            true,
             gpsInfoForApi,
         )
 
@@ -1408,8 +1407,6 @@ class BluetoothService : Service() {
             if (maxDistance.max() < 300f) {
                 if(pastMaxDistance.size != 0)
                     stopSensor()
-                else
-                    stopSensorNotSave()
             }
             pastMaxDistance = maxDistance.toMutableList()
             maxDistance = mutableListOf()
@@ -1521,6 +1518,7 @@ class BluetoothService : Service() {
                 driveDtoForApi.startTimeStamp,
                 driveDtoForApi.endTimestamp,
                 driveDtoForApi.verification,
+                driveDtoForApi.automobile,
                 driveDtoForApi.gpses
             )
 
