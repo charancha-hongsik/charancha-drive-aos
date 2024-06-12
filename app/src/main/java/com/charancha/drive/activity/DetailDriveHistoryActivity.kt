@@ -62,10 +62,7 @@ class DetailDriveHistoryActivity: AppCompatActivity() {
 
         detailDriveHistoryViewModel.setDrive.observe(this@DetailDriveHistoryActivity, DetailDriveHistoryViewModel.EventObserver {
             for(raw in it.jsonData){
-                if(raw.altitude != 0.0){
-                    polylines.add(LatLng(raw.latitude,raw.longtitude))
-                }
-                Log.d("tetssteests", "testsetsetsetse :: $raw")
+                polylines.add(LatLng(raw.latitude,raw.longtitude))
             }
 
 
@@ -94,15 +91,6 @@ class DetailDriveHistoryActivity: AppCompatActivity() {
 
             var contents = ""
             contents = contents + "주행 종료 : " + getDateFromTimeStamp((it.timeStamp + it.time)) + "\n"
-            contents = contents +  "항속 주행 거리 : " + it.constant_speed_driving_array.sum() + "\n"
-            contents = contents + "Harsh Driving 거리: " + it.harsh_driving_array.sum() + "\n"
-            contents = contents + "저속 주행거리: " + it.low_speed_driving_array.sum() + "\n"
-            contents = contents + "고속 주행거리: " + it.high_speed_driving_array.sum() + "\n"
-            contents = contents + "급출발 횟수: " + it.sudden_start_array.sum() + "\n"
-            contents = contents + "급정지 횟수: " + it.sudden_stop_array.sum() + "\n"
-            contents = contents + "급감속 횟수: " + it.sudden_deceleration_array.sum() + "\n"
-            contents = contents + "급가속 횟수: " + it.sudden_acceleration_array.sum() + "\n"
-            contents = contents + "급가감속 거리: " + it.sum_sudden_deceleration_speed + "\n"
 
             tvRapid1.text = contents
 
