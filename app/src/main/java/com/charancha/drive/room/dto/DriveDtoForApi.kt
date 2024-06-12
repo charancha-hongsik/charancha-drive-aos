@@ -6,8 +6,8 @@ data class DriveDtoForApi(
     var deviceModel:String,
     var deviceUuid:String,
     var username:String,
-    var tracking_id: String, // 20240417190026
-    var startTimeStamp: Long, // 1714087621
+    var trackingId: String, // 20240417190026
+    var startTimestamp: Long, // 1714087621
     var endTimestamp: Long,
     var verification:String,
     var automobile:Boolean,

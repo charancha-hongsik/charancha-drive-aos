@@ -18,6 +18,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.work.*
@@ -226,7 +227,6 @@ class BluetoothService : Service() {
 
 
             sensorState = false
-
 
             registerReceiver(WalkingDetectReceiver(),IntentFilter().apply {
                 addAction(TRANSITIONS_RECEIVER_ACTION)
@@ -1271,7 +1271,6 @@ class BluetoothService : Service() {
          */
         distance_array[HH] = distance_array[HH] + distance
 
-
         if(maxDistance.size > 1800){
             if (maxDistance.max() < 300f) {
                 if(pastMaxDistance.size != 0)
@@ -1377,13 +1376,13 @@ class BluetoothService : Service() {
         driveDtoForApi.endTimestamp = System.currentTimeMillis()
 
         val driveForApi = DriveForApi(
-            driveDtoForApi.tracking_id,
+            driveDtoForApi.trackingId,
             driveDtoForApi.manufacturer,
             driveDtoForApi.version,
             driveDtoForApi.deviceModel,
             driveDtoForApi.deviceUuid,
             driveDtoForApi.username,
-            driveDtoForApi.startTimeStamp,
+            driveDtoForApi.startTimestamp,
             driveDtoForApi.endTimestamp,
             driveDtoForApi.verification,
             driveDtoForApi.automobile,
@@ -1393,16 +1392,20 @@ class BluetoothService : Service() {
         val gson = Gson()
         val jsonParam = gson.toJson(driveForApi)
 
+        Log.d("testestsetset","testestestsetes jsonParam :: " + jsonParam)
+
         if (isInternetConnected(this@BluetoothService)) {
             apiService().postDrivingInfo(jsonParam).enqueue(object : Callback<JsonObject> {
                 override fun onResponse(
                     call: Call<JsonObject>,
                     response: Response<JsonObject>
                 ) {
-
+                    Log.d("testestsetset","testestestsetes success :: ")
                 }
 
                 override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                    Log.d("testestsetset", "testestestsetes onFailure :: $t")
+
                     writeToRoomForApi(driveForApi)
                 }
             })
@@ -1462,7 +1465,7 @@ class BluetoothService : Service() {
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
             .build()
-        return Retrofit.Builder().baseUrl("https://dev.charancha.com/").client(client)
+        return Retrofit.Builder().baseUrl("http://43.201.46.37:3000/").client(client)
             .addConverterFactory(GsonConverterFactory.create()).build().create(
                 ApiServiceInterface::class.java
             )

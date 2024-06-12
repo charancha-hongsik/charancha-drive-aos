@@ -7,7 +7,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface ApiServiceInterface {
-    @POST("driving")
+    @POST("api/v1/driving")
     fun postDrivingInfo(@Body jsonParam:String): Call<JsonObject>
 
 
