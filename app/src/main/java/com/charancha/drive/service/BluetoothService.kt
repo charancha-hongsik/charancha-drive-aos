@@ -139,6 +139,7 @@ class BluetoothService : Service() {
      */
     private val distanceBetween = FloatArray(3)
     private var pastLocation: Location? = null
+    private var firstLineLocation: Location? = null
     private var pastSpeed: Float = 0f
     private var pastTimeStamp = 0L
 
@@ -318,7 +319,7 @@ class BluetoothService : Service() {
 
             Handler(Looper.getMainLooper()).postDelayed({
                 val workRequest = PeriodicWorkRequest.Builder(
-                    WalkingDetectWorker3::class.java,
+                    WalkingDetectWorker4::class.java,
                     15, TimeUnit.MINUTES
                 ).setInitialDelay(9,TimeUnit.MINUTES).build()
 
@@ -829,6 +830,7 @@ class BluetoothService : Service() {
                  * W0D-74 1행 데이터 삭제
                  */
                 firstLineState = true
+                firstLineLocation = null
 
                 sensorState = true
                 PreferenceUtil.putPref(this, PreferenceUtil.RUNNING_LEVEL, level)
@@ -853,6 +855,7 @@ class BluetoothService : Service() {
                 if (level == PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL, "")) {
                     sensorState = false
                     firstLineState = false
+                    firstLineLocation = null
                     firstLocation = null
                     maxDistance = mutableListOf()
                     pastMaxDistance = mutableListOf()
@@ -879,6 +882,7 @@ class BluetoothService : Service() {
             if (sensorState) {
                 sensorState = false
                 firstLineState = false
+                firstLineLocation = null
                 firstLocation = null
                 maxDistance = mutableListOf()
                 pastMaxDistance = mutableListOf()
@@ -905,6 +909,7 @@ class BluetoothService : Service() {
             if (sensorState) {
                 sensorState = false
                 firstLineState = false
+                firstLineLocation = null
                 firstLocation = null
                 maxDistance = mutableListOf()
                 pastMaxDistance = mutableListOf()
@@ -1140,42 +1145,49 @@ class BluetoothService : Service() {
                      * W0D-74 1행 데이터 삭제
                      */
                     if(!firstLineState){
-
                         val location: Location = locationResult.lastLocation
                         val timeStamp = location.time
 
-
                         /**
-                         * W0D-78 중복시간 삭제
+                         * 1행 데이터와 같은 데이터 삭제
                          */
-
-                        if(getDateFromTimeStampToSS(pastTimeStamp) != getDateFromTimeStampToSS(timeStamp)){
-
-                            /**
-                             * W0D-75 1초간 이동거리 70m 이상이면 제외
-                             */
-
-                            if(pastLocation!=null){
-                                if((pastLocation!!.distanceTo(location) * 1000 / (timeStamp-pastTimeStamp)) > 70){
-                                    pastTimeStamp = timeStamp
-                                    pastLocation = location
-                                } else {
-                                    processLocationCallback(location, timeStamp)
-                                }
+                        if(firstLineLocation != null){
+                            if(firstLineLocation!!.latitude == location.latitude && firstLineLocation!!.longitude == location.longitude){
+                                pastLocation = location
+                                pastTimeStamp = location.time
                             } else{
-                                processLocationCallback(location, timeStamp)
+                                /**
+                                 * W0D-78 중복시간 삭제
+                                 */
+
+                                if(getDateFromTimeStampToSS(pastTimeStamp) != getDateFromTimeStampToSS(timeStamp)){
+
+                                    /**
+                                     * W0D-75 1초간 이동거리 70m 이상이면 제외
+                                     */
+
+                                    if(pastLocation!=null){
+                                        if((pastLocation!!.distanceTo(location) * 1000 / (timeStamp-pastTimeStamp)) > 70){
+                                            pastTimeStamp = timeStamp
+                                            pastLocation = location
+                                        } else {
+                                            processLocationCallback(location, timeStamp)
+                                        }
+                                    } else{
+                                        processLocationCallback(location, timeStamp)
+                                    }
+                                }else{
+                                    pastLocation = location
+                                    pastTimeStamp = location.time
+
+                                }
                             }
-                        }else{
-                            pastLocation = location
-                            pastTimeStamp = location.time
-
                         }
-
                     }else{
                         firstLineState = false
+                        firstLineLocation = locationResult.lastLocation
                         pastLocation = locationResult.lastLocation
                         pastTimeStamp = locationResult.lastLocation.time
-
                     }
                 }catch (e:Exception){
 
@@ -1504,45 +1516,44 @@ class BluetoothService : Service() {
     }
 
     private fun callApi(){
-        Executors.newSingleThreadExecutor().execute{
-            driveDtoForApi.gpses = gpsInfoForApi
-            driveDtoForApi.endTimestamp = System.currentTimeMillis()
+        driveDtoForApi.gpses = gpsInfoForApi
+        driveDtoForApi.endTimestamp = System.currentTimeMillis()
 
-            val driveForApi = DriveForApi(
-                driveDtoForApi.tracking_id,
-                driveDtoForApi.manufacturer,
-                driveDtoForApi.version,
-                driveDtoForApi.deviceModel,
-                driveDtoForApi.deviceUuid,
-                driveDtoForApi.username,
-                driveDtoForApi.startTimeStamp,
-                driveDtoForApi.endTimestamp,
-                driveDtoForApi.verification,
-                driveDtoForApi.automobile,
-                driveDtoForApi.gpses
-            )
+        val driveForApi = DriveForApi(
+            driveDtoForApi.tracking_id,
+            driveDtoForApi.manufacturer,
+            driveDtoForApi.version,
+            driveDtoForApi.deviceModel,
+            driveDtoForApi.deviceUuid,
+            driveDtoForApi.username,
+            driveDtoForApi.startTimeStamp,
+            driveDtoForApi.endTimestamp,
+            driveDtoForApi.verification,
+            driveDtoForApi.automobile,
+            driveDtoForApi.gpses
+        )
 
-            val gson = Gson()
-            val jsonParam = gson.toJson(driveForApi)
+        val gson = Gson()
+        val jsonParam = gson.toJson(driveForApi)
 
-            if (isInternetConnected(this@BluetoothService)) {
-                apiService().postDrivingInfo(jsonParam).enqueue(object : Callback<JsonObject> {
-                    override fun onResponse(
-                        call: Call<JsonObject>,
-                        response: Response<JsonObject>
-                    ) {
+        if (isInternetConnected(this@BluetoothService)) {
+            apiService().postDrivingInfo(jsonParam).enqueue(object : Callback<JsonObject> {
+                override fun onResponse(
+                    call: Call<JsonObject>,
+                    response: Response<JsonObject>
+                ) {
 
-                    }
+                }
 
-                    override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                        writeToRoomForApi(driveForApi)
-                    }
-                })
+                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                    writeToRoomForApi(driveForApi)
+                }
+            })
 
-            } else {
-                writeToRoomForApi(driveForApi)
-            }
+        } else {
+            writeToRoomForApi(driveForApi)
         }
+
     }
 
     fun writeToRoomForApi(driveForApi:DriveForApi){

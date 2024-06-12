@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.animation.LinearInterpolator
 import android.widget.TextView
 import androidx.activity.viewModels
@@ -61,8 +62,13 @@ class DetailDriveHistoryActivity: AppCompatActivity() {
 
         detailDriveHistoryViewModel.setDrive.observe(this@DetailDriveHistoryActivity, DetailDriveHistoryViewModel.EventObserver {
             for(raw in it.jsonData){
-                polylines.add(LatLng(raw.latitude,raw.longtitude))
+                if(raw.altitude != 0.0){
+                    polylines.add(LatLng(raw.latitude,raw.longtitude))
+                }
+                Log.d("tetssteests", "testsetsetsetse :: $raw")
             }
+
+
 
             /**
              * timeStamp
