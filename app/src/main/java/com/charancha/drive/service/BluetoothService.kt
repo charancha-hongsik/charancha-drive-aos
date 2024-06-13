@@ -227,8 +227,6 @@ class BluetoothService : Service() {
 
             sensorState = false
 
-            startSensor(L1)
-
             registerReceiver(WalkingDetectReceiver(),IntentFilter().apply {
                 addAction(TRANSITIONS_RECEIVER_ACTION)
             })
@@ -1270,9 +1268,6 @@ class BluetoothService : Service() {
          * 거리 계산
          */
         distance_array[HH] = distance_array[HH] + distance
-
-        if(maxDistance.size > 10)
-            stopSensor()
 
         if(maxDistance.size > 1800){
             if (maxDistance.max() < 300f) {
