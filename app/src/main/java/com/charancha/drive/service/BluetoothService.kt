@@ -215,6 +215,15 @@ class BluetoothService : Service() {
 
             setLocation2()
 
+            scheduleWalkingDetectWork()
+            scheduleWalkingDetectWork2()
+            scheduleWalkingDetectWork3()
+            scheduleWalkingDetectWork4()
+            scheduleWalkingDetectWork5()
+
+            registerReceiver(TransitionsReceiver(), filter)
+
+
 
             startForeground(1, notification.setSmallIcon(android.R.drawable.btn_star_big_off)
                 .setAutoCancel(false)
@@ -231,12 +240,6 @@ class BluetoothService : Service() {
                 addAction(TRANSITIONS_RECEIVER_ACTION)
             })
 
-            registerReceiver(TransitionsReceiver(), filter)
-            scheduleWalkingDetectWork()
-            scheduleWalkingDetectWork2()
-            scheduleWalkingDetectWork3()
-            scheduleWalkingDetectWork4()
-            scheduleWalkingDetectWork5()
         }
 
         return START_REDELIVER_INTENT
