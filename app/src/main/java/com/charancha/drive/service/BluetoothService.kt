@@ -250,18 +250,17 @@ class BluetoothService : Service() {
         try {
             WorkManager.getInstance(this@BluetoothService).cancelUniqueWork("WalkingDetectWork")
 
-            Handler(Looper.getMainLooper()).postDelayed({
-                val workRequest = PeriodicWorkRequest.Builder(
-                    WalkingDetectWorker::class.java,
-                    15, TimeUnit.MINUTES
-                ).build()
+            val workRequest = PeriodicWorkRequest.Builder(
+                WalkingDetectWorker::class.java,
+                15, TimeUnit.MINUTES
+            ).build()
 
-                WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                    "WalkingDetectWork",
-                    ExistingPeriodicWorkPolicy.REPLACE,
-                    workRequest
-                )
-            },1000)
+            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "WalkingDetectWork",
+                ExistingPeriodicWorkPolicy.REPLACE,
+                workRequest
+            )
+
 
         }catch (e:Exception){
 
@@ -272,18 +271,17 @@ class BluetoothService : Service() {
         try {
             WorkManager.getInstance(this@BluetoothService).cancelUniqueWork("WalkingDetectWorker2")
 
-            Handler(Looper.getMainLooper()).postDelayed({
-                val workRequest = PeriodicWorkRequest.Builder(
-                    WalkingDetectWorker2::class.java,
-                    15, TimeUnit.MINUTES
-                ).setInitialDelay(3,TimeUnit.MINUTES).build()
+            val workRequest = PeriodicWorkRequest.Builder(
+                WalkingDetectWorker2::class.java,
+                15, TimeUnit.MINUTES
+            ).setInitialDelay(3,TimeUnit.MINUTES).build()
 
-                WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                    "WalkingDetectWorker2",
-                    ExistingPeriodicWorkPolicy.REPLACE,
-                    workRequest
-                )
-            },1000)
+            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "WalkingDetectWorker2",
+                ExistingPeriodicWorkPolicy.REPLACE,
+                workRequest
+            )
+
 
         }catch (e:Exception){
 
@@ -295,20 +293,16 @@ class BluetoothService : Service() {
         try {
             WorkManager.getInstance(this@BluetoothService).cancelUniqueWork("WalkingDetectWorker3")
 
+            val workRequest = PeriodicWorkRequest.Builder(
+                WalkingDetectWorker3::class.java,
+                15, TimeUnit.MINUTES
+            ).setInitialDelay(6,TimeUnit.MINUTES).build()
 
-            Handler(Looper.getMainLooper()).postDelayed({
-                val workRequest = PeriodicWorkRequest.Builder(
-                    WalkingDetectWorker3::class.java,
-                    15, TimeUnit.MINUTES
-                ).setInitialDelay(6,TimeUnit.MINUTES).build()
-
-                WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                    "WalkingDetectWorker3",
-                    ExistingPeriodicWorkPolicy.REPLACE,
-                    workRequest
-                )
-            },1000)
-
+            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "WalkingDetectWorker3",
+                ExistingPeriodicWorkPolicy.REPLACE,
+                workRequest
+            )
 
         }catch (e:Exception){
 
@@ -319,19 +313,16 @@ class BluetoothService : Service() {
         try {
             WorkManager.getInstance(this@BluetoothService).cancelUniqueWork("WalkingDetectWorker4")
 
-            Handler(Looper.getMainLooper()).postDelayed({
-                val workRequest = PeriodicWorkRequest.Builder(
-                    WalkingDetectWorker4::class.java,
-                    15, TimeUnit.MINUTES
-                ).setInitialDelay(9,TimeUnit.MINUTES).build()
+            val workRequest = PeriodicWorkRequest.Builder(
+                WalkingDetectWorker4::class.java,
+                15, TimeUnit.MINUTES
+            ).setInitialDelay(9,TimeUnit.MINUTES).build()
 
-                WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                    "WalkingDetectWorker4",
-                    ExistingPeriodicWorkPolicy.REPLACE,
-                    workRequest
-                )
-            },1000)
-
+            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "WalkingDetectWorker4",
+                ExistingPeriodicWorkPolicy.REPLACE,
+                workRequest
+            )
         }catch (e:Exception){
 
         }
@@ -341,18 +332,16 @@ class BluetoothService : Service() {
         try {
             WorkManager.getInstance(this@BluetoothService).cancelUniqueWork("WalkingDetectWorker5")
 
-            Handler(Looper.getMainLooper()).postDelayed({
-                val workRequest = PeriodicWorkRequest.Builder(
-                    WalkingDetectWorker5::class.java,
-                    15, TimeUnit.MINUTES
-                ).setInitialDelay(12,TimeUnit.MINUTES).build()
+            val workRequest = PeriodicWorkRequest.Builder(
+                WalkingDetectWorker5::class.java,
+                15, TimeUnit.MINUTES
+            ).setInitialDelay(12,TimeUnit.MINUTES).build()
 
-                WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                    "WalkingDetectWorker5",
-                    ExistingPeriodicWorkPolicy.REPLACE,
-                    workRequest
-                )
-            },1000)
+            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "WalkingDetectWorker5",
+                ExistingPeriodicWorkPolicy.REPLACE,
+                workRequest
+            )
 
         }catch (e:Exception){
 
