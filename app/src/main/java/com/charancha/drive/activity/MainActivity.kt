@@ -37,14 +37,6 @@ import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
-import com.google.gson.JsonObject
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 
 
@@ -77,7 +69,7 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
             })
         builder.setNegativeButton("No",
-            DialogInterface.OnClickListener { dialog, which -> dialog.dismiss() })
+            { dialog, which -> dialog.dismiss() })
         builder.show()
     }
 

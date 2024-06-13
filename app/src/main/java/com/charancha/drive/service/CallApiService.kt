@@ -8,6 +8,7 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.charancha.drive.retrofit.ApiServiceInterface
 import com.charancha.drive.room.database.DriveDatabase
