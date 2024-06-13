@@ -23,7 +23,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.work.*
 import com.charancha.drive.PreferenceUtil
-import com.charancha.drive.calculateData
 import com.charancha.drive.retrofit.ApiServiceInterface
 import com.charancha.drive.room.database.DriveDatabase
 import com.charancha.drive.room.dto.DriveDto
@@ -34,9 +33,9 @@ import com.charancha.drive.room.entity.Drive
 import com.charancha.drive.room.entity.DriveForApi
 import com.google.android.gms.location.*
 import com.google.gson.Gson
-import com.google.gson.JsonObject
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -227,6 +226,8 @@ class BluetoothService : Service() {
 
 
             sensorState = false
+
+            startSensor(L1)
 
             registerReceiver(WalkingDetectReceiver(),IntentFilter().apply {
                 addAction(TRANSITIONS_RECEIVER_ACTION)
@@ -866,11 +867,11 @@ class BluetoothService : Service() {
                     makeDistanceBetween()
                     makeAltitudeFromGpsInfo()
 
-                    writeToRoom()
-                    callApi()
-
                     fusedLocationClient?.removeLocationUpdates(locationCallback)
                     fusedLocationClient = null
+
+                    writeToRoom()
+                    callApi()
                 }
             }
         }catch (e:Exception){
@@ -992,7 +993,6 @@ class BluetoothService : Service() {
             startTimeStamp,
             0L,
             level,
-            true,
             gpsInfoForApi,
         )
 
@@ -1271,6 +1271,9 @@ class BluetoothService : Service() {
          */
         distance_array[HH] = distance_array[HH] + distance
 
+        if(maxDistance.size > 10)
+            stopSensor()
+
         if(maxDistance.size > 1800){
             if (maxDistance.max() < 300f) {
                 if(pastMaxDistance.size != 0)
@@ -1385,27 +1388,25 @@ class BluetoothService : Service() {
             driveDtoForApi.startTimestamp,
             driveDtoForApi.endTimestamp,
             driveDtoForApi.verification,
-            driveDtoForApi.automobile,
+            true,
             driveDtoForApi.gpses
         )
 
         val gson = Gson()
-        val jsonParam = gson.toJson(driveForApi)
-
-        Log.d("testestsetset","testestestsetes jsonParam :: " + jsonParam)
+        val jsonParam = gson.toJson(driveDtoForApi)
 
         if (isInternetConnected(this@BluetoothService)) {
-            apiService().postDrivingInfo(jsonParam).enqueue(object : Callback<JsonObject> {
+            apiService().postDrivingInfo(jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object : Callback<ResponseBody> {
                 override fun onResponse(
-                    call: Call<JsonObject>,
-                    response: Response<JsonObject>
+                    call: Call<ResponseBody>,
+                    response: Response<ResponseBody>
                 ) {
-                    Log.d("testestsetset","testestestsetes success :: ")
+                    if(response.code() != 201){
+                        writeToRoomForApi(driveForApi)
+                    }
                 }
 
-                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                    Log.d("testestsetset", "testestestsetes onFailure :: $t")
-
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     writeToRoomForApi(driveForApi)
                 }
             })
@@ -1457,10 +1458,10 @@ class BluetoothService : Service() {
     }
 
     fun apiService(): ApiServiceInterface {
-        val interceptor = HttpLoggingInterceptor()
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+
+
         val client: OkHttpClient = OkHttpClient.Builder()
-            .addInterceptor(interceptor)
+            .addInterceptor(HeaderInterceptor())
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
@@ -1471,6 +1472,20 @@ class BluetoothService : Service() {
             )
     }
 
+
+    class HeaderInterceptor : Interceptor {
+        override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+
+            val originalRequest = chain.request()
+            val requestBuilder = originalRequest.newBuilder()
+                .header("Content-Type", "application/json")
+            val request = requestBuilder.build()
+            return chain.proceed(request)
+        }
+    }
+
+
+
     fun isInternetConnected(context: Context): Boolean {
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -1480,7 +1495,5 @@ class BluetoothService : Service() {
             connectivityManager.getNetworkCapabilities(network) ?: return false
         return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
     }
-
-
 
 }

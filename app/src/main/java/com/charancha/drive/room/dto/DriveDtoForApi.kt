@@ -10,6 +10,5 @@ data class DriveDtoForApi(
     var startTimestamp: Long, // 1714087621
     var endTimestamp: Long,
     var verification:String,
-    var automobile:Boolean,
     var gpses: List<EachGpsDtoForApi> // 원시 데이터
 ) : java.io.Serializable

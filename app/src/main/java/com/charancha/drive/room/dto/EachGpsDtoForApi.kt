@@ -1,7 +1,7 @@
 package com.charancha.drive.room.dto
 
 data class EachGpsDtoForApi(
-    var timeStamp: Long,
+    var timestamp: Long,
     var speed: Float,
     var distance:Float,
     var altitude:Double,

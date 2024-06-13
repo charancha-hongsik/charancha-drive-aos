@@ -7,22 +7,27 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.os.Build
 import android.os.IBinder
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.charancha.drive.retrofit.ApiServiceInterface
 import com.charancha.drive.room.database.DriveDatabase
-import com.charancha.drive.viewmodel.DetailDriveHistoryViewModel
+import com.charancha.drive.room.dto.DriveDtoForApi
 import com.google.gson.Gson
 import com.google.gson.JsonObject
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.HashMap
 import java.util.concurrent.Executors
 
 class CallApiService: Service() {
@@ -72,18 +77,35 @@ class CallApiService: Service() {
                 driveDatabase.driveForApiDao().allDriveLimit5?.let {
                     if (it.isNotEmpty()) {
                         for (drive in it) {
-                            val gson = Gson()
-                            val jsonParam = gson.toJson(drive)
 
-                            apiService().postDrivingInfo(jsonParam)
-                                .enqueue(object : Callback<JsonObject> {
+                            val driveDtoForApi = DriveDtoForApi(
+                                drive.tracking_id,
+                                drive.manufacturer,
+                                drive.version,
+                                drive.deviceModel,
+                                drive.deviceUuid,
+                                drive.username,
+                                drive.startTimeStamp,
+                                drive.endTimestamp,
+                                drive.verification,
+                                drive.gpses
+                            )
+
+                            val gson = Gson()
+                            val jsonParam = gson.toJson(driveDtoForApi)
+
+                            apiService().postDrivingInfo(jsonParam.toRequestBody("application/json".toMediaTypeOrNull()))
+                                .enqueue(object : Callback<ResponseBody> {
                                     override fun onResponse(
-                                        call: Call<JsonObject>,
-                                        response: Response<JsonObject>
+                                        call: Call<ResponseBody>,
+                                        response: Response<ResponseBody>
                                     ) {
-                                        // 보낸 데이터 삭제
-                                        driveDatabase.driveForApiDao()
-                                            .deleteByTrackingId(drive.tracking_id)
+
+                                        if(response.code() == 201){
+                                            // 보낸 데이터 삭제
+                                            driveDatabase.driveForApiDao()
+                                                .deleteByTrackingId(drive.tracking_id)
+                                        }
 
 
                                         if (drive.tracking_id == it.last().tracking_id) {
@@ -95,10 +117,11 @@ class CallApiService: Service() {
                                         }
                                     }
 
-                                    override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                                         val intent =
                                             Intent(this@CallApiService, CallApiService::class.java)
                                         stopService(intent)
+
                                     }
                                 })
                         }
@@ -132,7 +155,7 @@ class CallApiService: Service() {
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         val client: OkHttpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
-        return Retrofit.Builder().baseUrl("https://dev.charancha.com/").client(client)
+        return Retrofit.Builder().baseUrl("http://43.201.46.37:3000/").client(client)
             .addConverterFactory(GsonConverterFactory.create()).build().create(
                 ApiServiceInterface::class.java
             )

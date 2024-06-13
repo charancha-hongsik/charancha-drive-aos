@@ -12,8 +12,8 @@ android {
         applicationId "com.charancha.drive"
         minSdk 28
         targetSdk 33
-        versionCode 3
-        versionName "1.4.6"
+        versionCode 4
+        versionName "1.4.7"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -76,9 +76,11 @@ dependencies {
     // workManager
     implementation 'androidx.work:work-runtime:2.7.1'
 
+
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.6.4'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.3.0'
 
     // OkHttp
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
