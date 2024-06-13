@@ -797,8 +797,6 @@ class BluetoothService : Service() {
                     scheduleWalkingDetectWork4()
                     scheduleWalkingDetectWork5()
                     scheduleWalkingDetectWork6()
-
-                    stopSensor()
                 }
             } else if(activity.type == DetectedActivity.IN_VEHICLE){
                 // Vehicle 활동에 들어감
@@ -809,7 +807,6 @@ class BluetoothService : Service() {
                     scheduleWalkingDetectWork4()
                     scheduleWalkingDetectWork5()
                     scheduleWalkingDetectWork6()
-                    startSensor(L1)
                 }
 
             }
