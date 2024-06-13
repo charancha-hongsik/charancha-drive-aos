@@ -59,6 +59,8 @@ class BluetoothService : Service() {
         const val CAR_CONNECTION_STATE = "CarConnectionState"
 
         const val TRANSITIONS_RECEIVER_ACTION = "TRANSITIONS_RECEIVER_ACTION"
+        const val TRANSITIONS_RECEIVER_ACTION2 = "TRANSITIONS_RECEIVER_ACTION2"
+
 
 
         // auto app on your phone will send broadcast with this action when connection state changes
@@ -220,10 +222,20 @@ class BluetoothService : Service() {
             scheduleWalkingDetectWork3()
             scheduleWalkingDetectWork4()
             scheduleWalkingDetectWork5()
+            scheduleWalkingDetectWork6()
+
 
             registerReceiver(TransitionsReceiver(), filter)
 
+            sensorState = false
 
+            registerReceiver(WalkingDetectReceiver(),IntentFilter().apply {
+                addAction(TRANSITIONS_RECEIVER_ACTION)
+            })
+
+            registerReceiver(ActivityRecognitionReceiver(),IntentFilter().apply {
+                addAction(TRANSITIONS_RECEIVER_ACTION2)
+            })
 
             startForeground(1, notification.setSmallIcon(android.R.drawable.btn_star_big_off)
                 .setAutoCancel(false)
@@ -233,13 +245,6 @@ class BluetoothService : Service() {
                 .setOnlyAlertOnce(true)
                 .build())
 
-
-            sensorState = false
-
-            registerReceiver(WalkingDetectReceiver(),IntentFilter().apply {
-                addAction(TRANSITIONS_RECEIVER_ACTION)
-            })
-
         }
 
         return START_REDELIVER_INTENT
@@ -248,8 +253,6 @@ class BluetoothService : Service() {
 
     private fun scheduleWalkingDetectWork() {
         try {
-            WorkManager.getInstance(this@BluetoothService).cancelUniqueWork("WalkingDetectWork")
-
             val workRequest = PeriodicWorkRequest.Builder(
                 WalkingDetectWorker::class.java,
                 15, TimeUnit.MINUTES
@@ -269,8 +272,6 @@ class BluetoothService : Service() {
 
     private fun scheduleWalkingDetectWork2() {
         try {
-            WorkManager.getInstance(this@BluetoothService).cancelUniqueWork("WalkingDetectWorker2")
-
             val workRequest = PeriodicWorkRequest.Builder(
                 WalkingDetectWorker2::class.java,
                 15, TimeUnit.MINUTES
@@ -291,8 +292,6 @@ class BluetoothService : Service() {
 
     private fun scheduleWalkingDetectWork3() {
         try {
-            WorkManager.getInstance(this@BluetoothService).cancelUniqueWork("WalkingDetectWorker3")
-
             val workRequest = PeriodicWorkRequest.Builder(
                 WalkingDetectWorker3::class.java,
                 15, TimeUnit.MINUTES
@@ -311,8 +310,6 @@ class BluetoothService : Service() {
 
     private fun scheduleWalkingDetectWork4() {
         try {
-            WorkManager.getInstance(this@BluetoothService).cancelUniqueWork("WalkingDetectWorker4")
-
             val workRequest = PeriodicWorkRequest.Builder(
                 WalkingDetectWorker4::class.java,
                 15, TimeUnit.MINUTES
@@ -330,8 +327,6 @@ class BluetoothService : Service() {
 
     private fun scheduleWalkingDetectWork5() {
         try {
-            WorkManager.getInstance(this@BluetoothService).cancelUniqueWork("WalkingDetectWorker5")
-
             val workRequest = PeriodicWorkRequest.Builder(
                 WalkingDetectWorker5::class.java,
                 15, TimeUnit.MINUTES
@@ -347,6 +342,60 @@ class BluetoothService : Service() {
 
         }
     }
+
+    private fun scheduleWalkingDetectWork6() {
+        try {
+            val workRequest = PeriodicWorkRequest.Builder(
+                WalkingDetectWorker6::class.java,
+                15, TimeUnit.MINUTES
+            ).build()
+
+            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "WalkingDetectWork6",
+                ExistingPeriodicWorkPolicy.REPLACE,
+                workRequest
+            )
+
+
+        }catch (e:Exception){
+
+        }
+    }
+
+    class WalkingDetectWorker6(context: Context, params: WorkerParameters) : Worker(context, params) {
+
+        private val activityRecognitionClient: ActivityRecognitionClient = ActivityRecognition.getClient(context)
+
+        override fun doWork(): Result {
+            requestActivityUpdates()
+
+            return Result.success()
+        }
+
+        private fun requestActivityUpdates() {
+            val intent = Intent(TRANSITIONS_RECEIVER_ACTION2)
+            var flag = FLAG_UPDATE_CURRENT
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                flag = FLAG_MUTABLE
+            }
+            val pendingIntent = getBroadcast(
+                applicationContext,
+                0,
+                intent,
+                flag
+            )
+
+            // 1분 간격으로 활동 업데이트 요청
+            activityRecognitionClient.requestActivityUpdates(60000, pendingIntent)
+                .addOnSuccessListener {
+                    Log.d("ActivityRecognition", "Activity updates registered")
+                }
+                .addOnFailureListener {
+                    Log.d("ActivityRecognition", "Failed to register for activity updates")
+                }
+        }
+    }
+
     class WalkingDetectWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
 
         private val activityRecognitionClient: ActivityRecognitionClient = ActivityRecognition.getClient(context)
@@ -727,6 +776,53 @@ class BluetoothService : Service() {
             (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중....." + event + ", " + getCurrent()).build())
     }
 
+    inner class ActivityRecognitionReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (ActivityRecognitionResult.hasResult(intent)) {
+                val result = ActivityRecognitionResult.extractResult(intent)
+                val probableActivities = result.probableActivities
+                for (activity in probableActivities) {
+                    handleDetectedActivity(activity)
+                }
+            }
+        }
+
+        private fun handleDetectedActivity(activity: DetectedActivity) {
+            refreshNotiText("" + activity.type)
+
+            if(activity.type == DetectedActivity.WALKING) {
+                // Walking 활동에 들어감
+                if(sensorState){
+                    scheduleWalkingDetectWork()
+                    scheduleWalkingDetectWork2()
+                    scheduleWalkingDetectWork3()
+                    scheduleWalkingDetectWork4()
+                    scheduleWalkingDetectWork5()
+
+                    if(maxDistance.max() < 300f) {
+                        if (pastMaxDistance.size != 0)
+                            stopSensor()
+                    }else{
+                        stopSensor()
+                    }
+
+                }
+            } else if(activity.type == DetectedActivity.IN_VEHICLE){
+                // Vehicle 활동에 들어감
+                if(!sensorState){
+                    scheduleWalkingDetectWork()
+                    scheduleWalkingDetectWork2()
+                    scheduleWalkingDetectWork3()
+                    scheduleWalkingDetectWork4()
+                    scheduleWalkingDetectWork5()
+                    scheduleWalkingDetectWork6()
+                    startSensor(L1)
+                }
+
+            }
+        }
+    }
+
 
     inner class WalkingDetectReceiver : BroadcastReceiver() {
 
@@ -770,6 +866,7 @@ class BluetoothService : Service() {
                                     scheduleWalkingDetectWork3()
                                     scheduleWalkingDetectWork4()
                                     scheduleWalkingDetectWork5()
+                                    scheduleWalkingDetectWork6()
                                 }
                                 startSensor(L1)
                             }
@@ -1070,6 +1167,7 @@ class BluetoothService : Service() {
                         scheduleWalkingDetectWork3()
                         scheduleWalkingDetectWork4()
                         scheduleWalkingDetectWork5()
+                        scheduleWalkingDetectWork6()
                     }
                 }
             }
