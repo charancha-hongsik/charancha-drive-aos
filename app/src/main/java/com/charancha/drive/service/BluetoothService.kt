@@ -788,8 +788,6 @@ class BluetoothService : Service() {
         }
 
         private fun handleDetectedActivity(activity: DetectedActivity) {
-            refreshNotiText("" + activity.type)
-
             if(activity.type == DetectedActivity.WALKING) {
                 // Walking 활동에 들어감
                 if(sensorState){
@@ -798,6 +796,7 @@ class BluetoothService : Service() {
                     scheduleWalkingDetectWork3()
                     scheduleWalkingDetectWork4()
                     scheduleWalkingDetectWork5()
+                    scheduleWalkingDetectWork6()
 
                     stopSensor()
                 }
