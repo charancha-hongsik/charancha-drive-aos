@@ -799,13 +799,7 @@ class BluetoothService : Service() {
                     scheduleWalkingDetectWork4()
                     scheduleWalkingDetectWork5()
 
-                    if(maxDistance.max() < 300f) {
-                        if (pastMaxDistance.size != 0)
-                            stopSensor()
-                    }else{
-                        stopSensor()
-                    }
-
+                    stopSensor()
                 }
             } else if(activity.type == DetectedActivity.IN_VEHICLE){
                 // Vehicle 활동에 들어감
@@ -848,12 +842,7 @@ class BluetoothService : Service() {
                                     scheduleWalkingDetectWork4()
                                     scheduleWalkingDetectWork5()
 
-                                    if(maxDistance.max() < 300f) {
-                                        if (pastMaxDistance.size != 0)
-                                            stopSensor()
-                                    }else{
-                                        stopSensor()
-                                    }
+                                    stopSensor()
 
                                 }
                             }
@@ -1361,12 +1350,17 @@ class BluetoothService : Service() {
 
         if(maxDistance.size > 1800){
             if (maxDistance.max() < 300f) {
-                if(pastMaxDistance.size != 0)
-                    stopSensor()
+                stopSensor()
+
+                maxDistance = mutableListOf()
+                pastMaxDistance = mutableListOf()
+                firstLocation = null
+
+            }else{
+                maxDistance = mutableListOf()
+                firstLocation = null
+                pastMaxDistance = maxDistance.toMutableList()
             }
-            pastMaxDistance = maxDistance.toMutableList()
-            maxDistance = mutableListOf()
-            firstLocation = null
         }
 
         pastTimeStamp = timeStamp
