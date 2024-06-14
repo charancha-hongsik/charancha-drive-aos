@@ -18,6 +18,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.provider.Settings
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
@@ -215,27 +216,6 @@ class BluetoothService : Service() {
             )
             notification = NotificationCompat.Builder(this, CHANNEL_ID)
 
-            setLocation2()
-
-            scheduleWalkingDetectWork()
-            scheduleWalkingDetectWork2()
-            scheduleWalkingDetectWork3()
-            scheduleWalkingDetectWork4()
-            scheduleWalkingDetectWork5()
-            scheduleWalkingDetectWork6()
-
-
-            registerReceiver(TransitionsReceiver(), filter)
-
-            sensorState = false
-
-            registerReceiver(WalkingDetectReceiver(),IntentFilter().apply {
-                addAction(TRANSITIONS_RECEIVER_ACTION)
-            })
-
-            registerReceiver(ActivityRecognitionReceiver(),IntentFilter().apply {
-                addAction(TRANSITIONS_RECEIVER_ACTION2)
-            })
 
             startForeground(1, notification.setSmallIcon(android.R.drawable.btn_star_big_off)
                 .setAutoCancel(false)
@@ -245,6 +225,26 @@ class BluetoothService : Service() {
                 .setOnlyAlertOnce(true)
                 .build())
 
+            setLocation2()
+
+            registerReceiver(TransitionsReceiver(), filter)
+
+            registerReceiver(WalkingDetectReceiver(),IntentFilter().apply {
+                addAction(TRANSITIONS_RECEIVER_ACTION)
+            })
+
+            registerReceiver(ActivityRecognitionReceiver(),IntentFilter().apply {
+                addAction(TRANSITIONS_RECEIVER_ACTION2)
+            })
+
+            sensorState = false
+
+            scheduleWalkingDetectWork()
+            scheduleWalkingDetectWork2()
+            scheduleWalkingDetectWork3()
+            scheduleWalkingDetectWork4()
+            scheduleWalkingDetectWork5()
+            scheduleWalkingDetectWork6()
         }
 
         return START_REDELIVER_INTENT
@@ -464,6 +464,7 @@ class BluetoothService : Service() {
                 .addOnSuccessListener {
                 }
                 .addOnFailureListener {
+
                 }
         }
     }
@@ -915,6 +916,7 @@ class BluetoothService : Service() {
 
             }
         } catch(e:Exception){
+
         }
     }
 
@@ -952,6 +954,7 @@ class BluetoothService : Service() {
 
     fun stopSensor(){
         try {
+
             if (sensorState) {
                 sensorState = false
                 firstLineState = false
@@ -974,6 +977,7 @@ class BluetoothService : Service() {
 
             }
         }catch(e:Exception){
+
         }
     }
 
@@ -1054,20 +1058,18 @@ class BluetoothService : Service() {
             0f,
             gpsInfo)
 
-
         driveDtoForApi = DriveDtoForApi(
-            Build.MANUFACTURER,
-            Build.VERSION.RELEASE,
-            Build.MODEL,
-            UUID.randomUUID().toString(),
-            PreferenceUtil.getPref(this, PreferenceUtil.USER_NAME, "")!!,
-            format.format(time).toString(),
-            startTimeStamp,
-            0L,
-            level,
-            gpsInfoForApi,
+            manufacturer = Build.MANUFACTURER,
+            version = Build.VERSION.RELEASE,
+            deviceModel = Build.MODEL,
+            deviceUuid = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID),
+            username = PreferenceUtil.getPref(this, PreferenceUtil.USER_NAME, "")!!,
+            trackingId = format.format(time).toString(),
+            startTimestamp = startTimeStamp,
+            endTimestamp = 0L,
+            verification = level,
+            gpses = gpsInfoForApi,
         )
-
     }
 
     inner class TransitionsReceiver : BroadcastReceiver() {
@@ -1454,17 +1456,17 @@ class BluetoothService : Service() {
         driveDtoForApi.endTimestamp = System.currentTimeMillis()
 
         val driveForApi = DriveForApi(
-            driveDtoForApi.trackingId,
-            driveDtoForApi.manufacturer,
-            driveDtoForApi.version,
-            driveDtoForApi.deviceModel,
-            driveDtoForApi.deviceUuid,
-            driveDtoForApi.username,
-            driveDtoForApi.startTimestamp,
-            driveDtoForApi.endTimestamp,
-            driveDtoForApi.verification,
-            true,
-            driveDtoForApi.gpses
+            tracking_id = driveDtoForApi.trackingId,
+            manufacturer = driveDtoForApi.manufacturer,
+            version = driveDtoForApi.version,
+            deviceModel = driveDtoForApi.deviceModel,
+            deviceUuid = driveDtoForApi.deviceUuid,
+            username = driveDtoForApi.username,
+            startTimeStamp = driveDtoForApi.startTimestamp,
+            endTimestamp = driveDtoForApi.endTimestamp,
+            verification = driveDtoForApi.verification,
+            automobile = true,
+            gpses = driveDtoForApi.gpses
         )
 
         val gson = Gson()

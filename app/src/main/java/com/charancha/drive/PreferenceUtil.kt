@@ -11,6 +11,7 @@ object PreferenceUtil {
     var HAVE_BEEN_HOME = "have_been_home"
     var RUNNING_LEVEL = "running_level"
     var USER_NAME = "username"
+    var ANDROID_ID = "android_id"
 
     var SENSOR_STATE = "sensor_state"
 

@@ -80,16 +80,16 @@ class CallApiService: Service() {
                         for (drive in it) {
 
                             val driveDtoForApi = DriveDtoForApi(
-                                drive.tracking_id,
-                                drive.manufacturer,
-                                drive.version,
-                                drive.deviceModel,
-                                drive.deviceUuid,
-                                drive.username,
-                                drive.startTimeStamp,
-                                drive.endTimestamp,
-                                drive.verification,
-                                drive.gpses
+                                trackingId = drive.tracking_id,
+                                manufacturer = drive.manufacturer,
+                                version = drive.version,
+                                deviceModel = drive.deviceModel,
+                                deviceUuid = drive.deviceUuid,
+                                username = drive.username,
+                                startTimestamp = drive.startTimeStamp,
+                                endTimestamp = drive.endTimestamp,
+                                verification = drive.verification,
+                                gpses = drive.gpses
                             )
 
                             val gson = Gson()
