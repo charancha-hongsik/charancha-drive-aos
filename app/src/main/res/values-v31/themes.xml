@@ -1,5 +1,6 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
     <style name="Theme.Charanchadriveaos" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/default_background</item>
@@ -8,6 +9,11 @@
         <!-- no action bar -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+
+        <!-- Delete default splash screen -->
+        <item name="android:windowSplashScreenAnimatedIcon">@color/black_op_100</item>
+        <item name="android:windowIsTranslucent">true</item>
+
     </style>
 
     <!-- Base application theme. -->
@@ -21,6 +27,10 @@
         <!-- no action bar -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+
+        <!-- Theme for Android 12 and above (delete default splash) -->
+        <item name="android:windowSplashScreenBackground">@color/black_op_100</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@color/black_op_100</item>
 
     </style>
 </resources>

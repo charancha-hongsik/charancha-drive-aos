@@ -177,15 +177,6 @@ class MainActivity : AppCompatActivity() {
                             Log.d("testsetsetest","testestsetsetset googleIdTokenCredential :: " + googleIdTokenCredential.idToken)
                             Toast.makeText(this@MainActivity, "googleIdTokenCredential :: " + googleIdTokenCredential.idToken, Toast.LENGTH_SHORT).show()
 
-                            // accessToken
-                            // RefreshToken
-                            //
-
-//                            registerToFirebase(
-//                                googleIdTokenCredential.idToken,
-//                                failAction,
-//                                successAction
-//                            )
                         } catch (e: GoogleIdTokenParsingException) {
 
                         }
