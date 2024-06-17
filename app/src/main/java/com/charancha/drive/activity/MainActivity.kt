@@ -1,10 +1,7 @@
 package com.charancha.drive.activity
 
 import android.Manifest.permission.*
-import android.app.ActivityManager
-import android.app.AlarmManager
-import android.app.AlertDialog
-import android.app.PendingIntent
+import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.DialogInterface
@@ -20,15 +17,16 @@ import android.util.Log
 import android.view.View.*
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startForegroundService
+import androidx.credentials.*
+import androidx.lifecycle.lifecycleScope
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.PreferenceUtil.HAVE_BEEN_HOME
 import com.charancha.drive.R
-import com.charancha.drive.retrofit.ApiServiceInterface
 import com.charancha.drive.service.BluetoothService
 import com.charancha.drive.service.CallApiService
 import com.charancha.drive.viewmodel.MainViewModel
@@ -37,6 +35,10 @@ import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
+import kotlinx.coroutines.launch
 import java.util.*
 
 
@@ -57,6 +59,10 @@ class MainActivity : AppCompatActivity() {
     lateinit var btn_edit:ImageButton
     var tv_car_name:TextView? = null
 
+    private val RC_SIGN_IN = 9001  // 요청 코드 선언
+
+    lateinit var googleIdOption:GetGoogleIdOption
+    lateinit var request: GetCredentialRequest
     private fun promptForBatteryOptimization() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder.setTitle("Battery Optimization")
@@ -96,6 +102,7 @@ class MainActivity : AppCompatActivity() {
         startForegroundService(callApiIntent)
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -103,6 +110,7 @@ class MainActivity : AppCompatActivity() {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             requestBatteryOptimizationException()
         }
+
 
         setPieChart()
         setLineChartForBrakes(findViewById(R.id.chart_line_brakes))
@@ -122,6 +130,72 @@ class MainActivity : AppCompatActivity() {
 
         setAlarm()
 
+//        lifecycleScope.launch {
+//            requestGoogleLogin(this@MainActivity)
+//        }
+
+
+    }
+
+
+    suspend fun requestGoogleLogin(
+        activityContext : Context,
+    ) {
+        googleIdOption = GetGoogleIdOption.Builder()
+            .setFilterByAuthorizedAccounts(true)
+            .setServerClientId("181313354113-e6ilqvbn5nsgeaobtdip5utv3pi9pvoq.apps.googleusercontent.com")
+            .setAutoSelectEnabled(false)
+            .build()
+
+
+        request =
+            GetCredentialRequest.Builder().addCredentialOption(
+                googleIdOption
+            ).build()
+
+        val credentialManager = CredentialManager.create(this)
+
+        runCatching {
+            credentialManager.getCredential(
+                request = request,
+                context = activityContext,
+            )
+        }.onSuccess {
+            //성공시 액션
+            val credential = it.credential
+
+            when(credential) {
+                is CustomCredential -> {
+                    if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+
+                        try {
+                            // Use googleIdTokenCredential and extract id to validate and
+                            // authenticate on your server.
+                            val googleIdTokenCredential = GoogleIdTokenCredential
+                                .createFrom(credential.data)
+
+                            Log.d("testsetsetest","testestsetsetset googleIdTokenCredential :: " + googleIdTokenCredential.idToken)
+                            Toast.makeText(this@MainActivity, "googleIdTokenCredential :: " + googleIdTokenCredential.idToken, Toast.LENGTH_SHORT).show()
+
+                            // accessToken
+                            // RefreshToken
+                            //
+
+//                            registerToFirebase(
+//                                googleIdTokenCredential.idToken,
+//                                failAction,
+//                                successAction
+//                            )
+                        } catch (e: GoogleIdTokenParsingException) {
+
+                        }
+                    }
+                }
+            }
+        }.onFailure {
+            Log.d("testsetsetest","testestestseset onFailure:: " + it.message)
+            Toast.makeText(this@MainActivity, "onFailure " ,  Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun setAlarm(){

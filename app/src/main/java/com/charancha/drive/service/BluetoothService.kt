@@ -159,7 +159,7 @@ class BluetoothService : Service() {
 
 
     private var INTERVAL = 1000L
-    private var INTERVAL2 = 180000L
+    private var INTERVAL2 = 30000L
 
     /**
      *         locationRequest.setInterval(INTERVAL) // 20초마다 업데이트 요청
@@ -225,18 +225,6 @@ class BluetoothService : Service() {
                 .setOnlyAlertOnce(true)
                 .build())
 
-            setLocation2()
-
-            registerReceiver(TransitionsReceiver(), filter)
-
-            registerReceiver(WalkingDetectReceiver(),IntentFilter().apply {
-                addAction(TRANSITIONS_RECEIVER_ACTION)
-            })
-
-            registerReceiver(ActivityRecognitionReceiver(),IntentFilter().apply {
-                addAction(TRANSITIONS_RECEIVER_ACTION2)
-            })
-
             sensorState = false
 
             scheduleWalkingDetectWork()
@@ -248,6 +236,22 @@ class BluetoothService : Service() {
         }
 
         return START_REDELIVER_INTENT
+    }
+
+    override fun onCreate() {
+        setLocation2()
+
+        registerReceiver(TransitionsReceiver(), filter)
+
+        registerReceiver(WalkingDetectReceiver(),IntentFilter().apply {
+            addAction(TRANSITIONS_RECEIVER_ACTION)
+        })
+
+        registerReceiver(ActivityRecognitionReceiver(),IntentFilter().apply {
+            addAction(TRANSITIONS_RECEIVER_ACTION2)
+        })
+
+        super.onCreate()
     }
 
 
@@ -1133,6 +1137,7 @@ class BluetoothService : Service() {
 
     private fun setLocation2() {
         // FusedLocationProviderClient 초기화
+
         fusedLocationClient2 = LocationServices.getFusedLocationProviderClient(this)
 
 
@@ -1147,6 +1152,9 @@ class BluetoothService : Service() {
             override fun onLocationResult(locationResult: LocationResult) {
                 val location: Location = locationResult.lastLocation
 
+                Log.d("testsetsetset","teststsets :: " + location.time)
+                refreshNotiText(location.time.toString())
+
                 if(location.speed*MS_TO_KH > 30f){
                     if(!sensorState){
                         scheduleWalkingDetectWork()
@@ -1155,6 +1163,7 @@ class BluetoothService : Service() {
                         scheduleWalkingDetectWork4()
                         scheduleWalkingDetectWork5()
                         scheduleWalkingDetectWork6()
+                        startSensor(L1)
                     }
                 }
             }
@@ -1346,7 +1355,13 @@ class BluetoothService : Service() {
          */
         distance_array[HH] = distance_array[HH] + distance
 
+        /**
+         * 30분 간격으로 체크
+         */
         if(maxDistance.size > 1800){
+            /**
+             * 반경 300미터 이하 체크
+             */
             if (maxDistance.max() < 300f) {
                 stopSensor()
 

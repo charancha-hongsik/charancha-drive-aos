@@ -1,0 +1,34 @@
+{
+  "project_info": {
+    "project_number": "840489306578",
+    "project_id": "charancha-drive",
+    "storage_bucket": "charancha-drive.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:840489306578:android:e322a399e88c39ef4f600b",
+        "android_client_info": {
+          "package_name": "com.charancha.drive"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "181313354113-j5055d9u07h7as3m20t2hsh866ra18do.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWpbMguoV_2wCJ4ATqcbcZPn-Izgd5DGs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
