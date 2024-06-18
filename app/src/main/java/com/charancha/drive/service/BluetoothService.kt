@@ -26,6 +26,7 @@ import androidx.work.*
 import com.charancha.drive.BuildConfig
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.retrofit.ApiServiceInterface
+import com.charancha.drive.retrofit.HeaderInterceptor
 import com.charancha.drive.room.database.DriveDatabase
 import com.charancha.drive.room.dto.DriveDto
 import com.charancha.drive.room.dto.DriveDtoForApi
@@ -1567,20 +1568,6 @@ class BluetoothService : Service() {
                 ApiServiceInterface::class.java
             )
     }
-
-
-    class HeaderInterceptor : Interceptor {
-        override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
-
-            val originalRequest = chain.request()
-            val requestBuilder = originalRequest.newBuilder()
-                .header("Content-Type", "application/json")
-            val request = requestBuilder.build()
-            return chain.proceed(request)
-        }
-    }
-
-
 
     fun isInternetConnected(context: Context): Boolean {
         val connectivityManager =

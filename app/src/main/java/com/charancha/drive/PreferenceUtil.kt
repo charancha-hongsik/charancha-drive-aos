@@ -7,13 +7,20 @@ import android.os.Build
 
 
 object PreferenceUtil {
-    var pref_name = "charancha_pref" //저장소명
-    var HAVE_BEEN_HOME = "have_been_home"
-    var RUNNING_LEVEL = "running_level"
-    var USER_NAME = "username"
-    var ANDROID_ID = "android_id"
+    const val pref_name = "charancha_pref" //저장소명
+    const val HAVE_BEEN_HOME = "have_been_home"
+    const val RUNNING_LEVEL = "running_level"
+    const val USER_NAME = "username"
 
-    var SENSOR_STATE = "sensor_state"
+    /**
+     * 로그인 토큰 관련
+     */
+    val ACCESS_TOKEN = "access_token"
+    val REFRESH_TOKEN = "refresh_token"
+    val EXPIRES_IN = "expires_in"
+    val REFRESH_EXPIRES_IN = "refresh_expires_in"
+    val TOKEN_TYPE = "token_type"
+
 
 
 

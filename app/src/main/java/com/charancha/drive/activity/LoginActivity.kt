@@ -14,6 +14,8 @@ import androidx.lifecycle.lifecycleScope
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
 import com.charancha.drive.retrofit.ApiServiceInterface
+import com.charancha.drive.retrofit.HeaderInterceptor
+import com.charancha.drive.retrofit.response.SignInResponse
 import com.charancha.drive.room.dto.SignInDto
 import com.charancha.drive.room.dto.SignUpDto
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
@@ -99,24 +101,44 @@ class LoginActivity: AppCompatActivity() {
                                 .createFrom(credential.data)
 
                             val gson = Gson()
-                            val jsonParam = gson.toJson(SignInDto(googleIdTokenCredential.idToken, "string", "GOOGLE"))
+                            val jsonParam = gson.toJson(SignUpDto(googleIdTokenCredential.idToken, "string", "GOOGLE","string"))
 
 
 
-                            apiService().postSignIn(jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :
+                            apiService().postSignUp(jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :
                                 Callback<ResponseBody>{
                                 override fun onResponse(
                                     call: Call<ResponseBody>,
                                     response: Response<ResponseBody>
                                 ) {
+                                    if(response.code() == 201 || response.code() == 404){
+
+                                    }
+
                                     val gson = Gson()
-                                    val jsonParam = gson.toJson(SignUpDto(googleIdTokenCredential.idToken, "GOOGLE","01010022"))
+                                    val jsonParam = gson.toJson(SignInDto(googleIdTokenCredential.idToken, "string","GOOGLE"))
 
                                     apiService().postSignIn(jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object : Callback<ResponseBody>{
                                         override fun onResponse(
                                             call: Call<ResponseBody>,
                                             response: Response<ResponseBody>
                                         ) {
+                                            val signInResponse = gson.fromJson(response.body()?.string(), SignInResponse::class.java)
+
+                                            PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.ACCESS_TOKEN, signInResponse.access_token)
+                                            PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.REFRESH_TOKEN, signInResponse.refresh_token)
+                                            PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.EXPIRES_IN, signInResponse.expires_in)
+                                            PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.REFRESH_EXPIRES_IN, signInResponse.refresh_expires_in)
+                                            PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.TOKEN_TYPE, signInResponse.token_type)
+
+                                            if(PreferenceUtil.getBooleanPref(this@LoginActivity, PreferenceUtil.HAVE_BEEN_HOME, false)){
+                                                startActivity(Intent(this@LoginActivity, TermsOfUseActivity::class.java))
+                                                finish()
+                                            }else{
+                                                startActivity(Intent(this@LoginActivity, TermsOfUseActivity::class.java))
+                                                finish()
+                                            }
+
 
                                         }
 
@@ -137,15 +159,6 @@ class LoginActivity: AppCompatActivity() {
 
                                 }
                             })
-
-                            if(PreferenceUtil.getBooleanPref(this, PreferenceUtil.HAVE_BEEN_HOME, false)){
-                                startActivity(Intent(this, TermsOfUseActivity::class.java))
-                                finish()
-                            }else{
-                                startActivity(Intent(this, TermsOfUseActivity::class.java))
-                                finish()
-                            }
-
                         } catch (e: GoogleIdTokenParsingException) {
 
                         }
@@ -159,8 +172,6 @@ class LoginActivity: AppCompatActivity() {
     }
 
     fun apiService(): ApiServiceInterface {
-
-
         val client: OkHttpClient = OkHttpClient.Builder()
             .addInterceptor(HeaderInterceptor())
             .connectTimeout(30, TimeUnit.SECONDS)
@@ -172,17 +183,4 @@ class LoginActivity: AppCompatActivity() {
                 ApiServiceInterface::class.java
             )
     }
-
-
-    class HeaderInterceptor : Interceptor {
-        override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
-
-            val originalRequest = chain.request()
-            val requestBuilder = originalRequest.newBuilder()
-                .header("Content-Type", "application/json")
-            val request = requestBuilder.build()
-            return chain.proceed(request)
-        }
-    }
-
 }
