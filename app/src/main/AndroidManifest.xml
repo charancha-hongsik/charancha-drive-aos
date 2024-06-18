@@ -67,7 +67,13 @@
         </activity>
 
         <activity
-            android:name=".activity.BetaInfoActivity"
+            android:name=".activity.LoginActivity"
+            android:theme="@style/Theme.Charanchadrivelogin"
+            android:screenOrientation="portrait"
+            android:exported="true"/>
+
+        <activity
+            android:name=".activity.TermsOfUseActivity"
             android:screenOrientation="portrait"
             android:exported="true"/>
 

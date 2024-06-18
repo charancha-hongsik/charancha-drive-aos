@@ -33,4 +33,19 @@
         <item name="android:windowSplashScreenAnimatedIcon">@color/black_op_100</item>
 
     </style>
+
+    <!-- Base application theme. -->
+    <style name="Theme.Charanchadrivelogin" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">@color/white_op_100</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">@color/white_op_100</item>
+
+        <!-- no action bar -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+
+
+    </style>
 </resources>

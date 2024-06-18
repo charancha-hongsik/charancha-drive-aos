@@ -6,12 +6,12 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.charancha.drive.R
 
-class BetaInfoActivity: AppCompatActivity() {
+class TermsOfUseActivity: AppCompatActivity() {
     private lateinit var btnStart: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_betainfo)
+        setContentView(R.layout.activity_terms)
 
         init()
     }

@@ -15,13 +15,8 @@ class SplashActivity: AppCompatActivity() {
         setContentView(R.layout.activity_splash)
 
         Handler(Looper.getMainLooper()).postDelayed({
-            if(PreferenceUtil.getBooleanPref(this, PreferenceUtil.HAVE_BEEN_HOME, false)){
-                startActivity(Intent(this, MainActivity::class.java))
-                finish()
-            }else{
-                startActivity(Intent(this, BetaInfoActivity::class.java))
-                finish()
-            }
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
         }, 2000) // 2000 밀리초 (2초)
     }
 }

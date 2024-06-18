@@ -59,10 +59,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var btn_edit:ImageButton
     var tv_car_name:TextView? = null
 
-    private val RC_SIGN_IN = 9001  // 요청 코드 선언
-
-    lateinit var googleIdOption:GetGoogleIdOption
-    lateinit var request: GetCredentialRequest
     private fun promptForBatteryOptimization() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder.setTitle("Battery Optimization")
@@ -135,58 +131,6 @@ class MainActivity : AppCompatActivity() {
 //        }
 
 
-    }
-
-
-    suspend fun requestGoogleLogin(
-        activityContext : Context,
-    ) {
-        googleIdOption = GetGoogleIdOption.Builder()
-            .setFilterByAuthorizedAccounts(true)
-            .setServerClientId("181313354113-e6ilqvbn5nsgeaobtdip5utv3pi9pvoq.apps.googleusercontent.com")
-            .setAutoSelectEnabled(false)
-            .build()
-
-
-        request =
-            GetCredentialRequest.Builder().addCredentialOption(
-                googleIdOption
-            ).build()
-
-        val credentialManager = CredentialManager.create(this)
-
-        runCatching {
-            credentialManager.getCredential(
-                request = request,
-                context = activityContext,
-            )
-        }.onSuccess {
-            //성공시 액션
-            val credential = it.credential
-
-            when(credential) {
-                is CustomCredential -> {
-                    if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
-
-                        try {
-                            // Use googleIdTokenCredential and extract id to validate and
-                            // authenticate on your server.
-                            val googleIdTokenCredential = GoogleIdTokenCredential
-                                .createFrom(credential.data)
-
-                            Log.d("testsetsetest","testestsetsetset googleIdTokenCredential :: " + googleIdTokenCredential.idToken)
-                            Toast.makeText(this@MainActivity, "googleIdTokenCredential :: " + googleIdTokenCredential.idToken, Toast.LENGTH_SHORT).show()
-
-                        } catch (e: GoogleIdTokenParsingException) {
-
-                        }
-                    }
-                }
-            }
-        }.onFailure {
-            Log.d("testsetsetest","testestestseset onFailure:: " + it.message)
-            Toast.makeText(this@MainActivity, "onFailure " ,  Toast.LENGTH_SHORT).show()
-        }
     }
 
     private fun setAlarm(){
