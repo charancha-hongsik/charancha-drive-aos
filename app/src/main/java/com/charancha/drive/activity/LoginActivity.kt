@@ -54,9 +54,12 @@ class LoginActivity: AppCompatActivity() {
     fun setBtn(){
         constraintLayout = findViewById(R.id.layout_google_login)
         constraintLayout.setOnClickListener {
-            lifecycleScope.launch {
-                requestGoogleLogin(this@LoginActivity)
-            }
+//            lifecycleScope.launch {
+//                requestGoogleLogin(this@LoginActivity)
+//            }
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+
         }
     }
 
@@ -94,6 +97,8 @@ class LoginActivity: AppCompatActivity() {
                             // authenticate on your server.
                             val googleIdTokenCredential = GoogleIdTokenCredential
                                 .createFrom(credential.data)
+
+                            Log.d("testestestest","testsetestestset idToken :: " + googleIdTokenCredential.idToken)
 
 //                            val gson = Gson()
 //                            val jsonParam = gson.toJson(SignInDto(googleIdTokenCredential.idToken,  "GOOGLE"))
