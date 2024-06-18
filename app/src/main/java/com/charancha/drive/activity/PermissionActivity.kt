@@ -83,7 +83,7 @@ class PermissionActivity: AppCompatActivity(){
     private fun setListener(){
         btnPermission.setOnClickListener {
             if(btnPermission.text.contains("시작하기")){
-                startActivity(Intent(this, LoginActivity::class.java))
+                startActivity(Intent(this, MainActivity::class.java))
                 finish()
             } else{
                 when(permissionNo){

@@ -54,11 +54,11 @@ class LoginActivity: AppCompatActivity() {
     fun setBtn(){
         constraintLayout = findViewById(R.id.layout_google_login)
         constraintLayout.setOnClickListener {
-//            lifecycleScope.launch {
-//                requestGoogleLogin(this@LoginActivity)
-//            }
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
+            lifecycleScope.launch {
+                requestGoogleLogin(this@LoginActivity)
+            }
+//            startActivity(Intent(this, PermissionActivity::class.java))
+//            finish()
 
         }
     }
@@ -98,52 +98,45 @@ class LoginActivity: AppCompatActivity() {
                             val googleIdTokenCredential = GoogleIdTokenCredential
                                 .createFrom(credential.data)
 
-                            Log.d("testestestest","testsetestestset idToken :: " + googleIdTokenCredential.idToken)
+                            val gson = Gson()
+                            val jsonParam = gson.toJson(SignInDto(googleIdTokenCredential.idToken, "string", "GOOGLE"))
 
-//                            val gson = Gson()
-//                            val jsonParam = gson.toJson(SignInDto(googleIdTokenCredential.idToken,  "GOOGLE"))
-//                            Log.d("testestest","testestsetestse :: " + jsonParam)
-//
-//
-//
-//                            apiService().postSignIn(jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :
-//                                Callback<ResponseBody>{
-//                                override fun onResponse(
-//                                    call: Call<ResponseBody>,
-//                                    response: Response<ResponseBody>
-//                                ) {
-//                                    Log.d("testestsetset","testestestseest onResponse :: " + response.code())
-//
-//
-//                                    val gson = Gson()
-//                                    val jsonParam = gson.toJson(SignUpDto(googleIdTokenCredential.idToken, "GOOGLE","01010022"))
-//
-//                                    apiService().postSignIn(jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :
-//                                        Callback<ResponseBody>{
-//                                        override fun onResponse(
-//                                            call: Call<ResponseBody>,
-//                                            response: Response<ResponseBody>
-//                                        ) {
-//                                            Log.d("testestsetset","testestestseest onResponse2 :: " + response.code())
-//                                        }
-//
-//                                        override fun onFailure(
-//                                            call: Call<ResponseBody>,
-//                                            t: Throwable
-//                                        ) {
-//                                            Log.d("testestsetset","testestestseest onFailure2 :: ")
-//                                        }
-//
-//                                    })
-//
-//
-//                                }
-//
-//                                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-//                                    Log.d("testestsetset","testestestseest onFailure :: ")
-//
-//                                }
-//                            })
+
+
+                            apiService().postSignIn(jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :
+                                Callback<ResponseBody>{
+                                override fun onResponse(
+                                    call: Call<ResponseBody>,
+                                    response: Response<ResponseBody>
+                                ) {
+                                    val gson = Gson()
+                                    val jsonParam = gson.toJson(SignUpDto(googleIdTokenCredential.idToken, "GOOGLE","01010022"))
+
+                                    apiService().postSignIn(jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object : Callback<ResponseBody>{
+                                        override fun onResponse(
+                                            call: Call<ResponseBody>,
+                                            response: Response<ResponseBody>
+                                        ) {
+
+                                        }
+
+                                        override fun onFailure(
+                                            call: Call<ResponseBody>,
+                                            t: Throwable
+                                        ) {
+
+                                        }
+
+                                    })
+
+
+                                }
+
+                                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+
+                                }
+                            })
 
                             if(PreferenceUtil.getBooleanPref(this, PreferenceUtil.HAVE_BEEN_HOME, false)){
                                 startActivity(Intent(this, TermsOfUseActivity::class.java))
@@ -174,7 +167,7 @@ class LoginActivity: AppCompatActivity() {
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
             .build()
-        return Retrofit.Builder().baseUrl("http://43.201.46.37:3000/").client(client)
+        return Retrofit.Builder().baseUrl("http://172.16.10.111:3000/").client(client)
             .addConverterFactory(GsonConverterFactory.create()).build().create(
                 ApiServiceInterface::class.java
             )

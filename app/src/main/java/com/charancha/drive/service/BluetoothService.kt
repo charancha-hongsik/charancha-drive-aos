@@ -1357,6 +1357,7 @@ class BluetoothService : Service() {
          */
         distance_array[HH] = distance_array[HH] + distance
 
+
         /**
          * 30분 간격으로 체크
          */
