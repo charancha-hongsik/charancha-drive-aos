@@ -36,4 +36,11 @@
     <string name="high_speed_driving">고속 주행</string>
     <string name="first_login_text">운전 습관으로\n 차량 가치를 높이는 첫걸음</string>
     <string name="first_terms_text">처음 뵙겠습니다 :)\n이용약관에 동의해주세요</string>
+    <string name="terms_all_accept">전체 동의</string>
+    <string name="terms_title1">본인은 만 18세 이상입니다 (필수)</string>
+    <string name="terms_title2">서비스 이용약관 (필수)</string>
+    <string name="terms_title3">개인정보 처리방침 (필수)</string>
+    <string name="terms_title4">마케팅 정보 수신동의 (선택)</string>
+
+
 </resources>

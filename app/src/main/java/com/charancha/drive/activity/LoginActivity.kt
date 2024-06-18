@@ -141,7 +141,7 @@ class LoginActivity: AppCompatActivity() {
 //                            })
 
                             if(PreferenceUtil.getBooleanPref(this, PreferenceUtil.HAVE_BEEN_HOME, false)){
-                                startActivity(Intent(this, MainActivity::class.java))
+                                startActivity(Intent(this, TermsOfUseActivity::class.java))
                                 finish()
                             }else{
                                 startActivity(Intent(this, TermsOfUseActivity::class.java))

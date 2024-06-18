@@ -34,7 +34,7 @@
         android:id="@+id/layout_google_login"
         android:layout_width="match_parent"
         android:layout_height="52dp"
-        android:background="@drawable/radius8_gray"
+        android:background="@drawable/radius8_gray50"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_login1"
