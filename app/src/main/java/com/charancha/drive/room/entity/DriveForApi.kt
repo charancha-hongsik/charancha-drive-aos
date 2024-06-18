@@ -17,5 +17,6 @@ data class DriveForApi(
     @ColumnInfo(name="endTimestamp") var endTimestamp: Long,
     @ColumnInfo(name="verification") var verification:String,
     @ColumnInfo(name="automobile") var automobile:Boolean,
+    @ColumnInfo(name="appVersion") var appVersion: String, // 새로운 컬럼 추가
     @ColumnInfo(name="gpses") var gpses: List<EachGpsDtoForApi> // 원시 데이터
 )

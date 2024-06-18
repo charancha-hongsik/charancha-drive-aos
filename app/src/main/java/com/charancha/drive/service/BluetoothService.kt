@@ -23,6 +23,7 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.work.*
+import com.charancha.drive.BuildConfig
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.retrofit.ApiServiceInterface
 import com.charancha.drive.room.database.DriveDatabase
@@ -1072,6 +1073,7 @@ class BluetoothService : Service() {
             startTimestamp = startTimeStamp,
             endTimestamp = 0L,
             verification = level,
+            appVersion = BuildConfig.VERSION_NAME,
             gpses = gpsInfoForApi,
         )
     }
@@ -1481,6 +1483,7 @@ class BluetoothService : Service() {
             endTimestamp = driveDtoForApi.endTimestamp,
             verification = driveDtoForApi.verification,
             automobile = true,
+            appVersion = driveDtoForApi.appVersion,
             gpses = driveDtoForApi.gpses
         )
 

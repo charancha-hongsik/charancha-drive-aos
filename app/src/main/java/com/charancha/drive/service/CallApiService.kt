@@ -75,7 +75,7 @@ class CallApiService: Service() {
         if(isInternetConnected(this@CallApiService)){
             Executors.newSingleThreadExecutor().execute {
                 val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(this@CallApiService)
-                driveDatabase.driveForApiDao().allDriveLimit5?.let {
+                driveDatabase.driveForApiDao().allDriveLimit10?.let {
                     if (it.isNotEmpty()) {
                         for (drive in it) {
 
@@ -89,6 +89,7 @@ class CallApiService: Service() {
                                 startTimestamp = drive.startTimeStamp,
                                 endTimestamp = drive.endTimestamp,
                                 verification = drive.verification,
+                                appVersion = drive.appVersion,
                                 gpses = drive.gpses
                             )
 

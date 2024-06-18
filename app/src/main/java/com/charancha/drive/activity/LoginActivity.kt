@@ -13,10 +13,25 @@ import androidx.credentials.GetCredentialRequest
 import androidx.lifecycle.lifecycleScope
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
+import com.charancha.drive.retrofit.ApiServiceInterface
+import com.charancha.drive.room.dto.SignInDto
+import com.charancha.drive.room.dto.SignUpDto
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
+import com.google.gson.Gson
 import kotlinx.coroutines.launch
+import okhttp3.Interceptor
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.OkHttpClient
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 class LoginActivity: AppCompatActivity() {
     lateinit var constraintLayout: ConstraintLayout
@@ -80,8 +95,50 @@ class LoginActivity: AppCompatActivity() {
                             val googleIdTokenCredential = GoogleIdTokenCredential
                                 .createFrom(credential.data)
 
-                            Log.d("testsetsetest","testestsetsetset googleIdTokenCredential :: " + googleIdTokenCredential.idToken)
-                            Toast.makeText(this@LoginActivity, "googleIdTokenCredential :: " + googleIdTokenCredential.idToken, Toast.LENGTH_SHORT).show()
+//                            val gson = Gson()
+//                            val jsonParam = gson.toJson(SignInDto(googleIdTokenCredential.idToken,  "GOOGLE"))
+//                            Log.d("testestest","testestsetestse :: " + jsonParam)
+//
+//
+//
+//                            apiService().postSignIn(jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :
+//                                Callback<ResponseBody>{
+//                                override fun onResponse(
+//                                    call: Call<ResponseBody>,
+//                                    response: Response<ResponseBody>
+//                                ) {
+//                                    Log.d("testestsetset","testestestseest onResponse :: " + response.code())
+//
+//
+//                                    val gson = Gson()
+//                                    val jsonParam = gson.toJson(SignUpDto(googleIdTokenCredential.idToken, "GOOGLE","01010022"))
+//
+//                                    apiService().postSignIn(jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :
+//                                        Callback<ResponseBody>{
+//                                        override fun onResponse(
+//                                            call: Call<ResponseBody>,
+//                                            response: Response<ResponseBody>
+//                                        ) {
+//                                            Log.d("testestsetset","testestestseest onResponse2 :: " + response.code())
+//                                        }
+//
+//                                        override fun onFailure(
+//                                            call: Call<ResponseBody>,
+//                                            t: Throwable
+//                                        ) {
+//                                            Log.d("testestsetset","testestestseest onFailure2 :: ")
+//                                        }
+//
+//                                    })
+//
+//
+//                                }
+//
+//                                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+//                                    Log.d("testestsetset","testestestseest onFailure :: ")
+//
+//                                }
+//                            })
 
                             if(PreferenceUtil.getBooleanPref(this, PreferenceUtil.HAVE_BEEN_HOME, false)){
                                 startActivity(Intent(this, MainActivity::class.java))
@@ -98,8 +155,36 @@ class LoginActivity: AppCompatActivity() {
                 }
             }
         }.onFailure {
-            Log.d("testsetsetest","testestestseset onFailure:: " + it.message)
-            Toast.makeText(this@LoginActivity, "onFailure " ,  Toast.LENGTH_SHORT).show()
+
+
         }
     }
+
+    fun apiService(): ApiServiceInterface {
+
+
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(HeaderInterceptor())
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .build()
+        return Retrofit.Builder().baseUrl("http://43.201.46.37:3000/").client(client)
+            .addConverterFactory(GsonConverterFactory.create()).build().create(
+                ApiServiceInterface::class.java
+            )
+    }
+
+
+    class HeaderInterceptor : Interceptor {
+        override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+
+            val originalRequest = chain.request()
+            val requestBuilder = originalRequest.newBuilder()
+                .header("Content-Type", "application/json")
+            val request = requestBuilder.build()
+            return chain.proceed(request)
+        }
+    }
+
 }

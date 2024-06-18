@@ -11,5 +11,10 @@ interface ApiServiceInterface {
     @POST("api/v1/driving")
     fun postDrivingInfo(@Body body: RequestBody): Call<ResponseBody>
 
+    @POST("api/v1/auth/test/signup")
+    fun postSignUp(@Body body: RequestBody): Call<ResponseBody>
+
+    @POST("api/v1/auth/signin")
+    fun postSignIn(@Body body: RequestBody): Call<ResponseBody>
 
 }
