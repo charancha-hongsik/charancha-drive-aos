@@ -74,6 +74,7 @@
 
         <activity
             android:name=".activity.TermsOfUseActivity"
+            android:theme="@style/Theme.Charanchadrivelogin"
             android:screenOrientation="portrait"
             android:exported="true"/>
 
