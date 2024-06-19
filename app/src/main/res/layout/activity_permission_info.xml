@@ -224,9 +224,31 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_alarm"/>
 
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_permission_info_confirm"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginBottom="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/radius6_gray950"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="확인했어요"
+            android:textAppearance="@style/B2SB"
+            android:textFontWeight="600"
+            android:textColor="@color/white_op_95"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
 
-
-
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
