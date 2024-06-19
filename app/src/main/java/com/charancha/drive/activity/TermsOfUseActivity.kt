@@ -24,7 +24,10 @@ class TermsOfUseActivity: AppCompatActivity() {
     private lateinit var ibTerms3:ImageButton
     private lateinit var ibTerms4:ImageButton
     private lateinit var tvTerms1:TextView
-
+    private lateinit var tvTermsTitle1:TextView
+    private lateinit var tvTermsTitle2:TextView
+    private lateinit var tvTermsTitle3:TextView
+    private lateinit var tvTermsTitle4:TextView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,9 +51,18 @@ class TermsOfUseActivity: AppCompatActivity() {
         ibTerms3 = findViewById(R.id.ib_terms3)
         ibTerms4 = findViewById(R.id.ib_terms4)
         tvTerms1 = findViewById(R.id.tv_terms1)
+        tvTermsTitle1 = findViewById(R.id.tv_terms_title1)
+        tvTermsTitle2 = findViewById(R.id.tv_terms_title2)
+        tvTermsTitle3 = findViewById(R.id.tv_terms_title3)
+        tvTermsTitle4 = findViewById(R.id.tv_terms_title4)
+
 
         // TextView에 SpannableString 설정
         tvTerms1.text = CommonUtil.getSpannableString(this@TermsOfUseActivity, resources.getString(R.string.first_terms_text), resources.getString(R.string.first_terms_text_red), resources.getColor(R.color.pri_500))
+        tvTermsTitle1.text = CommonUtil.getSpannableString(this@TermsOfUseActivity, resources.getString(R.string.terms_title1), resources.getString(R.string.terms_title1_gray), resources.getColor(R.color.gray_400))
+        tvTermsTitle2.text = CommonUtil.getSpannableString(this@TermsOfUseActivity, resources.getString(R.string.terms_title2), resources.getString(R.string.terms_title2_gray), resources.getColor(R.color.gray_400))
+        tvTermsTitle3.text = CommonUtil.getSpannableString(this@TermsOfUseActivity, resources.getString(R.string.terms_title3), resources.getString(R.string.terms_title3_gray), resources.getColor(R.color.gray_400))
+        tvTermsTitle4.text = CommonUtil.getSpannableString(this@TermsOfUseActivity, resources.getString(R.string.terms_title4), resources.getString(R.string.terms_title4_gray), resources.getColor(R.color.gray_400))
 
     }
 

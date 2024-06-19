@@ -10,7 +10,7 @@ object CommonUtil {
 
         val spannableString = SpannableString(originalText)
 
-        val start = originalText.indexOf("이용약관에 동의")
+        val start = originalText.indexOf(spanText)
         val end = start + spanText.length
 
         val colorSpan = ForegroundColorSpan(color) // 원하는 색상으로 변경
