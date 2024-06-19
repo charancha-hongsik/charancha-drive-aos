@@ -1,7 +1,11 @@
 package com.charancha.drive.activity
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.widget.Button
 import android.widget.ImageButton
@@ -11,12 +15,14 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.charancha.drive.R
 
 class TermsOfUseActivity: AppCompatActivity() {
+    private lateinit var ibArrowTerms:ImageButton
     private lateinit var btnNext:ConstraintLayout
     private lateinit var ibAllAccept:ImageButton
     private lateinit var ibTerms1:ImageButton
     private lateinit var ibTerms2:ImageButton
     private lateinit var ibTerms3:ImageButton
     private lateinit var ibTerms4:ImageButton
+    private lateinit var tvTerms1:TextView
 
 
 
@@ -33,15 +39,41 @@ class TermsOfUseActivity: AppCompatActivity() {
     }
 
     private fun setResource(){
+        ibArrowTerms = findViewById(R.id.ib_arrow_terms)
         btnNext = findViewById(R.id.btn_next)
         ibAllAccept = findViewById(R.id.ib_all_accept)
         ibTerms1 = findViewById(R.id.ib_terms1)
         ibTerms2 = findViewById(R.id.ib_terms2)
         ibTerms3 = findViewById(R.id.ib_terms3)
         ibTerms4 = findViewById(R.id.ib_terms4)
+        tvTerms1 = findViewById(R.id.tv_terms1)
+
+        // 원본 문자열
+        val originalText = "처음 뵙겠습니다 :)\n이용약관에 동의해주세요"
+
+        // SpannableString 생성
+        val spannableString = SpannableString(originalText)
+
+        // "이용약관에 동의" 부분의 시작 인덱스와 끝 인덱스
+        val start = originalText.indexOf("이용약관에 동의")
+        val end = start + "이용약관에 동의".length
+
+        // ForegroundColorSpan을 사용하여 색상 변경
+        val colorSpan = ForegroundColorSpan(resources.getColor(R.color.pri_500)) // 원하는 색상으로 변경
+
+        // SpannableString에 색상 적용
+        spannableString.setSpan(colorSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        // TextView에 SpannableString 설정
+        tvTerms1.text = spannableString
+
     }
 
     private fun setListener(){
+        ibArrowTerms.setOnClickListener {
+            finish()
+        }
+
         btnNext.setOnClickListener {
             startActivity(Intent(this, PermissionActivity::class.java))
             finish()
