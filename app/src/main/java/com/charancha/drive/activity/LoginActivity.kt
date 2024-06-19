@@ -3,8 +3,6 @@ package com.charancha.drive.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.credentials.CredentialManager
@@ -16,14 +14,13 @@ import com.charancha.drive.R
 import com.charancha.drive.retrofit.ApiServiceInterface
 import com.charancha.drive.retrofit.HeaderInterceptor
 import com.charancha.drive.retrofit.response.SignInResponse
-import com.charancha.drive.room.dto.SignInDto
-import com.charancha.drive.room.dto.SignUpDto
+import com.charancha.drive.retrofit.request.SignInRequest
+import com.charancha.drive.retrofit.request.SignUpRequest
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
-import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -101,7 +98,7 @@ class LoginActivity: AppCompatActivity() {
                                 .createFrom(credential.data)
 
                             val gson = Gson()
-                            val jsonParam = gson.toJson(SignUpDto(googleIdTokenCredential.idToken, "string", "GOOGLE","string"))
+                            val jsonParam = gson.toJson(SignUpRequest(googleIdTokenCredential.idToken, "string", "GOOGLE","string"))
 
 
 
@@ -116,7 +113,7 @@ class LoginActivity: AppCompatActivity() {
                                     }
 
                                     val gson = Gson()
-                                    val jsonParam = gson.toJson(SignInDto(googleIdTokenCredential.idToken, "string","GOOGLE"))
+                                    val jsonParam = gson.toJson(SignInRequest(googleIdTokenCredential.idToken, "string","GOOGLE"))
 
                                     apiService().postSignIn(jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object : Callback<ResponseBody>{
                                         override fun onResponse(

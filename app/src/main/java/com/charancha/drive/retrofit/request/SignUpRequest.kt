@@ -1,6 +1,6 @@
-package com.charancha.drive.room.dto
+package com.charancha.drive.retrofit.request
 
-data class SignUpDto (
+data class SignUpRequest (
     val idToken:String,
     val authorizationCode:String,
     val oauthProvider:String,

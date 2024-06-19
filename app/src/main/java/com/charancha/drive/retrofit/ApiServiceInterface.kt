@@ -17,4 +17,7 @@ interface ApiServiceInterface {
     @POST("api/v1/auth/signin")
     fun postSignIn(@Body body: RequestBody): Call<ResponseBody>
 
+    @POST("api/v1/auth/token/reissue")
+    fun postReissue(@Header("refresh_token") token: String): Call<ResponseBody>
+
 }
