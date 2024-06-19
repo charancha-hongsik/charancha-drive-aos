@@ -12,6 +12,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.charancha.drive.CommonUtil
 import com.charancha.drive.R
 
 class TermsOfUseActivity: AppCompatActivity() {
@@ -48,24 +49,8 @@ class TermsOfUseActivity: AppCompatActivity() {
         ibTerms4 = findViewById(R.id.ib_terms4)
         tvTerms1 = findViewById(R.id.tv_terms1)
 
-        // 원본 문자열
-        val originalText = "처음 뵙겠습니다 :)\n이용약관에 동의해주세요"
-
-        // SpannableString 생성
-        val spannableString = SpannableString(originalText)
-
-        // "이용약관에 동의" 부분의 시작 인덱스와 끝 인덱스
-        val start = originalText.indexOf("이용약관에 동의")
-        val end = start + "이용약관에 동의".length
-
-        // ForegroundColorSpan을 사용하여 색상 변경
-        val colorSpan = ForegroundColorSpan(resources.getColor(R.color.pri_500)) // 원하는 색상으로 변경
-
-        // SpannableString에 색상 적용
-        spannableString.setSpan(colorSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-
         // TextView에 SpannableString 설정
-        tvTerms1.text = spannableString
+        tvTerms1.text = CommonUtil.getSpannableString(this@TermsOfUseActivity, resources.getString(R.string.first_terms_text), resources.getString(R.string.first_terms_text_red), resources.getColor(R.color.pri_500))
 
     }
 
