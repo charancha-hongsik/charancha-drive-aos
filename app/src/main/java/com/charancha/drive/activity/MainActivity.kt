@@ -22,7 +22,6 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.credentials.*
 import androidx.lifecycle.lifecycleScope
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.PreferenceUtil.HAVE_BEEN_HOME
@@ -35,9 +34,7 @@ import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
-import com.google.android.libraries.identity.googleid.GetGoogleIdOption
-import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
-import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
+
 import kotlinx.coroutines.launch
 import java.util.*
 
