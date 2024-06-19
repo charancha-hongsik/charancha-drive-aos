@@ -56,31 +56,31 @@ class MainActivity : AppCompatActivity() {
     lateinit var btn_edit:ImageButton
     var tv_car_name:TextView? = null
 
-    private fun promptForBatteryOptimization() {
-        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder.setTitle("Battery Optimization")
-        builder.setMessage("이 앱은 올바르게 작동하기 위해 배터리 최적화에서 제외되어야 합니다. 이 앱을 배터리 최적화에서 제외하시겠습니까?")
-        builder.setPositiveButton("Yes",
-            DialogInterface.OnClickListener { dialog, which ->
-                val intent = Intent()
-                intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-                intent.data = Uri.parse("package:$packageName")
-                startActivity(intent)
-            })
-        builder.setNegativeButton("No",
-            { dialog, which -> dialog.dismiss() })
-        builder.show()
-    }
+//    private fun promptForBatteryOptimization() {
+//        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+//        builder.setTitle("Battery Optimization")
+//        builder.setMessage("이 앱은 올바르게 작동하기 위해 배터리 최적화에서 제외되어야 합니다. 이 앱을 배터리 최적화에서 제외하시겠습니까?")
+//        builder.setPositiveButton("Yes",
+//            DialogInterface.OnClickListener { dialog, which ->
+//                val intent = Intent()
+//                intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+//                intent.data = Uri.parse("package:$packageName")
+//                startActivity(intent)
+//            })
+//        builder.setNegativeButton("No",
+//            { dialog, which -> dialog.dismiss() })
+//        builder.show()
+//    }
 
-    private fun requestBatteryOptimizationException() {
-        val packageName = packageName
-        val pm = getSystemService(POWER_SERVICE) as PowerManager
-        if (pm.isIgnoringBatteryOptimizations(packageName)) {
-
-        } else {
-            promptForBatteryOptimization()
-        }
-    }
+//    private fun requestBatteryOptimizationException() {
+//        val packageName = packageName
+//        val pm = getSystemService(POWER_SERVICE) as PowerManager
+//        if (pm.isIgnoringBatteryOptimizations(packageName)) {
+//
+//        } else {
+//            promptForBatteryOptimization()
+//        }
+//    }
 
     override fun onResume() {
         super.onResume()
@@ -100,9 +100,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            requestBatteryOptimizationException()
-        }
+//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+//            requestBatteryOptimizationException()
+//        }
 
 
         setPieChart()

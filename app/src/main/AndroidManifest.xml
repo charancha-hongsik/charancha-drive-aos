@@ -10,32 +10,24 @@
 
     <!-- API 버전 28 이하 -->
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
+    <!-- API 버전 28 (OS 9) 이상 -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
 
 
     <!-- Runtime Permission -->
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-
-
-    <!-- API 버전 28 이상 -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <!-- API 버전 29 이상 -->
+    <!-- API 버전 29 (OS 10) 이상 -->
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
-    <!-- API 버전 32  이상 -->
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-    <!-- API 버전 33  이상 -->
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <!-- API 버전 34 이상-->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
-
-    <!-- API 버전 29 이상 -->
+    <!-- API 버전 29 (OS 10) 이상 -->
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <!-- API 버전 32 (OS 12)  이상 -->
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <!-- API 버전 33 (OS 13)  이상 -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
 
-    <!-- TEST Permissions -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 
     <application

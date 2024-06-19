@@ -24,6 +24,7 @@ class PermissionInfoActivity: AppCompatActivity(){
     fun setListener(){
         layoutPermissionInfoConfirm.setOnClickListener {
             startActivity(Intent(this@PermissionInfoActivity, PermissionActivity::class.java))
+            finish()
         }
     }
 }
