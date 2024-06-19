@@ -1,6 +1,7 @@
 package com.charancha.drive.activity
 
 import android.content.Intent
+import android.content.pm.PermissionInfo
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Spannable
@@ -72,7 +73,7 @@ class TermsOfUseActivity: AppCompatActivity() {
         }
 
         btnNext.setOnClickListener {
-            startActivity(Intent(this, PermissionActivity::class.java))
+            startActivity(Intent(this, PermissionInfoActivity::class.java))
             finish()
         }
 

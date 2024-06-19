@@ -3,6 +3,7 @@ package com.charancha.drive.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.credentials.CredentialManager
@@ -96,6 +97,7 @@ class LoginActivity: AppCompatActivity() {
                             // authenticate on your server.
                             val googleIdTokenCredential = GoogleIdTokenCredential
                                 .createFrom(credential.data)
+
 
                             val gson = Gson()
                             val jsonParam = gson.toJson(SignUpRequest(googleIdTokenCredential.idToken, "string", "GOOGLE","string"))

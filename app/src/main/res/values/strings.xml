@@ -48,5 +48,16 @@
     <string name="terms_title4">마케팅 정보 수신동의 (선택)</string>
     <string name="terms_title4_gray">(선택)</string>
 
+    <string name="permission_info_text1">편리한 마일로그앱 사용을 위해\n아래의 권한을 허용해주세요</string>
+    <string name="permission_info_force_update">필수 접근 권한</string>
+    <string name="location_info">위치 정보</string>
+    <string name="location_info_contents">앱이 종료되었거나 사용 중이 아닐 때도 위치 데이터를 수집하여 주행 기록 기능을 지원해요.</string>
+    <string name="useractivity_info">동작 및 피트니스</string>
+    <string name="useractivity_info_contents">주행 시작과 종료를 확인하기 위해 동작 및 피트니스 활동 권한 설정이 필요해요.</string>
+    <string name="permission_info_choice_update">선택 접근 권한</string>
+    <string name="bluetooth_info">블루투스</string>
+    <string name="bluetooth_info_contents">정확한 주행 데이터를 쌓기 위해 블루투스 권한이 필요해요.</string>
+    <string name="alarm_info">알림</string>
+    <string name="alarm_info_contents">앱의 알림을 받기 위해 알림 설정이 필요해요.</string>
 
 </resources>

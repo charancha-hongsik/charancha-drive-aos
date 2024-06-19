@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.PermissionInfoActivity">
+
+    <ImageView
+        android:layout_width="66dp"
+        android:layout_height="20dp"
+        android:src="@drawable/logo_white"
+        android:layout_marginTop="46dp"
+        android:layout_marginLeft="20dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_permission_info_text1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/ST1B"
+        android:text="@string/permission_info_text1"
+        android:layout_marginTop="81dp"
+        android:layout_marginLeft="20dp"
+        android:textFontWeight="700"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <View
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@color/gray_950"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_permission_info_text1"/>
+
+    <TextView
+        android:id="@+id/tv_forceupdate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/C1SB"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="24dp"
+        android:textFontWeight="600"
+        android:text="@string/permission_info_force_update"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/line"/>
+
+    <ImageView
+        android:id="@+id/iv_locationinfo"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="20dp"
+        android:src="@drawable/ic_location"
+        android:text="@string/permission_info_force_update"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_forceupdate"/>
+
+    <TextView
+        android:id="@+id/tv_locationinfo"
+        android:layout_width="wrap_content"
+        android:layout_height="18dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="20dp"
+        android:textAppearance="@style/C1SB"
+        android:textFontWeight="600"
+        android:text="@string/location_info"
+        app:layout_constraintLeft_toRightOf="@+id/iv_locationinfo"
+        app:layout_constraintTop_toBottomOf="@+id/tv_forceupdate"/>
+
+    <TextView
+        android:id="@+id/tv_locationcontents"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:textAppearance="@style/C1R"
+        android:textFontWeight="400"
+        android:text="@string/location_info_contents"
+        app:layout_constraintLeft_toRightOf="@+id/iv_locationinfo"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_locationinfo"/>
+
+    <ImageView
+        android:id="@+id/iv_useractivity"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="20dp"
+        android:src="@drawable/ic_heart"
+        android:text="@string/permission_info_force_update"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_locationcontents"/>
+
+    <TextView
+        android:id="@+id/tv_useractivity"
+        android:layout_width="wrap_content"
+        android:layout_height="18dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="20dp"
+        android:textAppearance="@style/C1SB"
+        android:textFontWeight="600"
+        android:text="@string/useractivity_info"
+        app:layout_constraintLeft_toRightOf="@+id/iv_useractivity"
+        app:layout_constraintTop_toBottomOf="@+id/tv_locationcontents"/>
+
+    <TextView
+        android:id="@+id/tv_useractivitycontents"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:textAppearance="@style/C1R"
+        android:textFontWeight="400"
+        android:text="@string/useractivity_info_contents"
+        app:layout_constraintLeft_toRightOf="@+id/iv_useractivity"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_useractivity"/>
+
+    <View
+        android:id="@+id/line2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@color/gray_200"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_useractivitycontents"/>
+
+    <TextView
+        android:id="@+id/tv_choice_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/C1SB"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="24dp"
+        android:textFontWeight="600"
+        android:text="@string/permission_info_choice_update"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/line2"/>
+
+    <ImageView
+        android:id="@+id/iv_bluetoothinfo"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="20dp"
+        android:src="@drawable/ic_bluetooth"
+        android:text="@string/permission_info_force_update"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_choice_info"/>
+
+    <TextView
+        android:id="@+id/tv_bluetoothinfo"
+        android:layout_width="wrap_content"
+        android:layout_height="18dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="20dp"
+        android:textAppearance="@style/C1SB"
+        android:textFontWeight="600"
+        android:text="@string/bluetooth_info"
+        app:layout_constraintLeft_toRightOf="@+id/iv_bluetoothinfo"
+        app:layout_constraintTop_toBottomOf="@+id/tv_choice_info"/>
+
+    <TextView
+        android:id="@+id/tv_bluetoothcontents"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:textAppearance="@style/C1R"
+        android:textFontWeight="400"
+        android:text="@string/bluetooth_info_contents"
+        app:layout_constraintLeft_toRightOf="@+id/iv_bluetoothinfo"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_bluetoothinfo"/>
+
+    <ImageView
+        android:id="@+id/iv_alarm"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="20dp"
+        android:src="@drawable/ic_alarm"
+        android:text="@string/permission_info_force_update"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_bluetoothcontents"/>
+
+    <TextView
+        android:id="@+id/tv_alarm"
+        android:layout_width="wrap_content"
+        android:layout_height="18dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="20dp"
+        android:textAppearance="@style/C1SB"
+        android:textFontWeight="600"
+        android:text="@string/alarm_info"
+        app:layout_constraintLeft_toRightOf="@+id/iv_alarm"
+        app:layout_constraintTop_toBottomOf="@+id/tv_bluetoothcontents"/>
+
+    <TextView
+        android:id="@+id/tv_alarmcontents"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:textAppearance="@style/C1R"
+        android:textFontWeight="400"
+        android:text="@string/alarm_info_contents"
+        app:layout_constraintLeft_toRightOf="@+id/iv_alarm"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_alarm"/>
+
+
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
