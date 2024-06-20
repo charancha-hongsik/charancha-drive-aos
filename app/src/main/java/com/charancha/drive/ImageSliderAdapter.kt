@@ -1,6 +1,5 @@
 package com.charancha.drive
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -18,10 +17,12 @@ class ImageSliderAdapter(var images: ArrayList<Int>) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = PagerViewHolder((parent))
 
-    override fun getItemCount(): Int = images.size
+    override fun getItemCount(): Int = Integer.MAX_VALUE
 
     override fun onBindViewHolder(holder: PagerViewHolder, position: Int) {
-        holder.item_onboarding_image.setImageResource(images[position])
-        holder.item_onboarding_image.scaleType = ScaleType.CENTER
+        val realPosition = position % images.size
+        holder.item_onboarding_image.setImageResource(images[realPosition])
+        holder.item_onboarding_image.scaleType = ScaleType.CENTER_INSIDE
+
     }
 }

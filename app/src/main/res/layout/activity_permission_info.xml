@@ -42,14 +42,16 @@
 
     <TextView
         android:id="@+id/tv_forceupdate"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="@style/C1SB"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="24dp"
         android:textFontWeight="600"
+        android:gravity="left"
         android:text="@string/permission_info_force_update"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/line"/>
 
     <ImageView
@@ -65,13 +67,15 @@
 
     <TextView
         android:id="@+id/tv_locationinfo"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="18dp"
         android:layout_marginTop="16dp"
         android:layout_marginLeft="20dp"
         android:textAppearance="@style/C1SB"
         android:textFontWeight="600"
         android:text="@string/location_info"
+        android:gravity="left"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/iv_locationinfo"
         app:layout_constraintTop_toBottomOf="@+id/tv_forceupdate"/>
 
@@ -102,13 +106,15 @@
 
     <TextView
         android:id="@+id/tv_useractivity"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="18dp"
         android:layout_marginTop="16dp"
         android:layout_marginLeft="20dp"
         android:textAppearance="@style/C1SB"
         android:textFontWeight="600"
         android:text="@string/useractivity_info"
+        android:gravity="left"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/iv_useractivity"
         app:layout_constraintTop_toBottomOf="@+id/tv_locationcontents"/>
 
@@ -163,13 +169,15 @@
 
     <TextView
         android:id="@+id/tv_bluetoothinfo"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="18dp"
         android:layout_marginTop="16dp"
         android:layout_marginLeft="20dp"
         android:textAppearance="@style/C1SB"
         android:textFontWeight="600"
         android:text="@string/bluetooth_info"
+        android:gravity="left"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/iv_bluetoothinfo"
         app:layout_constraintTop_toBottomOf="@+id/tv_choice_info"/>
 
@@ -200,13 +208,15 @@
 
     <TextView
         android:id="@+id/tv_alarm"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="18dp"
         android:layout_marginTop="16dp"
         android:layout_marginLeft="20dp"
         android:textAppearance="@style/C1SB"
         android:textFontWeight="600"
         android:text="@string/alarm_info"
+        android:gravity="left"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/iv_alarm"
         app:layout_constraintTop_toBottomOf="@+id/tv_bluetoothcontents"/>
 

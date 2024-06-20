@@ -30,11 +30,12 @@
 
     <TextView
         android:id="@+id/tv_terms1"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:text="@string/first_terms_text"
         android:textColor="@color/gray_950"
+        android:gravity="left"
         android:textAppearance="@style/T1SB"
         android:textFontWeight="600"
         android:layout_marginLeft="20dp"
@@ -55,13 +56,16 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_terms1">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
-            android:text="전체 동의"
+            android:text="@string/terms_all_accept"
             android:textAppearance="@style/ST2SB"
             android:textColor="@color/gray_950"
             android:textFontWeight="600"
+            android:paddingRight="10dp"
+            android:gravity="left"
+            app:layout_constraintRight_toLeftOf="@+id/ib_all_accept"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
@@ -83,6 +87,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_terms_title1"
         android:layout_width="match_parent"
+        android:gravity="left"
         android:layout_height="24dp"
         android:layout_marginLeft="36dp"
         android:layout_marginRight="36dp"
@@ -93,12 +98,13 @@
 
         <TextView
             android:id="@+id/tv_terms_title1"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/terms_title1"
             android:textFontWeight="400"
             android:textColor="@color/gray_600"
             android:textAppearance="@style/B2R"
+            app:layout_constraintRight_toLeftOf="@+id/ib_terms1"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
@@ -128,10 +134,12 @@
 
         <TextView
             android:id="@+id/tv_terms_title2"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/terms_title2"
             android:textFontWeight="400"
+            app:layout_constraintRight_toLeftOf="@+id/ib_terms2"
+            android:gravity="left"
             android:textColor="@color/gray_600"
             android:textAppearance="@style/B2R"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -164,10 +172,12 @@
 
         <TextView
             android:id="@+id/tv_terms_title3"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/terms_title3"
             android:textFontWeight="400"
+            android:gravity="left"
+            app:layout_constraintRight_toLeftOf="@+id/ib_terms3"
             android:textColor="@color/gray_600"
             android:textAppearance="@style/B2R"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -200,9 +210,11 @@
 
         <TextView
             android:id="@+id/tv_terms_title4"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/terms_title4"
+            android:gravity="left"
+            app:layout_constraintRight_toLeftOf="@+id/ib_terms4"
             android:textFontWeight="400"
             android:textAppearance="@style/B2R"
             android:textColor="@color/gray_600"
