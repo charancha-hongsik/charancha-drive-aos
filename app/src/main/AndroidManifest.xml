@@ -28,8 +28,6 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
 
-
-
     <application
         android:name=".MyApplication"
         android:allowBackup="false"
@@ -60,25 +58,32 @@
 
         <activity
             android:name=".activity.PermissionInfoActivity"
-            android:theme="@style/Theme.Charanchadrivelogin"
+            android:theme="@style/Theme.Charanchadrivegray50"
+            android:screenOrientation="portrait"
+            android:exported="true"/>
+
+        <activity
+            android:name=".activity.OnBoardingActivity"
+            android:theme="@style/Theme.Charanchadrivegray50"
             android:screenOrientation="portrait"
             android:exported="true"/>
 
         <activity
             android:name=".activity.LoginActivity"
-            android:theme="@style/Theme.Charanchadrivelogin"
+            android:theme="@style/Theme.Charanchadrivewhite100"
             android:screenOrientation="portrait"
             android:exported="true"/>
 
         <activity
             android:name=".activity.TermsOfUseActivity"
-            android:theme="@style/Theme.Charanchadrivelogin"
+            android:theme="@style/Theme.Charanchadrivewhite100"
             android:screenOrientation="portrait"
             android:exported="true"/>
 
 
         <activity
             android:name=".activity.PermissionActivity"
+            android:theme="@style/Theme.Charanchadrivegray50"
             android:screenOrientation="portrait"
             android:exported="true"/>
 

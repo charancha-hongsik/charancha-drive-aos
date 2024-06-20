@@ -39,7 +39,6 @@ class PermissionActivity: AppCompatActivity(){
             }
     }
 
-    private lateinit var tvPermission: TextView
     private lateinit var btnPermission: ConstraintLayout
     private lateinit var tvNext:TextView
     private lateinit var ivPermission: ImageView
@@ -66,46 +65,41 @@ class PermissionActivity: AppCompatActivity(){
 
     private fun setListener(){
         btnPermission.setOnClickListener {
-            if(tvNext.text.contains("시작하기")){
-                startActivity(Intent(this, MainActivity::class.java))
-                finish()
-            } else{
-                when(permissionNo){
-                    /**
-                     * OS 28 이상
-                     */
-                    PERMISSION_ACCESS_FINE_LOCATION -> {
-                        if(ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-                            checkPermission(mutableListOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION).toTypedArray(), PERMISSION_ACCESS_FINE_LOCATION)
-                        }else{
-                            setNextOfFineLocationPermission()
-                        }
+            when(permissionNo){
+                /**
+                 * OS 28 이상
+                 */
+                PERMISSION_ACCESS_FINE_LOCATION -> {
+                    if(ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+                        checkPermission(mutableListOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION).toTypedArray(), PERMISSION_ACCESS_FINE_LOCATION)
+                    }else{
+                        setNextOfFineLocationPermission()
                     }
+                }
 
-                    /**
-                     * OS 29 이상
-                     */
-                    PERMISSION_ACCESS_BACKGROUND_LOCATION -> {
-                        if(ContextCompat.checkSelfPermission(this, ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED){
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                checkPermission(mutableListOf(ACCESS_BACKGROUND_LOCATION).toTypedArray(), PERMISSION_ACCESS_BACKGROUND_LOCATION)
-                            }
-                        }else{
-                            setNextOfBackgroundLocationPermission()
+                /**
+                 * OS 29 이상
+                 */
+                PERMISSION_ACCESS_BACKGROUND_LOCATION -> {
+                    if(ContextCompat.checkSelfPermission(this, ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED){
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            checkPermission(mutableListOf(ACCESS_BACKGROUND_LOCATION).toTypedArray(), PERMISSION_ACCESS_BACKGROUND_LOCATION)
                         }
+                    }else{
+                        setNextOfBackgroundLocationPermission()
                     }
+                }
 
-                    /**
-                     * OS 29 이상
-                     */
-                    PERMISSION_ACTIVITY_RECOGNITION -> {
-                        if(ContextCompat.checkSelfPermission(this, ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED){
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                checkPermission(mutableListOf(ACTIVITY_RECOGNITION).toTypedArray(), PERMISSION_ACTIVITY_RECOGNITION)
-                            }
-                        }else{
-                            setNextOfActivityRecognition()
+                /**
+                 * OS 29 이상
+                 */
+                PERMISSION_ACTIVITY_RECOGNITION -> {
+                    if(ContextCompat.checkSelfPermission(this, ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED){
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            checkPermission(mutableListOf(ACTIVITY_RECOGNITION).toTypedArray(), PERMISSION_ACTIVITY_RECOGNITION)
                         }
+                    }else{
+                        setNextOfActivityRecognition()
                     }
                 }
             }
@@ -144,7 +138,7 @@ class PermissionActivity: AppCompatActivity(){
     }
 
     private fun goToOnboardingActivity(){
-        startActivity(Intent(this, MainActivity::class.java))
+        startActivity(Intent(this, OnBoardingActivity::class.java))
         finish()
     }
 

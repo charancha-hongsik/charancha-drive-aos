@@ -47,9 +47,14 @@
     <string name="terms_title3_gray">(필수)</string>
     <string name="terms_title4">마케팅 정보 수신동의 (선택)</string>
     <string name="terms_title4_gray">(선택)</string>
+    <string name="next">다음</string>
 
     <string name="permission_info_text1">편리한 마일로그앱 사용을 위해\n아래의 권한을 허용해주세요</string>
     <string name="permission_info_force_update">필수 접근 권한</string>
+    <string name="permission_info_title1">나만의 주행 스타일</string>
+    <string name="permission_info_contents1">주행 분석에만 사용되니 안심하세요!\n반드시 필요한 접근 권한이에요:)</string>
+
+
     <string name="location_info">위치 정보</string>
     <string name="location_info_contents">앱이 종료되었거나 사용 중이 아닐 때도 위치 데이터를 수집하여 주행 기록 기능을 지원해요.</string>
     <string name="useractivity_info">동작 및 피트니스</string>
@@ -59,5 +64,16 @@
     <string name="bluetooth_info_contents">정확한 주행 데이터를 쌓기 위해 블루투스 권한이 필요해요.</string>
     <string name="alarm_info">알림</string>
     <string name="alarm_info_contents">앱의 알림을 받기 위해 알림 설정이 필요해요.</string>
+
+    <string name="register_car">내 차 등록하기</string>
+    <string name="onboarding_title1">내 차 관리\n잘하고 있을까?</string>
+    <string name="onboarding_title2">내 차\n한눈에 보기</string>
+    <string name="onboarding_title3">내 운전습관\n괜찮을까?</string>
+    <string name="onboarding_contents1">주행 기록을 통해\n관리 점수를 확인해 보세요!</string>
+    <string name="onboarding_contents2">엔진・타이어・브레이크를\n체계적으로 관리하세요!</string>
+    <string name="onboarding_contents3">상세한 주행 지표로\n나의 운전 습관을 점검해 보세요!</string>
+
+
+
 
 </resources>

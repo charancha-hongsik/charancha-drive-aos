@@ -55,19 +55,19 @@ class LoginActivity: AppCompatActivity() {
         constraintLayout = findViewById(R.id.layout_google_login)
         constraintLayout.setOnClickListener {
 
-//            startActivity(Intent(this, PermissionActivity::class.java))
-//            finish()
+            startActivity(Intent(this@LoginActivity, TermsOfUseActivity::class.java))
+            finish()
 
-            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("181313354113-e6ilqvbn5nsgeaobtdip5utv3pi9pvoq.apps.googleusercontent.com")
-                .requestEmail()
-                .build()
-
-            val mGoogleSignInClient = this.let { GoogleSignIn.getClient(it, gso) }
-
-            mGoogleSignInClient.signOut()
-            val signInIntent = mGoogleSignInClient.signInIntent
-            resultLauncher.launch(signInIntent)
+//            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                .requestIdToken("181313354113-e6ilqvbn5nsgeaobtdip5utv3pi9pvoq.apps.googleusercontent.com")
+//                .requestEmail()
+//                .build()
+//
+//            val mGoogleSignInClient = this.let { GoogleSignIn.getClient(it, gso) }
+//
+//            mGoogleSignInClient.signOut()
+//            val signInIntent = mGoogleSignInClient.signInIntent
+//            resultLauncher.launch(signInIntent)
 
         }
     }
