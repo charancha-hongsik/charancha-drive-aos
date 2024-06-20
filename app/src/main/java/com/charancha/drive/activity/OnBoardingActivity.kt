@@ -51,6 +51,8 @@ class OnBoardingActivity: AppCompatActivity() {
         viewpagerOnbaording.adapter = ImageSliderAdapter(getImages())
         viewpagerOnbaording.orientation = ViewPager2.ORIENTATION_HORIZONTAL
 
+        viewpagerOnbaording.isUserInputEnabled = false
+
         viewpagerOnbaording.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
                 // Called when the scroll state changes (starting, stopping, or changing position)
