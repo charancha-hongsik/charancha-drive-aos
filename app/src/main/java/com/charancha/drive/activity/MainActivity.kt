@@ -197,9 +197,7 @@ class MainActivity : AppCompatActivity() {
                 mutableListOf(
                     ACCESS_FINE_LOCATION,
                     ACCESS_COARSE_LOCATION,
-                    ACTIVITY_RECOGNITION,
-                    BLUETOOTH_CONNECT,
-                    POST_NOTIFICATIONS
+                    ACTIVITY_RECOGNITION
                 ).apply {
 
                 }.toTypedArray()
@@ -207,8 +205,7 @@ class MainActivity : AppCompatActivity() {
                 mutableListOf(
                     ACCESS_FINE_LOCATION,
                     ACCESS_COARSE_LOCATION,
-                    ACTIVITY_RECOGNITION,
-                    BLUETOOTH_CONNECT
+                    ACTIVITY_RECOGNITION
                 ).apply {
 
                 }.toTypedArray()
