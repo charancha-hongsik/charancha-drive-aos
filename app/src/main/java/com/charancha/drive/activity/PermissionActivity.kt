@@ -57,9 +57,12 @@ class PermissionActivity: AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_permission)
 
-        Log.d("testestsetestest","testestesset shouldShowRequestPermissionRationale:: " + ActivityCompat.shouldShowRequestPermissionRationale(this, ACCESS_FINE_LOCATION))
 
-        init()
+        if(PreferenceUtil.getBooleanPref(this, PreferenceUtil.PERMISSION_ALL_CHECKED, false)){
+            goToOnboardingActivity()
+        } else{
+            init()
+        }
     }
 
     private fun init(){

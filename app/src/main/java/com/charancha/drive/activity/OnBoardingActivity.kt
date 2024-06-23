@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.charancha.drive.CustomSpeedLinearSmoothScroller
 import com.charancha.drive.ImageSliderAdapter
+import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
 
 class OnBoardingActivity: AppCompatActivity() {
@@ -29,6 +30,8 @@ class OnBoardingActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_onboarding)
+
+        PreferenceUtil.putBooleanPref(this@OnBoardingActivity, PreferenceUtil.PERMISSION_ALL_CHECKED, true)
 
         setResources()
         setTimer()
