@@ -941,19 +941,13 @@ class BluetoothService : Service() {
                     maxDistance = mutableListOf()
                     pastMaxDistance = mutableListOf()
 
-                    makeSpeedInfo()
-                    makeAccelerationInfo()
-                    makePathLocationInfo()
-                    makeDistanceBetween()
-                    makeAltitudeFromGpsInfo()
-
-                    fusedLocationClient?.removeLocationUpdates(locationCallback)
-                    fusedLocationClient = null
-
-                    if(maxDistance.size > 0 && maxDistance.sum() > 0f){
+                    if(distance_array.sum() > 0f){
                         writeToRoom()
                         callApi()
                     }
+
+                    fusedLocationClient?.removeLocationUpdates(locationCallback)
+                    fusedLocationClient = null
                 }
             }
         }catch (e:Exception){
@@ -962,7 +956,6 @@ class BluetoothService : Service() {
 
     fun stopSensor(){
         try {
-
             if (sensorState) {
                 sensorState = false
                 firstLineState = false
@@ -971,13 +964,7 @@ class BluetoothService : Service() {
                 maxDistance = mutableListOf()
                 pastMaxDistance = mutableListOf()
 
-                makeSpeedInfo()
-                makeAccelerationInfo()
-                makePathLocationInfo()
-                makeDistanceBetween()
-                makeAltitudeFromGpsInfo()
-
-                if(maxDistance.size > 0 && maxDistance.sum() > 0f){
+                if(distance_array.sum() > 0f){
                     writeToRoom()
                     callApi()
                 }
@@ -1002,12 +989,6 @@ class BluetoothService : Service() {
                 pastMaxDistance = mutableListOf()
 
                 (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중.. NotSave" + getCurrent()).build())
-
-                makeSpeedInfo()
-                makeAccelerationInfo()
-                makePathLocationInfo()
-                makeDistanceBetween()
-                makeAltitudeFromGpsInfo()
 
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
@@ -1404,12 +1385,6 @@ class BluetoothService : Service() {
             accelerationInfo + getCurrent() + "," + ((location.speed*MS_TO_KH) - (pastSpeed*MS_TO_KH)) + "\n"
     }
 
-    private fun makeSpeedInfo() {
-    }
-
-    private fun makeAccelerationInfo() {
-    }
-
     /**
      * pathLocationInfoFromGps
      */
@@ -1431,18 +1406,10 @@ class BluetoothService : Service() {
         }
     }
 
-    private fun makePathLocationInfo() {
-    }
-
-    private fun makeDistanceBetween(){
-    }
 
     private fun getAltitude(location: Location) {
         altitudeInfoFromGps =
             altitudeInfoFromGps + getCurrent() + "," + location.altitude + "\n"
-    }
-
-    private fun makeAltitudeFromGpsInfo() {
     }
 
     fun writeToRoom(){
