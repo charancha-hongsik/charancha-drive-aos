@@ -322,8 +322,8 @@ class MainActivity : AppCompatActivity() {
         chart = findViewById(R.id.chart1)
 
         val entries: ArrayList<PieEntry> = ArrayList()
-        entries.add(PieEntry(70f, ""))
-        entries.add(PieEntry(30f, ""))
+        entries.add(PieEntry(50f, ""))
+        entries.add(PieEntry(50f, ""))
 
         val dataSet = PieDataSet(entries, "")
         dataSet.setColors(ContextCompat.getColor(this, R.color.gray_900), ContextCompat.getColor(this, R.color.gray_50))
