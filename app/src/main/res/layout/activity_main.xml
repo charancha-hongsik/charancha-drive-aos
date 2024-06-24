@@ -163,7 +163,7 @@
                         android:id="@+id/tv_average_score"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="420"
+                        android:text="0"
                         android:textColor="@color/gray_950"
                         android:textFontWeight="600"
                         android:textAppearance="@style/H1SB"

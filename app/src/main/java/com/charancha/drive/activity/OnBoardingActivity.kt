@@ -1,22 +1,23 @@
 package com.charancha.drive.activity
 
 import android.content.Intent
-import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
+import android.content.Intent.*
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.content.IntentCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.charancha.drive.CustomSpeedLinearSmoothScroller
 import com.charancha.drive.ImageSliderAdapter
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
+
 
 class OnBoardingActivity: AppCompatActivity() {
     lateinit var viewpagerOnbaording: ViewPager2
@@ -46,7 +47,7 @@ class OnBoardingActivity: AppCompatActivity() {
 
         layoutNext = findViewById(R.id.layout_next)
         layoutNext.setOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java).addFlags(FLAG_ACTIVITY_CLEAR_TOP))
+            startActivity(Intent(this, MainActivity::class.java).addFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK))
             finish()
         }
 
@@ -99,7 +100,8 @@ class OnBoardingActivity: AppCompatActivity() {
         return arrayListOf(
             R.drawable.onboarding1,
             R.drawable.onboarding2,
-            R.drawable.onboarding3,)
+            R.drawable.onboarding3,
+        )
     }
 
     private fun setTimer() {
