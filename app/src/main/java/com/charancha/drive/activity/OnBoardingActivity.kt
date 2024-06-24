@@ -1,6 +1,7 @@
 package com.charancha.drive.activity
 
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -45,7 +46,7 @@ class OnBoardingActivity: AppCompatActivity() {
 
         layoutNext = findViewById(R.id.layout_next)
         layoutNext.setOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java))
+            startActivity(Intent(this, MainActivity::class.java).addFlags(FLAG_ACTIVITY_CLEAR_TOP))
             finish()
         }
 

@@ -950,8 +950,10 @@ class BluetoothService : Service() {
                     fusedLocationClient?.removeLocationUpdates(locationCallback)
                     fusedLocationClient = null
 
-                    writeToRoom()
-                    callApi()
+                    if(maxDistance.size > 0 && maxDistance.sum() > 0f){
+                        writeToRoom()
+                        callApi()
+                    }
                 }
             }
         }catch (e:Exception){
@@ -975,8 +977,10 @@ class BluetoothService : Service() {
                 makeDistanceBetween()
                 makeAltitudeFromGpsInfo()
 
-                writeToRoom()
-                callApi()
+                if(maxDistance.size > 0 && maxDistance.sum() > 0f){
+                    writeToRoom()
+                    callApi()
+                }
 
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null

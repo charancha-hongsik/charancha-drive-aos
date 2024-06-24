@@ -172,46 +172,50 @@ class MainActivity : AppCompatActivity() {
         }
         builder.setNegativeButton("취소") { dialog, which ->
             dialog.dismiss()
-            if(ContextCompat.checkSelfPermission(this, ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED){
-                checkUserActivity()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                if(ContextCompat.checkSelfPermission(this, ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED){
+                    checkUserActivity()
+                }
             }
         }
         builder.show()
     }
 
     fun checkUserActivity(){
-        if(ContextCompat.checkSelfPermission(this, ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED){
-            val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-            builder.setTitle("동작 및 피트니스")
-            builder.setMessage("동작 및 피트니스 서비스를 사용할 수 없습니다. 기기의 ‘설정 > 개인정보 보호'에서 동작 및 피트니스 서비스를 켜주세요 (필수 권한)")
-            builder.setPositiveButton("설정으로 이동"
-            ) { _, _ ->
-                val openSettingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                    val uri: Uri = Uri.fromParts("package", packageName, null)
-                    data = uri
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if(ContextCompat.checkSelfPermission(this, ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED){
+                val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+                builder.setTitle("동작 및 피트니스")
+                builder.setMessage("동작 및 피트니스 서비스를 사용할 수 없습니다. 기기의 ‘설정 > 개인정보 보호'에서 동작 및 피트니스 서비스를 켜주세요 (필수 권한)")
+                builder.setPositiveButton("설정으로 이동"
+                ) { _, _ ->
+                    val openSettingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                        val uri: Uri = Uri.fromParts("package", packageName, null)
+                        data = uri
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    }
+                    startActivity(openSettingsIntent)
                 }
-                startActivity(openSettingsIntent)
-            }
-            builder.setNegativeButton("취소") { dialog, which ->
-                dialog.dismiss()
+                builder.setNegativeButton("취소") { dialog, which ->
+                    dialog.dismiss()
 
-                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                    checkPermission(mutableListOf(
-                        BLUETOOTH_CONNECT,
-                        POST_NOTIFICATIONS
-                    ).apply {
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                        checkPermission(mutableListOf(
+                            BLUETOOTH_CONNECT,
+                            POST_NOTIFICATIONS
+                        ).apply {
 
-                    }.toTypedArray(),0)
-                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    checkPermission(mutableListOf(
-                        BLUETOOTH_CONNECT
-                    ).apply {
+                        }.toTypedArray(),0)
+                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        checkPermission(mutableListOf(
+                            BLUETOOTH_CONNECT
+                        ).apply {
 
-                    }.toTypedArray(),0)
+                        }.toTypedArray(),0)
+                    }
                 }
+                builder.show()
             }
-            builder.show()
         }
     }
 

@@ -30,55 +30,56 @@ class SplashActivity: AppCompatActivity() {
                 startActivity(Intent(this, LoginActivity::class.java))
                 finish()
             }else{
-
-                PreferenceUtil.getPref(this@SplashActivity, PreferenceUtil.REFRESH_TOKEN, "")
-                    ?.let {
-                        val gson = Gson()
-
-                        apiService().postReissue(it).enqueue(object :
-                            Callback<ResponseBody> {
-                            override fun onResponse(
-                                call: Call<ResponseBody>,
-                                response: Response<ResponseBody>
-                            ) {
-                                if(response.code() == 201){
-                                    val signInResponse = gson.fromJson(response.body()?.string(), SignInResponse::class.java)
-
-                                    PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.ACCESS_TOKEN, signInResponse.access_token)
-                                    PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.REFRESH_TOKEN, signInResponse.refresh_token)
-                                    PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.EXPIRES_IN, signInResponse.expires_in)
-                                    PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.REFRESH_EXPIRES_IN, signInResponse.refresh_expires_in)
-                                    PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.TOKEN_TYPE, signInResponse.token_type)
-
-                                    startActivity(Intent(this@SplashActivity, TermsOfUseActivity::class.java))
-                                    finish()
-                                }else{
-                                    PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.ACCESS_TOKEN, "")
-                                    PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.REFRESH_TOKEN, "")
-                                    PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.EXPIRES_IN, "")
-                                    PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.REFRESH_EXPIRES_IN, "")
-                                    PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.TOKEN_TYPE, "")
-
-                                    startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
-                                    finish()
-                                }
-                            }
-
-                            override fun onFailure(
-                                call: Call<ResponseBody>,
-                                t: Throwable
-                            ) {
-                                startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
-                                finish()
-                            }
-
-                        })
-
-
-                    }?: run{
-                    startActivity(Intent(this, LoginActivity::class.java))
-                    finish()
-                }
+                startActivity(Intent(this, LoginActivity::class.java))
+                finish()
+//                PreferenceUtil.getPref(this@SplashActivity, PreferenceUtil.REFRESH_TOKEN, "")
+//                    ?.let {
+//                        val gson = Gson()
+//
+//                        apiService().postReissue(it).enqueue(object :
+//                            Callback<ResponseBody> {
+//                            override fun onResponse(
+//                                call: Call<ResponseBody>,
+//                                response: Response<ResponseBody>
+//                            ) {
+//                                if(response.code() == 201){
+//                                    val signInResponse = gson.fromJson(response.body()?.string(), SignInResponse::class.java)
+//
+//                                    PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.ACCESS_TOKEN, signInResponse.access_token)
+//                                    PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.REFRESH_TOKEN, signInResponse.refresh_token)
+//                                    PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.EXPIRES_IN, signInResponse.expires_in)
+//                                    PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.REFRESH_EXPIRES_IN, signInResponse.refresh_expires_in)
+//                                    PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.TOKEN_TYPE, signInResponse.token_type)
+//
+//                                    startActivity(Intent(this@SplashActivity, TermsOfUseActivity::class.java))
+//                                    finish()
+//                                }else{
+//                                    PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.ACCESS_TOKEN, "")
+//                                    PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.REFRESH_TOKEN, "")
+//                                    PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.EXPIRES_IN, "")
+//                                    PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.REFRESH_EXPIRES_IN, "")
+//                                    PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.TOKEN_TYPE, "")
+//
+//                                    startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
+//                                    finish()
+//                                }
+//                            }
+//
+//                            override fun onFailure(
+//                                call: Call<ResponseBody>,
+//                                t: Throwable
+//                            ) {
+//                                startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
+//                                finish()
+//                            }
+//
+//                        })
+//
+//
+//                    }?: run{
+//                    startActivity(Intent(this, LoginActivity::class.java))
+//                    finish()
+//                }
             }
         }, 2000) // 2000 밀리초 (2초)
     }
