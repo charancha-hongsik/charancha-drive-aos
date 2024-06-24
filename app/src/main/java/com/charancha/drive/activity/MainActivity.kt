@@ -447,7 +447,7 @@ class MainActivity : AppCompatActivity() {
         entries.add(Entry(15f, 9f))
 
         val dataSet = LineDataSet(entries, "")
-        dataSet.color = ContextCompat.getColor(this, R.color.sec_500)
+        dataSet.color = ContextCompat.getColor(this, R.color.gray_400)
         dataSet.lineWidth = 1f
         dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER // 베지어 곡선 활성화
 
@@ -533,7 +533,7 @@ class MainActivity : AppCompatActivity() {
 
 
         val dataSet = LineDataSet(entries, "")
-        dataSet.color = ContextCompat.getColor(this, R.color.gray_950)
+        dataSet.color = ContextCompat.getColor(this, R.color.gray_400)
         dataSet.lineWidth = 1f
         dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER // 베지어 곡선 활성화
 
