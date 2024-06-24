@@ -214,13 +214,15 @@
 
                 <TextView
                     android:id="@+id/tv_past_30_days"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="지난 30일간"
                     android:textColor="@color/gray_950"
                     android:textFontWeight="400"
                     android:textAppearance="@style/C1R"
+                    android:gravity="left"
                     app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/layout_summary"/>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -394,14 +396,13 @@
 
                     <TextView
                         android:id="@+id/tv_score_unit"
-                        android:layout_width="0dp"
+                        android:layout_width="22dp"
                         android:layout_height="14dp"
                         android:text="@string/score"
-                        android:gravity="center"
+                        android:gravity="center_vertical"
                         android:textFontWeight="400"
                         android:textAppearance="@style/C2R"
                         android:textColor="@color/gray_950"
-                        android:layout_marginEnd="8dp"
                         app:layout_constraintRight_toLeftOf="@+id/iv_arrow"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintTop_toTopOf="parent"/>
@@ -413,8 +414,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/arrow"
-                        android:layout_marginRight="16dp"
-                        android:padding="0dp"
+                        android:layout_marginRight="18dp"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintTop_toTopOf="parent"/>
@@ -456,12 +456,14 @@
 
                 <TextView
                     android:id="@+id/tv_recent_driving_score"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="@string/recent_driving_score"
                     android:textFontWeight="500"
                     android:textAppearance="@style/B2M"
                     android:textColor="@color/gray_950"
+                    android:gravity="left"
+                    app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent" />
 
@@ -486,7 +488,7 @@
                         app:layout_constraintLeft_toLeftOf="parent" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="30dp"
                         android:layout_height="wrap_content"
                         android:text="@string/score"
                         android:textAppearance="@style/B1R"
@@ -511,15 +513,20 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/layout_score"/>
 
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/resource_face_crying"
+                    app:layout_constraintLeft_toRightOf="@+id/tv_recent_info_text"
+                    app:layout_constraintTop_toBottomOf="@+id/layout_score" />
+
                 <TextView
                     android:id="@+id/btn_recent"
                     android:text="@string/recent_driving"
-                    android:layout_width="wrap_content"
+                    android:layout_width="69dp"
                     android:layout_height="28dp"
                     android:layout_marginTop="32dp"
                     android:gravity="center"
-                    android:paddingRight="10dp"
-                    android:paddingLeft="10dp"
                     android:paddingBottom="5dp"
                     android:paddingTop="5dp"
                     android:textColor="@color/white_op_95"
@@ -533,13 +540,11 @@
                 <TextView
                     android:id="@+id/btn_one_month"
                     android:text="@string/one_month"
-                    android:layout_width="wrap_content"
+                    android:layout_width="49dp"
                     android:layout_height="28dp"
                     android:layout_marginTop="32dp"
                     android:gravity="center"
                     android:layout_marginLeft="6dp"
-                    android:paddingRight="10dp"
-                    android:paddingLeft="10dp"
                     android:paddingBottom="5dp"
                     android:paddingTop="5dp"
                     android:textColor="@color/recent_score"
@@ -553,13 +558,11 @@
                 <TextView
                     android:id="@+id/btn_six_month"
                     android:text="@string/six_months"
-                    android:layout_width="wrap_content"
+                    android:layout_width="51dp"
                     android:layout_height="28dp"
                     android:layout_marginTop="32dp"
                     android:gravity="center"
                     android:layout_marginLeft="6dp"
-                    android:paddingRight="10dp"
-                    android:paddingLeft="10dp"
                     android:paddingBottom="5dp"
                     android:paddingTop="5dp"
                     android:textColor="@color/recent_score"
@@ -573,13 +576,11 @@
                 <TextView
                     android:id="@+id/btn_one_year"
                     android:text="@string/one_year"
-                    android:layout_width="wrap_content"
+                    android:layout_width="37dp"
                     android:layout_height="28dp"
                     android:layout_marginTop="32dp"
                     android:gravity="center"
                     android:layout_marginLeft="6dp"
-                    android:paddingRight="10dp"
-                    android:paddingLeft="10dp"
                     android:paddingBottom="5dp"
                     android:paddingTop="5dp"
                     android:textColor="@color/recent_score"
@@ -693,9 +694,8 @@
 
                     <TextView
                         android:id="@+id/tv_brake_score"
-                        android:layout_width="0dp"
+                        android:layout_width="79dp"
                         android:layout_height="28dp"
-                        android:layout_marginRight="16dp"
                         android:text="곧 만나요!"
                         android:textColor="@color/gray_600"
                         android:textFontWeight="600"
@@ -708,10 +708,9 @@
 
                     <TextView
                         android:id="@+id/tv_brake_score2"
-                        android:layout_width="wrap_content"
+                        android:layout_width="86dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:layout_marginRight="16dp"
                         android:textAppearance="@style/C2R"
                         android:text="하반기 오픈예정"
                         android:gravity="center_vertical"
@@ -727,11 +726,12 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layout_brakes"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="64dp"
                     android:layout_marginTop="8dp"
                     android:background="@drawable/radius6_white950_dash"
                     app:layout_constraintTop_toBottomOf="@+id/layout_tire"
+                    app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent">
 
                     <TextView
@@ -762,9 +762,8 @@
 
                     <TextView
                         android:id="@+id/tv_tire_score"
-                        android:layout_width="0dp"
+                        android:layout_width="79dp"
                         android:layout_height="28dp"
-                        android:layout_marginRight="16dp"
                         android:text="곧 만나요!"
                         android:textColor="@color/gray_600"
                         android:textFontWeight="600"
@@ -777,10 +776,9 @@
 
                     <TextView
                         android:id="@+id/tv_tire_score2"
-                        android:layout_width="wrap_content"
+                        android:layout_width="86dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:layout_marginRight="16dp"
                         android:textAppearance="@style/C2R"
                         android:text="하반기 오픈예정"
                         android:gravity="center_vertical"
