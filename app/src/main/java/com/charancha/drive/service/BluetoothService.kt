@@ -833,8 +833,6 @@ class BluetoothService : Service() {
                         val activityType = event.activityType
                         val transitionType = event.transitionType
 
-                        refreshNotiText(activityType.toString())
-
                         if(activityType == DetectedActivity.WALKING) {
                             if (transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
                                 // Walking 활동에 들어감
@@ -1139,9 +1137,6 @@ class BluetoothService : Service() {
         locationCallback2 = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 val location: Location = locationResult.lastLocation
-
-                Log.d("testsetsetset","teststsets :: " + location.time)
-                refreshNotiText(location.time.toString())
 
                 if(location.speed*MS_TO_KH > 30f){
                     if(!sensorState){
