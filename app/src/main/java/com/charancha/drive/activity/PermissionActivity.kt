@@ -26,7 +26,6 @@ class PermissionActivity: AppCompatActivity(){
         private const val PERMISSION_ACCESS_BACKGROUND_LOCATION = 1001
         private const val PERMISSION_ACTIVITY_RECOGNITION = 1002
 
-
         private val REQUIRED_PERMISSIONS =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 mutableListOf (

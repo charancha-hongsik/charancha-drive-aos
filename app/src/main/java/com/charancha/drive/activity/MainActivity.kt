@@ -4,25 +4,22 @@ import android.Manifest.permission.*
 import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.PowerManager
 import android.provider.Settings
 import android.util.Log
 import android.view.View.*
 import android.widget.ImageButton
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.PreferenceUtil.HAVE_BEEN_HOME
 import com.charancha.drive.R
@@ -34,8 +31,6 @@ import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
-
-import kotlinx.coroutines.launch
 import java.util.*
 
 
@@ -55,6 +50,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var chart: PieChart
     lateinit var btn_edit:ImageButton
     var tv_car_name:TextView? = null
+
+    var checkingPermission = false
 
 //    private fun promptForBatteryOptimization() {
 //        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
@@ -93,6 +90,14 @@ class MainActivity : AppCompatActivity() {
 
         val callApiIntent = Intent(this, CallApiService::class.java)
         startForegroundService(callApiIntent)
+
+        if(checkingPermission){
+            if(ContextCompat.checkSelfPermission(this, ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED){
+                checkUserActivity()
+            }
+
+            checkingPermission = false
+        }
     }
 
 
@@ -110,14 +115,37 @@ class MainActivity : AppCompatActivity() {
         setLineChartForEngine(findViewById(R.id.chart_line_engine))
         setLineChartForTire(findViewById(R.id.chart_line_tire))
 
+        if(!PreferenceUtil.getBooleanPref(this, HAVE_BEEN_HOME, false)){
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                checkPermission(mutableListOf(
+                    BLUETOOTH_CONNECT,
+                    POST_NOTIFICATIONS
+                ).apply {
+
+                }.toTypedArray(),0)
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                checkPermission(mutableListOf(
+                    BLUETOOTH_CONNECT
+                ).apply {
+
+                }.toTypedArray(),0)
+            }
+        }else{
+            if(ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                checkLocation()
+            } else{
+                if(ContextCompat.checkSelfPermission(this, ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED){
+                    checkUserActivity()
+                }
+            }
+        }
 
         // 홈화면 진입 여부 체크
         PreferenceUtil.putBooleanPref(this, HAVE_BEEN_HOME, true)
 
         if(allPermissionsGranted()){
             setBtn()
-
-        } else{
+        }else{
 
         }
 
@@ -126,9 +154,68 @@ class MainActivity : AppCompatActivity() {
 //        lifecycleScope.launch {
 //            requestGoogleLogin(this@MainActivity)
 //        }
-
-
     }
+
+    fun checkLocation(){
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        builder.setTitle("위치 정보 권한")
+        builder.setMessage("위치 서비스를 사용할 수 없습니다. 기기의 ‘설정 > 개인정보 보호'에서 위치 서비스를 ‘항상'으로 켜주세요 (필수 권한)")
+        builder.setPositiveButton("설정으로 이동"
+        ) { _, _ ->
+            val openSettingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                val uri: Uri = Uri.fromParts("package", packageName, null)
+                data = uri
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            checkingPermission = true
+            startActivity(openSettingsIntent)
+        }
+        builder.setNegativeButton("취소") { dialog, which ->
+            dialog.dismiss()
+            if(ContextCompat.checkSelfPermission(this, ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED){
+                checkUserActivity()
+            }
+        }
+        builder.show()
+    }
+
+    fun checkUserActivity(){
+        if(ContextCompat.checkSelfPermission(this, ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED){
+            val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+            builder.setTitle("동작 및 피트니스")
+            builder.setMessage("동작 및 피트니스 서비스를 사용할 수 없습니다. 기기의 ‘설정 > 개인정보 보호'에서 동작 및 피트니스 서비스를 켜주세요 (필수 권한)")
+            builder.setPositiveButton("설정으로 이동"
+            ) { _, _ ->
+                val openSettingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    val uri: Uri = Uri.fromParts("package", packageName, null)
+                    data = uri
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                startActivity(openSettingsIntent)
+            }
+            builder.setNegativeButton("취소") { dialog, which ->
+                dialog.dismiss()
+
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                    checkPermission(mutableListOf(
+                        BLUETOOTH_CONNECT,
+                        POST_NOTIFICATIONS
+                    ).apply {
+
+                    }.toTypedArray(),0)
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    checkPermission(mutableListOf(
+                        BLUETOOTH_CONNECT
+                    ).apply {
+
+                    }.toTypedArray(),0)
+                }
+            }
+            builder.show()
+        }
+    }
+
+
 
     private fun setAlarm(){
         var flag = PendingIntent.FLAG_UPDATE_CURRENT
@@ -196,7 +283,9 @@ class MainActivity : AppCompatActivity() {
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
                 mutableListOf(
                     ACCESS_FINE_LOCATION,
-                    ACCESS_COARSE_LOCATION,
+                    ACCESS_BACKGROUND_LOCATION,
+                    BLUETOOTH_CONNECT,
+                    POST_NOTIFICATIONS,
                     ACTIVITY_RECOGNITION
                 ).apply {
 
@@ -204,7 +293,8 @@ class MainActivity : AppCompatActivity() {
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 mutableListOf(
                     ACCESS_FINE_LOCATION,
-                    ACCESS_COARSE_LOCATION,
+                    ACCESS_BACKGROUND_LOCATION,
+                    BLUETOOTH_CONNECT,
                     ACTIVITY_RECOGNITION
                 ).apply {
 
@@ -212,19 +302,19 @@ class MainActivity : AppCompatActivity() {
             }else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 mutableListOf (
                     ACCESS_FINE_LOCATION,
-                    ACCESS_COARSE_LOCATION,
+                    ACCESS_BACKGROUND_LOCATION,
                     ACTIVITY_RECOGNITION
                 ).apply {
 
                 }.toTypedArray()
             } else {
                 mutableListOf (
-                    ACCESS_FINE_LOCATION,
-                    ACCESS_COARSE_LOCATION
+                    ACCESS_FINE_LOCATION
                 ).apply {
 
                 }.toTypedArray()
             }
+
     }
 
     private fun setPieChart(){
@@ -502,6 +592,13 @@ class MainActivity : AppCompatActivity() {
 
             val bluetoothIntent = Intent(context, BluetoothService::class.java)
             context.startForegroundService(bluetoothIntent)
+        }
+    }
+
+    private fun checkPermission(permissions: Array<String>, code: Int) {
+        if(ContextCompat.checkSelfPermission(this, permissions[0]) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, permissions,code)
+            return
         }
     }
 
