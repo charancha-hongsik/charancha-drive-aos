@@ -156,15 +156,27 @@ class TermsOfUseActivity: BaseActivity() {
         }
 
         tvTermsTitle2.setOnClickListener{
-            
+            for(term in termsSummaryResponse){
+                if(tvTermsTitle2.text.contains(term.title)){
+                    startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
+                }
+            }
         }
 
         tvTermsTitle3.setOnClickListener{
-
+            for(term in termsSummaryResponse){
+                if(tvTermsTitle3.text.contains(term.title)){
+                    startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
+                }
+            }
         }
 
         tvTermsTitle4.setOnClickListener{
-
+            for(term in termsSummaryResponse){
+                if(tvTermsTitle4.text.contains(term.title)){
+                    startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
+                }
+            }
         }
 
 

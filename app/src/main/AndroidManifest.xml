@@ -57,6 +57,12 @@
         </activity>
 
         <activity
+            android:name=".activity.TermsDetailActivity"
+            android:theme="@style/Theme.Charanchadrivewhite100"
+            android:screenOrientation="portrait"
+            android:exported="true"/>
+
+        <activity
             android:name=".activity.PermissionInfoActivity"
             android:theme="@style/Theme.Charanchadrivegray50"
             android:screenOrientation="portrait"
