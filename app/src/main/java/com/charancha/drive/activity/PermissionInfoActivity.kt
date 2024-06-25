@@ -5,8 +5,14 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.charancha.drive.R
+import com.charancha.drive.retrofit.ApiServiceInterface
+import com.charancha.drive.retrofit.HeaderInterceptor
+import okhttp3.OkHttpClient
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
-class PermissionInfoActivity: AppCompatActivity(){
+class PermissionInfoActivity: BaseActivity(){
     lateinit var layoutPermissionInfoConfirm:ConstraintLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,4 +33,5 @@ class PermissionInfoActivity: AppCompatActivity(){
             finish()
         }
     }
+
 }

@@ -32,7 +32,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-class LoginActivity: AppCompatActivity() {
+class LoginActivity: BaseActivity() {
     lateinit var constraintLayout: ConstraintLayout
 
     /**
@@ -155,16 +155,4 @@ class LoginActivity: AppCompatActivity() {
         }
     }
 
-    fun apiService(): ApiServiceInterface {
-        val client: OkHttpClient = OkHttpClient.Builder()
-            .addInterceptor(HeaderInterceptor())
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
-            .build()
-        return Retrofit.Builder().baseUrl("http://172.16.10.111:3000/").client(client)
-            .addConverterFactory(GsonConverterFactory.create()).build().create(
-                ApiServiceInterface::class.java
-            )
-    }
 }

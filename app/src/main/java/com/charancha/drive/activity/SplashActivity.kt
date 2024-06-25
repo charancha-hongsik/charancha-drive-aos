@@ -20,7 +20,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-class SplashActivity: AppCompatActivity() {
+class SplashActivity: BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
@@ -82,18 +82,5 @@ class SplashActivity: AppCompatActivity() {
 //                }
             }
         }, 2000) // 2000 밀리초 (2초)
-    }
-
-    fun apiService(): ApiServiceInterface {
-        val client: OkHttpClient = OkHttpClient.Builder()
-            .addInterceptor(HeaderInterceptor())
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
-            .build()
-        return Retrofit.Builder().baseUrl("http://172.16.10.111:3000/").client(client)
-            .addConverterFactory(GsonConverterFactory.create()).build().create(
-                ApiServiceInterface::class.java
-            )
     }
 }
