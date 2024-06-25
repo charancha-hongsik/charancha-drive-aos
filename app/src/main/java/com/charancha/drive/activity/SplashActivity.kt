@@ -18,7 +18,15 @@ import retrofit2.Callback
 import retrofit2.Response
 
 /**
- * 로그인 되어있는지 체크 (RefreshToken)
+ * 1. 로그인 되어있는지 체크 (RefreshToken)
+ *  비로그인 유저(토큰 없는 유저 / 토큰이 만료된 유저) -> 로그인 창으로 이동
+ *  로그인 유저 -> 토큰 갱신
+ *
+ * 2. 로그인 유저는 아래 사항 체크
+ * - 약관 허용을 X -> 약관 화면으로 이동
+ * - Permission X -> 퍼미션 화면으로 이동
+ * - 차량등록 X -> onBoarding 화면으로 이동
+ * - 위 사항 모두 완료된 사용자일 경우 -> Main 화면으로 이동
  */
 class SplashActivity: BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
