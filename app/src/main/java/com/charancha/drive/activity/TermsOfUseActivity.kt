@@ -22,6 +22,10 @@ import retrofit2.Response
 import java.lang.reflect.Type
 
 
+/**
+ * 뒤로가기 시 로그아웃 및 로그인 창으로 이동
+ * 모두 허용 후 다음 클릭 시 퍼미션 창으로 이동
+ */
 class TermsOfUseActivity: BaseActivity() {
     private lateinit var ibArrowTerms:ImageButton
     private lateinit var btnNext:ConstraintLayout

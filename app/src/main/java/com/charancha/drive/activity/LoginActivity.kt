@@ -33,6 +33,13 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
+/**
+ * 1. 회원가입 및 로그인 시
+ * - 약관 허용 X -> 약관 화면으로 이동
+ * - Permission X -> 퍼미션 화면으로 이동
+ * - 차량등록 X -> onBoarding 화면으로 이동
+ * - 위 사항 모두 완료된 사용자일 경우 -> Main 화면으로 이동
+ */
 class LoginActivity: BaseActivity() {
     lateinit var constraintLayout: ConstraintLayout
 
@@ -127,8 +134,6 @@ class LoginActivity: BaseActivity() {
                                         ) {
                                             if(response.code() == 200 || response.code() == 201){
                                                 val termsAgreeStatusResponse = gson.fromJson(response.body()?.string(), TermsAgreeStatusResponse::class.java)
-                                                Log.d("testestsetest","testestestsese :: getTermsAgree " + termsAgreeStatusResponse.agreed)
-
                                                 if(termsAgreeStatusResponse.agreed){
                                                     if(!PreferenceUtil.getBooleanPref(this@LoginActivity, PreferenceUtil.PERMISSION_ALL_CHECKED, false)){
                                                         startActivity(Intent(this@LoginActivity, PermissionInfoActivity::class.java))
