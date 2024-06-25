@@ -1146,7 +1146,6 @@ class BluetoothService : Service() {
                         scheduleWalkingDetectWork4()
                         scheduleWalkingDetectWork5()
                         scheduleWalkingDetectWork6()
-                        startSensor(L1)
                     }
                 }
             }
