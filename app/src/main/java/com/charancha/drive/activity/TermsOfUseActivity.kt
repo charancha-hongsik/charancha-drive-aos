@@ -70,6 +70,15 @@ class TermsOfUseActivity: BaseActivity() {
         })
     }
 
+    override fun onBackPressed() {
+        PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.ACCESS_TOKEN, "")
+        PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.REFRESH_TOKEN, "")
+        PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.EXPIRES_IN, "")
+        PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.REFRESH_EXPIRES_IN, "")
+        PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.TOKEN_TYPE, "")
+        super.onBackPressed()
+    }
+
     private fun setResource(){
         ibArrowTerms = findViewById(R.id.ib_arrow_terms)
         btnNext = findViewById(R.id.btn_next)
@@ -96,6 +105,11 @@ class TermsOfUseActivity: BaseActivity() {
 
     private fun setListener(){
         ibArrowTerms.setOnClickListener {
+            PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.ACCESS_TOKEN, "")
+            PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.REFRESH_TOKEN, "")
+            PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.EXPIRES_IN, "")
+            PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.REFRESH_EXPIRES_IN, "")
+            PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.TOKEN_TYPE, "")
             finish()
         }
 

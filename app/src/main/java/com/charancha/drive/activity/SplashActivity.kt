@@ -75,7 +75,12 @@ class SplashActivity: BaseActivity() {
                                                         finish()
                                                     }
                                                 }else{
-                                                    startActivity(Intent(this@SplashActivity, TermsOfUseActivity::class.java))
+                                                    PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.ACCESS_TOKEN, "")
+                                                    PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.REFRESH_TOKEN, "")
+                                                    PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.EXPIRES_IN, "")
+                                                    PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.REFRESH_EXPIRES_IN, "")
+                                                    PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.TOKEN_TYPE, "")
+                                                    startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
                                                     finish()
                                                 }
                                             }else{

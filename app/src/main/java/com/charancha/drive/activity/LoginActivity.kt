@@ -139,11 +139,9 @@ class LoginActivity: BaseActivity() {
                                                     }
                                                 }else{
                                                     startActivity(Intent(this@LoginActivity, TermsOfUseActivity::class.java))
-                                                    finish()
                                                 }
                                             }else{
                                                 startActivity(Intent(this@LoginActivity, TermsOfUseActivity::class.java))
-                                                finish()
                                             }
                                         }
 

@@ -21,7 +21,7 @@ open class BaseActivity: AppCompatActivity(){
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
             .build()
-        return Retrofit.Builder().baseUrl("http://172.16.10.111:3000/").client(client)
+        return Retrofit.Builder().baseUrl("http://43.201.46.37:3001/").client(client)
             .addConverterFactory(GsonConverterFactory.create()).build().create(
                 ApiServiceInterface::class.java
             )
