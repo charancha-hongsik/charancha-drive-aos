@@ -55,8 +55,6 @@ class LoginActivity: BaseActivity() {
         constraintLayout = findViewById(R.id.layout_google_login)
         constraintLayout.setOnClickListener {
 
-//            startActivity(Intent(this@LoginActivity, TermsOfUseActivity::class.java))
-
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken("181313354113-e6ilqvbn5nsgeaobtdip5utv3pi9pvoq.apps.googleusercontent.com")
                 .requestEmail()

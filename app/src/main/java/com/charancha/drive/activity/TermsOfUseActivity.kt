@@ -9,9 +9,12 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.charancha.drive.CommonUtil
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
+import com.charancha.drive.retrofit.request.AgreeTermsRequest
 import com.charancha.drive.retrofit.response.TermsSummaryResponse
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -97,19 +100,44 @@ class TermsOfUseActivity: BaseActivity() {
         }
 
         btnNext.setOnClickListener {
-//            val gson = Gson()
-//            val jsonParam = gson.toJson(AgreeTermsRequest(listOf<>()))
-//
-//            apiService().postTermsAgree(PreferenceUtil.getPref(this@TermsOfUseActivity, PreferenceUtil.ACCESS_TOKEN, "")!!, jsonParam.toRequestBody("application/json".toMediaTypeOrNull()))
-//
+            val acceptedTerms = mutableListOf<String>()
 
-            if(PreferenceUtil.getBooleanPref(this, PreferenceUtil.PERMISSION_ALL_CHECKED, false)){
-                startActivity(Intent(this, OnBoardingActivity::class.java))
-                finish()
-            }else{
-                startActivity(Intent(this, PermissionInfoActivity::class.java))
-                finish()
+            for(term in termsSummaryResponse){
+
+                if(tvTermsTitle4.text.contains(term.title)){
+                    if(ibTerms4.isSelected){
+                        acceptedTerms.add(term.id)
+                    }
+                }else{
+                    acceptedTerms.add(term.id)
+                }
             }
+
+            val gson = Gson()
+            val jsonParam = gson.toJson(AgreeTermsRequest(acceptedTerms.toList()))
+
+            apiService().postTermsAgree("Bearer " + PreferenceUtil.getPref(this@TermsOfUseActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :Callback<ResponseBody>{
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: Response<ResponseBody>
+                ) {
+                    Log.d("testestsetset","testsetestse response.code :: " + response.code())
+                    if(response.code() == 200 || response.code() == 201){
+                        if(PreferenceUtil.getBooleanPref(this@TermsOfUseActivity, PreferenceUtil.PERMISSION_ALL_CHECKED, false)){
+                            startActivity(Intent(this@TermsOfUseActivity, OnBoardingActivity::class.java))
+                            finish()
+                        }else{
+                            startActivity(Intent(this@TermsOfUseActivity, PermissionInfoActivity::class.java))
+                            finish()
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    TODO("Not yet implemented")
+                }
+
+            })
         }
 
         btnNext.isClickable = false
@@ -178,8 +206,6 @@ class TermsOfUseActivity: BaseActivity() {
                 }
             }
         }
-
-
     }
 
     private fun checkAllAccept(){

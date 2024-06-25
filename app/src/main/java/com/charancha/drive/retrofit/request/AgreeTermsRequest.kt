@@ -1,5 +1,5 @@
 package com.charancha.drive.retrofit.request
 
 data class AgreeTermsRequest (
-    val ids:Array<String>
+    val ids:List<String>
 ) : java.io.Serializable
