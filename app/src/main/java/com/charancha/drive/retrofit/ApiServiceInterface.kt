@@ -21,13 +21,13 @@ interface ApiServiceInterface {
     fun postReissue(@Header("refresh_token") token: String): Call<ResponseBody>
 
     @GET("api/v1/terms/summary")
-    fun getTerms(@Body body: RequestBody): Call<ResponseBody>
+    fun getTerms(@Query("termsUsage") termsUsage: String): Call<ResponseBody>
 
     @GET("api/v1/terms/{id}")
     fun getTermDetails(@Path("id") userKey: String): Call<ResponseBody>
 
     @POST("api/v1/terms/agree")
-    fun postTermsAgree(@Body body: RequestBody): Call<ResponseBody>
+    fun postTermsAgree(@Header("Authorization") token: String, @Body body: RequestBody): Call<ResponseBody>
 
     @GET("api/v1/terms/agree/status")
     fun getTermsAgree(@Header("Authorization") token: String, @Query("termsUsage") termsUsage: String, @Query("required") required: Boolean): Call<ResponseBody>

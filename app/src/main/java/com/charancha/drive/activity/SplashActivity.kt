@@ -74,7 +74,6 @@ class SplashActivity: BaseActivity() {
                                                 startActivity(Intent(this@SplashActivity, TermsOfUseActivity::class.java))
                                                 finish()
                                             }
-
                                         }
 
                                         override fun onFailure(

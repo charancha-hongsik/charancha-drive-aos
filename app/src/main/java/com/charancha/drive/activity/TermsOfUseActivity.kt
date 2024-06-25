@@ -1,27 +1,23 @@
 package com.charancha.drive.activity
 
 import android.content.Intent
-import android.content.pm.PermissionInfo
-import android.graphics.Color
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
 import android.util.Log
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.charancha.drive.CommonUtil
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
-import com.charancha.drive.retrofit.ApiServiceInterface
-import com.charancha.drive.retrofit.HeaderInterceptor
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
+import com.charancha.drive.retrofit.response.TermsSummaryResponse
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.lang.reflect.Type
+
 
 class TermsOfUseActivity: BaseActivity() {
     private lateinit var ibArrowTerms:ImageButton
@@ -37,6 +33,8 @@ class TermsOfUseActivity: BaseActivity() {
     private lateinit var tvTermsTitle3:TextView
     private lateinit var tvTermsTitle4:TextView
 
+    lateinit var termsSummaryResponse: List<TermsSummaryResponse>
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,8 +44,27 @@ class TermsOfUseActivity: BaseActivity() {
     }
 
     private fun init(){
-        setResource()
-        setListener()
+        apiService().getTerms("마일로그_서비스").enqueue(object : Callback<ResponseBody>{
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200){
+                    val jsonString = response.body()?.string()
+
+                    val gson = Gson()
+                    val type: Type = object : TypeToken<List<TermsSummaryResponse?>?>() {}.type
+                    termsSummaryResponse = gson.fromJson(jsonString, type)
+
+                    setResource()
+                    setListener()
+                }else{
+
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
     }
 
     private fun setResource(){
@@ -80,6 +97,12 @@ class TermsOfUseActivity: BaseActivity() {
         }
 
         btnNext.setOnClickListener {
+//            val gson = Gson()
+//            val jsonParam = gson.toJson(AgreeTermsRequest(listOf<>()))
+//
+//            apiService().postTermsAgree(PreferenceUtil.getPref(this@TermsOfUseActivity, PreferenceUtil.ACCESS_TOKEN, "")!!, jsonParam.toRequestBody("application/json".toMediaTypeOrNull()))
+//
+
             if(PreferenceUtil.getBooleanPref(this, PreferenceUtil.PERMISSION_ALL_CHECKED, false)){
                 startActivity(Intent(this, OnBoardingActivity::class.java))
                 finish()
@@ -131,6 +154,20 @@ class TermsOfUseActivity: BaseActivity() {
         ibTerms4.setOnClickListener {
             ibTerms4.isSelected = !ibTerms4.isSelected
         }
+
+        tvTermsTitle2.setOnClickListener{
+            
+        }
+
+        tvTermsTitle3.setOnClickListener{
+
+        }
+
+        tvTermsTitle4.setOnClickListener{
+
+        }
+
+
     }
 
     private fun checkAllAccept(){
