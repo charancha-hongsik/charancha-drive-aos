@@ -939,7 +939,7 @@ class BluetoothService : Service() {
                     maxDistance = mutableListOf()
                     pastMaxDistance = mutableListOf()
 
-                    if(distance_array.sum() > 0f){
+                    if(distance_array.sum() > 50f){
                         writeToRoom()
                         callApi()
                     }
@@ -962,7 +962,7 @@ class BluetoothService : Service() {
                 maxDistance = mutableListOf()
                 pastMaxDistance = mutableListOf()
 
-                if(distance_array.sum() > 0f){
+                if(distance_array.sum() > 50f){
                     writeToRoom()
                     callApi()
                 }
