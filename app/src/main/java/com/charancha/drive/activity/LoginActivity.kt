@@ -13,6 +13,7 @@ import com.charancha.drive.retrofit.HeaderInterceptor
 import com.charancha.drive.retrofit.request.SignInRequest
 import com.charancha.drive.retrofit.request.SignUpRequest
 import com.charancha.drive.retrofit.response.SignInResponse
+import com.charancha.drive.retrofit.response.TermsAgreeStatusResponse
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -119,15 +120,41 @@ class LoginActivity: BaseActivity() {
                                     PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.REFRESH_EXPIRES_IN, signInResponse.refresh_expires_in)
                                     PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.TOKEN_TYPE, signInResponse.token_type)
 
-                                    if(PreferenceUtil.getBooleanPref(this@LoginActivity, PreferenceUtil.HAVE_BEEN_HOME, false)){
-                                        startActivity(Intent(this@LoginActivity, TermsOfUseActivity::class.java))
-                                        finish()
-                                    }else{
-                                        startActivity(Intent(this@LoginActivity, TermsOfUseActivity::class.java))
-                                        finish()
-                                    }
+                                    apiService().getTermsAgree("Bearer " + signInResponse.access_token, "마일로그_서비스", true).enqueue(object :Callback<ResponseBody>{
+                                        override fun onResponse(
+                                            call: Call<ResponseBody>,
+                                            response: Response<ResponseBody>
+                                        ) {
+                                            if(response.code() == 200 || response.code() == 201){
+                                                val termsAgreeStatusResponse = gson.fromJson(response.body()?.string(), TermsAgreeStatusResponse::class.java)
+                                                Log.d("testestsetest","testestestsese :: getTermsAgree " + termsAgreeStatusResponse.agreed)
 
+                                                if(termsAgreeStatusResponse.agreed){
+                                                    if(!PreferenceUtil.getBooleanPref(this@LoginActivity, PreferenceUtil.PERMISSION_ALL_CHECKED, false)){
+                                                        startActivity(Intent(this@LoginActivity, PermissionInfoActivity::class.java))
+                                                        finish()
+                                                    }else{
+                                                        startActivity(Intent(this@LoginActivity, OnBoardingActivity::class.java))
+                                                        finish()
+                                                    }
+                                                }else{
+                                                    startActivity(Intent(this@LoginActivity, TermsOfUseActivity::class.java))
+                                                    finish()
+                                                }
+                                            }else{
+                                                startActivity(Intent(this@LoginActivity, TermsOfUseActivity::class.java))
+                                                finish()
+                                            }
+                                        }
 
+                                        override fun onFailure(
+                                            call: Call<ResponseBody>,
+                                            t: Throwable
+                                        ) {
+                                            TODO("Not yet implemented")
+                                        }
+
+                                    })
                                 }
 
                                 override fun onFailure(
