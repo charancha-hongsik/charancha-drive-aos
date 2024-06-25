@@ -65,7 +65,9 @@ class SplashActivity: BaseActivity() {
                                             response: Response<ResponseBody>
                                         ) {
                                             if(response.code() == 200 || response.code() == 201){
+
                                                 val termsAgreeStatusResponse = gson.fromJson(response.body()?.string(), TermsAgreeStatusResponse::class.java)
+
                                                 if(termsAgreeStatusResponse.agreed){
                                                     if(!PreferenceUtil.getBooleanPref(this@SplashActivity, PreferenceUtil.PERMISSION_ALL_CHECKED, false)){
                                                         startActivity(Intent(this@SplashActivity, PermissionInfoActivity::class.java))
