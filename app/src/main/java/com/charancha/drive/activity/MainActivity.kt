@@ -322,11 +322,11 @@ class MainActivity : AppCompatActivity() {
         chart = findViewById(R.id.chart1)
 
         val entries: ArrayList<PieEntry> = ArrayList()
-        entries.add(PieEntry(50f, ""))
-        entries.add(PieEntry(50f, ""))
+        entries.add(PieEntry(0f, ""))
+        entries.add(PieEntry(100f, ""))
 
         val dataSet = PieDataSet(entries, "")
-        dataSet.setColors(ContextCompat.getColor(this, R.color.gray_900), ContextCompat.getColor(this, R.color.gray_50))
+        dataSet.setColors(ContextCompat.getColor(this, R.color.pie_gradient_end_color), ContextCompat.getColor(this, R.color.gray_50))
         dataSet.setDrawValues(false)
 
         val data = PieData(dataSet)

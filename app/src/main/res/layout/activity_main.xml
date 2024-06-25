@@ -29,7 +29,7 @@
 
                 <ImageView
                     android:layout_width="74dp"
-                    android:layout_height="20dp"
+                    android:layout_height="22dp"
                     android:layout_marginTop="18dp"
                     android:src="@drawable/logo_white"
                     android:textAppearance="@style/ST2SB"
@@ -510,6 +510,7 @@
                     android:text="@string/no_data_shall_we_go"
                     android:textAppearance="@style/C1R"
                     android:textColor="@color/gray_600"
+                    android:textFontWeight="400"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/layout_score"/>
 
@@ -632,7 +633,8 @@
                         android:layout_marginRight="8dp"
                         android:layout_marginLeft="10dp"
                         android:text="0"
-                        android:textFontWeight="500"
+                        android:textColor="@color/gray_950"
+                        android:textFontWeight="600"
                         android:gravity="center_vertical|right"
                         android:textAppearance="@style/ST1M"
                         app:layout_constraintBottom_toBottomOf="parent"
