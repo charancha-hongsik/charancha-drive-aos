@@ -251,6 +251,9 @@ class PermissionActivity: AppCompatActivity(){
     }
 
     private fun goToOnboardingActivity(){
+        /**
+         * 차량등록이 되어있는지 체크 후 Main으로 갈지 정해야 함
+         */
         startActivity(Intent(this, OnBoardingActivity::class.java))
         finish()
     }

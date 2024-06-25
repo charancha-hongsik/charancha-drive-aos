@@ -100,7 +100,7 @@ class LoginActivity: BaseActivity() {
                         call: Call<ResponseBody>,
                         response: Response<ResponseBody>
                     ) {
-                        if(response.code() == 201 || response.code() == 404){
+                        if(response.code() == 201 || response.code() == 409){
                             val gson = Gson()
                             val jsonParam = gson.toJson(SignInRequest(account.idToken!!, "string","GOOGLE"))
 
