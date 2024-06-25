@@ -11,7 +11,7 @@ interface ApiServiceInterface {
     @POST("api/v1/driving")
     fun postDrivingInfo(@Body body: RequestBody): Call<ResponseBody>
 
-    @POST("api/v1/auth/test/signup")
+    @POST("api/v1/auth/signup")
     fun postSignUp(@Body body: RequestBody): Call<ResponseBody>
 
     @POST("api/v1/auth/signin")
@@ -29,7 +29,7 @@ interface ApiServiceInterface {
     @POST("api/v1/terms/agree")
     fun postTermsAgree(@Body body: RequestBody): Call<ResponseBody>
 
-    @POST("api/v1/terms/agree/status")
-    fun getTermsAgree(@Body body: RequestBody): Call<ResponseBody>
+    @GET("api/v1/terms/agree/status")
+    fun getTermsAgree(@Header("Authorization") token: String, @Query("termsUsage") termsUsage: String, @Query("required") required: Boolean): Call<ResponseBody>
 
 }

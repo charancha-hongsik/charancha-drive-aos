@@ -55,18 +55,18 @@ class LoginActivity: BaseActivity() {
         constraintLayout = findViewById(R.id.layout_google_login)
         constraintLayout.setOnClickListener {
 
-            startActivity(Intent(this@LoginActivity, TermsOfUseActivity::class.java))
+//            startActivity(Intent(this@LoginActivity, TermsOfUseActivity::class.java))
 
-//            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                .requestIdToken("181313354113-e6ilqvbn5nsgeaobtdip5utv3pi9pvoq.apps.googleusercontent.com")
-//                .requestEmail()
-//                .build()
-//
-//            val mGoogleSignInClient = this.let { GoogleSignIn.getClient(it, gso) }
-//
-//            mGoogleSignInClient.signOut()
-//            val signInIntent = mGoogleSignInClient.signInIntent
-//            resultLauncher.launch(signInIntent)
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken("181313354113-e6ilqvbn5nsgeaobtdip5utv3pi9pvoq.apps.googleusercontent.com")
+                .requestEmail()
+                .build()
+
+            val mGoogleSignInClient = this.let { GoogleSignIn.getClient(it, gso) }
+
+            mGoogleSignInClient.signOut()
+            val signInIntent = mGoogleSignInClient.signInIntent
+            resultLauncher.launch(signInIntent)
 
         }
     }
@@ -90,6 +90,9 @@ class LoginActivity: BaseActivity() {
             // Use googleIdTokenCredential and extract id to validate and
             // authenticate on your server.
 
+                Log.d("testestsetset","testsetsetsetset idToken:: " + account.idToken!!)
+
+
                 val gson = Gson()
                 val jsonParam = gson.toJson(SignUpRequest(account.idToken!!, "string", "GOOGLE","string"))
 
@@ -109,6 +112,7 @@ class LoginActivity: BaseActivity() {
                                     call: Call<ResponseBody>,
                                     response: Response<ResponseBody>
                                 ) {
+
                                     val signInResponse = gson.fromJson(response.body()?.string(), SignInResponse::class.java)
 
                                     PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.ACCESS_TOKEN, signInResponse.access_token)

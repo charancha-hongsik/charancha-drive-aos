@@ -56,12 +56,8 @@ class PermissionActivity: AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_permission)
 
+        init()
 
-        if(PreferenceUtil.getBooleanPref(this, PreferenceUtil.PERMISSION_ALL_CHECKED, false)){
-            goToOnboardingActivity()
-        } else{
-            init()
-        }
     }
 
     private fun init(){

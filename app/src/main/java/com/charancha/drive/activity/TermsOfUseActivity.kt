@@ -14,6 +14,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.charancha.drive.CommonUtil
+import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
 import com.charancha.drive.retrofit.ApiServiceInterface
 import com.charancha.drive.retrofit.HeaderInterceptor
@@ -79,8 +80,13 @@ class TermsOfUseActivity: BaseActivity() {
         }
 
         btnNext.setOnClickListener {
-            startActivity(Intent(this, PermissionInfoActivity::class.java))
-            finish()
+            if(PreferenceUtil.getBooleanPref(this, PreferenceUtil.PERMISSION_ALL_CHECKED, false)){
+                startActivity(Intent(this, OnBoardingActivity::class.java))
+                finish()
+            }else{
+                startActivity(Intent(this, PermissionInfoActivity::class.java))
+                finish()
+            }
         }
 
         btnNext.isClickable = false
