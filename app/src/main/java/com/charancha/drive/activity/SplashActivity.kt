@@ -33,13 +33,16 @@ class SplashActivity: BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            if(PreferenceUtil.getPref(this, PreferenceUtil.REFRESH_TOKEN, "") == ""){
-                unLoginedProcess()
-            }else {
-                loginedProcess()
-            }
-        }, 2000) // 2000 밀리초 (2초)
+        startActivity(Intent(this, RegisterCarActivity::class.java))
+        finish()
+
+//        Handler(Looper.getMainLooper()).postDelayed({
+//            if(PreferenceUtil.getPref(this, PreferenceUtil.REFRESH_TOKEN, "") == ""){
+//                unLoginedProcess()
+//            }else {
+//                loginedProcess()
+//            }
+//        }, 2000) // 2000 밀리초 (2초)
     }
 
     private fun unLoginedProcess(){
