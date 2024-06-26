@@ -427,6 +427,17 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <ImageView
+                android:id="@+id/iv_home_banner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/banner"
+                android:scaleType="centerCrop"
+                android:layout_marginTop="16dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_summary_info" />
+
             <TextView
                 android:id="@+id/tv_subtitle2"
                 android:layout_width="match_parent"
@@ -438,7 +449,7 @@
                 android:textColor="@color/gray_950"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/layout_summary_info"/>
+                app:layout_constraintTop_toBottomOf="@+id/iv_home_banner"/>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_summary_info2"
