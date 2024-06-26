@@ -123,7 +123,7 @@ class RegisterCarActivity: AppCompatActivity() {
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if(p1==0){
+                if(p3==0){
                     btn_next.isSelected = false
                     btn_next.isClickable = false
                 }else{
