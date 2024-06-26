@@ -1,5 +1,8 @@
 package com.charancha.drive.activity
 
+import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -26,6 +29,7 @@ class RegisterCarActivity: AppCompatActivity() {
     lateinit var btn_next:ConstraintLayout
     lateinit var tv_register_car:TextView
     lateinit var tv_register_car_caution:TextView
+
 
     var no = 0
 
@@ -67,7 +71,8 @@ class RegisterCarActivity: AppCompatActivity() {
                 }
 
                 2 -> {
-
+                    startActivity(Intent(this, MainActivity::class.java).addFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK))
+                    finish()
                 }
 
                 3 -> {
@@ -83,6 +88,32 @@ class RegisterCarActivity: AppCompatActivity() {
             }else{
                 tv_register_car_hint.visibility = VISIBLE
 
+            }
+        }
+
+        ib_arrow_register_car.setOnClickListener {
+            no--
+            when(no){
+                -1 -> {
+                    finish()
+                }
+
+                0 -> {
+                    setCarNoPage()
+                }
+
+                1 -> {
+                    setCarOwnerPage()
+                }
+
+                2 -> {
+
+
+                }
+
+                3 -> {
+
+                }
             }
         }
 
@@ -111,19 +142,36 @@ class RegisterCarActivity: AppCompatActivity() {
     fun setCarNoPage(){
         tv_register_car.text = resources.getString(R.string.register_car_no_title)
         tv_register_car_caution.text = resources.getString(R.string.register_car_no_errormessage)
+        et_register_car.text = null
+        et_register_car.hint = "123가1234"
         carNo = null
+
+        view_register_percent1.isSelected = true
+        view_register_percent2.isSelected = false
+        view_register_percent3.isSelected = false
     }
 
     fun setCarOwnerPage(){
         tv_register_car.text = resources.getString(R.string.register_car_owner_title)
         tv_register_car_caution.text = resources.getString(R.string.register_car_owner_errormessage)
+        et_register_car.text = null
+        et_register_car.hint = "김마일"
         carOwner = null
+
+        view_register_percent1.isSelected = true
+        view_register_percent1.isSelected = true
+        view_register_percent1.isSelected = false
     }
 
 
 
     override fun onBackPressed() {
+        no--
         when(no){
+            -1 -> {
+                finish()
+            }
+
             0 -> {
                 setCarNoPage()
             }
@@ -140,7 +188,5 @@ class RegisterCarActivity: AppCompatActivity() {
 
             }
         }
-
-        super.onBackPressed()
     }
 }
