@@ -875,6 +875,7 @@ class BluetoothService : Service() {
         val time = Date()
         return format.format(time)
     }
+
     inner class CarConnectionQueryHandler(resolver: ContentResolver?) : AsyncQueryHandler(resolver) {
 
         // notify new queryed connection status when query complete
