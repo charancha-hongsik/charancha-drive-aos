@@ -79,5 +79,8 @@
     <string name="register_car_owner_title">차량 소유자\n이름을 입력해주세요</string>
     <string name="register_car_owner_errormessage">입력시 차량 정보를 간편하게 불러올 수 있어요 :)</string>
 
+    <string name="confirm_register_my_car_title">내 차 정보를\n확인해주세요</string>
+
+
 
 </resources>

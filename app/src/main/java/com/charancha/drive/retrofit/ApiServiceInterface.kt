@@ -26,10 +26,21 @@ interface ApiServiceInterface {
     @GET("api/v1/terms/{id}")
     fun getTermDetails(@Path("id") userKey: String): Call<ResponseBody>
 
-    @POST("api/v1/terms/agree")
+    @POST("api/v1/users/me/terms/agree")
     fun postTermsAgree(@Header("Authorization") token: String, @Body body: RequestBody): Call<ResponseBody>
 
-    @GET("api/v1/terms/agree/status")
+    @GET("api/v1/users/me/terms/agreed-status")
     fun getTermsAgree(@Header("Authorization") token: String, @Query("termsUsage") termsUsage: String, @Query("required") required: Boolean): Call<ResponseBody>
 
+    @POST("api/v1/users/me/cars")
+    fun postMyCar(@Header("Authorization") token: String, @Query("termsUsage") termsUsage: String, @Query("required") required: Boolean): Call<ResponseBody>
+
+    @GET("api/v1/users/me/cars")
+    fun getMyCar(@Header("Authorization") token: String): Call<ResponseBody>
+
+    @GET("api/v1/cars/infoinquiry")
+    fun getCarInfoInquiry(@Header("Authorization") token: String, @Query("licensePlateNumber") licensePlateNumber: String, @Query("ownerName") ownerName: String): Call<ResponseBody>
+
+    @GET("api/v1/cars/{carId}")
+    fun getCarInfoinquiryByCarId(@Header("Authorization") token: String, @Path("id") carId: String): Call<ResponseBody>
 }

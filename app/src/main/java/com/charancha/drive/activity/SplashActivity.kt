@@ -10,8 +10,6 @@ import com.charancha.drive.R
 import com.charancha.drive.retrofit.response.SignInResponse
 import com.charancha.drive.retrofit.response.TermsAgreeStatusResponse
 import com.google.gson.Gson
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -32,7 +30,6 @@ class SplashActivity: BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
-
 
         Handler(Looper.getMainLooper()).postDelayed({
             if(PreferenceUtil.getPref(this, PreferenceUtil.REFRESH_TOKEN, "") == ""){
