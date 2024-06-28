@@ -163,7 +163,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="26dp"
-                    android:text="모델명"
+                    android:text="차량명"
                     android:textAppearance="@style/C1R"
                     android:textColor="@color/gray_400"
                     android:layout_weight="400"/>

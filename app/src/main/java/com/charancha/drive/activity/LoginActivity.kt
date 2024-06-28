@@ -4,6 +4,8 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.webkit.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -37,7 +39,7 @@ class LoginActivity: BaseActivity() {
     lateinit var constraintLayout: ConstraintLayout
     lateinit var wv_login:WebView
 
-    val loginUrl = ""
+    val loginUrl = "https://8b22-222-109-154-193.ngrok-free.app/"
 
     /**
      * 구글 로그인 관련
@@ -61,6 +63,7 @@ class LoginActivity: BaseActivity() {
 
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken("181313354113-e6ilqvbn5nsgeaobtdip5utv3pi9pvoq.apps.googleusercontent.com")
+//                .requestIdToken("345319283419-7u6i45h9b8n575mulpb6dkb17d8bgr8k.apps.googleusercontent.com")
                 .requestEmail()
                 .build()
 
@@ -69,17 +72,20 @@ class LoginActivity: BaseActivity() {
             mGoogleSignInClient.signOut()
             val signInIntent = mGoogleSignInClient.signInIntent
             resultLauncher.launch(signInIntent)
-
         }
     }
 
     fun setWebview(){
+        constraintLayout.visibility = INVISIBLE
+        wv_login.visibility = INVISIBLE
+
         wv_login = findViewById(R.id.wv_login)
+        wv_login.visibility = VISIBLE
         wv_login.settings.loadWithOverviewMode = true // 화면에 맞게 WebView 사이즈를 정의
         wv_login.settings.useWideViewPort = true //html 컨텐츠가 웹뷰에 맞게 나타나도록 합니다.
         wv_login.settings.defaultTextEncodingName = "UTF-8" // TextEncoding 이름 정의
         wv_login.settings.javaScriptEnabled = true
-//        wv_login.settings.userAgentString = wv_login.settings.userAgentString + " Milelog(AOS) "  + BuildConfig.VERSION_NAME
+        wv_login.settings.userAgentString = "Mozilla/5.0 AppleWebKit/535.19 Chrome/56.0.0 Mobile Safari/535.19"
         wv_login.settings.domStorageEnabled = true
         wv_login.settings.cacheMode = WebSettings.LOAD_DEFAULT
         wv_login.settings.textZoom = 100 // System 텍스트 사이즈 변경되지 않게
@@ -132,8 +138,12 @@ class LoginActivity: BaseActivity() {
 
     class MilelogPublicApi(val activity:LoginActivity) {
         @JavascriptInterface
-        fun successLogin(idToken:String, keylessAccount: String, keylessAccountExpire:Long, oauthProvider:String) {
-            activity.handleSuccessLogin(idToken)
+        fun successLogin(keylessAccount: String, keylessAccountExpire:String, oauthProvider:String) {
+            Log.d("testestset","testestsetesest keylessAccount :: " + keylessAccount)
+            Log.d("testestset","testestsetesest keylessAccountExpire :: " + keylessAccountExpire)
+            Log.d("testestset","testestsetesest oauthProvider :: " + oauthProvider)
+
+//            activity.handleSuccessLogin(idToken)
         }
 
         @JavascriptInterface
@@ -150,7 +160,6 @@ class LoginActivity: BaseActivity() {
             val task: Task<GoogleSignInAccount> =
                 GoogleSignIn.getSignedInAccountFromIntent(data)
             handleSignInResult(task)
-
         }
     }
 

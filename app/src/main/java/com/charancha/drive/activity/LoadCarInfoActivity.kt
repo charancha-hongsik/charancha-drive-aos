@@ -10,6 +10,7 @@ import android.view.View
 import android.view.animation.TranslateAnimation
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.charancha.drive.PreferenceUtil
@@ -132,6 +133,11 @@ class LoadCarInfoActivity:BaseActivity() {
                             setResult(RESULT_CANCELED, intent)
                             finish()
                         }
+                    }else{
+                        Toast.makeText(this@LoadCarInfoActivity,"차량 번호 또는 소유자명이 일치하지 않습니다.",Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this@LoadCarInfoActivity, RegisterCarActivity::class.java)
+                        setResult(RESULT_CANCELED, intent)
+                        finish()
                     }
                 }
 
