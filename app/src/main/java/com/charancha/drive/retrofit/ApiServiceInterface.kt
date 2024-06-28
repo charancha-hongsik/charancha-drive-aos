@@ -33,7 +33,7 @@ interface ApiServiceInterface {
     fun getTermsAgree(@Header("Authorization") token: String, @Query("termsUsage") termsUsage: String, @Query("required") required: Boolean): Call<ResponseBody>
 
     @POST("api/v1/users/me/cars")
-    fun postMyCar(@Header("Authorization") token: String, @Query("termsUsage") termsUsage: String, @Query("required") required: Boolean): Call<ResponseBody>
+    fun postMyCar(@Header("Authorization") token: String, @Body body: RequestBody): Call<ResponseBody>
 
     @GET("api/v1/users/me/cars")
     fun getMyCar(@Header("Authorization") token: String): Call<ResponseBody>

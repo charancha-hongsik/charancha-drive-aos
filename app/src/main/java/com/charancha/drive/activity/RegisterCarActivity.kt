@@ -12,19 +12,24 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.TextView
+import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
+import com.charancha.drive.retrofit.request.PostMyCarRequest
 import com.charancha.drive.retrofit.response.PostMyCarResponse
 import com.google.gson.Gson
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
-class RegisterCarActivity: AppCompatActivity() {
+class RegisterCarActivity: BaseActivity() {
     lateinit var view_register_percent1: View
     lateinit var view_register_percent2:View
     lateinit var view_register_percent3:View
@@ -43,6 +48,9 @@ class RegisterCarActivity: AppCompatActivity() {
     lateinit var tv_car_year:TextView
     lateinit var tv_car_fuel:TextView
     lateinit var tv_confirm:TextView
+    lateinit var iv_arrow_down: Spinner
+    lateinit var btn_arrow_down:ImageView
+    lateinit var postMyCarResponse:PostMyCarResponse
 
 
 
@@ -53,8 +61,6 @@ class RegisterCarActivity: AppCompatActivity() {
 
     var carNo:String? = null
     var carOwner:String? = null
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,9 +77,9 @@ class RegisterCarActivity: AppCompatActivity() {
                 val jsonString = it.data?.getStringExtra("response")
 
                 val gson = Gson()
-                val postMyCarResponse = gson.fromJson(jsonString, PostMyCarResponse::class.java)
+                postMyCarResponse = gson.fromJson(jsonString, PostMyCarResponse::class.java)
 
-                setAfterInquiry(postMyCarResponse)
+                setAfterInquiry()
             } else{
                 no--
             }
@@ -103,6 +109,30 @@ class RegisterCarActivity: AppCompatActivity() {
         tv_confirm = findViewById(R.id.tv_confirm)
 
 
+        iv_arrow_down = findViewById(R.id.iv_arrow_down)
+
+        btn_arrow_down = findViewById(R.id.btn_arrow_down)
+
+        val arrayAdapter = ArrayAdapter(this, R.layout.fuel_dropdown_textview,arrayOf("가솔린","디젤","LPG","전기"))
+        iv_arrow_down.adapter = arrayAdapter
+
+        iv_arrow_down.onItemSelectedListener = object :AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(parent: AdapterView<*>?, p1: View?, postision: Int, p3: Long) {
+                val selectedFuel = parent?.getItemAtPosition(postision) as String
+                tv_car_fuel.text = selectedFuel
+
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+
+            }
+
+        }
+
+        btn_arrow_down.setOnClickListener {
+            iv_arrow_down.performClick()
+        }
+
 
         btn_next = findViewById(R.id.btn_next)
         btn_next.setOnClickListener {
@@ -119,9 +149,37 @@ class RegisterCarActivity: AppCompatActivity() {
                 }
 
                 2 -> {
+                    val gson = Gson()
+                    val jsonParam =
+                        gson.toJson(PostMyCarRequest(
+                            licensePlateNumber=tv_car_id.text.toString(),
+                            ownerName=tv_car_owner.text.toString(),
+                            vehicleIdentificationNumber=tv_car_no.text.toString(),
+                            carYear=tv_car_year.text.toString().toInt(),
+                            carVender = postMyCarResponse.carVender,
+                            modelName = tv_car_model_name.text.toString(),
+                            fuel = tv_car_fuel.text.toString()
+                        ))
 
-//                    startActivity(Intent(this, MainActivity::class.java).addFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK))
-//                    finish()
+
+
+                    apiService().postMyCar(
+                        "Bearer " + PreferenceUtil.getPref(this@RegisterCarActivity,  PreferenceUtil.ACCESS_TOKEN, ""), jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :
+                        Callback<ResponseBody>{
+                        override fun onResponse(
+                            call: Call<ResponseBody>,
+                            response: Response<ResponseBody>
+                        ) {
+                            startActivity(Intent(this@RegisterCarActivity, MainActivity::class.java).addFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK))
+                            finish()
+                        }
+
+                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+                        }
+
+                    })
+
                 }
             }
 
@@ -239,6 +297,9 @@ class RegisterCarActivity: AppCompatActivity() {
      * 2. 화면 진입 시 input에 focus
      */
     fun setCarOwnerPage(){
+        layout_after_inquiry.visibility = GONE
+        layout_before_inquiry.visibility = VISIBLE
+
         tv_register_car.text = resources.getString(R.string.register_car_owner_title)
         tv_register_car_caution.text = resources.getString(R.string.register_car_owner_errormessage)
         et_register_car.text = null
@@ -277,7 +338,7 @@ class RegisterCarActivity: AppCompatActivity() {
         })
     }
 
-    fun setAfterInquiry(postMyCarResponse: PostMyCarResponse){
+    fun setAfterInquiry(){
         layout_before_inquiry.visibility = GONE
         layout_after_inquiry.visibility = VISIBLE
 
@@ -287,6 +348,10 @@ class RegisterCarActivity: AppCompatActivity() {
         tv_car_no.text = postMyCarResponse.licensePlateNumber
         tv_car_year.text = postMyCarResponse.carYear
         tv_car_model_name.text = postMyCarResponse.modelName
+
+        view_register_percent1.isSelected = true
+        view_register_percent2.isSelected = true
+        view_register_percent3.isSelected = true
 
         tv_confirm.text = "확인했어요"
     }
@@ -309,6 +374,7 @@ class RegisterCarActivity: AppCompatActivity() {
             }
 
             2 -> {
+
 
             }
 

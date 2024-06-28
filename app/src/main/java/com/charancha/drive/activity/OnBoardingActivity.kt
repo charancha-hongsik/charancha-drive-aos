@@ -48,10 +48,6 @@ class OnBoardingActivity: AppCompatActivity() {
         layoutNext = findViewById(R.id.layout_next)
         layoutNext.setOnClickListener {
             startActivity(Intent(this, RegisterCarActivity::class.java))
-            finish()
-
-//            startActivity(Intent(this, MainActivity::class.java).addFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK))
-//            finish()
         }
 
 
