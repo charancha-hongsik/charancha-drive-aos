@@ -9,10 +9,14 @@ import android.view.View.VISIBLE
 import android.webkit.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.charancha.drive.ApiServiceInterface2
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
+import com.charancha.drive.retrofit.ApiServiceInterface
+import com.charancha.drive.retrofit.HeaderInterceptor
 import com.charancha.drive.retrofit.request.SignInRequest
 import com.charancha.drive.retrofit.request.SignUpRequest
+import com.charancha.drive.retrofit.request.keylessAccountRequest
 import com.charancha.drive.retrofit.response.SignInResponse
 import com.charancha.drive.retrofit.response.TermsAgreeStatusResponse
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -22,11 +26,15 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.gson.Gson
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 /**
  * 1. 회원가입 및 로그인 시
@@ -39,7 +47,7 @@ class LoginActivity: BaseActivity() {
     lateinit var constraintLayout: ConstraintLayout
     lateinit var wv_login:WebView
 
-    val loginUrl = "https://8b22-222-109-154-193.ngrok-free.app/"
+    val loginUrl = "https://0565-222-109-154-193.ngrok-free.app/"
 
     /**
      * 구글 로그인 관련
@@ -76,9 +84,6 @@ class LoginActivity: BaseActivity() {
     }
 
     fun setWebview(){
-        constraintLayout.visibility = INVISIBLE
-        wv_login.visibility = INVISIBLE
-
         wv_login = findViewById(R.id.wv_login)
         wv_login.visibility = VISIBLE
         wv_login.settings.loadWithOverviewMode = true // 화면에 맞게 WebView 사이즈를 정의
@@ -125,7 +130,23 @@ class LoginActivity: BaseActivity() {
 
         // 쿠키 설정
         syncCookie()
+
+        Log.d("testestset","testestsetesest webview :: ")
+
     }
+
+
+    /**
+     * 1. webview (O)
+     * 2. GA (O)
+     * 3. 차량등록/지표상세 ->
+     * - AOS -> 차량등록 QA중 / 지표상세 (X)
+     * - iOS -> 차량등록 작업중(월요일 QA 요청)
+     *
+     * 4. 홈/관리점수/공통 모달창 UI 작업
+     * - AOS -> 홈 데이터 없는 부분 / Permission 뜨는 부분 로직 완료 , 관리점수/모달창 UI 작업(X)
+     *  -iOS -> 홈 데이터 없는 부분 / Permission 뜨는 부분 로직 완료 , 관리점수/모달창 UI 작업(X)
+     */
 
     private fun syncCookie(){
         wv_login.settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW)
@@ -143,7 +164,24 @@ class LoginActivity: BaseActivity() {
             Log.d("testestset","testestsetesest keylessAccountExpire :: " + keylessAccountExpire)
             Log.d("testestset","testestsetesest oauthProvider :: " + oauthProvider)
 
-//            activity.handleSuccessLogin(idToken)
+            val gson = Gson()
+            val jsonParam =
+                gson.toJson(keylessAccountRequest(keylessAccount))
+
+            activity.apiService2().postDrivingInfo(jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :Callback<ResponseBody>{
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: Response<ResponseBody>
+                ) {
+                    Log.d("testestset","testestsetesest response :: " + response.code())
+                }
+
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    TODO("Not yet implemented")
+                }
+
+            })
+
         }
 
         @JavascriptInterface
@@ -409,6 +447,19 @@ class LoginActivity: BaseActivity() {
         } catch (e: ApiException){
             Log.w("failed", "signInResult:failed code=" + e.statusCode)
         }
+    }
+
+    fun apiService2(): ApiServiceInterface2 {
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(HeaderInterceptor())
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .build()
+        return Retrofit.Builder().baseUrl("https://93e0-222-109-154-193.ngrok-free.app/").client(client)
+            .addConverterFactory(GsonConverterFactory.create()).build().create(
+                ApiServiceInterface2::class.java
+            )
     }
 
 }
