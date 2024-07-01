@@ -21,6 +21,7 @@
         android:id="@+id/tv_login1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:visibility="invisible"
         android:layout_marginTop="204dp"
         android:text="@string/first_login_text"
         android:gravity="center"
@@ -34,6 +35,7 @@
         android:id="@+id/iv_login1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="invisible"
         android:src="@drawable/logo_white"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -44,6 +46,7 @@
         android:id="@+id/layout_google_login"
         android:layout_width="match_parent"
         android:layout_height="52dp"
+        android:visibility="invisible"
         android:background="@drawable/radius8_gray50"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -77,5 +80,6 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

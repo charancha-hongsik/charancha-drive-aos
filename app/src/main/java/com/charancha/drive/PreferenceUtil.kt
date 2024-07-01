@@ -27,6 +27,11 @@ object PreferenceUtil {
     val EXPIRES_IN = "expires_in"
     val REFRESH_EXPIRES_IN = "refresh_expires_in"
     val TOKEN_TYPE = "token_type"
+    val KEYLESS_ACCOUNT = "keylessAccount"
+    val KEYLESS_ACCOUNT_EXPIRE = "keylessAccountExpire"
+    val OAUTH_PROVIDER = "oauthProvider"
+    val ID_TOKEN = "idToken"
+
 
 
 

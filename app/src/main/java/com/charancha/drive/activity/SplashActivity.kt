@@ -7,13 +7,17 @@ import android.os.Looper
 import android.util.Log
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
+import com.charancha.drive.retrofit.response.GetMyCarInfoResponse
 import com.charancha.drive.retrofit.response.SignInResponse
 import com.charancha.drive.retrofit.response.TermsAgreeStatusResponse
+import com.charancha.drive.retrofit.response.TermsSummaryResponse
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.lang.reflect.Type
 
 /**
  * 1. 로그인 되어있는지 체크 (RefreshToken)
@@ -65,6 +69,7 @@ class SplashActivity: BaseActivity() {
                             PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.REFRESH_EXPIRES_IN, signInResponse.refresh_expires_in)
                             PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.TOKEN_TYPE, signInResponse.token_type)
 
+
                             apiService().getTermsAgree("Bearer " + signInResponse.access_token, "마일로그_서비스", true).enqueue(object :Callback<ResponseBody>{
                                 override fun onResponse(
                                     call: Call<ResponseBody>,
@@ -79,8 +84,38 @@ class SplashActivity: BaseActivity() {
                                                 startActivity(Intent(this@SplashActivity, PermissionInfoActivity::class.java))
                                                 finish()
                                             }else{
-                                                startActivity(Intent(this@SplashActivity, OnBoardingActivity::class.java))
-                                                finish()
+                                                apiService().getMyCarInfo("Bearer " + signInResponse.access_token).enqueue(object :Callback<ResponseBody>{
+                                                    override fun onResponse(
+                                                        call: Call<ResponseBody>,
+                                                        response: Response<ResponseBody>
+                                                    ) {
+                                                        if(response.code() == 200){
+                                                            val jsonString = response.body()?.string()
+
+                                                            val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
+                                                            val getMyCarInfoResponse:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
+
+                                                            if(getMyCarInfoResponse.size > 0){
+                                                                startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+                                                                finish()
+                                                            }else{
+                                                                startActivity(Intent(this@SplashActivity, OnBoardingActivity::class.java))
+                                                                finish()
+                                                            }
+                                                        }else{
+                                                            startActivity(Intent(this@SplashActivity, OnBoardingActivity::class.java))
+                                                            finish()
+                                                        }
+                                                    }
+
+                                                    override fun onFailure(
+                                                        call: Call<ResponseBody>,
+                                                        t: Throwable
+                                                    ) {
+                                                        startActivity(Intent(this@SplashActivity, OnBoardingActivity::class.java))
+                                                        finish()
+                                                    }
+                                                })
                                             }
                                         }else{
                                             PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.ACCESS_TOKEN, "")

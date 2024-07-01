@@ -156,12 +156,9 @@ class RegisterCarActivity: BaseActivity() {
                             ownerName=tv_car_owner.text.toString(),
                             vehicleIdentificationNumber=tv_car_no.text.toString(),
                             carYear=tv_car_year.text.toString().toInt(),
-                            carVender = postMyCarResponse.carVender,
-                            modelName = tv_car_model_name.text.toString(),
+                            carName = tv_car_model_name.text.toString(),
                             fuel = tv_car_fuel.text.toString()
                         ))
-
-
 
                     apiService().postMyCar(
                         "Bearer " + PreferenceUtil.getPref(this@RegisterCarActivity,  PreferenceUtil.ACCESS_TOKEN, ""), jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :

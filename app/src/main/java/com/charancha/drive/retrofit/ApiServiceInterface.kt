@@ -32,7 +32,7 @@ interface ApiServiceInterface {
     @GET("api/v1/users/me/terms/agreed-status")
     fun getTermsAgree(@Header("Authorization") token: String, @Query("termsUsage") termsUsage: String, @Query("required") required: Boolean): Call<ResponseBody>
 
-    @POST("api/v1/users/me/cars")
+    @POST("api/v1/users/me/personal-cars")
     fun postMyCar(@Header("Authorization") token: String, @Body body: RequestBody): Call<ResponseBody>
 
     @GET("api/v1/users/me/cars")
@@ -43,4 +43,7 @@ interface ApiServiceInterface {
 
     @GET("api/v1/cars/{carId}")
     fun getCarInfoinquiryByCarId(@Header("Authorization") token: String, @Path("id") carId: String): Call<ResponseBody>
+
+    @GET("api/v1/users/me/personal-cars")
+    fun getMyCarInfo(@Header("Authorization") token: String): Call<ResponseBody>
 }

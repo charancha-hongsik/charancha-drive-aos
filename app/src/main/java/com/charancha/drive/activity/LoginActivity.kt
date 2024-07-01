@@ -4,37 +4,23 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
-import android.view.View.INVISIBLE
-import android.view.View.VISIBLE
+import android.view.View.*
 import android.webkit.*
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.charancha.drive.ApiServiceInterface2
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
-import com.charancha.drive.retrofit.ApiServiceInterface
-import com.charancha.drive.retrofit.HeaderInterceptor
 import com.charancha.drive.retrofit.request.SignInRequest
 import com.charancha.drive.retrofit.request.SignUpRequest
-import com.charancha.drive.retrofit.request.keylessAccountRequest
 import com.charancha.drive.retrofit.response.SignInResponse
 import com.charancha.drive.retrofit.response.TermsAgreeStatusResponse
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.Task
 import com.google.gson.Gson
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
 
 /**
  * 1. 회원가입 및 로그인 시
@@ -53,33 +39,25 @@ class LoginActivity: BaseActivity() {
      * 구글 로그인 관련
      */
 
-    val googleSignInOption = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        setBtn()
-//        setWebview()
+//        setBtn()
+        setWebview()
     }
 
     fun setBtn(){
         constraintLayout = findViewById(R.id.layout_google_login)
         constraintLayout.setOnClickListener {
-
-            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken("181313354113-e6ilqvbn5nsgeaobtdip5utv3pi9pvoq.apps.googleusercontent.com")
-//                .requestIdToken("345319283419-7u6i45h9b8n575mulpb6dkb17d8bgr8k.apps.googleusercontent.com")
-                .requestEmail()
-                .build()
-
-            val mGoogleSignInClient = this.let { GoogleSignIn.getClient(it, gso) }
-
-            mGoogleSignInClient.signOut()
-            val signInIntent = mGoogleSignInClient.signInIntent
-            resultLauncher.launch(signInIntent)
+            startActivity(
+                Intent(
+                    this@LoginActivity,
+                    PermissionInfoActivity::class.java
+                )
+            )
+            finish()
         }
     }
 
@@ -94,6 +72,7 @@ class LoginActivity: BaseActivity() {
         wv_login.settings.domStorageEnabled = true
         wv_login.settings.cacheMode = WebSettings.LOAD_DEFAULT
         wv_login.settings.textZoom = 100 // System 텍스트 사이즈 변경되지 않게
+
 
 
         //chrome inspect 디버깅 모드
@@ -130,9 +109,6 @@ class LoginActivity: BaseActivity() {
 
         // 쿠키 설정
         syncCookie()
-
-        Log.d("testestset","testestsetesest webview :: ")
-
     }
 
 
@@ -159,29 +135,13 @@ class LoginActivity: BaseActivity() {
 
     class MilelogPublicApi(val activity:LoginActivity) {
         @JavascriptInterface
-        fun successLogin(keylessAccount: String, keylessAccountExpire:String, oauthProvider:String) {
-            Log.d("testestset","testestsetesest keylessAccount :: " + keylessAccount)
-            Log.d("testestset","testestsetesest keylessAccountExpire :: " + keylessAccountExpire)
-            Log.d("testestset","testestsetesest oauthProvider :: " + oauthProvider)
+        fun successLogin(keylessAccount: String, keylessAccountExpire:String, oauthProvider:String, idToken:String) {
+            PreferenceUtil.putPref(activity, PreferenceUtil.KEYLESS_ACCOUNT, keylessAccount)
+            PreferenceUtil.putPref(activity, PreferenceUtil.KEYLESS_ACCOUNT_EXPIRE, keylessAccountExpire)
+            PreferenceUtil.putPref(activity, PreferenceUtil.OAUTH_PROVIDER, oauthProvider)
+            PreferenceUtil.putPref(activity, PreferenceUtil.ID_TOKEN, idToken)
 
-            val gson = Gson()
-            val jsonParam =
-                gson.toJson(keylessAccountRequest(keylessAccount))
-
-            activity.apiService2().postDrivingInfo(jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :Callback<ResponseBody>{
-                override fun onResponse(
-                    call: Call<ResponseBody>,
-                    response: Response<ResponseBody>
-                ) {
-                    Log.d("testestset","testestsetesest response :: " + response.code())
-                }
-
-                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    TODO("Not yet implemented")
-                }
-
-            })
-
+            activity.handleSuccessLogin(idToken,oauthProvider.uppercase())
         }
 
         @JavascriptInterface
@@ -191,21 +151,12 @@ class LoginActivity: BaseActivity() {
 
     }
 
-    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == -1) {
 
-            val data: Intent? = result.data
-            val task: Task<GoogleSignInAccount> =
-                GoogleSignIn.getSignedInAccountFromIntent(data)
-            handleSignInResult(task)
-        }
-    }
-
-    fun handleSuccessLogin(idToken:String) {
+    fun handleSuccessLogin(idToken:String, oauthProvider:String) {
         try {
             val gson = Gson()
             val jsonParam =
-                gson.toJson(SignUpRequest(idToken, "string", "GOOGLE", "string"))
+                gson.toJson(SignUpRequest(idToken, "string", oauthProvider, "string"))
 
             apiService().postSignUp(jsonParam.toRequestBody("application/json".toMediaTypeOrNull()))
                 .enqueue(object :
@@ -217,8 +168,7 @@ class LoginActivity: BaseActivity() {
                         if (response.code() == 201 || response.code() == 409) {
                             val gson = Gson()
                             val jsonParam =
-                                gson.toJson(SignInRequest(idToken, "string", "GOOGLE"))
-
+                                gson.toJson(SignInRequest(idToken, "string", oauthProvider))
 
                             apiService().postSignIn(jsonParam.toRequestBody("application/json".toMediaTypeOrNull()))
                                 .enqueue(object : Callback<ResponseBody> {
@@ -317,7 +267,7 @@ class LoginActivity: BaseActivity() {
                                                 call: Call<ResponseBody>,
                                                 t: Throwable
                                             ) {
-                                                TODO("Not yet implemented")
+
                                             }
 
                                         })
@@ -332,6 +282,14 @@ class LoginActivity: BaseActivity() {
 
                                 })
 
+                        }else{
+                            startActivity(
+                                Intent(
+                                    this@LoginActivity,
+                                    PermissionInfoActivity::class.java
+                                )
+                            )
+                            finish()
                         }
 
                     }
@@ -347,119 +305,6 @@ class LoginActivity: BaseActivity() {
     }
 
     fun handleFailLogin(message:String){
-
+        Log.d("testestestes","testestsetse handleFailLogin :: " + message)
     }
-
-    private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>){
-        try {
-
-            val account = completedTask.getResult(ApiException::class.java)
-            try {
-            // Use googleIdTokenCredential and extract id to validate and
-            // authenticate on your server.
-
-                Log.d("testestsetset","testsetsetsetset idToken:: " + account.idToken!!)
-
-
-                val gson = Gson()
-                val jsonParam = gson.toJson(SignUpRequest(account.idToken!!, "string", "GOOGLE","string"))
-
-                apiService().postSignUp(jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :
-                    Callback<ResponseBody>{
-                    override fun onResponse(
-                        call: Call<ResponseBody>,
-                        response: Response<ResponseBody>
-                    ) {
-                        if(response.code() == 201 || response.code() == 409){
-                            val gson = Gson()
-                            val jsonParam = gson.toJson(SignInRequest(account.idToken!!, "string","GOOGLE"))
-
-
-                            apiService().postSignIn(jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object : Callback<ResponseBody>{
-                                override fun onResponse(
-                                    call: Call<ResponseBody>,
-                                    response: Response<ResponseBody>
-                                ) {
-
-                                    val signInResponse = gson.fromJson(response.body()?.string(), SignInResponse::class.java)
-
-                                    PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.ACCESS_TOKEN, signInResponse.access_token)
-                                    PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.REFRESH_TOKEN, signInResponse.refresh_token)
-                                    PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.EXPIRES_IN, signInResponse.expires_in)
-                                    PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.REFRESH_EXPIRES_IN, signInResponse.refresh_expires_in)
-                                    PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.TOKEN_TYPE, signInResponse.token_type)
-
-                                    apiService().getTermsAgree("Bearer " + signInResponse.access_token, "마일로그_서비스", true).enqueue(object :Callback<ResponseBody>{
-                                        override fun onResponse(
-                                            call: Call<ResponseBody>,
-                                            response: Response<ResponseBody>
-                                        ) {
-                                            if(response.code() == 200 || response.code() == 201){
-                                                val termsAgreeStatusResponse = gson.fromJson(response.body()?.string(), TermsAgreeStatusResponse::class.java)
-                                                if(termsAgreeStatusResponse.agreed){
-                                                    if(!PreferenceUtil.getBooleanPref(this@LoginActivity, PreferenceUtil.PERMISSION_ALL_CHECKED, false)){
-                                                        startActivity(Intent(this@LoginActivity, PermissionInfoActivity::class.java))
-                                                        finish()
-                                                    }else{
-                                                        startActivity(Intent(this@LoginActivity, OnBoardingActivity::class.java))
-                                                        finish()
-                                                    }
-                                                }else{
-                                                    startActivity(Intent(this@LoginActivity, TermsOfUseActivity::class.java))
-                                                }
-                                            }else{
-                                                startActivity(Intent(this@LoginActivity, TermsOfUseActivity::class.java))
-                                            }
-                                        }
-
-                                        override fun onFailure(
-                                            call: Call<ResponseBody>,
-                                            t: Throwable
-                                        ) {
-                                            TODO("Not yet implemented")
-                                        }
-
-                                    })
-                                }
-
-                                override fun onFailure(
-                                    call: Call<ResponseBody>,
-                                    t: Throwable
-                                ) {
-
-                                }
-
-                            })
-
-                        }
-
-                    }
-
-                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
-
-                    }
-                })
-        } catch (e: Exception) {
-
-        }
-
-        } catch (e: ApiException){
-            Log.w("failed", "signInResult:failed code=" + e.statusCode)
-        }
-    }
-
-    fun apiService2(): ApiServiceInterface2 {
-        val client: OkHttpClient = OkHttpClient.Builder()
-            .addInterceptor(HeaderInterceptor())
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
-            .build()
-        return Retrofit.Builder().baseUrl("https://93e0-222-109-154-193.ngrok-free.app/").client(client)
-            .addConverterFactory(GsonConverterFactory.create()).build().create(
-                ApiServiceInterface2::class.java
-            )
-    }
-
 }
