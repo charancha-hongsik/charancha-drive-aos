@@ -232,6 +232,7 @@
                     android:layout_weight="400"/>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraint_fuel_select"
                     android:layout_width="match_parent"
                     android:layout_height="54dp"
                     android:layout_marginTop="6dp"
@@ -338,6 +339,46 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/layout_fuel_select"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="visible"
+        android:background="@color/black_op_70"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:context=".activity.BottomSheetActivity">
+
+
+        <LinearLayout
+            android:id="@+id/persistent_bottom_sheet"
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
+            android:background="@drawable/radius24_topleftright_white"
+            android:orientation="vertical"
+            android:padding="24dp"
+            app:behavior_hideable="false"
+            app:behavior_peekHeight="250dp"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+            <View
+                android:layout_width="40dp"
+                android:layout_height="4dp"
+                android:background="@drawable/radius10_gray200"
+                android:layout_gravity="center_horizontal"/>
+
+            <ListView
+                android:id="@+id/listView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@null"
+                android:layout_marginTop="28dp"/>
+
+        </LinearLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

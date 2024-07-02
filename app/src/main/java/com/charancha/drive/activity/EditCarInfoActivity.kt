@@ -1,28 +1,20 @@
 package com.charancha.drive.activity
 
-import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.util.Log
 import android.view.View
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.view.View.GONE
+import android.view.View.VISIBLE
+import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.charancha.drive.CustomDialog
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
 import com.charancha.drive.retrofit.request.EditMyCarRequest
-import com.charancha.drive.retrofit.request.PostMyCarRequest
-import com.charancha.drive.retrofit.request.SignUpRequest
 import com.charancha.drive.retrofit.response.GetMyCarInfoResponse
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -32,6 +24,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.lang.reflect.Type
+
 
 class EditCarInfoActivity:BaseActivity() {
     lateinit var tv_car_no: TextView
@@ -44,6 +37,11 @@ class EditCarInfoActivity:BaseActivity() {
     lateinit var layout_edit:ConstraintLayout
     lateinit var getMyCarInfoResponse:GetMyCarInfoResponse
     lateinit var ib_close: ImageView
+    lateinit var constraint_fuel_select:ConstraintLayout
+    lateinit var layout_fuel_select:CoordinatorLayout
+    lateinit var persistent_bottom_sheet: LinearLayout
+    lateinit var behavior: BottomSheetBehavior<LinearLayout>
+    lateinit var listview:ListView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,6 +50,7 @@ class EditCarInfoActivity:BaseActivity() {
 
         init()
         setInfo()
+        persistentBottomSheetEvent()
     }
 
     fun init(){
@@ -64,6 +63,14 @@ class EditCarInfoActivity:BaseActivity() {
         layout_delete = findViewById(R.id.layout_delete)
         layout_edit = findViewById(R.id.layout_edit)
         ib_close = findViewById(R.id.ib_close)
+        constraint_fuel_select = findViewById(R.id.constraint_fuel_select)
+        layout_fuel_select = findViewById(R.id.layout_fuel_select)
+        persistent_bottom_sheet = findViewById(R.id.persistent_bottom_sheet)
+        listview = findViewById(R.id.listView)
+
+        constraint_fuel_select.setOnClickListener {
+            layout_fuel_select.visibility = VISIBLE
+        }
 
         ib_close.setOnClickListener {
             finish()
@@ -145,6 +152,38 @@ class EditCarInfoActivity:BaseActivity() {
 
             }).show()
         }
+
+        val itemList: MutableList<String?> = ArrayList()
+
+        // 데이터 추가
+        itemList.add("가솔린")
+        itemList.add("디젤")
+        itemList.add("LPG")
+        itemList.add("전기")
+        itemList.add("수소")
+        itemList.add("CNG")
+        itemList.add("가솔린+LPG")
+        itemList.add("가솔린+CNG")
+        itemList.add("가솔린+전기")
+        itemList.add("디젤+전기")
+        itemList.add("LPG+전기")
+        itemList.add("기타")
+
+
+        // adapter 생성
+        val adapter = ArrayAdapter(this, R.layout.edit_fuel_textview, R.id.tv_fuel, itemList)
+
+
+        // listView에 adapter 연결
+        listview.adapter = adapter
+        listview.setOnItemClickListener { parent, view, position, l ->
+            val fuel = parent.getItemAtPosition(position) as String
+            tv_car_fuel.text = fuel
+
+            layout_fuel_select.visibility = GONE
+
+        }
+
     }
 
     fun setInfo(){
@@ -207,6 +246,34 @@ class EditCarInfoActivity:BaseActivity() {
 
 
 
-
+    private fun persistentBottomSheetEvent() {
+        behavior = BottomSheetBehavior.from(persistent_bottom_sheet)
+        behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                // 슬라이드 되는 도중 계속 호출
+                // called continuously while dragging
+                Log.d("testset", "onStateChanged: 드래그 중")
+            }
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when(newState) {
+                    BottomSheetBehavior.STATE_COLLAPSED-> {
+                        Log.d("testset", "onStateChanged: 접음")
+                    }
+                    BottomSheetBehavior.STATE_DRAGGING-> {
+                        Log.d("testset", "onStateChanged: 드래그")
+                    }
+                    BottomSheetBehavior.STATE_EXPANDED-> {
+                        Log.d("testset", "onStateChanged: 펼침")
+                    }
+                    BottomSheetBehavior.STATE_HIDDEN-> {
+                        Log.d("testset", "onStateChanged: 숨기기")
+                    }
+                    BottomSheetBehavior.STATE_SETTLING-> {
+                        Log.d("testset", "onStateChanged: 고정됨")
+                    }
+                }
+            }
+        })
+    }
 
 }
