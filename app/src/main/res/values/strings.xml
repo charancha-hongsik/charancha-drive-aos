@@ -56,7 +56,7 @@
 
 
     <string name="location_info">위치 정보</string>
-    <string name="location_info_contents">앱이 종료되었거나 사용 중이 아닐 때도 위치 데이터를 수집하여 주행 기록 기능을 지원해요.</string>
+    <string name="location_info_contents">앱이 종료되었거나 사용 중이 아닐 때도 주행 기록 기능을 지원해요. 위치 정보는 핸드폰에만 저장되고 서버로 전송하지 않아요.</string>
     <string name="useractivity_info">동작 및 피트니스</string>
     <string name="useractivity_info_contents">주행 시작과 종료를 확인하기 위해 동작 및 피트니스 활동 권한 설정이 필요해요.</string>
     <string name="permission_info_choice_update">선택 접근 권한</string>
