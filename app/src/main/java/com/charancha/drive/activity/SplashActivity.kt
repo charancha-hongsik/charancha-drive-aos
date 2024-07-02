@@ -89,11 +89,22 @@ class SplashActivity: BaseActivity() {
                                                         call: Call<ResponseBody>,
                                                         response: Response<ResponseBody>
                                                     ) {
+                                                        Log.d("testsetestest","testsetestse response code:: " + response.code())
                                                         if(response.code() == 200){
                                                             val jsonString = response.body()?.string()
 
                                                             val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
                                                             val getMyCarInfoResponse:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
+
+                                                            Log.d("testsetestest","testsetestse getMyCarInfoResponse size:: " + getMyCarInfoResponse.size)
+                                                            Log.d("testsetestest","testsetestse getMyCarInfoResponse size:: " + getMyCarInfoResponse.size)
+
+                                                            for(car in getMyCarInfoResponse){
+                                                                Log.d("testsetestest","testsetestse car name :: " + car.carName)
+
+                                                            }
+
+
 
                                                             if(getMyCarInfoResponse.size > 0){
                                                                 startActivity(Intent(this@SplashActivity, MainActivity::class.java))

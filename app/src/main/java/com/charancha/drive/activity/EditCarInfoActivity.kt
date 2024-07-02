@@ -140,8 +140,13 @@ class EditCarInfoActivity:BaseActivity() {
                             call: Call<ResponseBody>,
                             response: Response<ResponseBody>
                         ) {
-                            startActivity(Intent(this@EditCarInfoActivity, OnBoardingActivity::class.java))
-                            finish()
+                            Log.d("testsetestst","testsetsetestse delete code:: " + response.code())
+                            Log.d("testsetestst","testsetsetestse delete message :: " + response.message())
+
+                            if(response.code() == 204){
+                                startActivity(Intent(this@EditCarInfoActivity, OnBoardingActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+                                finish()
+                            }
                         }
 
                         override fun onFailure(call: Call<ResponseBody>, t: Throwable) {

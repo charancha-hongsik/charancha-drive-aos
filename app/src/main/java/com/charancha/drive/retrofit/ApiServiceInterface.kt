@@ -47,7 +47,7 @@ interface ApiServiceInterface {
     @GET("api/v1/users/me/personal-cars/{personalCarId}")
     fun getCarInfoinquiryByCarId(@Header("Authorization") token: String, @Path("personalCarId") personalCarId: String): Call<ResponseBody>
 
-    @GET("api/v1/users/me/personal-cars/{personalCarId}")
+    @DELETE("api/v1/users/me/personal-cars/{personalCarId}")
     fun deleteMyCarByCarId(@Header("Authorization") token: String, @Path("personalCarId") personalCarId: String): Call<ResponseBody>
 
 }
