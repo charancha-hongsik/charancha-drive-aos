@@ -60,12 +60,36 @@
 
     </style>
 
+    <style name="Theme.MyInfoTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">@color/white_op_95</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">@color/gray_50</item>
+
+        <!-- no action bar -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+    </style>
+
     <style name="RegisterCarEditText" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorControlNormal">@color/gray_950</item> <!-- non focused line color -->
         <item name="colorControlActivated">@color/gray_950</item> <!-- focused line color -->
         <item name="android:editTextColor">@color/gray_950</item>  <!-- text color -->
         <item name="android:textColorHighlight">@color/gray_950</item> <!-- selected text color -->
         <item name="android:textColorHint">@color/gray_200</item>   <!-- hint color -->
+    </style>
+
+    <style name="Theme.MyPageTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">@color/gray_950</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">@color/gray_50</item>
+
+        <!-- no action bar -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
     </style>
 
 </resources>

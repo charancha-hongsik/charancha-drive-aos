@@ -57,6 +57,18 @@
         </activity>
 
         <activity
+            android:name=".activity.MyInfoActivity"
+            android:theme="@style/Theme.MyInfoTheme"
+            android:screenOrientation="portrait"
+            android:exported="true"/>
+
+        <activity
+            android:name=".activity.MyPageActivity"
+            android:theme="@style/Theme.MyPageTheme"
+            android:screenOrientation="portrait"
+            android:exported="true"/>
+
+        <activity
             android:name=".activity.LoadCarInfoActivity"
             android:theme="@style/Theme.Charanchadrivewhite100"
             android:screenOrientation="portrait"
