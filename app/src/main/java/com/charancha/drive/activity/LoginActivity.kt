@@ -147,6 +147,7 @@ class LoginActivity: BaseActivity() {
             val jsonParam =
                 gson.toJson(SignUpRequest(idToken, "string", oauthProvider, "string"))
 
+
             apiService().postSignUp(jsonParam.toRequestBody("application/json".toMediaTypeOrNull()))
                 .enqueue(object :
                     Callback<ResponseBody> {
@@ -154,6 +155,8 @@ class LoginActivity: BaseActivity() {
                         call: Call<ResponseBody>,
                         response: Response<ResponseBody>
                     ) {
+                        Log.d("testestest","testsetestestse :: " + response.code())
+
                         if (response.code() == 201 || response.code() == 409) {
                             val gson = Gson()
                             val jsonParam =
@@ -297,13 +300,7 @@ class LoginActivity: BaseActivity() {
                                 })
 
                         }else{
-                            startActivity(
-                                Intent(
-                                    this@LoginActivity,
-                                    PermissionInfoActivity::class.java
-                                )
-                            )
-                            finish()
+
                         }
 
                     }
