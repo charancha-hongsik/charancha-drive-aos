@@ -33,8 +33,6 @@ class OnBoardingActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_onboarding)
 
-        PreferenceUtil.putBooleanPref(this@OnBoardingActivity, PreferenceUtil.PERMISSION_ALL_CHECKED, true)
-
         setResources()
         setTimer()
     }

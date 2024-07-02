@@ -15,10 +15,6 @@ class CustomDialog(context: Context, val title:String, val contents:String, val 
     lateinit var tv_cancel:TextView
     lateinit var tv_comfirm:TextView
 
-
-
-
-
     init {
         setCancelable(false)
     }
@@ -32,6 +28,8 @@ class CustomDialog(context: Context, val title:String, val contents:String, val 
         layout_cancel = findViewById(R.id.layout_cancel)
         tv_dialog_title = findViewById(R.id.tv_dialog_title)
         tv_dialog_contents = findViewById(R.id.tv_dialog_contents)
+        tv_comfirm = findViewById(R.id.tv_comfirm)
+        tv_cancel = findViewById(R.id.tv_cancel)
 
 
         layout_confirm.setOnClickListener {

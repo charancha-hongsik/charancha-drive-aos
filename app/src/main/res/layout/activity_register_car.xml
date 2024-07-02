@@ -174,18 +174,24 @@
                     android:layout_marginTop="6dp"
                     android:background="@drawable/radius8_gray50">
 
-                    <TextView
-                        android:id="@+id/tv_car_model_name"
-                        android:layout_width="wrap_content"
+                    <EditText
+                        android:id="@+id/et_car_model_name"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="BMW"
-                        android:textAppearance="@style/B1SB"
-                        android:textFontWeight="600"
-                        android:textColor="@color/gray_950"
                         android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:background="@null"
+                        android:theme="@style/EditCarText"
+                        android:textColor="@color/gray_950"
+                        android:textFontWeight="600"
+                        android:textAppearance="@style/B1SB"
+                        android:gravity="center_vertical"
+                        android:hint="BMW"
+                        app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -193,7 +199,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="26dp"
-                    android:text="연식"
+                    android:text="형식연도"
                     android:textAppearance="@style/C1R"
                     android:textColor="@color/gray_400"
                     android:layout_weight="400"/>
@@ -204,18 +210,25 @@
                     android:layout_marginTop="6dp"
                     android:background="@drawable/radius8_gray50">
 
-                    <TextView
-                        android:id="@+id/tv_car_year"
-                        android:layout_width="wrap_content"
+                    <EditText
+                        android:id="@+id/et_car_year"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="2024"
-                        android:textAppearance="@style/B1SB"
-                        android:textFontWeight="600"
-                        android:textColor="@color/gray_950"
                         android:layout_marginLeft="16dp"
+                        android:layout_marginRight="16dp"
+                        android:background="@null"
+                        android:theme="@style/EditCarText"
+                        android:textColor="@color/gray_950"
+                        android:textFontWeight="600"
+                        android:inputType="number"
+                        android:textAppearance="@style/B1SB"
+                        android:gravity="center_vertical"
+                        android:hint="2021"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

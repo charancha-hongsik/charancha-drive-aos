@@ -44,8 +44,8 @@ class RegisterCarActivity: BaseActivity() {
     lateinit var tv_car_no:TextView
     lateinit var tv_car_owner:TextView
     lateinit var tv_car_id:TextView
-    lateinit var tv_car_model_name:TextView
-    lateinit var tv_car_year:TextView
+    lateinit var et_car_model_name:EditText
+    lateinit var et_car_year:EditText
     lateinit var tv_car_fuel:TextView
     lateinit var tv_confirm:TextView
     lateinit var iv_arrow_down: Spinner
@@ -103,10 +103,26 @@ class RegisterCarActivity: BaseActivity() {
         tv_car_no = findViewById(R.id.tv_car_no)
         tv_car_owner = findViewById(R.id.tv_car_owner)
         tv_car_id = findViewById(R.id.tv_car_id)
-        tv_car_model_name = findViewById(R.id.tv_car_model_name)
-        tv_car_year = findViewById(R.id.tv_car_year)
+        et_car_model_name = findViewById(R.id.et_car_model_name)
+        et_car_year = findViewById(R.id.et_car_year)
         tv_car_fuel = findViewById(R.id.tv_car_fuel)
         tv_confirm = findViewById(R.id.tv_confirm)
+
+        et_car_model_name.setOnFocusChangeListener { view, b ->
+            if(b){
+                et_car_model_name.hint = ""
+            }else{
+
+            }
+        }
+
+        et_car_year.setOnFocusChangeListener { view, b ->
+            if(b){
+                et_car_year.hint = ""
+            }else{
+
+            }
+        }
 
 
         iv_arrow_down = findViewById(R.id.iv_arrow_down)
@@ -155,8 +171,8 @@ class RegisterCarActivity: BaseActivity() {
                             licensePlateNumber=tv_car_id.text.toString(),
                             ownerName=tv_car_owner.text.toString(),
                             vehicleIdentificationNumber=tv_car_no.text.toString(),
-                            carYear=tv_car_year.text.toString().toInt(),
-                            carName = tv_car_model_name.text.toString(),
+                            carYear=et_car_year.hint.toString().toInt(),
+                            carName = et_car_model_name.hint.toString(),
                             fuel = tv_car_fuel.text.toString()
                         ))
 
@@ -339,12 +355,12 @@ class RegisterCarActivity: BaseActivity() {
         layout_before_inquiry.visibility = GONE
         layout_after_inquiry.visibility = VISIBLE
 
-        tv_car_fuel.text = postMyCarResponse.fuel
+        tv_car_fuel.text = "가솔린"
         tv_car_owner.text = postMyCarResponse.ownerName
         tv_car_id.text = postMyCarResponse.vehicleIdentificationNumber
         tv_car_no.text = postMyCarResponse.licensePlateNumber
-        tv_car_year.text = postMyCarResponse.carYear
-        tv_car_model_name.text = postMyCarResponse.modelName
+        et_car_year.hint = postMyCarResponse.carYear
+        et_car_model_name.hint = postMyCarResponse.carName
 
         view_register_percent1.isSelected = true
         view_register_percent2.isSelected = true

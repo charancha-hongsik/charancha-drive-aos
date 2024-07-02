@@ -19,8 +19,16 @@ import com.charancha.drive.PreferenceUtil.PERMISSION_ACCESS_BACKGROUND_LOCATION_
 import com.charancha.drive.PreferenceUtil.PERMISSION_ACCESS_FINE_LOCATION_THREE_TIMES
 import com.charancha.drive.PreferenceUtil.PERMISSION_ACTIVITY_RECOGNITION_THREE_TIMES
 import com.charancha.drive.R
+import com.charancha.drive.retrofit.response.GetMyCarInfoResponse
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.lang.reflect.Type
 
-class PermissionActivity: AppCompatActivity(){
+class PermissionActivity: BaseActivity(){
     companion object {
         private const val PERMISSION_ACCESS_FINE_LOCATION = 1000
         private const val PERMISSION_ACCESS_BACKGROUND_LOCATION = 1001
@@ -254,8 +262,47 @@ class PermissionActivity: AppCompatActivity(){
         /**
          * 차량등록이 되어있는지 체크 후 Main으로 갈지 정해야 함
          */
-        startActivity(Intent(this, OnBoardingActivity::class.java))
-        finish()
+        apiService().getMyCarInfo("Bearer " + PreferenceUtil.getPref(this@PermissionActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!).enqueue(object :
+            Callback<ResponseBody> {
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+                if(response.code() == 200){
+                    val jsonString = response.body()?.string()
+
+                    val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
+                    val getMyCarInfoResponse:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
+
+                    if(getMyCarInfoResponse.size > 0){
+                        PreferenceUtil.putBooleanPref(this@PermissionActivity, PreferenceUtil.PERMISSION_ALL_CHECKED, true)
+
+                        startActivity(Intent(this@PermissionActivity, MainActivity::class.java))
+                        finish()
+                    }else{
+                        PreferenceUtil.putBooleanPref(this@PermissionActivity, PreferenceUtil.PERMISSION_ALL_CHECKED, true)
+
+                        startActivity(Intent(this@PermissionActivity, OnBoardingActivity::class.java))
+                        finish()
+                    }
+                }else{
+                    PreferenceUtil.putBooleanPref(this@PermissionActivity, PreferenceUtil.PERMISSION_ALL_CHECKED, true)
+
+                    startActivity(Intent(this@PermissionActivity, OnBoardingActivity::class.java))
+                    finish()
+                }
+            }
+
+            override fun onFailure(
+                call: Call<ResponseBody>,
+                t: Throwable
+            ) {
+                PreferenceUtil.putBooleanPref(this@PermissionActivity, PreferenceUtil.PERMISSION_ALL_CHECKED, true)
+
+                startActivity(Intent(this@PermissionActivity, OnBoardingActivity::class.java))
+                finish()
+            }
+        })
     }
 
     override fun onResume() {

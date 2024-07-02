@@ -39,7 +39,7 @@ interface ApiServiceInterface {
     fun getCarInfoInquiry(@Header("Authorization") token: String, @Query("licensePlateNumber") licensePlateNumber: String, @Query("ownerName") ownerName: String): Call<ResponseBody>
 
     @PATCH("api/v1/users/me/personal-cars/{personalCarId}")
-    fun patCarInfoByCarId(@Header("Authorization") token: String, @Path("personalCarId") personalCarId: String): Call<ResponseBody>
+    fun patchCarInfoByCarId(@Header("Authorization") token: String, @Path("personalCarId") personalCarId: String, @Body body: RequestBody): Call<ResponseBody>
 
     @GET("api/v1/users/me/personal-cars")
     fun getMyCarInfo(@Header("Authorization") token: String): Call<ResponseBody>

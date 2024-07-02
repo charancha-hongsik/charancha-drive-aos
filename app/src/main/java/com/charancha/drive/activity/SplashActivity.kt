@@ -35,10 +35,6 @@ class SplashActivity: BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        startActivity(Intent(this, MainActivity::class.java))
-        finish()
-
-
         Handler(Looper.getMainLooper()).postDelayed({
             if(PreferenceUtil.getPref(this, PreferenceUtil.REFRESH_TOKEN, "") == ""){
                 unLoginedProcess()
@@ -74,7 +70,7 @@ class SplashActivity: BaseActivity() {
                             PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.TOKEN_TYPE, signInResponse.token_type)
 
 
-                            apiService().getTermsAgree("Bearer " + signInResponse.access_token, "마일로그_서비스", true).enqueue(object :Callback<ResponseBody>{
+                            apiService().getTermsAgree("Bearer " + PreferenceUtil.getPref(this@SplashActivity, PreferenceUtil.ACCESS_TOKEN, ""), "마일로그_서비스", true).enqueue(object :Callback<ResponseBody>{
                                 override fun onResponse(
                                     call: Call<ResponseBody>,
                                     response: Response<ResponseBody>
