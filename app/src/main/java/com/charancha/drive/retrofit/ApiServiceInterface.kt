@@ -35,15 +35,19 @@ interface ApiServiceInterface {
     @POST("api/v1/users/me/personal-cars")
     fun postMyCar(@Header("Authorization") token: String, @Body body: RequestBody): Call<ResponseBody>
 
-    @GET("api/v1/users/me/cars")
-    fun getMyCar(@Header("Authorization") token: String): Call<ResponseBody>
-
-    @GET("api/v1/cars/infoinquiry")
+    @GET("api/v1/cars/registration-records")
     fun getCarInfoInquiry(@Header("Authorization") token: String, @Query("licensePlateNumber") licensePlateNumber: String, @Query("ownerName") ownerName: String): Call<ResponseBody>
 
-    @GET("api/v1/cars/{carId}")
-    fun getCarInfoinquiryByCarId(@Header("Authorization") token: String, @Path("id") carId: String): Call<ResponseBody>
+    @PATCH("api/v1/users/me/personal-cars/{personalCarId}")
+    fun patCarInfoByCarId(@Header("Authorization") token: String, @Path("personalCarId") personalCarId: String): Call<ResponseBody>
 
     @GET("api/v1/users/me/personal-cars")
     fun getMyCarInfo(@Header("Authorization") token: String): Call<ResponseBody>
+
+    @GET("api/v1/users/me/personal-cars/{personalCarId}")
+    fun getCarInfoinquiryByCarId(@Header("Authorization") token: String, @Path("personalCarId") personalCarId: String): Call<ResponseBody>
+
+    @GET("api/v1/users/me/personal-cars/{personalCarId}")
+    fun deleteMyCarByCarId(@Header("Authorization") token: String, @Path("personalCarId") personalCarId: String): Call<ResponseBody>
+
 }

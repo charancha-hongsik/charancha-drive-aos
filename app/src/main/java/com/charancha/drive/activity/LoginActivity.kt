@@ -11,16 +11,19 @@ import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
 import com.charancha.drive.retrofit.request.SignInRequest
 import com.charancha.drive.retrofit.request.SignUpRequest
+import com.charancha.drive.retrofit.response.GetMyCarInfoResponse
 import com.charancha.drive.retrofit.response.SignInResponse
 import com.charancha.drive.retrofit.response.TermsAgreeStatusResponse
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.lang.reflect.Type
 
 /**
  * 1. 회원가입 및 로그인 시
@@ -44,21 +47,7 @@ class LoginActivity: BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-//        setBtn()
         setWebview()
-    }
-
-    fun setBtn(){
-        constraintLayout = findViewById(R.id.layout_google_login)
-        constraintLayout.setOnClickListener {
-            startActivity(
-                Intent(
-                    this@LoginActivity,
-                    PermissionInfoActivity::class.java
-                )
-            )
-            finish()
-        }
     }
 
     fun setWebview(){
@@ -237,13 +226,38 @@ class LoginActivity: BaseActivity() {
                                                             )
                                                             finish()
                                                         } else {
-                                                            startActivity(
-                                                                Intent(
-                                                                    this@LoginActivity,
-                                                                    OnBoardingActivity::class.java
-                                                                )
-                                                            )
-                                                            finish()
+                                                            apiService().getMyCarInfo("Bearer " + signInResponse.access_token).enqueue(object :Callback<ResponseBody>{
+                                                                override fun onResponse(
+                                                                    call: Call<ResponseBody>,
+                                                                    response: Response<ResponseBody>
+                                                                ) {
+                                                                    if(response.code() == 200){
+                                                                        val jsonString = response.body()?.string()
+
+                                                                        val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
+                                                                        val getMyCarInfoResponse:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
+
+                                                                        if(getMyCarInfoResponse.size > 0){
+                                                                            startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                                                                            finish()
+                                                                        }else{
+                                                                            startActivity(Intent(this@LoginActivity, OnBoardingActivity::class.java))
+                                                                            finish()
+                                                                        }
+                                                                    }else{
+                                                                        startActivity(Intent(this@LoginActivity, OnBoardingActivity::class.java))
+                                                                        finish()
+                                                                    }
+                                                                }
+
+                                                                override fun onFailure(
+                                                                    call: Call<ResponseBody>,
+                                                                    t: Throwable
+                                                                ) {
+                                                                    startActivity(Intent(this@LoginActivity, OnBoardingActivity::class.java))
+                                                                    finish()
+                                                                }
+                                                            })
                                                         }
                                                     } else {
                                                         startActivity(

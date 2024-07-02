@@ -81,18 +81,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//        CustomDialog(this, object : CustomDialog.DialogCallback{
-//            override fun onConfirm() {
-//                Log.d("testestestest","testestestestsetsetet onConfirm")
-//            }
-//
-//            override fun onCancel() {
-//                Log.d("testestestest","testestestestsetsetet onCancel")
-//            }
-//
-//        }).show()
-
-
         setPieChart()
         setLineChartForBrakes(findViewById(R.id.chart_line_brakes))
         setLineChartForEngine(findViewById(R.id.chart_line_engine))
@@ -136,64 +124,70 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun checkLocation(){
-        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-        builder.setTitle("위치 정보 권한")
-        builder.setMessage("위치 서비스를 사용할 수 없습니다. 기기의 ‘설정 > 개인정보 보호'에서 위치 서비스를 ‘항상'으로 켜주세요 (필수 권한)")
-        builder.setPositiveButton("설정으로 이동"
-        ) { _, _ ->
-            val openSettingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                val uri: Uri = Uri.fromParts("package", packageName, null)
-                data = uri
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        CustomDialog(this, "위치 정보 권한", "위치 서비스를 사용할 수 없습니다. 기기의 ‘설정 > 개인정보 보호'에서 위치 서비스를 ‘항상'으로 켜주세요 (필수 권한)", "설정으로 이동","취소",  object : CustomDialog.DialogCallback{
+            override fun onConfirm() {
+                val openSettingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    val uri: Uri = Uri.fromParts("package", packageName, null)
+                    data = uri
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                checkingPermission = true
+                startActivity(openSettingsIntent)
             }
-            checkingPermission = true
-            startActivity(openSettingsIntent)
-        }
-        builder.setNegativeButton("취소") { dialog, which ->
-            dialog.dismiss()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                if(ContextCompat.checkSelfPermission(this, ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED){
-                    checkUserActivity()
+
+            override fun onCancel() {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    if(ContextCompat.checkSelfPermission(this@MainActivity, ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED){
+                        checkUserActivity()
+                    }
                 }
             }
-        }
-        builder.show()
+
+        }).show()
     }
 
     fun checkUserActivity(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            if(ContextCompat.checkSelfPermission(this, ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED){
-                val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-                builder.setTitle("동작 및 피트니스")
-                builder.setMessage("동작 및 피트니스 서비스를 사용할 수 없습니다. 기기의 ‘설정 > 개인정보 보호'에서 동작 및 피트니스 서비스를 켜주세요 (필수 권한)")
-                builder.setPositiveButton("설정으로 이동"
-                ) { _, _ ->
-                    val openSettingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                        val uri: Uri = Uri.fromParts("package", packageName, null)
-                        data = uri
-                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    }
-                    startActivity(openSettingsIntent)
-                }
-                builder.setNegativeButton("취소") { dialog, which ->
-                    dialog.dismiss()
+            if(ContextCompat.checkSelfPermission(this, ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
+                CustomDialog(
+                    this,
+                    "동작 및 피트니스",
+                    "동작 및 피트니스 서비스를 사용할 수 없습니다. 기기의 ‘설정 > 개인정보 보호'에서 동작 및 피트니스 서비스를 켜주세요 (필수 권한)",
+                    "설정으로 이동",
+                    "취소",
+                    object : CustomDialog.DialogCallback {
+                        override fun onConfirm() {
+                            val openSettingsIntent =
+                                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                    val uri: Uri = Uri.fromParts("package", packageName, null)
+                                    data = uri
+                                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                }
+                            startActivity(openSettingsIntent)
+                        }
 
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                        checkPermission(mutableListOf(
-                            BLUETOOTH_CONNECT,
-                            POST_NOTIFICATIONS
-                        ).apply {
+                        override fun onCancel() {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                    checkPermission(mutableListOf(
+                                        BLUETOOTH_CONNECT,
+                                        POST_NOTIFICATIONS
+                                    ).apply {
 
-                        }.toTypedArray(),0)
-                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        checkPermission(mutableListOf(
-                            BLUETOOTH_CONNECT
-                        ).apply {
+                                    }.toTypedArray(), 0
+                                    )
+                                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                    checkPermission(mutableListOf(
+                                        BLUETOOTH_CONNECT
+                                    ).apply {
 
-                        }.toTypedArray(),0)
-                    }
-                }
-                builder.show()
+                                    }.toTypedArray(), 0
+                                    )
+                                }
+                            }
+                        }
+
+                    }).show()
             }
         }
     }
@@ -239,7 +233,7 @@ class MainActivity : AppCompatActivity() {
 
         btn_edit = findViewById(R.id.btn_edit)
         btn_edit.setOnClickListener{
-            startActivity(Intent(this, InputNameActivity::class.java))
+            startActivity(Intent(this, EditCarInfoActivity::class.java))
         }
 
         tv_car_name = findViewById(R.id.tv_car_name)
