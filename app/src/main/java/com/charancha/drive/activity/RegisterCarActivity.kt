@@ -112,7 +112,7 @@ class RegisterCarActivity: BaseActivity() {
             if(b){
                 et_car_model_name.hint = ""
             }else{
-
+                et_car_model_name.hint = postMyCarResponse.carName
             }
         }
 
@@ -120,7 +120,7 @@ class RegisterCarActivity: BaseActivity() {
             if(b){
                 et_car_year.hint = ""
             }else{
-
+                et_car_year.hint = postMyCarResponse.carYear
             }
         }
 
@@ -165,14 +165,27 @@ class RegisterCarActivity: BaseActivity() {
                 }
 
                 2 -> {
+
+                    var carYear = postMyCarResponse.carYear
+                    var carName = postMyCarResponse.carName
+
+                     if(et_car_year.text.toString().isNotEmpty()){
+                         carYear = et_car_year.text.toString()
+                     }
+
+                    if(et_car_model_name.text.toString().isNotEmpty()){
+                        carName = et_car_model_name.text.toString()
+                    }
+
+
                     val gson = Gson()
                     val jsonParam =
                         gson.toJson(PostMyCarRequest(
                             licensePlateNumber=tv_car_id.text.toString(),
                             ownerName=tv_car_owner.text.toString(),
                             vehicleIdentificationNumber=tv_car_no.text.toString(),
-                            carYear=et_car_year.hint.toString().toInt(),
-                            carName = et_car_model_name.hint.toString(),
+                            carYear= carYear.toInt(),
+                            carName = carName,
                             fuel = tv_car_fuel.text.toString()
                         ))
 

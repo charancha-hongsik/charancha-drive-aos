@@ -84,6 +84,7 @@ class EditCarInfoActivity:BaseActivity() {
             if(b){
                 et_car_model_name.hint = ""
             }else{
+                et_car_model_name.hint = getMyCarInfoResponse.carName
 
             }
         }
@@ -92,6 +93,7 @@ class EditCarInfoActivity:BaseActivity() {
             if(b){
                 et_car_year.hint = ""
             }else{
+                et_car_year.hint = getMyCarInfoResponse.carYear.toString()
 
             }
         }
