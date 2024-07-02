@@ -1,6 +1,8 @@
 package com.charancha.drive.activity
 
 import android.os.Bundle
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.charancha.drive.retrofit.ApiServiceInterface
 import com.charancha.drive.retrofit.HeaderInterceptor
@@ -25,6 +27,15 @@ open class BaseActivity: AppCompatActivity(){
             .addConverterFactory(GsonConverterFactory.create()).build().create(
                 ApiServiceInterface::class.java
             )
+    }
+
+    fun showKeyboard(editText: EditText) {
+        // EditText에 포커스 주기
+        editText.requestFocus()
+
+        // InputMethodManager를 통해 키보드 올리기
+        val imm = editText.context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
     }
 
 }

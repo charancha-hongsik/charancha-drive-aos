@@ -67,16 +67,14 @@
             android:layout_marginTop="6dp"
             android:background="@drawable/radius8_gray50">
 
-            <EditText
-                android:id="@+id/et_login_oauth"
+            <TextView
+                android:id="@+id/tv_login_oauth"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="구글"
+                android:text="구글"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:theme="@style/EditCarText"
-                android:background="@null"
                 android:textColor="@color/gray_950"
                 android:textFontWeight="600"
                 android:textAppearance="@style/B1SB"
@@ -99,16 +97,14 @@
             android:layout_marginTop="6dp"
             android:background="@drawable/radius8_gray50">
 
-            <EditText
-                android:id="@+id/et_email"
+            <TextView
+                android:id="@+id/tv_email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="abcd123@gmail.com"
+                android:text="abcd123@gmail.com"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:theme="@style/EditCarText"
-                android:background="@null"
                 android:textColor="@color/gray_950"
                 android:textFontWeight="600"
                 android:textAppearance="@style/B1SB"
@@ -116,37 +112,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="이름"
-            android:layout_marginTop="24dp"
-            android:textAppearance="@style/C1R"
-            android:textFontWeight="400"
-            android:textColor="@color/gray_600"/>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:layout_marginTop="6dp"
-            android:background="@drawable/radius8_gray50">
-
-            <EditText
-                android:id="@+id/et_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="김마일"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:theme="@style/EditCarText"
-                android:background="@null"
-                android:textColor="@color/gray_950"
-                android:textFontWeight="600"
-                android:textAppearance="@style/B1SB"
-                android:layout_marginLeft="16dp"/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
             android:layout_width="wrap_content"
@@ -163,20 +128,33 @@
             android:layout_marginTop="6dp"
             android:background="@drawable/radius8_gray50">
 
-            <EditText
-                android:id="@+id/et_nickname"
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/tv_nickname"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:hint="한치의흠도없는 스카이다이빙 001"
+                android:text="폭주하는 소금빵_123asdfdfd8fd8f8asdfasdfasdfaf"
+                android:layout_marginRight="46dp"
+                android:maxLines="1"
+                android:ellipsize="end"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:theme="@style/EditCarText"
-                android:background="@null"
+                app:layout_constraintRight_toLeftOf="@+id/ib_edit_nickname"
                 android:textColor="@color/gray_950"
                 android:textFontWeight="600"
                 android:textAppearance="@style/B1SB"
                 android:layout_marginLeft="16dp"/>
+
+            <ImageView
+                android:id="@+id/ib_edit_nickname"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginRight="16dp"
+                android:src="@drawable/ic_edit_gray"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>

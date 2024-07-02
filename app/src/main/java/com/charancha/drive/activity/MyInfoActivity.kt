@@ -1,21 +1,21 @@
 package com.charancha.drive.activity
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
+import com.charancha.drive.CustomDialog
+import com.charancha.drive.CustomDialogForEditText
 import com.charancha.drive.R
+import retrofit2.Callback
+import retrofit2.Response
 
 class MyInfoActivity:BaseActivity() {
     lateinit var btn_back:ImageView
-    lateinit var et_login_oauth:EditText
-    lateinit var et_email:EditText
-    lateinit var et_name:EditText
-    lateinit var et_nickname:EditText
+    lateinit var tv_nickname:TextView
     lateinit var tv_withdrawal:TextView
-
-
+    lateinit var ib_edit_nickname:ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,20 +27,38 @@ class MyInfoActivity:BaseActivity() {
 
     fun init(){
         btn_back = findViewById(R.id.btn_back)
-        et_login_oauth = findViewById(R.id.et_login_oauth)
-        et_email = findViewById(R.id.et_email)
-        et_name = findViewById(R.id.et_name)
-        et_nickname = findViewById(R.id.et_nickname)
+        tv_nickname = findViewById(R.id.tv_nickname)
         tv_withdrawal = findViewById(R.id.tv_withdrawal)
-
-        btn_back.setOnClickListener {
-            finish()
-        }
+        ib_edit_nickname = findViewById(R.id.ib_edit_nickname)
 
     }
 
     fun setListener(){
+        btn_back.setOnClickListener {
+            finish()
+        }
 
+        tv_withdrawal.setOnClickListener {
+
+        }
+
+        tv_nickname.setOnClickListener {
+
+        }
+
+        ib_edit_nickname.setOnClickListener {
+            CustomDialogForEditText(this, "내 정보", "별명", "폭주하는 소금빵","저장","취소",  object : CustomDialogForEditText.DialogCallback{
+                override fun onConfirm(contents:String) {
+
+                }
+
+                override fun onCancel() {
+
+
+                }
+
+            }).show()
+        }
 
 
     }

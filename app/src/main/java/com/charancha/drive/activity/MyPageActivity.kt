@@ -2,6 +2,7 @@ package com.charancha.drive.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.charancha.drive.PreferenceUtil
@@ -15,6 +16,7 @@ class MyPageActivity:BaseActivity() {
     lateinit var btn_terms:ConstraintLayout
     lateinit var btn_personal_info:ConstraintLayout
     lateinit var btn_logout: TextView
+    lateinit var btn_back: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +34,7 @@ class MyPageActivity:BaseActivity() {
         btn_terms = findViewById(R.id.btn_terms)
         btn_personal_info = findViewById(R.id.btn_personal_info)
         btn_logout = findViewById(R.id.btn_logout)
+        btn_back = findViewById(R.id.btn_back)
     }
 
     fun setListener(){
@@ -58,6 +61,8 @@ class MyPageActivity:BaseActivity() {
         btn_personal_info.setOnClickListener {
 
         }
+
+        btn_back.setOnClickListener { finish() }
 
         btn_logout.setOnClickListener {
             PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.ACCESS_TOKEN, "")

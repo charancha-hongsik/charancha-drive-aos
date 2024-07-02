@@ -396,14 +396,4 @@ class RegisterCarActivity: BaseActivity() {
             }
         }
     }
-
-    // EditText에 포커스를 주고 키보드를 올리는 함수
-    fun showKeyboard(editText: EditText) {
-        // EditText에 포커스 주기
-        editText.requestFocus()
-
-        // InputMethodManager를 통해 키보드 올리기
-        val imm = editText.context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
-    }
 }
