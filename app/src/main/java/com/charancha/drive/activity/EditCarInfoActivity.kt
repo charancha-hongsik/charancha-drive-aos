@@ -72,6 +72,10 @@ class EditCarInfoActivity:BaseActivity() {
             layout_fuel_select.visibility = VISIBLE
         }
 
+        layout_fuel_select.setOnClickListener {
+            layout_fuel_select.visibility = GONE
+        }
+
         ib_close.setOnClickListener {
             finish()
         }
