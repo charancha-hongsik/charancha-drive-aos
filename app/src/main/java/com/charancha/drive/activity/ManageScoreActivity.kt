@@ -53,11 +53,10 @@ class ManageScoreActivity:BaseActivity() {
         tv_normal_speed_driving_percent2 = findViewById(R.id.tv_normal_speed_driving_percent2)
 
 
-        setNormalSpeedDrivingChartWidthByPercent(0.19f)
         setOptimalDrivingChartWidthByPercent(1f)
+        setNormalSpeedDrivingChartWidthByPercent(0.22f)
         setOptimalDrivingPercentTextView()
         setNormalDrivingPercentTextView()
-
     }
 
     /**
@@ -103,7 +102,7 @@ class ManageScoreActivity:BaseActivity() {
 
                 val widthDifference = chartWidth - percentWidth
 
-                if (widthDifference > dpToPx(7)) {
+                if (widthDifference > 11) {
                     tv_optimal_driving_percent1.visibility = GONE
                     tv_optimal_driving_percent2.visibility = VISIBLE
                 }else{
@@ -118,12 +117,18 @@ class ManageScoreActivity:BaseActivity() {
 
         view_normal_speed_driving_chart.viewTreeObserver.addOnGlobalLayoutListener {
             tv_normal_speed_driving_percent1.viewTreeObserver.addOnGlobalLayoutListener {
-                val chartWidth = view_normal_speed_driving_chart.width
-                val percentWidth = tv_normal_speed_driving_percent1.width
+                val chartWidth = pxToDp(view_normal_speed_driving_chart.width)
+                val percentWidth = pxToDp(tv_normal_speed_driving_percent1.width)
 
                 val widthDifference = chartWidth - percentWidth
 
-                if (widthDifference > dpToPx(7)) {
+                Log.d("testsetestets","testsetsetse widthDifference :: " + widthDifference)
+                Log.d("testsetestets","testsetsetse chartWidth :: " + chartWidth)
+                Log.d("testsetestets","testsetsetse percentWidth :: " + percentWidth)
+
+
+
+                if (widthDifference > 11) {
                     tv_normal_speed_driving_percent1.visibility = GONE
                     tv_normal_speed_driving_percent2.visibility = VISIBLE
                 }else{
@@ -135,8 +140,12 @@ class ManageScoreActivity:BaseActivity() {
 
     }
 
-    fun dpToPx(dp: Int): Int {
+    fun pxToDp(px: Int): Float {
         val density = resources.displayMetrics.density
-        return (dp * density).roundToInt()
+        Log.d("testsetestets","testsetsetse density :: " + density)
+        Log.d("testsetestets","testsetsetse px :: " + px)
+
+
+        return px / density
     }
 }
