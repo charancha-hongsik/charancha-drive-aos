@@ -222,7 +222,7 @@ class BluetoothService : Service() {
             startForeground(1, notification.setSmallIcon(android.R.drawable.btn_star_big_off)
                 .setAutoCancel(false)
                 .setOngoing(true)
-                .setContentText("주행 관찰중.." + getCurrent())
+                .setContentText("주행 관찰중이에요.")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setOnlyAlertOnce(true)
                 .build())
@@ -998,7 +998,7 @@ class BluetoothService : Service() {
                 maxDistance = mutableListOf()
                 pastMaxDistance = mutableListOf()
 
-                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중.. NotSave" + getCurrent()).build())
+                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중이에요.").build())
 
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
