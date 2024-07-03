@@ -770,15 +770,27 @@ class BluetoothService : Service() {
 
 
     fun refreshNotiText(){
-        if(sensorState)
-            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 중..($distanceSum m) " + getCurrent()).build())
+        if(sensorState) {
+            if (distance_array.isNotEmpty() && distance_array.sum() > 500) {
+                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(
+                    1,
+                    notification.setContentText("주행 중..($distanceSum m) " + getCurrent()).build()
+                )
+            }
+        }
         else
             (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중....." + getCurrent()).build())
     }
 
     fun refreshNotiText(event:String){
-        if(sensorState)
-            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 중..($distanceSum m) " + event + ", " + getCurrent()).build())
+        if(sensorState) {
+            if (distance_array.isNotEmpty() && distance_array.sum() > 500) {
+                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(
+                    1,
+                    notification.setContentText("주행 중..($distanceSum m) " + getCurrent()).build()
+                )
+            }
+        }
         else
             (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중....." + event + ", " + getCurrent()).build())
     }
@@ -939,7 +951,7 @@ class BluetoothService : Service() {
                     maxDistance = mutableListOf()
                     pastMaxDistance = mutableListOf()
 
-                    if(distance_array.sum() > 0f){
+                    if(distance_array.sum() > 500f){
                         writeToRoom()
                         callApi()
                     }
@@ -962,7 +974,7 @@ class BluetoothService : Service() {
                 maxDistance = mutableListOf()
                 pastMaxDistance = mutableListOf()
 
-                if(distance_array.sum() > 0f){
+                if(distance_array.sum() > 500f){
                     writeToRoom()
                     callApi()
                 }
@@ -1146,6 +1158,7 @@ class BluetoothService : Service() {
                         scheduleWalkingDetectWork4()
                         scheduleWalkingDetectWork5()
                         scheduleWalkingDetectWork6()
+                        startSensor(L1)
                     }
                 }
             }
