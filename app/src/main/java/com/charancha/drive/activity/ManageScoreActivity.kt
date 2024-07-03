@@ -7,6 +7,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.charancha.drive.R
 import kotlin.math.roundToInt
 
@@ -20,6 +21,7 @@ class ManageScoreActivity:BaseActivity() {
     lateinit var tv_optimal_driving_percent2: TextView
     lateinit var tv_normal_speed_driving_percent1: TextView
     lateinit var tv_normal_speed_driving_percent2: TextView
+    lateinit var btn_average_distance: ConstraintLayout
 
 
 
@@ -51,6 +53,11 @@ class ManageScoreActivity:BaseActivity() {
         tv_optimal_driving_percent2 = findViewById(R.id.tv_optimal_driving_percent2)
         tv_normal_speed_driving_percent1 = findViewById(R.id.tv_normal_speed_driving_percent1)
         tv_normal_speed_driving_percent2 = findViewById(R.id.tv_normal_speed_driving_percent2)
+
+        btn_average_distance = findViewById(R.id.btn_average_distance)
+        btn_average_distance.setOnClickListener {
+
+        }
 
 
         setOptimalDrivingChartWidthByPercent(1f)
@@ -122,12 +129,6 @@ class ManageScoreActivity:BaseActivity() {
 
                 val widthDifference = chartWidth - percentWidth
 
-                Log.d("testsetestets","testsetsetse widthDifference :: " + widthDifference)
-                Log.d("testsetestets","testsetsetse chartWidth :: " + chartWidth)
-                Log.d("testsetestets","testsetsetse percentWidth :: " + percentWidth)
-
-
-
                 if (widthDifference > 11) {
                     tv_normal_speed_driving_percent1.visibility = GONE
                     tv_normal_speed_driving_percent2.visibility = VISIBLE
@@ -142,9 +143,6 @@ class ManageScoreActivity:BaseActivity() {
 
     fun pxToDp(px: Int): Float {
         val density = resources.displayMetrics.density
-        Log.d("testsetestets","testsetsetse density :: " + density)
-        Log.d("testsetestets","testsetsetse px :: " + px)
-
 
         return px / density
     }
