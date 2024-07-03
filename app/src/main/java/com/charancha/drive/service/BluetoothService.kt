@@ -779,7 +779,7 @@ class BluetoothService : Service() {
             }
         }
         else
-            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중....." + getCurrent()).build())
+            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중이에요.").build())
     }
 
     fun refreshNotiText(event:String){
@@ -792,7 +792,7 @@ class BluetoothService : Service() {
             }
         }
         else
-            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중....." + event + ", " + getCurrent()).build())
+            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중이에요.").build())
     }
 
     inner class ActivityRecognitionReceiver : BroadcastReceiver() {
