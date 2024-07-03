@@ -103,7 +103,7 @@ class ManageScoreActivity:BaseActivity() {
 
                 val widthDifference = chartWidth - percentWidth
 
-                if (widthDifference > dpToPx(15)) {
+                if (widthDifference > dpToPx(7)) {
                     tv_optimal_driving_percent1.visibility = GONE
                     tv_optimal_driving_percent2.visibility = VISIBLE
                 }else{
@@ -123,7 +123,7 @@ class ManageScoreActivity:BaseActivity() {
 
                 val widthDifference = chartWidth - percentWidth
 
-                if (widthDifference > dpToPx(15)) {
+                if (widthDifference > dpToPx(7)) {
                     tv_normal_speed_driving_percent1.visibility = GONE
                     tv_normal_speed_driving_percent2.visibility = VISIBLE
                 }else{
