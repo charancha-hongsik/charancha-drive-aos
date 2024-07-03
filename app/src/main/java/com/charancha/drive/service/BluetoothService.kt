@@ -771,7 +771,7 @@ class BluetoothService : Service() {
 
     fun refreshNotiText(){
         if(sensorState) {
-            if (distance_array.isNotEmpty() && distance_array.sum() > 500) {
+            if (distance_array.isNotEmpty() && distance_array.sum() > 500f) {
                 (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(
                     1,
                     notification.setContentText("주행 중..($distanceSum m) " + getCurrent()).build()
@@ -784,7 +784,7 @@ class BluetoothService : Service() {
 
     fun refreshNotiText(event:String){
         if(sensorState) {
-            if (distance_array.isNotEmpty() && distance_array.sum() > 500) {
+            if (distance_array.isNotEmpty() && distance_array.sum() > 500f) {
                 (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(
                     1,
                     notification.setContentText("주행 중..($distanceSum m) " + getCurrent()).build()
