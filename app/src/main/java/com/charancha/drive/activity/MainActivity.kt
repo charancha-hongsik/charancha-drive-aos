@@ -14,10 +14,12 @@ import android.provider.Settings
 import android.util.Log
 import android.view.View.*
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.charancha.drive.CustomDialog
@@ -50,6 +52,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var chart: PieChart
     lateinit var btn_edit:ImageButton
+    lateinit var layout_engine: ConstraintLayout
     var tv_car_name:TextView? = null
 
     var checkingPermission = false
@@ -239,6 +242,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         tv_car_name = findViewById(R.id.tv_car_name)
+        layout_engine = findViewById(R.id.layout_engine)
+        layout_engine.setOnClickListener {
+            startActivity(Intent(this, ManageScoreActivity::class.java))
+        }
+
+
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
