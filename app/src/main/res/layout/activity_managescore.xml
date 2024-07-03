@@ -130,7 +130,6 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="0"
-                    android:includeFontPadding="false"
                     android:textColor="@color/white_op_95"
                     android:textAppearance="@style/H2SB"
                     android:textFontWeight="600"
@@ -157,7 +156,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="아직 데이터가 없어요."
-                    android:includeFontPadding="false"
                     android:textAppearance="@style/B2M"
                     android:textFontWeight="500"
                     android:textColor="@color/white_op_60"
@@ -172,7 +170,6 @@
                     android:text="함께 달려볼까요?"
                     android:textAppearance="@style/B2M"
                     android:textFontWeight="500"
-                    android:includeFontPadding="false"
                     android:textColor="@color/white_op_60"
                     android:layout_marginLeft="20dp"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -201,7 +198,6 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="333"
-                    android:includeFontPadding="false"
                     android:textColor="@color/white_op_95"
                     android:textAppearance="@style/H2SB"
                     android:textFontWeight="600"
@@ -230,7 +226,6 @@
                     android:text="굉장해요. 지난 주행보다 +11점 얻었어요!"
                     android:textAppearance="@style/B2M"
                     android:textFontWeight="500"
-                    android:includeFontPadding="false"
                     android:textColor="@color/white_op_60"
                     android:layout_marginLeft="20dp"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -289,7 +284,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="20"
-                    android:includeFontPadding="false"
                     android:textColor="@color/gray_950"
                     android:textFontWeight="600"
                     android:textAppearance="@style/T2SB"
@@ -308,7 +302,6 @@
                     android:layout_marginRight="16dp"
                     android:textColor="@color/gray_600"
                     android:textFontWeight="400"
-                    android:includeFontPadding="false"
                     android:textAppearance="@style/C2R"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_distance"
@@ -371,7 +364,6 @@
                     android:text="35.1"
                     android:textColor="@color/gray_950"
                     android:textFontWeight="600"
-                    android:includeFontPadding="false"
                     android:textAppearance="@style/T2SB"
                     android:layout_marginRight="1dp"
                     app:layout_constraintBottom_toTopOf="@id/tv_speed_contents"
@@ -389,7 +381,6 @@
                     android:textColor="@color/gray_600"
                     android:textFontWeight="400"
                     android:textAppearance="@style/C2R"
-                    android:includeFontPadding="false"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_speed_percent"
                     app:layout_constraintBottom_toBottomOf="parent" />
@@ -471,14 +462,53 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_optimal_driving_contents" />
                 
-                <com.github.mikephil.charting.charts.HorizontalBarChart
-                    android:id="@+id/barchart_optimal_driving_chart_title"
+                <View
+                    android:id="@+id/view_optimal_driving_chart_background"
                     android:layout_width="match_parent"
                     android:layout_height="28dp"
                     android:layout_marginTop="6dp"
+                    android:background="@drawable/radius6_gray50"
                     app:layout_constraintTop_toBottomOf="@+id/tv_optimal_driving_chart_title"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"/>
+
+                <View
+                    android:id="@+id/view_optimal_driving_chart"
+                    android:layout_width="70dp"
+                    android:layout_height="28dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/radius6_gray950"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_optimal_driving_chart_title"
+                    app:layout_constraintLeft_toLeftOf="parent" />
+
+                <TextView
+                    android:id="@+id/tv_optimal_driving_percent1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/gray_950"
+                    android:textAppearance="@style/C2R"
+                    android:textFontWeight="400"
+                    android:layout_marginLeft="4dp"
+                    android:text="내 차 8.5%"
+                    android:visibility="visible"
+                    app:layout_constraintLeft_toRightOf="@+id/view_optimal_driving_chart"
+                    app:layout_constraintBottom_toBottomOf="@+id/view_optimal_driving_chart_background"
+                    app:layout_constraintTop_toTopOf="@+id/view_optimal_driving_chart_background"/>
+
+                <TextView
+                    android:id="@+id/tv_optimal_driving_percent2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white_op_95"
+                    android:textAppearance="@style/C2R"
+                    android:textFontWeight="400"
+                    android:layout_marginRight="6dp"
+                    android:text="내 차 8.5%"
+                    android:visibility="visible"
+                    app:layout_constraintRight_toRightOf="@+id/view_optimal_driving_chart"
+                    app:layout_constraintBottom_toBottomOf="@+id/view_optimal_driving_chart_background"
+                    app:layout_constraintTop_toTopOf="@+id/view_optimal_driving_chart_background"/>
+
                 
                 <TextView
                     android:id="@+id/btn_optimal_driving"
@@ -491,7 +521,7 @@
                     android:layout_marginTop="24dp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/barchart_optimal_driving_chart_title"/>
+                    app:layout_constraintTop_toBottomOf="@+id/view_optimal_driving_chart_background"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -556,14 +586,54 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_normal_speed_driving_contents" />
 
-                <com.github.mikephil.charting.charts.HorizontalBarChart
-                    android:id="@+id/barchart_normal_speed_driving_chart_title"
+                <View
+                    android:id="@+id/view_normal_speed_driving_chart_background"
                     android:layout_width="match_parent"
                     android:layout_height="28dp"
                     android:layout_marginTop="6dp"
+                    android:background="@drawable/radius6_gray50"
                     app:layout_constraintTop_toBottomOf="@+id/tv_normal_speed_driving_chart_title"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"/>
+
+                <View
+                    android:id="@+id/view_normal_speed_driving_chart"
+                    android:layout_width="140dp"
+                    android:layout_height="28dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/radius6_gray950"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_normal_speed_driving_chart_title"
+                    app:layout_constraintLeft_toLeftOf="parent" />
+
+
+                <TextView
+                    android:id="@+id/tv_normal_speed_driving_percent1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/gray_950"
+                    android:textAppearance="@style/C2R"
+                    android:textFontWeight="400"
+                    android:layout_marginLeft="4dp"
+                    android:text="내 차 8.5%"
+                    android:visibility="visible"
+                    app:layout_constraintLeft_toRightOf="@+id/view_normal_speed_driving_chart"
+                    app:layout_constraintBottom_toBottomOf="@+id/view_normal_speed_driving_chart_background"
+                    app:layout_constraintTop_toTopOf="@+id/view_normal_speed_driving_chart_background"/>
+
+                <TextView
+                    android:id="@+id/tv_normal_speed_driving_percent2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white_op_95"
+                    android:textAppearance="@style/C2R"
+                    android:textFontWeight="400"
+                    android:layout_marginRight="6dp"
+                    android:text="내 차 8.5%"
+                    android:visibility="visible"
+                    app:layout_constraintRight_toRightOf="@+id/view_normal_speed_driving_chart"
+                    app:layout_constraintBottom_toBottomOf="@+id/view_normal_speed_driving_chart_background"
+                    app:layout_constraintTop_toTopOf="@+id/view_normal_speed_driving_chart_background"/>
+
 
                 <TextView
                     android:id="@+id/btn_normal_speed_driving"
@@ -576,7 +646,7 @@
                     android:layout_marginTop="24dp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/barchart_normal_speed_driving_chart_title"/>
+                    app:layout_constraintTop_toBottomOf="@+id/view_normal_speed_driving_chart_background"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
