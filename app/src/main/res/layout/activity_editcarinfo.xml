@@ -357,12 +357,11 @@
         <LinearLayout
             android:id="@+id/persistent_bottom_sheet"
             android:layout_width="match_parent"
-            android:layout_height="500dp"
+            android:layout_height="472dp"
             android:background="@drawable/radius24_topleftright_white"
             android:orientation="vertical"
             android:padding="24dp"
             app:behavior_hideable="false"
-            app:behavior_peekHeight="250dp"
             app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
             <View

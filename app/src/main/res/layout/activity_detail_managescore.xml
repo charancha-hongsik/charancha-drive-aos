@@ -651,7 +651,6 @@
             android:orientation="vertical"
             android:padding="24dp"
             app:behavior_hideable="false"
-            app:behavior_peekHeight="336dp"
             app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
             <View
@@ -757,6 +756,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/btn_select_date_from_list"
                     android:layout_width="match_parent"
+                    android:visibility="gone"
                     android:layout_height="40dp"
                     android:layout_marginTop="12dp">
 

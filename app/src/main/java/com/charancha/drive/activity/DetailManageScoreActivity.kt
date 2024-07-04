@@ -117,7 +117,9 @@ class DetailManageScoreActivity:BaseActivity(){
             layout_select_main.visibility = VISIBLE
         }
 
-        layout_choose_date.setOnClickListener { layout_choose_date.visibility = GONE }
+        layout_choose_date.setOnClickListener {
+            layout_choose_date.visibility = GONE
+        }
 
         btn_close_select_date.setOnClickListener {
             layout_choose_date.visibility = GONE
@@ -145,6 +147,7 @@ class DetailManageScoreActivity:BaseActivity(){
             btn_each_month.isSelected = false
             btn_date_own.isSelected = false
 
+            btn_select_date_from_list.visibility = GONE
         }
 
         btn_six_month.setOnClickListener {
@@ -152,6 +155,8 @@ class DetailManageScoreActivity:BaseActivity(){
             btn_six_month.isSelected = true
             btn_each_month.isSelected = false
             btn_date_own.isSelected = false
+
+            btn_select_date_from_list.visibility = GONE
         }
 
         btn_each_month.setOnClickListener {
@@ -159,6 +164,8 @@ class DetailManageScoreActivity:BaseActivity(){
             btn_six_month.isSelected = false
             btn_each_month.isSelected = true
             btn_date_own.isSelected = false
+
+            btn_select_date_from_list.visibility = VISIBLE
         }
 
         btn_date_own.setOnClickListener {
@@ -166,6 +173,9 @@ class DetailManageScoreActivity:BaseActivity(){
             btn_six_month.isSelected = false
             btn_each_month.isSelected = false
             btn_date_own.isSelected = true
+
+            btn_select_date_from_list.visibility = GONE
+
         }
 
 
@@ -183,6 +193,7 @@ class DetailManageScoreActivity:BaseActivity(){
                 when(newState) {
                     BottomSheetBehavior.STATE_COLLAPSED-> {
                         Log.d("testset", "onStateChanged: 접음")
+                        layout_choose_date.visibility = GONE
                     }
                     BottomSheetBehavior.STATE_DRAGGING-> {
                         Log.d("testset", "onStateChanged: 드래그")
@@ -192,6 +203,7 @@ class DetailManageScoreActivity:BaseActivity(){
                     }
                     BottomSheetBehavior.STATE_HIDDEN-> {
                         Log.d("testset", "onStateChanged: 숨기기")
+
                     }
                     BottomSheetBehavior.STATE_SETTLING-> {
                         Log.d("testset", "onStateChanged: 고정됨")

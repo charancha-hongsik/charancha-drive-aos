@@ -269,6 +269,7 @@ class EditCarInfoActivity:BaseActivity() {
                 when(newState) {
                     BottomSheetBehavior.STATE_COLLAPSED-> {
                         Log.d("testset", "onStateChanged: 접음")
+                        layout_fuel_select.visibility = GONE
                     }
                     BottomSheetBehavior.STATE_DRAGGING-> {
                         Log.d("testset", "onStateChanged: 드래그")
