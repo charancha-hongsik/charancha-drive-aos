@@ -796,13 +796,16 @@
             <ListView
                 android:id="@+id/listView_choose_date_own"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="300dp"
+                android:layout_marginTop="28dp"
                 android:divider="@null"
-                android:visibility="gone"
-                android:layout_marginTop="28dp"/>
+                android:drawSelectorOnTop="false"
+                android:listSelector="@drawable/choose_date_item_selector"
+                android:visibility="gone" />
 
 
             <TextView
+                android:id="@+id/btn_inquire_date"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 android:layout_marginTop="32dp"
