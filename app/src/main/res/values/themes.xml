@@ -50,6 +50,18 @@
 
     </style>
 
+    <style name="Theme.DetailManageScore" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">@color/white_op_95</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">@color/gray_50</item>
+
+        <!-- no action bar -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+    </style>
+
     <style name="Theme.MyInfoTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/white_op_95</item>

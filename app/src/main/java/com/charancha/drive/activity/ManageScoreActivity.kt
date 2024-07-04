@@ -1,5 +1,6 @@
 package com.charancha.drive.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -56,7 +57,7 @@ class ManageScoreActivity:BaseActivity() {
 
         btn_average_distance = findViewById(R.id.btn_average_distance)
         btn_average_distance.setOnClickListener {
-
+            startActivity(Intent(this@ManageScoreActivity, DetailManageScoreActivity::class.java).putExtra("title","평균 관리 점수"))
         }
 
 
