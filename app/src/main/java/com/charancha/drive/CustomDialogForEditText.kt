@@ -3,6 +3,8 @@ package com.charancha.drive
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Window
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -44,7 +46,7 @@ class CustomDialogForEditText(context: Context, val title:String, val subtitle:S
                 dialogCallback.onConfirm(et_dialog_contents.text.toString())
                 dismiss()
             }else{
-                Toast.makeText(context, "내용을 적어주세요.",Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "1글자 이상 입력하세요.",Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -67,6 +69,28 @@ class CustomDialogForEditText(context: Context, val title:String, val subtitle:S
 
             }
         }
+
+        et_dialog_contents.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                p0?.let{
+                    if(p0.length>=7){
+
+                    }else{
+
+                    }
+                }
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+        })
+
+
 
     }
 

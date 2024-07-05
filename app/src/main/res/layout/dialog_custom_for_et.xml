@@ -65,6 +65,7 @@
                 android:textFontWeight="600"
                 android:textAppearance="@style/B1SB"
                 android:inputType="text"
+                android:maxLength="16"
                 android:layout_margin="16dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
