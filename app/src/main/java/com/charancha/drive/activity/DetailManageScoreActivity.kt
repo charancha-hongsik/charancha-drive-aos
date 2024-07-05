@@ -39,6 +39,9 @@ class DetailManageScoreActivity:BaseActivity(){
     lateinit var tv_selected_date:TextView
     lateinit var layout_date_own:ConstraintLayout
     lateinit var tv_inquire_scope:TextView
+    lateinit var tv_date_own_start:TextView
+    lateinit var tv_date_own_end:TextView
+
 
     lateinit var behavior: BottomSheetBehavior<LinearLayout>
 
@@ -71,6 +74,8 @@ class DetailManageScoreActivity:BaseActivity(){
         btn_date_own = findViewById(R.id.btn_date_own)
         layout_date_own = findViewById(R.id.layout_date_own)
         tv_inquire_scope = findViewById(R.id.tv_inquire_scope)
+        tv_date_own_start = findViewById(R.id.tv_date_own_start)
+        tv_date_own_end = findViewById(R.id.tv_date_own_end)
 
         persistentBottomSheetEvent()
 
@@ -79,6 +84,8 @@ class DetailManageScoreActivity:BaseActivity(){
     fun setResources(){
         tv_detail_managescroe_title.text = intent.getStringExtra("title")
         btn_a_month.isSelected = true
+        tv_date_own_start.text = getOneMonthAgo(LocalDate.now())
+        tv_date_own_end.text = getCurrentDateFormatted(LocalDate.now())
 
         val itemList = getDateList()
 
@@ -138,6 +145,23 @@ class DetailManageScoreActivity:BaseActivity(){
 
 
         return choseDateList
+    }
+
+
+    fun getCurrentDateFormatted(currentDate:LocalDate): String {
+        // 결과를 yyyy.MM.dd 형식으로 포맷팅하여 반환
+        val formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd")
+        return currentDate.format(formatter)
+    }
+
+
+    fun getOneMonthAgo(currentDate:LocalDate): String {
+        // 한 달 전의 날짜 계산
+        val oneMonthAgoDate = currentDate.minusMonths(1).plusDays(1)
+
+        // 결과를 yyyy.MM.dd 형식으로 포맷팅하여 반환
+        val formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd")
+        return oneMonthAgoDate.format(formatter)
     }
 
     fun getDateRangeString(yearMonth: String): String {

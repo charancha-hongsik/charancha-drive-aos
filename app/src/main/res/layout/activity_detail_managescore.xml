@@ -805,12 +805,13 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layout_date_own"
                     android:layout_width="match_parent"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:background="@drawable/radius6_white950_stroke"
                     android:layout_height="50dp"
                     android:layout_marginTop="6dp">
 
                     <TextView
+                        android:id="@+id/tv_date_own_start"
                         android:layout_width="94dp"
                         android:layout_height="wrap_content"
                         android:text="2024.6.2"
@@ -833,6 +834,7 @@
                         app:layout_constraintLeft_toLeftOf="parent" />
 
                     <TextView
+                        android:id="@+id/tv_date_own_end"
                         android:layout_width="94dp"
                         android:layout_height="wrap_content"
                         android:text="2024.7.15"
