@@ -248,7 +248,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="83dp"
                 android:layout_marginTop="12dp"
-                android:background="@drawable/radius6_white950">
+                android:background="@drawable/radius6_white950_stroke">
 
                 <TextView
                     android:id="@+id/tv_average_distance"
@@ -327,7 +327,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="83dp"
                 android:layout_marginTop="12dp"
-                android:background="@drawable/radius6_white950">
+                android:background="@drawable/radius6_white950_stroke">
 
                 <TextView
                     android:id="@+id/tv_high_speed_driving"
@@ -407,7 +407,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:padding="20dp"
-                android:background="@drawable/radius6_white950">
+                android:background="@drawable/radius6_white950_stroke">
 
 
                 <TextView
@@ -531,7 +531,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:padding="20dp"
-                android:background="@drawable/radius6_white950">
+                android:background="@drawable/radius6_white950_stroke">
 
 
                 <TextView

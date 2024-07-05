@@ -1,6 +1,7 @@
 package com.charancha.drive.activity
 
 import android.content.Context
+import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,9 +12,12 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.widget.TextViewCompat
 import com.charancha.drive.ChosenDate
 import com.charancha.drive.R
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class DetailManageScoreActivity:BaseActivity(){
     lateinit var tv_detail_managescroe_title: TextView
@@ -32,6 +36,7 @@ class DetailManageScoreActivity:BaseActivity(){
     lateinit var btn_inquire_date:TextView
     lateinit var btn_select_date_from_list:ConstraintLayout
     lateinit var tv_selected_date:TextView
+    lateinit var layout_date_own:ConstraintLayout
 
     lateinit var behavior: BottomSheetBehavior<LinearLayout>
 
@@ -64,6 +69,7 @@ class DetailManageScoreActivity:BaseActivity(){
         btn_six_month = findViewById(R.id.btn_six_month)
         btn_each_month = findViewById(R.id.btn_each_month)
         btn_date_own = findViewById(R.id.btn_date_own)
+        layout_date_own = findViewById(R.id.layout_date_own)
 
         persistentBottomSheetEvent()
 
@@ -73,16 +79,10 @@ class DetailManageScoreActivity:BaseActivity(){
         tv_detail_managescroe_title.text = intent.getStringExtra("title")
         btn_a_month.isSelected = true
 
-        val itemList: MutableList<ChosenDate> = ArrayList()
+        val itemList = getDateList()
 
-        // 데이터 추가
-        itemList.add(ChosenDate("2024년 7월", true))
-        itemList.add(ChosenDate("2024년 8월", false))
-        itemList.add(ChosenDate("2024년 9월", false))
-        itemList.add(ChosenDate("2024년 10월", false))
-        itemList.add(ChosenDate("2024년 11월", false))
-        itemList.add(ChosenDate("2024년 12월", false))
-
+        selectedDate = itemList.get(0).date
+        tv_selected_date.text = selectedDate
 
 
         // adapter 생성
@@ -105,6 +105,36 @@ class DetailManageScoreActivity:BaseActivity(){
         // listView에 adapter 연결
         listView_choose_date_own.adapter = adapter
 
+    }
+
+    fun getDateList():MutableList<ChosenDate>{
+        val currentDate = LocalDate.now()
+
+        // 날짜 형식을 지정합니다. 예: "2024년 6월"
+        val formatter = DateTimeFormatter.ofPattern("yyyy년 M월")
+
+        // 결과를 저장할 리스트를 생성합니다.
+        val dateList = mutableListOf<String>()
+
+        // 36개월 동안의 날짜를 역순으로 추가합니다.
+        for (i in 0 until 36) {
+            val date = currentDate.minusMonths(i.toLong())
+            val formattedDate = date.format(formatter)
+            dateList.add(formattedDate)
+        }
+
+        val choseDateList = mutableListOf<ChosenDate>()
+
+        for (i in 0 until 36) {
+            if( i == 0){
+                choseDateList.add(ChosenDate(dateList.get(i),true))
+            }else{
+                choseDateList.add(ChosenDate(dateList.get(i),false))
+            }
+        }
+
+
+        return choseDateList
     }
 
     fun setListener(){
@@ -147,7 +177,14 @@ class DetailManageScoreActivity:BaseActivity(){
             btn_each_month.isSelected = false
             btn_date_own.isSelected = false
 
-            btn_select_date_from_list.visibility = GONE
+            TextViewCompat.setTextAppearance(btn_a_month, R.style.B1SBweight600)
+            TextViewCompat.setTextAppearance(btn_six_month, R.style.B1Mweight500)
+            TextViewCompat.setTextAppearance(btn_each_month, R.style.B1Mweight500)
+            TextViewCompat.setTextAppearance(btn_date_own, R.style.B1Mweight500)
+
+
+            layout_date_own.visibility = GONE
+
         }
 
         btn_six_month.setOnClickListener {
@@ -156,7 +193,14 @@ class DetailManageScoreActivity:BaseActivity(){
             btn_each_month.isSelected = false
             btn_date_own.isSelected = false
 
+            TextViewCompat.setTextAppearance(btn_a_month, R.style.B1Mweight500)
+            TextViewCompat.setTextAppearance(btn_six_month, R.style.B1SBweight600)
+            TextViewCompat.setTextAppearance(btn_each_month, R.style.B1Mweight500)
+            TextViewCompat.setTextAppearance(btn_date_own, R.style.B1Mweight500)
+
             btn_select_date_from_list.visibility = GONE
+            layout_date_own.visibility = GONE
+
         }
 
         btn_each_month.setOnClickListener {
@@ -165,7 +209,13 @@ class DetailManageScoreActivity:BaseActivity(){
             btn_each_month.isSelected = true
             btn_date_own.isSelected = false
 
+            TextViewCompat.setTextAppearance(btn_a_month, R.style.B1Mweight500)
+            TextViewCompat.setTextAppearance(btn_six_month, R.style.B1Mweight500)
+            TextViewCompat.setTextAppearance(btn_each_month, R.style.B1SBweight600)
+            TextViewCompat.setTextAppearance(btn_date_own, R.style.B1Mweight500)
+
             btn_select_date_from_list.visibility = VISIBLE
+            layout_date_own.visibility = GONE
         }
 
         btn_date_own.setOnClickListener {
@@ -174,9 +224,15 @@ class DetailManageScoreActivity:BaseActivity(){
             btn_each_month.isSelected = false
             btn_date_own.isSelected = true
 
+            TextViewCompat.setTextAppearance(btn_a_month, R.style.B1Mweight500)
+            TextViewCompat.setTextAppearance(btn_six_month, R.style.B1Mweight500)
+            TextViewCompat.setTextAppearance(btn_each_month, R.style.B1Mweight500)
+            TextViewCompat.setTextAppearance(btn_date_own, R.style.B1SBweight600)
             btn_select_date_from_list.visibility = GONE
-
+            layout_date_own.visibility = VISIBLE
         }
+
+
 
 
     }
@@ -193,7 +249,7 @@ class DetailManageScoreActivity:BaseActivity(){
                 when(newState) {
                     BottomSheetBehavior.STATE_COLLAPSED-> {
                         Log.d("testset", "onStateChanged: 접음")
-                        layout_choose_date.visibility = GONE
+//                        layout_choose_date.visibility = GONE
                     }
                     BottomSheetBehavior.STATE_DRAGGING-> {
                         Log.d("testset", "onStateChanged: 드래그")
@@ -227,11 +283,20 @@ class DetailManageScoreActivity:BaseActivity(){
             tvName.text = chosenDate?.date
             chosenDate?.selected?.let {
                 tvName.isSelected = it
+
+                if(it){
+                    TextViewCompat.setTextAppearance(tvName, R.style.B1SBweight600)
+                }else{
+                    TextViewCompat.setTextAppearance(tvName, R.style.B1RWeight400)
+
+                }
             }
 
             tvName.setOnClickListener {
                 callback.chosenDate(tvName.text.toString())
             }
+
+
 
             return listItemView
         }

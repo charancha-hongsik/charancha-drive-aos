@@ -43,9 +43,33 @@
         <item name="android:letterSpacing">0</item>
     </style>
 
+    <style name="B1RWeight400" android:font="@font/pretendardregular">
+        <item name="android:textSize">16dp</item>
+        <item name="lineHeight">22dp</item>
+        <item name="android:textFontWeight">400</item>
+        <item name="android:textColor">@color/gray_950</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
     <style name="B1M" android:font="@font/pretendardmedium">
         <item name="android:textSize">16dp</item>
         <item name="lineHeight">22dp</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="B1Mweight500" android:font="@font/pretendardmedium">
+        <item name="android:textSize">16dp</item>
+        <item name="lineHeight">22dp</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="android:textColor">@color/gray_950</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="B1SBweight600" android:font="@font/pretendardsemibold">
+        <item name="android:textSize">16dp</item>
+        <item name="lineHeight">22dp</item>
+        <item name="android:textFontWeight">600</item>
+        <item name="android:textColor">@color/gray_950</item>
         <item name="android:letterSpacing">0</item>
     </style>
 
