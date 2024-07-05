@@ -64,6 +64,7 @@
                 android:layout_marginTop="24dp">
 
                 <TextView
+                    android:id="@+id/tv_inquire_scope"
                     android:layout_width="wrap_content"
                     android:layout_height="26dp"
                     android:text="2024년 6월 2일 ~ 7월 15일"
@@ -153,6 +154,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_score"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_marginTop="14dp"

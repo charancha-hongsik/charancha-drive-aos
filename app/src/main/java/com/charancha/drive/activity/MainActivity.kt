@@ -60,9 +60,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if(tv_car_name != null && PreferenceUtil.getPref(this, PreferenceUtil.USER_NAME, "") != ""){
-            tv_car_name!!.text = PreferenceUtil.getPref(this, PreferenceUtil.USER_NAME, "")
-        }
 
         val bluetoothIntent = Intent(this, BluetoothService::class.java)
         startForegroundService(bluetoothIntent)

@@ -18,6 +18,7 @@ import com.charancha.drive.R
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.temporal.TemporalAdjusters
 
 class DetailManageScoreActivity:BaseActivity(){
     lateinit var tv_detail_managescroe_title: TextView
@@ -37,12 +38,11 @@ class DetailManageScoreActivity:BaseActivity(){
     lateinit var btn_select_date_from_list:ConstraintLayout
     lateinit var tv_selected_date:TextView
     lateinit var layout_date_own:ConstraintLayout
+    lateinit var tv_inquire_scope:TextView
 
     lateinit var behavior: BottomSheetBehavior<LinearLayout>
 
-    var selectedDate:String? = null
-
-
+    lateinit var selectedDate:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +70,7 @@ class DetailManageScoreActivity:BaseActivity(){
         btn_each_month = findViewById(R.id.btn_each_month)
         btn_date_own = findViewById(R.id.btn_date_own)
         layout_date_own = findViewById(R.id.layout_date_own)
+        tv_inquire_scope = findViewById(R.id.tv_inquire_scope)
 
         persistentBottomSheetEvent()
 
@@ -83,6 +84,8 @@ class DetailManageScoreActivity:BaseActivity(){
 
         selectedDate = itemList.get(0).date
         tv_selected_date.text = selectedDate
+
+        setInquireScope(getLastMonthRangeString())
 
 
         // adapter 생성
@@ -137,6 +140,51 @@ class DetailManageScoreActivity:BaseActivity(){
         return choseDateList
     }
 
+    fun getDateRangeString(yearMonth: String): String {
+
+        // 주어진 문자열을 LocalDate로 파싱 (해당 월의 첫날)
+        val startDate = LocalDate.parse("$yearMonth 1일", DateTimeFormatter.ofPattern("yyyy년 M월 d일"))
+
+        // 해당 월의 마지막 날 계산
+        val endDate = startDate.with(TemporalAdjusters.lastDayOfMonth())
+
+        // 결과 문자열 생성
+        return "${startDate.year}년 ${startDate.monthValue}월 1일 ~ ${endDate.dayOfMonth}일"
+    }
+
+    fun getLastMonthRangeString(): String {
+        val currentDate = LocalDate.now()
+        val startDate = currentDate.minusMonths(1).plusDays(1) // 한 달 전의 첫째 날
+        val endDate = currentDate
+
+        val dateFormatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일")
+        val startDateString = if (startDate.month == endDate.month) {
+            startDate.format(dateFormatter).replaceFirst(" ", "")
+        } else {
+            startDate.format(dateFormatter)
+        }
+        val endDateString = endDate.format(DateTimeFormatter.ofPattern("M월 d일"))
+
+        return "$startDateString ~ $endDateString"
+    }
+
+
+    fun getLastSixMonthsRangeString(): String {
+        val currentDate = LocalDate.now()
+        val startDate = currentDate.minusMonths(6).plusDays(1) // 한 달 전의 첫째 날
+        val endDate = currentDate
+
+        val dateFormatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일")
+        val startDateString = if (startDate.month == endDate.month) {
+            startDate.format(dateFormatter).replaceFirst(" ", "")
+        } else {
+            startDate.format(dateFormatter)
+        }
+        val endDateString = endDate.format(DateTimeFormatter.ofPattern("M월 d일"))
+
+        return "$startDateString ~ $endDateString"
+    }
+
     fun setListener(){
         btn_back.setOnClickListener { finish() }
 
@@ -160,9 +208,20 @@ class DetailManageScoreActivity:BaseActivity(){
                 listView_choose_date_own.visibility = GONE
                 layout_select_main.visibility = VISIBLE
 
-                selectedDate?.let {
-                    tv_selected_date.text = it
+                tv_selected_date.text = selectedDate
+            }else{
+                if(btn_a_month.isSelected){
+                    setInquireScope(getLastMonthRangeString())
+                }else if(btn_six_month.isSelected){
+                    setInquireScope(getLastSixMonthsRangeString())
+                }else if(btn_each_month.isSelected){
+                    setInquireScope(getDateRangeString(selectedDate))
+                }else if(btn_date_own.isSelected){
+
                 }
+
+                layout_choose_date.visibility = GONE
+
             }
         }
 
@@ -267,6 +326,10 @@ class DetailManageScoreActivity:BaseActivity(){
                 }
             }
         })
+    }
+
+    private fun setInquireScope(scope:String){
+        tv_inquire_scope.text = scope
     }
 
     class DateAdapter(context: Context, date: List<ChosenDate>,val callback:DateCallback ) : ArrayAdapter<ChosenDate>(context, 0, date) {
