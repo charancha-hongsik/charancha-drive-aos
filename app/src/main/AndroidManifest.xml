@@ -57,6 +57,12 @@
         </activity>
 
         <activity
+            android:name=".activity.WithdrawalActivity"
+            android:theme="@style/Theme.Charanchadrivegray50"
+            android:screenOrientation="portrait"
+            android:exported="true"/>
+
+        <activity
             android:name=".activity.CheckDesignActivity"
             android:theme="@style/Theme.Charanchadrivegray50"
             android:screenOrientation="portrait"

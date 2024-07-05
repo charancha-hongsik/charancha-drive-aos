@@ -1,13 +1,23 @@
 package com.charancha.drive.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import com.charancha.drive.CustomDialog
 import com.charancha.drive.CustomDialogForEditText
+import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
+import com.charancha.drive.retrofit.request.PatchProfilesRequest
+import com.charancha.drive.retrofit.request.SignInRequest
+import com.google.gson.Gson
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.ResponseBody
+import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
@@ -16,6 +26,9 @@ class MyInfoActivity:BaseActivity() {
     lateinit var tv_nickname:TextView
     lateinit var tv_withdrawal:TextView
     lateinit var ib_edit_nickname:ImageView
+    lateinit var nickName:String
+    lateinit var tv_login_oauth:TextView
+    lateinit var tv_email:TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +43,13 @@ class MyInfoActivity:BaseActivity() {
         tv_nickname = findViewById(R.id.tv_nickname)
         tv_withdrawal = findViewById(R.id.tv_withdrawal)
         ib_edit_nickname = findViewById(R.id.ib_edit_nickname)
+        tv_login_oauth = findViewById(R.id.tv_login_oauth)
+        tv_email = findViewById(R.id.tv_email)
+
+        nickName = intent.getStringExtra("nickname")!!
+        tv_nickname.text = nickName
+        tv_login_oauth.text = intent.getStringExtra("provider")!!
+        tv_email.text = intent.getStringExtra("email")
 
     }
 
@@ -39,21 +59,35 @@ class MyInfoActivity:BaseActivity() {
         }
 
         tv_withdrawal.setOnClickListener {
-
-        }
-
-        tv_nickname.setOnClickListener {
-
+            startActivity(Intent(this@MyInfoActivity, WithdrawalActivity::class.java))
         }
 
         ib_edit_nickname.setOnClickListener {
-            CustomDialogForEditText(this, "내 정보", "별명", "폭주하는 소금빵","저장","취소",  object : CustomDialogForEditText.DialogCallback{
+            CustomDialogForEditText(this, "내 정보", "별명", nickName,"저장","취소",  object : CustomDialogForEditText.DialogCallback{
                 override fun onConfirm(contents:String) {
+                    val gson = Gson()
+                    val jsonParam =
+                        gson.toJson(PatchProfilesRequest(contents))
 
+                    apiService().patchAccountProfiles("Bearer " + PreferenceUtil.getPref(this@MyInfoActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :Callback<ResponseBody>{
+                        override fun onResponse(
+                            call: Call<ResponseBody>,
+                            response: Response<ResponseBody>
+                        ) {
+                            if(response.code() == 200){
+                                Toast.makeText(this@MyInfoActivity, "저장 되었습니다.", Toast.LENGTH_SHORT).show()
+                                finish()
+                            }
+                        }
+
+                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+                        }
+
+                    })
                 }
 
                 override fun onCancel() {
-
 
                 }
 

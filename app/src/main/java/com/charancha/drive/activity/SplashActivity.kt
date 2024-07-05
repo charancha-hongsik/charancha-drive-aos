@@ -46,7 +46,6 @@ class SplashActivity: BaseActivity() {
 
     private fun unLoginedProcess(){
         startActivity(Intent(this, LoginActivity::class.java))
-        Log.d("testestsetest","testestestestset :: LoginActivity5")
 
         finish()
     }
@@ -54,7 +53,6 @@ class SplashActivity: BaseActivity() {
     private fun loginedProcess(){
         PreferenceUtil.getPref(this@SplashActivity, PreferenceUtil.REFRESH_TOKEN, "")
             ?.let {
-                Log.d("testestsetse","testestest REFRESH_TOKEN :: " + it)
 
                 val gson = Gson()
 
@@ -64,7 +62,6 @@ class SplashActivity: BaseActivity() {
                         call: Call<ResponseBody>,
                         response: Response<ResponseBody>
                     ) {
-                        Log.d("testestsetse","testestest code :: " + response.code())
                         if(response.code() == 201){
                             val signInResponse = gson.fromJson(response.body()?.string(), SignInResponse::class.java)
 

@@ -2,11 +2,20 @@ package com.charancha.drive.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
+import com.charancha.drive.retrofit.response.GetAccountProfilesResponse
+import com.charancha.drive.retrofit.response.GetAccountResponse
+import com.charancha.drive.retrofit.response.GetMyCarInfoResponse
+import com.google.gson.Gson
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MyPageActivity:BaseActivity() {
     lateinit var layout_nickname:ConstraintLayout
@@ -17,6 +26,9 @@ class MyPageActivity:BaseActivity() {
     lateinit var btn_personal_info:ConstraintLayout
     lateinit var btn_logout: TextView
     lateinit var btn_back: ImageView
+    lateinit var getAccountProfilesResponse:GetAccountProfilesResponse
+    lateinit var tv_email:TextView
+    lateinit var tv_nickname:TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,11 +47,13 @@ class MyPageActivity:BaseActivity() {
         btn_personal_info = findViewById(R.id.btn_personal_info)
         btn_logout = findViewById(R.id.btn_logout)
         btn_back = findViewById(R.id.btn_back)
+        tv_email = findViewById(R.id.tv_email)
+        tv_nickname = findViewById(R.id.tv_nickname)
     }
 
     fun setListener(){
         layout_nickname.setOnClickListener {
-            startActivity(Intent(this@MyPageActivity, MyInfoActivity::class.java))
+            startActivity(Intent(this@MyPageActivity, MyInfoActivity::class.java).putExtra("nickname",getAccountProfilesResponse.nickName).putExtra("email", getAccountProfilesResponse.user.email).putExtra("provider",getAccountProfilesResponse.user.provider.text.en))
         }
 
         btn_drive_history.setOnClickListener {
@@ -77,7 +91,32 @@ class MyPageActivity:BaseActivity() {
 
     }
 
-    fun setResources(){
+    override fun onResume() {
+        super.onResume()
+        setResources()
+    }
 
+    fun setResources(){
+        apiService().getAccountProfiles("Bearer " + PreferenceUtil.getPref(this@MyPageActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!).enqueue(object :
+            Callback<ResponseBody>{
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+
+                if(response.code() == 200){
+                    getAccountProfilesResponse = Gson().fromJson(
+                        response.body()?.string(),
+                        GetAccountProfilesResponse::class.java
+                    )
+
+                    tv_email.text = getAccountProfilesResponse.user.email
+                    tv_nickname.text = getAccountProfilesResponse.nickName + "님"
+
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+            }
+
+        })
     }
 }
