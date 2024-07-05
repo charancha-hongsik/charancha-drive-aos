@@ -142,6 +142,7 @@ class LoginActivity: BaseActivity() {
 
 
     fun handleSuccessLogin(idToken:String, oauthProvider:String) {
+        Log.d("testestestse","testestesestse idToken :: " + idToken)
         try {
             val gson = Gson()
             val jsonParam =
@@ -161,6 +162,9 @@ class LoginActivity: BaseActivity() {
                             val gson = Gson()
                             val jsonParam =
                                 gson.toJson(SignInRequest(idToken, "string", oauthProvider))
+
+                            Log.d("testestest","testsetestestse :: " + response.code())
+
 
                             apiService().postSignIn(jsonParam.toRequestBody("application/json".toMediaTypeOrNull()))
                                 .enqueue(object : Callback<ResponseBody> {

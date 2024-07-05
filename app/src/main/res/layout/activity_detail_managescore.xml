@@ -863,6 +863,8 @@
                 android:visibility="gone" />
 
 
+
+
             <TextView
                 android:id="@+id/btn_inquire_date"
                 android:layout_width="match_parent"

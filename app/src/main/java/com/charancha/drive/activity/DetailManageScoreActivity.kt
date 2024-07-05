@@ -315,6 +315,14 @@ class DetailManageScoreActivity:BaseActivity(){
             layout_date_own.visibility = VISIBLE
         }
 
+        tv_date_own_start.setOnClickListener {
+            layout_select_main.visibility = GONE
+        }
+
+        tv_date_own_end.setOnClickListener {
+            layout_select_main.visibility = GONE
+        }
+
 
 
 
