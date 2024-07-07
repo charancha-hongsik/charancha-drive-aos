@@ -212,6 +212,7 @@
                         android:textColor="@color/gray_950"
                         android:textFontWeight="600"
                         android:inputType="number"
+                        android:maxLength="4"
                         android:textAppearance="@style/B1SB"
                         android:gravity="center_vertical"
                         android:hint="2021"
