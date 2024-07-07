@@ -112,7 +112,7 @@ class EditCarInfoActivity:BaseActivity() {
 
             val gson = Gson()
             val jsonParam =
-                gson.toJson(EditMyCarRequest(getMyCarInfoResponse.licensePlateNumber, getMyCarInfoResponse.ownerName, carYear, carModelName, getMyCarInfoResponse.fuel))
+                gson.toJson(EditMyCarRequest(getMyCarInfoResponse.licensePlateNumber, getMyCarInfoResponse.ownerName, carYear, carModelName, tv_car_fuel.text.toString()))
 
             apiService().patchCarInfoByCarId("Bearer " + PreferenceUtil.getPref(this@EditCarInfoActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, getMyCarInfoResponse.id, jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :Callback<ResponseBody>{
                 override fun onResponse(

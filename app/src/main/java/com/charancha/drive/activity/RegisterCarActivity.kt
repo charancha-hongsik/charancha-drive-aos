@@ -16,10 +16,12 @@ import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
 import com.charancha.drive.retrofit.request.PostMyCarRequest
 import com.charancha.drive.retrofit.response.PostMyCarResponse
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.Gson
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -48,9 +50,13 @@ class RegisterCarActivity: BaseActivity() {
     lateinit var et_car_year:EditText
     lateinit var tv_car_fuel:TextView
     lateinit var tv_confirm:TextView
-    lateinit var iv_arrow_down: Spinner
-    lateinit var btn_arrow_down:ImageView
     lateinit var postMyCarResponse:PostMyCarResponse
+
+    lateinit var constraint_fuel_select:ConstraintLayout
+    lateinit var layout_fuel_select: CoordinatorLayout
+    lateinit var persistent_bottom_sheet: LinearLayout
+    lateinit var behavior: BottomSheetBehavior<LinearLayout>
+    lateinit var listview:ListView
 
 
 
@@ -67,10 +73,12 @@ class RegisterCarActivity: BaseActivity() {
         setContentView(R.layout.activity_register_car)
 
         init()
+
     }
 
     fun init(){
         setResources()
+        persistentBottomSheetEvent()
 
         getPostMyCarResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
             if(it.resultCode == RESULT_OK){
@@ -94,6 +102,8 @@ class RegisterCarActivity: BaseActivity() {
         ib_arrow_register_car = findViewById(R.id.ib_arrow_register_car)
         tv_register_car_hint = findViewById(R.id.tv_register_car_hint)
         et_register_car = findViewById(R.id.et_register_car)
+        listview = findViewById(R.id.listView)
+
 
         tv_register_car = findViewById(R.id.tv_register_car)
         tv_register_car_caution = findViewById(R.id.tv_register_car_caution)
@@ -123,32 +133,6 @@ class RegisterCarActivity: BaseActivity() {
                 et_car_year.hint = postMyCarResponse.carYear
             }
         }
-
-
-        iv_arrow_down = findViewById(R.id.iv_arrow_down)
-
-        btn_arrow_down = findViewById(R.id.btn_arrow_down)
-
-        val arrayAdapter = ArrayAdapter(this, R.layout.fuel_dropdown_textview,arrayOf("가솔린","디젤","LPG","전기"))
-        iv_arrow_down.adapter = arrayAdapter
-
-        iv_arrow_down.onItemSelectedListener = object :AdapterView.OnItemSelectedListener{
-            override fun onItemSelected(parent: AdapterView<*>?, p1: View?, postision: Int, p3: Long) {
-                val selectedFuel = parent?.getItemAtPosition(postision) as String
-                tv_car_fuel.text = selectedFuel
-
-            }
-
-            override fun onNothingSelected(p0: AdapterView<*>?) {
-
-            }
-
-        }
-
-        btn_arrow_down.setOnClickListener {
-            iv_arrow_down.performClick()
-        }
-
 
         btn_next = findViewById(R.id.btn_next)
         btn_next.setOnClickListener {
@@ -270,6 +254,51 @@ class RegisterCarActivity: BaseActivity() {
             }
 
         })
+
+
+        constraint_fuel_select = findViewById(R.id.constraint_fuel_select)
+        layout_fuel_select = findViewById(R.id.layout_fuel_select)
+        persistent_bottom_sheet = findViewById(R.id.persistent_bottom_sheet)
+
+        constraint_fuel_select.setOnClickListener {
+            layout_fuel_select.visibility = VISIBLE
+        }
+
+        layout_fuel_select.setOnClickListener {
+            layout_fuel_select.visibility = GONE
+        }
+
+        val itemList: MutableList<String?> = ArrayList()
+
+        // 데이터 추가
+        itemList.add("가솔린")
+        itemList.add("디젤")
+        itemList.add("LPG")
+        itemList.add("전기")
+        itemList.add("수소")
+        itemList.add("CNG")
+        itemList.add("가솔린+LPG")
+        itemList.add("가솔린+CNG")
+        itemList.add("가솔린+전기")
+        itemList.add("디젤+전기")
+        itemList.add("LPG+전기")
+        itemList.add("기타")
+
+
+        // adapter 생성
+        val adapter = ArrayAdapter(this, R.layout.edit_fuel_textview, R.id.tv_fuel, itemList)
+
+
+        // listView에 adapter 연결
+        listview.adapter = adapter
+        listview.setOnItemClickListener { parent, view, position, l ->
+            val fuel = parent.getItemAtPosition(position) as String
+            tv_car_fuel.text = fuel
+
+            layout_fuel_select.visibility = GONE
+
+        }
+
     }
 
     /**
@@ -408,5 +437,36 @@ class RegisterCarActivity: BaseActivity() {
 
             }
         }
+    }
+
+    private fun persistentBottomSheetEvent() {
+        behavior = BottomSheetBehavior.from(persistent_bottom_sheet)
+        behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                // 슬라이드 되는 도중 계속 호출
+                // called continuously while dragging
+                Log.d("testset", "onStateChanged: 드래그 중")
+            }
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when(newState) {
+                    BottomSheetBehavior.STATE_COLLAPSED-> {
+                        Log.d("testset", "onStateChanged: 접음")
+                        layout_fuel_select.visibility = GONE
+                    }
+                    BottomSheetBehavior.STATE_DRAGGING-> {
+                        Log.d("testset", "onStateChanged: 드래그")
+                    }
+                    BottomSheetBehavior.STATE_EXPANDED-> {
+                        Log.d("testset", "onStateChanged: 펼침")
+                    }
+                    BottomSheetBehavior.STATE_HIDDEN-> {
+                        Log.d("testset", "onStateChanged: 숨기기")
+                    }
+                    BottomSheetBehavior.STATE_SETTLING-> {
+                        Log.d("testset", "onStateChanged: 고정됨")
+                    }
+                }
+            }
+        })
     }
 }
