@@ -76,7 +76,8 @@ class MyInfoActivity:BaseActivity() {
                         ) {
                             if(response.code() == 200){
                                 Toast.makeText(this@MyInfoActivity, "저장 되었습니다.", Toast.LENGTH_SHORT).show()
-                                finish()
+                                tv_nickname.text = contents
+
                             }
                         }
 
