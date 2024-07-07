@@ -393,6 +393,7 @@
                 android:theme="@style/RegisterCarEditText"
                 android:textColor="@color/gray_950"
                 android:textFontWeight="700"
+                android:maxLength="9"
                 android:gravity="center"
                 android:inputType="text"
                 android:textAppearance="@style/H3B"
