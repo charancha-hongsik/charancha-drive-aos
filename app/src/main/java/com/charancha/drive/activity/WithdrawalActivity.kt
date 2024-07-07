@@ -37,6 +37,8 @@ class WithdrawalActivity:BaseActivity() {
     fun setListener(){
         ib_terms1.setOnClickListener {
             ib_terms1.isSelected = !ib_terms1.isSelected
+
+
         }
 
         tv_confirm_withdrawal.setOnClickListener {
