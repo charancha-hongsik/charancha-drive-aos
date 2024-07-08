@@ -1,7 +1,6 @@
 package com.charancha.drive.activity
 
 import android.content.Context
-import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,12 +12,12 @@ import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.widget.TextViewCompat
-import com.charancha.drive.ChosenDate
-import com.charancha.drive.R
+import com.charancha.drive.*
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAdjusters
+import java.util.*
 
 class DetailManageScoreActivity:BaseActivity(){
     lateinit var tv_detail_managescroe_title: TextView
@@ -46,6 +45,10 @@ class DetailManageScoreActivity:BaseActivity(){
     lateinit var lv_year:ListView
     lateinit var lv_month:ListView
     lateinit var lv_day:ListView
+
+    lateinit var chosenYearList:List<ChosenYear>
+    lateinit var chosenMonthList:List<ChosenMonth>
+    lateinit var chosenDayList:List<ChosenDay>
 
 
     lateinit var behavior: BottomSheetBehavior<LinearLayout>
@@ -93,6 +96,10 @@ class DetailManageScoreActivity:BaseActivity(){
     }
 
     fun setResources(){
+        chosenYearList = getYear()
+        chosenMonthList = getMonth()
+        chosenDayList = getDay(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH))
+
         tv_detail_managescroe_title.text = intent.getStringExtra("title")
         btn_a_month.isSelected = true
         tv_date_own_start.text = getOneMonthAgo(LocalDate.now())
@@ -107,7 +114,7 @@ class DetailManageScoreActivity:BaseActivity(){
 
 
         // adapter 생성
-        val adapter = DateAdapter(this, itemList,object : DateAdapter.DateCallback{
+        val dateAdapter = DateAdapter(this, itemList,object : DateAdapter.DateCallback{
             override fun chosenDate(date: String) {
                 selectedDate = date
 
@@ -122,9 +129,59 @@ class DetailManageScoreActivity:BaseActivity(){
 
         })
 
+        val yearAdapter = YearAdapter(this, chosenYearList,object : YearAdapter.DateCallback{
+            override fun chosenDatePostion(position: Int) {
+                for((index,value) in chosenYearList.withIndex())
+                    value.selected = index==position
+
+                (lv_year.adapter as YearAdapter).notifyDataSetChanged()
+                lv_year.setSelection(position)
+
+            }
+        })
+
+        val monthAdapter = MonthAdapter(this, chosenMonthList,object : MonthAdapter.DateCallback{
+            override fun chosenDatePostion(position: Int) {
+                for((index,value) in chosenMonthList.withIndex())
+                    value.selected = index==position
+
+                (lv_month.adapter as MonthAdapter).notifyDataSetChanged()
+                lv_month.setSelection(position)
+
+            }
+        })
+
+        val dayAdapter = DayAdapter(this, chosenDayList,object : DayAdapter.DateCallback{
+            override fun chosenDatePostion(position: Int) {
+                for((index,value) in chosenDayList.withIndex())
+                    value.selected = index==position
+
+                (lv_day.adapter as DayAdapter).notifyDataSetChanged()
+                lv_day.setSelection(position)
+
+            }
+        })
+
 
         // listView에 adapter 연결
-        listView_choose_date_own.adapter = adapter
+        listView_choose_date_own.adapter = dateAdapter
+
+        lv_year.adapter = yearAdapter
+        lv_month.adapter = monthAdapter
+        lv_day.adapter = dayAdapter
+
+        for((index,value) in chosenYearList.withIndex())
+            if(value.selected)
+                lv_year.setSelection(index)
+
+        for((index,value) in chosenMonthList.withIndex())
+            if(value.selected)
+                lv_month.setSelection(index)
+
+        for((index,value) in chosenDayList.withIndex())
+            if(value.selected)
+                lv_day.setSelection(index)
+
 
     }
 
@@ -340,10 +397,6 @@ class DetailManageScoreActivity:BaseActivity(){
             layout_select_main.visibility = GONE
             layout_datepicker.visibility = VISIBLE
         }
-
-
-
-
     }
 
     private fun persistentBottomSheetEvent() {
@@ -418,5 +471,147 @@ class DetailManageScoreActivity:BaseActivity(){
             fun chosenDate(date:String)
 
         }
+    }
+    private fun setYear(){
+        /**
+         * ListView 새로 생성 후 notify 및 setSection
+         */
+
+
+
+    }
+
+    private fun setMonth(){
+        /**
+         * ListView 새로 생성 후 notify 및 setSection
+         */
+
+    }
+
+    private fun setDay(){
+        /**
+         * ListView 새로 생성 후 notify 및 setSection
+         */
+
+    }
+
+
+    class YearAdapter(context: Context, date: List<ChosenYear>,val callback:DateCallback ) : ArrayAdapter<ChosenYear>(context, 0, date) {
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+            var listItemView = convertView
+            if (listItemView == null) {
+                listItemView = LayoutInflater.from(context).inflate(R.layout.item_yyyy, parent, false)
+            }
+
+            val chosenYear = getItem(position)
+
+            val tvName = listItemView!!.findViewById<TextView>(R.id.tv_yy)
+            tvName.text = chosenYear!!.yyyy.toString() + "년"
+
+            tvName.setOnClickListener {
+                callback.chosenDatePostion(position)
+            }
+
+            tvName.isSelected = chosenYear.selected
+
+            return listItemView!!
+        }
+
+        interface DateCallback {
+            fun chosenDatePostion(position:Int)
+
+        }
+    }
+
+    class MonthAdapter(context: Context, date: List<ChosenMonth>,val callback:DateCallback ) : ArrayAdapter<ChosenMonth>(context, 0, date) {
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+            var listItemView = convertView
+            if (listItemView == null) {
+                listItemView = LayoutInflater.from(context).inflate(R.layout.item_mm, parent, false)
+            }
+
+            val chosenMonth = getItem(position)
+
+            val tvName = listItemView!!.findViewById<TextView>(R.id.tv_mm)
+            tvName.text = chosenMonth!!.mm.toString() + "월"
+            tvName.setOnClickListener {
+                callback.chosenDatePostion(position)
+            }
+
+            tvName.isSelected = chosenMonth.selected
+
+            return listItemView!!
+        }
+
+        interface DateCallback {
+            fun chosenDatePostion(position:Int)
+
+        }
+    }
+
+    class DayAdapter(context: Context, date: List<ChosenDay>,val callback:DateCallback ) : ArrayAdapter<ChosenDay>(context, 0, date) {
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+            var listItemView = convertView
+            if (listItemView == null) {
+                listItemView = LayoutInflater.from(context).inflate(R.layout.item_dd, parent, false)
+            }
+
+            val chosenDay = getItem(position)
+
+            val tvName = listItemView!!.findViewById<TextView>(R.id.tv_dd)
+            tvName.text = chosenDay!!.dd.toString() + "일"
+
+            tvName.setOnClickListener {
+                callback.chosenDatePostion(position)
+            }
+
+            tvName.isSelected = chosenDay.selected
+
+
+            return listItemView!!
+        }
+
+        interface DateCallback {
+            fun chosenDatePostion(position:Int)
+
+        }
+    }
+
+    private fun getYear():List<ChosenYear>{
+        val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+        val yearsList = mutableListOf<ChosenYear>()
+        for (i in 0 until 5) {
+            if(i == 0)
+                yearsList.add(ChosenYear(currentYear - i, true))
+            else
+                yearsList.add(ChosenYear(currentYear - i, false))
+        }
+        return yearsList
+    }
+
+    private fun getMonth():List<ChosenMonth>{
+        val currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1
+        val months = mutableListOf<ChosenMonth>()
+
+        for (i in 1..12) {
+            months.add(ChosenMonth(i, i == currentMonth))
+        }
+        return months
+    }
+
+    private fun getDay(year:Int, month:Int):List<ChosenDay>{
+        val currentDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+
+        val days = mutableListOf<ChosenDay>()
+
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.YEAR, year)
+        calendar.set(Calendar.MONTH, month - 1) // Calendar.MONTH는 0부터 시작하므로 -1
+
+        for (i in 1..calendar.getActualMaximum(Calendar.DAY_OF_MONTH)) {
+            days.add(ChosenDay(i, i == currentDay))
+        }
+
+        return days
     }
 }

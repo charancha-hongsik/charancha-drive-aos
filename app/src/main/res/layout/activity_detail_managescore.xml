@@ -875,18 +875,27 @@
                     android:id="@+id/lv_year"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:scrollbars="none"
+                    android:layout_gravity="center_vertical"
+                    android:divider="@null"
                     android:layout_weight="1"/>
 
                 <ListView
                     android:id="@+id/lv_month"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:scrollbars="none"
+                    android:divider="@null"
                     android:layout_weight="1"/>
 
                 <ListView
                     android:id="@+id/lv_day"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:scrollbars="none"
+                    android:divider="@null"
                     android:layout_weight="1"/>
 
 

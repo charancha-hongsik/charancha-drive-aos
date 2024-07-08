@@ -65,6 +65,14 @@
         <item name="android:letterSpacing">0</item>
     </style>
 
+    <style name="B1Mweight500Gray300" android:font="@font/pretendardmedium">
+        <item name="android:textSize">16dp</item>
+        <item name="lineHeight">22dp</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="android:textColor">@color/gray_300</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+
     <style name="B1SBweight600" android:font="@font/pretendardsemibold">
         <item name="android:textSize">16dp</item>
         <item name="lineHeight">22dp</item>
@@ -179,6 +187,14 @@
         <item name="android:textSize">18dp</item>
         <item name="lineHeight">26dp</item>
         <item name="android:letterSpacing">0</item>
+    </style>
+
+    <style name="ST2SBweight600" android:font="@font/pretendardsemibold">
+        <item name="android:textSize">18dp</item>
+        <item name="lineHeight">26dp</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:textColor">@color/gray_950</item>
+        <item name="android:textFontWeight">600</item>
     </style>
 
     <style name="ST2B" android:font="@font/pretendardbold">
