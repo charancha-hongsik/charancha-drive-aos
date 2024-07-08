@@ -255,6 +255,29 @@ class RegisterCarActivity: BaseActivity() {
 
         })
 
+        et_car_year.addTextChangedListener(object :TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                p0?.let{
+                    if(p0.length>=4 || p0.length==0){
+                        btn_next.isSelected = true
+                        btn_next.isClickable = true
+                    }else{
+                        btn_next.isSelected = false
+                        btn_next.isClickable = false
+                    }
+                }
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+
+        })
+
 
         constraint_fuel_select = findViewById(R.id.constraint_fuel_select)
         layout_fuel_select = findViewById(R.id.layout_fuel_select)
@@ -409,6 +432,7 @@ class RegisterCarActivity: BaseActivity() {
         view_register_percent3.isSelected = true
 
         tv_confirm.text = "확인했어요"
+        tv_confirm.isSelected = false
     }
 
 
