@@ -42,6 +42,11 @@ class DetailManageScoreActivity:BaseActivity(){
     lateinit var tv_date_own_start:TextView
     lateinit var tv_date_own_end:TextView
 
+    lateinit var layout_datepicker:LinearLayout
+    lateinit var lv_year:ListView
+    lateinit var lv_month:ListView
+    lateinit var lv_day:ListView
+
 
     lateinit var behavior: BottomSheetBehavior<LinearLayout>
 
@@ -76,6 +81,12 @@ class DetailManageScoreActivity:BaseActivity(){
         tv_inquire_scope = findViewById(R.id.tv_inquire_scope)
         tv_date_own_start = findViewById(R.id.tv_date_own_start)
         tv_date_own_end = findViewById(R.id.tv_date_own_end)
+
+        layout_datepicker = findViewById(R.id.layout_datepicker)
+        lv_year = findViewById(R.id.lv_year)
+        lv_month = findViewById(R.id.lv_month)
+        lv_day = findViewById(R.id.lv_day)
+
 
         persistentBottomSheetEvent()
 
@@ -216,11 +227,15 @@ class DetailManageScoreActivity:BaseActivity(){
             layout_choose_date.visibility = VISIBLE
 
             listView_choose_date_own.visibility = GONE
+            layout_datepicker.visibility = GONE
             layout_select_main.visibility = VISIBLE
         }
 
         layout_choose_date.setOnClickListener {
-            layout_choose_date.visibility = GONE
+            if(layout_select_main.visibility == VISIBLE)
+                layout_choose_date.visibility = GONE
+            else
+                btn_inquire_date.performClick()
         }
 
         btn_close_select_date.setOnClickListener {
@@ -230,6 +245,7 @@ class DetailManageScoreActivity:BaseActivity(){
         btn_inquire_date.setOnClickListener {
             if(layout_select_main.visibility == GONE){
                 listView_choose_date_own.visibility = GONE
+                layout_datepicker.visibility = GONE
                 layout_select_main.visibility = VISIBLE
 
                 tv_selected_date.text = selectedDate
@@ -265,7 +281,7 @@ class DetailManageScoreActivity:BaseActivity(){
             TextViewCompat.setTextAppearance(btn_each_month, R.style.B1Mweight500)
             TextViewCompat.setTextAppearance(btn_date_own, R.style.B1Mweight500)
 
-
+            btn_select_date_from_list.visibility = GONE
             layout_date_own.visibility = GONE
 
         }
@@ -317,10 +333,12 @@ class DetailManageScoreActivity:BaseActivity(){
 
         tv_date_own_start.setOnClickListener {
             layout_select_main.visibility = GONE
+            layout_datepicker.visibility = VISIBLE
         }
 
         tv_date_own_end.setOnClickListener {
             layout_select_main.visibility = GONE
+            layout_datepicker.visibility = VISIBLE
         }
 
 

@@ -805,7 +805,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layout_date_own"
                     android:layout_width="match_parent"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     android:background="@drawable/radius6_white950_stroke"
                     android:layout_height="50dp"
                     android:layout_marginTop="6dp">
@@ -861,8 +861,36 @@
                 android:drawSelectorOnTop="false"
                 android:listSelector="@drawable/choose_date_item_selector"
                 android:visibility="gone" />
+            
+            <LinearLayout
+                android:id="@+id/layout_datepicker"
+                android:layout_width="match_parent"
+                android:layout_height="162dp"
+                android:layout_marginTop="28dp"
+                android:visibility="gone"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <ListView
+                    android:id="@+id/lv_year"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
+
+                <ListView
+                    android:id="@+id/lv_month"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
+
+                <ListView
+                    android:id="@+id/lv_day"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
 
 
+            </LinearLayout>
 
 
             <TextView

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
 import okhttp3.ResponseBody
@@ -65,6 +66,8 @@ class WithdrawalActivity:BaseActivity() {
                     }
 
                 })
+            } else{
+                Toast.makeText(this, "약관 동의 후 탈퇴가 가능합니다.",Toast.LENGTH_SHORT).show()
             }
 
         }
