@@ -56,9 +56,12 @@ class TermsOfUseActivity: BaseActivity() {
                 if(response.code() == 200){
                     val jsonString = response.body()?.string()
 
+                    Log.d("testsetestset","testestsetse :: " + jsonString)
+
                     val gson = Gson()
                     val type: Type = object : TypeToken<List<TermsSummaryResponse?>?>() {}.type
                     termsSummaryResponse = gson.fromJson(jsonString, type)
+
 
                     setResource()
                     setListener()

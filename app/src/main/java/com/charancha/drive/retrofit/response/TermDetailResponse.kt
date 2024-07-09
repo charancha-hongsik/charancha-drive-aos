@@ -6,8 +6,8 @@ data class TermDetailResponse (
         val deletedAt:String,
         val updatedAt:String,
         val title:String,
-        val version:String,
+        val version:Int,
         val content:String,
-        val isActive:String,
-        val isRequired:String
+        val isActive:Int,
+        val isRequired:Int
 )
