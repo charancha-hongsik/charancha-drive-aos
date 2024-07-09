@@ -50,10 +50,21 @@ class DetailManageScoreActivity:BaseActivity(){
     lateinit var chosenMonthList:List<ChosenMonth>
     lateinit var chosenDayList:List<ChosenDay>
 
+    var chosenStartYear:Int = 0
+    var chosenEndYear:Int = 0
+    var chosenStartMonth:Int = 0
+    var chosenEndMonth:Int = 0
+    var chosenStartDay:Int = 0
+    var chosenEndDay:Int = 0
+
+
+
+
 
     lateinit var behavior: BottomSheetBehavior<LinearLayout>
-
     lateinit var selectedDate:String
+
+    var startDateState = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -131,36 +142,58 @@ class DetailManageScoreActivity:BaseActivity(){
 
         val yearAdapter = YearAdapter(this, chosenYearList,object : YearAdapter.DateCallback{
             override fun chosenDatePostion(position: Int) {
+                if(startDateState)
+                    chosenStartYear = chosenYearList[position].yyyy
+                else
+                    chosenEndYear = chosenYearList[position].yyyy
+
                 for((index,value) in chosenYearList.withIndex())
                     value.selected = index==position
 
                 (lv_year.adapter as YearAdapter).notifyDataSetChanged()
                 lv_year.setSelection(position)
-
             }
         })
 
         val monthAdapter = MonthAdapter(this, chosenMonthList,object : MonthAdapter.DateCallback{
             override fun chosenDatePostion(position: Int) {
+
+                if(startDateState)
+                    chosenStartMonth = chosenMonthList[position].mm
+                else
+                    chosenEndMonth = chosenMonthList[position].mm
+
+
                 for((index,value) in chosenMonthList.withIndex())
                     value.selected = index==position
 
                 (lv_month.adapter as MonthAdapter).notifyDataSetChanged()
                 lv_month.setSelection(position)
-
             }
         })
 
         val dayAdapter = DayAdapter(this, chosenDayList,object : DayAdapter.DateCallback{
             override fun chosenDatePostion(position: Int) {
+                if(startDateState)
+                    chosenStartDay = chosenDayList[position].dd
+                else
+                    chosenEndDay = chosenDayList[position].dd
+
                 for((index,value) in chosenDayList.withIndex())
                     value.selected = index==position
 
                 (lv_day.adapter as DayAdapter).notifyDataSetChanged()
                 lv_day.setSelection(position)
-
             }
         })
+
+        chosenStartYear = getCurrentYear()
+        chosenStartMonth = getCurrentMonth()
+        chosenStartDay = getCurrentDay()
+
+        chosenEndYear = getCurrentYear()
+        chosenEndMonth = getCurrentMonth()
+        chosenEndDay = getCurrentDay()
 
 
         // listView에 adapter 연결
@@ -301,6 +334,31 @@ class DetailManageScoreActivity:BaseActivity(){
 
         btn_inquire_date.setOnClickListener {
             if(layout_select_main.visibility == GONE){
+                if(layout_datepicker.visibility == VISIBLE){
+                    var yyyy = getCurrentYear()
+                    var mm = getCurrentMonth()
+                    var dd = getCurrentDay()
+
+                    for(value in chosenYearList)
+                        if(value.selected)
+                            yyyy = value.yyyy
+
+                    for(value in chosenMonthList)
+                        if(value.selected)
+                            mm = value.mm
+
+                    for(value in chosenDayList)
+                        if(value.selected)
+                            dd = value.dd
+
+                    if(startDateState){
+                        tv_date_own_start.text = "$yyyy.$mm.$dd"
+                    }else{
+                        tv_date_own_end.text = "$yyyy.$mm.$dd"
+                    }
+                }
+
+
                 listView_choose_date_own.visibility = GONE
                 layout_datepicker.visibility = GONE
                 layout_select_main.visibility = VISIBLE
@@ -391,11 +449,15 @@ class DetailManageScoreActivity:BaseActivity(){
         tv_date_own_start.setOnClickListener {
             layout_select_main.visibility = GONE
             layout_datepicker.visibility = VISIBLE
+
+            startDateState = true
         }
 
         tv_date_own_end.setOnClickListener {
             layout_select_main.visibility = GONE
             layout_datepicker.visibility = VISIBLE
+
+            startDateState = false
         }
     }
 
@@ -578,7 +640,7 @@ class DetailManageScoreActivity:BaseActivity(){
     }
 
     private fun getYear():List<ChosenYear>{
-        val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+        val currentYear = getCurrentYear()
         val yearsList = mutableListOf<ChosenYear>()
         for (i in 0 until 5) {
             if(i == 0)
@@ -590,7 +652,7 @@ class DetailManageScoreActivity:BaseActivity(){
     }
 
     private fun getMonth():List<ChosenMonth>{
-        val currentMonth = Calendar.getInstance().get(Calendar.MONTH) + 1
+        val currentMonth = getCurrentMonth()
         val months = mutableListOf<ChosenMonth>()
 
         for (i in 1..12) {
@@ -600,7 +662,7 @@ class DetailManageScoreActivity:BaseActivity(){
     }
 
     private fun getDay(year:Int, month:Int):List<ChosenDay>{
-        val currentDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+        val currentDay = getCurrentDay()
 
         val days = mutableListOf<ChosenDay>()
 
@@ -613,5 +675,15 @@ class DetailManageScoreActivity:BaseActivity(){
         }
 
         return days
+    }
+
+    private fun getCurrentYear():Int{
+        return Calendar.getInstance().get(Calendar.YEAR)
+    }
+    private fun getCurrentMonth():Int{
+        return Calendar.getInstance().get(Calendar.MONTH) + 1
+    }
+    private fun getCurrentDay():Int{
+        return Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
     }
 }
