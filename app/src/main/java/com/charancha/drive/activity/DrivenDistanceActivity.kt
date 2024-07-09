@@ -6,7 +6,7 @@ import com.charancha.drive.R
 class DrivenDistanceActivity:BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_driven_distance)
+        setContentView(R.layout.activity_driven_summary)
 
 
     }
