@@ -196,6 +196,7 @@
                     android:textColor="@color/gray_950"/>
 
                 <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/layout_barchart_distance"
                     android:layout_width="match_parent"
                     android:layout_height="210dp"
                     android:layout_marginTop="57dp"/>
@@ -409,6 +410,7 @@
                     android:textColor="@color/gray_950"/>
 
                 <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/layout_linechart_distance"
                     android:layout_width="match_parent"
                     android:layout_height="210dp"
                     android:layout_marginTop="35dp"/>

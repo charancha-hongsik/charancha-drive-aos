@@ -26,11 +26,11 @@ interface ApiServiceInterface {
     @GET("api/v1/terms/{id}")
     fun getTermDetails(@Path("id") userKey: String): Call<ResponseBody>
 
-    @POST("api/v1/users/me/terms/agree")
+    @PUT("api/v1/me/terms/agreements")
     fun postTermsAgree(@Header("Authorization") token: String, @Body body: RequestBody): Call<ResponseBody>
 
-    @GET("api/v1/users/me/terms/agreed-status")
-    fun getTermsAgree(@Header("Authorization") token: String, @Query("termsUsage") termsUsage: String, @Query("required") required: Boolean): Call<ResponseBody>
+    @GET("api/v1/me/terms/agreements")
+    fun getTermsAgree(@Header("Authorization") token: String, @Query("termsUsage") termsUsage: String): Call<ResponseBody>
 
 
     /**

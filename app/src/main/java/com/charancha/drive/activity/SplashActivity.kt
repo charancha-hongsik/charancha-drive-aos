@@ -72,17 +72,28 @@ class SplashActivity: BaseActivity() {
                             PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.TOKEN_TYPE, signInResponse.token_type)
 
 
-                            apiService().getTermsAgree("Bearer " + PreferenceUtil.getPref(this@SplashActivity, PreferenceUtil.ACCESS_TOKEN, ""), "마일로그_서비스", true).enqueue(object :Callback<ResponseBody>{
+                            apiService().getTermsAgree("Bearer " + PreferenceUtil.getPref(this@SplashActivity, PreferenceUtil.ACCESS_TOKEN, ""), "MILELOG_USAGE").enqueue(object :Callback<ResponseBody>{
                                 override fun onResponse(
                                     call: Call<ResponseBody>,
                                     response: Response<ResponseBody>
                                 ) {
-                                    Log.d("testsetsetset","testsesetse getTermsAgree :: " + response.code())
                                     if(response.code() == 200 || response.code() == 201){
 
-                                        val termsAgreeStatusResponse = gson.fromJson(response.body()?.string(), TermsAgreeStatusResponse::class.java)
+                                        val jsonString = response.body()?.string()
 
-                                        if(termsAgreeStatusResponse.agreed){
+
+                                        val type: Type = object : TypeToken<List<TermsAgreeStatusResponse?>?>() {}.type
+                                        val termsAgreeStatusResponses:List<TermsAgreeStatusResponse> = Gson().fromJson(jsonString, type)
+
+                                        var agree = true
+
+                                        for(term in termsAgreeStatusResponses){
+                                            if(term.terms.isRequired == 1)
+                                                if(term.terms.isActive == 0)
+                                                    agree = false
+                                        }
+
+                                        if(agree){
                                             if(!PreferenceUtil.getBooleanPref(this@SplashActivity, PreferenceUtil.PERMISSION_ALL_CHECKED, false)){
                                                 startActivity(Intent(this@SplashActivity, PermissionInfoActivity::class.java))
                                                 finish()

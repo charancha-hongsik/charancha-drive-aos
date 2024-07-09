@@ -1,5 +1,12 @@
 package com.charancha.drive.retrofit.response
 
 data class TermsAgreeStatusResponse (
-    val agreed:Boolean
+    val createdAt:String,
+    val deletedAt:String,
+    val updatedAt:String,
+    val id:String,
+    val termsId:String,
+    val userId:String,
+    val isAgreed:Int,
+    val terms:Terms,
 )

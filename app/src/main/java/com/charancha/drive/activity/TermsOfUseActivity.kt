@@ -7,11 +7,13 @@ import android.text.style.UnderlineSpan
 import android.util.Log
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.charancha.drive.CommonUtil
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
 import com.charancha.drive.retrofit.request.AgreeTermsRequest
+import com.charancha.drive.retrofit.request.Agreements
 import com.charancha.drive.retrofit.response.GetMyCarInfoResponse
 import com.charancha.drive.retrofit.response.TermsSummaryResponse
 import com.google.gson.Gson
@@ -37,11 +39,14 @@ class TermsOfUseActivity: BaseActivity() {
     private lateinit var ibTerms2:ImageButton
     private lateinit var ibTerms3:ImageButton
     private lateinit var ibTerms4:ImageButton
+    private lateinit var ibTerms5:ImageButton
     private lateinit var tvTerms1:TextView
     private lateinit var tvTermsTitle1:TextView
     private lateinit var tvTermsTitle2:TextView
     private lateinit var tvTermsTitle3:TextView
     private lateinit var tvTermsTitle4:TextView
+    private lateinit var tvTermsTitle5:TextView
+
 
     lateinit var termsSummaryResponse: List<TermsSummaryResponse>
 
@@ -59,12 +64,11 @@ class TermsOfUseActivity: BaseActivity() {
                 if(response.code() == 200){
                     val jsonString = response.body()?.string()
 
-                    Log.d("testsetestset","testestsetse :: " + jsonString)
+                    Log.d("testsetsetest","testsetestset :: " + jsonString)
 
                     val gson = Gson()
                     val type: Type = object : TypeToken<List<TermsSummaryResponse?>?>() {}.type
                     termsSummaryResponse = gson.fromJson(jsonString, type)
-
 
                     setResource()
                     setListener()
@@ -97,11 +101,13 @@ class TermsOfUseActivity: BaseActivity() {
         ibTerms2 = findViewById(R.id.ib_terms2)
         ibTerms3 = findViewById(R.id.ib_terms3)
         ibTerms4 = findViewById(R.id.ib_terms4)
+        ibTerms5 = findViewById(R.id.ib_terms5)
         tvTerms1 = findViewById(R.id.tv_terms1)
         tvTermsTitle1 = findViewById(R.id.tv_terms_title1)
         tvTermsTitle2 = findViewById(R.id.tv_terms_title2)
         tvTermsTitle3 = findViewById(R.id.tv_terms_title3)
         tvTermsTitle4 = findViewById(R.id.tv_terms_title4)
+        tvTermsTitle5 = findViewById(R.id.tv_terms_title5)
 
 
         // TextView에 SpannableString 설정
@@ -110,6 +116,7 @@ class TermsOfUseActivity: BaseActivity() {
         tvTermsTitle2.text = CommonUtil.getSpannableString(this@TermsOfUseActivity, resources.getString(R.string.terms_title2), resources.getString(R.string.terms_title2_gray), resources.getColor(R.color.gray_400))
         tvTermsTitle3.text = CommonUtil.getSpannableString(this@TermsOfUseActivity, resources.getString(R.string.terms_title3), resources.getString(R.string.terms_title3_gray), resources.getColor(R.color.gray_400))
         tvTermsTitle4.text = CommonUtil.getSpannableString(this@TermsOfUseActivity, resources.getString(R.string.terms_title4), resources.getString(R.string.terms_title4_gray), resources.getColor(R.color.gray_400))
+        tvTermsTitle5.text = CommonUtil.getSpannableString(this@TermsOfUseActivity, resources.getString(R.string.terms_title5), resources.getString(R.string.terms_title5_gray), resources.getColor(R.color.gray_400))
 
 
         val content2 = SpannableString(tvTermsTitle2.text.toString())
@@ -123,6 +130,10 @@ class TermsOfUseActivity: BaseActivity() {
         val content4 = SpannableString(tvTermsTitle4.text.toString())
         content4.setSpan(UnderlineSpan(), 0, content4.length-5, 0)
         tvTermsTitle4.text = content4
+
+        val content5 = SpannableString(tvTermsTitle5.text.toString())
+        content5.setSpan(UnderlineSpan(), 0, content5.length-5, 0)
+        tvTermsTitle5.text = content5
 
 
     }
@@ -138,16 +149,16 @@ class TermsOfUseActivity: BaseActivity() {
         }
 
         btnNext.setOnClickListener {
-            val acceptedTerms = mutableListOf<String>()
+            val acceptedTerms = mutableListOf<Agreements>()
 
             for(term in termsSummaryResponse){
 
                 if(tvTermsTitle4.text.contains(term.title)){
                     if(ibTerms4.isSelected){
-                        acceptedTerms.add(term.id)
+                        acceptedTerms.add(Agreements(term.id,1))
                     }
                 }else{
-                    acceptedTerms.add(term.id)
+                    acceptedTerms.add(Agreements(term.id,1))
                 }
             }
 
@@ -159,7 +170,6 @@ class TermsOfUseActivity: BaseActivity() {
                     call: Call<ResponseBody>,
                     response: Response<ResponseBody>
                 ) {
-                    Log.d("testestsetset","testsetestse response.code :: " + response.code())
                     if(response.code() == 200 || response.code() == 201){
                         if(PreferenceUtil.getBooleanPref(this@TermsOfUseActivity, PreferenceUtil.PERMISSION_ALL_CHECKED, false)){
                             apiService().getMyCarInfo("Bearer " + PreferenceUtil.getPref(this@TermsOfUseActivity, PreferenceUtil.ACCESS_TOKEN, "")).enqueue(object :Callback<ResponseBody>{
@@ -198,6 +208,8 @@ class TermsOfUseActivity: BaseActivity() {
                             startActivity(Intent(this@TermsOfUseActivity, PermissionInfoActivity::class.java))
                             finish()
                         }
+                    } else{
+                        Toast.makeText(this@TermsOfUseActivity,"통신 실패",Toast.LENGTH_SHORT).show()
                     }
                 }
 
@@ -217,6 +229,8 @@ class TermsOfUseActivity: BaseActivity() {
             ibTerms2.isSelected = ibAllAccept.isSelected
             ibTerms3.isSelected = ibAllAccept.isSelected
             ibTerms4.isSelected = ibAllAccept.isSelected
+            ibTerms5.isSelected = ibAllAccept.isSelected
+
 
             checkAllAccept()
         }
@@ -251,6 +265,10 @@ class TermsOfUseActivity: BaseActivity() {
             ibTerms4.isSelected = !ibTerms4.isSelected
         }
 
+        ibTerms5.setOnClickListener {
+            ibTerms5.isSelected = !ibTerms5.isSelected
+        }
+
         tvTermsTitle2.setOnClickListener{
             for(term in termsSummaryResponse){
                 if(tvTermsTitle2.text.contains(term.title)){
@@ -270,6 +288,14 @@ class TermsOfUseActivity: BaseActivity() {
         tvTermsTitle4.setOnClickListener{
             for(term in termsSummaryResponse){
                 if(tvTermsTitle4.text.contains(term.title)){
+                    startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
+                }
+            }
+        }
+
+        tvTermsTitle5.setOnClickListener{
+            for(term in termsSummaryResponse){
+                if(tvTermsTitle5.text.contains(term.title)){
                     startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
                 }
             }

@@ -207,19 +207,26 @@ class LoginActivity: BaseActivity() {
 
                                         apiService().getTermsAgree(
                                             "Bearer " + signInResponse.access_token,
-                                            "마일로그_서비스",
-                                            true
+                                            "MILELOG_USAGE"
                                         ).enqueue(object : Callback<ResponseBody> {
                                             override fun onResponse(
                                                 call: Call<ResponseBody>,
                                                 response: Response<ResponseBody>
                                             ) {
                                                 if (response.code() == 200 || response.code() == 201) {
-                                                    val termsAgreeStatusResponse = gson.fromJson(
-                                                        response.body()?.string(),
-                                                        TermsAgreeStatusResponse::class.java
-                                                    )
-                                                    if (termsAgreeStatusResponse.agreed) {
+                                                    val jsonString = response.body()?.string()
+
+                                                    val type: Type = object : TypeToken<List<TermsAgreeStatusResponse?>?>() {}.type
+                                                    val termsAgreeStatusResponses:List<TermsAgreeStatusResponse> = Gson().fromJson(jsonString, type)
+
+                                                    var agree = true
+
+                                                    for(term in termsAgreeStatusResponses){
+                                                        if(term.terms.isRequired == 1)
+                                                            if(term.terms.isActive == 0)
+                                                                agree = false
+                                                    }
+                                                    if (agree) {
                                                         if (!PreferenceUtil.getBooleanPref(
                                                                 this@LoginActivity,
                                                                 PreferenceUtil.PERMISSION_ALL_CHECKED,
