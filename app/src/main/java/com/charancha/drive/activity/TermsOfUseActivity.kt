@@ -2,6 +2,8 @@ package com.charancha.drive.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.style.UnderlineSpan
 import android.util.Log
 import android.widget.ImageButton
 import android.widget.TextView
@@ -108,6 +110,20 @@ class TermsOfUseActivity: BaseActivity() {
         tvTermsTitle2.text = CommonUtil.getSpannableString(this@TermsOfUseActivity, resources.getString(R.string.terms_title2), resources.getString(R.string.terms_title2_gray), resources.getColor(R.color.gray_400))
         tvTermsTitle3.text = CommonUtil.getSpannableString(this@TermsOfUseActivity, resources.getString(R.string.terms_title3), resources.getString(R.string.terms_title3_gray), resources.getColor(R.color.gray_400))
         tvTermsTitle4.text = CommonUtil.getSpannableString(this@TermsOfUseActivity, resources.getString(R.string.terms_title4), resources.getString(R.string.terms_title4_gray), resources.getColor(R.color.gray_400))
+
+
+        val content2 = SpannableString(tvTermsTitle2.text.toString())
+        content2.setSpan(UnderlineSpan(), 0, content2.length-5, 0)
+        tvTermsTitle2.text = content2
+
+        val content3 = SpannableString(tvTermsTitle3.text.toString())
+        content3.setSpan(UnderlineSpan(), 0, content3.length-5, 0)
+        tvTermsTitle3.text = content3
+
+        val content4 = SpannableString(tvTermsTitle4.text.toString())
+        content4.setSpan(UnderlineSpan(), 0, content4.length-5, 0)
+        tvTermsTitle4.text = content4
+
 
     }
 
