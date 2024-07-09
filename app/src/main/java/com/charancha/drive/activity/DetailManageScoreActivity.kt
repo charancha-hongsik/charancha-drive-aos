@@ -29,7 +29,6 @@ class DetailManageScoreActivity:BaseActivity(){
     lateinit var btn_a_month:TextView
     lateinit var btn_six_month:TextView
     lateinit var btn_each_month:TextView
-    lateinit var btn_date_own:TextView
 
     lateinit var listView_choose_date_own:ListView
     lateinit var layout_select_main:LinearLayout
@@ -38,33 +37,10 @@ class DetailManageScoreActivity:BaseActivity(){
     lateinit var tv_selected_date:TextView
     lateinit var layout_date_own:ConstraintLayout
     lateinit var tv_inquire_scope:TextView
-    lateinit var tv_date_own_start:TextView
-    lateinit var tv_date_own_end:TextView
-
-    lateinit var layout_datepicker:LinearLayout
-    lateinit var lv_year:ListView
-    lateinit var lv_month:ListView
-    lateinit var lv_day:ListView
-
-    lateinit var chosenYearList:List<ChosenYear>
-    lateinit var chosenMonthList:List<ChosenMonth>
-    lateinit var chosenDayList:List<ChosenDay>
-
-    var chosenStartYear:Int = 0
-    var chosenEndYear:Int = 0
-    var chosenStartMonth:Int = 0
-    var chosenEndMonth:Int = 0
-    var chosenStartDay:Int = 0
-    var chosenEndDay:Int = 0
-
-
-
 
 
     lateinit var behavior: BottomSheetBehavior<LinearLayout>
     lateinit var selectedDate:String
-
-    var startDateState = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,31 +66,16 @@ class DetailManageScoreActivity:BaseActivity(){
         tv_selected_date = findViewById(R.id.tv_selected_date)
         btn_six_month = findViewById(R.id.btn_six_month)
         btn_each_month = findViewById(R.id.btn_each_month)
-        btn_date_own = findViewById(R.id.btn_date_own)
         layout_date_own = findViewById(R.id.layout_date_own)
         tv_inquire_scope = findViewById(R.id.tv_inquire_scope)
-        tv_date_own_start = findViewById(R.id.tv_date_own_start)
-        tv_date_own_end = findViewById(R.id.tv_date_own_end)
-
-        layout_datepicker = findViewById(R.id.layout_datepicker)
-        lv_year = findViewById(R.id.lv_year)
-        lv_month = findViewById(R.id.lv_month)
-        lv_day = findViewById(R.id.lv_day)
-
 
         persistentBottomSheetEvent()
 
     }
 
     fun setResources(){
-        chosenYearList = getYear()
-        chosenMonthList = getMonth()
-        chosenDayList = getDay(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH))
-
         tv_detail_managescroe_title.text = intent.getStringExtra("title")
         btn_a_month.isSelected = true
-        tv_date_own_start.text = getOneMonthAgo(LocalDate.now())
-        tv_date_own_end.text = getCurrentDateFormatted(LocalDate.now())
 
         val itemList = getDateList()
 
@@ -140,80 +101,10 @@ class DetailManageScoreActivity:BaseActivity(){
 
         })
 
-        val yearAdapter = YearAdapter(this, chosenYearList,object : YearAdapter.DateCallback{
-            override fun chosenDatePostion(position: Int) {
-                if(startDateState)
-                    chosenStartYear = chosenYearList[position].yyyy
-                else
-                    chosenEndYear = chosenYearList[position].yyyy
-
-                for((index,value) in chosenYearList.withIndex())
-                    value.selected = index==position
-
-                (lv_year.adapter as YearAdapter).notifyDataSetChanged()
-                lv_year.setSelection(position)
-            }
-        })
-
-        val monthAdapter = MonthAdapter(this, chosenMonthList,object : MonthAdapter.DateCallback{
-            override fun chosenDatePostion(position: Int) {
-
-                if(startDateState)
-                    chosenStartMonth = chosenMonthList[position].mm
-                else
-                    chosenEndMonth = chosenMonthList[position].mm
-
-
-                for((index,value) in chosenMonthList.withIndex())
-                    value.selected = index==position
-
-                (lv_month.adapter as MonthAdapter).notifyDataSetChanged()
-                lv_month.setSelection(position)
-            }
-        })
-
-        val dayAdapter = DayAdapter(this, chosenDayList,object : DayAdapter.DateCallback{
-            override fun chosenDatePostion(position: Int) {
-                if(startDateState)
-                    chosenStartDay = chosenDayList[position].dd
-                else
-                    chosenEndDay = chosenDayList[position].dd
-
-                for((index,value) in chosenDayList.withIndex())
-                    value.selected = index==position
-
-                (lv_day.adapter as DayAdapter).notifyDataSetChanged()
-                lv_day.setSelection(position)
-            }
-        })
-
-        chosenStartYear = getCurrentYear()
-        chosenStartMonth = getCurrentMonth()
-        chosenStartDay = getCurrentDay()
-
-        chosenEndYear = getCurrentYear()
-        chosenEndMonth = getCurrentMonth()
-        chosenEndDay = getCurrentDay()
-
-
         // listView에 adapter 연결
         listView_choose_date_own.adapter = dateAdapter
 
-        lv_year.adapter = yearAdapter
-        lv_month.adapter = monthAdapter
-        lv_day.adapter = dayAdapter
 
-        for((index,value) in chosenYearList.withIndex())
-            if(value.selected)
-                lv_year.setSelection(index)
-
-        for((index,value) in chosenMonthList.withIndex())
-            if(value.selected)
-                lv_month.setSelection(index)
-
-        for((index,value) in chosenDayList.withIndex())
-            if(value.selected)
-                lv_day.setSelection(index)
 
 
     }
@@ -249,21 +140,6 @@ class DetailManageScoreActivity:BaseActivity(){
     }
 
 
-    fun getCurrentDateFormatted(currentDate:LocalDate): String {
-        // 결과를 yyyy.MM.dd 형식으로 포맷팅하여 반환
-        val formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd")
-        return currentDate.format(formatter)
-    }
-
-
-    fun getOneMonthAgo(currentDate:LocalDate): String {
-        // 한 달 전의 날짜 계산
-        val oneMonthAgoDate = currentDate.minusMonths(1).plusDays(1)
-
-        // 결과를 yyyy.MM.dd 형식으로 포맷팅하여 반환
-        val formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd")
-        return oneMonthAgoDate.format(formatter)
-    }
 
     fun getDateRangeString(yearMonth: String): String {
 
@@ -317,7 +193,6 @@ class DetailManageScoreActivity:BaseActivity(){
             layout_choose_date.visibility = VISIBLE
 
             listView_choose_date_own.visibility = GONE
-            layout_datepicker.visibility = GONE
             layout_select_main.visibility = VISIBLE
         }
 
@@ -334,33 +209,8 @@ class DetailManageScoreActivity:BaseActivity(){
 
         btn_inquire_date.setOnClickListener {
             if(layout_select_main.visibility == GONE){
-                if(layout_datepicker.visibility == VISIBLE){
-                    var yyyy = getCurrentYear()
-                    var mm = getCurrentMonth()
-                    var dd = getCurrentDay()
-
-                    for(value in chosenYearList)
-                        if(value.selected)
-                            yyyy = value.yyyy
-
-                    for(value in chosenMonthList)
-                        if(value.selected)
-                            mm = value.mm
-
-                    for(value in chosenDayList)
-                        if(value.selected)
-                            dd = value.dd
-
-                    if(startDateState){
-                        tv_date_own_start.text = "$yyyy.$mm.$dd"
-                    }else{
-                        tv_date_own_end.text = "$yyyy.$mm.$dd"
-                    }
-                }
-
 
                 listView_choose_date_own.visibility = GONE
-                layout_datepicker.visibility = GONE
                 layout_select_main.visibility = VISIBLE
 
                 tv_selected_date.text = selectedDate
@@ -371,10 +221,7 @@ class DetailManageScoreActivity:BaseActivity(){
                     setInquireScope(getLastSixMonthsRangeString())
                 }else if(btn_each_month.isSelected){
                     setInquireScope(getDateRangeString(selectedDate))
-                }else if(btn_date_own.isSelected){
-
                 }
-
                 layout_choose_date.visibility = GONE
 
             }
@@ -389,15 +236,12 @@ class DetailManageScoreActivity:BaseActivity(){
             btn_a_month.isSelected = true
             btn_six_month.isSelected = false
             btn_each_month.isSelected = false
-            btn_date_own.isSelected = false
 
             TextViewCompat.setTextAppearance(btn_a_month, R.style.B1SBweight600)
             TextViewCompat.setTextAppearance(btn_six_month, R.style.B1Mweight500)
             TextViewCompat.setTextAppearance(btn_each_month, R.style.B1Mweight500)
-            TextViewCompat.setTextAppearance(btn_date_own, R.style.B1Mweight500)
 
             btn_select_date_from_list.visibility = GONE
-            layout_date_own.visibility = GONE
 
         }
 
@@ -405,12 +249,10 @@ class DetailManageScoreActivity:BaseActivity(){
             btn_a_month.isSelected = false
             btn_six_month.isSelected = true
             btn_each_month.isSelected = false
-            btn_date_own.isSelected = false
 
             TextViewCompat.setTextAppearance(btn_a_month, R.style.B1Mweight500)
             TextViewCompat.setTextAppearance(btn_six_month, R.style.B1SBweight600)
             TextViewCompat.setTextAppearance(btn_each_month, R.style.B1Mweight500)
-            TextViewCompat.setTextAppearance(btn_date_own, R.style.B1Mweight500)
 
             btn_select_date_from_list.visibility = GONE
             layout_date_own.visibility = GONE
@@ -421,43 +263,12 @@ class DetailManageScoreActivity:BaseActivity(){
             btn_a_month.isSelected = false
             btn_six_month.isSelected = false
             btn_each_month.isSelected = true
-            btn_date_own.isSelected = false
 
             TextViewCompat.setTextAppearance(btn_a_month, R.style.B1Mweight500)
             TextViewCompat.setTextAppearance(btn_six_month, R.style.B1Mweight500)
             TextViewCompat.setTextAppearance(btn_each_month, R.style.B1SBweight600)
-            TextViewCompat.setTextAppearance(btn_date_own, R.style.B1Mweight500)
 
             btn_select_date_from_list.visibility = VISIBLE
-            layout_date_own.visibility = GONE
-        }
-
-        btn_date_own.setOnClickListener {
-            btn_a_month.isSelected = false
-            btn_six_month.isSelected = false
-            btn_each_month.isSelected = false
-            btn_date_own.isSelected = true
-
-            TextViewCompat.setTextAppearance(btn_a_month, R.style.B1Mweight500)
-            TextViewCompat.setTextAppearance(btn_six_month, R.style.B1Mweight500)
-            TextViewCompat.setTextAppearance(btn_each_month, R.style.B1Mweight500)
-            TextViewCompat.setTextAppearance(btn_date_own, R.style.B1SBweight600)
-            btn_select_date_from_list.visibility = GONE
-            layout_date_own.visibility = VISIBLE
-        }
-
-        tv_date_own_start.setOnClickListener {
-            layout_select_main.visibility = GONE
-            layout_datepicker.visibility = VISIBLE
-
-            startDateState = true
-        }
-
-        tv_date_own_end.setOnClickListener {
-            layout_select_main.visibility = GONE
-            layout_datepicker.visibility = VISIBLE
-
-            startDateState = false
         }
     }
 
@@ -533,148 +344,6 @@ class DetailManageScoreActivity:BaseActivity(){
             fun chosenDate(date:String)
 
         }
-    }
-    private fun setYear(){
-        /**
-         * ListView 새로 생성 후 notify 및 setSection
-         */
-
-
-
-    }
-
-    private fun setMonth(){
-        /**
-         * ListView 새로 생성 후 notify 및 setSection
-         */
-
-    }
-
-    private fun setDay(){
-        /**
-         * ListView 새로 생성 후 notify 및 setSection
-         */
-
-    }
-
-
-    class YearAdapter(context: Context, date: List<ChosenYear>,val callback:DateCallback ) : ArrayAdapter<ChosenYear>(context, 0, date) {
-        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            var listItemView = convertView
-            if (listItemView == null) {
-                listItemView = LayoutInflater.from(context).inflate(R.layout.item_yyyy, parent, false)
-            }
-
-            val chosenYear = getItem(position)
-
-            val tvName = listItemView!!.findViewById<TextView>(R.id.tv_yy)
-            tvName.text = chosenYear!!.yyyy.toString() + "년"
-
-            tvName.setOnClickListener {
-                callback.chosenDatePostion(position)
-            }
-
-            tvName.isSelected = chosenYear.selected
-
-            return listItemView!!
-        }
-
-        interface DateCallback {
-            fun chosenDatePostion(position:Int)
-
-        }
-    }
-
-    class MonthAdapter(context: Context, date: List<ChosenMonth>,val callback:DateCallback ) : ArrayAdapter<ChosenMonth>(context, 0, date) {
-        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            var listItemView = convertView
-            if (listItemView == null) {
-                listItemView = LayoutInflater.from(context).inflate(R.layout.item_mm, parent, false)
-            }
-
-            val chosenMonth = getItem(position)
-
-            val tvName = listItemView!!.findViewById<TextView>(R.id.tv_mm)
-            tvName.text = chosenMonth!!.mm.toString() + "월"
-            tvName.setOnClickListener {
-                callback.chosenDatePostion(position)
-            }
-
-            tvName.isSelected = chosenMonth.selected
-
-            return listItemView!!
-        }
-
-        interface DateCallback {
-            fun chosenDatePostion(position:Int)
-
-        }
-    }
-
-    class DayAdapter(context: Context, date: List<ChosenDay>,val callback:DateCallback ) : ArrayAdapter<ChosenDay>(context, 0, date) {
-        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            var listItemView = convertView
-            if (listItemView == null) {
-                listItemView = LayoutInflater.from(context).inflate(R.layout.item_dd, parent, false)
-            }
-
-            val chosenDay = getItem(position)
-
-            val tvName = listItemView!!.findViewById<TextView>(R.id.tv_dd)
-            tvName.text = chosenDay!!.dd.toString() + "일"
-
-            tvName.setOnClickListener {
-                callback.chosenDatePostion(position)
-            }
-
-            tvName.isSelected = chosenDay.selected
-
-
-            return listItemView!!
-        }
-
-        interface DateCallback {
-            fun chosenDatePostion(position:Int)
-
-        }
-    }
-
-    private fun getYear():List<ChosenYear>{
-        val currentYear = getCurrentYear()
-        val yearsList = mutableListOf<ChosenYear>()
-        for (i in 0 until 5) {
-            if(i == 0)
-                yearsList.add(ChosenYear(currentYear - i, true))
-            else
-                yearsList.add(ChosenYear(currentYear - i, false))
-        }
-        return yearsList
-    }
-
-    private fun getMonth():List<ChosenMonth>{
-        val currentMonth = getCurrentMonth()
-        val months = mutableListOf<ChosenMonth>()
-
-        for (i in 1..12) {
-            months.add(ChosenMonth(i, i == currentMonth))
-        }
-        return months
-    }
-
-    private fun getDay(year:Int, month:Int):List<ChosenDay>{
-        val currentDay = getCurrentDay()
-
-        val days = mutableListOf<ChosenDay>()
-
-        val calendar = Calendar.getInstance()
-        calendar.set(Calendar.YEAR, year)
-        calendar.set(Calendar.MONTH, month - 1) // Calendar.MONTH는 0부터 시작하므로 -1
-
-        for (i in 1..calendar.getActualMaximum(Calendar.DAY_OF_MONTH)) {
-            days.add(ChosenDay(i, i == currentDay))
-        }
-
-        return days
     }
 
     private fun getCurrentYear():Int{

@@ -706,7 +706,7 @@
                     android:layout_height="46dp"
                     android:layout_marginTop="20dp"
                     android:orientation="horizontal"
-                    android:weightSum="4">
+                    android:weightSum="3">
 
                     <TextView
                         android:id="@+id/btn_a_month"
@@ -742,20 +742,6 @@
                         android:clickable="true"
                         android:layout_marginLeft="6dp"
                         android:background="@drawable/choose_date_selector"/>
-
-                    <TextView
-                        android:id="@+id/btn_date_own"
-                        android:layout_width="0dp"
-                        android:layout_height="46dp"
-                        android:text="직접입력"
-                        android:textAppearance="@style/B1Mweight500"
-                        android:gravity="center"
-                        android:layout_weight="1"
-                        android:clickable="true"
-                        android:layout_marginLeft="6dp"
-                        android:background="@drawable/choose_date_selector"/>
-
-
 
                 </LinearLayout>
 
