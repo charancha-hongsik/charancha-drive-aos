@@ -9,7 +9,7 @@ class DrivenDistanceActivity:BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_driven_summary)
+        setContentView(R.layout.activity_driven_distance)
 
         init()
         setResources()
