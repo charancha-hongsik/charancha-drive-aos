@@ -2,7 +2,6 @@ package com.charancha.drive.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -10,9 +9,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.charancha.drive.R
-import kotlin.math.roundToInt
 
-class ManageScoreActivity:BaseActivity() {
+class ManageEngineActivity:BaseActivity() {
     lateinit var btn_back: ImageView
     lateinit var view_normal_speed_driving_chart:View
     lateinit var view_optimal_driving_chart:View
@@ -32,7 +30,7 @@ class ManageScoreActivity:BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_managescore)
+        setContentView(R.layout.activity_manage_engine)
 
         init()
 
@@ -67,7 +65,7 @@ class ManageScoreActivity:BaseActivity() {
 
         btn_average_distance = findViewById(R.id.btn_average_distance)
         btn_average_distance.setOnClickListener {
-            startActivity(Intent(this@ManageScoreActivity, DetailManageScoreActivity::class.java).putExtra("title","평균 관리 점수"))
+            startActivity(Intent(this, DrivenDistanceActivity::class.java))
         }
 
         btn_recent_drive.isSelected = true

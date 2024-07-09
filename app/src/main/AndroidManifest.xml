@@ -81,7 +81,7 @@
             android:exported="true"/>
         <activity
 
-            android:name=".activity.ManageScoreActivity"
+            android:name=".activity.ManageEngineActivity"
             android:theme="@style/Theme.Charanchadrivegray50"
             android:screenOrientation="portrait"
             android:exported="true"/>

@@ -14,7 +14,6 @@ import android.provider.Settings
 import android.util.Log
 import android.view.View.*
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -56,6 +55,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var layout_average_distance:ConstraintLayout
     lateinit var layout_average_time:ConstraintLayout
     lateinit var tv_car_name:TextView
+    lateinit var tv_average_score_info:TextView
+    lateinit var layout_recent_manage_score:ConstraintLayout
 
     var checkingPermission = false
 
@@ -119,10 +120,6 @@ class MainActivity : AppCompatActivity() {
         setBtn()
 
         setAlarm()
-
-//        lifecycleScope.launch {
-//            requestGoogleLogin(this@MainActivity)
-//        }
     }
 
     fun checkLocation(){
@@ -242,7 +239,7 @@ class MainActivity : AppCompatActivity() {
         tv_car_name = findViewById(R.id.tv_car_name)
         layout_engine = findViewById(R.id.layout_engine)
         layout_engine.setOnClickListener {
-            startActivity(Intent(this, ManageScoreActivity::class.java))
+            startActivity(Intent(this, ManageEngineActivity::class.java))
         }
 
         layout_average_distance = findViewById(R.id.layout_average_distance)
@@ -254,6 +251,17 @@ class MainActivity : AppCompatActivity() {
 
         layout_average_time.setOnClickListener {
             startActivity(Intent(this, DrivenDistanceActivity::class.java))
+        }
+
+        tv_average_score_info = findViewById(R.id.tv_average_score_info)
+        tv_average_score_info.setOnClickListener {
+            startActivity(Intent(this@MainActivity, DetailManageScoreActivity::class.java).putExtra("title","평균 관리 점수"))
+
+        }
+
+        layout_recent_manage_score = findViewById(R.id.layout_recent_manage_score)
+        layout_recent_manage_score.setOnClickListener{
+            startActivity(Intent(this@MainActivity, DetailManageScoreActivity::class.java).putExtra("title","최근 관리 점수"))
         }
 
 
