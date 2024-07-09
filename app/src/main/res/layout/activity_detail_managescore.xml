@@ -621,7 +621,7 @@
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="24dp"
                     android:textAppearance="@style/B2B"
-                    android:textColor="@color/gray_80중0"
+                    android:textColor="@color/gray_800"
                     android:textFontWeight="700"
                     android:text="안내"/>
 
