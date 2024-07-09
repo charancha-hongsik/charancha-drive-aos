@@ -261,24 +261,200 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:text="평균 주행 거리"
+                        android:textAppearance="@style/B2R"
+                        android:textFontWeight="400"
+                        android:textColor="@color/gray_600"
+                        android:gravity="center_vertical"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"/>
 
                     <TextView
+                        android:id="@+id/tv_average_distance"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:text="75"
+                        android:textAppearance="@style/ST1SB"
+                        android:textFontWeight="600"
+                        android:textColor="@color/gray_950"
+                        android:layout_marginRight="1dp"
+                        android:gravity="center_vertical"
+                        app:layout_constraintRight_toLeftOf="@+id/tv_average_distance_unit"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/tv_average_distance_unit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="km"
+                        android:textAppearance="@style/C1R"
+                        android:textFontWeight="400"
+                        android:textColor="@color/gray_950"
+                        android:gravity="center_vertical"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="28dp"
+                    android:layout_marginTop="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="최소 주행 거리"
+                        android:textAppearance="@style/B2R"
+                        android:textFontWeight="400"
+                        android:textColor="@color/gray_600"
+                        android:gravity="center_vertical"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/tv_least_distance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="10"
+                        android:textAppearance="@style/ST1SB"
+                        android:textFontWeight="600"
+                        android:textColor="@color/gray_950"
+                        android:layout_marginRight="1dp"
+                        android:gravity="center_vertical"
+                        app:layout_constraintRight_toLeftOf="@+id/tv_least_distance_unit"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/tv_least_distance_unit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="km"
+                        android:textAppearance="@style/C1R"
+                        android:textFontWeight="400"
+                        android:textColor="@color/gray_950"
+                        android:gravity="center_vertical"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="28dp"
+                    android:layout_marginTop="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="최 주행 거리"
+                        android:textAppearance="@style/B2R"
+                        android:textFontWeight="400"
+                        android:textColor="@color/gray_600"
+                        android:gravity="center_vertical"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/tv_most_distance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="150"
+                        android:textAppearance="@style/ST1SB"
+                        android:textFontWeight="600"
+                        android:textColor="@color/gray_950"
+                        android:layout_marginRight="1dp"
+                        android:gravity="center_vertical"
+                        app:layout_constraintRight_toLeftOf="@+id/tv_most_distance_unit"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/tv_most_distance_unit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="km"
+                        android:textAppearance="@style/C1R"
+                        android:textFontWeight="400"
+                        android:textColor="@color/gray_950"
+                        android:gravity="center_vertical"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
                 
                 
                 
 
 
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical"
+                android:background="@drawable/radius8_white950"
+                android:paddingTop="20dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="24dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2024년 5월 16일"
+                    android:textAppearance="@style/C1R"
+                    android:textFontWeight="400"
+                    android:textColor="@color/gray_600"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="최근 내 차는\n73km 달렸어요"
+                    android:textAppearance="@style/ST2SB"
+                    android:textFontWeight="600"
+                    android:textColor="@color/gray_950"/>
+
+                <com.github.mikephil.charting.charts.LineChart
+                    android:layout_width="match_parent"
+                    android:layout_height="210dp"
+                    android:layout_marginTop="35dp"/>
+
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="24dp"
+                android:textAppearance="@style/B2B"
+                android:textColor="@color/gray_800"
+                android:textFontWeight="700"
+                android:text="안내"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="10dp"
+                android:textAppearance="@style/C1R"
+                android:textColor="@color/gray_700"
+                android:layout_marginBottom="60dp"
+                android:textFontWeight="400"
+                android:text="마일로그에서 제공하는 주행 데이터는 이용 환경에 따라\n실제와 다를 수 있습니다."/>
             
             
 
