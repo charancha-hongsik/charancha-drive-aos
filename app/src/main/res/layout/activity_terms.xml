@@ -252,6 +252,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="다음"
+            android:textAppearance="@style/B1SB"
+            android:textFontWeight="600"
             android:textColor="@color/white_op_95"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"

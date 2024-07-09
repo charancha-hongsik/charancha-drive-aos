@@ -29,7 +29,7 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/white_op_100</item>
         <item name="android:windowLightStatusBar">true</item>
-        <item name="android:navigationBarColor">@color/white_op_100</item>
+        <item name="android:navigationBarColor">@color/gray_50</item>
 
         <!-- no action bar -->
         <item name="windowActionBar">false</item>
