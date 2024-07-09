@@ -52,7 +52,6 @@ class TermsDetailActivity: BaseActivity() {
                         val termsDetailResponse = gson.fromJson(response.body()?.string(), TermDetailResponse::class.java)
                         tvTermsContents.setText(termsDetailResponse.content)
                     }
-
                 }
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {

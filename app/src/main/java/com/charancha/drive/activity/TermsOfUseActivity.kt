@@ -10,6 +10,7 @@ import com.charancha.drive.CommonUtil
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
 import com.charancha.drive.retrofit.request.AgreeTermsRequest
+import com.charancha.drive.retrofit.response.GetMyCarInfoResponse
 import com.charancha.drive.retrofit.response.TermsSummaryResponse
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -145,8 +146,38 @@ class TermsOfUseActivity: BaseActivity() {
                     Log.d("testestsetset","testsetestse response.code :: " + response.code())
                     if(response.code() == 200 || response.code() == 201){
                         if(PreferenceUtil.getBooleanPref(this@TermsOfUseActivity, PreferenceUtil.PERMISSION_ALL_CHECKED, false)){
-                            startActivity(Intent(this@TermsOfUseActivity, OnBoardingActivity::class.java))
-                            finish()
+                            apiService().getMyCarInfo("Bearer " + PreferenceUtil.getPref(this@TermsOfUseActivity, PreferenceUtil.ACCESS_TOKEN, "")).enqueue(object :Callback<ResponseBody>{
+                                override fun onResponse(
+                                    call: Call<ResponseBody>,
+                                    response: Response<ResponseBody>
+                                ) {
+                                    if(response.code() == 200){
+                                        val jsonString = response.body()?.string()
+
+                                        val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
+                                        val getMyCarInfoResponse:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
+
+                                        if(getMyCarInfoResponse.size > 0){
+                                            startActivity(Intent(this@TermsOfUseActivity, MainActivity::class.java))
+                                            finish()
+                                        }else{
+                                            startActivity(Intent(this@TermsOfUseActivity, OnBoardingActivity::class.java))
+                                            finish()
+                                        }
+                                    }else{
+                                        startActivity(Intent(this@TermsOfUseActivity, OnBoardingActivity::class.java))
+                                        finish()
+                                    }
+                                }
+
+                                override fun onFailure(
+                                    call: Call<ResponseBody>,
+                                    t: Throwable
+                                ) {
+                                    startActivity(Intent(this@TermsOfUseActivity, OnBoardingActivity::class.java))
+                                    finish()
+                                }
+                            })
                         }else{
                             startActivity(Intent(this@TermsOfUseActivity, PermissionInfoActivity::class.java))
                             finish()
