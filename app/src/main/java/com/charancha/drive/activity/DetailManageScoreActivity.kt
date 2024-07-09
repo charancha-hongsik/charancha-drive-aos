@@ -5,8 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
+import android.view.View.*
 import android.view.ViewGroup
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -37,6 +36,8 @@ class DetailManageScoreActivity:BaseActivity(){
     lateinit var tv_selected_date:TextView
     lateinit var layout_date_own:ConstraintLayout
     lateinit var tv_inquire_scope:TextView
+    lateinit var layout_there_is_data:LinearLayout
+    lateinit var layout_no_data:ConstraintLayout
 
 
     lateinit var behavior: BottomSheetBehavior<LinearLayout>
@@ -68,6 +69,8 @@ class DetailManageScoreActivity:BaseActivity(){
         btn_each_month = findViewById(R.id.btn_each_month)
         layout_date_own = findViewById(R.id.layout_date_own)
         tv_inquire_scope = findViewById(R.id.tv_inquire_scope)
+        layout_there_is_data = findViewById(R.id.layout_there_is_data)
+        layout_no_data = findViewById(R.id.layout_no_data)
 
         persistentBottomSheetEvent()
 
@@ -217,10 +220,16 @@ class DetailManageScoreActivity:BaseActivity(){
             }else{
                 if(btn_a_month.isSelected){
                     setInquireScope(getLastMonthRangeString())
+                    layout_there_is_data.visibility = INVISIBLE
+                    layout_no_data.visibility = VISIBLE
                 }else if(btn_six_month.isSelected){
                     setInquireScope(getLastSixMonthsRangeString())
+                    layout_there_is_data.visibility = VISIBLE
+                    layout_no_data.visibility = GONE
                 }else if(btn_each_month.isSelected){
                     setInquireScope(getDateRangeString(selectedDate))
+                    layout_there_is_data.visibility = VISIBLE
+                    layout_no_data.visibility = GONE
                 }
                 layout_choose_date.visibility = GONE
 
