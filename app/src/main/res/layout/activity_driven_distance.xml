@@ -17,7 +17,7 @@
             android:id="@+id/tv_driven_distance_title"
             android:layout_width="200dp"
             android:layout_height="26dp"
-            android:text="주행 거"
+            android:text="주행 거리"
             android:textColor="@color/gray_950"
             android:textFontWeight="700"
             android:textAppearance="@style/ST2B"
