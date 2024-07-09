@@ -23,6 +23,10 @@ class ManageScoreActivity:BaseActivity() {
     lateinit var tv_normal_speed_driving_percent1: TextView
     lateinit var tv_normal_speed_driving_percent2: TextView
     lateinit var btn_average_distance: ConstraintLayout
+    lateinit var btn_recent_drive:TextView
+    lateinit var btn_month_drive:TextView
+    lateinit var btn_six_month_drive:TextView
+    lateinit var btn_year_drive:TextView
 
 
 
@@ -55,10 +59,18 @@ class ManageScoreActivity:BaseActivity() {
         tv_normal_speed_driving_percent1 = findViewById(R.id.tv_normal_speed_driving_percent1)
         tv_normal_speed_driving_percent2 = findViewById(R.id.tv_normal_speed_driving_percent2)
 
+        btn_recent_drive = findViewById(R.id.btn_recent_drive)
+        btn_month_drive = findViewById(R.id.btn_month_drive)
+        btn_six_month_drive = findViewById(R.id.btn_six_month_drive)
+        btn_year_drive = findViewById(R.id.btn_year_drive)
+
+
         btn_average_distance = findViewById(R.id.btn_average_distance)
         btn_average_distance.setOnClickListener {
             startActivity(Intent(this@ManageScoreActivity, DetailManageScoreActivity::class.java).putExtra("title","평균 관리 점수"))
         }
+
+        btn_recent_drive.isSelected = true
 
 
         setOptimalDrivingChartWidthByPercent(1f)
