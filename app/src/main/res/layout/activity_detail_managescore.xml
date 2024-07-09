@@ -65,15 +65,17 @@
 
                 <TextView
                     android:id="@+id/tv_inquire_scope"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="26dp"
                     android:text="2024년 6월 2일 ~ 7월 15일"
                     android:textColor="@color/gray_950"
                     android:textFontWeight="600"
                     android:textAppearance="@style/ST2SB"
+                    android:layout_marginRight="8dp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toLeftOf="@+id/btn_choose_date"/>
 
                 <ImageView
                     android:id="@+id/btn_choose_date"
@@ -637,7 +639,7 @@
         android:id="@+id/layout_choose_date"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:visibility="visible"
+        android:visibility="gone"
         android:background="@color/black_op_70"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

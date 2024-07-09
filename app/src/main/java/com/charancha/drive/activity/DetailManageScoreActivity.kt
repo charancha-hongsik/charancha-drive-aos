@@ -164,7 +164,7 @@ class DetailManageScoreActivity:BaseActivity(){
         } else {
             startDate.format(dateFormatter)
         }
-        val endDateString = endDate.format(DateTimeFormatter.ofPattern("M월 d일"))
+        val endDateString = endDate.format(DateTimeFormatter.ofPattern("yyyy년 M월 d일"))
 
         return "$startDateString ~ $endDateString"
     }
@@ -181,7 +181,7 @@ class DetailManageScoreActivity:BaseActivity(){
         } else {
             startDate.format(dateFormatter)
         }
-        val endDateString = endDate.format(DateTimeFormatter.ofPattern("M월 d일"))
+        val endDateString = endDate.format(DateTimeFormatter.ofPattern("yyyy년 M월 d일"))
 
         return "$startDateString ~ $endDateString"
     }

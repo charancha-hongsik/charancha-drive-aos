@@ -20,8 +20,8 @@ interface ApiServiceInterface {
     @POST("api/v1/auth/token/reissue")
     fun postReissue(@Header("refresh_token") token: String): Call<ResponseBody>
 
-    @GET("api/v1/terms/summary")
-    fun getTerms(@Query("termsUsage") termsUsage: String): Call<ResponseBody>
+    @GET("api/v1/terms")
+    fun getTerms(@Query("usageType") termsUsage: String): Call<ResponseBody>
 
     @GET("api/v1/terms/{id}")
     fun getTermDetails(@Path("id") userKey: String): Call<ResponseBody>

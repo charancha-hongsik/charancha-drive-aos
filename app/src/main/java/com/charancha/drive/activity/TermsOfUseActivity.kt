@@ -51,7 +51,7 @@ class TermsOfUseActivity: BaseActivity() {
     }
 
     private fun init(){
-        apiService().getTerms("마일로그_서비스").enqueue(object : Callback<ResponseBody>{
+        apiService().getTerms("MILELOG_USAGE").enqueue(object : Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200){
                     val jsonString = response.body()?.string()
