@@ -53,7 +53,9 @@ class MainActivity : AppCompatActivity() {
     lateinit var chart: PieChart
     lateinit var btn_edit:ImageButton
     lateinit var layout_engine: ConstraintLayout
-    var tv_car_name:TextView? = null
+    lateinit var layout_average_distance:ConstraintLayout
+    lateinit var layout_average_time:ConstraintLayout
+    lateinit var tv_car_name:TextView
 
     var checkingPermission = false
 
@@ -242,6 +244,17 @@ class MainActivity : AppCompatActivity() {
         layout_engine = findViewById(R.id.layout_engine)
         layout_engine.setOnClickListener {
             startActivity(Intent(this, ManageScoreActivity::class.java))
+        }
+
+        layout_average_distance = findViewById(R.id.layout_average_distance)
+        layout_average_time = findViewById(R.id.layout_average_time)
+
+        layout_average_distance.setOnClickListener {
+            startActivity(Intent(this, DrivenDistanceActivity::class.java))
+        }
+
+        layout_average_time.setOnClickListener {
+            startActivity(Intent(this, DrivenDistanceActivity::class.java))
         }
 
 
