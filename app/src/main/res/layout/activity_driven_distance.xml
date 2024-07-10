@@ -126,7 +126,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="최근 주행 시간"
+                    android:text="최근 주행 거리"
                     android:textAppearance="@style/B2M"
                     android:textColor="@color/gray_950"
                     android:textFontWeight="500"/>

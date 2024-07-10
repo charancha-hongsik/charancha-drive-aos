@@ -68,6 +68,8 @@
     <color name="pie_gradient_start_color">#100E12</color>
     <color name="pie_gradient_end_color">#5C5676</color>
 
+    <color name="line_inner_start_color">#4D505050</color>
+
 
 
 </resources>
