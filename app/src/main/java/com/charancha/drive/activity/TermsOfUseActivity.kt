@@ -64,8 +64,6 @@ class TermsOfUseActivity: BaseActivity() {
                 if(response.code() == 200){
                     val jsonString = response.body()?.string()
 
-                    Log.d("testsetsetest","testsetestset :: " + jsonString)
-
                     val gson = Gson()
                     val type: Type = object : TypeToken<List<TermsSummaryResponse?>?>() {}.type
                     termsSummaryResponse = gson.fromJson(jsonString, type)
@@ -156,7 +154,8 @@ class TermsOfUseActivity: BaseActivity() {
                 if(tvTermsTitle4.text.contains(term.title)){
                     if(ibTerms4.isSelected){
                         acceptedTerms.add(Agreements(term.id,1))
-                    }
+                    }else
+                        acceptedTerms.add(Agreements(term.id,0))
                 }else{
                     acceptedTerms.add(Agreements(term.id,1))
                 }

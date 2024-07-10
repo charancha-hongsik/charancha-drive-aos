@@ -237,7 +237,6 @@ class DrivenDistanceActivity:BaseActivity() {
         // Y축 커스텀 레이블 포매터 설정
         rightAxis.valueFormatter = object : IAxisValueFormatter {
             override fun getFormattedValue(value: Float, axis: AxisBase?): String {
-                Log.d("testsetsetest","testesestest :: " + value)
                 val minValue = rightAxis.axisMinimum
                 val maxValue = rightAxis.axisMaximum
 
