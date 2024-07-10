@@ -39,7 +39,6 @@ class DrivenDistanceActivity:BaseActivity() {
     private fun setBarChart() {
 
         val entries = listOf(
-            BarEntry(0f, 0f),
             BarEntry(1f, 6f),
             BarEntry(2f, 10f),
             BarEntry(3f, 4f),
@@ -64,7 +63,6 @@ class DrivenDistanceActivity:BaseActivity() {
             BarEntry(22f, 1f),
             BarEntry(23f,2f),
             BarEntry(24f,5f),
-            BarEntry(25f,0f),
         )
 
         val dataSet = BarDataSet(entries, "Sample Data")
@@ -78,12 +76,13 @@ class DrivenDistanceActivity:BaseActivity() {
         layout_barchart_distance.animateY(1000)
         layout_barchart_distance.legend.isEnabled = false
         layout_barchart_distance.setTouchEnabled(false)
-        layout_barchart_distance.setExtraOffsets(0f, 0f, 0f, 0f)
+        layout_barchart_distance.setExtraOffsets(20f, 0f, 0f, 0f)
+
 
         // Customizing x-axis labels
         val xAxis = layout_barchart_distance.xAxis
         xAxis.granularity = 1.0f // only intervals of 1 unit
-        xAxis.axisMinimum = -1f
+        xAxis.axisMinimum = 0f
         xAxis.axisMaximum = 25f
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
@@ -140,8 +139,6 @@ class DrivenDistanceActivity:BaseActivity() {
     private fun setupLineChart() {
         // 데이터 준비
         val entries = listOf(
-            BarEntry(-1f, 10f),
-            BarEntry(0f, 11f),
             BarEntry(1f, 12f),
             BarEntry(2f, 13f),
             BarEntry(3f, 14f),
@@ -166,7 +163,6 @@ class DrivenDistanceActivity:BaseActivity() {
             BarEntry(22f, 60f),
             BarEntry(23f,63f),
             BarEntry(24f,66f),
-            BarEntry(25f,69f),
         )
 
         // 데이터셋 생성 및 설정
@@ -191,11 +187,12 @@ class DrivenDistanceActivity:BaseActivity() {
         layout_linechart_distance.description.isEnabled = false // 설명 텍스트 사용 여부 설정
         layout_linechart_distance.legend.isEnabled = false
         layout_linechart_distance.setTouchEnabled(false)
+        layout_linechart_distance.setExtraOffsets(20f,0f,0f,0f)
+
 
         // Customizing x-axis labels
         val xAxis = layout_linechart_distance.xAxis
-        xAxis.granularity = 1.0f // only intervals of 1 unit
-        xAxis.axisMinimum = -1f
+        xAxis.axisMinimum = 0f
         xAxis.axisMaximum = 25f
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
