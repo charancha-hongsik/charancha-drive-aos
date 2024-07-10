@@ -62,7 +62,6 @@ class DrivenDistanceActivity:BaseActivity() {
             BarEntry(23f,2f),
             BarEntry(24f,5f),
             BarEntry(25f,0f),
-
         )
 
         val dataSet = BarDataSet(entries, "Sample Data")
@@ -82,19 +81,18 @@ class DrivenDistanceActivity:BaseActivity() {
         val xAxis = layout_barchart_distance.xAxis
         xAxis.granularity = 1.0f // only intervals of 1 unit
         xAxis.axisMinimum = -1f
-        xAxis.axisMaximum = 26f
+        xAxis.axisMaximum = 25f
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
 
         // Customizing x-axis labels
         xAxis.valueFormatter = object : IAxisValueFormatter {
             override fun getFormattedValue(value: Float, axis: AxisBase?): String {
-                Log.d("testestsetest","testestsetesset value :: " + value)
                 return when (value.toInt()) {
                     0 -> "오전 12시"
-                    10 -> "오전 6시"
-                    20 -> "오후 12시"
-                    25 -> "오후 6시"
+                    8 -> "오전 6시"
+                    16 -> "오후 12시"
+                    24-> "오후 6시"
                     else -> "" // 나머지 레이블은 비워둠
                 }
             }
