@@ -37,6 +37,7 @@ class DrivenDistanceActivity:BaseActivity() {
     }
 
     private fun setBarChart() {
+
         val entries = listOf(
             BarEntry(0f, 0f),
             BarEntry(1f, 6f),
@@ -139,33 +140,33 @@ class DrivenDistanceActivity:BaseActivity() {
     private fun setupLineChart() {
         // 데이터 준비
         val entries = listOf(
-            BarEntry(0f, 1f),
-            BarEntry(1f, 2f),
-            BarEntry(2f, 3f),
-            BarEntry(3f, 4f),
-            BarEntry(4f, 5f),
-            BarEntry(5f, 6f),
-            BarEntry(6f, 8f),
-            BarEntry(7f, 10f),
-            BarEntry(8f, 12f),
-            BarEntry(9f, 14f),
-            BarEntry(10f, 16f),
-            BarEntry(11f, 18f),
-            BarEntry(12f, 20f),
-            BarEntry(13f, 23f),
-            BarEntry(14f, 26f),
-            BarEntry(15f, 29f),
-            BarEntry(16f, 32f),
-            BarEntry(17f, 35f),
-            BarEntry(18f, 38f),
-            BarEntry(19f, 41f),
-            BarEntry(20f, 44f),
-            BarEntry(21f, 47f),
-            BarEntry(22f, 50f),
-            BarEntry(23f,53f),
-            BarEntry(24f,56f),
-            BarEntry(25f,59f)
-
+            BarEntry(-1f, 10f),
+            BarEntry(0f, 11f),
+            BarEntry(1f, 12f),
+            BarEntry(2f, 13f),
+            BarEntry(3f, 14f),
+            BarEntry(4f, 15f),
+            BarEntry(5f, 16f),
+            BarEntry(6f, 18f),
+            BarEntry(7f, 20f),
+            BarEntry(8f, 22f),
+            BarEntry(9f, 24f),
+            BarEntry(10f, 26f),
+            BarEntry(11f, 28f),
+            BarEntry(12f, 30f),
+            BarEntry(13f, 33f),
+            BarEntry(14f, 36f),
+            BarEntry(15f, 39f),
+            BarEntry(16f, 42f),
+            BarEntry(17f, 45f),
+            BarEntry(18f, 48f),
+            BarEntry(19f, 51f),
+            BarEntry(20f, 54f),
+            BarEntry(21f, 57f),
+            BarEntry(22f, 60f),
+            BarEntry(23f,63f),
+            BarEntry(24f,66f),
+            BarEntry(25f,69f),
         )
 
         // 데이터셋 생성 및 설정
@@ -175,7 +176,7 @@ class DrivenDistanceActivity:BaseActivity() {
         dataSet.setDrawCircles(false)
         dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER // 곡선 형태로 설정
         dataSet.setDrawFilled(true)  // 선 안쪽을 색으로 채우도록 설정
-        dataSet.fillColor = getColor(R.color.line_inner_start_color)  // 채우기 색상 설정
+        dataSet.fillDrawable = getDrawable(R.drawable.line_chart_gradient)
 
         // 데이터셋 리스트 생성
         val dataSets = ArrayList<ILineDataSet>()
@@ -218,7 +219,7 @@ class DrivenDistanceActivity:BaseActivity() {
         leftAxis.setDrawGridLines(true) // 그리드 라인 표시
         leftAxis.setDrawAxisLine(false) // 축 라인 제거
         leftAxis.setDrawLabels(false) // Y축 레이블 제거
-        leftAxis.setLabelCount(6, true) // 가로 라인의 수를 5로 설정 (강제)
+        leftAxis.setLabelCount(6, true) // 가로 라인의 수를 6로 설정 (강제)
         leftAxis.granularity = 1.0f
         leftAxis.axisMinimum = 0f
         leftAxis.axisMaximum = 80f
