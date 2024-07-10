@@ -174,8 +174,6 @@
                 android:orientation="vertical"
                 android:background="@drawable/radius8_white950"
                 android:paddingTop="20dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
                 android:paddingBottom="24dp">
 
                 <TextView
@@ -184,12 +182,16 @@
                     android:text="2024년 5월 16일"
                     android:textAppearance="@style/C1R"
                     android:textFontWeight="400"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
                     android:textColor="@color/gray_600"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
                     android:text="내 차는 자주\n달릴수록 좋아요"
                     android:textAppearance="@style/ST2SB"
                     android:textFontWeight="600"
@@ -199,7 +201,8 @@
                     android:id="@+id/layout_barchart_distance"
                     android:layout_width="match_parent"
                     android:layout_height="210dp"
-                    android:layout_marginTop="57dp"/>
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="24dp"/>
 
 
             </LinearLayout>
@@ -388,14 +391,14 @@
                 android:orientation="vertical"
                 android:background="@drawable/radius8_white950"
                 android:paddingTop="20dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
                 android:paddingBottom="24dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="2024년 5월 16일"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
                     android:textAppearance="@style/C1R"
                     android:textFontWeight="400"
                     android:textColor="@color/gray_600"/>
@@ -404,6 +407,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
                     android:text="최근 내 차는\n73km 달렸어요"
                     android:textAppearance="@style/ST2SB"
                     android:textFontWeight="600"
@@ -413,6 +418,7 @@
                     android:id="@+id/layout_linechart_distance"
                     android:layout_width="match_parent"
                     android:layout_height="210dp"
+                    android:layout_marginRight="15dp"
                     android:layout_marginTop="35dp"/>
 
 

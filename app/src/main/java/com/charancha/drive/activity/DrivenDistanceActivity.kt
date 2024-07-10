@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
+import android.widget.TextView
 import com.charancha.drive.R
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.LineChart
@@ -18,6 +19,12 @@ class DrivenDistanceActivity:BaseActivity() {
     lateinit var btn_back:ImageView
     lateinit var layout_barchart_distance:BarChart
     lateinit var layout_linechart_distance:LineChart
+    lateinit var btn_recent_drive:TextView
+    lateinit var btn_month_drive:TextView
+    lateinit var btn_six_month_drive:TextView
+    lateinit var btn_year_drive:TextView
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,35 +41,41 @@ class DrivenDistanceActivity:BaseActivity() {
 
         layout_barchart_distance = findViewById(R.id.layout_barchart_distance)
         layout_linechart_distance = findViewById(R.id.layout_linechart_distance)
+
+        btn_recent_drive = findViewById(R.id.btn_recent_drive)
+        btn_month_drive = findViewById(R.id.btn_month_drive)
+        btn_six_month_drive = findViewById(R.id.btn_six_month_drive)
+        btn_year_drive = findViewById(R.id.btn_year_drive)
+
+        btn_recent_drive.isSelected = true
     }
 
     private fun setBarChart() {
 
         val entries = listOf(
-            BarEntry(1f, 6f),
-            BarEntry(2f, 10f),
-            BarEntry(3f, 4f),
-            BarEntry(4f, 8f),
-            BarEntry(5f, 6f),
-            BarEntry(6f, 2f),
-            BarEntry(7f, 7f),
-            BarEntry(8f, 5f),
-            BarEntry(9f, 9f),
-            BarEntry(10f, 3f),
-            BarEntry(11f, 4f),
-            BarEntry(12f, 5f),
-            BarEntry(13f, 6f),
-            BarEntry(14f, 2f),
-            BarEntry(15f, 7f),
-            BarEntry(16f, 5f),
-            BarEntry(17f, 9f),
-            BarEntry(18f, 3f),
-            BarEntry(19f, 4f),
-            BarEntry(20f, 5f),
-            BarEntry(21f, 9f),
-            BarEntry(22f, 1f),
-            BarEntry(23f,2f),
-            BarEntry(24f,5f),
+            BarEntry(-1f, 6f),
+            BarEntry(-0f, 10f),
+            BarEntry(1f, 4f),
+            BarEntry(2f, 8f),
+            BarEntry(3f, 6f),
+            BarEntry(4f, 2f),
+            BarEntry(5f, 7f),
+            BarEntry(6f, 5f),
+            BarEntry(7f, 9f),
+            BarEntry(8f, 3f),
+            BarEntry(9f, 4f),
+            BarEntry(10f, 5f),
+            BarEntry(11f, 2f),
+            BarEntry(12f, 7f),
+            BarEntry(13f, 5f),
+            BarEntry(14f, 9f),
+            BarEntry(15f, 3f),
+            BarEntry(16f, 4f),
+            BarEntry(17f, 5f),
+            BarEntry(18f, 9f),
+            BarEntry(19f, 1f),
+            BarEntry(20f,2f),
+            BarEntry(21f,5f)
         )
 
         val dataSet = BarDataSet(entries, "Sample Data")
@@ -76,26 +89,25 @@ class DrivenDistanceActivity:BaseActivity() {
         layout_barchart_distance.animateY(1000)
         layout_barchart_distance.legend.isEnabled = false
         layout_barchart_distance.setTouchEnabled(false)
-        layout_barchart_distance.setExtraOffsets(20f, 0f, 0f, 0f)
-
 
         // Customizing x-axis labels
         val xAxis = layout_barchart_distance.xAxis
-        xAxis.granularity = 1.0f // only intervals of 1 unit
-        xAxis.axisMinimum = 0f
-        xAxis.axisMaximum = 25f
+        xAxis.granularity = 1f // only intervals of 1 unit
+        xAxis.axisMinimum = -2f
+        xAxis.axisMaximum = 22f
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
         xAxis.textColor = getColor(R.color.gray_600)
+        xAxis.labelCount = 24
 
         // Customizing x-axis labels
         xAxis.valueFormatter = object : IAxisValueFormatter {
             override fun getFormattedValue(value: Float, axis: AxisBase?): String {
                 return when (value.toInt()) {
-                    0 -> "오전 12시"
+                    1 -> "오전 12시"
                     8 -> "오전 6시"
-                    16 -> "오후 12시"
-                    24-> "오후 6시"
+                    14 -> "오후 12시"
+                    20-> "오후 6시"
                     else -> "" // 나머지 레이블은 비워둠
                 }
             }
@@ -136,33 +148,46 @@ class DrivenDistanceActivity:BaseActivity() {
         layout_barchart_distance.invalidate() // refresh
     }
 
+    /**
+     * 최근 주행 (24개 데이터) -> 0시간 ~ 23시간
+     * xAxis.valueFormatter -> 오전 12시 , 오전 6시, 오후 12시, 오후 6시
+     *
+     * 1개월 (28 / 30 / 31개 데이터) -> 해당 월의 일
+     * 각 월요일 표기
+     * 4개 or 5개 표기
+     *
+     * 6개월 (6개 데이터) -> 6개월
+     * 6개 표기
+     *
+     * 1년 (12개 데이터) -> 1월 ~ 12월
+     * 4개 표기
+     */
     private fun setupLineChart() {
         // 데이터 준비
         val entries = listOf(
-            BarEntry(1f, 12f),
-            BarEntry(2f, 13f),
-            BarEntry(3f, 14f),
-            BarEntry(4f, 15f),
-            BarEntry(5f, 16f),
-            BarEntry(6f, 18f),
-            BarEntry(7f, 20f),
+            BarEntry(-1f, 1f),
+            BarEntry(-0f, 3f),
+            BarEntry(1f, 5f),
+            BarEntry(2f, 7f),
+            BarEntry(3f, 9f),
+            BarEntry(4f, 11f),
+            BarEntry(5f, 13f),
+            BarEntry(6f, 16f),
+            BarEntry(7f, 19f),
             BarEntry(8f, 22f),
-            BarEntry(9f, 24f),
-            BarEntry(10f, 26f),
-            BarEntry(11f, 28f),
-            BarEntry(12f, 30f),
-            BarEntry(13f, 33f),
-            BarEntry(14f, 36f),
-            BarEntry(15f, 39f),
-            BarEntry(16f, 42f),
-            BarEntry(17f, 45f),
-            BarEntry(18f, 48f),
-            BarEntry(19f, 51f),
-            BarEntry(20f, 54f),
-            BarEntry(21f, 57f),
-            BarEntry(22f, 60f),
-            BarEntry(23f,63f),
-            BarEntry(24f,66f),
+            BarEntry(9f, 25f),
+            BarEntry(10f, 28f),
+            BarEntry(11f, 31f),
+            BarEntry(12f, 35f),
+            BarEntry(13f, 39f),
+            BarEntry(14f, 43f),
+            BarEntry(15f, 47f),
+            BarEntry(16f, 51f),
+            BarEntry(17f, 55f),
+            BarEntry(18f, 59f),
+            BarEntry(19f, 66f),
+            BarEntry(20f,73f),
+            BarEntry(21f,79f)
         )
 
         // 데이터셋 생성 및 설정
@@ -192,20 +217,21 @@ class DrivenDistanceActivity:BaseActivity() {
 
         // Customizing x-axis labels
         val xAxis = layout_linechart_distance.xAxis
-        xAxis.axisMinimum = 0f
-        xAxis.axisMaximum = 25f
+        xAxis.axisMinimum = -2f
+        xAxis.axisMaximum = 22f
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
         xAxis.textColor = getColor(R.color.gray_600)
+        xAxis.labelCount = 24
 
         // Customizing x-axis labels
         xAxis.valueFormatter = object : IAxisValueFormatter {
             override fun getFormattedValue(value: Float, axis: AxisBase?): String {
                 return when (value.toInt()) {
-                    0 -> "오전 12시"
+                    1 -> "오전 12시"
                     8 -> "오전 6시"
-                    16 -> "오후 12시"
-                    24-> "오후 6시"
+                    14 -> "오후 12시"
+                    20-> "오후 6시"
                     else -> "" // 나머지 레이블은 비워둠
                 }
             }
@@ -251,5 +277,21 @@ class DrivenDistanceActivity:BaseActivity() {
 
     private fun setResources(){
         btn_back.setOnClickListener { finish() }
+
+        btn_recent_drive.setOnClickListener {
+
+        }
+
+        btn_month_drive.setOnClickListener {
+
+        }
+
+        btn_six_month_drive.setOnClickListener {
+
+        }
+
+        btn_year_drive.setOnClickListener {
+
+        }
     }
 }
