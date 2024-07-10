@@ -32,7 +32,6 @@ class WithdrawalActivity:BaseActivity() {
         tv_confirm_withdrawal = findViewById(R.id.tv_confirm_withdrawal)
         tv_cancel_withdrawal = findViewById(R.id.tv_cancel_withdrawal)
         btn_back = findViewById(R.id.btn_back)
-
     }
 
     fun setListener(){
@@ -51,6 +50,7 @@ class WithdrawalActivity:BaseActivity() {
                         response: Response<ResponseBody>
                     ) {
                         if(response.code() == 200){
+                            Log.d("testestesest","testsetsetes :: 회원탈퇴")
                             PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.ACCESS_TOKEN, "")
                             PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.REFRESH_TOKEN, "")
                             PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.EXPIRES_IN, "")

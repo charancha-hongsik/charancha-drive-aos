@@ -78,67 +78,82 @@ class SplashActivity: BaseActivity() {
                                     response: Response<ResponseBody>
                                 ) {
                                     if(response.code() == 200 || response.code() == 201){
-
                                         val jsonString = response.body()?.string()
-
 
                                         val type: Type = object : TypeToken<List<TermsAgreeStatusResponse?>?>() {}.type
                                         val termsAgreeStatusResponses:List<TermsAgreeStatusResponse> = Gson().fromJson(jsonString, type)
 
                                         var agree = true
 
-                                        for(term in termsAgreeStatusResponses){
-                                            if(term.terms.isRequired == 1)
-                                                if(term.terms.isActive == 0)
-                                                    agree = false
-                                        }
+                                        if(termsAgreeStatusResponses.isEmpty()){
+                                            startActivity(
+                                                Intent(
+                                                    this@SplashActivity,
+                                                    TermsOfUseActivity::class.java
+                                                )
+                                            )
+                                        }else{
+                                            for(term in termsAgreeStatusResponses){
+                                                if(term.terms.isRequired == 1)
+                                                    if(term.terms.isActive == 0)
+                                                        agree = false
+                                            }
+                                            if (agree) {
+                                                if (!PreferenceUtil.getBooleanPref(
+                                                        this@SplashActivity,
+                                                        PreferenceUtil.PERMISSION_ALL_CHECKED,
+                                                        false
+                                                    )
+                                                ) {
+                                                    startActivity(
+                                                        Intent(
+                                                            this@SplashActivity,
+                                                            PermissionInfoActivity::class.java
+                                                        )
+                                                    )
+                                                    finish()
+                                                } else {
+                                                    apiService().getMyCarInfo("Bearer " + signInResponse.access_token).enqueue(object :Callback<ResponseBody>{
+                                                        override fun onResponse(
+                                                            call: Call<ResponseBody>,
+                                                            response: Response<ResponseBody>
+                                                        ) {
+                                                            if(response.code() == 200){
+                                                                val jsonString = response.body()?.string()
 
-                                        if(agree){
-                                            if(!PreferenceUtil.getBooleanPref(this@SplashActivity, PreferenceUtil.PERMISSION_ALL_CHECKED, false)){
-                                                startActivity(Intent(this@SplashActivity, PermissionInfoActivity::class.java))
-                                                finish()
-                                            }else{
-                                                apiService().getMyCarInfo("Bearer " + signInResponse.access_token).enqueue(object :Callback<ResponseBody>{
-                                                    override fun onResponse(
-                                                        call: Call<ResponseBody>,
-                                                        response: Response<ResponseBody>
-                                                    ) {
-                                                        if(response.code() == 200){
-                                                            val jsonString = response.body()?.string()
+                                                                val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
+                                                                val getMyCarInfoResponse:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
 
-                                                            val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
-                                                            val getMyCarInfoResponse:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
-
-                                                            if(getMyCarInfoResponse.size > 0){
-                                                                startActivity(Intent(this@SplashActivity, MainActivity::class.java))
-                                                                finish()
+                                                                if(getMyCarInfoResponse.size > 0){
+                                                                    startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+                                                                    finish()
+                                                                }else{
+                                                                    startActivity(Intent(this@SplashActivity, OnBoardingActivity::class.java))
+                                                                    finish()
+                                                                }
                                                             }else{
                                                                 startActivity(Intent(this@SplashActivity, OnBoardingActivity::class.java))
                                                                 finish()
                                                             }
-                                                        }else{
+                                                        }
+
+                                                        override fun onFailure(
+                                                            call: Call<ResponseBody>,
+                                                            t: Throwable
+                                                        ) {
                                                             startActivity(Intent(this@SplashActivity, OnBoardingActivity::class.java))
                                                             finish()
                                                         }
-                                                    }
-
-                                                    override fun onFailure(
-                                                        call: Call<ResponseBody>,
-                                                        t: Throwable
-                                                    ) {
-                                                        startActivity(Intent(this@SplashActivity, OnBoardingActivity::class.java))
-                                                        finish()
-                                                    }
-                                                })
+                                                    })
+                                                }
+                                            } else {
+                                                startActivity(
+                                                    Intent(
+                                                        this@SplashActivity,
+                                                        TermsOfUseActivity::class.java
+                                                    )
+                                                )
                                             }
-                                        }else{
-                                            PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.ACCESS_TOKEN, "")
-                                            PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.REFRESH_TOKEN, "")
-                                            PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.EXPIRES_IN, "")
-                                            PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.REFRESH_EXPIRES_IN, "")
-                                            PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.TOKEN_TYPE, "")
-                                            startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
-                                            finish()
                                         }
                                     }else{
                                         startActivity(Intent(this@SplashActivity, TermsOfUseActivity::class.java))

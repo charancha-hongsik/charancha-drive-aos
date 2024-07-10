@@ -213,6 +213,7 @@ class LoginActivity: BaseActivity() {
                                                 call: Call<ResponseBody>,
                                                 response: Response<ResponseBody>
                                             ) {
+
                                                 if (response.code() == 200 || response.code() == 201) {
                                                     val jsonString = response.body()?.string()
 
@@ -221,66 +222,75 @@ class LoginActivity: BaseActivity() {
 
                                                     var agree = true
 
-                                                    for(term in termsAgreeStatusResponses){
-                                                        if(term.terms.isRequired == 1)
-                                                            if(term.terms.isActive == 0)
-                                                                agree = false
-                                                    }
-                                                    if (agree) {
-                                                        if (!PreferenceUtil.getBooleanPref(
-                                                                this@LoginActivity,
-                                                                PreferenceUtil.PERMISSION_ALL_CHECKED,
-                                                                false
-                                                            )
-                                                        ) {
-                                                            startActivity(
-                                                                Intent(
-                                                                    this@LoginActivity,
-                                                                    PermissionInfoActivity::class.java
-                                                                )
-                                                            )
-                                                            finish()
-                                                        } else {
-                                                            apiService().getMyCarInfo("Bearer " + signInResponse.access_token).enqueue(object :Callback<ResponseBody>{
-                                                                override fun onResponse(
-                                                                    call: Call<ResponseBody>,
-                                                                    response: Response<ResponseBody>
-                                                                ) {
-                                                                    if(response.code() == 200){
-                                                                        val jsonString = response.body()?.string()
-
-                                                                        val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
-                                                                        val getMyCarInfoResponse:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
-
-                                                                        if(getMyCarInfoResponse.size > 0){
-                                                                            startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-                                                                            finish()
-                                                                        }else{
-                                                                            startActivity(Intent(this@LoginActivity, OnBoardingActivity::class.java))
-                                                                            finish()
-                                                                        }
-                                                                    }else{
-                                                                        startActivity(Intent(this@LoginActivity, OnBoardingActivity::class.java))
-                                                                        finish()
-                                                                    }
-                                                                }
-
-                                                                override fun onFailure(
-                                                                    call: Call<ResponseBody>,
-                                                                    t: Throwable
-                                                                ) {
-                                                                    startActivity(Intent(this@LoginActivity, OnBoardingActivity::class.java))
-                                                                    finish()
-                                                                }
-                                                            })
-                                                        }
-                                                    } else {
+                                                    if(termsAgreeStatusResponses.isEmpty()){
                                                         startActivity(
                                                             Intent(
                                                                 this@LoginActivity,
                                                                 TermsOfUseActivity::class.java
                                                             )
                                                         )
+                                                    }else{
+                                                        for(term in termsAgreeStatusResponses){
+                                                            if(term.terms.isRequired == 1)
+                                                                if(term.terms.isActive == 0)
+                                                                    agree = false
+                                                        }
+                                                        if (agree) {
+                                                            if (!PreferenceUtil.getBooleanPref(
+                                                                    this@LoginActivity,
+                                                                    PreferenceUtil.PERMISSION_ALL_CHECKED,
+                                                                    false
+                                                                )
+                                                            ) {
+                                                                startActivity(
+                                                                    Intent(
+                                                                        this@LoginActivity,
+                                                                        PermissionInfoActivity::class.java
+                                                                    )
+                                                                )
+                                                                finish()
+                                                            } else {
+                                                                apiService().getMyCarInfo("Bearer " + signInResponse.access_token).enqueue(object :Callback<ResponseBody>{
+                                                                    override fun onResponse(
+                                                                        call: Call<ResponseBody>,
+                                                                        response: Response<ResponseBody>
+                                                                    ) {
+                                                                        if(response.code() == 200){
+                                                                            val jsonString = response.body()?.string()
+
+                                                                            val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
+                                                                            val getMyCarInfoResponse:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
+
+                                                                            if(getMyCarInfoResponse.size > 0){
+                                                                                startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                                                                                finish()
+                                                                            }else{
+                                                                                startActivity(Intent(this@LoginActivity, OnBoardingActivity::class.java))
+                                                                                finish()
+                                                                            }
+                                                                        }else{
+                                                                            startActivity(Intent(this@LoginActivity, OnBoardingActivity::class.java))
+                                                                            finish()
+                                                                        }
+                                                                    }
+
+                                                                    override fun onFailure(
+                                                                        call: Call<ResponseBody>,
+                                                                        t: Throwable
+                                                                    ) {
+                                                                        startActivity(Intent(this@LoginActivity, OnBoardingActivity::class.java))
+                                                                        finish()
+                                                                    }
+                                                                })
+                                                            }
+                                                        } else {
+                                                            startActivity(
+                                                                Intent(
+                                                                    this@LoginActivity,
+                                                                    TermsOfUseActivity::class.java
+                                                                )
+                                                            )
+                                                        }
                                                     }
                                                 } else {
                                                     startActivity(
