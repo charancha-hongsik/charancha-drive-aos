@@ -100,6 +100,13 @@ class DetailManageScoreActivity:BaseActivity(){
                     }
                 }
                 (listView_choose_date_own.adapter as DateAdapter).notifyDataSetChanged()
+
+                listView_choose_date_own.visibility = GONE
+                layout_select_main.visibility = VISIBLE
+                btn_inquire_date.visibility = VISIBLE
+
+                tv_selected_date.text = selectedDate
+
             }
 
         })
@@ -202,8 +209,9 @@ class DetailManageScoreActivity:BaseActivity(){
         layout_choose_date.setOnClickListener {
             if(layout_select_main.visibility == VISIBLE)
                 layout_choose_date.visibility = GONE
-            else
+            else {
                 btn_inquire_date.performClick()
+            }
         }
 
         btn_close_select_date.setOnClickListener {
@@ -239,6 +247,7 @@ class DetailManageScoreActivity:BaseActivity(){
         btn_select_date_from_list.setOnClickListener {
             listView_choose_date_own.visibility = VISIBLE
             layout_select_main.visibility = GONE
+            btn_inquire_date.visibility = GONE
         }
 
         btn_a_month.setOnClickListener {
