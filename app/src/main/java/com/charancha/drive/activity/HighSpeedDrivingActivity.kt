@@ -1,12 +1,18 @@
 package com.charancha.drive.activity
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.charancha.drive.R
+import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.components.AxisBase
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.formatter.IAxisValueFormatter
 
 class HighSpeedDrivingActivity:BaseActivity() {
     lateinit var layout_high_speed_percent: View
@@ -26,6 +32,8 @@ class HighSpeedDrivingActivity:BaseActivity() {
     lateinit var btn_month_drive:TextView
     lateinit var btn_six_month_drive:TextView
     lateinit var btn_year_drive:TextView
+
+    lateinit var layout_barchart_highspeed:BarChart
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,6 +65,8 @@ class HighSpeedDrivingActivity:BaseActivity() {
         btn_six_month_drive = findViewById(R.id.btn_six_month_drive)
         btn_year_drive = findViewById(R.id.btn_year_drive)
 
+        layout_barchart_highspeed = findViewById(R.id.layout_barchart_highspeed)
+
         btn_recent_drive.isSelected = true
 
         btn_recent_drive.setOnClickListener {
@@ -65,6 +75,8 @@ class HighSpeedDrivingActivity:BaseActivity() {
             btn_six_month_drive.isSelected = false
             btn_year_drive.isSelected = false
 
+            setRecentBarChart()
+
         }
 
         btn_month_drive.setOnClickListener {
@@ -72,6 +84,8 @@ class HighSpeedDrivingActivity:BaseActivity() {
             btn_month_drive.isSelected = true
             btn_six_month_drive.isSelected = false
             btn_year_drive.isSelected = false
+
+            setMonthBarChart()
         }
 
         btn_six_month_drive.setOnClickListener {
@@ -79,6 +93,8 @@ class HighSpeedDrivingActivity:BaseActivity() {
             btn_month_drive.isSelected = false
             btn_six_month_drive.isSelected = true
             btn_year_drive.isSelected = false
+
+            setSixMonthBarChart()
         }
 
         btn_year_drive.setOnClickListener {
@@ -86,7 +102,11 @@ class HighSpeedDrivingActivity:BaseActivity() {
             btn_month_drive.isSelected = false
             btn_six_month_drive.isSelected = false
             btn_year_drive.isSelected = true
+
+            setYearBarChart()
         }
+
+        setRecentBarChart()
 
         setHighSpeedDrivingChartWidthByPercent(0.341f)
         setLowSpeedDrivingChartWidthByPercent(0.618f)
@@ -158,4 +178,659 @@ class HighSpeedDrivingActivity:BaseActivity() {
             layout_extra_speed_extra.layoutParams = layoutParams2
         }
     }
+
+    private fun setRecentBarChart() {
+        val entries1 = listOf(
+            BarEntry(-1f, 7f),
+            BarEntry(-0f, 9f),
+            BarEntry(1f, 8f),
+            BarEntry(2f, 7f),
+            BarEntry(3f, 10f),
+            BarEntry(4f, 9f),
+            BarEntry(5f, 8f),
+            BarEntry(6f, 7f),
+            BarEntry(7f, 10f),
+            BarEntry(8f, 9f),
+            BarEntry(9f, 7f),
+            BarEntry(10f, 8f),
+            BarEntry(11f, 9f),
+            BarEntry(12f, 8f),
+            BarEntry(13f, 7f),
+            BarEntry(14f, 10f),
+            BarEntry(15f, 10f),
+            BarEntry(16f, 9f),
+            BarEntry(17f, 8f),
+            BarEntry(18f, 8f),
+            BarEntry(19f, 7f),
+            BarEntry(20f,7f),
+            BarEntry(21f,8f),
+            BarEntry(22f,7f)
+        )
+
+        val entries2 = listOf(
+            BarEntry(-1f, 6f),
+            BarEntry(-0f, 5f),
+            BarEntry(1f, 5f),
+            BarEntry(2f, 5f),
+            BarEntry(3f, 4f),
+            BarEntry(4f, 6f),
+            BarEntry(5f, 5f),
+            BarEntry(6f, 6f),
+            BarEntry(7f, 5f),
+            BarEntry(8f, 6f),
+            BarEntry(9f, 5f),
+            BarEntry(10f, 5f),
+            BarEntry(11f, 5f),
+            BarEntry(12f, 4f),
+            BarEntry(13f, 4f),
+            BarEntry(14f, 6f),
+            BarEntry(15f, 4f),
+            BarEntry(16f, 6f),
+            BarEntry(17f, 4f),
+            BarEntry(18f, 6f),
+            BarEntry(19f, 6f),
+            BarEntry(20f,5f),
+            BarEntry(21f,6f),
+            BarEntry(22f,4f)
+        )
+
+        val entries3 = listOf(
+            BarEntry(-1f, 1f),
+            BarEntry(-0f, 3f),
+            BarEntry(1f, 1f),
+            BarEntry(2f, 2f),
+            BarEntry(3f, 2f),
+            BarEntry(4f, 3f),
+            BarEntry(5f, 3f),
+            BarEntry(6f, 3f),
+            BarEntry(7f, 3f),
+            BarEntry(8f, 1f),
+            BarEntry(9f, 3f),
+            BarEntry(10f, 1f),
+            BarEntry(11f, 3f),
+            BarEntry(12f, 1f),
+            BarEntry(13f, 3f),
+            BarEntry(14f, 3f),
+            BarEntry(15f, 2f),
+            BarEntry(16f, 3f),
+            BarEntry(17f, 3f),
+            BarEntry(18f, 2f),
+            BarEntry(19f, 3f),
+            BarEntry(20f,2f),
+            BarEntry(21f,3f),
+            BarEntry(22f,3f)
+        )
+
+        val dataSet1 = BarDataSet(entries1, "Part 1")
+        dataSet1.color = getColor(R.color.gray_700)
+        dataSet1.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+        val dataSet2 = BarDataSet(entries2, "Part 2")
+        dataSet2.color = getColor(R.color.gray_950)
+        dataSet2.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+
+        val dataSet3 = BarDataSet(entries3, "Part 3")
+        dataSet3.color = getColor(R.color.sec_500)
+        dataSet3.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+
+
+        val barData = BarData(dataSet1, dataSet2, dataSet3)
+        layout_barchart_highspeed.data = barData
+        layout_barchart_highspeed.setFitBars(true) // make the x-axis fit exactly all bars
+        layout_barchart_highspeed.description.isEnabled = false
+        layout_barchart_highspeed.animateY(1000)
+        layout_barchart_highspeed.legend.isEnabled = false
+        layout_barchart_highspeed.setTouchEnabled(false)
+
+        // Customizing x-axis labels
+        val xAxis = layout_barchart_highspeed.xAxis
+        xAxis.granularity = 1f // only intervals of 1 unit
+        xAxis.axisMinimum = -2f
+        xAxis.axisMaximum = 23f
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
+        xAxis.textColor = getColor(R.color.gray_600)
+        xAxis.labelCount = 24
+
+        // Customizing x-axis labels
+        xAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                return when (value.toInt()) {
+                    1 -> "오전 12시"
+                    8 -> "오전 6시"
+                    15 -> "오후 12시"
+                    21-> "오후 6시"
+                    else -> "" // 나머지 레이블은 비워둠
+                }
+            }
+        }
+
+        // Y축 레이블 및 선 제거
+        val leftAxis = layout_barchart_highspeed.axisLeft
+        leftAxis.setDrawGridLines(true) // 그리드 라인 표시
+        leftAxis.setDrawAxisLine(false) // 축 라인 제거
+        leftAxis.setDrawLabels(false) // Y축 레이블 제거
+        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 5로 설정 (강제)
+        leftAxis.axisMinimum = 0f
+        leftAxis.axisMaximum = 10f
+        leftAxis.gridColor = getColor(R.color.gray_200)
+
+
+        val rightAxis = layout_barchart_highspeed.axisRight
+        rightAxis.setDrawGridLines(false) // 그리드 라인 제거
+        rightAxis.setDrawAxisLine(false) // 축 라인 제거
+        rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.axisMinimum = 0f
+        rightAxis.axisMaximum = 10f
+        rightAxis.textColor = getColor(R.color.gray_600)
+
+        // Y축 커스텀 레이블 포매터 설정
+        rightAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                val minValue = rightAxis.axisMinimum
+                val maxValue = rightAxis.axisMaximum
+                return if (value == minValue || value == maxValue) {
+                    value.toInt().toString() + "시간"// 가장 아래와 위에만 레이블 표시
+                } else {
+                    "" // 나머지 레이블 제거
+                }
+            }
+        }
+
+        layout_barchart_highspeed.invalidate() // refresh
+
+    }
+
+    /**
+     * 데이터 30개가 내려옴
+     * 각 월요일을 차트 하단에 노출
+     */
+    private fun setMonthBarChart() {
+
+        val entries1 = listOf(
+            BarEntry(-1f, 9f),
+            BarEntry(-0f, 10f),
+            BarEntry(1f, 9f),
+            BarEntry(2f, 10f),
+            BarEntry(3f, 9f),
+            BarEntry(4f, 9f),
+            BarEntry(5f, 10f),
+            BarEntry(6f, 9f),
+            BarEntry(7f, 8f),
+            BarEntry(8f, 10f),
+            BarEntry(9f, 9f),
+            BarEntry(10f, 9f),
+            BarEntry(11f, 9f),
+            BarEntry(12f, 10f),
+            BarEntry(13f, 10f),
+            BarEntry(14f, 8f),
+            BarEntry(15f, 9f),
+            BarEntry(16f, 10f),
+            BarEntry(17f, 9f),
+            BarEntry(18f, 8f),
+            BarEntry(19f, 9f),
+            BarEntry(20f,8f),
+            BarEntry(21f,9f),
+            BarEntry(22f,8f),
+            BarEntry(23f,9f),
+            BarEntry(24f,8f),
+            BarEntry(25f,9f),
+            BarEntry(26f,9f),
+            BarEntry(27f,8f),
+            BarEntry(28f,9f)
+        )
+
+        val entries2 = listOf(
+            BarEntry(-1f, 6f),
+            BarEntry(-0f, 5f),
+            BarEntry(1f, 6f),
+            BarEntry(2f, 6f),
+            BarEntry(3f, 5f),
+            BarEntry(4f, 6f),
+            BarEntry(5f, 6f),
+            BarEntry(6f, 6f),
+            BarEntry(7f, 5f),
+            BarEntry(8f, 5f),
+            BarEntry(9f, 5f),
+            BarEntry(10f, 6f),
+            BarEntry(11f, 6f),
+            BarEntry(12f, 7f),
+            BarEntry(13f, 6f),
+            BarEntry(14f, 6f),
+            BarEntry(15f, 5f),
+            BarEntry(16f, 6f),
+            BarEntry(17f, 6f),
+            BarEntry(18f, 5f),
+            BarEntry(19f, 7f),
+            BarEntry(20f,6f),
+            BarEntry(21f,6f),
+            BarEntry(22f,6f),
+            BarEntry(23f,5f),
+            BarEntry(24f,6f),
+            BarEntry(25f,6f),
+            BarEntry(26f,7f),
+            BarEntry(27f,6f),
+            BarEntry(28f,7f)
+        )
+
+        val entries3 = listOf(
+            BarEntry(-1f, 3f),
+            BarEntry(-0f, 2f),
+            BarEntry(1f, 3f),
+            BarEntry(2f, 1f),
+            BarEntry(3f, 2f),
+            BarEntry(4f, 3f),
+            BarEntry(5f, 1f),
+            BarEntry(6f, 3f),
+            BarEntry(7f, 3f),
+            BarEntry(8f, 1f),
+            BarEntry(9f, 3f),
+            BarEntry(10f, 2f),
+            BarEntry(11f, 3f),
+            BarEntry(12f, 3f),
+            BarEntry(13f, 1f),
+            BarEntry(14f, 3f),
+            BarEntry(15f, 2f),
+            BarEntry(16f, 3f),
+            BarEntry(17f, 3f),
+            BarEntry(18f, 2f),
+            BarEntry(19f, 3f),
+            BarEntry(20f,3f),
+            BarEntry(21f,2f),
+            BarEntry(22f,3f),
+            BarEntry(23f,1f),
+            BarEntry(24f,3f),
+            BarEntry(25f,3f),
+            BarEntry(26f,1f),
+            BarEntry(27f,3f),
+            BarEntry(28f,1f)
+        )
+
+        val dataSet1 = BarDataSet(entries1, "Part 1")
+        dataSet1.color = getColor(R.color.gray_700)
+        dataSet1.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+        val dataSet2 = BarDataSet(entries2, "Part 2")
+        dataSet2.color = getColor(R.color.gray_950)
+        dataSet2.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+
+        val dataSet3 = BarDataSet(entries3, "Part 3")
+        dataSet3.color = getColor(R.color.sec_500)
+        dataSet3.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+
+
+        val barData = BarData(dataSet1, dataSet2, dataSet3)
+        layout_barchart_highspeed.data = barData
+        layout_barchart_highspeed.setFitBars(true) // make the x-axis fit exactly all bars
+        layout_barchart_highspeed.description.isEnabled = false
+        layout_barchart_highspeed.animateY(1000)
+        layout_barchart_highspeed.legend.isEnabled = false
+        layout_barchart_highspeed.setTouchEnabled(false)
+
+        // Customizing x-axis labels
+        val xAxis = layout_barchart_highspeed.xAxis
+        xAxis.granularity = 1f // only intervals of 1 unit
+        xAxis.axisMinimum = -2f
+        xAxis.axisMaximum = 29f
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
+        xAxis.textColor = getColor(R.color.gray_600)
+        xAxis.labelCount = 30
+
+        // Customizing x-axis labels
+        xAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                return when (value.toInt()) {
+                    1 -> "6월 17일"
+                    10 -> "6월 24일"
+                    18 -> "7월 1일"
+                    26-> "7월 8일"
+                    else -> "" // 나머지 레이블은 비워둠
+                }
+            }
+        }
+
+        // Y축 레이블 및 선 제거
+        val leftAxis = layout_barchart_highspeed.axisLeft
+        leftAxis.setDrawGridLines(true) // 그리드 라인 표시
+        leftAxis.setDrawAxisLine(false) // 축 라인 제거
+        leftAxis.setDrawLabels(false) // Y축 레이블 제거
+        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 5로 설정 (강제)
+        leftAxis.axisMinimum = 0f
+        leftAxis.axisMaximum = 10f
+        leftAxis.gridColor = getColor(R.color.gray_200)
+
+
+        val rightAxis = layout_barchart_highspeed.axisRight
+        rightAxis.setDrawGridLines(false) // 그리드 라인 제거
+        rightAxis.setDrawAxisLine(false) // 축 라인 제거
+        rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.axisMinimum = 0f
+        rightAxis.axisMaximum = 10f
+        rightAxis.textColor = getColor(R.color.gray_600)
+
+        // Y축 커스텀 레이블 포매터 설정
+        rightAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                val minValue = rightAxis.axisMinimum
+                val maxValue = rightAxis.axisMaximum
+                return if (value == minValue || value == maxValue) {
+                    value.toInt().toString() + "시간"// 가장 아래와 위에만 레이블 표시
+                } else {
+                    "" // 나머지 레이블 제거
+                }
+            }
+        }
+
+        layout_barchart_highspeed.invalidate() // refresh
+    }
+
+    private fun setSixMonthBarChart() {
+
+        val entries1 = listOf(
+            BarEntry(-1f, 10f), // 첫번째 월
+            BarEntry(-0f, 0f),
+            BarEntry(1f, 0f),
+            BarEntry(2f, 8f), // 두번째 월
+            BarEntry(3f, 0f),
+            BarEntry(4f, 0f),
+            BarEntry(5f, 10f), // 세번째 월
+            BarEntry(6f, 0f),
+            BarEntry(7f, 0f),
+            BarEntry(8f, 9f), // 네번째 월
+            BarEntry(9f, 0f),
+            BarEntry(10f, 0f),
+            BarEntry(11f, 9f), // 다섯번째 월
+            BarEntry(12f, 0f),
+            BarEntry(13f, 0f),
+            BarEntry(14f, 9f) // 여섯번째 월
+        )
+
+        val entries2 = listOf(
+            BarEntry(-1f, 6f), // 첫번째 월
+            BarEntry(-0f, 0f),
+            BarEntry(1f, 0f),
+            BarEntry(2f, 6f), // 두번째 월
+            BarEntry(3f, 0f),
+            BarEntry(4f, 0f),
+            BarEntry(5f, 7f), // 세번째 월
+            BarEntry(6f, 0f),
+            BarEntry(7f, 0f),
+            BarEntry(8f, 6f), // 네번째 월
+            BarEntry(9f, 0f),
+            BarEntry(10f, 0f),
+            BarEntry(11f, 6f), // 다섯번째 월
+            BarEntry(12f, 0f),
+            BarEntry(13f, 0f),
+            BarEntry(14f, 7f) // 여섯번째 월
+        )
+
+        val entries3 = listOf(
+            BarEntry(-1f, 3f), // 첫번째 월
+            BarEntry(-0f, 0f),
+            BarEntry(1f, 0f),
+            BarEntry(2f, 1f), // 두번째 월
+            BarEntry(3f, 0f),
+            BarEntry(4f, 0f),
+            BarEntry(5f, 3f), // 세번째 월
+            BarEntry(6f, 0f),
+            BarEntry(7f, 0f),
+            BarEntry(8f, 3f), // 네번째 월
+            BarEntry(9f, 0f),
+            BarEntry(10f, 0f),
+            BarEntry(11f, 2f), // 다섯번째 월
+            BarEntry(12f, 0f),
+            BarEntry(13f, 0f),
+            BarEntry(14f, 1f) // 여섯번째 월
+        )
+
+        val dataSet1 = BarDataSet(entries1, "Part 1")
+        dataSet1.color = getColor(R.color.gray_700)
+        dataSet1.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+        val dataSet2 = BarDataSet(entries2, "Part 2")
+        dataSet2.color = getColor(R.color.gray_950)
+        dataSet2.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+
+        val dataSet3 = BarDataSet(entries3, "Part 3")
+        dataSet3.color = getColor(R.color.sec_500)
+        dataSet3.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+
+
+        val barData = BarData(dataSet1, dataSet2, dataSet3)
+        layout_barchart_highspeed.data = barData
+        layout_barchart_highspeed.setFitBars(true) // make the x-axis fit exactly all bars
+        layout_barchart_highspeed.description.isEnabled = false
+        layout_barchart_highspeed.animateY(1000)
+        layout_barchart_highspeed.legend.isEnabled = false
+        layout_barchart_highspeed.setTouchEnabled(false)
+
+        // Customizing x-axis labels
+        val xAxis = layout_barchart_highspeed.xAxis
+        xAxis.granularity = 1f // only intervals of 1 unit
+        xAxis.axisMinimum = -2f
+        xAxis.axisMaximum = 15f
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
+        xAxis.textColor = getColor(R.color.gray_600)
+        xAxis.labelCount = 16
+
+        // Customizing x-axis labels
+        xAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                return when (value.toInt()) {
+                    -1 -> "1월"
+                    2 -> "2월"
+                    5 -> "3월"
+                    8 -> "4월"
+                    11 -> "5월"
+                    14 -> "6월"
+                    else -> "" // 나머지 레이블은 비워둠
+                }
+            }
+        }
+
+        // Y축 레이블 및 선 제거
+        val leftAxis = layout_barchart_highspeed.axisLeft
+        leftAxis.setDrawGridLines(true) // 그리드 라인 표시
+        leftAxis.setDrawAxisLine(false) // 축 라인 제거
+        leftAxis.setDrawLabels(false) // Y축 레이블 제거
+        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 5로 설정 (강제)
+        leftAxis.axisMinimum = 0f
+        leftAxis.axisMaximum = 10f
+        leftAxis.gridColor = getColor(R.color.gray_200)
+
+
+        val rightAxis = layout_barchart_highspeed.axisRight
+        rightAxis.setDrawGridLines(false) // 그리드 라인 제거
+        rightAxis.setDrawAxisLine(false) // 축 라인 제거
+        rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.axisMinimum = 0f
+        rightAxis.axisMaximum = 10f
+        rightAxis.textColor = getColor(R.color.gray_600)
+
+        // Y축 커스텀 레이블 포매터 설정
+        rightAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                val minValue = rightAxis.axisMinimum
+                val maxValue = rightAxis.axisMaximum
+                return if (value == minValue || value == maxValue) {
+                    value.toInt().toString() + "시간"// 가장 아래와 위에만 레이블 표시
+                } else {
+                    "" // 나머지 레이블 제거
+                }
+            }
+        }
+
+        layout_barchart_highspeed.invalidate() // refresh
+    }
+
+    private fun setYearBarChart() {
+
+        val entries1 = listOf(
+            BarEntry(-1f, 8f), // 1월
+            BarEntry(-0f, 0f),
+            BarEntry(1f, 10f), // 2월
+            BarEntry(2f, 0f),
+            BarEntry(3f, 10f), // 3월
+            BarEntry(4f, 0f),
+            BarEntry(5f, 10f), // 4월
+            BarEntry(6f, 0f),
+            BarEntry(7f, 9f), // 5월
+            BarEntry(8f, 0f),
+            BarEntry(9f, 10f), // 6월
+            BarEntry(10f, 0f),
+            BarEntry(11f, 9f), // 7월
+            BarEntry(12f, 0f),
+            BarEntry(13f, 10f), // 8월
+            BarEntry(14f, 0f),
+            BarEntry(15f, 8f), // 9월
+            BarEntry(16f, 0f),
+            BarEntry(17f, 10f), // 10월
+            BarEntry(18f, 0f),
+            BarEntry(19f, 9f), // 11월
+            BarEntry(20f,0f),
+            BarEntry(21f,9f) // 12월
+        )
+
+        val entries2 = listOf(
+            BarEntry(-1f, 6f), // 1월
+            BarEntry(-0f, 0f),
+            BarEntry(1f, 5f), // 2월
+            BarEntry(2f, 0f),
+            BarEntry(3f, 5f), // 3월
+            BarEntry(4f, 0f),
+            BarEntry(5f, 4f), // 4월
+            BarEntry(6f, 0f),
+            BarEntry(7f, 6f), // 5월
+            BarEntry(8f, 0f),
+            BarEntry(9f, 6f), // 6월
+            BarEntry(10f, 0f),
+            BarEntry(11f, 6f), // 7월
+            BarEntry(12f, 0f),
+            BarEntry(13f, 6f), // 8월
+            BarEntry(14f, 0f),
+            BarEntry(15f, 4f), // 9월
+            BarEntry(16f, 0f),
+            BarEntry(17f, 6f), // 10월
+            BarEntry(18f, 0f),
+            BarEntry(19f, 5f), // 11월
+            BarEntry(20f,0f),
+            BarEntry(21f,5f) // 12월
+        )
+
+        val entries3 = listOf(
+            BarEntry(-1f, 2f), // 1월
+            BarEntry(-0f, 0f),
+            BarEntry(1f, 2f), // 2월
+            BarEntry(2f, 0f),
+            BarEntry(3f, 2f), // 3월
+            BarEntry(4f, 0f),
+            BarEntry(5f, 2f), // 4월
+            BarEntry(6f, 0f),
+            BarEntry(7f, 2f), // 5월
+            BarEntry(8f, 0f),
+            BarEntry(9f, 2f), // 6월
+            BarEntry(10f, 0f),
+            BarEntry(11f, 2f), // 7월
+            BarEntry(12f, 0f),
+            BarEntry(13f, 2f), // 8월
+            BarEntry(14f, 0f),
+            BarEntry(15f, 3f), // 9월
+            BarEntry(16f, 0f),
+            BarEntry(17f, 2f), // 10월
+            BarEntry(18f, 0f),
+            BarEntry(19f, 1f), // 11월
+            BarEntry(20f,0f),
+            BarEntry(21f,2f) // 12월
+        )
+
+        val dataSet1 = BarDataSet(entries1, "Part 1")
+        dataSet1.color = getColor(R.color.gray_700)
+        dataSet1.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+        val dataSet2 = BarDataSet(entries2, "Part 2")
+        dataSet2.color = getColor(R.color.gray_950)
+        dataSet2.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+
+        val dataSet3 = BarDataSet(entries3, "Part 3")
+        dataSet3.color = getColor(R.color.sec_500)
+        dataSet3.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+
+
+        val barData = BarData(dataSet1, dataSet2, dataSet3)
+        layout_barchart_highspeed.data = barData
+        layout_barchart_highspeed.setFitBars(true) // make the x-axis fit exactly all bars
+        layout_barchart_highspeed.description.isEnabled = false
+        layout_barchart_highspeed.animateY(1000)
+        layout_barchart_highspeed.legend.isEnabled = false
+        layout_barchart_highspeed.setTouchEnabled(false)
+
+        // Customizing x-axis labels
+        val xAxis = layout_barchart_highspeed.xAxis
+        xAxis.granularity = 1f // only intervals of 1 unit
+        xAxis.axisMinimum = -2f
+        xAxis.axisMaximum = 22f
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
+        xAxis.textColor = getColor(R.color.gray_600)
+        xAxis.labelCount = 23
+
+        // Customizing x-axis labels
+        xAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                return when (value.toInt()) {
+                    -1 -> "1월"
+                    7 -> "5월"
+                    13 -> "8월"
+                    21-> "12월"
+                    else -> "" // 나머지 레이블은 비워둠
+                }
+            }
+        }
+
+        // Y축 레이블 및 선 제거
+        val leftAxis = layout_barchart_highspeed.axisLeft
+        leftAxis.setDrawGridLines(true) // 그리드 라인 표시
+        leftAxis.setDrawAxisLine(false) // 축 라인 제거
+        leftAxis.setDrawLabels(false) // Y축 레이블 제거
+        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 5로 설정 (강제)
+        leftAxis.axisMinimum = 0f
+        leftAxis.axisMaximum = 10f
+        leftAxis.gridColor = getColor(R.color.gray_200)
+
+
+        val rightAxis = layout_barchart_highspeed.axisRight
+        rightAxis.setDrawGridLines(false) // 그리드 라인 제거
+        rightAxis.setDrawAxisLine(false) // 축 라인 제거
+        rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.axisMinimum = 0f
+        rightAxis.axisMaximum = 10f
+        rightAxis.textColor = getColor(R.color.gray_600)
+
+        // Y축 커스텀 레이블 포매터 설정
+        rightAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                val minValue = rightAxis.axisMinimum
+                val maxValue = rightAxis.axisMaximum
+                return if (value == minValue || value == maxValue) {
+                    value.toInt().toString() + "시간"// 가장 아래와 위에만 레이블 표시
+                } else {
+                    "" // 나머지 레이블 제거
+                }
+            }
+        }
+
+        layout_barchart_highspeed.invalidate() // refresh
+    }
+
+
 }

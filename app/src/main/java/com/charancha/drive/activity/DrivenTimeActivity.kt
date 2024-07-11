@@ -349,7 +349,7 @@ class DrivenTimeActivity:BaseActivity() {
                 val minValue = rightAxis.axisMinimum
                 val maxValue = rightAxis.axisMaximum
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "시"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + "시간"// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -452,7 +452,7 @@ class DrivenTimeActivity:BaseActivity() {
                 val minValue = rightAxis.axisMinimum
                 val maxValue = rightAxis.axisMaximum
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "시"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + "시간"// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -580,7 +580,7 @@ class DrivenTimeActivity:BaseActivity() {
                 val maxValue = rightAxis.axisMaximum
 
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "시"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + "시간"// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -806,7 +806,7 @@ class DrivenTimeActivity:BaseActivity() {
                 val maxValue = rightAxis.axisMaximum
 
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "시"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + "시간"// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }

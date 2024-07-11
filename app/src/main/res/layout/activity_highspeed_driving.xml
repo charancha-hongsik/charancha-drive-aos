@@ -480,37 +480,73 @@
                 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="14dp"
+                    android:layout_height="16dp"
                     android:paddingLeft="20dp"
                     android:paddingRight="20dp"
+                    android:layout_marginTop="12dp"
                     android:orientation="horizontal">
                     
                     <View
                         android:layout_width="7dp"
-                        android:layout_height="7dp"/>
+                        android:layout_height="7dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/radius2_orange500"/>
 
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:text="고속 주행"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:layout_marginLeft="4dp"
+                        android:textAppearance="@style/C2R"
+                        android:textFontWeight="400"
+                        android:textColor="@color/gray_600" />
 
                     <View
                         android:layout_width="7dp"
-                        android:layout_height="7dp"/>
+                        android:layout_height="7dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="18dp"
+                        android:background="@drawable/radius2_gray950"/>
 
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:text="저속 주행"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:layout_marginLeft="4dp"
+                        android:textAppearance="@style/C2R"
+                        android:textFontWeight="400"
+                        android:textColor="@color/gray_600" />
 
                     <View
                         android:layout_width="7dp"
-                        android:layout_height="7dp"/>
+                        android:layout_height="7dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="18dp"
+                        android:background="@drawable/radius2_gray700"/>
 
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-                    
+                        android:layout_height="wrap_content"
+                        android:text="기타"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:layout_marginLeft="4dp"
+                        android:textAppearance="@style/C2R"
+                        android:textFontWeight="400"
+                        android:textColor="@color/gray_600" />
                     
                 </LinearLayout>
+                
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/layout_barchart_highspeed"
+                    android:layout_width="match_parent"
+                    android:layout_height="210dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="24dp"/>
 
             </LinearLayout>
 
