@@ -40,9 +40,9 @@ class HighSpeedDrivingActivity:BaseActivity() {
         layout_extra_speed_extra = findViewById(R.id.layout_extra_speed_extra)
         layout_extra_speed_background = findViewById(R.id.layout_extra_speed_background)
 
-        setHighSpeedDrivingChartWidthByPercent(0.3f)
-        setLowSpeedDrivingChartWidthByPercent(0.2f)
-        setExtraSpeedDrivingChartWidthByPercent(0.5f)
+        setHighSpeedDrivingChartWidthByPercent(0.341f)
+        setLowSpeedDrivingChartWidthByPercent(0.618f)
+        setExtraSpeedDrivingChartWidthByPercent(0.41f)
 
 
 
