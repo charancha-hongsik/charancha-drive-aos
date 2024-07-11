@@ -71,7 +71,7 @@ class ManageEngineActivity:BaseActivity() {
 
         btn_average_distance = findViewById(R.id.btn_average_distance)
         btn_average_distance.setOnClickListener {
-            startActivity(Intent(this, DrivenDistanceActivity::class.java))
+            startActivity(Intent(this, AverageDrivenDistanceActivity::class.java))
         }
 
         btn_recent_drive.isSelected = true

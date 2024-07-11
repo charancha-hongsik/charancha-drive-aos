@@ -41,7 +41,7 @@ interface ApiServiceInterface {
     fun getCarInfoInquiry(@Header("Authorization") token: String, @Query("licensePlateNumber") licensePlateNumber: String, @Query("ownerName") ownerName: String): Call<ResponseBody>
 
     // 내가 등록한 개인 차량 정보 조회
-    @GET("api/v1/me/cars/user-cars/{userCarId}")
+    @GET("api/v1/me/cars/-/user-cars/{userCarId}")
     fun getCarInfoinquiryByCarId(@Header("Authorization") token: String, @Path("userCarId") personalCarId: String): Call<ResponseBody>
 
     // 내 개인 차량 수정
@@ -53,7 +53,7 @@ interface ApiServiceInterface {
     fun deleteMyCarByCarId(@Header("Authorization") token: String, @Path("userCarId") personalCarId: String): Call<ResponseBody>
 
     // 내가 등록한 개인 차량 목록 조회
-    @GET("api/v1/me/cars/user-cars")
+    @GET("api/v1/me/cars/-/user-cars")
     fun getMyCarInfo(@Header("Authorization") token: String): Call<ResponseBody>
 
     // 내 개인 차량 등록
