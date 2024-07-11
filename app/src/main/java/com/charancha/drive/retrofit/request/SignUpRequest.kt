@@ -5,4 +5,5 @@ data class SignUpRequest (
     val authorizationCode:String,
     val oauthProvider:String,
     val deviceToken:String,
+    val accountAddress:String
 ) : java.io.Serializable

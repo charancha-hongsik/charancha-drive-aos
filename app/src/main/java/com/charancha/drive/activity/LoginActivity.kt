@@ -132,8 +132,10 @@ class LoginActivity: BaseActivity() {
             PreferenceUtil.putPref(activity, PreferenceUtil.ID_TOKEN, idToken)
             PreferenceUtil.putPref(activity, PreferenceUtil.ACCOUNT_ADDRESS, accountAddress)
 
+            Log.d("testestestset", "testestestsetset :: $accountAddress")
 
-            activity.handleSuccessLogin(idToken,oauthProvider.uppercase())
+
+            activity.handleSuccessLogin(idToken,oauthProvider.uppercase(),accountAddress)
         }
 
         @JavascriptInterface
@@ -144,12 +146,11 @@ class LoginActivity: BaseActivity() {
     }
 
 
-    fun handleSuccessLogin(idToken:String, oauthProvider:String) {
-        Log.d("testestestse","testestesestse idToken :: " + idToken)
+    fun handleSuccessLogin(idToken:String, oauthProvider:String, accountAddress:String) {
         try {
             val gson = Gson()
             val jsonParam =
-                gson.toJson(SignUpRequest(idToken, "string", oauthProvider, "string"))
+                gson.toJson(SignUpRequest(idToken, "string", oauthProvider, "string", accountAddress))
 
 
             apiService().postSignUp(jsonParam.toRequestBody("application/json".toMediaTypeOrNull()))
