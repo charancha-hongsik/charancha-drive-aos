@@ -250,7 +250,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         layout_average_time.setOnClickListener {
-            startActivity(Intent(this, DrivenDistanceActivity::class.java))
+            startActivity(Intent(this, DrivenTimeActivity::class.java))
         }
 
         tv_average_score_info = findViewById(R.id.tv_average_score_info)

@@ -63,6 +63,12 @@
             android:exported="true"/>
 
         <activity
+            android:name=".activity.DrivenTimeActivity"
+            android:theme="@style/Theme.Charanchadrivegray50"
+            android:screenOrientation="portrait"
+            android:exported="true"/>
+
+        <activity
             android:name=".activity.DrivenDistanceActivity"
             android:theme="@style/Theme.Charanchadrivegray50"
             android:screenOrientation="portrait"

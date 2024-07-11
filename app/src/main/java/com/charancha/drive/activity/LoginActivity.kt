@@ -132,9 +132,6 @@ class LoginActivity: BaseActivity() {
             PreferenceUtil.putPref(activity, PreferenceUtil.ID_TOKEN, idToken)
             PreferenceUtil.putPref(activity, PreferenceUtil.ACCOUNT_ADDRESS, accountAddress)
 
-            Log.d("testestestset", "testestestsetset :: $accountAddress")
-
-
             activity.handleSuccessLogin(idToken,oauthProvider.uppercase(),accountAddress)
         }
 
@@ -160,15 +157,10 @@ class LoginActivity: BaseActivity() {
                         call: Call<ResponseBody>,
                         response: Response<ResponseBody>
                     ) {
-                        Log.d("testestest","testsetestestse :: " + response.code())
-
                         if (response.code() == 201 || response.code() == 409) {
                             val gson = Gson()
                             val jsonParam =
                                 gson.toJson(SignInRequest(idToken, "string", oauthProvider))
-
-                            Log.d("testestest","testsetestestse :: " + response.code())
-
 
                             apiService().postSignIn(jsonParam.toRequestBody("application/json".toMediaTypeOrNull()))
                                 .enqueue(object : Callback<ResponseBody> {
