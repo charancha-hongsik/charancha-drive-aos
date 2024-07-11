@@ -222,7 +222,7 @@ class BluetoothService : Service() {
             startForeground(1, notification.setSmallIcon(android.R.drawable.btn_star_big_off)
                 .setAutoCancel(false)
                 .setOngoing(true)
-                .setContentText("주행 관찰중.." + getCurrent())
+                .setContentText("주행 관찰중이에요.")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setOnlyAlertOnce(true)
                 .build())
@@ -770,17 +770,29 @@ class BluetoothService : Service() {
 
 
     fun refreshNotiText(){
-        if(sensorState)
-            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 중..($distanceSum m) " + getCurrent()).build())
+        if(sensorState) {
+            if (distance_array.isNotEmpty() && distance_array.sum() > 500f) {
+                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(
+                    1,
+                    notification.setContentText("주행 중..($distanceSum m) " + getCurrent()).build()
+                )
+            }
+        }
         else
-            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중....." + getCurrent()).build())
+            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중이에요.").build())
     }
 
     fun refreshNotiText(event:String){
-        if(sensorState)
-            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 중..($distanceSum m) " + event + ", " + getCurrent()).build())
+        if(sensorState) {
+            if (distance_array.isNotEmpty() && distance_array.sum() > 500f) {
+                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(
+                    1,
+                    notification.setContentText("주행 중..($distanceSum m) " + getCurrent()).build()
+                )
+            }
+        }
         else
-            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중....." + event + ", " + getCurrent()).build())
+            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중이에요.").build())
     }
 
     inner class ActivityRecognitionReceiver : BroadcastReceiver() {
@@ -940,7 +952,7 @@ class BluetoothService : Service() {
                     maxDistance = mutableListOf()
                     pastMaxDistance = mutableListOf()
 
-                    if(distance_array.sum() > 0f){
+                    if(distance_array.sum() > 500f){
                         writeToRoom()
                         callApi()
                     }
@@ -963,7 +975,7 @@ class BluetoothService : Service() {
                 maxDistance = mutableListOf()
                 pastMaxDistance = mutableListOf()
 
-                if(distance_array.sum() > 0f){
+                if(distance_array.sum() > 500f){
                     writeToRoom()
                     callApi()
                 }
@@ -987,7 +999,7 @@ class BluetoothService : Service() {
                 maxDistance = mutableListOf()
                 pastMaxDistance = mutableListOf()
 
-                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중.. NotSave" + getCurrent()).build())
+                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중이에요.").build())
 
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
