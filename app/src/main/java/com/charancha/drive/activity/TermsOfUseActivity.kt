@@ -153,6 +153,7 @@ class TermsOfUseActivity: BaseActivity() {
             PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.OAUTH_PROVIDER, "")
             PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.ID_TOKEN, "")
             PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
+            startActivity(Intent(this@TermsOfUseActivity, LoginActivity::class.java))
             finish()
         }
 

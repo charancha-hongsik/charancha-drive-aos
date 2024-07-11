@@ -224,6 +224,7 @@ class LoginActivity: BaseActivity() {
                                                                 TermsOfUseActivity::class.java
                                                             )
                                                         )
+                                                        finish()
                                                     }else{
                                                         for(term in termsAgreeStatusResponses){
                                                             if(term.terms.isRequired == 1)
@@ -285,6 +286,7 @@ class LoginActivity: BaseActivity() {
                                                                     TermsOfUseActivity::class.java
                                                                 )
                                                             )
+                                                            finish()
                                                         }
                                                     }
                                                 } else {
@@ -294,6 +296,7 @@ class LoginActivity: BaseActivity() {
                                                             TermsOfUseActivity::class.java
                                                         )
                                                     )
+                                                    finish()
                                                 }
                                             }
 
