@@ -25,6 +25,7 @@ class ManageEngineActivity:BaseActivity() {
     lateinit var btn_month_drive:TextView
     lateinit var btn_six_month_drive:TextView
     lateinit var btn_year_drive:TextView
+    lateinit var btn_high_speed_driving:ConstraintLayout
 
 
 
@@ -61,6 +62,11 @@ class ManageEngineActivity:BaseActivity() {
         btn_month_drive = findViewById(R.id.btn_month_drive)
         btn_six_month_drive = findViewById(R.id.btn_six_month_drive)
         btn_year_drive = findViewById(R.id.btn_year_drive)
+
+        btn_high_speed_driving = findViewById(R.id.btn_high_speed_driving)
+        btn_high_speed_driving.setOnClickListener {
+            startActivity(Intent(this, HighSpeedDrivingActivity::class.java))
+        }
 
 
         btn_average_distance = findViewById(R.id.btn_average_distance)
