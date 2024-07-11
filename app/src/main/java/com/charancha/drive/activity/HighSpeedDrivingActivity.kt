@@ -277,6 +277,8 @@ class HighSpeedDrivingActivity:BaseActivity() {
 
 
         val barData = BarData(dataSet1, dataSet2, dataSet3)
+        barData.barWidth = 0.6f
+
         layout_barchart_highspeed.data = barData
         layout_barchart_highspeed.setFitBars(true) // make the x-axis fit exactly all bars
         layout_barchart_highspeed.description.isEnabled = false
@@ -464,6 +466,8 @@ class HighSpeedDrivingActivity:BaseActivity() {
 
 
         val barData = BarData(dataSet1, dataSet2, dataSet3)
+        barData.barWidth = 0.6f
+
         layout_barchart_highspeed.data = barData
         layout_barchart_highspeed.setFitBars(true) // make the x-axis fit exactly all bars
         layout_barchart_highspeed.description.isEnabled = false
@@ -534,59 +538,44 @@ class HighSpeedDrivingActivity:BaseActivity() {
 
         val entries1 = listOf(
             BarEntry(-1f, 10f), // 첫번째 월
-            BarEntry(-0f, 0f),
-            BarEntry(1f, 0f),
-            BarEntry(2f, 8f), // 두번째 월
-            BarEntry(3f, 0f),
+            BarEntry(0f, 0f),
+            BarEntry(1f, 8f), // 두번째 월
+            BarEntry(2f, 0f),
+            BarEntry(3f, 10f), // 세번째 월
             BarEntry(4f, 0f),
-            BarEntry(5f, 10f), // 세번째 월
+            BarEntry(5f, 9f), // 네번째 월
             BarEntry(6f, 0f),
-            BarEntry(7f, 0f),
-            BarEntry(8f, 9f), // 네번째 월
-            BarEntry(9f, 0f),
-            BarEntry(10f, 0f),
-            BarEntry(11f, 9f), // 다섯번째 월
-            BarEntry(12f, 0f),
-            BarEntry(13f, 0f),
-            BarEntry(14f, 9f) // 여섯번째 월
+            BarEntry(7f, 9f), // 다섯번째 월
+            BarEntry(8f, 0f),
+            BarEntry(9f, 9f) // 여섯번째 월
         )
 
         val entries2 = listOf(
             BarEntry(-1f, 6f), // 첫번째 월
-            BarEntry(-0f, 0f),
-            BarEntry(1f, 0f),
-            BarEntry(2f, 6f), // 두번째 월
-            BarEntry(3f, 0f),
+            BarEntry(0f, 0f),
+            BarEntry(1f, 6f), // 두번째 월
+            BarEntry(2f, 0f),
+            BarEntry(3f, 7f), // 세번째 월
             BarEntry(4f, 0f),
-            BarEntry(5f, 7f), // 세번째 월
+            BarEntry(5f, 6f), // 네번째 월
             BarEntry(6f, 0f),
-            BarEntry(7f, 0f),
-            BarEntry(8f, 6f), // 네번째 월
-            BarEntry(9f, 0f),
-            BarEntry(10f, 0f),
-            BarEntry(11f, 6f), // 다섯번째 월
-            BarEntry(12f, 0f),
-            BarEntry(13f, 0f),
-            BarEntry(14f, 7f) // 여섯번째 월
+            BarEntry(7f, 6f), // 다섯번째 월
+            BarEntry(8f, 0f),
+            BarEntry(9f, 7f) // 여섯번째 월
         )
 
         val entries3 = listOf(
             BarEntry(-1f, 3f), // 첫번째 월
-            BarEntry(-0f, 0f),
-            BarEntry(1f, 0f),
-            BarEntry(2f, 1f), // 두번째 월
-            BarEntry(3f, 0f),
+            BarEntry(0f, 0f),
+            BarEntry(1f, 1f), // 두번째 월
+            BarEntry(2f, 0f),
+            BarEntry(3f, 3f), // 세번째 월
             BarEntry(4f, 0f),
-            BarEntry(5f, 3f), // 세번째 월
+            BarEntry(5f, 3f), // 네번째 월
             BarEntry(6f, 0f),
-            BarEntry(7f, 0f),
-            BarEntry(8f, 3f), // 네번째 월
-            BarEntry(9f, 0f),
-            BarEntry(10f, 0f),
-            BarEntry(11f, 2f), // 다섯번째 월
-            BarEntry(12f, 0f),
-            BarEntry(13f, 0f),
-            BarEntry(14f, 1f) // 여섯번째 월
+            BarEntry(7f, 2f), // 다섯번째 월
+            BarEntry(8f, 0f),
+            BarEntry(9f, 1f) // 여섯번째 월
         )
 
         val dataSet1 = BarDataSet(entries1, "Part 1")
@@ -616,22 +605,22 @@ class HighSpeedDrivingActivity:BaseActivity() {
         val xAxis = layout_barchart_highspeed.xAxis
         xAxis.granularity = 1f // only intervals of 1 unit
         xAxis.axisMinimum = -2f
-        xAxis.axisMaximum = 15f
+        xAxis.axisMaximum = 10f
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
         xAxis.textColor = getColor(R.color.gray_600)
-        xAxis.labelCount = 16
+        xAxis.labelCount = 11
 
         // Customizing x-axis labels
         xAxis.valueFormatter = object : IAxisValueFormatter {
             override fun getFormattedValue(value: Float, axis: AxisBase?): String {
                 return when (value.toInt()) {
                     -1 -> "1월"
-                    2 -> "2월"
-                    5 -> "3월"
-                    8 -> "4월"
-                    11 -> "5월"
-                    14 -> "6월"
+                    1 -> "2월"
+                    3 -> "3월"
+                    5 -> "4월"
+                    7 -> "5월"
+                    9 -> "6월"
                     else -> "" // 나머지 레이블은 비워둠
                 }
             }
@@ -768,6 +757,8 @@ class HighSpeedDrivingActivity:BaseActivity() {
 
 
         val barData = BarData(dataSet1, dataSet2, dataSet3)
+        barData.barWidth = 1.0f
+
         layout_barchart_highspeed.data = barData
         layout_barchart_highspeed.setFitBars(true) // make the x-axis fit exactly all bars
         layout_barchart_highspeed.description.isEnabled = false

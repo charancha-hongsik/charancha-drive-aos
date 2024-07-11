@@ -266,7 +266,7 @@ class BestDrivingActivity:BaseActivity() {
         dataSet.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
 
         val barData = BarData(dataSet)
-        barData.barWidth = 0.7f
+        barData.barWidth = 0.6f
 
         layout_barchart_best_driving.data = barData
         layout_barchart_best_driving.setFitBars(true) // make the x-axis fit exactly all bars
