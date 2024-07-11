@@ -35,16 +35,16 @@ class SplashActivity: BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        startActivity(Intent(this, MainActivity::class.java))
+//        startActivity(Intent(this, MainActivity::class.java))
 
 
-//        Handler(Looper.getMainLooper()).postDelayed({
-//            if(PreferenceUtil.getPref(this, PreferenceUtil.REFRESH_TOKEN, "") == ""){
-//                unLoginedProcess()
-//            }else {
-//                loginedProcess()
-//            }
-//        }, 2000) // 2000 밀리초 (2초)
+        Handler(Looper.getMainLooper()).postDelayed({
+            if(PreferenceUtil.getPref(this, PreferenceUtil.REFRESH_TOKEN, "") == ""){
+                unLoginedProcess()
+            }else {
+                loginedProcess()
+            }
+        }, 2000) // 2000 밀리초 (2초)
     }
 
     private fun unLoginedProcess(){
@@ -178,6 +178,11 @@ class SplashActivity: BaseActivity() {
                             PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.EXPIRES_IN, "")
                             PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.REFRESH_EXPIRES_IN, "")
                             PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.TOKEN_TYPE, "")
+                            PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.KEYLESS_ACCOUNT, "")
+                            PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.KEYLESS_ACCOUNT_EXPIRE, "")
+                            PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.OAUTH_PROVIDER, "")
+                            PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.ID_TOKEN, "")
+                            PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
 
                             startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
                             finish()

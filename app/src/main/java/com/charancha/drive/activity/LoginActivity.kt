@@ -125,11 +125,13 @@ class LoginActivity: BaseActivity() {
 
     class MilelogPublicApi(val activity:LoginActivity) {
         @JavascriptInterface
-        fun successLogin(keylessAccount: String, keylessAccountExpire:String, oauthProvider:String, idToken:String) {
+        fun successLogin(keylessAccount: String, keylessAccountExpire:String, oauthProvider:String, idToken:String, accountAddress:String) {
             PreferenceUtil.putPref(activity, PreferenceUtil.KEYLESS_ACCOUNT, keylessAccount)
             PreferenceUtil.putPref(activity, PreferenceUtil.KEYLESS_ACCOUNT_EXPIRE, keylessAccountExpire)
             PreferenceUtil.putPref(activity, PreferenceUtil.OAUTH_PROVIDER, oauthProvider)
             PreferenceUtil.putPref(activity, PreferenceUtil.ID_TOKEN, idToken)
+            PreferenceUtil.putPref(activity, PreferenceUtil.ACCOUNT_ADDRESS, accountAddress)
+
 
             activity.handleSuccessLogin(idToken,oauthProvider.uppercase())
         }

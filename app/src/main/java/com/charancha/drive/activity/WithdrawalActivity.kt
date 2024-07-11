@@ -56,6 +56,11 @@ class WithdrawalActivity:BaseActivity() {
                             PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.EXPIRES_IN, "")
                             PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.REFRESH_EXPIRES_IN, "")
                             PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.TOKEN_TYPE, "")
+                            PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.KEYLESS_ACCOUNT, "")
+                            PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.KEYLESS_ACCOUNT_EXPIRE, "")
+                            PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.OAUTH_PROVIDER, "")
+                            PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.ID_TOKEN, "")
+                            PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
                             startActivity(Intent(this@WithdrawalActivity, LoginActivity::class.java))
                             finish()
                         }

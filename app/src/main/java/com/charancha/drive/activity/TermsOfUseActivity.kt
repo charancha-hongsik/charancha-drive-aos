@@ -88,6 +88,11 @@ class TermsOfUseActivity: BaseActivity() {
         PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.EXPIRES_IN, "")
         PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.REFRESH_EXPIRES_IN, "")
         PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.TOKEN_TYPE, "")
+        PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.KEYLESS_ACCOUNT, "")
+        PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.KEYLESS_ACCOUNT_EXPIRE, "")
+        PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.OAUTH_PROVIDER, "")
+        PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.ID_TOKEN, "")
+        PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
         super.onBackPressed()
     }
 
@@ -143,6 +148,11 @@ class TermsOfUseActivity: BaseActivity() {
             PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.EXPIRES_IN, "")
             PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.REFRESH_EXPIRES_IN, "")
             PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.TOKEN_TYPE, "")
+            PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.KEYLESS_ACCOUNT, "")
+            PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.KEYLESS_ACCOUNT_EXPIRE, "")
+            PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.OAUTH_PROVIDER, "")
+            PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.ID_TOKEN, "")
+            PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
             finish()
         }
 

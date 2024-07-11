@@ -31,6 +31,7 @@ object PreferenceUtil {
     val KEYLESS_ACCOUNT_EXPIRE = "keylessAccountExpire"
     val OAUTH_PROVIDER = "oauthProvider"
     val ID_TOKEN = "idToken"
+    val ACCOUNT_ADDRESS = "accountAddress"
 
 
 

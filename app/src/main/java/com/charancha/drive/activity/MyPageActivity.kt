@@ -84,6 +84,11 @@ class MyPageActivity:BaseActivity() {
             PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.EXPIRES_IN, "")
             PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.REFRESH_EXPIRES_IN, "")
             PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.TOKEN_TYPE, "")
+            PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.KEYLESS_ACCOUNT, "")
+            PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.KEYLESS_ACCOUNT_EXPIRE, "")
+            PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.OAUTH_PROVIDER, "")
+            PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.ID_TOKEN, "")
+            PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
             startActivity(Intent(this@MyPageActivity, LoginActivity::class.java))
             finish()
         }
@@ -100,6 +105,8 @@ class MyPageActivity:BaseActivity() {
         apiService().getAccountProfiles("Bearer " + PreferenceUtil.getPref(this@MyPageActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!).enqueue(object :
             Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+
+                Log.d("testestseest","testestest :: " + response.code())
 
                 if(response.code() == 200){
                     getAccountProfilesResponse = Gson().fromJson(
