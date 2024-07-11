@@ -87,6 +87,8 @@ class DrivenTimeActivity:BaseActivity() {
         dataSet.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
 
         val barData = BarData(dataSet)
+        barData.barWidth = 0.6f
+
         layout_barchart_time.data = barData
         layout_barchart_time.setFitBars(true) // make the x-axis fit exactly all bars
         layout_barchart_time.description.isEnabled = false
@@ -142,7 +144,7 @@ class DrivenTimeActivity:BaseActivity() {
                 val minValue = rightAxis.axisMinimum
                 val maxValue = rightAxis.axisMaximum
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "시간"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + "km"// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -196,6 +198,8 @@ class DrivenTimeActivity:BaseActivity() {
         dataSet.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
 
         val barData = BarData(dataSet)
+        barData.barWidth = 0.6f
+
         layout_barchart_time.data = barData
         layout_barchart_time.setFitBars(true) // make the x-axis fit exactly all bars
         layout_barchart_time.description.isEnabled = false
@@ -251,7 +255,7 @@ class DrivenTimeActivity:BaseActivity() {
                 val minValue = rightAxis.axisMinimum
                 val maxValue = rightAxis.axisMaximum
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "시간"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + "km"// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -270,21 +274,16 @@ class DrivenTimeActivity:BaseActivity() {
 
         val entries = listOf(
             BarEntry(-1f, 6f), // 첫번째 월
-            BarEntry(-0f, 0f),
-            BarEntry(1f, 0f),
-            BarEntry(2f, 8f), // 두번째 월
-            BarEntry(3f, 0f),
+            BarEntry(0f, 0f),
+            BarEntry(1f, 8f), // 두번째 월
+            BarEntry(2f, 0f),
+            BarEntry(3f, 7f), // 세번째 월
             BarEntry(4f, 0f),
-            BarEntry(5f, 7f), // 세번째 월
+            BarEntry(5f, 3f), // 네번째 월
             BarEntry(6f, 0f),
-            BarEntry(7f, 0f),
-            BarEntry(8f, 3f), // 네번째 월
-            BarEntry(9f, 0f),
-            BarEntry(10f, 0f),
-            BarEntry(11f, 2f), // 다섯번째 월
-            BarEntry(12f, 0f),
-            BarEntry(13f, 0f),
-            BarEntry(14f, 9f) // 여섯번째 월
+            BarEntry(7f, 2f), // 다섯번째 월
+            BarEntry(8f, 0f),
+            BarEntry(9f, 9f) // 여섯번째 월
         )
 
         val dataSet = BarDataSet(entries, "Sample Data")
@@ -303,22 +302,22 @@ class DrivenTimeActivity:BaseActivity() {
         val xAxis = layout_barchart_time.xAxis
         xAxis.granularity = 1f // only intervals of 1 unit
         xAxis.axisMinimum = -2f
-        xAxis.axisMaximum = 15f
+        xAxis.axisMaximum = 10f
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
         xAxis.textColor = getColor(R.color.gray_600)
-        xAxis.labelCount = 16
+        xAxis.labelCount = 11
 
         // Customizing x-axis labels
         xAxis.valueFormatter = object : IAxisValueFormatter {
             override fun getFormattedValue(value: Float, axis: AxisBase?): String {
                 return when (value.toInt()) {
                     -1 -> "1월"
-                    2 -> "2월"
-                    5 -> "3월"
-                    8 -> "4월"
-                    11 -> "5월"
-                    14 -> "6월"
+                    1 -> "2월"
+                    3 -> "3월"
+                    5 -> "4월"
+                    7 -> "5월"
+                    9 -> "6월"
                     else -> "" // 나머지 레이블은 비워둠
                 }
             }
@@ -349,7 +348,7 @@ class DrivenTimeActivity:BaseActivity() {
                 val minValue = rightAxis.axisMinimum
                 val maxValue = rightAxis.axisMaximum
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "시간"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + "km"// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -397,6 +396,7 @@ class DrivenTimeActivity:BaseActivity() {
         dataSet.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
 
         val barData = BarData(dataSet)
+        barData.barWidth = 1.0f
         layout_barchart_time.data = barData
         layout_barchart_time.setFitBars(true) // make the x-axis fit exactly all bars
         layout_barchart_time.description.isEnabled = false
@@ -452,7 +452,7 @@ class DrivenTimeActivity:BaseActivity() {
                 val minValue = rightAxis.axisMinimum
                 val maxValue = rightAxis.axisMaximum
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "시간"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + "km"// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
