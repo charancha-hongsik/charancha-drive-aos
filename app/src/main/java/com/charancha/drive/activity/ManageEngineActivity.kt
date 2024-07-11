@@ -26,6 +26,8 @@ class ManageEngineActivity:BaseActivity() {
     lateinit var btn_six_month_drive:TextView
     lateinit var btn_year_drive:TextView
     lateinit var btn_high_speed_driving:ConstraintLayout
+    lateinit var btn_optimal_driving:TextView
+    lateinit var btn_normal_speed_driving:TextView
 
 
 
@@ -72,6 +74,16 @@ class ManageEngineActivity:BaseActivity() {
         btn_average_distance = findViewById(R.id.btn_average_distance)
         btn_average_distance.setOnClickListener {
             startActivity(Intent(this, AverageDrivenDistanceActivity::class.java))
+        }
+
+        btn_optimal_driving = findViewById(R.id.btn_optimal_driving)
+        btn_optimal_driving.setOnClickListener {
+            startActivity(Intent(this, BestDrivingActivity::class.java))
+        }
+
+        btn_normal_speed_driving = findViewById(R.id.btn_normal_speed_driving)
+        btn_normal_speed_driving.setOnClickListener {
+            startActivity(Intent(this, ConstantSpeedDrivingActivity::class.java))
         }
 
         btn_recent_drive.isSelected = true
