@@ -510,10 +510,9 @@ class BluetoothService : Service() {
 
         startTimeStamp = System.currentTimeMillis()
 
-
         gpsInfoForApp = mutableListOf()
         driveForApp = DriveForApp(
-            "",
+            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!! + startTimeStamp,
             startTimeStamp,
             gpsInfoForApp)
 
@@ -819,17 +818,6 @@ class BluetoothService : Service() {
         pastLocation = location
     }
 
-
-    fun writeToRoomForApp(trackingId:String){
-        Executors.newSingleThreadExecutor().execute{
-            try {
-                driveForApp.tracking_id = trackingId
-                driveDatabase?.driveForAppDao()?.insert(driveForApp)
-            } catch (e:Exception){
-            }
-        }
-    }
-
     private fun callApi(){
         driveForApi.endTimestamp = System.currentTimeMillis()
 
@@ -869,11 +857,20 @@ class BluetoothService : Service() {
 
     }
 
+    fun writeToRoomForApp(trackingId:String){
+        Executors.newSingleThreadExecutor().execute{
+            try {
+                driveForApp.tracking_id = trackingId
+                driveDatabase?.driveForAppDao()?.insert(driveForApp)
+            } catch (e:Exception){
+            }
+        }
+    }
+
     fun writeToRoomForApi(driveForApi:DriveForApi){
         Executors.newSingleThreadExecutor().execute {
             try {
                 driveDatabase?.driveForApiDao()?.insert(driveForApi)
-
             } catch (e:Exception){
             }
         }
