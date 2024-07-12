@@ -21,7 +21,7 @@ class MyDriveHistoryViewModel: ViewModel() {
     fun getAllDrive(){
         viewModelScope.launch {
             val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(context)
-            driveDatabase.driveDao().allDriveForApp?.let {
+            driveDatabase.driveForAppDao().allDriveForApp?.let {
                 setAllDriveDateForApp.value = Event(it.toMutableList())
             }
 

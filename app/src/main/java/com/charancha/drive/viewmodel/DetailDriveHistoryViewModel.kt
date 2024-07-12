@@ -24,7 +24,7 @@ class DetailDriveHistoryViewModel: ViewModel() {
     fun getAllDrive(){
         viewModelScope.launch {
             val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(context)
-            driveDatabase.driveDao().allDriveForApp?.let {
+            driveDatabase.driveForAppDao().allDriveForApp?.let {
                 setAllDriveDateForApp.value = Event(it.toMutableList())
             }
         }
@@ -33,7 +33,7 @@ class DetailDriveHistoryViewModel: ViewModel() {
     fun getDrive(trackingId:String){
         viewModelScope.launch {
             val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(context)
-            driveDatabase.driveDao().getDriveByTrackingId(trackingId)?.let {
+            driveDatabase.driveForAppDao().getDriveByTrackingId(trackingId)?.let {
                 setDriveForApp.value = Event(it)
             }
         }

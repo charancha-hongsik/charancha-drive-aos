@@ -81,17 +81,17 @@ class DetailDriveHistoryActivity: AppCompatActivity() {
              * harsh_driving (m)
              */
             tvTrackingId.text = "id : " + it.tracking_id
-            tvTimestamp.text = "주행시작 : " + getDateFromTimeStamp(it.timeStamp)
-            tvRank.text = "랭크 : " + it.verification
-            tvDistance.text = "주행거리(m) : " + it.distance_array.sum()
-            tvTime.text = "주행 시간 : " + (TimeUnit.MILLISECONDS.toSeconds(it.time)/60) + "분 " + (TimeUnit.MILLISECONDS.toSeconds(it.time)%60) + "초"
-            tvTime.text = "주행 시간 : " + (TimeUnit.MILLISECONDS.toSeconds(it.time)/60) + "분 " + (TimeUnit.MILLISECONDS.toSeconds(it.time)%60) + "초"
+            tvTimestamp.text = "주행시작 : " + getDateFromTimeStamp(it.startTimestamp)
+//            tvRank.text = "랭크 : " + it.verification
+//            tvDistance.text = "주행거리(m) : " + it.distance_array.sum()
+//            tvTime.text = "주행 시간 : " + (TimeUnit.MILLISECONDS.toSeconds(it.time)/60) + "분 " + (TimeUnit.MILLISECONDS.toSeconds(it.time)%60) + "초"
+//            tvTime.text = "주행 시간 : " + (TimeUnit.MILLISECONDS.toSeconds(it.time)/60) + "분 " + (TimeUnit.MILLISECONDS.toSeconds(it.time)%60) + "초"
+//
+//
+//            var contents = ""
+//            contents = contents + "주행 종료 : " + getDateFromTimeStamp((it.timeStamp + it.time)) + "\n"
 
-
-            var contents = ""
-            contents = contents + "주행 종료 : " + getDateFromTimeStamp((it.timeStamp + it.time)) + "\n"
-
-            tvRapid1.text = contents
+//            tvRapid1.text = contents
 
             if(polylines.size != 0){
                 setMapData()

@@ -36,7 +36,7 @@ class LoginActivity: BaseActivity() {
     lateinit var constraintLayout: ConstraintLayout
     lateinit var wv_login:WebView
 
-    val loginUrl = "https://eaaf-222-109-154-193.ngrok-free.app/" +
+    val loginUrl = "https://2401-222-109-154-193.ngrok-free.app/" +
             ""
 
     /**

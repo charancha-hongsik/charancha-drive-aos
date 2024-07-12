@@ -19,34 +19,11 @@ class MainViewModel: ViewModel() {
     fun getAllDrive(){
         viewModelScope.launch {
             val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(context)
-            driveDatabase.driveDao().allDriveForApp?.let {
+            driveDatabase.driveForApiDao().allDrive?.let {
                 for(drive in it)
                     Log.d("testestestest","testsetsetset drive :: " + drive.toString())
             }
         }
     }
-
-    fun getAllDistance(){
-        viewModelScope.launch {
-            val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(context)
-            Log.d("testestsetest","testsetsetestsetse :: " + getAllFloatList(driveDatabase.driveDao()))
-        }
-
-    }
-
-    fun getAllFloatList(driveForAppDao: DriveForAppDao): List<List<Float>> {
-        val gson = Gson()
-        val listType = object : TypeToken<List<Float>>() {}.type
-
-        // JSON 문자열 리스트를 가져옵니다.
-        val jsonStringList = driveForAppDao.getAllDistanceArrays(1716446441000, 1716446461000)
-
-        // JSON 문자열 리스트를 List<List<Float>>로 변환합니다.
-        return jsonStringList.map { jsonString ->
-            gson.fromJson(jsonString, listType)
-        }
-    }
-
-
 
 }

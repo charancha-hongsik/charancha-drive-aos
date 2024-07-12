@@ -12,6 +12,7 @@ import androidx.core.app.NotificationCompat
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.retrofit.ApiServiceInterface
 import com.charancha.drive.room.database.DriveDatabase
+import com.charancha.drive.room.entity.DriveForApi
 import com.google.gson.Gson
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
@@ -69,9 +70,10 @@ class CallApiService: Service() {
                     if (it.isNotEmpty()) {
                         for (drive in it) {
 
-                            val driveDtoForApi = DriveDtoForApi(
+                            val driveDtoForApi = DriveForApi(
+                                tracking_id = PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!! + drive.startTimestamp,
                                 userCarId = PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
-                                startTimestamp = drive.startTimeStamp,
+                                startTimestamp = drive.startTimestamp,
                                 endTimestamp = drive.endTimestamp,
                                 verification = drive.verification,
                                 gpses = drive.gpses

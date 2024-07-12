@@ -127,7 +127,7 @@ class MainActivity : BaseActivity() {
         PreferenceUtil.putBooleanPref(this, HAVE_BEEN_HOME, true)
 
         setBtn()
-
+        setCarInfo()
         setAlarm()
     }
 
@@ -602,9 +602,6 @@ class MainActivity : BaseActivity() {
     class AlarmReceiver : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {
-            // 알람이 트리거될 때 수행할 작업을 여기에 추가
-            Log.d("testestsetest","testestsesetestestsetsetset AlarmReceiver")
-
             val bluetoothIntent = Intent(context, BluetoothService::class.java)
             context.startForegroundService(bluetoothIntent)
         }
@@ -644,9 +641,9 @@ class MainActivity : BaseActivity() {
                                         GetMyCarInfoResponse::class.java
                                     )
 
-                                    PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.vehicleIdentificationNumber)
+                                    PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.id)
                                     tv_car_name.setText(getMyCarInfoResponse.carName)
-                                    tv_car_no.setText(getMyCarInfoResponse.licensePlateNumber)
+                                    tv_car_no.setText(getMyCarInfoResponse.vehicleIdentificationNumber)
                                 }
                             }
 

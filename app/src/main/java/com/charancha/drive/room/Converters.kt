@@ -2,6 +2,7 @@ package com.charancha.drive.room
 
 import androidx.room.TypeConverter
 import com.charancha.drive.room.dto.EachGpsDtoForApi
+import com.charancha.drive.room.dto.EachGpsDtoForApp
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -28,13 +29,13 @@ class Converters {
 
 
     @TypeConverter
-    fun fromEachGpsDtoList(value: List<EachGpsDto>?): String {
-        return Gson().toJson(value ?: emptyList<EachGpsDto>())
+    fun fromEachGpsDtoList(value: List<EachGpsDtoForApp>?): String {
+        return Gson().toJson(value ?: emptyList<EachGpsDtoForApp>())
     }
 
     @TypeConverter
-    fun toEachGpsDtoList(value: String?): List<EachGpsDto> {
-        return if (value == null) emptyList() else Gson().fromJson(value, object : TypeToken<List<EachGpsDto>>() {}.type)
+    fun toEachGpsDtoList(value: String?): List<EachGpsDtoForApp> {
+        return if (value == null) emptyList() else Gson().fromJson(value, object : TypeToken<List<EachGpsDtoForApp>>() {}.type)
     }
 
     @TypeConverter
