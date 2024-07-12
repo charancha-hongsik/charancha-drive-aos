@@ -28,28 +28,40 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
 import java.text.SimpleDateFormat
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.security.auth.callback.Callback
 
 
 class DetailDriveHistoryActivity: BaseActivity() {
-    lateinit var tvTrackingId:TextView
-    lateinit var tvTimestamp:TextView
-    lateinit var tvRank:TextView
-    lateinit var tvDistance:TextView
-    lateinit var tvTime:TextView
-    lateinit var tvRapid1:TextView
-    lateinit var tvRapid2:TextView
-
     lateinit var tracking_id:String
 
     val polylines:MutableList<LatLng> = mutableListOf()
 
-    private val mMap: GoogleMap? = null
     private var currentMarker: Marker? = null
 
     private val detailDriveHistoryViewModel: DetailDriveHistoryViewModel by viewModels()
+
+    lateinit var tv_date:TextView
+    lateinit var tv_distance:TextView
+    lateinit var tv_start_time:TextView
+    lateinit var tv_end_time:TextView
+    lateinit var tv_start_time_info:TextView
+    lateinit var tv_end_time_info:TextView
+    lateinit var tv_drive_time_info:TextView
+    lateinit var tv_drive_distance_info:TextView
+    lateinit var tv_drive_verification_info:TextView
+    lateinit var tv_high_speed_driving_percent_info:TextView
+    lateinit var tv_low_speed_driving_percent_info:TextView
+    lateinit var tv_max_speed_info:TextView
+    lateinit var tv_high_speed_average_info:TextView
+    lateinit var tv_low_speed_average_info:TextView
+    lateinit var tv_rapid_start_count:TextView
+    lateinit var tv_rapid_acc_count_info:TextView
+    lateinit var tv_rapid_stop_count_info:TextView
+    lateinit var tv_rapid_desc_count_info:TextView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,13 +75,6 @@ class DetailDriveHistoryActivity: BaseActivity() {
     }
 
     private fun init(){
-        tvTrackingId = findViewById(R.id.tv_tracking_id)
-        tvTimestamp = findViewById(R.id.tv_timestamp)
-        tvRank = findViewById(R.id.tv_rank)
-        tvDistance = findViewById(R.id.tv_distance)
-        tvTime = findViewById(R.id.tv_time)
-        tvRapid1 = findViewById(R.id.tv_rapid1)
-        tvRapid2 = findViewById(R.id.tv_rapid2)
 
         detailDriveHistoryViewModel.setDriveForApp.observe(this@DetailDriveHistoryActivity, DetailDriveHistoryViewModel.EventObserver {
             for(raw in it.gpses){
@@ -82,6 +87,29 @@ class DetailDriveHistoryActivity: BaseActivity() {
         })
         tracking_id = intent.getStringExtra("tracking_id").toString()
         detailDriveHistoryViewModel.getDrive(tracking_id)
+
+        tv_date = findViewById(R.id.tv_date)
+        tv_distance = findViewById(R.id.tv_distance)
+        tv_start_time = findViewById(R.id.tv_start_time)
+        tv_end_time = findViewById(R.id.tv_end_time)
+        tv_start_time_info = findViewById(R.id.tv_start_time_info)
+        tv_end_time_info = findViewById(R.id.tv_end_time_info)
+        tv_drive_time_info = findViewById(R.id.tv_drive_time_info)
+        tv_drive_distance_info = findViewById(R.id.tv_drive_distance_info)
+        tv_drive_verification_info = findViewById(R.id.tv_drive_verification_info)
+        tv_high_speed_driving_percent_info = findViewById(R.id.tv_high_speed_driving_percent_info)
+        tv_low_speed_driving_percent_info = findViewById(R.id.tv_low_speed_driving_percent_info)
+        tv_max_speed_info = findViewById(R.id.tv_max_speed_info)
+        tv_low_speed_average_info = findViewById(R.id.tv_low_speed_average_info)
+        tv_high_speed_average_info = findViewById(R.id.tv_high_speed_average_info)
+        tv_rapid_start_count = findViewById(R.id.tv_rapid_start_count)
+        tv_rapid_acc_count_info = findViewById(R.id.tv_rapid_acc_count_info)
+        tv_rapid_stop_count_info = findViewById(R.id.tv_rapid_stop_count_info)
+        tv_rapid_desc_count_info = findViewById(R.id.tv_rapid_desc_count_info)
+
+
+
+
     }
 
     private fun getDateFromTimeStamp(timeStamp:Long) : String{
@@ -195,15 +223,33 @@ class DetailDriveHistoryActivity: BaseActivity() {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200){
                     val getDrivingInfoResponse = Gson().fromJson(response.body()?.string(), GetDrivingInfoResponse::class.java)
-                    Log.d("testestestestset","teststeststset :: totalTime " + getDrivingInfoResponse.totalTime)
-                    Log.d("testestestestset","teststeststset :: totalDistance " + getDrivingInfoResponse.totalDistance)
-                    Log.d("testestestestset","teststeststset :: optimalDrivingDistance" + getDrivingInfoResponse.optimalDrivingDistance)
-                    Log.d("testestestestset","teststeststset :: lowSpeedDrivingDistancePercentage " + getDrivingInfoResponse.lowSpeedDrivingDistancePercentage)
-                    Log.d("testestestestset","teststeststset :: lowSpeedDrivingMaxSpeed " + getDrivingInfoResponse.lowSpeedDrivingMaxSpeed)
-                    Log.d("testestestestset","teststeststset :: averageSpeed " + getDrivingInfoResponse.averageSpeed)
-                    Log.d("testestestestset","teststeststset :: lowSpeedDrivingDistancePercentage " + getDrivingInfoResponse.lowSpeedDrivingDistancePercentage)
-                    Log.d("testestestestset","teststeststset :: startTime " + getDrivingInfoResponse.startTime)
-                    Log.d("testestestestset","teststeststset :: optimalDrivingPercentage " + getDrivingInfoResponse.optimalDrivingPercentage)
+
+                    tv_date.text = getDrivingInfoResponse.createdAt
+                    tv_distance.text = (getDrivingInfoResponse.totalDistance/1000).toString() + "km"
+                    tv_start_time.text = getDrivingInfoResponse.startTime
+                    tv_end_time.text = getDrivingInfoResponse.endTime
+                    tv_start_time_info.text = getDrivingInfoResponse.startTime
+                    tv_end_time_info.text = getDrivingInfoResponse.endTime
+                    tv_drive_time_info.text = getDrivingInfoResponse.totalTime.toString()
+                    tv_drive_distance_info.text = getDrivingInfoResponse.totalDistance.toString()
+                    tv_drive_verification_info.text = ""
+                    tv_high_speed_driving_percent_info.text = getDrivingInfoResponse.highSpeedDrivingDistancePercentage.toString()
+                    tv_low_speed_driving_percent_info.text = getDrivingInfoResponse.lowSpeedDrivingDistancePercentage.toString()
+                    tv_max_speed_info.text = getDrivingInfoResponse.maxSpeed.toString()
+                    tv_high_speed_average_info.text = getDrivingInfoResponse.highSpeedDrivingAverageSpeed.toString()
+                    tv_low_speed_average_info.text = getDrivingInfoResponse.lowSpeedDrivingAverageSpeed.toString()
+                    tv_rapid_start_count.text = getDrivingInfoResponse.rapidStartCount.toString()
+                    tv_rapid_acc_count_info.text = getDrivingInfoResponse.rapidAccelerationCount.toString()
+                    tv_rapid_stop_count_info.text = getDrivingInfoResponse.rapidStopCount.toString()
+                    tv_rapid_desc_count_info.text = getDrivingInfoResponse.rapidDecelerationCount.toString()
+
+
+
+
+
+
+
+
                 }
             }
 
@@ -212,5 +258,16 @@ class DetailDriveHistoryActivity: BaseActivity() {
             }
 
         })
+    }
+
+    fun formatIsoToKorean(isoDate: String): String {
+        // ISO 8601 형식의 날짜 문자열을 ZonedDateTime 객체로 변환
+        val zonedDateTime = ZonedDateTime.parse(isoDate)
+
+        // 원하는 형식의 DateTimeFormatter 생성
+        val formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분 ss초", Locale.KOREAN)
+
+        // 포맷된 문자열 반환
+        return zonedDateTime.format(formatter)
     }
 }
