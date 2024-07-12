@@ -89,6 +89,8 @@ class MyPageActivity:BaseActivity() {
             PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.OAUTH_PROVIDER, "")
             PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.ID_TOKEN, "")
             PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
+            PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.USER_CARID, "")
+
             startActivity(Intent(this@MyPageActivity, LoginActivity::class.java))
             finish()
         }

@@ -1,23 +1,22 @@
 package com.charancha.drive.viewmodel
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.charancha.drive.room.database.DriveDatabase
-import com.charancha.drive.room.entity.Drive
+import com.charancha.drive.room.entity.DriveForApp
 import kotlinx.coroutines.launch
 
 class DetailDriveHistoryViewModel: ViewModel() {
     lateinit var context: Context
 
-    private val _setAllDriveDate = MutableLiveData<Event<MutableList<Drive>>>()
-    val setAllDriveDate: MutableLiveData<Event<MutableList<Drive>>> get() = _setAllDriveDate
+    private val _setAllDriveDateForApp = MutableLiveData<Event<MutableList<DriveForApp>>>()
+    val setAllDriveDateForApp: MutableLiveData<Event<MutableList<DriveForApp>>> get() = _setAllDriveDateForApp
 
-    private val _setDrive = MutableLiveData<Event<Drive>>()
-    val setDrive: MutableLiveData<Event<Drive>> get() = _setDrive
+    private val _setDriveForApp = MutableLiveData<Event<DriveForApp>>()
+    val setDriveForApp: MutableLiveData<Event<DriveForApp>> get() = _setDriveForApp
 
     fun init(context:Context){
         this.context = context
@@ -25,8 +24,8 @@ class DetailDriveHistoryViewModel: ViewModel() {
     fun getAllDrive(){
         viewModelScope.launch {
             val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(context)
-            driveDatabase.driveDao().allDrive?.let {
-                setAllDriveDate.value = Event(it.toMutableList())
+            driveDatabase.driveDao().allDriveForApp?.let {
+                setAllDriveDateForApp.value = Event(it.toMutableList())
             }
         }
     }
@@ -35,7 +34,7 @@ class DetailDriveHistoryViewModel: ViewModel() {
         viewModelScope.launch {
             val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(context)
             driveDatabase.driveDao().getDriveByTrackingId(trackingId)?.let {
-                setDrive.value = Event(it)
+                setDriveForApp.value = Event(it)
             }
         }
     }

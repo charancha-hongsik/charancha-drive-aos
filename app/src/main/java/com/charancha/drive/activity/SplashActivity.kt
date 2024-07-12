@@ -183,6 +183,7 @@ class SplashActivity: BaseActivity() {
                             PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.OAUTH_PROVIDER, "")
                             PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.ID_TOKEN, "")
                             PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
+                            PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.USER_CARID, "")
 
                             startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
                             finish()

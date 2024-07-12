@@ -1,5 +1,4 @@
 package com.charancha.drive.retrofit.response
-
 data class GetMyCarInfoResponse (
     val id:String,
     val createdAt:String,

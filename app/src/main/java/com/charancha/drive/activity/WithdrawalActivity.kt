@@ -50,7 +50,6 @@ class WithdrawalActivity:BaseActivity() {
                         response: Response<ResponseBody>
                     ) {
                         if(response.code() == 200){
-                            Log.d("testestesest","testsetsetes :: 회원탈퇴")
                             PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.ACCESS_TOKEN, "")
                             PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.REFRESH_TOKEN, "")
                             PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.EXPIRES_IN, "")
@@ -61,6 +60,7 @@ class WithdrawalActivity:BaseActivity() {
                             PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.OAUTH_PROVIDER, "")
                             PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.ID_TOKEN, "")
                             PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
+                            PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.USER_CARID, "")
                             startActivity(Intent(this@WithdrawalActivity, LoginActivity::class.java))
                             finish()
                         }

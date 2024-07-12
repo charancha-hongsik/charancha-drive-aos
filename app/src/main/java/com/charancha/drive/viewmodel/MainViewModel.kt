@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.charancha.drive.room.dao.DriveDao
+import com.charancha.drive.room.dao.DriveForAppDao
 import com.charancha.drive.room.database.DriveDatabase
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -19,7 +19,7 @@ class MainViewModel: ViewModel() {
     fun getAllDrive(){
         viewModelScope.launch {
             val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(context)
-            driveDatabase.driveDao().allDrive?.let {
+            driveDatabase.driveDao().allDriveForApp?.let {
                 for(drive in it)
                     Log.d("testestestest","testsetsetset drive :: " + drive.toString())
             }
@@ -34,12 +34,12 @@ class MainViewModel: ViewModel() {
 
     }
 
-    fun getAllFloatList(driveDao: DriveDao): List<List<Float>> {
+    fun getAllFloatList(driveForAppDao: DriveForAppDao): List<List<Float>> {
         val gson = Gson()
         val listType = object : TypeToken<List<Float>>() {}.type
 
         // JSON 문자열 리스트를 가져옵니다.
-        val jsonStringList = driveDao.getAllDistanceArrays(1716446441000, 1716446461000)
+        val jsonStringList = driveForAppDao.getAllDistanceArrays(1716446441000, 1716446461000)
 
         // JSON 문자열 리스트를 List<List<Float>>로 변환합니다.
         return jsonStringList.map { jsonString ->

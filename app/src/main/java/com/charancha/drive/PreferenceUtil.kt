@@ -20,7 +20,7 @@ object PreferenceUtil {
 
 
     /**
-     * 로그인 토큰 관련
+     * 로그인 및 로그아웃 시 처리 필요
      */
     val ACCESS_TOKEN = "access_token"
     val REFRESH_TOKEN = "refresh_token"
@@ -32,6 +32,7 @@ object PreferenceUtil {
     val OAUTH_PROVIDER = "oauthProvider"
     val ID_TOKEN = "idToken"
     val ACCOUNT_ADDRESS = "accountAddress"
+    val USER_CARID = "user_carid"
 
 
 

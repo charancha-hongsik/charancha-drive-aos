@@ -25,7 +25,7 @@ class MyDriveHistoryActivity: AppCompatActivity() {
         historyViewModel.init(applicationContext)
 
 
-        historyViewModel.setAllDriveDate.observe(this@MyDriveHistoryActivity, MyDriveHistoryViewModel.EventObserver {
+        historyViewModel.setAllDriveDateForApp.observe(this@MyDriveHistoryActivity, MyDriveHistoryViewModel.EventObserver {
             var id_list:MutableList<String> = mutableListOf()
                 for(drive in it) {
                     id_list.add(

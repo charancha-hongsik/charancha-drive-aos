@@ -93,6 +93,7 @@ class TermsOfUseActivity: BaseActivity() {
         PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.OAUTH_PROVIDER, "")
         PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.ID_TOKEN, "")
         PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
+        PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.USER_CARID, "")
         super.onBackPressed()
     }
 
@@ -153,6 +154,7 @@ class TermsOfUseActivity: BaseActivity() {
             PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.OAUTH_PROVIDER, "")
             PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.ID_TOKEN, "")
             PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
+            PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.USER_CARID, "")
             startActivity(Intent(this@TermsOfUseActivity, LoginActivity::class.java))
             finish()
         }

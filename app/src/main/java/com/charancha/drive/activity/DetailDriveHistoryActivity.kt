@@ -4,7 +4,6 @@ import android.animation.ValueAnimator
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.animation.LinearInterpolator
 import android.widget.TextView
 import androidx.activity.viewModels
@@ -60,7 +59,7 @@ class DetailDriveHistoryActivity: AppCompatActivity() {
         tvRapid1 = findViewById(R.id.tv_rapid1)
         tvRapid2 = findViewById(R.id.tv_rapid2)
 
-        detailDriveHistoryViewModel.setDrive.observe(this@DetailDriveHistoryActivity, DetailDriveHistoryViewModel.EventObserver {
+        detailDriveHistoryViewModel.setDriveForApp.observe(this@DetailDriveHistoryActivity, DetailDriveHistoryViewModel.EventObserver {
             for(raw in it.jsonData){
                 polylines.add(LatLng(raw.latitude,raw.longtitude))
             }

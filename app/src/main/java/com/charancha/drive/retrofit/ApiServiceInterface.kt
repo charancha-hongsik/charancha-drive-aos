@@ -8,7 +8,7 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface ApiServiceInterface {
-    @POST("api/v1/driving")
+    @POST("api/v1/cars/user-cars/drivings")
     fun postDrivingInfo(@Body body: RequestBody): Call<ResponseBody>
 
     @POST("api/v1/auth/signup")

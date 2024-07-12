@@ -15,24 +15,19 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
-import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
-import android.provider.Settings
-import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.work.*
-import com.charancha.drive.BuildConfig
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.retrofit.ApiServiceInterface
 import com.charancha.drive.retrofit.HeaderInterceptor
+import com.charancha.drive.retrofit.request.PostDrivingInfoRequest
+import com.charancha.drive.retrofit.response.PostDrivingInfoResponse
 import com.charancha.drive.room.database.DriveDatabase
-import com.charancha.drive.room.dto.DriveDto
-import com.charancha.drive.room.dto.DriveDtoForApi
-import com.charancha.drive.room.dto.EachGpsDto
-import com.charancha.drive.room.dto.EachGpsDtoForApi
-import com.charancha.drive.room.entity.Drive
+import com.charancha.drive.room.dto.*
+import com.charancha.drive.room.entity.DriveForApp
 import com.charancha.drive.room.entity.DriveForApi
 import com.google.android.gms.location.*
 import com.google.gson.Gson
@@ -107,25 +102,8 @@ class BluetoothService : Service() {
      */
 
     var distance_array = MutableList(24) { 0f } // 24개 시간대의 distance
-    var sudden_deceleration_array = MutableList(24) { 0 } // 24개 시간대의 sudden_deceleration 갯수
-    var sudden_stop_array = MutableList(24) { 0 } // 24개 시간대의 sudden_stop 갯수
-    var sudden_acceleration_array = MutableList(24) { 0 }// 24개 시간대의 sudden_acceleration 갯수
-    var sudden_start_array= MutableList(24) { 0 }  // 24개 시간대의 sudden_start 갯수
-    var high_speed_driving_array = MutableList(24) { 0f } // 24개 시간대의 high_speed_driving 거리
-    var low_speed_driving_array = MutableList(24) { 0f } // 24개 시간대의 low_speed_driving 거리
-    var constant_speed_driving_array = MutableList(24) { 0f } // 24개 시간대의 constant_speed_driving 거리
-    var harsh_driving_array = MutableList(24) { 0f } // 24개 시간대의 harsh_driving 거리
-    var sumSuddenDecelerationDistance = 0f
-
-    var constantList1 = MutableList(24) {0f}
-    var constantList2 = MutableList(24) {0f}
-    var constantList3 = MutableList(24) {0f}
-    var constantList4 = MutableList(24) {0f}
-    var constantList5 = MutableList(24) {0f}
-    var firstConstantTimeStamp = 0L
 
     private var sensorState:Boolean = false
-
     private var driveDatabase: DriveDatabase? = null
 
     private var fusedLocationClient :FusedLocationProviderClient? = null
@@ -142,22 +120,10 @@ class BluetoothService : Service() {
     /**
      * 위치 센서
      */
-    private val distanceBetween = FloatArray(3)
     private var pastLocation: Location? = null
     private var firstLineLocation: Location? = null
     private var pastSpeed: Float = 0f
     private var pastTimeStamp = 0L
-
-    /**
-     * textFile 저장 용도
-     */
-    private var speedInfoFromGps: String = ""
-    private var distanceInfoFromGps: String = ""
-    private var distanceToInfoFromGps: String = ""
-    private var pathLocationInfoFromGps: String = ""
-    private var altitudeInfoFromGps: String = ""
-    private var accelerationInfo: String = ""
-
 
 
     private var INTERVAL = 1000L
@@ -175,12 +141,12 @@ class BluetoothService : Service() {
     /**
      * room 데이터
      */
-    lateinit var driveDto: DriveDto
-    lateinit var gpsInfo: MutableList<EachGpsDto>
-    lateinit var driveDtoForApi: DriveDtoForApi
+    lateinit var driveForApp: DriveForApp
+    lateinit var gpsInfoForApp: MutableList<EachGpsDtoForApp>
+
+    lateinit var driveForApi: DriveForApi
     lateinit var gpsInfoForApi: MutableList<EachGpsDtoForApi>
-    private var maxSpeed: Float = 0f
-    private var distanceSum: Float = 0f
+
     private var startTimeStamp: Long = 0L
 
     /**
@@ -230,11 +196,6 @@ class BluetoothService : Service() {
             sensorState = false
 
             scheduleWalkingDetectWork()
-            scheduleWalkingDetectWork2()
-            scheduleWalkingDetectWork3()
-            scheduleWalkingDetectWork4()
-            scheduleWalkingDetectWork5()
-            scheduleWalkingDetectWork6()
         }
 
         return START_REDELIVER_INTENT
@@ -276,131 +237,7 @@ class BluetoothService : Service() {
         }
     }
 
-    private fun scheduleWalkingDetectWork2() {
-        try {
-            val workRequest = PeriodicWorkRequest.Builder(
-                WalkingDetectWorker2::class.java,
-                15, TimeUnit.MINUTES
-            ).setInitialDelay(3,TimeUnit.MINUTES).build()
 
-            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                "WalkingDetectWorker2",
-                ExistingPeriodicWorkPolicy.REPLACE,
-                workRequest
-            )
-
-
-        }catch (e:Exception){
-
-        }
-    }
-
-
-    private fun scheduleWalkingDetectWork3() {
-        try {
-            val workRequest = PeriodicWorkRequest.Builder(
-                WalkingDetectWorker3::class.java,
-                15, TimeUnit.MINUTES
-            ).setInitialDelay(6,TimeUnit.MINUTES).build()
-
-            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                "WalkingDetectWorker3",
-                ExistingPeriodicWorkPolicy.REPLACE,
-                workRequest
-            )
-
-        }catch (e:Exception){
-
-        }
-    }
-
-    private fun scheduleWalkingDetectWork4() {
-        try {
-            val workRequest = PeriodicWorkRequest.Builder(
-                WalkingDetectWorker4::class.java,
-                15, TimeUnit.MINUTES
-            ).setInitialDelay(9,TimeUnit.MINUTES).build()
-
-            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                "WalkingDetectWorker4",
-                ExistingPeriodicWorkPolicy.REPLACE,
-                workRequest
-            )
-        }catch (e:Exception){
-
-        }
-    }
-
-    private fun scheduleWalkingDetectWork5() {
-        try {
-            val workRequest = PeriodicWorkRequest.Builder(
-                WalkingDetectWorker5::class.java,
-                15, TimeUnit.MINUTES
-            ).setInitialDelay(12,TimeUnit.MINUTES).build()
-
-            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                "WalkingDetectWorker5",
-                ExistingPeriodicWorkPolicy.REPLACE,
-                workRequest
-            )
-
-        }catch (e:Exception){
-
-        }
-    }
-
-    private fun scheduleWalkingDetectWork6() {
-        try {
-            val workRequest = PeriodicWorkRequest.Builder(
-                WalkingDetectWorker6::class.java,
-                15, TimeUnit.MINUTES
-            ).build()
-
-            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                "WalkingDetectWork6",
-                ExistingPeriodicWorkPolicy.REPLACE,
-                workRequest
-            )
-
-
-        }catch (e:Exception){
-
-        }
-    }
-
-    class WalkingDetectWorker6(context: Context, params: WorkerParameters) : Worker(context, params) {
-
-        private val activityRecognitionClient: ActivityRecognitionClient = ActivityRecognition.getClient(context)
-
-        override fun doWork(): Result {
-            requestActivityUpdates()
-
-            return Result.success()
-        }
-
-        private fun requestActivityUpdates() {
-            val intent = Intent(TRANSITIONS_RECEIVER_ACTION2)
-            var flag = FLAG_UPDATE_CURRENT
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                flag = FLAG_MUTABLE
-            }
-            val pendingIntent = getBroadcast(
-                applicationContext,
-                0,
-                intent,
-                flag
-            )
-
-            // 1분 간격으로 활동 업데이트 요청
-            activityRecognitionClient.requestActivityUpdates(60000, pendingIntent)
-                .addOnSuccessListener {
-                    Log.d("ActivityRecognition", "Activity updates registered")
-                }
-                .addOnFailureListener {
-                    Log.d("ActivityRecognition", "Failed to register for activity updates")
-                }
-        }
-    }
 
     class WalkingDetectWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
 
@@ -475,319 +312,12 @@ class BluetoothService : Service() {
         }
     }
 
-
-    class WalkingDetectWorker2(context: Context, params: WorkerParameters) : Worker(context, params) {
-
-        private val activityRecognitionClient: ActivityRecognitionClient = ActivityRecognition.getClient(context)
-
-        override fun doWork(): Result {
-            requestActivityUpdates()
-
-            return Result.success()
-        }
-
-        private fun requestActivityUpdates() {
-            val transitions = listOf(
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.WALKING)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.WALKING)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.IN_VEHICLE)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.IN_VEHICLE)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.STILL)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.STILL)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.ON_BICYCLE)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.RUNNING)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.ON_FOOT)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build()
-            )
-
-            val request = ActivityTransitionRequest(transitions)
-
-            val intent = Intent(TRANSITIONS_RECEIVER_ACTION)
-            var flag = FLAG_UPDATE_CURRENT
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                flag = FLAG_MUTABLE
-            }
-            val pendingIntent = getBroadcast(
-                applicationContext,
-                0,
-                intent,
-                flag
-            )
-
-            activityRecognitionClient.requestActivityTransitionUpdates(request, pendingIntent)
-                .addOnSuccessListener {
-                }
-                .addOnFailureListener {
-                }
-        }
-    }
-
-
-    class WalkingDetectWorker3(context: Context, params: WorkerParameters) : Worker(context, params) {
-
-        private val activityRecognitionClient: ActivityRecognitionClient = ActivityRecognition.getClient(context)
-
-        override fun doWork(): Result {
-            requestActivityUpdates()
-
-            return Result.success()
-        }
-
-        private fun requestActivityUpdates() {
-            val transitions = listOf(
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.WALKING)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.WALKING)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.IN_VEHICLE)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.IN_VEHICLE)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.STILL)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.STILL)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.ON_BICYCLE)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.RUNNING)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.ON_FOOT)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build()
-            )
-
-            val request = ActivityTransitionRequest(transitions)
-
-            val intent = Intent(TRANSITIONS_RECEIVER_ACTION)
-            var flag = FLAG_UPDATE_CURRENT
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                flag = FLAG_MUTABLE
-            }
-            val pendingIntent = getBroadcast(
-                applicationContext,
-                0,
-                intent,
-                flag
-            )
-
-            activityRecognitionClient.requestActivityTransitionUpdates(request, pendingIntent)
-                .addOnSuccessListener {
-                }
-                .addOnFailureListener {
-                }
-        }
-    }
-    class WalkingDetectWorker4(context: Context, params: WorkerParameters) : Worker(context, params) {
-
-        private val activityRecognitionClient: ActivityRecognitionClient = ActivityRecognition.getClient(context)
-
-        override fun doWork(): Result {
-            requestActivityUpdates()
-
-            return Result.success()
-        }
-
-        private fun requestActivityUpdates() {
-            val transitions = listOf(
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.WALKING)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.WALKING)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.IN_VEHICLE)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.IN_VEHICLE)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.STILL)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.STILL)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.ON_BICYCLE)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.RUNNING)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.ON_FOOT)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build()
-            )
-
-            val request = ActivityTransitionRequest(transitions)
-
-            val intent = Intent(TRANSITIONS_RECEIVER_ACTION)
-            var flag = FLAG_UPDATE_CURRENT
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                flag = FLAG_MUTABLE
-            }
-            val pendingIntent = getBroadcast(
-                applicationContext,
-                0,
-                intent,
-                flag
-            )
-
-            activityRecognitionClient.requestActivityTransitionUpdates(request, pendingIntent)
-                .addOnSuccessListener {
-                }
-                .addOnFailureListener {
-                }
-        }
-    }
-
-    class WalkingDetectWorker5(context: Context, params: WorkerParameters) : Worker(context, params) {
-
-        private val activityRecognitionClient: ActivityRecognitionClient = ActivityRecognition.getClient(context)
-
-        override fun doWork(): Result {
-            requestActivityUpdates()
-
-
-            return Result.success()
-        }
-
-
-
-        private fun requestActivityUpdates() {
-            val transitions = listOf(
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.WALKING)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.WALKING)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.IN_VEHICLE)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.IN_VEHICLE)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.STILL)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.STILL)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.ON_BICYCLE)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.RUNNING)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.ON_FOOT)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build()
-            )
-
-            val request = ActivityTransitionRequest(transitions)
-
-            val intent = Intent(TRANSITIONS_RECEIVER_ACTION)
-            var flag = FLAG_UPDATE_CURRENT
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                flag = FLAG_MUTABLE
-            }
-            val pendingIntent = getBroadcast(
-                applicationContext,
-                0,
-                intent,
-                flag
-            )
-
-            activityRecognitionClient.requestActivityTransitionUpdates(request, pendingIntent)
-                .addOnSuccessListener {
-                }
-                .addOnFailureListener {
-                }
-        }
-    }
-
-
-
     fun refreshNotiText(){
         if(sensorState) {
             if (distance_array.isNotEmpty() && distance_array.sum() > 500f) {
                 (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(
                     1,
-                    notification.setContentText("주행 중..($distanceSum m) " + getCurrent()).build()
-                )
-            }
-        }
-        else
-            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중이에요.").build())
-    }
-
-    fun refreshNotiText(event:String){
-        if(sensorState) {
-            if (distance_array.isNotEmpty() && distance_array.sum() > 500f) {
-                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(
-                    1,
-                    notification.setContentText("주행 중..($distanceSum m) " + getCurrent()).build()
+                    notification.setContentText("주행 중..(${distance_array.sum()} m) " + getCurrent()).build()
                 )
             }
         }
@@ -811,21 +341,11 @@ class BluetoothService : Service() {
                 // Walking 활동에 들어감
                 if(sensorState){
                     scheduleWalkingDetectWork()
-                    scheduleWalkingDetectWork2()
-                    scheduleWalkingDetectWork3()
-                    scheduleWalkingDetectWork4()
-                    scheduleWalkingDetectWork5()
-                    scheduleWalkingDetectWork6()
                 }
             } else if(activity.type == DetectedActivity.IN_VEHICLE){
                 // Vehicle 활동에 들어감
                 if(!sensorState){
                     scheduleWalkingDetectWork()
-                    scheduleWalkingDetectWork2()
-                    scheduleWalkingDetectWork3()
-                    scheduleWalkingDetectWork4()
-                    scheduleWalkingDetectWork5()
-                    scheduleWalkingDetectWork6()
                 }
 
             }
@@ -850,10 +370,6 @@ class BluetoothService : Service() {
                                 // Walking 활동에 들어감
                                 if(sensorState){
                                     scheduleWalkingDetectWork()
-                                    scheduleWalkingDetectWork2()
-                                    scheduleWalkingDetectWork3()
-                                    scheduleWalkingDetectWork4()
-                                    scheduleWalkingDetectWork5()
 
                                     stopSensor()
 
@@ -864,11 +380,7 @@ class BluetoothService : Service() {
                                 // Vehicle 활동에 들어감
                                 if(!sensorState){
                                     scheduleWalkingDetectWork()
-                                    scheduleWalkingDetectWork2()
-                                    scheduleWalkingDetectWork3()
-                                    scheduleWalkingDetectWork4()
-                                    scheduleWalkingDetectWork5()
-                                    scheduleWalkingDetectWork6()
+
                                 }
                                 startSensor(L1)
                             }
@@ -929,8 +441,10 @@ class BluetoothService : Service() {
                 initDriveData(level)
                 setLocation()
 
-                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 중..($distanceSum m)").build())
-
+                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(
+                    1,
+                    notification.setContentText("주행 중..(${distance_array.sum()} m) " + getCurrent()).build()
+                )
             }
         } catch(e:Exception){
 
@@ -953,7 +467,6 @@ class BluetoothService : Service() {
                     pastMaxDistance = mutableListOf()
 
                     if(distance_array.sum() > 500f){
-                        writeToRoom()
                         callApi()
                     }
 
@@ -976,7 +489,6 @@ class BluetoothService : Service() {
                 pastMaxDistance = mutableListOf()
 
                 if(distance_array.sum() > 500f){
-                    writeToRoom()
                     callApi()
                 }
 
@@ -989,88 +501,30 @@ class BluetoothService : Service() {
         }
     }
 
-    fun stopSensorNotSave(){
-        try {
-            if (sensorState) {
-                sensorState = false
-                firstLineState = false
-                firstLineLocation = null
-                firstLocation = null
-                maxDistance = mutableListOf()
-                pastMaxDistance = mutableListOf()
-
-                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중이에요.").build())
-
-                fusedLocationClient?.removeLocationUpdates(locationCallback)
-                fusedLocationClient = null
-
-            }
-        }catch(e:Exception){
-        }
-    }
-
     private fun initDriveData(level:String){
 
         val format = SimpleDateFormat("yyyyMMddHHmmss")
         format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
-        val time = Date()
-
-        speedInfoFromGps = ""
-        distanceInfoFromGps = ""
-        distanceToInfoFromGps = ""
-        pathLocationInfoFromGps = ""
-        altitudeInfoFromGps = ""
-        accelerationInfo = ""
 
         distance_array = MutableList(24) { 0f } // 23개 시간대의 distance
-        sudden_deceleration_array = MutableList(24) { 0 } // 23개 시간대의 sudden_deceleration 갯수
-        sudden_stop_array = MutableList(24) { 0 } // 23개 시간대의 sudden_stop 갯수
-        sudden_acceleration_array = MutableList(24) { 0 }// 23개 시간대의 sudden_acceleration 갯수
-        sudden_start_array = MutableList(24) { 0 }  // 23개 시간대의 sudden_start 갯수
-        high_speed_driving_array = MutableList(24) { 0f } // 23개 시간대의 high_speed_driving 거리
-        low_speed_driving_array = MutableList(24) { 0f } // 23개 시간대의 low_speed_driving 거리
-        constant_speed_driving_array = MutableList(24) { 0f } // 23개 시간대의 constant_speed_driving 거리
-        harsh_driving_array = MutableList(24) { 0f } // 23개 시간대의 harsh_driving 거리
-        sumSuddenDecelerationDistance = 0f
 
-        constantList1 = MutableList(24) {0f}
-        constantList2 = MutableList(24) {0f}
-        constantList3 = MutableList(24) {0f}
-        constantList4 = MutableList(24) {0f}
-        constantList5 = MutableList(24) {0f}
-        firstConstantTimeStamp = 0L
-
-        maxSpeed = 0f
-        distanceSum = 0f
         startTimeStamp = System.currentTimeMillis()
-        gpsInfo = mutableListOf()
-        gpsInfoForApi = mutableListOf()
-        driveDto = DriveDto(
-            format.format(time).toString(),
-            startTimeStamp,
-            level,
-            listOf(),0L, listOf(),
-            listOf(),
-            listOf(),
-            listOf(),
-            listOf(),
-            listOf(),
-            listOf(),
-            listOf(),
-            0f,
-            gpsInfo)
 
-        driveDtoForApi = DriveDtoForApi(
-            manufacturer = Build.MANUFACTURER,
-            version = Build.VERSION.RELEASE,
-            deviceModel = Build.MODEL,
-            deviceUuid = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID),
-            username = PreferenceUtil.getPref(this, PreferenceUtil.USER_NAME, "")!!,
-            trackingId = format.format(time).toString(),
+
+        gpsInfoForApp = mutableListOf()
+        driveForApp = DriveForApp(
+            "",
+            startTimeStamp,
+            gpsInfoForApp)
+
+
+        gpsInfoForApi = mutableListOf()
+        driveForApi = DriveForApi(
+            tracking_id = PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!! + startTimeStamp,
+            userCarId = PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
             startTimestamp = startTimeStamp,
             endTimestamp = 0L,
             verification = level,
-            appVersion = BuildConfig.VERSION_NAME,
             gpses = gpsInfoForApi,
         )
     }
@@ -1154,12 +608,6 @@ class BluetoothService : Service() {
                 if(location.speed*MS_TO_KH > 30f){
                     if(!sensorState){
                         scheduleWalkingDetectWork()
-                        scheduleWalkingDetectWork2()
-                        scheduleWalkingDetectWork3()
-                        scheduleWalkingDetectWork4()
-                        scheduleWalkingDetectWork5()
-                        scheduleWalkingDetectWork6()
-                        startSensor(L1)
                     }
                 }
             }
@@ -1324,13 +772,6 @@ class BluetoothService : Service() {
             }
         }
 
-        // 1717370784111
-        // 1717370780111
-
-        getAltitude(location)
-        getPathLocation(location)
-        getSpeed(location)
-
         var distance = 0f
         if(pastLocation != null){
             distance = pastLocation!!.distanceTo(location)
@@ -1340,7 +781,7 @@ class BluetoothService : Service() {
         val acceleration = (location.speed * MS_TO_KH) - (pastSpeed * MS_TO_KH)
 
 
-        gpsInfo.add(EachGpsDto(timeStamp, location.latitude, location.longitude, String.format("%.2f",location.speed * MS_TO_KH).toFloat(),String.format("%.2f",distance).toFloat(),String.format("%.2f", location.altitude).toDouble(), String.format("%.2f",(location.speed * MS_TO_KH) - (pastSpeed * MS_TO_KH)).toFloat()))
+        gpsInfoForApp.add(EachGpsDtoForApp(timeStamp, location.latitude, location.longitude, String.format("%.2f", location.altitude).toDouble()))
         gpsInfoForApi.add(EachGpsDtoForApi(timeStamp, String.format("%.2f",speed).toFloat() ,String.format("%.2f",distance).toFloat(),String.format("%.2f", location.altitude).toDouble(), String.format("%.2f",acceleration).toFloat()))
 
 
@@ -1378,98 +819,30 @@ class BluetoothService : Service() {
         pastLocation = location
     }
 
-    /**
-     * SpeedFromGps
-     */
-    private fun getSpeed(location: Location) {
-        speedInfoFromGps =
-            speedInfoFromGps + getCurrent() + "," + (location.speed*MS_TO_KH) + "\n"
 
-        if(maxSpeed < location.speed*MS_TO_KH){
-            maxSpeed = location.speed*MS_TO_KH
-        }
-
-        accelerationInfo =
-            accelerationInfo + getCurrent() + "," + ((location.speed*MS_TO_KH) - (pastSpeed*MS_TO_KH)) + "\n"
-    }
-
-    /**
-     * pathLocationInfoFromGps
-     */
-    private fun getPathLocation(location: Location) {
-        pathLocationInfoFromGps =
-            pathLocationInfoFromGps + getCurrent() + "," + location.latitude + "," + location.longitude + "\n"
-
-        if(pastLocation != null){
-            Location.distanceBetween(location.latitude, location.longitude, pastLocation!!.latitude, pastLocation!!.longitude, distanceBetween)
-            val distanceTo: Float = pastLocation!!.distanceTo(location)
-
-            distanceInfoFromGps =
-                distanceInfoFromGps + getCurrent() + "," + distanceBetween[0] + "\n"
-
-            distanceToInfoFromGps =
-                distanceToInfoFromGps + getCurrent() + "," + distanceTo + "\n"
-
-            distanceSum += distanceBetween[0]
-        }
-    }
-
-
-    private fun getAltitude(location: Location) {
-        altitudeInfoFromGps =
-            altitudeInfoFromGps + getCurrent() + "," + location.altitude + "\n"
-    }
-
-    fun writeToRoom(){
+    fun writeToRoomForApp(trackingId:String){
         Executors.newSingleThreadExecutor().execute{
             try {
-                driveDto.jsonData = gpsInfo
-                driveDto.time = System.currentTimeMillis() - startTimeStamp
-
-                val drive = Drive(
-                    driveDto.tracking_id,
-                    driveDto.timeStamp,
-                    driveDto.verification,
-                    distance_array.toList(),
-                    driveDto.time,
-                    sudden_deceleration_array.toList(),
-                    sudden_stop_array.toList(),
-                    sudden_acceleration_array.toList(),
-                    sudden_start_array.toList(),
-                    high_speed_driving_array.toList(),
-                    low_speed_driving_array.toList(),
-                    constant_speed_driving_array.toList(),
-                    harsh_driving_array.toList(),
-                    sumSuddenDecelerationDistance,
-                    gpsInfo)
-
-                driveDatabase?.driveDao()?.insert(drive)
+                driveForApp.tracking_id = trackingId
+                driveDatabase?.driveForAppDao()?.insert(driveForApp)
             } catch (e:Exception){
             }
         }
     }
 
     private fun callApi(){
-        driveDtoForApi.gpses = gpsInfoForApi
-        driveDtoForApi.endTimestamp = System.currentTimeMillis()
+        driveForApi.endTimestamp = System.currentTimeMillis()
 
-        val driveForApi = DriveForApi(
-            tracking_id = driveDtoForApi.trackingId,
-            manufacturer = driveDtoForApi.manufacturer,
-            version = driveDtoForApi.version,
-            deviceModel = driveDtoForApi.deviceModel,
-            deviceUuid = driveDtoForApi.deviceUuid,
-            username = driveDtoForApi.username,
-            startTimeStamp = driveDtoForApi.startTimestamp,
-            endTimestamp = driveDtoForApi.endTimestamp,
-            verification = driveDtoForApi.verification,
-            automobile = true,
-            appVersion = driveDtoForApi.appVersion,
-            gpses = driveDtoForApi.gpses
+        val postDriveDtoForApi = PostDrivingInfoRequest(
+            userCarId=PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            startTimestamp = driveForApi.startTimestamp,
+            endTimestamp = driveForApi.endTimestamp,
+            verification = driveForApi.verification,
+            gpses = driveForApi.gpses
         )
 
         val gson = Gson()
-        val jsonParam = gson.toJson(driveDtoForApi)
+        val jsonParam = gson.toJson(postDriveDtoForApi)
 
         if (isInternetConnected(this@BluetoothService)) {
             apiService().postDrivingInfo(jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object : Callback<ResponseBody> {
@@ -1477,7 +850,10 @@ class BluetoothService : Service() {
                     call: Call<ResponseBody>,
                     response: Response<ResponseBody>
                 ) {
-                    if(response.code() != 201){
+                    if(response.code() == 201){
+                        val postDrivingInfoResponse = gson.fromJson(response.body()?.string(), PostDrivingInfoResponse::class.java)
+                        writeToRoomForApp(postDrivingInfoResponse.id)
+                    }else{
                         writeToRoomForApi(driveForApi)
                     }
                 }
@@ -1542,7 +918,7 @@ class BluetoothService : Service() {
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
             .build()
-        return Retrofit.Builder().baseUrl("http://43.201.46.37:3000/").client(client)
+        return Retrofit.Builder().baseUrl("http://43.201.46.37:3001/").client(client)
             .addConverterFactory(GsonConverterFactory.create()).build().create(
                 ApiServiceInterface::class.java
             )

@@ -25,6 +25,7 @@ import com.charancha.drive.CustomDialog
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.PreferenceUtil.HAVE_BEEN_HOME
 import com.charancha.drive.R
+import com.charancha.drive.retrofit.response.GetMyCarInfoResponse
 import com.charancha.drive.service.BluetoothService
 import com.charancha.drive.service.CallApiService
 import com.charancha.drive.viewmodel.MainViewModel
@@ -33,6 +34,13 @@ import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.lang.reflect.Type
 import java.util.*
 
 
@@ -45,7 +53,7 @@ import java.util.*
  * 5. 최근 주행 총점
  * 6.
  */
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
     lateinit var btnHistory: ImageButton
     private val mainViewModel: MainViewModel by viewModels()
 
@@ -54,9 +62,10 @@ class MainActivity : AppCompatActivity() {
     lateinit var layout_engine: ConstraintLayout
     lateinit var layout_average_distance:ConstraintLayout
     lateinit var layout_average_time:ConstraintLayout
-    lateinit var tv_car_name:TextView
     lateinit var tv_average_score_info:TextView
     lateinit var layout_recent_manage_score:ConstraintLayout
+    lateinit var tv_car_name:TextView
+    lateinit var tv_car_no:TextView
 
     var checkingPermission = false
 
@@ -237,6 +246,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         tv_car_name = findViewById(R.id.tv_car_name)
+        tv_car_no = findViewById(R.id.tv_car_no)
         layout_engine = findViewById(R.id.layout_engine)
         layout_engine.setOnClickListener {
             startActivity(Intent(this, ManageEngineActivity::class.java))
@@ -605,6 +615,61 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(this, permissions,code)
             return
         }
+    }
+
+    fun setCarInfo(){
+        apiService().getMyCarInfo("Bearer " + PreferenceUtil.getPref(this@MainActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!).enqueue(object :
+            Callback<ResponseBody> {
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+
+                if(response.code() == 200){
+                    val jsonString = response.body()?.string()
+
+                    val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
+                    val getMyCarInfoResponses:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
+
+                    if(getMyCarInfoResponses.size > 0){
+                        apiService().getCarInfoinquiryByCarId("Bearer " + PreferenceUtil.getPref(this@MainActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, getMyCarInfoResponses.get(0).id).enqueue(object :
+                            Callback<ResponseBody> {
+                            override fun onResponse(
+                                call: Call<ResponseBody>,
+                                response: Response<ResponseBody>
+                            ) {
+                                if(response.code() == 200){
+                                    val getMyCarInfoResponse = Gson().fromJson(
+                                        response.body()?.string(),
+                                        GetMyCarInfoResponse::class.java
+                                    )
+
+                                    PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.vehicleIdentificationNumber)
+                                    tv_car_name.setText(getMyCarInfoResponse.carName)
+                                    tv_car_no.setText(getMyCarInfoResponse.licensePlateNumber)
+                                }
+                            }
+
+                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+                            }
+
+                        })
+                    }else{
+
+                    }
+                }else{
+
+                }
+            }
+
+            override fun onFailure(
+                call: Call<ResponseBody>,
+                t: Throwable
+            ) {
+
+            }
+        })
     }
 
 }
