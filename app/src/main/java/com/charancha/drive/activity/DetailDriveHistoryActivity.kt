@@ -224,12 +224,12 @@ class DetailDriveHistoryActivity: BaseActivity() {
                 if(response.code() == 200){
                     val getDrivingInfoResponse = Gson().fromJson(response.body()?.string(), GetDrivingInfoResponse::class.java)
 
-                    tv_date.text = getDrivingInfoResponse.createdAt
+                    tv_date.text = transformTimeToYYYYMMDD(getDrivingInfoResponse.createdAt)
                     tv_distance.text = (getDrivingInfoResponse.totalDistance/1000).toString() + "km"
-                    tv_start_time.text = getDrivingInfoResponse.startTime
-                    tv_end_time.text = getDrivingInfoResponse.endTime
-                    tv_start_time_info.text = getDrivingInfoResponse.startTime
-                    tv_end_time_info.text = getDrivingInfoResponse.endTime
+                    tv_start_time.text = transformTimeToHHMM(getDrivingInfoResponse.startTime)
+                    tv_end_time.text = transformTimeToHHMM(getDrivingInfoResponse.endTime)
+                    tv_start_time_info.text = transformTimeToYYYYMMDDHHMMSS(getDrivingInfoResponse.startTime)
+                    tv_end_time_info.text = transformTimeToYYYYMMDDHHMMSS(getDrivingInfoResponse.endTime)
                     tv_drive_time_info.text = getDrivingInfoResponse.totalTime.toString()
                     tv_drive_distance_info.text = getDrivingInfoResponse.totalDistance.toString()
                     tv_drive_verification_info.text = ""
@@ -244,12 +244,6 @@ class DetailDriveHistoryActivity: BaseActivity() {
                     tv_rapid_desc_count_info.text = getDrivingInfoResponse.rapidDecelerationCount.toString()
 
 
-
-
-
-
-
-
                 }
             }
 
@@ -260,12 +254,45 @@ class DetailDriveHistoryActivity: BaseActivity() {
         })
     }
 
-    fun formatIsoToKorean(isoDate: String): String {
+    private fun formatIsoToKorean(isoDate: String): String {
         // ISO 8601 형식의 날짜 문자열을 ZonedDateTime 객체로 변환
         val zonedDateTime = ZonedDateTime.parse(isoDate)
 
         // 원하는 형식의 DateTimeFormatter 생성
         val formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분 ss초", Locale.KOREAN)
+
+        // 포맷된 문자열 반환
+        return zonedDateTime.format(formatter)
+    }
+
+    private fun transformTimeToYYYYMMDD(isoDate: String):String{
+        // ISO 8601 형식의 날짜 문자열을 ZonedDateTime 객체로 변환
+        val zonedDateTime = ZonedDateTime.parse(isoDate)
+
+        // 원하는 형식의 DateTimeFormatter 생성
+        val formatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일", Locale.KOREAN)
+
+        // 포맷된 문자열 반환
+        return zonedDateTime.format(formatter)
+    }
+
+    private fun transformTimeToHHMM(isoDate: String):String{
+        // ISO 8601 형식의 날짜 문자열을 ZonedDateTime 객체로 변환
+        val zonedDateTime = ZonedDateTime.parse(isoDate)
+
+        // 원하는 형식의 DateTimeFormatter 생성
+        val formatter = DateTimeFormatter.ofPattern("HH시 MM분", Locale.KOREAN)
+
+        // 포맷된 문자열 반환
+        return zonedDateTime.format(formatter)
+    }
+
+    private fun transformTimeToYYYYMMDDHHMMSS(isoDate: String):String{
+        // ISO 8601 형식의 날짜 문자열을 ZonedDateTime 객체로 변환
+        val zonedDateTime = ZonedDateTime.parse(isoDate)
+
+        // 원하는 형식의 DateTimeFormatter 생성
+        val formatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일\nHH시 MM분 ss초", Locale.KOREAN)
 
         // 포맷된 문자열 반환
         return zonedDateTime.format(formatter)
