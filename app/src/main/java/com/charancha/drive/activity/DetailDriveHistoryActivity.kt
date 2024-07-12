@@ -4,23 +4,36 @@ import android.animation.ValueAnimator
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.animation.LinearInterpolator
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
+import com.charancha.drive.retrofit.request.AgreeTermsRequest
+import com.charancha.drive.retrofit.request.GetDrivingInfoRequest
+import com.charancha.drive.retrofit.response.GetDrivingInfoResponse
+import com.charancha.drive.retrofit.response.SignInResponse
 import com.charancha.drive.viewmodel.DetailDriveHistoryViewModel
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.gson.Gson
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+import javax.security.auth.callback.Callback
 
 
-class DetailDriveHistoryActivity: AppCompatActivity() {
+class DetailDriveHistoryActivity: BaseActivity() {
     lateinit var tvTrackingId:TextView
     lateinit var tvTimestamp:TextView
     lateinit var tvRank:TextView
@@ -45,9 +58,8 @@ class DetailDriveHistoryActivity: AppCompatActivity() {
 
         detailDriveHistoryViewModel.init(applicationContext)
 
-
         init()
-
+        getDriveDetail()
     }
 
     private fun init(){
@@ -63,35 +75,6 @@ class DetailDriveHistoryActivity: AppCompatActivity() {
             for(raw in it.gpses){
                 polylines.add(LatLng(raw.latitude,raw.longtitude))
             }
-
-
-
-            /**
-             * timeStamp
-             * Verification
-             * distance
-             * time
-             * sudden_stop (count)
-             * sudden_acceleration (count)
-             * sudden_deceleration (count)
-             * sudden_start (count)
-             * high_speed_driving (m)
-             * low_speed_driving (m)
-             * constant_speed_driving (m)
-             * harsh_driving (m)
-             */
-            tvTrackingId.text = "id : " + it.tracking_id
-            tvTimestamp.text = "주행시작 : " + getDateFromTimeStamp(it.startTimestamp)
-//            tvRank.text = "랭크 : " + it.verification
-//            tvDistance.text = "주행거리(m) : " + it.distance_array.sum()
-//            tvTime.text = "주행 시간 : " + (TimeUnit.MILLISECONDS.toSeconds(it.time)/60) + "분 " + (TimeUnit.MILLISECONDS.toSeconds(it.time)%60) + "초"
-//            tvTime.text = "주행 시간 : " + (TimeUnit.MILLISECONDS.toSeconds(it.time)/60) + "분 " + (TimeUnit.MILLISECONDS.toSeconds(it.time)%60) + "초"
-//
-//
-//            var contents = ""
-//            contents = contents + "주행 종료 : " + getDateFromTimeStamp((it.timeStamp + it.time)) + "\n"
-
-//            tvRapid1.text = contents
 
             if(polylines.size != 0){
                 setMapData()
@@ -204,5 +187,30 @@ class DetailDriveHistoryActivity: AppCompatActivity() {
                 return LatLng(lat, lng)
             }
         }
+    }
+
+    private fun getDriveDetail(){
+        apiService().getDrivingInfo("Bearer " + PreferenceUtil.getPref(this@DetailDriveHistoryActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, tracking_id).enqueue(object :
+            retrofit2.Callback<ResponseBody>{
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200){
+                    val getDrivingInfoResponse = Gson().fromJson(response.body()?.string(), GetDrivingInfoResponse::class.java)
+                    Log.d("testestestestset","teststeststset :: totalTime " + getDrivingInfoResponse.totalTime)
+                    Log.d("testestestestset","teststeststset :: totalDistance " + getDrivingInfoResponse.totalDistance)
+                    Log.d("testestestestset","teststeststset :: optimalDrivingDistance" + getDrivingInfoResponse.optimalDrivingDistance)
+                    Log.d("testestestestset","teststeststset :: lowSpeedDrivingDistancePercentage " + getDrivingInfoResponse.lowSpeedDrivingDistancePercentage)
+                    Log.d("testestestestset","teststeststset :: lowSpeedDrivingMaxSpeed " + getDrivingInfoResponse.lowSpeedDrivingMaxSpeed)
+                    Log.d("testestestestset","teststeststset :: averageSpeed " + getDrivingInfoResponse.averageSpeed)
+                    Log.d("testestestestset","teststeststset :: lowSpeedDrivingDistancePercentage " + getDrivingInfoResponse.lowSpeedDrivingDistancePercentage)
+                    Log.d("testestestestset","teststeststset :: startTime " + getDrivingInfoResponse.startTime)
+                    Log.d("testestestestset","teststeststset :: optimalDrivingPercentage " + getDrivingInfoResponse.optimalDrivingPercentage)
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
     }
 }

@@ -11,6 +11,9 @@ interface ApiServiceInterface {
     @POST("api/v1/cars/user-cars/drivings")
     fun postDrivingInfo(@Header("Authorization") token: String, @Body body: RequestBody): Call<ResponseBody>
 
+    @GET("api/v1/cars/-/user-cars/-/drivings/{drivingId}")
+    fun getDrivingInfo(@Header("Authorization") token: String, @Path("drivingId") drivingId: String): Call<ResponseBody>
+
     @POST("api/v1/auth/signup")
     fun postSignUp(@Body body: RequestBody): Call<ResponseBody>
 

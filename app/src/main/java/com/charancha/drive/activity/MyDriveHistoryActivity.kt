@@ -10,7 +10,7 @@ import com.charancha.drive.R
 import com.charancha.drive.viewmodel.MyDriveHistoryViewModel
 
 
-class MyDriveHistoryActivity: AppCompatActivity() {
+class MyDriveHistoryActivity: BaseActivity() {
     lateinit var lvHistory:ListView
     private val historyViewModel: MyDriveHistoryViewModel by viewModels()
 
@@ -48,7 +48,5 @@ class MyDriveHistoryActivity: AppCompatActivity() {
         })
 
         historyViewModel.getAllDrive()
-
-
     }
 }
