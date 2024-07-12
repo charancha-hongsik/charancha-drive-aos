@@ -57,7 +57,7 @@ class MyPageActivity:BaseActivity() {
         }
 
         btn_drive_history.setOnClickListener {
-
+            startActivity(Intent(this@MyPageActivity, MyDriveHistoryActivity::class.java))
         }
 
         btn_alarm_setting.setOnClickListener {

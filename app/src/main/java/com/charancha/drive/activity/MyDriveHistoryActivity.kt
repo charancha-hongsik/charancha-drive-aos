@@ -29,8 +29,7 @@ class MyDriveHistoryActivity: AppCompatActivity() {
             var id_list:MutableList<String> = mutableListOf()
                 for(drive in it) {
                     id_list.add(
-                        drive.tracking_id.subSequence(0, 4)
-                            .toString() + "-" + drive.tracking_id.subSequence(4, 8)
+                        drive.tracking_id
                     )
                 }
 

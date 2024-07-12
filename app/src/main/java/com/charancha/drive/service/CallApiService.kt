@@ -82,7 +82,7 @@ class CallApiService: Service() {
                             val gson = Gson()
                             val jsonParam = gson.toJson(driveDtoForApi)
 
-                            apiService().postDrivingInfo(jsonParam.toRequestBody("application/json".toMediaTypeOrNull()))
+                            apiService().postDrivingInfo("Bearer " + PreferenceUtil.getPref(this@CallApiService,  PreferenceUtil.ACCESS_TOKEN, "")!!, jsonParam.toRequestBody("application/json".toMediaTypeOrNull()))
                                 .enqueue(object : Callback<ResponseBody> {
                                     override fun onResponse(
                                         call: Call<ResponseBody>,

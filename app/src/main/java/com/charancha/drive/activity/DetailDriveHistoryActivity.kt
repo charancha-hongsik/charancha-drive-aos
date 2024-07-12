@@ -60,7 +60,7 @@ class DetailDriveHistoryActivity: AppCompatActivity() {
         tvRapid2 = findViewById(R.id.tv_rapid2)
 
         detailDriveHistoryViewModel.setDriveForApp.observe(this@DetailDriveHistoryActivity, DetailDriveHistoryViewModel.EventObserver {
-            for(raw in it.jsonData){
+            for(raw in it.gpses){
                 polylines.add(LatLng(raw.latitude,raw.longtitude))
             }
 

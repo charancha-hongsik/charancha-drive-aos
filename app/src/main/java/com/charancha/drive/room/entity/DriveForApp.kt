@@ -12,7 +12,7 @@ import com.charancha.drive.room.dto.EachGpsDtoForApp
 data class DriveForApp(
     @ColumnInfo(name="tracking_Id") var tracking_id: String, // APP쪽에서의 임의 tracking_id
     @ColumnInfo(name="startTimestamp") var startTimestamp:Long,
-    @ColumnInfo(name="jsonData") var jsonData: List<EachGpsDtoForApp>
+    @ColumnInfo(name="gpses") var gpses: List<EachGpsDtoForApp>
 ){
     @PrimaryKey(autoGenerate = true)
     var idx: Long = 0

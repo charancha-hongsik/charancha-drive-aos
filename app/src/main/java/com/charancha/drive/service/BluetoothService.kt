@@ -833,11 +833,12 @@ class BluetoothService : Service() {
         val jsonParam = gson.toJson(postDriveDtoForApi)
 
         if (isInternetConnected(this@BluetoothService)) {
-            apiService().postDrivingInfo(jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object : Callback<ResponseBody> {
+            apiService().postDrivingInfo("Bearer " + PreferenceUtil.getPref(this@BluetoothService,  PreferenceUtil.ACCESS_TOKEN, "")!!, jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object : Callback<ResponseBody> {
                 override fun onResponse(
                     call: Call<ResponseBody>,
                     response: Response<ResponseBody>
                 ) {
+
                     if(response.code() == 201){
                         val postDrivingInfoResponse = gson.fromJson(response.body()?.string(), PostDrivingInfoResponse::class.java)
                         writeToRoomForApp(postDrivingInfoResponse.id)
