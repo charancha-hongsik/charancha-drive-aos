@@ -697,7 +697,7 @@
         android:id="@+id/layout_choose_date"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:visibility="gone"
+        android:visibility="visible"
         android:background="@color/black_op_70"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

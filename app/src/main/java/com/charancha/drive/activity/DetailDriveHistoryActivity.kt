@@ -225,23 +225,23 @@ class DetailDriveHistoryActivity: BaseActivity() {
                     val getDrivingInfoResponse = Gson().fromJson(response.body()?.string(), GetDrivingInfoResponse::class.java)
 
                     tv_date.text = transformTimeToYYYYMMDD(getDrivingInfoResponse.createdAt)
-                    tv_distance.text = (getDrivingInfoResponse.totalDistance/1000).toString() + "km"
+                    tv_distance.text = transformMetersToKm(getDrivingInfoResponse.totalDistance)
                     tv_start_time.text = transformTimeToHHMM(getDrivingInfoResponse.startTime)
                     tv_end_time.text = transformTimeToHHMM(getDrivingInfoResponse.endTime)
                     tv_start_time_info.text = transformTimeToYYYYMMDDHHMMSS(getDrivingInfoResponse.startTime)
                     tv_end_time_info.text = transformTimeToYYYYMMDDHHMMSS(getDrivingInfoResponse.endTime)
-                    tv_drive_time_info.text = getDrivingInfoResponse.totalTime.toString()
-                    tv_drive_distance_info.text = getDrivingInfoResponse.totalDistance.toString()
+                    tv_drive_time_info.text = transformSecondsToHHMMSS(getDrivingInfoResponse.totalTime)
+                    tv_drive_distance_info.text = transformMetersToKm(getDrivingInfoResponse.totalDistance)
                     tv_drive_verification_info.text = ""
-                    tv_high_speed_driving_percent_info.text = getDrivingInfoResponse.highSpeedDrivingDistancePercentage.toString()
-                    tv_low_speed_driving_percent_info.text = getDrivingInfoResponse.lowSpeedDrivingDistancePercentage.toString()
-                    tv_max_speed_info.text = getDrivingInfoResponse.maxSpeed.toString()
-                    tv_high_speed_average_info.text = getDrivingInfoResponse.highSpeedDrivingAverageSpeed.toString()
-                    tv_low_speed_average_info.text = getDrivingInfoResponse.lowSpeedDrivingAverageSpeed.toString()
-                    tv_rapid_start_count.text = getDrivingInfoResponse.rapidStartCount.toString()
-                    tv_rapid_acc_count_info.text = getDrivingInfoResponse.rapidAccelerationCount.toString()
-                    tv_rapid_stop_count_info.text = getDrivingInfoResponse.rapidStopCount.toString()
-                    tv_rapid_desc_count_info.text = getDrivingInfoResponse.rapidDecelerationCount.toString()
+                    tv_high_speed_driving_percent_info.text = getDrivingInfoResponse.highSpeedDrivingDistancePercentage.toString() + "%"
+                    tv_low_speed_driving_percent_info.text = getDrivingInfoResponse.lowSpeedDrivingDistancePercentage.toString() + "%"
+                    tv_max_speed_info.text = getDrivingInfoResponse.maxSpeed.toString() + "km/h"
+                    tv_high_speed_average_info.text = getDrivingInfoResponse.highSpeedDrivingAverageSpeed.toString() + "km/h"
+                    tv_low_speed_average_info.text = getDrivingInfoResponse.lowSpeedDrivingAverageSpeed.toString() + "km/h"
+                    tv_rapid_start_count.text = getDrivingInfoResponse.rapidStartCount.toInt().toString() + "회"
+                    tv_rapid_acc_count_info.text = getDrivingInfoResponse.rapidAccelerationCount.toInt().toString() + "회"
+                    tv_rapid_stop_count_info.text = getDrivingInfoResponse.rapidStopCount.toInt().toString() + "회"
+                    tv_rapid_desc_count_info.text = getDrivingInfoResponse.rapidDecelerationCount.toInt().toString() + "회"
 
 
                 }
@@ -296,5 +296,18 @@ class DetailDriveHistoryActivity: BaseActivity() {
 
         // 포맷된 문자열 반환
         return zonedDateTime.format(formatter)
+    }
+
+    private fun transformSecondsToHHMMSS(seconds:Double):String{
+
+        val hours = seconds.toInt() / 3600
+        val minutes = (seconds.toInt() % 3600) / 60
+        val secs = seconds.toInt() % 60
+
+        return "${hours}시간 ${minutes}분 ${secs}초"
+    }
+
+    private fun transformMetersToKm(meter:Double):String{
+        return "" + (meter/1000) + "km"
     }
 }

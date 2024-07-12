@@ -169,11 +169,11 @@
                 app:cardCornerRadius="12dp"
                 app:cardElevation="1dp">
 
-                <fragment
-                    android:id="@+id/map"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:name="com.google.android.gms.maps.SupportMapFragment"/>
+<!--                <fragment-->
+<!--                    android:id="@+id/map"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:name="com.google.android.gms.maps.SupportMapFragment"/>-->
             </androidx.cardview.widget.CardView>
 
             <LinearLayout
@@ -817,5 +817,107 @@
 
 
     </ScrollView>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/layout_choose_date"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="visible"
+        android:background="@color/black_op_70"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+
+        <LinearLayout
+            android:id="@+id/persistent_bottom_sheet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/radius24_topleftright_white"
+            android:orientation="vertical"
+            android:padding="24dp"
+            app:behavior_hideable="false"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+            <View
+                android:layout_width="40dp"
+                android:layout_height="4dp"
+                android:background="@drawable/radius10_gray200"
+                android:layout_gravity="center_horizontal"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="109dp"
+                android:orientation="vertical"
+                android:weightSum="2"
+                android:layout_marginTop="28dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:paddingLeft="14dp"
+                    android:orientation="horizontal"
+                    android:layout_gravity="left|center_vertical"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/check" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="내 차에요!"
+                        android:textColor="@color/gray_950"
+                        android:textAppearance="@style/ST2SB"
+                        android:textFontWeight="600"
+                        android:layout_marginLeft="8dp"
+                        android:layout_gravity="center_vertical" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:paddingLeft="14dp"
+                    android:orientation="horizontal"
+                    android:layout_gravity="left|center_vertical"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="내 차가 아니에요"
+                        android:textColor="@color/gray_950"
+                        android:textAppearance="@style/ST2SB"
+                        android:textFontWeight="600"
+                        android:layout_marginLeft="8dp"
+                        android:layout_gravity="center_vertical" />
+
+                </LinearLayout>
+
+
+
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/btn_inquire_date"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="32dp"
+                android:background="@drawable/radius8_gray950"
+                android:gravity="center"
+                android:text="조회"
+                android:textColor="@color/white_op_95"
+                android:layout_weight="600"
+                android:textAppearance="@style/B1SB"/>
+
+
+        </LinearLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
