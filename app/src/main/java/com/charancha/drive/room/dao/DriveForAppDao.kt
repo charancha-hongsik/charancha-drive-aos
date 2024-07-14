@@ -32,4 +32,8 @@ interface DriveForAppDao {
     @Query("SELECT * FROM drive WHERE tracking_id = :trackingId")
     fun getDriveByTrackingId(trackingId: String): DriveForApp?
 
+    // tracking_id를 업데이트하는 메서드
+    @Query("UPDATE drive SET tracking_Id = :newTrackingId WHERE tracking_id = :id")
+    fun updateTrackingId(id: String, newTrackingId: String)
+
 }

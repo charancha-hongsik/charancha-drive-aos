@@ -844,18 +844,20 @@ class BluetoothService : Service() {
                         writeToRoomForApp(postDrivingInfoResponse.id)
                     }else{
                         writeToRoomForApi(driveForApi)
+                        writeToRoomForApp(driveForApi.tracking_id)
                     }
                 }
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     writeToRoomForApi(driveForApi)
+                    writeToRoomForApp(driveForApi.tracking_id)
                 }
             })
 
         } else {
             writeToRoomForApi(driveForApi)
+            writeToRoomForApp(driveForApi.tracking_id)
         }
-
     }
 
     fun writeToRoomForApp(trackingId:String){

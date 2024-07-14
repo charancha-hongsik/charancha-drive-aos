@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.animation.LinearInterpolator
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -28,6 +29,9 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
 import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -62,6 +66,7 @@ class DetailDriveHistoryActivity: BaseActivity() {
     lateinit var tv_rapid_acc_count_info:TextView
     lateinit var tv_rapid_stop_count_info:TextView
     lateinit var tv_rapid_desc_count_info:TextView
+    lateinit var btn_back: ImageView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,6 +76,7 @@ class DetailDriveHistoryActivity: BaseActivity() {
         detailDriveHistoryViewModel.init(applicationContext)
 
         init()
+        setResources()
         getDriveDetail()
     }
 
@@ -78,6 +84,8 @@ class DetailDriveHistoryActivity: BaseActivity() {
 
         detailDriveHistoryViewModel.setDriveForApp.observe(this@DetailDriveHistoryActivity, DetailDriveHistoryViewModel.EventObserver {
             for(raw in it.gpses){
+                Log.d("testsetsetset","testsetsetset timestamp :: " + transformTimestampToHHMM(raw.timestamp))
+                Log.d("testsetsetset","testsetsetset altitude :: " + raw.altitude)
                 polylines.add(LatLng(raw.latitude,raw.longtitude))
             }
 
@@ -106,10 +114,14 @@ class DetailDriveHistoryActivity: BaseActivity() {
         tv_rapid_acc_count_info = findViewById(R.id.tv_rapid_acc_count_info)
         tv_rapid_stop_count_info = findViewById(R.id.tv_rapid_stop_count_info)
         tv_rapid_desc_count_info = findViewById(R.id.tv_rapid_desc_count_info)
+        btn_back = findViewById(R.id.btn_back)
 
+    }
 
-
-
+    private fun setResources(){
+        btn_back.setOnClickListener {
+            finish()
+        }
     }
 
     private fun getDateFromTimeStamp(timeStamp:Long) : String{
@@ -309,5 +321,18 @@ class DetailDriveHistoryActivity: BaseActivity() {
 
     private fun transformMetersToKm(meter:Double):String{
         return "" + (meter/1000) + "km"
+    }
+
+    private fun transformTimestampToHHMM(timestamp:Long):String{
+        val instant = Instant.ofEpochMilli(timestamp)
+
+        // Instant를 LocalDateTime으로 변환 (기본 시간대 사용)
+        val dateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault())
+
+        // 원하는 형식의 DateTimeFormatter 생성
+        val formatter = DateTimeFormatter.ofPattern("HH시 mm분", Locale.KOREAN)
+
+        // 포맷된 문자열 반환
+        return dateTime.format(formatter)
     }
 }

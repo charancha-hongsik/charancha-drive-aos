@@ -169,11 +169,11 @@
                 app:cardCornerRadius="12dp"
                 app:cardElevation="1dp">
 
-<!--                <fragment-->
-<!--                    android:id="@+id/map"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:name="com.google.android.gms.maps.SupportMapFragment"/>-->
+                <fragment
+                    android:id="@+id/map"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"/>
             </androidx.cardview.widget.CardView>
 
             <LinearLayout
@@ -822,7 +822,7 @@
         android:id="@+id/layout_choose_date"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:visibility="visible"
+        android:visibility="gone"
         android:background="@color/black_op_70"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

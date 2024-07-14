@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.charancha.drive.room.dto.EachGpsDtoForApi
 
+// API 호출 실패한 데이터 저장 용
 @Entity(tableName = "driveForApi")
 data class DriveForApi(
     @ColumnInfo(name="tracking_Id") var tracking_id: String, // APP쪽에서의 임의 tracking_id

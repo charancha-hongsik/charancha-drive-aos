@@ -11,6 +11,7 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.retrofit.ApiServiceInterface
+import com.charancha.drive.retrofit.response.PostDrivingInfoResponse
 import com.charancha.drive.room.database.DriveDatabase
 import com.charancha.drive.room.entity.DriveForApi
 import com.google.gson.Gson
@@ -90,10 +91,19 @@ class CallApiService: Service() {
                                     ) {
 
                                         if(response.code() == 201){
+                                            val postDrivingInfoResponse = gson.fromJson(response.body()?.string(), PostDrivingInfoResponse::class.java)
+                                            // update id drive.
+                                            // tracking_id to postDrivingInfoResponse.id
+
                                             // 보낸 데이터 삭제
                                             driveDatabase.driveForApiDao()
                                                 .deleteByTrackingId(drive.tracking_id)
+
+                                            // DriveForApp tracking_id 저장
+                                            driveDatabase.driveForAppDao()
+                                                .updateTrackingId(drive.tracking_id, postDrivingInfoResponse.id)
                                         }
+
 
 
                                         if (drive.tracking_id == it.last().tracking_id) {
