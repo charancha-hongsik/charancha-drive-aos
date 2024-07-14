@@ -17,6 +17,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.IBinder
 import android.os.Looper
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.work.*
@@ -492,6 +493,8 @@ class BluetoothService : Service() {
                     callApi()
                 }
 
+//                callApi()
+
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
 
@@ -791,7 +794,6 @@ class BluetoothService : Service() {
          */
         distance_array[HH] = distance_array[HH] + distance
 
-
         /**
          * 30분 간격으로 체크
          */
@@ -838,23 +840,27 @@ class BluetoothService : Service() {
                     call: Call<ResponseBody>,
                     response: Response<ResponseBody>
                 ) {
-
                     if(response.code() == 201){
                         val postDrivingInfoResponse = gson.fromJson(response.body()?.string(), PostDrivingInfoResponse::class.java)
                         writeToRoomForApp(postDrivingInfoResponse.id)
                     }else{
                         writeToRoomForApi(driveForApi)
                         writeToRoomForApp(driveForApi.tracking_id)
+                        Log.d("testestestest","testsetsetse 3 :: " + driveForApi.tracking_id)
+
                     }
                 }
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     writeToRoomForApi(driveForApi)
                     writeToRoomForApp(driveForApi.tracking_id)
+                    Log.d("testestestest","testsetsetse 2 :: " + driveForApi.tracking_id)
+
                 }
             })
 
         } else {
+            Log.d("testestestest","testsetsetse 1 :: " + driveForApi.tracking_id)
             writeToRoomForApi(driveForApi)
             writeToRoomForApp(driveForApi.tracking_id)
         }

@@ -22,8 +22,8 @@ interface DriveForApiDao {
     /**
      * 모든 Drving 값 가져오기
      */
-    @get:Query("SELECT * FROM driveForApi ORDER BY startTimeStamp DESC LIMIT 10")
-    val allDriveLimit10: List<DriveForApi>?
+    @get:Query("SELECT * FROM driveForApi ORDER BY startTimeStamp DESC LIMIT 5")
+    val allDriveLimit5: List<DriveForApi>?
 
 
     /**

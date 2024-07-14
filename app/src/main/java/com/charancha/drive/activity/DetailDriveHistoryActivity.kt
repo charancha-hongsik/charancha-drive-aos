@@ -84,8 +84,6 @@ class DetailDriveHistoryActivity: BaseActivity() {
 
         detailDriveHistoryViewModel.setDriveForApp.observe(this@DetailDriveHistoryActivity, DetailDriveHistoryViewModel.EventObserver {
             for(raw in it.gpses){
-                Log.d("testsetsetset","testsetsetset timestamp :: " + transformTimestampToHHMM(raw.timestamp))
-                Log.d("testsetsetset","testsetsetset altitude :: " + raw.altitude)
                 polylines.add(LatLng(raw.latitude,raw.longtitude))
             }
 
@@ -239,6 +237,9 @@ class DetailDriveHistoryActivity: BaseActivity() {
                     tv_date.text = transformTimeToYYYYMMDD(getDrivingInfoResponse.createdAt)
                     tv_distance.text = transformMetersToKm(getDrivingInfoResponse.totalDistance)
                     tv_start_time.text = transformTimeToHHMM(getDrivingInfoResponse.startTime)
+                    Log.d("testestestest","testsetestestse totalDistance ::" + getDrivingInfoResponse.totalDistance)
+
+
                     tv_end_time.text = transformTimeToHHMM(getDrivingInfoResponse.endTime)
                     tv_start_time_info.text = transformTimeToYYYYMMDDHHMMSS(getDrivingInfoResponse.startTime)
                     tv_end_time_info.text = transformTimeToYYYYMMDDHHMMSS(getDrivingInfoResponse.endTime)
@@ -293,7 +294,7 @@ class DetailDriveHistoryActivity: BaseActivity() {
         val zonedDateTime = ZonedDateTime.parse(isoDate)
 
         // 원하는 형식의 DateTimeFormatter 생성
-        val formatter = DateTimeFormatter.ofPattern("HH시 MM분", Locale.KOREAN)
+        val formatter = DateTimeFormatter.ofPattern("HH시 mm분", Locale.KOREAN)
 
         // 포맷된 문자열 반환
         return zonedDateTime.format(formatter)
@@ -304,7 +305,7 @@ class DetailDriveHistoryActivity: BaseActivity() {
         val zonedDateTime = ZonedDateTime.parse(isoDate)
 
         // 원하는 형식의 DateTimeFormatter 생성
-        val formatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일\nHH시 MM분 ss초", Locale.KOREAN)
+        val formatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일\nHH시 mm분 ss초", Locale.KOREAN)
 
         // 포맷된 문자열 반환
         return zonedDateTime.format(formatter)
@@ -320,7 +321,7 @@ class DetailDriveHistoryActivity: BaseActivity() {
     }
 
     private fun transformMetersToKm(meter:Double):String{
-        return "" + (meter/1000) + "km"
+        return String.format(Locale.KOREAN, "%.5fkm", meter / 1000)
     }
 
     private fun transformTimestampToHHMM(timestamp:Long):String{

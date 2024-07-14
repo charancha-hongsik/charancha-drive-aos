@@ -67,7 +67,7 @@ class CallApiService: Service() {
         if(isInternetConnected(this@CallApiService)){
             Executors.newSingleThreadExecutor().execute {
                 val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(this@CallApiService)
-                driveDatabase.driveForApiDao().allDriveLimit10?.let {
+                driveDatabase.driveForApiDao().allDriveLimit5?.let {
                     if (it.isNotEmpty()) {
                         for (drive in it) {
 
@@ -103,8 +103,6 @@ class CallApiService: Service() {
                                             driveDatabase.driveForAppDao()
                                                 .updateTrackingId(drive.tracking_id, postDrivingInfoResponse.id)
                                         }
-
-
 
                                         if (drive.tracking_id == it.last().tracking_id) {
                                             val intent = Intent(
