@@ -14,6 +14,10 @@ interface ApiServiceInterface {
     @GET("api/v1/cars/-/user-cars/-/drivings/{drivingId}")
     fun getDrivingInfo(@Header("Authorization") token: String, @Path("drivingId") drivingId: String): Call<ResponseBody>
 
+    // 주행 기록 수정
+    @PATCH("api/v1/cars/user-cars/drivings/{drivingId}")
+    fun patchDrivingInfo(@Header("Authorization") token: String, @Path("drivingId") drivingId: String,@Body body: RequestBody): Call<ResponseBody>
+
     @POST("api/v1/auth/signup")
     fun postSignUp(@Body body: RequestBody): Call<ResponseBody>
 

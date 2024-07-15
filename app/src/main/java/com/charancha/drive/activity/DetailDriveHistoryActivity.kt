@@ -17,6 +17,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
+import com.charancha.drive.retrofit.request.PatchDrivingInfo
+import com.charancha.drive.retrofit.request.SignUpRequest
 import com.charancha.drive.retrofit.response.GetDrivingInfoResponse
 import com.charancha.drive.viewmodel.DetailDriveHistoryViewModel
 import com.google.android.gms.maps.*
@@ -26,8 +28,11 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.Gson
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.time.Instant
@@ -149,15 +154,57 @@ class DetailDriveHistoryActivity: BaseActivity() {
 
         btn_set_mycar.setOnClickListener {
             if(btn_mycar.isSelected){
+                val gson = Gson()
+                val jsonParam =
+                    gson.toJson(PatchDrivingInfo(true))
+                apiService().patchDrivingInfo("Bearer " + PreferenceUtil.getPref(this@DetailDriveHistoryActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, tracking_id,jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object:Callback<ResponseBody>{
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+                        Log.d("testesetsetset","testsetestse :: " + response.code())
+                        if(response.code() == 200){
+                            tv_mycar.visibility = VISIBLE
+                            tv_not_mycar.visibility = GONE
+                        }
+                        layout_my_drive.visibility = GONE
+
+                    }
+
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        layout_my_drive.visibility = GONE
+                    }
+
+                })
                 tv_mycar.visibility = VISIBLE
                 tv_not_mycar.visibility = GONE
             }else{
-                tv_mycar.visibility = GONE
-                tv_not_mycar.visibility = VISIBLE
+                val gson = Gson()
+                val jsonParam =
+                    gson.toJson(PatchDrivingInfo(false))
+
+                apiService().patchDrivingInfo("Bearer " + PreferenceUtil.getPref(this@DetailDriveHistoryActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, tracking_id,jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object:Callback<ResponseBody>{
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+                        Log.d("testesetsetset","testsetestse :: " + response.code())
+
+                        if(response.code() == 200){
+                            tv_mycar.visibility = GONE
+                            tv_not_mycar.visibility = VISIBLE
+                        }
+                        layout_my_drive.visibility = GONE
+
+                    }
+
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        layout_my_drive.visibility = GONE
+                    }
+
+                })
 
             }
-
-            layout_my_drive.visibility = GONE
         }
 
         btn_mycar.setOnClickListener {
