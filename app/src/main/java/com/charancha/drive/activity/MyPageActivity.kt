@@ -65,7 +65,7 @@ class MyPageActivity:BaseActivity() {
         }
 
         btn_setting.setOnClickListener {
-
+            startActivity(Intent(this@MyPageActivity, SettingActivity::class.java))
         }
 
         btn_terms.setOnClickListener {

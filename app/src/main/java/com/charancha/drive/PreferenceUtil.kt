@@ -35,6 +35,11 @@ object PreferenceUtil {
     val USER_CARID = "user_carid"
 
 
+    /**
+     * km/mile
+     */
+    val KM_MILE = "km_mile"
+
 
 
 

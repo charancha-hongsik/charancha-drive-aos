@@ -13,7 +13,7 @@ android {
         minSdk 28
         targetSdk 33
         versionCode 4
-        versionName "1.5.13"
+        versionName "1.5.14"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -34,7 +34,6 @@ android {
 }
 
 dependencies {
-
     implementation 'androidx.core:core-ktx:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.8.0'
@@ -96,7 +95,6 @@ dependencies {
     // Add the dependency for the Analytics library
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation 'com.google.firebase:firebase-analytics-ktx:21.2.0'
-
 
 
     // viewPager
