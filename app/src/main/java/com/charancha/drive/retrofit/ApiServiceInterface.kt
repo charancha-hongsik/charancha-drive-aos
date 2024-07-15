@@ -88,5 +88,84 @@ interface ApiServiceInterface {
     @PATCH("api/v1/me/profiles")
     fun patchAccountProfiles(@Header("Authorization") token: String, @Body body: RequestBody): Call<ResponseBody>
 
+    /**
+     * 지표 상세
+     */
+    // 주행 통계 조회
+    @GET("api/v1/cars/-/user-cars/{userCarId}/drivings/-/statistics")
+    fun getDrivingStatistics(@Header("Authorization") token: String,
+                           @Path("userCarId") userCarId: String,
+                           @Query("criteriaStartTime") criteriaStartTime: String,
+                           @Query("criteriaEndTime") criteriaEndTime: String,
+                           @Query("criteriaTime") criteriaTime: String,
+                           @Query("minimumTimeUnit") minimumTimeUnit: String): Call<ResponseBody>
+
+
+    // 최근 주행 통계 조회
+    @GET("api/v1/cars/-/user-cars/{userCarId}/drivings/-/statistics")
+    fun getRecentDrivingStatistics(@Header("Authorization") token: String,
+                           @Path("userCarId") userCarId: String): Call<ResponseBody>
+
+
+    // 주행 거리 그래프 데이터 조회
+    @GET("api/v1/cars/-/user-cars/{userCarId}/drivings/-/statistics/driving-distance/graph")
+    fun getDrivingDistanceGraphData(@Header("Authorization") token: String,
+                          @Path("userCarId") userCarId: String,
+                          @Query("order") order: String,
+                          @Query("afterCursor") afterCursor: String,
+                          @Query("beforeCursor") beforeCursor: String,
+                          @Query("criteriaStartTime") criteriaStartTime: String,
+                          @Query("criteriaEndTime") criteriaEndTime: String,
+                          @Query("criteriaTime") criteriaTime: String,
+                          @Query("minimumTimeUnit") minimumTimeUnit: String): Call<ResponseBody>
+
+
+    // 주행 거리 비율 그래프 데이터 조회
+    @GET("api/v1/cars/-/user-cars/{userCarId}/drivings/-/statistics/driving-distance-ratio/graph")
+    fun getDrivingDistanceRatioGraphData(@Header("Authorization") token: String,
+                          @Path("userCarId") userCarId: String,
+                          @Query("order") order: String,
+                          @Query("afterCursor") afterCursor: String,
+                          @Query("beforeCursor") beforeCursor: String,
+                          @Query("criteriaStartTime") criteriaStartTime: String,
+                          @Query("criteriaEndTime") criteriaEndTime: String,
+                          @Query("criteriaTime") criteriaTime: String,
+                          @Query("minimumTimeUnit") minimumTimeUnit: String): Call<ResponseBody>
+
+    // 1회 평균 주행 거리 그래프 데이터 조회
+    @GET("api/v1/cars/-/user-cars/{userCarId}/drivings/-/statistics/driving-distance-per-one/graph")
+    fun getDrivingDistancePerOneGraphData(@Header("Authorization") token: String,
+                               @Path("userCarId") userCarId: String,
+                               @Query("order") order: String,
+                               @Query("afterCursor") afterCursor: String,
+                               @Query("beforeCursor") beforeCursor: String,
+                               @Query("criteriaStartTime") criteriaStartTime: String,
+                               @Query("criteriaEndTime") criteriaEndTime: String,
+                               @Query("criteriaTime") criteriaTime: String,
+                               @Query("minimumTimeUnit") minimumTimeUnit: String): Call<ResponseBody>
+
+    // 주행 시간 그래프 데이터 조회
+    @GET("api/v1/cars/-/user-cars/{userCarId}/drivings/-/statistics/driving-time/graph")
+    fun getDrivingTimeGraphData(@Header("Authorization") token: String,
+                                         @Path("userCarId") userCarId: String,
+                                         @Query("order") order: String,
+                                         @Query("afterCursor") afterCursor: String,
+                                         @Query("beforeCursor") beforeCursor: String,
+                                         @Query("criteriaStartTime") criteriaStartTime: String,
+                                         @Query("criteriaEndTime") criteriaEndTime: String,
+                                         @Query("criteriaTime") criteriaTime: String,
+                                         @Query("minimumTimeUnit") minimumTimeUnit: String): Call<ResponseBody>
+
+    // 1회 평균 주행 시간 그래프 데이터 조회
+    @GET("api/v1/cars/-/user-cars/{userCarId}/drivings/-/statistics/driving-time/graph")
+    fun getDrivingTimePerOneGraphData(@Header("Authorization") token: String,
+                                @Path("userCarId") userCarId: String,
+                                @Query("order") order: String,
+                                @Query("afterCursor") afterCursor: String,
+                                @Query("beforeCursor") beforeCursor: String,
+                                @Query("criteriaStartTime") criteriaStartTime: String,
+                                @Query("criteriaEndTime") criteriaEndTime: String,
+                                @Query("criteriaTime") criteriaTime: String,
+                                @Query("minimumTimeUnit") minimumTimeUnit: String): Call<ResponseBody>
 
 }
