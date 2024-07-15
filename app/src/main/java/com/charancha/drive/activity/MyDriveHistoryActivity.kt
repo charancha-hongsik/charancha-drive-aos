@@ -18,13 +18,9 @@ class MyDriveHistoryActivity: BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_drive_history)
 
-
-
         lvHistory = findViewById(R.id.lv_history)
 
         historyViewModel.init(applicationContext)
-
-
         historyViewModel.setAllDriveDateForApp.observe(this@MyDriveHistoryActivity, MyDriveHistoryViewModel.EventObserver {
             var id_list:MutableList<String> = mutableListOf()
                 for(drive in it) {
@@ -32,7 +28,6 @@ class MyDriveHistoryActivity: BaseActivity() {
                         drive.tracking_id
                     )
                 }
-
 
             val adapter: ArrayAdapter<String> =
                 ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, id_list)

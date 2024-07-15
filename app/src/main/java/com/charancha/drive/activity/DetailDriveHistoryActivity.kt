@@ -5,26 +5,27 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.animation.LinearInterpolator
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
-import com.charancha.drive.retrofit.request.AgreeTermsRequest
-import com.charancha.drive.retrofit.request.GetDrivingInfoRequest
 import com.charancha.drive.retrofit.response.GetDrivingInfoResponse
-import com.charancha.drive.retrofit.response.SignInResponse
 import com.charancha.drive.viewmodel.DetailDriveHistoryViewModel
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.Gson
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
@@ -35,8 +36,6 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
-import java.util.concurrent.TimeUnit
-import javax.security.auth.callback.Callback
 
 
 class DetailDriveHistoryActivity: BaseActivity() {
@@ -67,6 +66,17 @@ class DetailDriveHistoryActivity: BaseActivity() {
     lateinit var tv_rapid_stop_count_info:TextView
     lateinit var tv_rapid_desc_count_info:TextView
     lateinit var btn_back: ImageView
+    lateinit var btn_mycar: LinearLayout
+    lateinit var btn_not_mycar:LinearLayout
+
+    lateinit var layout_my_drive:CoordinatorLayout
+    lateinit var persistent_bottom_sheet:LinearLayout
+    lateinit var behavior: BottomSheetBehavior<LinearLayout>
+
+    lateinit var btn_choose_mycar: ConstraintLayout
+    lateinit var btn_set_mycar:TextView
+    lateinit var tv_mycar:LinearLayout
+    lateinit var tv_not_mycar:TextView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -113,6 +123,14 @@ class DetailDriveHistoryActivity: BaseActivity() {
         tv_rapid_stop_count_info = findViewById(R.id.tv_rapid_stop_count_info)
         tv_rapid_desc_count_info = findViewById(R.id.tv_rapid_desc_count_info)
         btn_back = findViewById(R.id.btn_back)
+        btn_mycar = findViewById(R.id.btn_mycar)
+        btn_not_mycar = findViewById(R.id.btn_not_mycar)
+        layout_my_drive = findViewById(R.id.layout_my_drive)
+        persistent_bottom_sheet = findViewById(R.id.persistent_bottom_sheet)
+        btn_choose_mycar = findViewById(R.id.btn_choose_mycar)
+        btn_set_mycar = findViewById(R.id.btn_set_mycar)
+        tv_mycar = findViewById(R.id.tv_mycar)
+        tv_not_mycar = findViewById(R.id.tv_not_mycar)
 
     }
 
@@ -120,6 +138,41 @@ class DetailDriveHistoryActivity: BaseActivity() {
         btn_back.setOnClickListener {
             finish()
         }
+
+        btn_choose_mycar.setOnClickListener {
+            layout_my_drive.visibility = VISIBLE
+        }
+
+        layout_my_drive.setOnClickListener {
+            layout_my_drive.visibility = GONE
+        }
+
+        btn_set_mycar.setOnClickListener {
+            if(btn_mycar.isSelected){
+                tv_mycar.visibility = VISIBLE
+                tv_not_mycar.visibility = GONE
+            }else{
+                tv_mycar.visibility = GONE
+                tv_not_mycar.visibility = VISIBLE
+
+            }
+
+            layout_my_drive.visibility = GONE
+        }
+
+        btn_mycar.setOnClickListener {
+            btn_mycar.isSelected = true
+            btn_not_mycar.isSelected = false
+        }
+
+        btn_not_mycar.setOnClickListener {
+            btn_mycar.isSelected = false
+            btn_not_mycar.isSelected = true
+        }
+
+        btn_mycar.isSelected = true
+
+        persistentBottomSheetEvent()
     }
 
     private fun getDateFromTimeStamp(timeStamp:Long) : String{
@@ -237,9 +290,6 @@ class DetailDriveHistoryActivity: BaseActivity() {
                     tv_date.text = transformTimeToYYYYMMDD(getDrivingInfoResponse.createdAt)
                     tv_distance.text = transformMetersToKm(getDrivingInfoResponse.totalDistance)
                     tv_start_time.text = transformTimeToHHMM(getDrivingInfoResponse.startTime)
-                    Log.d("testestestest","testsetestestse totalDistance ::" + getDrivingInfoResponse.totalDistance)
-
-
                     tv_end_time.text = transformTimeToHHMM(getDrivingInfoResponse.endTime)
                     tv_start_time_info.text = transformTimeToYYYYMMDDHHMMSS(getDrivingInfoResponse.startTime)
                     tv_end_time_info.text = transformTimeToYYYYMMDDHHMMSS(getDrivingInfoResponse.endTime)
@@ -336,4 +386,37 @@ class DetailDriveHistoryActivity: BaseActivity() {
         // 포맷된 문자열 반환
         return dateTime.format(formatter)
     }
+
+    private fun persistentBottomSheetEvent() {
+        behavior = BottomSheetBehavior.from(persistent_bottom_sheet)
+        behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                // 슬라이드 되는 도중 계속 호출
+                // called continuously while dragging
+                Log.d("testset", "onStateChanged: 드래그 중")
+            }
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when(newState) {
+                    BottomSheetBehavior.STATE_COLLAPSED-> {
+                        Log.d("testset", "onStateChanged: 접음")
+//                        layout_choose_date.visibility = GONE
+                    }
+                    BottomSheetBehavior.STATE_DRAGGING-> {
+                        Log.d("testset", "onStateChanged: 드래그")
+                    }
+                    BottomSheetBehavior.STATE_EXPANDED-> {
+                        Log.d("testset", "onStateChanged: 펼침")
+                    }
+                    BottomSheetBehavior.STATE_HIDDEN-> {
+                        Log.d("testset", "onStateChanged: 숨기기")
+
+                    }
+                    BottomSheetBehavior.STATE_SETTLING-> {
+                        Log.d("testset", "onStateChanged: 고정됨")
+                    }
+                }
+            }
+        })
+    }
+
 }

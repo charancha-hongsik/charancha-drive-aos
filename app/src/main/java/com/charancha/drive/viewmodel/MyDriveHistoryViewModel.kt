@@ -24,15 +24,6 @@ class MyDriveHistoryViewModel: ViewModel() {
             driveDatabase.driveForAppDao().allDriveForApp?.let {
                 setAllDriveDateForApp.value = Event(it.toMutableList())
             }
-
-//            driveDatabase.driveForApiDao().allDrive?.let {
-//                Log.d("testsetsetsetset","testsetsetsetse1233 drive size:: " +it.size)
-//
-//                for(drive in it){
-//                    Log.d("testsetsetsetset","testsetsetsetse1233 tracking_id:: " + drive.tracking_id)
-//                    Log.d("testsetsetsetset","testsetsetsetse1233 deviceModel:: " + drive.automobile)
-//                }
-//            }
         }
     }
 

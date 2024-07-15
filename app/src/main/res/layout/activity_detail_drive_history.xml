@@ -46,13 +46,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_date"
                 android:layout_width="match_parent"
                 android:layout_height="18dp"
+                android:layout_marginTop="12dp"
                 android:textAppearance="@style/C1R"
                 android:textFontWeight="400"
                 android:textColor="@color/gray_700"
@@ -104,68 +104,111 @@
 
             </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="이동수단"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="34dp"
-                android:textFontWeight="400"
-                android:textAppearance="@style/C1R"
-                android:textColor="@color/gray_700"/>
-            
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="26dp"
-                android:layout_marginTop="4dp"
-                android:orientation="horizontal"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp">
-                
-                <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:src="@drawable/check"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/radius8_white950"
+                >
 
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="내 차에요!"
-                    android:textColor="@color/gray_950"
-                    android:textAppearance="@style/ST2SB"
-                    android:textFontWeight="600"
-                    android:layout_marginLeft="22dp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
-                
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_arrow_down"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
-                
-                
-            </androidx.constraintlayout.widget.ConstraintLayout>
-            
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="14dp"
-                android:text="6월 30일까지만 변경 가능해요."
-                android:textAppearance="@style/C2R"
-                android:textColor="@color/gray_500"
-                android:textFontWeight="400"
-                android:layout_marginLeft="20dp"/>
+                    android:layout_height="wrap_content"
+                    android:text="이동수단"
+                    android:layout_marginTop="18dp"
+                    android:layout_marginLeft="20dp"
+                    android:textFontWeight="400"
+                    android:textAppearance="@style/C1R"
+                    android:textColor="@color/gray_700"/>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/btn_choose_mycar"
+                    android:layout_width="match_parent"
+                    android:layout_height="26dp"
+                    android:layout_marginTop="4dp"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp">
+
+                    <LinearLayout
+                        android:id="@+id/tv_mycar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="visible"
+                        android:orientation="horizontal"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/check"
+                            android:layout_gravity="center_vertical"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="내 차에요!"
+                            android:textColor="@color/gray_950"
+                            android:textAppearance="@style/ST2SB"
+                            android:textFontWeight="600"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="8dp" />
+
+
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_not_mycar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="내 차가 아니에요"
+                        android:visibility="gone"
+                        android:textColor="@color/gray_950"
+                        android:textAppearance="@style/ST2SB"
+                        android:textFontWeight="600"
+                        android:layout_gravity="center_vertical"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_arrow_down"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="14dp"
+                    android:text="6월 30일까지만 변경 가능해요."
+                    android:textAppearance="@style/C2R"
+                    android:textColor="@color/gray_500"
+                    android:textFontWeight="400"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginBottom="18dp"/>
+
+
+            </LinearLayout>
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="204dp"
-                android:layout_marginTop="34dp"
+                android:layout_marginTop="20dp"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="1dp">
 
@@ -819,7 +862,7 @@
     </ScrollView>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/layout_choose_date"
+        android:id="@+id/layout_my_drive"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="gone"
@@ -854,10 +897,12 @@
                 android:layout_marginTop="28dp">
 
                 <LinearLayout
+                    android:id="@+id/btn_mycar"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:paddingLeft="14dp"
                     android:orientation="horizontal"
+                    android:background="@drawable/choose_mycar_item_selector"
                     android:layout_gravity="left|center_vertical"
                     android:layout_weight="1">
 
@@ -880,9 +925,11 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/btn_not_mycar"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:paddingLeft="14dp"
+                    android:background="@drawable/choose_mycar_item_selector"
                     android:orientation="horizontal"
                     android:layout_gravity="left|center_vertical"
                     android:layout_weight="1">
@@ -905,13 +952,13 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/btn_inquire_date"
+                android:id="@+id/btn_set_mycar"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
                 android:layout_marginTop="32dp"
                 android:background="@drawable/radius8_gray950"
                 android:gravity="center"
-                android:text="조회"
+                android:text="설정하기"
                 android:textColor="@color/white_op_95"
                 android:layout_weight="600"
                 android:textAppearance="@style/B1SB"/>
