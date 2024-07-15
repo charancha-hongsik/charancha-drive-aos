@@ -57,6 +57,12 @@
         </activity>
 
         <activity
+            android:name=".activity.NotificationActivity"
+            android:theme="@style/Theme.Charanchadrivegray50"
+            android:screenOrientation="portrait"
+            android:exported="true"/>
+
+        <activity
             android:name=".activity.SettingActivity"
             android:theme="@style/Theme.Charanchadrivegray50"
             android:screenOrientation="portrait"

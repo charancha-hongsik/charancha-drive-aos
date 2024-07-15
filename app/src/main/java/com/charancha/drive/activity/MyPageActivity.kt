@@ -9,8 +9,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
 import com.charancha.drive.retrofit.response.GetAccountProfilesResponse
-import com.charancha.drive.retrofit.response.GetAccountResponse
-import com.charancha.drive.retrofit.response.GetMyCarInfoResponse
 import com.charancha.drive.retrofit.response.TermsSummaryResponse
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -86,6 +84,7 @@ class MyPageActivity:BaseActivity() {
         }
 
         btn_alarm_setting.setOnClickListener {
+            startActivity(Intent(this@MyPageActivity, NotificationActivity::class.java))
 
         }
 
