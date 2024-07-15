@@ -419,10 +419,10 @@ class DetailDriveHistoryActivity: BaseActivity() {
 
     private fun getSpeedWithDistanceUnit(speed: Double):String{
         if(distance_unit == "km"){
-            return String.format(Locale.KOREAN, "%.5fkm", speed)
+            return String.format(Locale.KOREAN, "%.5fkm/h", speed)
         }else{
             val milesPerKilometer = 0.621371
-            return String.format(Locale.KOREAN, "%.5fmile", speed * milesPerKilometer)
+            return String.format(Locale.KOREAN, "%.5fmile/h", speed * milesPerKilometer)
         }
     }
 
