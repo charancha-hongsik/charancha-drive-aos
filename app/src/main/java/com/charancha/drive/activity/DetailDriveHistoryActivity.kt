@@ -164,6 +164,7 @@ class DetailDriveHistoryActivity: BaseActivity() {
                         call: Call<ResponseBody>,
                         response: Response<ResponseBody>
                     ) {
+
                         if(response.code() == 200){
                             tv_mycar.visibility = VISIBLE
                             tv_not_mycar.visibility = GONE
@@ -177,8 +178,6 @@ class DetailDriveHistoryActivity: BaseActivity() {
                     }
 
                 })
-                tv_mycar.visibility = VISIBLE
-                tv_not_mycar.visibility = GONE
             }else{
                 val gson = Gson()
                 val jsonParam =
@@ -189,7 +188,6 @@ class DetailDriveHistoryActivity: BaseActivity() {
                         call: Call<ResponseBody>,
                         response: Response<ResponseBody>
                     ) {
-
                         if(response.code() == 200){
                             tv_mycar.visibility = GONE
                             tv_not_mycar.visibility = VISIBLE
@@ -201,7 +199,6 @@ class DetailDriveHistoryActivity: BaseActivity() {
                     override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                         layout_my_drive.visibility = GONE
                     }
-
                 })
 
             }
@@ -351,7 +348,24 @@ class DetailDriveHistoryActivity: BaseActivity() {
                     tv_rapid_acc_count_info.text = getDrivingInfoResponse.rapidAccelerationCount.toInt().toString() + "회"
                     tv_rapid_stop_count_info.text = getDrivingInfoResponse.rapidStopCount.toInt().toString() + "회"
                     tv_rapid_desc_count_info.text = getDrivingInfoResponse.rapidDecelerationCount.toInt().toString() + "회"
-                    tv_scope_date_mycar.text = transformDateTo30Dayslater(getDrivingInfoResponse.endTime)
+
+                    if(isMyCarScope(getDrivingInfoResponse.endTime)){
+                        tv_scope_date_mycar.text = transformDateTo30Dayslater(getDrivingInfoResponse.endTime)
+                    } else{
+                        tv_scope_date_mycar.text = "변경 가능 기간이 지났어요."
+                    }
+
+                    if(getDrivingInfoResponse.isActive){
+                        tv_mycar.visibility = VISIBLE
+                        tv_not_mycar.visibility = GONE
+                        btn_mycar.isSelected = true
+                        btn_not_mycar.isSelected = false
+                    }else{
+                        tv_mycar.visibility = GONE
+                        tv_not_mycar.visibility = VISIBLE
+                        btn_mycar.isSelected = false
+                        btn_not_mycar.isSelected = true
+                    }
                 }
             }
 
@@ -444,6 +458,20 @@ class DetailDriveHistoryActivity: BaseActivity() {
         // 포맷된 문자열 반환
         val formattedDate = newZonedDateTime.format(formatter)
         return "$formattedDate" + "까지만 변경 가능해요"
+    }
+
+    fun isMyCarScope(isoDate: String):Boolean{
+        // ISO 8601 형식의 날짜 문자열을 ZonedDateTime 객체로 변환
+        val zonedDateTime = ZonedDateTime.parse(isoDate)
+
+        // 현재 날짜와 시간
+        val now = ZonedDateTime.now()
+
+        // 주어진 날짜로부터 30일 후의 날짜 계산
+        val dateAfter30Days = zonedDateTime.plusDays(30)
+
+        // 현재 날짜가 주어진 날짜와 30일 후의 날짜 사이에 있는지 확인
+        return now.isAfter(zonedDateTime) && now.isBefore(dateAfter30Days)
     }
 
 

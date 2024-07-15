@@ -235,20 +235,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
-                    android:textFontWeight="700"
-                    android:textAppearance="@style/ST2B"
-                    android:textColor="@color/gray_950"
-                    android:text="고도 그래프"/>
-
-                <com.github.mikephil.charting.charts.LineChart
-                    android:layout_width="match_parent"
-                    android:layout_height="138dp"
-                    android:layout_marginTop="12dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="56dp"
                     android:text="주행"
                     android:textColor="@color/gray_950"
                     android:textAppearance="@style/ST2B"
