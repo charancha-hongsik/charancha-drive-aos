@@ -180,7 +180,7 @@ class RegisterCarActivity: BaseActivity() {
                             call: Call<ResponseBody>,
                             response: Response<ResponseBody>
                         ) {
-                            Log.d("testestsetestest", "testsetsetsetset :: " + response.code())
+                            PreferenceUtil.putPref(this@RegisterCarActivity,  PreferenceUtil.KM_MILE, "km")
                             startActivity(Intent(this@RegisterCarActivity, MainActivity::class.java).addFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK))
                             finish()
                         }
