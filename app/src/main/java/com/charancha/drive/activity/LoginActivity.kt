@@ -33,11 +33,9 @@ import java.lang.reflect.Type
  * - 위 사항 모두 완료된 사용자일 경우 -> Main 화면으로 이동
  */
 class LoginActivity: BaseActivity() {
-    lateinit var constraintLayout: ConstraintLayout
     lateinit var wv_login:WebView
 
-    val loginUrl = "https://2401-222-109-154-193.ngrok-free.app/" +
-            ""
+    val loginUrl = "https://milelog-local.gatch.app"
 
     /**
      * 구글 로그인 관련

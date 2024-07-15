@@ -328,8 +328,7 @@ class DetailDriveHistoryActivity: BaseActivity() {
     }
 
     private fun getDriveDetail(){
-        apiService().getDrivingInfo("Bearer " + PreferenceUtil.getPref(this@DetailDriveHistoryActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, tracking_id).enqueue(object :
-            retrofit2.Callback<ResponseBody>{
+        apiService().getDrivingInfo("Bearer " + PreferenceUtil.getPref(this@DetailDriveHistoryActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, tracking_id).enqueue(object : Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200){
                     val getDrivingInfoResponse = Gson().fromJson(response.body()?.string(), GetDrivingInfoResponse::class.java)
@@ -352,8 +351,7 @@ class DetailDriveHistoryActivity: BaseActivity() {
                     tv_rapid_acc_count_info.text = getDrivingInfoResponse.rapidAccelerationCount.toInt().toString() + "회"
                     tv_rapid_stop_count_info.text = getDrivingInfoResponse.rapidStopCount.toInt().toString() + "회"
                     tv_rapid_desc_count_info.text = getDrivingInfoResponse.rapidDecelerationCount.toInt().toString() + "회"
-
-
+                    tv_scope_date_mycar.text = transformDateTo30Dayslater(getDrivingInfoResponse.endTime)
                 }
             }
 
@@ -409,7 +407,6 @@ class DetailDriveHistoryActivity: BaseActivity() {
     }
 
     private fun transformSecondsToHHMMSS(seconds:Double):String{
-
         val hours = seconds.toInt() / 3600
         val minutes = (seconds.toInt() % 3600) / 60
         val secs = seconds.toInt() % 60
@@ -433,6 +430,22 @@ class DetailDriveHistoryActivity: BaseActivity() {
         // 포맷된 문자열 반환
         return dateTime.format(formatter)
     }
+
+    fun transformDateTo30Dayslater(isoDate: String): String {
+        // ISO 8601 형식의 날짜 문자열을 ZonedDateTime 객체로 변환
+        val zonedDateTime = ZonedDateTime.parse(isoDate)
+
+        // 30일 후의 날짜 계산
+        val newZonedDateTime = zonedDateTime.plusDays(30)
+
+        // 원하는 형식의 DateTimeFormatter 생성
+        val formatter = DateTimeFormatter.ofPattern("MM월 dd일", Locale.KOREAN)
+
+        // 포맷된 문자열 반환
+        val formattedDate = newZonedDateTime.format(formatter)
+        return "$formattedDate" + "까지만 변경 가능해요"
+    }
+
 
     private fun persistentBottomSheetEvent() {
         behavior = BottomSheetBehavior.from(persistent_bottom_sheet)
