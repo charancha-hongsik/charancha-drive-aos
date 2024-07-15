@@ -73,6 +73,7 @@ class DetailDriveHistoryActivity: BaseActivity() {
     lateinit var btn_back: ImageView
     lateinit var btn_mycar: LinearLayout
     lateinit var btn_not_mycar:LinearLayout
+    lateinit var tv_scope_date_mycar:TextView
 
     lateinit var layout_my_drive:CoordinatorLayout
     lateinit var persistent_bottom_sheet:LinearLayout
@@ -136,6 +137,7 @@ class DetailDriveHistoryActivity: BaseActivity() {
         btn_set_mycar = findViewById(R.id.btn_set_mycar)
         tv_mycar = findViewById(R.id.tv_mycar)
         tv_not_mycar = findViewById(R.id.tv_not_mycar)
+        tv_scope_date_mycar = findViewById(R.id.tv_scope_date_mycar)
 
     }
 
