@@ -11,11 +11,14 @@ import com.charancha.drive.R
 import com.charancha.drive.retrofit.response.GetAccountProfilesResponse
 import com.charancha.drive.retrofit.response.GetAccountResponse
 import com.charancha.drive.retrofit.response.GetMyCarInfoResponse
+import com.charancha.drive.retrofit.response.TermsSummaryResponse
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.lang.reflect.Type
 
 class MyPageActivity:BaseActivity() {
     lateinit var layout_nickname:ConstraintLayout
@@ -29,6 +32,8 @@ class MyPageActivity:BaseActivity() {
     lateinit var getAccountProfilesResponse:GetAccountProfilesResponse
     lateinit var tv_email:TextView
     lateinit var tv_nickname:TextView
+    lateinit var termsSummaryResponse: List<TermsSummaryResponse>
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +54,26 @@ class MyPageActivity:BaseActivity() {
         btn_back = findViewById(R.id.btn_back)
         tv_email = findViewById(R.id.tv_email)
         tv_nickname = findViewById(R.id.tv_nickname)
+
+        apiService().getTerms("MILELOG_USAGE").enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200){
+                    val jsonString = response.body()?.string()
+
+                    val gson = Gson()
+                    val type: Type = object : TypeToken<List<TermsSummaryResponse?>?>() {}.type
+                    termsSummaryResponse = gson.fromJson(jsonString, type)
+
+                }else{
+
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
     }
 
     fun setListener(){
@@ -68,12 +93,21 @@ class MyPageActivity:BaseActivity() {
             startActivity(Intent(this@MyPageActivity, SettingActivity::class.java))
         }
 
-        btn_terms.setOnClickListener {
 
+        btn_terms.setOnClickListener {
+            for(term in termsSummaryResponse){
+                if(term.title.contains("이용약관")){
+                    startActivity(Intent(this@MyPageActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
+                }
+            }
         }
 
         btn_personal_info.setOnClickListener {
-
+            for(term in termsSummaryResponse){
+                if(term.title.contains("개인정보 처리방침")){
+                    startActivity(Intent(this@MyPageActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
+                }
+            }
         }
 
         btn_back.setOnClickListener { finish() }

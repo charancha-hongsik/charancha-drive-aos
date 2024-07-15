@@ -5,13 +5,23 @@ import android.util.Log
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.charancha.drive.BuildConfig
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
+import com.charancha.drive.retrofit.response.TermsSummaryResponse
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.lang.reflect.Type
 
 class SettingActivity:BaseActivity(){
     lateinit var layout_select_distance_unit: CoordinatorLayout
@@ -22,6 +32,8 @@ class SettingActivity:BaseActivity(){
     lateinit var btn_mile:LinearLayout
     lateinit var btn_open_set_distance_unit:LinearLayout
     lateinit var tv_unit:TextView
+    lateinit var tv_version:TextView
+    lateinit var btn_back:ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +51,8 @@ class SettingActivity:BaseActivity(){
         btn_mile = findViewById(R.id.btn_mile)
         btn_open_set_distance_unit = findViewById(R.id.btn_open_set_distance_unit)
         tv_unit = findViewById(R.id.tv_unit)
+        tv_version = findViewById(R.id.tv_version)
+        btn_back = findViewById(R.id.btn_back)
 
         btn_open_set_distance_unit.setOnClickListener {
             layout_select_distance_unit.visibility = VISIBLE
@@ -84,6 +98,12 @@ class SettingActivity:BaseActivity(){
             tv_unit.text = "mile"
 
         }
+
+        btn_back.setOnClickListener {
+            finish()
+        }
+
+        tv_version.text = "V" + BuildConfig.VERSION_NAME
     }
 
     private fun persistentBottomSheetEvent() {
