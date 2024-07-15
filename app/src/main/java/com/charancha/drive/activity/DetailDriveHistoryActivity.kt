@@ -162,7 +162,6 @@ class DetailDriveHistoryActivity: BaseActivity() {
                         call: Call<ResponseBody>,
                         response: Response<ResponseBody>
                     ) {
-                        Log.d("testesetsetset","testsetestse :: " + response.code())
                         if(response.code() == 200){
                             tv_mycar.visibility = VISIBLE
                             tv_not_mycar.visibility = GONE
@@ -188,7 +187,6 @@ class DetailDriveHistoryActivity: BaseActivity() {
                         call: Call<ResponseBody>,
                         response: Response<ResponseBody>
                     ) {
-                        Log.d("testesetsetset","testsetestse :: " + response.code())
 
                         if(response.code() == 200){
                             tv_mycar.visibility = GONE
@@ -342,7 +340,7 @@ class DetailDriveHistoryActivity: BaseActivity() {
                     tv_end_time_info.text = transformTimeToYYYYMMDDHHMMSS(getDrivingInfoResponse.endTime)
                     tv_drive_time_info.text = transformSecondsToHHMMSS(getDrivingInfoResponse.totalTime)
                     tv_drive_distance_info.text = transformMetersToKm(getDrivingInfoResponse.totalDistance)
-                    tv_drive_verification_info.text = ""
+                    tv_drive_verification_info.text = getDrivingInfoResponse.verification
                     tv_high_speed_driving_percent_info.text = getDrivingInfoResponse.highSpeedDrivingDistancePercentage.toString() + "%"
                     tv_low_speed_driving_percent_info.text = getDrivingInfoResponse.lowSpeedDrivingDistancePercentage.toString() + "%"
                     tv_max_speed_info.text = getDrivingInfoResponse.maxSpeed.toString() + "km/h"

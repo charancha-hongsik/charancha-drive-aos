@@ -51,4 +51,6 @@ data class GetDrivingInfoResponse (
     val optimalDrivingPercentage:Double,
     val harshDrivingDistance:Double,
     val harshDrivingPercentage:Double,
+    val verification:String,
+    val isActive:Boolean
     ) : java.io.Serializable
