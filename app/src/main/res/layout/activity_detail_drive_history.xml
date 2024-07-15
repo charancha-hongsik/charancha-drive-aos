@@ -44,6 +44,7 @@
 
 
         <LinearLayout
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -202,6 +203,45 @@
                     android:textFontWeight="400"
                     android:layout_marginLeft="20dp"
                     android:layout_marginBottom="18dp"/>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tv_mycar_scope_info"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/radius8_gray100_with_gray200border"
+                android:orientation="horizontal">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/radius999_gray950"
+                    android:layout_marginLeft="29dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_exclamation"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:textAppearance="@style/C2M"
+                    android:textColor="@color/gray_700"
+                    android:textFontWeight="500"
+                    android:text="앱 재설치 또는 차량 재등록 시 주행 경로는 볼 수 없어요"
+                    android:layout_gravity="center_vertical"/>
 
 
             </LinearLayout>

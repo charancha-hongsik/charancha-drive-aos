@@ -83,6 +83,7 @@ class DetailDriveHistoryActivity: BaseActivity() {
     lateinit var btn_set_mycar:TextView
     lateinit var tv_mycar:LinearLayout
     lateinit var tv_not_mycar:TextView
+    lateinit var tv_mycar_scope_info:LinearLayout
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -138,6 +139,7 @@ class DetailDriveHistoryActivity: BaseActivity() {
         tv_mycar = findViewById(R.id.tv_mycar)
         tv_not_mycar = findViewById(R.id.tv_not_mycar)
         tv_scope_date_mycar = findViewById(R.id.tv_scope_date_mycar)
+        tv_mycar_scope_info = findViewById(R.id.tv_mycar_scope_info)
 
     }
 
@@ -351,8 +353,10 @@ class DetailDriveHistoryActivity: BaseActivity() {
 
                     if(isMyCarScope(getDrivingInfoResponse.endTime)){
                         tv_scope_date_mycar.text = transformDateTo30Dayslater(getDrivingInfoResponse.endTime)
+                        tv_mycar_scope_info.visibility = GONE
                     } else{
                         tv_scope_date_mycar.text = "변경 가능 기간이 지났어요."
+                        tv_mycar_scope_info.visibility = VISIBLE
                     }
 
                     if(getDrivingInfoResponse.isActive){
