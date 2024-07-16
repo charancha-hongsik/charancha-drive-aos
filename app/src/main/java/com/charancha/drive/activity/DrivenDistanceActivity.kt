@@ -107,11 +107,11 @@ class DrivenDistanceActivity:BaseActivity() {
         }
 
         btn_six_month_drive.setOnClickListener {
-
+            setSixMonthDrivingDistance()
         }
 
         btn_year_drive.setOnClickListener {
-
+            setYearDrivingDistance()
         }
     }
 
@@ -1046,8 +1046,8 @@ class DrivenDistanceActivity:BaseActivity() {
         tv_driving_info3.text = "최근 주행 거리를\n한눈에 확인해보세요!"
 
         apiService().getRecentDrivingStatistics(
-            "Bearer " + PreferenceUtil.getPref(this@DrivenDistanceActivity,
-                PreferenceUtil.ACCESS_TOKEN, "")!!, PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!).enqueue(object:Callback<ResponseBody>{
+            "Bearer " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!).enqueue(object:Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200){
                     val recentDrivingDistance = Gson().fromJson(
@@ -1128,10 +1128,78 @@ class DrivenDistanceActivity:BaseActivity() {
     }
 
     private fun setSixMonthDrivingDistance(){
+        tv_driving_info1.text = "6개월 주행 거리"
+        tv_driving_info2.text = "내 차는 자주\n달릴수록 좋아요"
+        tv_driving_info3.text = "6개월 주행 거리를\n한눈에 확인해보세요!"
 
+        apiService().getDrivingStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            getCurrentAndPastTimeForISO(60).second,
+            getCurrentAndPastTimeForISO(60).first,
+            "startTime",
+            "day").enqueue(object:Callback<ResponseBody>{
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200) {
+
+                    val drivingDistance = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingStatisticsResponse::class.java
+                    )
+
+                    tv_total_distance.text = transferDistance(drivingDistance.total.totalDistance)
+                    tv_diff_distance.text = "+" + transferDistance(drivingDistance.diffTotal.totalDistance) + distance_unit + " 증가"
+                    tv_average_distance.text = transferDistance(drivingDistance.average.totalDistance)
+                    tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
+                    tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
+
+                    tv_driving_info4.text = "6개월 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요"
+                }
+
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
     }
 
     private fun setYearDrivingDistance(){
+        tv_driving_info1.text = "1년 주행 거리"
+        tv_driving_info2.text = "내 차는 자주\n달릴수록 좋아요"
+        tv_driving_info3.text = "1년 주행 거리를\n한눈에 확인해보세요!"
 
+        apiService().getDrivingStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            getCurrentAndPastTimeForISO(365).second,
+            getCurrentAndPastTimeForISO(365).first,
+            "startTime",
+            "day").enqueue(object:Callback<ResponseBody>{
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200) {
+
+                    val drivingDistance = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingStatisticsResponse::class.java
+                    )
+
+                    tv_total_distance.text = transferDistance(drivingDistance.total.totalDistance)
+                    tv_diff_distance.text = "+" + transferDistance(drivingDistance.diffTotal.totalDistance) + distance_unit + " 증가"
+                    tv_average_distance.text = transferDistance(drivingDistance.average.totalDistance)
+                    tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
+                    tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
+
+                    tv_driving_info4.text = "6개월 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요"
+                }
+
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
     }
 }

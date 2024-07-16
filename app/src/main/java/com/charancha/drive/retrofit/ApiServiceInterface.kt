@@ -102,7 +102,7 @@ interface ApiServiceInterface {
 
 
     // 최근 주행 통계 조회
-    @GET("api/v1/cars/-/user-cars/{userCarId}/drivings/-/statistics")
+    @GET("api/v1/cars/-/user-cars/{userCarId}/drivings/-/statistics/recent")
     fun getRecentDrivingStatistics(@Header("Authorization") token: String,
                            @Path("userCarId") userCarId: String): Call<ResponseBody>
 
