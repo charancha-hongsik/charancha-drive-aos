@@ -133,6 +133,10 @@ class BestDrivingActivity:BaseActivity() {
 
             if(percent == 0f){
                 layout_extra_speed_percent.visibility = GONE
+
+                val layoutParams2 = layout_extra_speed_extra.layoutParams
+                layoutParams2.width = backgroundWidth
+                layout_extra_speed_extra.layoutParams = layoutParams2
             }else{
                 layout_extra_speed_percent.visibility = VISIBLE
                 // Calculate 70% of the background view's width
@@ -578,8 +582,8 @@ class BestDrivingActivity:BaseActivity() {
                         GetRecentDrivingStatisticsResponse::class.java
                     )
                     if(recentDrivingDistance.isRecent){
-                        tv_best_percent1.text = String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.average.optimalDrivingPercentage)
-                        tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.average.optimalDrivingPercentage)
+                        tv_best_percent1.text = String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.average.optimalDrivingPercentage) + "%"
+                        tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.average.optimalDrivingPercentage) + "%"
                         tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
 
                         setExtraSpeedDrivingChartWidthByPercent(recentDrivingDistance.average.optimalDrivingPercentage.toFloat()/100)
@@ -628,8 +632,8 @@ class BestDrivingActivity:BaseActivity() {
                         GetDrivingStatisticsResponse::class.java
                     )
 
-                    tv_best_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage)
-                    tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage)
+                    tv_best_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
+                    tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
                     tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
 
                     setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat()/100)
@@ -663,8 +667,8 @@ class BestDrivingActivity:BaseActivity() {
                         response.body()?.string(),
                         GetDrivingStatisticsResponse::class.java
                     )
-                    tv_best_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage)
-                    tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage)
+                    tv_best_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
+                    tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
                     tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
 
                     setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat()/100)
@@ -699,8 +703,8 @@ class BestDrivingActivity:BaseActivity() {
                         response.body()?.string(),
                         GetDrivingStatisticsResponse::class.java
                     )
-                    tv_best_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage)
-                    tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage)
+                    tv_best_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
+                    tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
                     tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
 
                     setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat()/100)

@@ -24,9 +24,9 @@ import retrofit2.Response
 import java.util.*
 
 class ConstantSpeedDrivingActivity:BaseActivity() {
-    lateinit var layout_extra_speed_percent: View
-    lateinit var layout_extra_speed_extra:View
-    lateinit var layout_extra_speed_background:ConstraintLayout
+    lateinit var layout_const_speed_percent: View
+    lateinit var layout_const_speed_extra:View
+    lateinit var layout_const_speed_background:ConstraintLayout
 
     lateinit var btn_back:ImageView
     lateinit var btn_recent_drive:TextView
@@ -53,9 +53,9 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
     }
 
     fun init(){
-        layout_extra_speed_percent = findViewById(R.id.layout_extra_speed_percent)
-        layout_extra_speed_extra = findViewById(R.id.layout_extra_speed_extra)
-        layout_extra_speed_background = findViewById(R.id.layout_extra_speed_background)
+        layout_const_speed_percent = findViewById(R.id.layout_const_speed_percent)
+        layout_const_speed_extra = findViewById(R.id.layout_const_speed_extra)
+        layout_const_speed_background = findViewById(R.id.layout_const_speed_background)
 
         btn_back = findViewById(R.id.btn_back)
         btn_back.setOnClickListener { finish() }
@@ -125,24 +125,29 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
      * 0.0 ~ 1
      */
     fun setExtraSpeedDrivingChartWidthByPercent(percent:Float){
-        layout_extra_speed_background.post {
-            val backgroundWidth = layout_extra_speed_background.width
+        layout_const_speed_background.post {
+            val backgroundWidth = layout_const_speed_background.width
 
             if(percent == 0f){
-                layout_extra_speed_percent.visibility = View.GONE
+                layout_const_speed_percent.visibility = View.GONE
+
+                val layoutParams2 = layout_const_speed_extra.layoutParams
+                layoutParams2.width = backgroundWidth
+                layout_const_speed_extra.layoutParams = layoutParams2
+
             }else{
-                layout_extra_speed_percent.visibility = View.VISIBLE
+                layout_const_speed_percent.visibility = View.VISIBLE
                 // Calculate 70% of the background view's width
                 val chartWidth = (backgroundWidth * percent).toInt()
 
                 // Apply the calculated width to view_normal_speed_driving_chart
-                val layoutParams = layout_extra_speed_percent.layoutParams
+                val layoutParams = layout_const_speed_percent.layoutParams
                 layoutParams.width = chartWidth
-                layout_extra_speed_percent.layoutParams = layoutParams
+                layout_const_speed_percent.layoutParams = layoutParams
 
-                val layoutParams2 = layout_extra_speed_extra.layoutParams
+                val layoutParams2 = layout_const_speed_extra.layoutParams
                 layoutParams2.width = backgroundWidth - chartWidth
-                layout_extra_speed_extra.layoutParams = layoutParams2
+                layout_const_speed_extra.layoutParams = layoutParams2
             }
         }
     }
@@ -575,8 +580,8 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
                         GetRecentDrivingStatisticsResponse::class.java
                     )
                     if(recentDrivingDistance.isRecent){
-                        tv_const_percent1.text = String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.average.constantSpeedDrivingDistancePercentage)
-                        tv_const_percent2.text = String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.average.constantSpeedDrivingDistancePercentage)
+                        tv_const_percent1.text = String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.average.constantSpeedDrivingDistancePercentage) + "%"
+                        tv_const_percent2.text = String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.average.constantSpeedDrivingDistancePercentage) + "%"
                         tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.diffAverage.constantSpeedDrivingDistancePercentage) + "% 증가"
 
                         setExtraSpeedDrivingChartWidthByPercent(recentDrivingDistance.average.constantSpeedDrivingDistancePercentage.toFloat()/100)
@@ -624,8 +629,8 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
                         GetDrivingStatisticsResponse::class.java
                     )
 
-                    tv_const_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.constantSpeedDrivingDistancePercentage)
-                    tv_const_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.constantSpeedDrivingDistancePercentage)
+                    tv_const_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.constantSpeedDrivingDistancePercentage) + "%"
+                    tv_const_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.constantSpeedDrivingDistancePercentage) + "%"
                     tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage) + "% 증가"
 
                     setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.constantSpeedDrivingDistancePercentage.toFloat()/100)
@@ -659,8 +664,8 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
                         response.body()?.string(),
                         GetDrivingStatisticsResponse::class.java
                     )
-                    tv_const_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.constantSpeedDrivingDistancePercentage)
-                    tv_const_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.constantSpeedDrivingDistancePercentage)
+                    tv_const_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.constantSpeedDrivingDistancePercentage) + "%"
+                    tv_const_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.constantSpeedDrivingDistancePercentage) + "%"
                     tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage) + "% 증가"
 
                     setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.constantSpeedDrivingDistancePercentage.toFloat()/100)
@@ -695,8 +700,8 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
                         response.body()?.string(),
                         GetDrivingStatisticsResponse::class.java
                     )
-                    tv_const_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.constantSpeedDrivingDistancePercentage)
-                    tv_const_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.constantSpeedDrivingDistancePercentage)
+                    tv_const_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.constantSpeedDrivingDistancePercentage) + "%"
+                    tv_const_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.constantSpeedDrivingDistancePercentage) + "%"
                     tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage) + "% 증가"
 
                     setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.constantSpeedDrivingDistancePercentage.toFloat()/100)

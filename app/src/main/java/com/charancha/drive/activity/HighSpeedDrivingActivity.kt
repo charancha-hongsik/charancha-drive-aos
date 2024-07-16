@@ -159,6 +159,11 @@ class HighSpeedDrivingActivity:BaseActivity() {
 
             if(percent == 0.0f){
                 layout_high_speed_percent.visibility = GONE
+
+                val layoutParams2 = layout_high_speed_extra.layoutParams
+                layoutParams2.width = backgroundWidth
+                layout_high_speed_extra.layoutParams = layoutParams2
+
             }else{
                 layout_high_speed_percent.visibility = VISIBLE
                 // Calculate 70% of the background view's width
@@ -185,6 +190,10 @@ class HighSpeedDrivingActivity:BaseActivity() {
 
             if(percent == 0f){
                 layout_low_speed_percent.visibility = GONE
+
+                val layoutParams2 = layout_low_speed_extra.layoutParams
+                layoutParams2.width = backgroundWidth
+                layout_low_speed_extra.layoutParams = layoutParams2
 
             }else{
                 layout_low_speed_percent.visibility = VISIBLE
@@ -214,6 +223,10 @@ class HighSpeedDrivingActivity:BaseActivity() {
 
             if(percent == 0f){
                 layout_extra_speed_percent.visibility = GONE
+
+                val layoutParams2 = layout_extra_speed_extra.layoutParams
+                layoutParams2.width = backgroundWidth
+                layout_extra_speed_extra.layoutParams = layoutParams2
 
             }else{
                 layout_extra_speed_percent.visibility = VISIBLE
