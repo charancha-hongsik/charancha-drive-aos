@@ -2,6 +2,8 @@ package com.charancha.drive.activity
 
 import android.os.Bundle
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -35,6 +37,7 @@ class BestDrivingActivity:BaseActivity() {
     lateinit var btn_year_drive:TextView
 
     lateinit var tv_driving_info1:TextView
+    lateinit var tv_driving_info2:TextView
     lateinit var tv_best_percent1:TextView
     lateinit var tv_diff_percent:TextView
     lateinit var tv_best_percent2:TextView
@@ -69,6 +72,7 @@ class BestDrivingActivity:BaseActivity() {
         layout_barchart_best_driving = findViewById(R.id.layout_barchart_best_driving)
 
         tv_driving_info1 = findViewById(R.id.tv_driving_info1)
+        tv_driving_info2 = findViewById(R.id.tv_driving_info2)
         tv_best_percent1 = findViewById(R.id.tv_best_percent1)
         tv_diff_percent = findViewById(R.id.tv_diff_percent)
         tv_best_percent2 = findViewById(R.id.tv_best_percent2)
@@ -127,17 +131,22 @@ class BestDrivingActivity:BaseActivity() {
         layout_extra_speed_background.post {
             val backgroundWidth = layout_extra_speed_background.width
 
-            // Calculate 70% of the background view's width
-            val chartWidth = (backgroundWidth * percent).toInt()
+            if(percent == 0f){
+                layout_extra_speed_percent.visibility = GONE
+            }else{
+                layout_extra_speed_percent.visibility = VISIBLE
+                // Calculate 70% of the background view's width
+                val chartWidth = (backgroundWidth * percent).toInt()
 
-            // Apply the calculated width to view_normal_speed_driving_chart
-            val layoutParams = layout_extra_speed_percent.layoutParams
-            layoutParams.width = chartWidth
-            layout_extra_speed_percent.layoutParams = layoutParams
+                // Apply the calculated width to view_normal_speed_driving_chart
+                val layoutParams = layout_extra_speed_percent.layoutParams
+                layoutParams.width = chartWidth
+                layout_extra_speed_percent.layoutParams = layoutParams
 
-            val layoutParams2 = layout_extra_speed_extra.layoutParams
-            layoutParams2.width = backgroundWidth - chartWidth
-            layout_extra_speed_extra.layoutParams = layoutParams2
+                val layoutParams2 = layout_extra_speed_extra.layoutParams
+                layoutParams2.width = backgroundWidth - chartWidth
+                layout_extra_speed_extra.layoutParams = layoutParams2
+            }
         }
     }
 
@@ -556,6 +565,7 @@ class BestDrivingActivity:BaseActivity() {
 
     private fun setRecentDrivingDistance(){
         tv_driving_info1.text = "최근 평균 최적 주행"
+        tv_driving_info2.text = "최근 내 차의\n최적 주행 비율이에요"
 
         apiService().getRecentDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
@@ -599,6 +609,8 @@ class BestDrivingActivity:BaseActivity() {
 
     private fun setMonthDrivingDistance(){
         tv_driving_info1.text = "1개월 평균 최적 주행"
+        tv_driving_info2.text = "1개월 간 내 차의\n최적 주행 비율이에요"
+
 
 
         apiService().getDrivingStatistics(
@@ -635,6 +647,7 @@ class BestDrivingActivity:BaseActivity() {
 
     private fun setSixMonthDrivingDistance(){
         tv_driving_info1.text = "6개월 평균 최적 주행"
+        tv_driving_info2.text = "6개월 간 내 차의\n최적 주행 비율이에요"
 
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
@@ -669,6 +682,7 @@ class BestDrivingActivity:BaseActivity() {
 
     private fun setYearDrivingDistance(){
         tv_driving_info1.text = "1년 평균 최적 주행"
+        tv_driving_info2.text = "1년 간 내 차의\n최적 주행 비율이에요"
 
 
         apiService().getDrivingStatistics(
