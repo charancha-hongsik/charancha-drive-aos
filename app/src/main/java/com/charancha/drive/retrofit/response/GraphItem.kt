@@ -3,7 +3,7 @@ package com.charancha.drive.retrofit.response
 data class GraphItem (
     val startTime:String,
     val endTime:String,
-    val distance:Int,
+    val distance:Double,
     val time:Double,
     val highSpeedDrivingDistancePercentage:Double,
     val lowSpeedDrivingDistancePercentage:Double,

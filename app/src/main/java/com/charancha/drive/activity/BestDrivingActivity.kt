@@ -568,7 +568,7 @@ class BestDrivingActivity:BaseActivity() {
 
 
     private fun setRecentDrivingDistance(){
-        tv_driving_info1.text = "최근 평균 최적 주행"
+        tv_driving_info1.text = "최근 1일 평균 최적 주행"
         tv_driving_info2.text = "최근 내 차의\n최적 주행 비율이에요"
 
         apiService().getRecentDrivingStatistics(
