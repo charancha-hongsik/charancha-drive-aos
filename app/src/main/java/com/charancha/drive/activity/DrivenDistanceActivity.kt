@@ -48,8 +48,6 @@ class DrivenDistanceActivity:BaseActivity() {
     var recentStartTime = "2024-07-15T00:00:00.000Z"
     var recentEndTime = "2024-07-15T23:59:59.999Z"
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_driven_distance)
@@ -59,8 +57,6 @@ class DrivenDistanceActivity:BaseActivity() {
 
         setRecentBarChartAsDefault()
         setRecentDrivingDistance()
-
-        callMonthBarChart()
     }
 
     private fun init(){
@@ -332,36 +328,36 @@ class DrivenDistanceActivity:BaseActivity() {
      */
     private fun setMonthBarChartAsDefault() {
         val entries = listOf(
-            BarEntry(-1f, 6f),
-            BarEntry(-0f, 10f),
-            BarEntry(1f, 4f),
-            BarEntry(2f, 8f),
-            BarEntry(3f, 6f),
-            BarEntry(4f, 1f),
-            BarEntry(5f, 7f),
-            BarEntry(6f, 5f),
-            BarEntry(7f, 9f),
-            BarEntry(8f, 9f),
-            BarEntry(9f, 4f),
-            BarEntry(10f, 5f),
-            BarEntry(11f, 2f),
-            BarEntry(12f, 7f),
-            BarEntry(13f, 5f),
-            BarEntry(14f, 1f),
-            BarEntry(15f, 3f),
-            BarEntry(16f, 4f),
-            BarEntry(17f, 5f),
-            BarEntry(18f, 9f),
-            BarEntry(19f, 1f),
-            BarEntry(20f,2f),
-            BarEntry(21f,5f),
-            BarEntry(22f,8f),
-            BarEntry(23f,3f),
-            BarEntry(24f,4f),
-            BarEntry(25f,1f),
-            BarEntry(26f,9f),
-            BarEntry(27f,5f),
-            BarEntry(28f,5f)
+            BarEntry(-1f, 0f),
+            BarEntry(-0f, 0f),
+            BarEntry(1f, 0f),
+            BarEntry(2f, 0f),
+            BarEntry(3f, 0f),
+            BarEntry(4f, 0f),
+            BarEntry(5f, 0f),
+            BarEntry(6f, 0f),
+            BarEntry(7f, 0f),
+            BarEntry(8f, 0f),
+            BarEntry(9f, 0f),
+            BarEntry(10f, 0f),
+            BarEntry(11f, 0f),
+            BarEntry(12f, 0f),
+            BarEntry(13f, 0f),
+            BarEntry(14f, 0f),
+            BarEntry(15f, 0f),
+            BarEntry(16f, 0f),
+            BarEntry(17f, 0f),
+            BarEntry(18f, 0f),
+            BarEntry(19f, 0f),
+            BarEntry(20f,0f),
+            BarEntry(21f,0f),
+            BarEntry(22f,0f),
+            BarEntry(23f,0f),
+            BarEntry(24f,0f),
+            BarEntry(25f,0f),
+            BarEntry(26f,0f),
+            BarEntry(27f,0f),
+            BarEntry(28f,0f)
         )
 
         val dataSet = BarDataSet(entries, "Sample Data")
@@ -571,8 +567,8 @@ class DrivenDistanceActivity:BaseActivity() {
             "ASC",
             null,
             null,
-            getCurrentAndPastTimeForISO(30).second,
-            getCurrentAndPastTimeForISO(30).first,
+            getCurrentAndPastTimeForISO(29).second,
+            getCurrentAndPastTimeForISO(29).first,
             "startTime",
             "day"
         ).enqueue(object :Callback<ResponseBody>{
@@ -587,7 +583,7 @@ class DrivenDistanceActivity:BaseActivity() {
                         GetDrivingGraphDataResponse::class.java
                     )
 
-                    setMonthBarChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(30).third)
+                    setMonthBarChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(29).third)
                 }
             }
 
@@ -598,25 +594,92 @@ class DrivenDistanceActivity:BaseActivity() {
         })
     }
 
+    private fun callSixMonthBarChart(){
+        apiService().getDrivingDistanceGraphData(
+            "Bearer " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.USER_CARID, "")!!,
+            "ASC",
+            null,
+            null,
+            getCurrentAndPastTimeForISO(150).second,
+            getCurrentAndPastTimeForISO(150).first,
+            "startTime",
+            "month"
+        ).enqueue(object :Callback<ResponseBody>{
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+
+                if(response.code() == 200){
+                    val getDrivingGraphDataResponse = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingGraphDataResponse::class.java
+                    )
+
+                    setSixMonthBarChart(getDrivingGraphDataResponse.items,getCurrentAndPastTimeForISO(150).third )
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
+
+    private fun callYearBarChart(){
+        apiService().getDrivingDistanceGraphData(
+            "Bearer " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.USER_CARID, "")!!,
+            "ASC",
+            null,
+            null,
+            getCurrentAndPastTimeForISO(335).second,
+            getCurrentAndPastTimeForISO(335).first,
+            "startTime",
+            "month"
+        ).enqueue(object :Callback<ResponseBody>{
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+
+                if(response.code() == 200){
+                    val getDrivingGraphDataResponse = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingGraphDataResponse::class.java
+                    )
+
+                    setYearBarChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(335).third)
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
 
     /**
      * 6개의 데이터가 내려옴
      * 6개 데이터 뿌려주면 됨
      */
-    private fun setSixMonthBarChart() {
+    private fun setSixMonthBarChartAsDefault() {
 
         val entries = listOf(
-            BarEntry(-1f, 6f), // 첫번째 월
+            BarEntry(-1f, 0f), // 첫번째 월
             BarEntry(0f, 0f),
-            BarEntry(1f, 8f), // 두번째 월
+            BarEntry(1f, 0f), // 두번째 월
             BarEntry(2f, 0f),
-            BarEntry(3f, 7f), // 세번째 월
+            BarEntry(3f, 0f), // 세번째 월
             BarEntry(4f, 0f),
-            BarEntry(5f, 3f), // 네번째 월
+            BarEntry(5f, 0f), // 네번째 월
             BarEntry(6f, 0f),
-            BarEntry(7f, 2f), // 다섯번째 월
+            BarEntry(7f, 0f), // 다섯번째 월
             BarEntry(8f, 0f),
-            BarEntry(9f, 9f) // 여섯번째 월
+            BarEntry(9f, 0f) // 여섯번째 월
         )
 
         val dataSet = BarDataSet(entries, "Sample Data")
@@ -692,36 +755,142 @@ class DrivenDistanceActivity:BaseActivity() {
     }
 
     /**
+     * 6개의 데이터가 내려옴
+     * 6개 데이터 뿌려주면 됨
+     */
+    private fun setSixMonthBarChart(items : List<GraphItem>, months:List<String>) {
+
+        var max = 0
+
+        for(item in items){
+            if(transferDistance(item.distance).toDouble() > max.toDouble())
+                max = transferDistance(item.distance).toDouble().toInt()
+        }
+
+        if(max == 0){
+            setSixMonthBarChartAsDefault()
+            return
+        }
+
+        max++
+
+        val entries = listOf(
+            BarEntry(-1f, transferDistance(items.get(0).distance).toFloat()), // 첫번째 월
+            BarEntry(0f, 0f),
+            BarEntry(1f, transferDistance(items.get(1).distance).toFloat()), // 두번째 월
+            BarEntry(2f, 0f),
+            BarEntry(3f, transferDistance(items.get(2).distance).toFloat()), // 세번째 월
+            BarEntry(4f, 0f),
+            BarEntry(5f, transferDistance(items.get(3).distance).toFloat()), // 네번째 월
+            BarEntry(6f, 0f),
+            BarEntry(7f, transferDistance(items.get(4).distance).toFloat()), // 다섯번째 월
+            BarEntry(8f, 0f),
+            BarEntry(9f, transferDistance(items.get(5).distance).toFloat()) // 여섯번째 월
+        )
+
+        val dataSet = BarDataSet(entries, "Sample Data")
+        dataSet.color = getColor(R.color.gray_200)
+        dataSet.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+        val barData = BarData(dataSet)
+        layout_barchart_distance.data = barData
+        layout_barchart_distance.setFitBars(true) // make the x-axis fit exactly all bars
+        layout_barchart_distance.description.isEnabled = false
+        layout_barchart_distance.animateY(1000)
+        layout_barchart_distance.legend.isEnabled = false
+        layout_barchart_distance.setTouchEnabled(false)
+
+        // Customizing x-axis labels
+        val xAxis = layout_barchart_distance.xAxis
+        xAxis.granularity = 1f // only intervals of 1 unit
+        xAxis.axisMinimum = -2f
+        xAxis.axisMaximum = 10f
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
+        xAxis.textColor = getColor(R.color.gray_600)
+        xAxis.labelCount = 11
+
+        // Customizing x-axis labels
+        xAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                return when (value.toInt()) {
+                    -1 -> months.get(0)
+                    1 -> months.get(1)
+                    3 -> months.get(2)
+                    5 -> months.get(3)
+                    7 -> months.get(4)
+                    9 -> months.get(5)
+                    else -> "" // 나머지 레이블은 비워둠
+                }
+            }
+        }
+
+        // Y축 레이블 및 선 제거
+        val leftAxis = layout_barchart_distance.axisLeft
+        leftAxis.setDrawGridLines(true) // 그리드 라인 표시
+        leftAxis.setDrawAxisLine(false) // 축 라인 제거
+        leftAxis.setDrawLabels(false) // Y축 레이블 제거
+        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 5로 설정 (강제)
+        leftAxis.axisMinimum = 0f
+        leftAxis.axisMaximum = max.toFloat()
+        leftAxis.gridColor = getColor(R.color.gray_200)
+
+
+        val rightAxis = layout_barchart_distance.axisRight
+        rightAxis.setDrawGridLines(false) // 그리드 라인 제거
+        rightAxis.setDrawAxisLine(false) // 축 라인 제거
+        rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.axisMinimum = 0f
+        rightAxis.axisMaximum = max.toFloat()
+        rightAxis.textColor = getColor(R.color.gray_600)
+
+        // Y축 커스텀 레이블 포매터 설정
+        rightAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                val minValue = rightAxis.axisMinimum
+                val maxValue = rightAxis.axisMaximum
+                return if (value == minValue || value == maxValue) {
+                    value.toInt().toString() + "km"// 가장 아래와 위에만 레이블 표시
+                } else {
+                    "" // 나머지 레이블 제거
+                }
+            }
+        }
+
+        layout_barchart_distance.invalidate() // refresh
+    }
+
+    /**
      * 데어터가 12개 내려옴 (월 단위의 데이터)
      * 1월 / 5월 / 8월 / 12월
      */
 
-    private fun setYearBarChart() {
+    private fun setYearBarChartAsDefault() {
 
         val entries = listOf(
-            BarEntry(-1f, 6f), // 1월
+            BarEntry(-1f, 0f), // 1월
             BarEntry(-0f, 0f),
-            BarEntry(1f, 4f), // 2월
+            BarEntry(1f, 0f), // 2월
             BarEntry(2f, 0f),
-            BarEntry(3f, 6f), // 3월
+            BarEntry(3f, 0f), // 3월
             BarEntry(4f, 0f),
-            BarEntry(5f, 7f), // 4월
+            BarEntry(5f, 0f), // 4월
             BarEntry(6f, 0f),
-            BarEntry(7f, 9f), // 5월
+            BarEntry(7f, 0f), // 5월
             BarEntry(8f, 0f),
-            BarEntry(9f, 4f), // 6월
+            BarEntry(9f, 0f), // 6월
             BarEntry(10f, 0f),
-            BarEntry(11f, 2f), // 7월
+            BarEntry(11f, 0f), // 7월
             BarEntry(12f, 0f),
-            BarEntry(13f, 5f), // 8월
+            BarEntry(13f, 0f), // 8월
             BarEntry(14f, 0f),
-            BarEntry(15f, 3f), // 9월
+            BarEntry(15f, 0f), // 9월
             BarEntry(16f, 0f),
-            BarEntry(17f, 5f), // 10월
+            BarEntry(17f, 0f), // 10월
             BarEntry(18f, 0f),
-            BarEntry(19f, 1f), // 11월
+            BarEntry(19f, 0f), // 11월
             BarEntry(20f,0f),
-            BarEntry(21f,5f) // 12월
+            BarEntry(21f,0f) // 12월
         )
 
         val dataSet = BarDataSet(entries, "Sample Data")
@@ -755,6 +924,105 @@ class DrivenDistanceActivity:BaseActivity() {
                     7 -> "5월"
                     13 -> "8월"
                     21-> "12월"
+                    else -> "" // 나머지 레이블은 비워둠
+                }
+            }
+        }
+
+        // Y축 레이블 및 선 제거
+        val leftAxis = layout_barchart_distance.axisLeft
+        leftAxis.setDrawGridLines(true) // 그리드 라인 표시
+        leftAxis.setDrawAxisLine(false) // 축 라인 제거
+        leftAxis.setDrawLabels(false) // Y축 레이블 제거
+        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 5로 설정 (강제)
+        leftAxis.axisMinimum = 0f
+        leftAxis.axisMaximum = 10f
+        leftAxis.gridColor = getColor(R.color.gray_200)
+
+
+        val rightAxis = layout_barchart_distance.axisRight
+        rightAxis.setDrawGridLines(false) // 그리드 라인 제거
+        rightAxis.setDrawAxisLine(false) // 축 라인 제거
+        rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.axisMinimum = 0f
+        rightAxis.axisMaximum = 10f
+        rightAxis.textColor = getColor(R.color.gray_600)
+
+        // Y축 커스텀 레이블 포매터 설정
+        rightAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                val minValue = rightAxis.axisMinimum
+                val maxValue = rightAxis.axisMaximum
+                return if (value == minValue || value == maxValue) {
+                    value.toInt().toString() + "km"// 가장 아래와 위에만 레이블 표시
+                } else {
+                    "" // 나머지 레이블 제거
+                }
+            }
+        }
+
+        layout_barchart_distance.invalidate() // refresh
+    }
+
+    private fun setYearBarChart(items : List<GraphItem>, months:List<String>) {
+
+        val entries = listOf(
+            BarEntry(-1f, transferDistance(items.get(0).distance).toFloat()), // 1월
+            BarEntry(-0f, 0f),
+            BarEntry(1f, transferDistance(items.get(1).distance).toFloat()), // 2월
+            BarEntry(2f, 0f),
+            BarEntry(3f, transferDistance(items.get(2).distance).toFloat()), // 3월
+            BarEntry(4f, 0f),
+            BarEntry(5f, transferDistance(items.get(3).distance).toFloat()), // 4월
+            BarEntry(6f, 0f),
+            BarEntry(7f, transferDistance(items.get(4).distance).toFloat()), // 5월
+            BarEntry(8f, 0f),
+            BarEntry(9f, transferDistance(items.get(5).distance).toFloat()), // 6월
+            BarEntry(10f, 0f),
+            BarEntry(11f, transferDistance(items.get(6).distance).toFloat()), // 7월
+            BarEntry(12f, 0f),
+            BarEntry(13f, transferDistance(items.get(7).distance).toFloat()), // 8월
+            BarEntry(14f, 0f),
+            BarEntry(15f, transferDistance(items.get(8).distance).toFloat()), // 9월
+            BarEntry(16f, 0f),
+            BarEntry(17f, transferDistance(items.get(9).distance).toFloat()), // 10월
+            BarEntry(18f, 0f),
+            BarEntry(19f, transferDistance(items.get(10).distance).toFloat()), // 11월
+            BarEntry(20f,0f),
+            BarEntry(21f,transferDistance(items.get(11).distance).toFloat()) // 12월
+        )
+
+        val dataSet = BarDataSet(entries, "Sample Data")
+        dataSet.color = getColor(R.color.gray_200)
+        dataSet.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+        val barData = BarData(dataSet)
+        barData.barWidth = 1.0f
+        layout_barchart_distance.data = barData
+        layout_barchart_distance.setFitBars(true) // make the x-axis fit exactly all bars
+        layout_barchart_distance.description.isEnabled = false
+        layout_barchart_distance.animateY(1000)
+        layout_barchart_distance.legend.isEnabled = false
+        layout_barchart_distance.setTouchEnabled(false)
+
+        // Customizing x-axis labels
+        val xAxis = layout_barchart_distance.xAxis
+        xAxis.granularity = 1f // only intervals of 1 unit
+        xAxis.axisMinimum = -2f
+        xAxis.axisMaximum = 22f
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
+        xAxis.textColor = getColor(R.color.gray_600)
+        xAxis.labelCount = 23
+
+        // Customizing x-axis labels
+        xAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                return when (value.toInt()) {
+                    -1 -> months.get(0)
+                    7 -> months.get(4)
+                    13 -> months.get(7)
+                    21-> months.get(11)
                     else -> "" // 나머지 레이블은 비워둠
                 }
             }
@@ -1288,7 +1556,7 @@ class DrivenDistanceActivity:BaseActivity() {
         }
 
         btn_six_month_drive.setOnClickListener {
-            setSixMonthBarChart()
+            callSixMonthBarChart()
             setSixMonthLineChart()
             setSixMonthDrivingDistance()
 
@@ -1299,7 +1567,7 @@ class DrivenDistanceActivity:BaseActivity() {
         }
 
         btn_year_drive.setOnClickListener {
-            setYearBarChart()
+            callYearBarChart()
             setYearLineChart()
             setYearDrivingDistance()
 
@@ -1343,8 +1611,8 @@ class DrivenDistanceActivity:BaseActivity() {
                             "ASC",
                             null,
                             null,
-                            "2024-07-14T00:00:00.000Z",
-                            "2024-07-14T23:59:59.999Z",
+                            "2024-07-15T00:00:00.000Z",
+                            "2024-07-15T23:59:59.999Z",
                             "startTime",
                             "hour"
                         ).enqueue(object :Callback<ResponseBody>{
@@ -1449,10 +1717,10 @@ class DrivenDistanceActivity:BaseActivity() {
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
-            getCurrentAndPastTimeForISO(60).second,
-            getCurrentAndPastTimeForISO(60).first,
+            getCurrentAndPastTimeForISO(150).second,
+            getCurrentAndPastTimeForISO(150).first,
             "startTime",
-            "day").enqueue(object:Callback<ResponseBody>{
+            "month").enqueue(object:Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200) {
 
@@ -1487,10 +1755,10 @@ class DrivenDistanceActivity:BaseActivity() {
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
-            getCurrentAndPastTimeForISO(365).second,
-            getCurrentAndPastTimeForISO(365).first,
+            getCurrentAndPastTimeForISO(335).second,
+            getCurrentAndPastTimeForISO(335).first,
             "startTime",
-            "day").enqueue(object:Callback<ResponseBody>{
+            "month").enqueue(object:Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200) {
 

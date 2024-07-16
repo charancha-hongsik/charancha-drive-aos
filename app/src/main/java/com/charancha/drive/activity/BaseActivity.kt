@@ -81,7 +81,8 @@ open class BaseActivity: AppCompatActivity(){
         return Pair(hours, minutes)
     }
 
-    fun getCurrentAndPastTimeForISO(past:Long): Triple<String, String,List<String>> {
+
+    fun getCurrentAndPastTimeForISO(past: Long): Triple<String, String, List<String>> {
         // 현재 시간 구하기
         val now = Instant.now()
 
@@ -100,20 +101,31 @@ open class BaseActivity: AppCompatActivity(){
         val startDate = ZonedDateTime.ofInstant(previousDate, zoneId).toLocalDate()
         val endDate = ZonedDateTime.ofInstant(now, zoneId).toLocalDate()
 
-        // 범위 내 모든 월요일 찾기
-        val mondays = mutableListOf<String>()
+        val resultList = mutableListOf<String>()
         val dateFormatter = DateTimeFormatter.ofPattern("MM월 dd일")
+        val monthFormatter = DateTimeFormatter.ofPattern("MM월")
 
         var date = startDate
 
-        while (!date.isAfter(endDate)) {
-            if (date.dayOfWeek == DayOfWeek.MONDAY) {
-                mondays.add(date.format(dateFormatter))
+        if (past == 150L || past == 335L) {
+            // 범위 내 모든 달 찾기
+            while (!date.isAfter(endDate)) {
+                resultList.add(date.format(monthFormatter))
+                date = date.plusMonths(1).withDayOfMonth(1)
             }
-            date = date.plusDays(1)
+        } else if (past == 29L) {
+            // 범위 내 모든 월요일 찾기
+            while (!date.isAfter(endDate)) {
+                if (date.dayOfWeek == DayOfWeek.MONDAY) {
+                    resultList.add(date.format(dateFormatter))
+                }
+                date = date.plusDays(1)
+            }
         }
 
-        return Triple(nowFormatted, previousDateFormatted, mondays)
+        return Triple(nowFormatted, previousDateFormatted, resultList)
     }
+
+
 
 }
