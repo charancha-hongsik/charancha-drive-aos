@@ -277,10 +277,10 @@ class DrivenDistanceActivity:BaseActivity() {
         xAxis.valueFormatter = object : IAxisValueFormatter {
             override fun getFormattedValue(value: Float, axis: AxisBase?): String {
                 return when (value.toInt()) {
-                    1 -> "오전 12시"
-                    8 -> "오전 6시"
-                    15 -> "오후 12시"
-                    21-> "오후 6시"
+                    0 -> "오전 12시"
+                    7 -> "오전 6시"
+                    14 -> "오후 12시"
+                    20-> "오후 6시"
                     else -> "" // 나머지 레이블은 비워둠
                 }
             }
@@ -1673,7 +1673,7 @@ class DrivenDistanceActivity:BaseActivity() {
     private fun setMonthDrivingDistance(){
         tv_driving_info1.text = "1개월 주행 거리"
         tv_driving_info2.text = "내 차는 자주\n달릴수록 좋아요"
-        tv_driving_info3.text = "1개월 주행 거리를\n한눈에 확인해보세요!"
+        tv_driving_info3.text = "1개월 간 주행 거리를\n한눈에 확인해보세요!"
 
 
         apiService().getDrivingStatistics(
@@ -1697,7 +1697,7 @@ class DrivenDistanceActivity:BaseActivity() {
                     tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
                     tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
 
-                    tv_driving_info4.text = "최근 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요"
+                    tv_driving_info4.text = "1개월 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요"
                 }
 
             }
@@ -1773,7 +1773,7 @@ class DrivenDistanceActivity:BaseActivity() {
                     tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
                     tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
 
-                    tv_driving_info4.text = "6개월 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요"
+                    tv_driving_info4.text = "1년 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요"
                 }
 
             }
