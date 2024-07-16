@@ -5,7 +5,10 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
+import com.charancha.drive.retrofit.response.GetDrivingStatisticsResponse
+import com.charancha.drive.retrofit.response.GetRecentDrivingStatisticsResponse
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase
@@ -14,6 +17,11 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import com.google.gson.Gson
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class DrivenTimeActivity:BaseActivity() {
     lateinit var btn_back:ImageView
@@ -23,6 +31,22 @@ class DrivenTimeActivity:BaseActivity() {
     lateinit var btn_month_drive:TextView
     lateinit var btn_six_month_drive:TextView
     lateinit var btn_year_drive:TextView
+
+    lateinit var tv_time_info1:TextView
+    lateinit var tv_time_info2:TextView
+    lateinit var tv_time_info3:TextView
+    lateinit var tv_time_info4:TextView
+
+    lateinit var tv_hour:TextView
+    lateinit var tv_minute:TextView
+    lateinit var tv_average_hour:TextView
+    lateinit var tv_average_minute:TextView
+    lateinit var tv_max_hour:TextView
+    lateinit var tv_max_minute:TextView
+    lateinit var tv_min_hour:TextView
+    lateinit var tv_min_minute:TextView
+    lateinit var tv_diff_time:TextView
+
 
 
 
@@ -34,6 +58,7 @@ class DrivenTimeActivity:BaseActivity() {
         setResources()
         setRecentBarChart()
         setRecentLineChart()
+        setRecentDrivingTime()
     }
 
     private fun init(){
@@ -46,6 +71,20 @@ class DrivenTimeActivity:BaseActivity() {
         btn_month_drive = findViewById(R.id.btn_month_drive)
         btn_six_month_drive = findViewById(R.id.btn_six_month_drive)
         btn_year_drive = findViewById(R.id.btn_year_drive)
+
+        tv_time_info1 = findViewById(R.id.tv_drive_time_info1)
+        tv_time_info2 = findViewById(R.id.tv_drive_time_info2)
+        tv_time_info3 = findViewById(R.id.tv_drive_time_info3)
+        tv_time_info4 = findViewById(R.id.tv_drive_time_info4)
+        tv_hour = findViewById(R.id.tv_hour)
+        tv_minute = findViewById(R.id.tv_minute)
+        tv_average_hour = findViewById(R.id.tv_average_hour)
+        tv_average_minute = findViewById(R.id.tv_average_minute)
+        tv_max_hour = findViewById(R.id.tv_max_hour)
+        tv_max_minute = findViewById(R.id.tv_max_minute)
+        tv_min_hour = findViewById(R.id.tv_min_hour)
+        tv_min_minute = findViewById(R.id.tv_min_minute)
+        tv_diff_time = findViewById(R.id.tv_diff_time)
 
         btn_recent_drive.isSelected = true
     }
@@ -935,6 +974,7 @@ class DrivenTimeActivity:BaseActivity() {
         btn_recent_drive.setOnClickListener {
             setRecentBarChart()
             setRecentLineChart()
+            setRecentDrivingTime()
 
             btn_recent_drive.isSelected = true
             btn_month_drive.isSelected = false
@@ -945,6 +985,7 @@ class DrivenTimeActivity:BaseActivity() {
         btn_month_drive.setOnClickListener {
             setMonthBarChart()
             setMonthLineChart()
+            setMonthDrivingTime()
 
             btn_recent_drive.isSelected = false
             btn_month_drive.isSelected = true
@@ -956,6 +997,7 @@ class DrivenTimeActivity:BaseActivity() {
         btn_six_month_drive.setOnClickListener {
             setSixMonthBarChart()
             setSixMonthLineChart()
+            setSixMonthDrivingTime()
 
             btn_recent_drive.isSelected = false
             btn_month_drive.isSelected = false
@@ -966,11 +1008,207 @@ class DrivenTimeActivity:BaseActivity() {
         btn_year_drive.setOnClickListener {
             setYearBarChart()
             setYearLineChart()
+            setYearDrivingTime()
 
             btn_recent_drive.isSelected = false
             btn_month_drive.isSelected = false
             btn_six_month_drive.isSelected = false
             btn_year_drive.isSelected = true
         }
+
+
+    }
+
+    private fun setRecentDrivingTime(){
+        tv_time_info1.text = "최근 주행 시간"
+        tv_time_info2.text = "내 차는 자주\n달릴수록 좋아요"
+        tv_time_info3.text = "최근 주행 시간을\n한눈에 확인해보세요!"
+
+        apiService().getRecentDrivingStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!).enqueue(object:
+            Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200){
+                    val recentDrivingDistance = Gson().fromJson(
+                        response.body()?.string(),
+                        GetRecentDrivingStatisticsResponse::class.java
+                    )
+
+                    if(recentDrivingDistance.isRecent){
+                        tv_hour.text = transferSecondsToHourAndMinutes(recentDrivingDistance.total.totalTime).first.toString()
+                        tv_minute.text = transferSecondsToHourAndMinutes(recentDrivingDistance.total.totalTime).second.toString()
+                        tv_average_hour.text = transferSecondsToHourAndMinutes(recentDrivingDistance.average.totalTime).first.toString()
+                        tv_average_minute.text = transferSecondsToHourAndMinutes(recentDrivingDistance.average.totalTime).second.toString()
+                        tv_min_hour.text = transferSecondsToHourAndMinutes(recentDrivingDistance.min.totalTime).first.toString()
+                        tv_min_minute.text = transferSecondsToHourAndMinutes(recentDrivingDistance.min.totalTime).second.toString()
+                        tv_max_hour.text = transferSecondsToHourAndMinutes(recentDrivingDistance.max.totalTime).first.toString()
+                        tv_max_minute.text = transferSecondsToHourAndMinutes(recentDrivingDistance.max.totalTime).second.toString()
+                        tv_diff_time.text = transferSecondsToHourAndMinutes(recentDrivingDistance.max.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(recentDrivingDistance.max.totalTime).second + "분 증가"
+
+                        tv_time_info4.text = "최근 내 차는\n" + transferSecondsToHourAndMinutes(recentDrivingDistance.total.totalTime).first +"시간" + transferSecondsToHourAndMinutes(recentDrivingDistance.total.totalTime).second + "분" + " 달렸어요"
+                    }else{
+                        tv_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
+                        tv_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
+                        tv_average_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
+                        tv_average_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
+                        tv_min_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
+                        tv_min_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
+                        tv_max_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
+                        tv_max_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
+                        tv_diff_time.text = transferSecondsToHourAndMinutes(0.0).first.toString() + "시간 " + transferSecondsToHourAndMinutes(0.0).second + "분 증가"
+
+                        tv_time_info4.text = "최근 내 차는\n" + transferSecondsToHourAndMinutes(0.0).first +"시간" + transferSecondsToHourAndMinutes(0.0).second + "분" + " 달렸어요"
+                    }
+                }else{
+
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                tv_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
+                tv_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
+                tv_average_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
+                tv_average_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
+                tv_min_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
+                tv_min_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
+                tv_max_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
+                tv_max_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
+                tv_diff_time.text = transferSecondsToHourAndMinutes(0.0).first.toString() + "시간 " + transferSecondsToHourAndMinutes(0.0).second + "분 증가"
+
+                tv_time_info4.text = "최근 내 차는\n" + transferSecondsToHourAndMinutes(0.0).first +"시간" + transferSecondsToHourAndMinutes(0.0).second + "분" + " 달렸어요"
+            }
+
+        })
+
+
+
+    }
+
+    private fun setMonthDrivingTime(){
+        tv_time_info1.text = "1개월 주행 시간"
+        tv_time_info2.text = "내 차는 자주\n달릴수록 좋아요"
+        tv_time_info3.text = "1개월 주행 시간을\n한눈에 확인해보세요!"
+
+
+        apiService().getDrivingStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            getCurrentAndPastTimeForISO(30).second,
+            getCurrentAndPastTimeForISO(30).first,
+            "startTime",
+            "day").enqueue(object: Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200) {
+
+                    val drivingDistance = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingStatisticsResponse::class.java
+                    )
+
+                    tv_hour.text = transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first.toString()
+                    tv_minute.text = transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second.toString()
+                    tv_average_hour.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).first.toString()
+                    tv_average_minute.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).second.toString()
+                    tv_min_hour.text = transferSecondsToHourAndMinutes(drivingDistance.min.totalTime).first.toString()
+                    tv_min_minute.text = transferSecondsToHourAndMinutes(drivingDistance.min.totalTime).second.toString()
+                    tv_max_hour.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).first.toString()
+                    tv_max_minute.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).second.toString()
+                    tv_diff_time.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).second + "분 증가"
+
+                    tv_time_info4.text = "1개월 간 내 차는\n" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first +"시간" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second + "분" + " 달렸어요"
+                }
+
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
+
+    private fun setSixMonthDrivingTime(){
+        tv_time_info1.text = "6개월 주행 시간"
+        tv_time_info2.text = "내 차는 자주\n달릴수록 좋아요"
+        tv_time_info3.text = "6개월 주행 시간을\n한눈에 확인해보세요!"
+
+        apiService().getDrivingStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            getCurrentAndPastTimeForISO(60).second,
+            getCurrentAndPastTimeForISO(60).first,
+            "startTime",
+            "day").enqueue(object: Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200) {
+
+                    val drivingDistance = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingStatisticsResponse::class.java
+                    )
+
+                    tv_hour.text = transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first.toString()
+                    tv_minute.text = transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second.toString()
+                    tv_average_hour.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).first.toString()
+                    tv_average_minute.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).second.toString()
+                    tv_min_hour.text = transferSecondsToHourAndMinutes(drivingDistance.min.totalTime).first.toString()
+                    tv_min_minute.text = transferSecondsToHourAndMinutes(drivingDistance.min.totalTime).second.toString()
+                    tv_max_hour.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).first.toString()
+                    tv_max_minute.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).second.toString()
+                    tv_diff_time.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).second + "분 증가"
+
+                    tv_time_info4.text = "6개월 간 내 차는\n" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first +"시간" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second + "분" + " 달렸어요"
+                }
+
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
+
+    private fun setYearDrivingTime(){
+        tv_time_info1.text = "1년 주행 시간"
+        tv_time_info2.text = "내 차는 자주\n달릴수록 좋아요"
+        tv_time_info3.text = "1년 주행 시간을\n한눈에 확인해보세요!"
+
+        apiService().getDrivingStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            getCurrentAndPastTimeForISO(365).second,
+            getCurrentAndPastTimeForISO(365).first,
+            "startTime",
+            "day").enqueue(object: Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200) {
+
+                    val drivingDistance = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingStatisticsResponse::class.java
+                    )
+
+                    tv_hour.text = transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first.toString()
+                    tv_minute.text = transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second.toString()
+                    tv_average_hour.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).first.toString()
+                    tv_average_minute.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).second.toString()
+                    tv_min_hour.text = transferSecondsToHourAndMinutes(drivingDistance.min.totalTime).first.toString()
+                    tv_min_minute.text = transferSecondsToHourAndMinutes(drivingDistance.min.totalTime).second.toString()
+                    tv_max_hour.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).first.toString()
+                    tv_max_minute.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).second.toString()
+                    tv_diff_time.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).second + "분 증가"
+
+                    tv_time_info4.text = "1년 간 내 차는\n" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first +"시간" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second + "분" + " 달렸어요"
+                }
+
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
     }
 }

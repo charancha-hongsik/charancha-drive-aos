@@ -328,7 +328,7 @@ class DetailDriveHistoryActivity: BaseActivity() {
                 if(response.code() == 200){
                     val getDrivingInfoResponse = Gson().fromJson(response.body()?.string(), GetDrivingInfoResponse::class.java)
 
-                    Log.d("testsetsetse","testsetestset startTime :: " + getDrivingInfoResponse.startTime)
+                    Log.d("testsetsetse","testsetestset totalTime :: " + getDrivingInfoResponse.totalTime)
 
                     tv_date.text = transformTimeToYYYYMMDD(getDrivingInfoResponse.createdAt)
                     tv_distance.text = transferDistanceWithUnit(getDrivingInfoResponse.totalDistance)

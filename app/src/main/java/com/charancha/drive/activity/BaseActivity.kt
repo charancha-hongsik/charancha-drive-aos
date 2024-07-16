@@ -76,6 +76,12 @@ open class BaseActivity: AppCompatActivity(){
         }
     }
 
+    fun transferSecondsToHourAndMinutes(seconds: Double): Pair<Int, Int> {
+        val hours = (seconds / 3600).toInt()
+        val minutes = ((seconds % 3600) / 60).toInt()
+        return Pair(hours, minutes)
+    }
+
     fun getCurrentAndPastTimeForISO(past:Long): Pair<String, String> {
         // 현재 시간 구하기
         val now = Instant.now()

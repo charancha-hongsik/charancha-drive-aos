@@ -97,22 +97,6 @@ class DrivenDistanceActivity:BaseActivity() {
 
 
         btn_recent_drive.isSelected = true
-
-        btn_recent_drive.setOnClickListener {
-            setRecentDrivingDistance()
-        }
-
-        btn_month_drive.setOnClickListener {
-            setMonthDrivingDistance()
-        }
-
-        btn_six_month_drive.setOnClickListener {
-            setSixMonthDrivingDistance()
-        }
-
-        btn_year_drive.setOnClickListener {
-            setYearDrivingDistance()
-        }
     }
 
     /**
@@ -1001,6 +985,7 @@ class DrivenDistanceActivity:BaseActivity() {
         btn_recent_drive.setOnClickListener {
             setRecentBarChart()
             setRecentLineChart()
+            setRecentDrivingDistance()
 
             btn_recent_drive.isSelected = true
             btn_month_drive.isSelected = false
@@ -1011,6 +996,7 @@ class DrivenDistanceActivity:BaseActivity() {
         btn_month_drive.setOnClickListener {
             setMonthBarChart()
             setMonthLineChart()
+            setMonthDrivingDistance()
 
             btn_recent_drive.isSelected = false
             btn_month_drive.isSelected = true
@@ -1022,6 +1008,7 @@ class DrivenDistanceActivity:BaseActivity() {
         btn_six_month_drive.setOnClickListener {
             setSixMonthBarChart()
             setSixMonthLineChart()
+            setSixMonthDrivingDistance()
 
             btn_recent_drive.isSelected = false
             btn_month_drive.isSelected = false
@@ -1032,6 +1019,7 @@ class DrivenDistanceActivity:BaseActivity() {
         btn_year_drive.setOnClickListener {
             setYearBarChart()
             setYearLineChart()
+            setYearDrivingDistance()
 
             btn_recent_drive.isSelected = false
             btn_month_drive.isSelected = false
@@ -1094,6 +1082,7 @@ class DrivenDistanceActivity:BaseActivity() {
         tv_driving_info2.text = "내 차는 자주\n달릴수록 좋아요"
         tv_driving_info3.text = "1개월 주행 거리를\n한눈에 확인해보세요!"
 
+
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
@@ -1108,6 +1097,8 @@ class DrivenDistanceActivity:BaseActivity() {
                         response.body()?.string(),
                         GetDrivingStatisticsResponse::class.java
                     )
+
+                    Log.d("testsetestset","testsetsesest :: " + drivingDistance.total.totalDistance)
 
                     tv_total_distance.text = transferDistance(drivingDistance.total.totalDistance)
                     tv_diff_distance.text = "+" + transferDistance(drivingDistance.diffTotal.totalDistance) + distance_unit + " 증가"
