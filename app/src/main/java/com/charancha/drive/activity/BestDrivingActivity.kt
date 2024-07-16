@@ -5,7 +5,10 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
+import com.charancha.drive.retrofit.response.GetDrivingStatisticsResponse
+import com.charancha.drive.retrofit.response.GetRecentDrivingStatisticsResponse
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis
@@ -13,6 +16,12 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
+import com.google.gson.Gson
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.util.*
 
 class BestDrivingActivity:BaseActivity() {
     lateinit var layout_extra_speed_percent: View
@@ -25,6 +34,12 @@ class BestDrivingActivity:BaseActivity() {
     lateinit var btn_six_month_drive:TextView
     lateinit var btn_year_drive:TextView
 
+    lateinit var tv_driving_info1:TextView
+    lateinit var tv_best_percent1:TextView
+    lateinit var tv_diff_percent:TextView
+    lateinit var tv_best_percent2:TextView
+
+
     lateinit var layout_barchart_best_driving:BarChart
 
 
@@ -33,6 +48,8 @@ class BestDrivingActivity:BaseActivity() {
         setContentView(R.layout.activity_best_driving)
 
         init()
+
+        setRecentDrivingDistance()
 
     }
 
@@ -51,6 +68,11 @@ class BestDrivingActivity:BaseActivity() {
 
         layout_barchart_best_driving = findViewById(R.id.layout_barchart_best_driving)
 
+        tv_driving_info1 = findViewById(R.id.tv_driving_info1)
+        tv_best_percent1 = findViewById(R.id.tv_best_percent1)
+        tv_diff_percent = findViewById(R.id.tv_diff_percent)
+        tv_best_percent2 = findViewById(R.id.tv_best_percent2)
+
         btn_recent_drive.isSelected = true
 
         btn_recent_drive.setOnClickListener {
@@ -60,6 +82,7 @@ class BestDrivingActivity:BaseActivity() {
             btn_year_drive.isSelected = false
 
             setRecentBarChart()
+            setRecentDrivingDistance()
 
         }
 
@@ -70,6 +93,7 @@ class BestDrivingActivity:BaseActivity() {
             btn_year_drive.isSelected = false
 
             setMonthBarChart()
+            setMonthDrivingDistance()
         }
 
         btn_six_month_drive.setOnClickListener {
@@ -79,6 +103,7 @@ class BestDrivingActivity:BaseActivity() {
             btn_year_drive.isSelected = false
 
             setSixMonthBarChart()
+            setSixMonthDrivingDistance()
         }
 
         btn_year_drive.setOnClickListener {
@@ -88,11 +113,10 @@ class BestDrivingActivity:BaseActivity() {
             btn_year_drive.isSelected = true
 
             setYearBarChart()
+            setYearDrivingDistance()
         }
 
         setRecentBarChart()
-
-        setExtraSpeedDrivingChartWidthByPercent(0.81f)
     }
 
 
@@ -105,7 +129,6 @@ class BestDrivingActivity:BaseActivity() {
 
             // Calculate 70% of the background view's width
             val chartWidth = (backgroundWidth * percent).toInt()
-
 
             // Apply the calculated width to view_normal_speed_driving_chart
             val layoutParams = layout_extra_speed_percent.layoutParams
@@ -531,4 +554,150 @@ class BestDrivingActivity:BaseActivity() {
     }
 
 
+    private fun setRecentDrivingDistance(){
+        tv_driving_info1.text = "최근 평균 최적 주행"
+
+        apiService().getRecentDrivingStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!).enqueue(object:
+            Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200){
+                    val recentDrivingDistance = Gson().fromJson(
+                        response.body()?.string(),
+                        GetRecentDrivingStatisticsResponse::class.java
+                    )
+                    if(recentDrivingDistance.isRecent){
+                        tv_best_percent1.text = String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.average.optimalDrivingPercentage)
+                        tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.average.optimalDrivingPercentage)
+                        tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
+
+                        setExtraSpeedDrivingChartWidthByPercent(recentDrivingDistance.average.optimalDrivingPercentage.toFloat()/100)
+
+                    }else{
+                        tv_best_percent1.text = "0.0"
+                        tv_best_percent2.text = "0.0"
+                        tv_diff_percent.text = "+0.0% 증가"
+                    }
+                }else{
+
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                tv_best_percent1.text = "0.0"
+                tv_best_percent2.text = "0.0"
+                tv_diff_percent.text = "+0.0% 증가"
+            }
+
+        })
+
+
+
+    }
+
+
+    private fun setMonthDrivingDistance(){
+        tv_driving_info1.text = "1개월 평균 최적 주행"
+
+
+        apiService().getDrivingStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            getCurrentAndPastTimeForISO(30).second,
+            getCurrentAndPastTimeForISO(30).first,
+            "startTime",
+            "day").enqueue(object: Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200) {
+
+                    val drivingDistance = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingStatisticsResponse::class.java
+                    )
+
+                    tv_best_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage)
+                    tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage)
+                    tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
+
+                    setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat()/100)
+
+                }
+
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
+
+    private fun setSixMonthDrivingDistance(){
+        tv_driving_info1.text = "6개월 평균 최적 주행"
+
+        apiService().getDrivingStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            getCurrentAndPastTimeForISO(60).second,
+            getCurrentAndPastTimeForISO(60).first,
+            "startTime",
+            "day").enqueue(object: Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200) {
+
+                    val drivingDistance = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingStatisticsResponse::class.java
+                    )
+                    tv_best_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage)
+                    tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage)
+                    tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
+
+                    setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat()/100)
+
+                }
+
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
+
+    private fun setYearDrivingDistance(){
+        tv_driving_info1.text = "1년 평균 최적 주행"
+
+
+        apiService().getDrivingStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            getCurrentAndPastTimeForISO(365).second,
+            getCurrentAndPastTimeForISO(365).first,
+            "startTime",
+            "day").enqueue(object: Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200) {
+
+                    val drivingDistance = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingStatisticsResponse::class.java
+                    )
+                    tv_best_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage)
+                    tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage)
+                    tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
+
+                    setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat()/100)
+                }
+
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
 }
