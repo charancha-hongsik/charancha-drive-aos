@@ -1104,7 +1104,7 @@ class DrivenDistanceActivity:BaseActivity() {
                     tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
                     tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
 
-                    tv_driving_info4.text = "1개월 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요"
+                    tv_driving_info4.text = "최근 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요"
                 }
 
             }

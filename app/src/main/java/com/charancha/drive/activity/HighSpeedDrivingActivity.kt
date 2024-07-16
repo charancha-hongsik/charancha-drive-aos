@@ -895,24 +895,16 @@ class HighSpeedDrivingActivity:BaseActivity() {
                         GetRecentDrivingStatisticsResponse::class.java
                     )
                     if(recentDrivingDistance.isRecent){
-
                         runOnUiThread{
                             tv_total_percent.text = String.format(Locale.KOREAN, "%.3f", recentDrivingDistance.average.highSpeedDrivingDistancePercentage)
                             tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.3f", recentDrivingDistance.diffAverage.highSpeedDrivingDistancePercentage) + "% 증가"
-                            tv_high_speed_percent.text = String.format(Locale.KOREAN, "%.3f", recentDrivingDistance.average.highSpeedDrivingDistancePercentage)
-                            tv_low_speed_percent.text = String.format(Locale.KOREAN, "%.3f", recentDrivingDistance.average.lowSpeedDrivingDistancePercentage)
-                            tv_etc_speed_percent.text = String.format(Locale.KOREAN, "%.3f", recentDrivingDistance.average.etcSpeedDrivingDistancePercentage)
+                            tv_high_speed_percent.text = String.format(Locale.KOREAN, "%.3f", recentDrivingDistance.average.highSpeedDrivingDistancePercentage) + "%"
+                            tv_low_speed_percent.text = String.format(Locale.KOREAN, "%.3f", recentDrivingDistance.average.lowSpeedDrivingDistancePercentage) + "%"
+                            tv_etc_speed_percent.text = String.format(Locale.KOREAN, "%.3f", recentDrivingDistance.average.etcSpeedDrivingDistancePercentage) + "%"
 
-                            Log.d("testestestset","testestsetse :: " + String.format(Locale.KOREAN, "%.1f",recentDrivingDistance.average.highSpeedDrivingDistancePercentage/100).toFloat())
-                            Log.d("testestestset","testestsetse :: " + String.format(Locale.KOREAN, "%.1f",recentDrivingDistance.average.lowSpeedDrivingDistancePercentage/100).toFloat())
-                            Log.d("testestestset","testestsetse :: " + String.format(Locale.KOREAN, "%.1f",recentDrivingDistance.average.etcSpeedDrivingDistancePercentage/100).toFloat())
-
-
-                            setHighSpeedDrivingChartWidthByPercent(String.format(Locale.KOREAN, "%.1f",recentDrivingDistance.average.highSpeedDrivingDistancePercentage/100).toFloat())
-                            setLowSpeedDrivingChartWidthByPercent(String.format(Locale.KOREAN, "%.1f",recentDrivingDistance.average.lowSpeedDrivingDistancePercentage/100).toFloat())
-                            setExtraSpeedDrivingChartWidthByPercent(String.format(Locale.KOREAN, "%.1f",recentDrivingDistance.average.etcSpeedDrivingDistancePercentage/100).toFloat())
-
-
+                            setHighSpeedDrivingChartWidthByPercent(recentDrivingDistance.average.highSpeedDrivingDistancePercentage.toFloat()/100)
+                            setLowSpeedDrivingChartWidthByPercent(recentDrivingDistance.average.lowSpeedDrivingDistancePercentage.toFloat()/100)
+                            setExtraSpeedDrivingChartWidthByPercent(recentDrivingDistance.average.etcSpeedDrivingDistancePercentage.toFloat()/100)
                         }
                     }else{
                         runOnUiThread {
