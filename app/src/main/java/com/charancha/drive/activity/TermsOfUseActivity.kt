@@ -113,31 +113,64 @@ class TermsOfUseActivity: BaseActivity() {
         tvTermsTitle4 = findViewById(R.id.tv_terms_title4)
         tvTermsTitle5 = findViewById(R.id.tv_terms_title5)
 
+        try {
+            // TextView에 SpannableString 설정
+            tvTerms1.text = CommonUtil.getSpannableString(
+                this@TermsOfUseActivity,
+                resources.getString(R.string.first_terms_text),
+                resources.getString(R.string.first_terms_text_red),
+                resources.getColor(R.color.pri_500)
+            )
+            tvTermsTitle1.text = CommonUtil.getSpannableString(
+                this@TermsOfUseActivity,
+                resources.getString(R.string.terms_title1),
+                resources.getString(R.string.terms_title1_gray),
+                resources.getColor(R.color.gray_400)
+            )
+            tvTermsTitle2.text = CommonUtil.getSpannableString(
+                this@TermsOfUseActivity,
+                resources.getString(R.string.terms_title2),
+                resources.getString(R.string.terms_title2_gray),
+                resources.getColor(R.color.gray_400)
+            )
+            tvTermsTitle3.text = CommonUtil.getSpannableString(
+                this@TermsOfUseActivity,
+                resources.getString(R.string.terms_title3),
+                resources.getString(R.string.terms_title3_gray),
+                resources.getColor(R.color.gray_400)
+            )
+            tvTermsTitle4.text = CommonUtil.getSpannableString(
+                this@TermsOfUseActivity,
+                resources.getString(R.string.terms_title4),
+                resources.getString(R.string.terms_title4_gray),
+                resources.getColor(R.color.gray_400)
+            )
+            tvTermsTitle5.text = CommonUtil.getSpannableString(
+                this@TermsOfUseActivity,
+                resources.getString(R.string.terms_title5),
+                resources.getString(R.string.terms_title5_gray),
+                resources.getColor(R.color.gray_400)
+            )
 
-        // TextView에 SpannableString 설정
-        tvTerms1.text = CommonUtil.getSpannableString(this@TermsOfUseActivity, resources.getString(R.string.first_terms_text), resources.getString(R.string.first_terms_text_red), resources.getColor(R.color.pri_500))
-        tvTermsTitle1.text = CommonUtil.getSpannableString(this@TermsOfUseActivity, resources.getString(R.string.terms_title1), resources.getString(R.string.terms_title1_gray), resources.getColor(R.color.gray_400))
-        tvTermsTitle2.text = CommonUtil.getSpannableString(this@TermsOfUseActivity, resources.getString(R.string.terms_title2), resources.getString(R.string.terms_title2_gray), resources.getColor(R.color.gray_400))
-        tvTermsTitle3.text = CommonUtil.getSpannableString(this@TermsOfUseActivity, resources.getString(R.string.terms_title3), resources.getString(R.string.terms_title3_gray), resources.getColor(R.color.gray_400))
-        tvTermsTitle4.text = CommonUtil.getSpannableString(this@TermsOfUseActivity, resources.getString(R.string.terms_title4), resources.getString(R.string.terms_title4_gray), resources.getColor(R.color.gray_400))
-        tvTermsTitle5.text = CommonUtil.getSpannableString(this@TermsOfUseActivity, resources.getString(R.string.terms_title5), resources.getString(R.string.terms_title5_gray), resources.getColor(R.color.gray_400))
 
+            val content2 = SpannableString(tvTermsTitle2.text.toString())
+            content2.setSpan(UnderlineSpan(), 0, content2.length - 5, 0)
+            tvTermsTitle2.text = content2
 
-        val content2 = SpannableString(tvTermsTitle2.text.toString())
-        content2.setSpan(UnderlineSpan(), 0, content2.length-5, 0)
-        tvTermsTitle2.text = content2
+            val content3 = SpannableString(tvTermsTitle3.text.toString())
+            content3.setSpan(UnderlineSpan(), 0, content3.length - 5, 0)
+            tvTermsTitle3.text = content3
 
-        val content3 = SpannableString(tvTermsTitle3.text.toString())
-        content3.setSpan(UnderlineSpan(), 0, content3.length-5, 0)
-        tvTermsTitle3.text = content3
+            val content4 = SpannableString(tvTermsTitle4.text.toString())
+            content4.setSpan(UnderlineSpan(), 0, content4.length - 5, 0)
+            tvTermsTitle4.text = content4
 
-        val content4 = SpannableString(tvTermsTitle4.text.toString())
-        content4.setSpan(UnderlineSpan(), 0, content4.length-5, 0)
-        tvTermsTitle4.text = content4
+            val content5 = SpannableString(tvTermsTitle5.text.toString())
+            content5.setSpan(UnderlineSpan(), 0, content5.length - 5, 0)
+            tvTermsTitle5.text = content5
+        }catch (e:Exception){
 
-        val content5 = SpannableString(tvTermsTitle5.text.toString())
-        content5.setSpan(UnderlineSpan(), 0, content5.length-5, 0)
-        tvTermsTitle5.text = content5
+        }
 
 
     }

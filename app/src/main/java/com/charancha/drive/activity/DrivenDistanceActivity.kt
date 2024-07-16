@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View.*
 import android.widget.ImageView
 import android.widget.TextView
+import com.charancha.drive.CommonUtil
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
 import com.charancha.drive.retrofit.response.*
@@ -1621,6 +1622,14 @@ class DrivenDistanceActivity:BaseActivity() {
 
                         tv_driving_info4.text = "최근 내 차는\n" + transferDistance(recentDrivingDistance.total.totalDistance) + distance_unit + " 달렸어요"
 
+                        tv_driving_info4.text = CommonUtil.getSpannableString(
+                            this@DrivenDistanceActivity,
+                            "최근 내 차는\n" + transferDistance(recentDrivingDistance.total.totalDistance) + distance_unit + " 달렸어요",
+                            transferDistance(recentDrivingDistance.total.totalDistance) + distance_unit,
+                            resources.getColor(R.color.pri_500)
+                        )
+
+
                         apiService().getDrivingDistanceGraphData(
                             "Bearer " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
                             PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.USER_CARID, "")!!,
@@ -1714,6 +1723,14 @@ class DrivenDistanceActivity:BaseActivity() {
                     tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
 
                     tv_driving_info4.text = "1개월 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요"
+
+                    // TextView에 SpannableString 설정
+                    tv_driving_info4.text = CommonUtil.getSpannableString(
+                        this@DrivenDistanceActivity,
+                        "1개월 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요",
+                        transferDistance(drivingDistance.total.totalDistance) + distance_unit,
+                        resources.getColor(R.color.pri_500)
+                    )
                 }
 
             }
@@ -1752,6 +1769,13 @@ class DrivenDistanceActivity:BaseActivity() {
                     tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
 
                     tv_driving_info4.text = "6개월 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요"
+
+                    tv_driving_info4.text = CommonUtil.getSpannableString(
+                        this@DrivenDistanceActivity,
+                        "6개월 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요",
+                        transferDistance(drivingDistance.total.totalDistance) + distance_unit,
+                        resources.getColor(R.color.pri_500)
+                    )
                 }
 
             }
@@ -1790,6 +1814,13 @@ class DrivenDistanceActivity:BaseActivity() {
                     tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
 
                     tv_driving_info4.text = "1년 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요"
+
+                    tv_driving_info4.text = CommonUtil.getSpannableString(
+                        this@DrivenDistanceActivity,
+                        "1년 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요",
+                        transferDistance(drivingDistance.total.totalDistance) + distance_unit,
+                        resources.getColor(R.color.pri_500)
+                    )
                 }
 
             }
