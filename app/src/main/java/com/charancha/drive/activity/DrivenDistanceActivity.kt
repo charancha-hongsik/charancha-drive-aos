@@ -3,6 +3,7 @@ package com.charancha.drive.activity
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.View.*
 import android.widget.ImageView
 import android.widget.TextView
 import com.charancha.drive.PreferenceUtil
@@ -1612,6 +1613,7 @@ class DrivenDistanceActivity:BaseActivity() {
                         recentEndTime = recentDrivingDistance.recentEndTime
 
                         tv_total_distance.text = transferDistance(recentDrivingDistance.total.totalDistance)
+                        tv_diff_distance.visibility = VISIBLE
                         tv_diff_distance.text = "+" + transferDistance(recentDrivingDistance.diffTotal.totalDistance) + distance_unit + " 증가"
                         tv_average_distance.text = transferDistance(recentDrivingDistance.average.totalDistance)
                         tv_max_distance.text = transferDistance(recentDrivingDistance.max.totalDistance)
@@ -1654,6 +1656,7 @@ class DrivenDistanceActivity:BaseActivity() {
 
 
                     }else{
+                        tv_diff_distance.visibility = INVISIBLE
                         tv_total_distance.text = transferDistance(0.0)
                         tv_diff_distance.text = "+" + transferDistance(0.0) + distance_unit + " 증가"
                         tv_average_distance.text = transferDistance(0.0)
@@ -1663,7 +1666,6 @@ class DrivenDistanceActivity:BaseActivity() {
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-
                     }
                 }else{
 
