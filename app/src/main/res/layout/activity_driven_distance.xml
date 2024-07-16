@@ -124,6 +124,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_driving_info1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="최근 주행 거리"
@@ -137,6 +138,7 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/tv_total_distance"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="73"
@@ -146,6 +148,7 @@
                         android:gravity="center"/>
 
                     <TextView
+                        android:id="@+id/tv_total_distance_unit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="km"
@@ -157,9 +160,10 @@
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/tv_diff_distance"
                     android:layout_width="wrap_content"
                     android:layout_height="18dp"
-                    android:text="+ 21분 증가"
+                    android:text="+ 21분km 증가"
                     android:textAppearance="@style/C1R"
                     android:textColor="@color/pri_500"
                     android:textFontWeight="400"
@@ -187,6 +191,7 @@
                     android:textColor="@color/gray_600"/>
 
                 <TextView
+                    android:id="@+id/tv_driving_info2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -224,6 +229,7 @@
                     android:textColor="@color/gray_600"/>
 
                 <TextView
+                    android:id="@+id/tv_driving_info3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -302,7 +308,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"/>
 
                     <TextView
-                        android:id="@+id/tv_least_distance"
+                        android:id="@+id/tv_min_distance"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="10"
@@ -311,12 +317,12 @@
                         android:textColor="@color/gray_950"
                         android:layout_marginRight="1dp"
                         android:gravity="center_vertical"
-                        app:layout_constraintRight_toLeftOf="@+id/tv_least_distance_unit"
+                        app:layout_constraintRight_toLeftOf="@+id/tv_min_distance_unit"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"/>
 
                     <TextView
-                        android:id="@+id/tv_least_distance_unit"
+                        android:id="@+id/tv_min_distance_unit"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="km"
@@ -338,7 +344,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text="최 주행 거리"
+                        android:text="최대 주행 거리"
                         android:textAppearance="@style/B2R"
                         android:textFontWeight="400"
                         android:textColor="@color/gray_600"
@@ -348,7 +354,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"/>
 
                     <TextView
-                        android:id="@+id/tv_most_distance"
+                        android:id="@+id/tv_max_distance"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="150"
@@ -357,12 +363,12 @@
                         android:textColor="@color/gray_950"
                         android:layout_marginRight="1dp"
                         android:gravity="center_vertical"
-                        app:layout_constraintRight_toLeftOf="@+id/tv_most_distance_unit"
+                        app:layout_constraintRight_toLeftOf="@+id/tv_max_distance_unit"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"/>
 
                     <TextView
-                        android:id="@+id/tv_most_distance_unit"
+                        android:id="@+id/tv_max_distance_unit"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="km"
@@ -404,6 +410,7 @@
                     android:textColor="@color/gray_600"/>
 
                 <TextView
+                    android:id="@+id/tv_driving_info4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"

@@ -13,13 +13,11 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.viewModels
-import androidx.car.app.hardware.info.Speed
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
 import com.charancha.drive.retrofit.request.PatchDrivingInfo
-import com.charancha.drive.retrofit.request.SignUpRequest
 import com.charancha.drive.retrofit.response.GetDrivingInfoResponse
 import com.charancha.drive.viewmodel.DetailDriveHistoryViewModel
 import com.google.android.gms.maps.*
@@ -36,11 +34,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
+import java.time.*
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.util.*
 
 
@@ -85,8 +81,6 @@ class DetailDriveHistoryActivity: BaseActivity() {
     lateinit var tv_mycar:LinearLayout
     lateinit var tv_not_mycar:TextView
     lateinit var tv_mycar_scope_info:LinearLayout
-    var distance_unit = "km"
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,8 +91,6 @@ class DetailDriveHistoryActivity: BaseActivity() {
         init()
         setResources()
         getDriveDetail()
-
-        distance_unit = PreferenceUtil.getPref(this@DetailDriveHistoryActivity,  PreferenceUtil.KM_MILE, "km")!!
     }
 
     private fun init(){
@@ -336,14 +328,16 @@ class DetailDriveHistoryActivity: BaseActivity() {
                 if(response.code() == 200){
                     val getDrivingInfoResponse = Gson().fromJson(response.body()?.string(), GetDrivingInfoResponse::class.java)
 
+                    Log.d("testsetsetse","testsetestset startTime :: " + getDrivingInfoResponse.startTime)
+
                     tv_date.text = transformTimeToYYYYMMDD(getDrivingInfoResponse.createdAt)
-                    tv_distance.text = transferDistanceUnit(getDrivingInfoResponse.totalDistance)
+                    tv_distance.text = transferDistanceWithUnit(getDrivingInfoResponse.totalDistance)
                     tv_start_time.text = transformTimeToHHMM(getDrivingInfoResponse.startTime)
                     tv_end_time.text = transformTimeToHHMM(getDrivingInfoResponse.endTime)
                     tv_start_time_info.text = transformTimeToYYYYMMDDHHMMSS(getDrivingInfoResponse.startTime)
                     tv_end_time_info.text = transformTimeToYYYYMMDDHHMMSS(getDrivingInfoResponse.endTime)
                     tv_drive_time_info.text = transformSecondsToHHMMSS(getDrivingInfoResponse.totalTime)
-                    tv_drive_distance_info.text = transferDistanceUnit(getDrivingInfoResponse.totalDistance)
+                    tv_drive_distance_info.text = transferDistanceWithUnit(getDrivingInfoResponse.totalDistance)
                     tv_drive_verification_info.text = getDrivingInfoResponse.verification
                     tv_high_speed_driving_percent_info.text = getDrivingInfoResponse.highSpeedDrivingDistancePercentage.toString() + "%"
                     tv_low_speed_driving_percent_info.text = getDrivingInfoResponse.lowSpeedDrivingDistancePercentage.toString() + "%"
@@ -417,15 +411,6 @@ class DetailDriveHistoryActivity: BaseActivity() {
         return zonedDateTime.format(formatter)
     }
 
-    private fun getSpeedWithDistanceUnit(speed: Double):String{
-        if(distance_unit == "km"){
-            return String.format(Locale.KOREAN, "%.5fkm/h", speed)
-        }else{
-            val milesPerKilometer = 0.621371
-            return String.format(Locale.KOREAN, "%.5fmile/h", speed * milesPerKilometer)
-        }
-    }
-
     private fun transformTimeToYYYYMMDDHHMMSS(isoDate: String):String{
         // ISO 8601 형식의 날짜 문자열을 ZonedDateTime 객체로 변환
         val zonedDateTime = ZonedDateTime.parse(isoDate)
@@ -443,15 +428,6 @@ class DetailDriveHistoryActivity: BaseActivity() {
         val secs = seconds.toInt() % 60
 
         return "${hours}시간 ${minutes}분 ${secs}초"
-    }
-
-    fun transferDistanceUnit(meters:Double):String{
-        if(distance_unit == "km"){
-            return String.format(Locale.KOREAN, "%.5fkm", meters / 1000)
-        }else{
-            val milesPerMeter = 0.000621371
-            return String.format(Locale.KOREAN, "%.5fmile",meters * milesPerMeter)
-        }
     }
 
     private fun transformTimestampToHHMM(timestamp:Long):String{

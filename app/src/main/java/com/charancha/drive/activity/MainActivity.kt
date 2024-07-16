@@ -653,7 +653,8 @@ class MainActivity : BaseActivity() {
 
                         })
                     }else{
-
+                        startActivity(Intent(this@MainActivity, SplashActivity::class.java))
+                        finish()
                     }
                 }else{
 
