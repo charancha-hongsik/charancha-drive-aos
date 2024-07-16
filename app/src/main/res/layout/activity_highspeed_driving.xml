@@ -124,6 +124,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_driving_info1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="최근 평균 고속 주행"
@@ -137,6 +138,7 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/tv_total_percent"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="35.1"
@@ -157,6 +159,7 @@
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/tv_diff_percent"
                     android:layout_width="wrap_content"
                     android:layout_height="18dp"
                     android:text="+ 1.1% 증가"
@@ -219,6 +222,7 @@
                     android:textColor="@color/gray_600"/>
 
                 <TextView
+                    android:id="@+id/tv_driving_info2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -252,6 +256,7 @@
                             android:text="고속"/>
 
                         <TextView
+                            android:id="@+id/tv_high_speed_percent"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="@style/C2SB"
@@ -274,7 +279,7 @@
                         android:layout_marginTop="8dp">
 
                         <View
-                            android:id="@+id/layout_extra_speed_percent"
+                            android:id="@+id/layout_high_speed_percent"
                             android:layout_width="300dp"
                             android:layout_height="10dp"
                             android:background="@drawable/radius2_orange500"
@@ -283,14 +288,14 @@
                             app:layout_constraintBottom_toBottomOf="parent"/>
 
                         <View
-                            android:id="@+id/layout_extra_speed_extra"
+                            android:id="@+id/layout_high_speed_extra"
                             android:layout_width="0dp"
                             android:layout_height="10dp"
                             android:background="@drawable/radius2_gray100"
                             android:layout_marginLeft="2dp"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
-                            app:layout_constraintLeft_toRightOf="@+id/layout_extra_speed_percent"
+                            app:layout_constraintLeft_toRightOf="@+id/layout_high_speed_percent"
                             app:layout_constraintBottom_toBottomOf="parent"/>
 
 
@@ -324,6 +329,7 @@
                             android:text="저속"/>
 
                         <TextView
+                            android:id="@+id/tv_low_speed_percent"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="@style/C2SB"
@@ -396,6 +402,7 @@
                             android:text="기타"/>
 
                         <TextView
+                            android:id="@+id/tv_etc_speed_percent"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textAppearance="@style/C2SB"
@@ -418,7 +425,7 @@
                         android:layout_marginTop="8dp">
 
                         <View
-                            android:id="@+id/layout_high_speed_percent"
+                            android:id="@+id/layout_extra_speed_percent"
                             android:layout_width="300dp"
                             android:layout_height="10dp"
                             android:background="@drawable/radius2_gray700"
@@ -427,14 +434,14 @@
                             app:layout_constraintBottom_toBottomOf="parent"/>
 
                         <View
-                            android:id="@+id/layout_high_speed_extra"
+                            android:id="@+id/layout_extra_speed_extra"
                             android:layout_width="0dp"
                             android:layout_height="10dp"
                             android:background="@drawable/radius2_gray100"
                             android:layout_marginLeft="2dp"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
-                            app:layout_constraintLeft_toRightOf="@+id/layout_high_speed_percent"
+                            app:layout_constraintLeft_toRightOf="@+id/layout_extra_speed_percent"
                             app:layout_constraintBottom_toBottomOf="parent"/>
 
 
@@ -468,6 +475,7 @@
                     android:textColor="@color/gray_600"/>
 
                 <TextView
+                    android:id="@+id/tv_driving_info3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"

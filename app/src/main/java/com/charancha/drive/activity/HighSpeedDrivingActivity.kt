@@ -1,11 +1,17 @@
 package com.charancha.drive.activity
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
+import com.charancha.drive.retrofit.response.GetDrivingStatisticsResponse
+import com.charancha.drive.retrofit.response.GetRecentDrivingStatisticsResponse
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis
@@ -13,6 +19,12 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
+import com.google.gson.Gson
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.util.*
 
 class HighSpeedDrivingActivity:BaseActivity() {
     lateinit var layout_high_speed_percent: View
@@ -33,6 +45,17 @@ class HighSpeedDrivingActivity:BaseActivity() {
     lateinit var btn_six_month_drive:TextView
     lateinit var btn_year_drive:TextView
 
+    lateinit var tv_driving_info1:TextView
+    lateinit var tv_driving_info2:TextView
+    lateinit var tv_driving_info3:TextView
+
+    lateinit var tv_total_percent:TextView
+    lateinit var tv_diff_percent:TextView
+    lateinit var tv_high_speed_percent:TextView
+    lateinit var tv_low_speed_percent:TextView
+    lateinit var tv_etc_speed_percent:TextView
+
+
     lateinit var layout_barchart_highspeed:BarChart
 
 
@@ -41,6 +64,7 @@ class HighSpeedDrivingActivity:BaseActivity() {
         setContentView(R.layout.activity_highspeed_driving)
 
         init()
+        setRecentDrivingDistance()
 
     }
 
@@ -67,6 +91,17 @@ class HighSpeedDrivingActivity:BaseActivity() {
 
         layout_barchart_highspeed = findViewById(R.id.layout_barchart_highspeed)
 
+        tv_driving_info1 = findViewById(R.id.tv_driving_info1)
+        tv_driving_info2 = findViewById(R.id.tv_driving_info2)
+        tv_driving_info3 = findViewById(R.id.tv_driving_info3)
+
+        tv_total_percent = findViewById(R.id.tv_total_percent)
+        tv_diff_percent = findViewById(R.id.tv_diff_percent)
+
+        tv_high_speed_percent = findViewById(R.id.tv_high_speed_percent)
+        tv_low_speed_percent = findViewById(R.id.tv_low_speed_percent)
+        tv_etc_speed_percent = findViewById(R.id.tv_etc_speed_percent)
+
         btn_recent_drive.isSelected = true
 
         btn_recent_drive.setOnClickListener {
@@ -76,6 +111,7 @@ class HighSpeedDrivingActivity:BaseActivity() {
             btn_year_drive.isSelected = false
 
             setRecentBarChart()
+            setRecentDrivingDistance()
 
         }
 
@@ -86,6 +122,7 @@ class HighSpeedDrivingActivity:BaseActivity() {
             btn_year_drive.isSelected = false
 
             setMonthBarChart()
+            setMonthDrivingDistance()
         }
 
         btn_six_month_drive.setOnClickListener {
@@ -95,6 +132,7 @@ class HighSpeedDrivingActivity:BaseActivity() {
             btn_year_drive.isSelected = false
 
             setSixMonthBarChart()
+            setSixMonthDrivingDistance()
         }
 
         btn_year_drive.setOnClickListener {
@@ -104,14 +142,12 @@ class HighSpeedDrivingActivity:BaseActivity() {
             btn_year_drive.isSelected = true
 
             setYearBarChart()
+            setYearDrivingDistance()
         }
 
         setRecentBarChart()
-
-        setHighSpeedDrivingChartWidthByPercent(0.341f)
-        setLowSpeedDrivingChartWidthByPercent(0.618f)
-        setExtraSpeedDrivingChartWidthByPercent(0.41f)
     }
+
 
     /**
      * 0.0 ~ 1
@@ -120,18 +156,23 @@ class HighSpeedDrivingActivity:BaseActivity() {
         layout_high_speed_background.post {
             val backgroundWidth = layout_high_speed_background.width
 
-            // Calculate 70% of the background view's width
-            val chartWidth = (backgroundWidth * percent).toInt()
 
+            if(percent == 0.0f){
+                layout_high_speed_percent.visibility = GONE
+            }else{
+                layout_high_speed_percent.visibility = VISIBLE
+                // Calculate 70% of the background view's width
+                val chartWidth = (backgroundWidth * percent).toInt()
 
-            // Apply the calculated width to view_normal_speed_driving_chart
-            val layoutParams = layout_high_speed_percent.layoutParams
-            layoutParams.width = chartWidth
-            layout_high_speed_percent.layoutParams = layoutParams
+                // Apply the calculated width to view_normal_speed_driving_chart
+                val layoutParams = layout_high_speed_percent.layoutParams
+                layoutParams.width = chartWidth
+                layout_high_speed_percent.layoutParams = layoutParams
 
-            val layoutParams2 = layout_high_speed_extra.layoutParams
-            layoutParams2.width = backgroundWidth - chartWidth
-            layout_high_speed_extra.layoutParams = layoutParams2
+                val layoutParams2 = layout_high_speed_extra.layoutParams
+                layoutParams2.width = backgroundWidth - chartWidth
+                layout_high_speed_extra.layoutParams = layoutParams2
+            }
         }
     }
 
@@ -142,18 +183,24 @@ class HighSpeedDrivingActivity:BaseActivity() {
         layout_low_speed_background.post {
             val backgroundWidth = layout_low_speed_background.width
 
-            // Calculate 70% of the background view's width
-            val chartWidth = (backgroundWidth * percent).toInt()
+            if(percent == 0f){
+                layout_low_speed_percent.visibility = GONE
 
+            }else{
+                layout_low_speed_percent.visibility = VISIBLE
 
-            // Apply the calculated width to view_normal_speed_driving_chart
-            val layoutParams = layout_low_speed_percent.layoutParams
-            layoutParams.width = chartWidth
-            layout_low_speed_percent.layoutParams = layoutParams
+                // Calculate 70% of the background view's width
+                val chartWidth = (backgroundWidth * percent).toInt()
 
-            val layoutParams2 = layout_low_speed_extra.layoutParams
-            layoutParams2.width = backgroundWidth - chartWidth
-            layout_low_speed_extra.layoutParams = layoutParams2
+                // Apply the calculated width to view_normal_speed_driving_chart
+                val layoutParams = layout_low_speed_percent.layoutParams
+                layoutParams.width = chartWidth
+                layout_low_speed_percent.layoutParams = layoutParams
+
+                val layoutParams2 = layout_low_speed_extra.layoutParams
+                layoutParams2.width = backgroundWidth - chartWidth
+                layout_low_speed_extra.layoutParams = layoutParams2
+            }
         }
     }
 
@@ -164,20 +211,28 @@ class HighSpeedDrivingActivity:BaseActivity() {
         layout_extra_speed_background.post {
             val backgroundWidth = layout_extra_speed_background.width
 
-            // Calculate 70% of the background view's width
-            val chartWidth = (backgroundWidth * percent).toInt()
 
+            if(percent == 0f){
+                layout_extra_speed_percent.visibility = GONE
 
-            // Apply the calculated width to view_normal_speed_driving_chart
-            val layoutParams = layout_extra_speed_percent.layoutParams
-            layoutParams.width = chartWidth
-            layout_extra_speed_percent.layoutParams = layoutParams
+            }else{
+                layout_extra_speed_percent.visibility = VISIBLE
 
-            val layoutParams2 = layout_extra_speed_extra.layoutParams
-            layoutParams2.width = backgroundWidth - chartWidth
-            layout_extra_speed_extra.layoutParams = layoutParams2
+                // Calculate 70% of the background view's width
+                val chartWidth = (backgroundWidth * percent).toInt()
+
+                // Apply the calculated width to view_normal_speed_driving_chart
+                val layoutParams = layout_extra_speed_percent.layoutParams
+                layoutParams.width = chartWidth
+                layout_extra_speed_percent.layoutParams = layoutParams
+
+                val layoutParams2 = layout_extra_speed_extra.layoutParams
+                layoutParams2.width = backgroundWidth - chartWidth
+                layout_extra_speed_extra.layoutParams = layoutParams2
+            }
         }
     }
+
 
     private fun setRecentBarChart() {
         val entries1 = listOf(
@@ -822,6 +877,199 @@ class HighSpeedDrivingActivity:BaseActivity() {
         }
 
         layout_barchart_highspeed.invalidate() // refresh
+    }
+
+    private fun setRecentDrivingDistance(){
+        tv_driving_info1.text = "최근 평균 고속 주행"
+        tv_driving_info2.text = "내 차는 고속 주행\n비율이 높을수록 좋아요"
+        tv_driving_info3.text = "최근 내 차의\n고속 주행 비율이에요"
+
+        apiService().getRecentDrivingStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@HighSpeedDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!).enqueue(object:
+            Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200){
+                    val recentDrivingDistance = Gson().fromJson(
+                        response.body()?.string(),
+                        GetRecentDrivingStatisticsResponse::class.java
+                    )
+                    if(recentDrivingDistance.isRecent){
+
+                        runOnUiThread{
+                            tv_total_percent.text = String.format(Locale.KOREAN, "%.3f", recentDrivingDistance.average.highSpeedDrivingDistancePercentage)
+                            tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.3f", recentDrivingDistance.diffAverage.highSpeedDrivingDistancePercentage) + "% 증가"
+                            tv_high_speed_percent.text = String.format(Locale.KOREAN, "%.3f", recentDrivingDistance.average.highSpeedDrivingDistancePercentage)
+                            tv_low_speed_percent.text = String.format(Locale.KOREAN, "%.3f", recentDrivingDistance.average.lowSpeedDrivingDistancePercentage)
+                            tv_etc_speed_percent.text = String.format(Locale.KOREAN, "%.3f", recentDrivingDistance.average.etcSpeedDrivingDistancePercentage)
+
+                            Log.d("testestestset","testestsetse :: " + String.format(Locale.KOREAN, "%.1f",recentDrivingDistance.average.highSpeedDrivingDistancePercentage/100).toFloat())
+                            Log.d("testestestset","testestsetse :: " + String.format(Locale.KOREAN, "%.1f",recentDrivingDistance.average.lowSpeedDrivingDistancePercentage/100).toFloat())
+                            Log.d("testestestset","testestsetse :: " + String.format(Locale.KOREAN, "%.1f",recentDrivingDistance.average.etcSpeedDrivingDistancePercentage/100).toFloat())
+
+
+                            setHighSpeedDrivingChartWidthByPercent(String.format(Locale.KOREAN, "%.1f",recentDrivingDistance.average.highSpeedDrivingDistancePercentage/100).toFloat())
+                            setLowSpeedDrivingChartWidthByPercent(String.format(Locale.KOREAN, "%.1f",recentDrivingDistance.average.lowSpeedDrivingDistancePercentage/100).toFloat())
+                            setExtraSpeedDrivingChartWidthByPercent(String.format(Locale.KOREAN, "%.1f",recentDrivingDistance.average.etcSpeedDrivingDistancePercentage/100).toFloat())
+
+
+                        }
+                    }else{
+                        runOnUiThread {
+                            tv_total_percent.text = "0.0"
+                            tv_diff_percent.text = "+0.0% 증가"
+                            tv_high_speed_percent.text = 0.0.toString()
+                            tv_low_speed_percent.text = 0.0.toString()
+                            tv_etc_speed_percent.text = 0.0.toString()
+                        }
+                    }
+                }else{
+
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                tv_total_percent.text = "0,0"
+                tv_diff_percent.text = "+0.0% 증가"
+                tv_high_speed_percent.text = 0.0.toString()
+                tv_low_speed_percent.text = 0.0.toString()
+                tv_etc_speed_percent.text = 0.0.toString()
+            }
+
+        })
+
+
+
+    }
+
+    private fun setMonthDrivingDistance(){
+        tv_driving_info1.text = "1개월 평균 고속 주행"
+        tv_driving_info2.text = "내 차는 고속 주행\n비율이 높을수록 좋아요"
+        tv_driving_info3.text = "1개월 내 차의\n고속 주행 비율이에요"
+
+
+        apiService().getDrivingStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@HighSpeedDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            getCurrentAndPastTimeForISO(30).second,
+            getCurrentAndPastTimeForISO(30).first,
+            "startTime",
+            "day").enqueue(object: Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200) {
+
+                    val drivingDistance = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingStatisticsResponse::class.java
+                    )
+
+                    runOnUiThread{
+                        tv_total_percent.text = String.format(Locale.KOREAN, "%.3f", drivingDistance.average.highSpeedDrivingDistancePercentage)
+                        tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.3f", drivingDistance.diffAverage.highSpeedDrivingDistancePercentage) + "% 증가"
+                        tv_high_speed_percent.text = String.format(Locale.KOREAN, "%.3f", drivingDistance.average.highSpeedDrivingDistancePercentage)
+                        tv_low_speed_percent.text = String.format(Locale.KOREAN, "%.3f", drivingDistance.average.lowSpeedDrivingDistancePercentage)
+                        tv_etc_speed_percent.text = String.format(Locale.KOREAN, "%.3f", drivingDistance.average.etcSpeedDrivingDistancePercentage)
+
+                        setHighSpeedDrivingChartWidthByPercent(drivingDistance.average.highSpeedDrivingDistancePercentage.toFloat()/100)
+                        setLowSpeedDrivingChartWidthByPercent(drivingDistance.average.lowSpeedDrivingDistancePercentage.toFloat()/100)
+                        setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.etcSpeedDrivingDistancePercentage.toFloat()/100)
+                    }
+                }
+
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
+
+    private fun setSixMonthDrivingDistance(){
+        tv_driving_info1.text = "6개월 평균 고속 주행"
+        tv_driving_info2.text = "내 차는 고속 주행\n비율이 높을수록 좋아요"
+        tv_driving_info3.text = "6개월 내 차의\n고속 주행 비율이에요"
+
+
+        apiService().getDrivingStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@HighSpeedDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            getCurrentAndPastTimeForISO(60).second,
+            getCurrentAndPastTimeForISO(60).first,
+            "startTime",
+            "day").enqueue(object: Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200) {
+
+                    val drivingDistance = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingStatisticsResponse::class.java
+                    )
+
+
+                    runOnUiThread{
+                        tv_total_percent.text = String.format(Locale.KOREAN, "%.3f", drivingDistance.average.highSpeedDrivingDistancePercentage)
+                        tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.3f", drivingDistance.diffAverage.highSpeedDrivingDistancePercentage) + "% 증가"
+                        tv_high_speed_percent.text = String.format(Locale.KOREAN, "%.3f", drivingDistance.average.highSpeedDrivingDistancePercentage)
+                        tv_low_speed_percent.text = String.format(Locale.KOREAN, "%.3f", drivingDistance.average.lowSpeedDrivingDistancePercentage)
+                        tv_etc_speed_percent.text = String.format(Locale.KOREAN, "%.3f", drivingDistance.average.etcSpeedDrivingDistancePercentage)
+
+                        setHighSpeedDrivingChartWidthByPercent(drivingDistance.average.highSpeedDrivingDistancePercentage.toFloat()/100)
+                        setLowSpeedDrivingChartWidthByPercent(drivingDistance.average.lowSpeedDrivingDistancePercentage.toFloat()/100)
+                        setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.etcSpeedDrivingDistancePercentage.toFloat()/100)
+                    }
+                }
+
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
+
+    private fun setYearDrivingDistance(){
+        tv_driving_info1.text = "1년 평균 고속 주행"
+        tv_driving_info2.text = "내 차는 고속 주행\n비율이 높을수록 좋아요"
+        tv_driving_info3.text = "1년 내 차의\n고속 주행 비율이에요"
+
+        apiService().getDrivingStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@HighSpeedDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            getCurrentAndPastTimeForISO(365).second,
+            getCurrentAndPastTimeForISO(365).first,
+            "startTime",
+            "day").enqueue(object: Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200) {
+
+                    val drivingDistance = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingStatisticsResponse::class.java
+                    )
+
+
+                    runOnUiThread{
+                        tv_total_percent.text = String.format(Locale.KOREAN, "%.3f", drivingDistance.average.highSpeedDrivingDistancePercentage)
+                        tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.3f", drivingDistance.diffAverage.highSpeedDrivingDistancePercentage) + "% 증가"
+                        tv_high_speed_percent.text = String.format(Locale.KOREAN, "%.3f", drivingDistance.average.highSpeedDrivingDistancePercentage)
+                        tv_low_speed_percent.text = String.format(Locale.KOREAN, "%.3f", drivingDistance.average.lowSpeedDrivingDistancePercentage)
+                        tv_etc_speed_percent.text = String.format(Locale.KOREAN, "%.3f", drivingDistance.average.etcSpeedDrivingDistancePercentage)
+
+                        setHighSpeedDrivingChartWidthByPercent(drivingDistance.average.highSpeedDrivingDistancePercentage.toFloat()/100)
+                        setLowSpeedDrivingChartWidthByPercent(drivingDistance.average.lowSpeedDrivingDistancePercentage.toFloat()/100)
+                        setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.etcSpeedDrivingDistancePercentage.toFloat()/100)
+                    }
+                }
+
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
     }
 
 

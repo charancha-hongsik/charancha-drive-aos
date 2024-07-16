@@ -1098,8 +1098,6 @@ class DrivenDistanceActivity:BaseActivity() {
                         GetDrivingStatisticsResponse::class.java
                     )
 
-                    Log.d("testsetestset","testsetsesest :: " + drivingDistance.total.totalDistance)
-
                     tv_total_distance.text = transferDistance(drivingDistance.total.totalDistance)
                     tv_diff_distance.text = "+" + transferDistance(drivingDistance.diffTotal.totalDistance) + distance_unit + " 증가"
                     tv_average_distance.text = transferDistance(drivingDistance.average.totalDistance)
