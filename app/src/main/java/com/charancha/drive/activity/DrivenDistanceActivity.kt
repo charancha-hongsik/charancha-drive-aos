@@ -965,6 +965,20 @@ class DrivenDistanceActivity:BaseActivity() {
     }
 
     private fun setYearBarChart(items : List<GraphItem>, months:List<String>) {
+        var max = 0
+
+        for(item in items){
+            if(transferDistance(item.distance).toDouble() > max.toDouble())
+                max = transferDistance(item.distance).toDouble().toInt()
+        }
+
+        if(max == 0){
+            setYearBarChartAsDefault()
+            return
+        }
+
+        max++
+
 
         val entries = listOf(
             BarEntry(-1f, transferDistance(items.get(0).distance).toFloat()), // 1월
@@ -1035,7 +1049,7 @@ class DrivenDistanceActivity:BaseActivity() {
         leftAxis.setDrawLabels(false) // Y축 레이블 제거
         leftAxis.setLabelCount(5, true) // 가로 라인의 수를 5로 설정 (강제)
         leftAxis.axisMinimum = 0f
-        leftAxis.axisMaximum = 10f
+        leftAxis.axisMaximum = max.toFloat()
         leftAxis.gridColor = getColor(R.color.gray_200)
 
 
@@ -1044,7 +1058,7 @@ class DrivenDistanceActivity:BaseActivity() {
         rightAxis.setDrawAxisLine(false) // 축 라인 제거
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
         rightAxis.axisMinimum = 0f
-        rightAxis.axisMaximum = 10f
+        rightAxis.axisMaximum = max.toFloat()
         rightAxis.textColor = getColor(R.color.gray_600)
 
         // Y축 커스텀 레이블 포매터 설정
