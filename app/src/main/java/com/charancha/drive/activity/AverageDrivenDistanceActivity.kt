@@ -5,7 +5,10 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
+import com.charancha.drive.retrofit.response.GetDrivingStatisticsResponse
+import com.charancha.drive.retrofit.response.GetRecentDrivingStatisticsResponse
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase
@@ -14,6 +17,11 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import com.google.gson.Gson
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class AverageDrivenDistanceActivity:BaseActivity() {
     lateinit var btn_back:ImageView
@@ -22,6 +30,22 @@ class AverageDrivenDistanceActivity:BaseActivity() {
     lateinit var btn_month_drive:TextView
     lateinit var btn_six_month_drive:TextView
     lateinit var btn_year_drive:TextView
+
+    lateinit var tv_driving_info1:TextView
+    lateinit var tv_driving_info2:TextView
+    lateinit var tv_driving_info3:TextView
+
+    lateinit var tv_total_distance:TextView
+    lateinit var tv_total_distance_unit:TextView
+
+    lateinit var tv_average_distance:TextView
+    lateinit var tv_average_distance_unit:TextView
+    lateinit var tv_max_distance:TextView
+    lateinit var tv_max_distance_unit:TextView
+    lateinit var tv_min_distance:TextView
+    lateinit var tv_min_distance_unit:TextView
+    lateinit var tv_diff_distance:TextView
+
 
 
 
@@ -32,6 +56,8 @@ class AverageDrivenDistanceActivity:BaseActivity() {
         init()
         setResources()
         setRecentBarChart()
+
+        setRecentDrivingDistance()
     }
 
     private fun init(){
@@ -43,6 +69,26 @@ class AverageDrivenDistanceActivity:BaseActivity() {
         btn_month_drive = findViewById(R.id.btn_month_drive)
         btn_six_month_drive = findViewById(R.id.btn_six_month_drive)
         btn_year_drive = findViewById(R.id.btn_year_drive)
+
+        tv_driving_info1 = findViewById(R.id.tv_driving_info1)
+        tv_driving_info2 = findViewById(R.id.tv_driving_info2)
+        tv_driving_info3 = findViewById(R.id.tv_driving_info3)
+        tv_total_distance = findViewById(R.id.tv_total_distance)
+        tv_total_distance_unit = findViewById(R.id.tv_total_distance_unit)
+        tv_average_distance = findViewById(R.id.tv_average_distance)
+        tv_average_distance_unit = findViewById(R.id.tv_average_distance_unit)
+        tv_max_distance = findViewById(R.id.tv_max_distance)
+        tv_max_distance_unit = findViewById(R.id.tv_max_distance_unit)
+        tv_min_distance = findViewById(R.id.tv_min_distance)
+        tv_min_distance_unit = findViewById(R.id.tv_min_distance_unit)
+        tv_diff_distance = findViewById(R.id.tv_diff_distance)
+
+        tv_total_distance_unit.text = distance_unit
+        tv_average_distance_unit.text = distance_unit
+        tv_max_distance_unit.text = distance_unit
+        tv_min_distance_unit.text = distance_unit
+
+
 
         btn_recent_drive.isSelected = true
     }
@@ -464,6 +510,7 @@ class AverageDrivenDistanceActivity:BaseActivity() {
 
         btn_recent_drive.setOnClickListener {
             setRecentBarChart()
+            setRecentDrivingDistance()
 
             btn_recent_drive.isSelected = true
             btn_month_drive.isSelected = false
@@ -473,6 +520,8 @@ class AverageDrivenDistanceActivity:BaseActivity() {
 
         btn_month_drive.setOnClickListener {
             setMonthBarChart()
+            setMonthDrivingDistance()
+
             btn_recent_drive.isSelected = false
             btn_month_drive.isSelected = true
             btn_six_month_drive.isSelected = false
@@ -482,6 +531,8 @@ class AverageDrivenDistanceActivity:BaseActivity() {
 
         btn_six_month_drive.setOnClickListener {
             setSixMonthBarChart()
+            setSixMonthDrivingDistance()
+
             btn_recent_drive.isSelected = false
             btn_month_drive.isSelected = false
             btn_six_month_drive.isSelected = true
@@ -490,10 +541,170 @@ class AverageDrivenDistanceActivity:BaseActivity() {
 
         btn_year_drive.setOnClickListener {
             setYearBarChart()
+            setYearDrivingDistance()
+
             btn_recent_drive.isSelected = false
             btn_month_drive.isSelected = false
             btn_six_month_drive.isSelected = false
             btn_year_drive.isSelected = true
         }
+    }
+
+    private fun setRecentDrivingDistance(){
+        tv_driving_info1.text = "최근 1회 평균 주행 거리"
+        tv_driving_info2.text = "1회 평균 주행 거리는 \n높을수록 좋아요"
+        tv_driving_info3.text = "최근 1회 주행 거리를\n한눈에 확인해보세요!"
+
+        apiService().getRecentDrivingStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@AverageDrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!).enqueue(object:
+            Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200){
+                    val recentDrivingDistance = Gson().fromJson(
+                        response.body()?.string(),
+                        GetRecentDrivingStatisticsResponse::class.java
+                    )
+
+                    if(recentDrivingDistance.isRecent){
+                        tv_total_distance.text = transferDistance(recentDrivingDistance.total.totalDistance)
+                        tv_diff_distance.text = "+" + transferDistance(recentDrivingDistance.diffTotal.totalDistance) + distance_unit + " 증가"
+                        tv_average_distance.text = transferDistance(recentDrivingDistance.average.totalDistance)
+                        tv_max_distance.text = transferDistance(recentDrivingDistance.max.totalDistance)
+                        tv_min_distance.text = transferDistance(recentDrivingDistance.min.totalDistance)
+
+                    }else{
+                        tv_total_distance.text = transferDistance(0.0)
+                        tv_diff_distance.text = "+" + transferDistance(0.0) + distance_unit + " 증가"
+                        tv_average_distance.text = transferDistance(0.0)
+                        tv_max_distance.text = transferDistance(0.0)
+                        tv_min_distance.text = transferDistance(0.0)
+                    }
+                }else{
+
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                tv_total_distance.text = transferDistance(0.0)
+                tv_diff_distance.text = "+" + transferDistance(0.0) + distance_unit + " 증가"
+                tv_average_distance.text = transferDistance(0.0)
+                tv_max_distance.text = transferDistance(0.0)
+                tv_min_distance.text = transferDistance(0.0)
+            }
+
+        })
+
+
+
+    }
+
+    private fun setMonthDrivingDistance(){
+        tv_driving_info1.text = "1개월 1회 평균 주행 거리"
+        tv_driving_info2.text = "1회 평균 주행 거리는 \n높을수록 좋아요"
+        tv_driving_info3.text = "1개월 1회 주행 거리를\n한눈에 확인해보세요!"
+
+
+        apiService().getDrivingStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@AverageDrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            getCurrentAndPastTimeForISO(30).second,
+            getCurrentAndPastTimeForISO(30).first,
+            "startTime",
+            "day").enqueue(object: Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200) {
+
+                    val drivingDistance = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingStatisticsResponse::class.java
+                    )
+
+                    tv_total_distance.text = transferDistance(drivingDistance.total.totalDistance)
+                    tv_diff_distance.text = "+" + transferDistance(drivingDistance.diffTotal.totalDistance) + distance_unit + " 증가"
+                    tv_average_distance.text = transferDistance(drivingDistance.average.totalDistance)
+                    tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
+                    tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
+                }
+
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
+
+    private fun setSixMonthDrivingDistance(){
+        tv_driving_info1.text = "6개월 1회 평균 주행 거리"
+        tv_driving_info2.text = "1회 평균 주행 거리는 \n높을수록 좋아요"
+        tv_driving_info3.text = "6개월 1회 주행 거리를\n한눈에 확인해보세요!"
+        apiService().getDrivingStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@AverageDrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            getCurrentAndPastTimeForISO(60).second,
+            getCurrentAndPastTimeForISO(60).first,
+            "startTime",
+            "day").enqueue(object: Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200) {
+
+                    val drivingDistance = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingStatisticsResponse::class.java
+                    )
+
+                    tv_total_distance.text = transferDistance(drivingDistance.total.totalDistance)
+                    tv_diff_distance.text = "+" + transferDistance(drivingDistance.diffTotal.totalDistance) + distance_unit + " 증가"
+                    tv_average_distance.text = transferDistance(drivingDistance.average.totalDistance)
+                    tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
+                    tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
+                }
+
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
+
+    private fun setYearDrivingDistance(){
+        tv_driving_info1.text = "1년 1회 평균 주행 거리"
+        tv_driving_info2.text = "1회 평균 주행 거리는 \n높을수록 좋아요"
+        tv_driving_info3.text = "1년 1회 주행 거리를\n한눈에 확인해보세요!"
+
+        apiService().getDrivingStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@AverageDrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            getCurrentAndPastTimeForISO(365).second,
+            getCurrentAndPastTimeForISO(365).first,
+            "startTime",
+            "day").enqueue(object: Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200) {
+
+                    val drivingDistance = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingStatisticsResponse::class.java
+                    )
+
+                    tv_total_distance.text = transferDistance(drivingDistance.total.totalDistance)
+                    tv_diff_distance.text = "+" + transferDistance(drivingDistance.diffTotal.totalDistance) + distance_unit + " 증가"
+                    tv_average_distance.text = transferDistance(drivingDistance.average.totalDistance)
+                    tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
+                    tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
+
+                }
+
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
     }
 }
