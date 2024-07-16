@@ -10,8 +10,7 @@ import com.charancha.drive.retrofit.HeaderInterceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.time.Instant
-import java.time.ZoneOffset
+import java.time.*
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.*
@@ -82,22 +81,39 @@ open class BaseActivity: AppCompatActivity(){
         return Pair(hours, minutes)
     }
 
-    fun getCurrentAndPastTimeForISO(past:Long): Pair<String, String> {
+    fun getCurrentAndPastTimeForISO(past:Long): Triple<String, String,List<String>> {
         // 현재 시간 구하기
         val now = Instant.now()
 
-        // 현재 시간 기준 한 달 전 시간 구하기
-        val previousMonth = now.minus(past, ChronoUnit.DAYS)
+        // 현재 시간 기준 주어진 일 전 시간 구하기
+        val previousDate = now.minus(past, ChronoUnit.DAYS)
 
         // 시간 포맷
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").withZone(
-            ZoneOffset.UTC)
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").withZone(ZoneId.of("UTC"))
 
         // 포맷된 시간 문자열로 변환
         val nowFormatted = formatter.format(now)
-        val previousMonthFormatted = formatter.format(previousMonth)
+        val previousDateFormatted = formatter.format(previousDate)
 
-        return Pair(nowFormatted, previousMonthFormatted)
+        // Instant를 ZonedDateTime으로 변환
+        val zoneId = ZoneId.of("UTC")
+        val startDate = ZonedDateTime.ofInstant(previousDate, zoneId).toLocalDate()
+        val endDate = ZonedDateTime.ofInstant(now, zoneId).toLocalDate()
+
+        // 범위 내 모든 월요일 찾기
+        val mondays = mutableListOf<String>()
+        val dateFormatter = DateTimeFormatter.ofPattern("MM월 dd일")
+
+        var date = startDate
+
+        while (!date.isAfter(endDate)) {
+            if (date.dayOfWeek == DayOfWeek.MONDAY) {
+                mondays.add(date.format(dateFormatter))
+            }
+            date = date.plusDays(1)
+        }
+
+        return Triple(nowFormatted, previousDateFormatted, mondays)
     }
 
 }
