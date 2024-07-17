@@ -940,10 +940,10 @@ class DrivenDistanceActivity:BaseActivity() {
         xAxis.valueFormatter = object : IAxisValueFormatter {
             override fun getFormattedValue(value: Float, axis: AxisBase?): String {
                 return when (value.toInt()) {
-                    -1 -> "1월"
-                    7 -> "5월"
-                    13 -> "8월"
-                    21-> "12월"
+                    -1 -> months.get(0)
+                    7 -> months.get(4)
+                    13 -> months.get(7)
+                    21-> months.get(11)
                     else -> "" // 나머지 레이블은 비워둠
                 }
             }
@@ -1623,7 +1623,7 @@ class DrivenDistanceActivity:BaseActivity() {
         layout_linechart_distance.invalidate()
     }
 
-    private fun setSixMonthLineChartAsDefault() {
+    private fun setSixMonthLineChartAsDefault(months: List<String>) {
         // 데이터 준비
         val entries = listOf(
             BarEntry(-1f, 0f),
@@ -1679,20 +1679,22 @@ class DrivenDistanceActivity:BaseActivity() {
         // Customizing x-axis labels
         val xAxis = layout_linechart_distance.xAxis
         xAxis.axisMinimum = -2f
-        xAxis.axisMaximum = 22f
+        xAxis.axisMaximum = 10f
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
         xAxis.textColor = getColor(R.color.gray_600)
-        xAxis.labelCount = 24
+        xAxis.labelCount = 12
 
         // Customizing x-axis labels
         xAxis.valueFormatter = object : IAxisValueFormatter {
             override fun getFormattedValue(value: Float, axis: AxisBase?): String {
                 return when (value.toInt()) {
-                    1 -> "오전 12시"
-                    8 -> "오전 6시"
-                    14 -> "오후 12시"
-                    20-> "오후 6시"
+                    -1 -> months.get(0)
+                    1 -> months.get(1)
+                    3 -> months.get(2)
+                    5 -> months.get(3)
+                    7 -> months.get(4)
+                    9 -> months.get(5)
                     else -> "" // 나머지 레이블은 비워둠
                 }
             }
@@ -1745,7 +1747,7 @@ class DrivenDistanceActivity:BaseActivity() {
         }
 
         if(max == 0){
-            setSixMonthBarChartAsDefault(months)
+            setSixMonthLineChartAsDefault(months)
             return
         }
 
