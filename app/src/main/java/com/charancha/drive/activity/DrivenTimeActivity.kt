@@ -1816,7 +1816,7 @@ class DrivenTimeActivity:BaseActivity() {
         }
 
         if(max == 0.0){
-            setMonthLineChartAsDefault(months)
+            setSixMonthLineChartAsDefault(months)
             return
         }
 

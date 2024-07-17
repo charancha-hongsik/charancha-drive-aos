@@ -1511,14 +1511,13 @@ class DrivenDistanceActivity:BaseActivity() {
     }
 
     private fun setMonthLineChart(items: List<GraphItem>, months: List<String>) {
-        var max = 0
+        var max = 0.0
 
         for(item in items){
-            if(transferDistance(item.distance).toDouble() > max.toDouble())
-                max = transferDistance(item.distance).toDouble().toInt()
+            max += transferDistance(item.distance).toDouble()
         }
 
-        if(max == 0){
+        if(max == 0.0){
             setMonthLineChartAsDefault(months)
             return
         }
@@ -2131,50 +2130,6 @@ class DrivenDistanceActivity:BaseActivity() {
         layout_linechart_distance.invalidate()
     }
 
-    private fun setResources(){
-        btn_back.setOnClickListener { finish() }
-
-        btn_recent_drive.setOnClickListener {
-            setRecentDrivingDistance()
-
-            btn_recent_drive.isSelected = true
-            btn_month_drive.isSelected = false
-            btn_six_month_drive.isSelected = false
-            btn_year_drive.isSelected = false
-        }
-
-        btn_month_drive.setOnClickListener {
-            callMonthChart()
-            setMonthDrivingDistance()
-
-            btn_recent_drive.isSelected = false
-            btn_month_drive.isSelected = true
-            btn_six_month_drive.isSelected = false
-            btn_year_drive.isSelected = false
-
-        }
-
-        btn_six_month_drive.setOnClickListener {
-            callSixMonthChart()
-            setSixMonthDrivingDistance()
-
-            btn_recent_drive.isSelected = false
-            btn_month_drive.isSelected = false
-            btn_six_month_drive.isSelected = true
-            btn_year_drive.isSelected = false
-        }
-
-        btn_year_drive.setOnClickListener {
-            callYearChart()
-            setYearDrivingDistance()
-
-            btn_recent_drive.isSelected = false
-            btn_month_drive.isSelected = false
-            btn_six_month_drive.isSelected = false
-            btn_year_drive.isSelected = true
-        }
-    }
-
     private fun setRecentDrivingDistance(){
         tv_driving_info1.text = "최근 1일 주행 거리"
         tv_driving_info2.text = "내 차는 자주\n달릴수록 좋아요"
@@ -2428,5 +2383,49 @@ class DrivenDistanceActivity:BaseActivity() {
             }
 
         })
+    }
+
+    private fun setResources(){
+        btn_back.setOnClickListener { finish() }
+
+        btn_recent_drive.setOnClickListener {
+            setRecentDrivingDistance()
+
+            btn_recent_drive.isSelected = true
+            btn_month_drive.isSelected = false
+            btn_six_month_drive.isSelected = false
+            btn_year_drive.isSelected = false
+        }
+
+        btn_month_drive.setOnClickListener {
+            callMonthChart()
+            setMonthDrivingDistance()
+
+            btn_recent_drive.isSelected = false
+            btn_month_drive.isSelected = true
+            btn_six_month_drive.isSelected = false
+            btn_year_drive.isSelected = false
+
+        }
+
+        btn_six_month_drive.setOnClickListener {
+            callSixMonthChart()
+            setSixMonthDrivingDistance()
+
+            btn_recent_drive.isSelected = false
+            btn_month_drive.isSelected = false
+            btn_six_month_drive.isSelected = true
+            btn_year_drive.isSelected = false
+        }
+
+        btn_year_drive.setOnClickListener {
+            callYearChart()
+            setYearDrivingDistance()
+
+            btn_recent_drive.isSelected = false
+            btn_month_drive.isSelected = false
+            btn_six_month_drive.isSelected = false
+            btn_year_drive.isSelected = true
+        }
     }
 }
