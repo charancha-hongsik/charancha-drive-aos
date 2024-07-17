@@ -85,8 +85,8 @@ open class BaseActivity: AppCompatActivity(){
         return milliseconds / 3600.0
     }
 
-    fun secondsToMinutes(milliseconds: Double): Int {
-        return (milliseconds / 60.0).toInt()
+    fun secondsToMinutes(milliseconds: Double): Double {
+        return (milliseconds / 60.0)
     }
 
     fun minutesToHours(minutes: Int): Double {

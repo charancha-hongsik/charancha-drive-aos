@@ -263,7 +263,7 @@ class DrivenTimeActivity:BaseActivity() {
 
         for(item in items){
             if(secondsToMinutes(item.time) > max)
-                max = secondsToMinutes(item.time)
+                max = secondsToMinutes(item.time).toInt()
         }
 
         if(max == 0){
@@ -515,7 +515,7 @@ class DrivenTimeActivity:BaseActivity() {
 
         for(item in items){
             if(secondsToMinutes(item.time) > max)
-                max = secondsToMinutes(item.time)
+                max = secondsToMinutes(item.time).toInt()
         }
 
         if(max == 0){
@@ -840,7 +840,7 @@ class DrivenTimeActivity:BaseActivity() {
 
         for(item in items){
             if(secondsToMinutes(item.time) > max)
-                max = secondsToMinutes(item.time)
+                max = secondsToMinutes(item.time).toInt()
         }
 
         if(max == 0){
@@ -1048,7 +1048,7 @@ class DrivenTimeActivity:BaseActivity() {
 
         for(item in items){
             if(secondsToMinutes(item.time) > max)
-                max = secondsToMinutes(item.time)
+                max = secondsToMinutes(item.time).toInt()
         }
 
         if(max == 0){
@@ -1300,7 +1300,7 @@ class DrivenTimeActivity:BaseActivity() {
             return
         }
 
-        val time = FloatArray(24) { 0f }
+        val time = DoubleArray(24) { 0.0 }
 
         // Iterate over each item and parse the startTime to extract the hour
         val koreaZoneId = ZoneId.of("Asia/Seoul")
@@ -1314,36 +1314,38 @@ class DrivenTimeActivity:BaseActivity() {
             Log.d("teststsetest","testestestst hour : " + hour)
             Log.d("teststsetest","testestestst time : " + item.time)
 
-            time[hour] = secondsToMinutes(item.time).toFloat()
+            time[hour] = secondsToMinutes(item.time)
         }
 
 
         val entries = listOf(
-            BarEntry(-1f, time.sliceArray(0..0).sum()), // 00시
-            BarEntry(-0f, time.sliceArray(0..1).sum()), // 01시
-            BarEntry(1f, time.sliceArray(0..2).sum()), // 02시
-            BarEntry(2f, time.sliceArray(0..3).sum()), // 03시
-            BarEntry(3f, time.sliceArray(0..4).sum()), // 04시
-            BarEntry(4f, time.sliceArray(0..5).sum()), // 05시
-            BarEntry(5f, time.sliceArray(0..6).sum()), // 06시
-            BarEntry(6f, time.sliceArray(0..7).sum()), // 07시
-            BarEntry(7f, time.sliceArray(0..8).sum()), // 08시
-            BarEntry(8f, time.sliceArray(0..9).sum()), // 09시
-            BarEntry(9f, time.sliceArray(0..10).sum()), // 10시
-            BarEntry(10f, time.sliceArray(0..11).sum()), // 11시
-            BarEntry(11f, time.sliceArray(0..12).sum()), // 12시
-            BarEntry(12f, time.sliceArray(0..13).sum()), // 13시
-            BarEntry(13f, time.sliceArray(0..14).sum()), // 14시
-            BarEntry(14f, time.sliceArray(0..15).sum()), // 15시
-            BarEntry(15f, time.sliceArray(0..16).sum()), // 16시
-            BarEntry(16f, time.sliceArray(0..17).sum()), // 17시
-            BarEntry(17f, time.sliceArray(0..18).sum()), // 18시
-            BarEntry(18f, time.sliceArray(0..19).sum()), // 19시
-            BarEntry(19f, time.sliceArray(0..20).sum()), // 20시
-            BarEntry(20f,time.sliceArray(0..21).sum()), // 21시
-            BarEntry(21f,time.sliceArray(0..22).sum()), // 22시
-            BarEntry(22f,time.sliceArray(0..23).sum()) // 23시
+            BarEntry(-1f, time.sliceArray(0..0).sum().toFloat()), // 00시
+            BarEntry(-0f, time.sliceArray(0..1).sum().toFloat()), // 01시
+            BarEntry(1f, time.sliceArray(0..2).sum().toFloat()), // 02시
+            BarEntry(2f, time.sliceArray(0..3).sum().toFloat()), // 03시
+            BarEntry(3f, time.sliceArray(0..4).sum().toFloat()), // 04시
+            BarEntry(4f, time.sliceArray(0..5).sum().toFloat()), // 05시
+            BarEntry(5f, time.sliceArray(0..6).sum().toFloat()), // 06시
+            BarEntry(6f, time.sliceArray(0..7).sum().toFloat()), // 07시
+            BarEntry(7f, time.sliceArray(0..8).sum().toFloat()), // 08시
+            BarEntry(8f, time.sliceArray(0..9).sum().toFloat()), // 09시
+            BarEntry(9f, time.sliceArray(0..10).sum().toFloat()), // 10시
+            BarEntry(10f, time.sliceArray(0..11).sum().toFloat()), // 11시
+            BarEntry(11f, time.sliceArray(0..12).sum().toFloat()), // 12시
+            BarEntry(12f, time.sliceArray(0..13).sum().toFloat()), // 13시
+            BarEntry(13f, time.sliceArray(0..14).sum().toFloat()), // 14시
+            BarEntry(14f, time.sliceArray(0..15).sum().toFloat()), // 15시
+            BarEntry(15f, time.sliceArray(0..16).sum().toFloat()), // 16시
+            BarEntry(16f, time.sliceArray(0..17).sum().toFloat()), // 17시
+            BarEntry(17f, time.sliceArray(0..18).sum().toFloat()), // 18시
+            BarEntry(18f, time.sliceArray(0..19).sum().toFloat()), // 19시
+            BarEntry(19f, time.sliceArray(0..20).sum().toFloat()), // 20시
+            BarEntry(20f,time.sliceArray(0..21).sum().toFloat()), // 21시
+            BarEntry(21f,time.sliceArray(0..22).sum().toFloat()), // 22시
+            BarEntry(22f,time.sliceArray(0..23).sum().toFloat()) // 23시
         )
+
+        Log.d("testsetestset","testestset :: " + time.sliceArray(0..23).sum())
 
         // 데이터셋 생성 및 설정
         val dataSet = LineDataSet(entries, "Label") // 데이터셋 생성

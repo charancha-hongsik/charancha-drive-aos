@@ -1251,8 +1251,6 @@ class DrivenDistanceActivity:BaseActivity() {
             max += transferDistance(item.distance).toDouble()
         }
 
-        Log.d("testsetset","testestest max :: " + max)
-
         if(max == 0.0){
             setRecentLineChartAsDefault()
             return
