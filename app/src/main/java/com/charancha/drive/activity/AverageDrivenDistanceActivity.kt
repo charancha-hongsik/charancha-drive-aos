@@ -1165,7 +1165,7 @@ class AverageDrivenDistanceActivity:BaseActivity() {
                     )
 
                     if(recentDrivingDistance.isRecent){
-                        tv_total_distance.text = transferDistance(recentDrivingDistance.total.totalDistance)
+                        tv_total_distance.text = transferDistance(recentDrivingDistance.average.totalDistance)
                         tv_diff_distance.text = "+" + transferDistance(recentDrivingDistance.diffTotal.totalDistance) + distance_unit + " 증가"
                         tv_average_distance.text = transferDistance(recentDrivingDistance.average.totalDistance)
                         tv_max_distance.text = transferDistance(recentDrivingDistance.max.totalDistance)
