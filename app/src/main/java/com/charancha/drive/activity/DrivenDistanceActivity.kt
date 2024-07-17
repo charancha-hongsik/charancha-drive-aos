@@ -23,6 +23,11 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 class DrivenDistanceActivity:BaseActivity() {
     lateinit var btn_back:ImageView
@@ -195,7 +200,7 @@ class DrivenDistanceActivity:BaseActivity() {
                 val minValue = rightAxis.axisMinimum
                 val maxValue = rightAxis.axisMaximum
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "km"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + distance_unit// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -224,31 +229,46 @@ class DrivenDistanceActivity:BaseActivity() {
 
         max++
 
+        val distances = FloatArray(24) { 0f }
+
+        // Iterate over each item and parse the startTime to extract the hour
+        val koreaZoneId = ZoneId.of("Asia/Seoul")
+
+        // Iterate over each item and parse the startTime to extract the hour
+        for (item in items) {
+            val startTime = Instant.parse(item.startTime)
+            val localDateTime = LocalDateTime.ofInstant(startTime, koreaZoneId)
+            val hour = localDateTime.hour
+
+            distances[hour] = transferDistance(item.distance).toFloat()
+        }
+
+
         val entries = listOf(
-            BarEntry(-1f, transferDistance(items.get(0).distance).toFloat()),
-            BarEntry(-0f, transferDistance(items.get(1).distance).toFloat()),
-            BarEntry(1f, transferDistance(items.get(2).distance).toFloat()),
-            BarEntry(2f, transferDistance(items.get(3).distance).toFloat()),
-            BarEntry(3f, transferDistance(items.get(4).distance).toFloat()),
-            BarEntry(4f, transferDistance(items.get(5).distance).toFloat()),
-            BarEntry(5f, transferDistance(items.get(6).distance).toFloat()),
-            BarEntry(6f, transferDistance(items.get(7).distance).toFloat()),
-            BarEntry(7f, transferDistance(items.get(8).distance).toFloat()),
-            BarEntry(8f, transferDistance(items.get(9).distance).toFloat()),
-            BarEntry(9f, transferDistance(items.get(10).distance).toFloat()),
-            BarEntry(10f, transferDistance(items.get(11).distance).toFloat()),
-            BarEntry(11f, transferDistance(items.get(12).distance).toFloat()),
-            BarEntry(12f, transferDistance(items.get(13).distance).toFloat()),
-            BarEntry(13f, transferDistance(items.get(14).distance).toFloat()),
-            BarEntry(14f, transferDistance(items.get(15).distance).toFloat()),
-            BarEntry(15f, transferDistance(items.get(16).distance).toFloat()),
-            BarEntry(16f, transferDistance(items.get(17).distance).toFloat()),
-            BarEntry(17f, transferDistance(items.get(18).distance).toFloat()),
-            BarEntry(18f, transferDistance(items.get(19).distance).toFloat()),
-            BarEntry(19f, transferDistance(items.get(20).distance).toFloat()),
-            BarEntry(20f,transferDistance(items.get(21).distance).toFloat()),
-            BarEntry(21f,transferDistance(items.get(22).distance).toFloat()),
-            BarEntry(22f,transferDistance(items.get(23).distance).toFloat())
+            BarEntry(-1f, distances.get(0)), // 00시
+            BarEntry(-0f, distances.get(1)), // 01시
+            BarEntry(1f, distances.get(2)), // 02시
+            BarEntry(2f, distances.get(3)), // 03시
+            BarEntry(3f, distances.get(4)), // 04시
+            BarEntry(4f, distances.get(5)), // 05시
+            BarEntry(5f, distances.get(6)), // 06시
+            BarEntry(6f, distances.get(7)), // 07시
+            BarEntry(7f, distances.get(8)), // 08시
+            BarEntry(8f, distances.get(9)), // 09시
+            BarEntry(9f, distances.get(10)), // 10시
+            BarEntry(10f, distances.get(11)), // 11시
+            BarEntry(11f, distances.get(12)), // 12시
+            BarEntry(12f, distances.get(13)), // 13시
+            BarEntry(13f, distances.get(14)), // 14시
+            BarEntry(14f, distances.get(15)), // 15시
+            BarEntry(15f, distances.get(16)), // 16시
+            BarEntry(16f, distances.get(17)), // 17시
+            BarEntry(17f, distances.get(18)), // 18시
+            BarEntry(18f, distances.get(19)), // 19시
+            BarEntry(19f, distances.get(20)), // 20시
+            BarEntry(20f,distances.get(21)), // 21시
+            BarEntry(21f,distances.get(22)), // 22시
+            BarEntry(22f,distances.get(23)) // 23시
         )
 
         val dataSet = BarDataSet(entries, "Sample Data")
@@ -280,9 +300,9 @@ class DrivenDistanceActivity:BaseActivity() {
             override fun getFormattedValue(value: Float, axis: AxisBase?): String {
                 return when (value.toInt()) {
                     0 -> "오전 12시"
-                    7 -> "오전 6시"
-                    14 -> "오후 12시"
-                    20-> "오후 6시"
+                    6 -> "오전 6시"
+                    12 -> "오후 12시"
+                    18-> "오후 6시"
                     else -> "" // 나머지 레이블은 비워둠
                 }
             }
@@ -293,7 +313,7 @@ class DrivenDistanceActivity:BaseActivity() {
         leftAxis.setDrawGridLines(true) // 그리드 라인 표시
         leftAxis.setDrawAxisLine(false) // 축 라인 제거
         leftAxis.setDrawLabels(false) // Y축 레이블 제거
-        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 5로 설정 (강제)
+        leftAxis.setLabelCount(6, true) // 가로 라인의 수를 6 설정 (강제)
         leftAxis.axisMinimum = 0f
         leftAxis.axisMaximum = max.toFloat()
         leftAxis.gridColor = getColor(R.color.gray_200)
@@ -303,6 +323,7 @@ class DrivenDistanceActivity:BaseActivity() {
         rightAxis.setDrawGridLines(false) // 그리드 라인 제거
         rightAxis.setDrawAxisLine(false) // 축 라인 제거
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(6, true) // 가로 라인의 수를 6 설정 (강제)
         rightAxis.axisMinimum = 0f
         rightAxis.axisMaximum = max.toFloat()
         rightAxis.textColor = getColor(R.color.gray_600)
@@ -424,7 +445,7 @@ class DrivenDistanceActivity:BaseActivity() {
                 val minValue = rightAxis.axisMinimum
                 val maxValue = rightAxis.axisMaximum
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "km"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + distance_unit// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -552,7 +573,7 @@ class DrivenDistanceActivity:BaseActivity() {
                 val minValue = rightAxis.axisMinimum
                 val maxValue = rightAxis.axisMaximum
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "km"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + distance_unit// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -746,7 +767,7 @@ class DrivenDistanceActivity:BaseActivity() {
                 val minValue = rightAxis.axisMinimum
                 val maxValue = rightAxis.axisMaximum
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "km"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + distance_unit// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -852,7 +873,7 @@ class DrivenDistanceActivity:BaseActivity() {
                 val minValue = rightAxis.axisMinimum
                 val maxValue = rightAxis.axisMaximum
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "km"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + distance_unit// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -956,7 +977,7 @@ class DrivenDistanceActivity:BaseActivity() {
                 val minValue = rightAxis.axisMinimum
                 val maxValue = rightAxis.axisMaximum
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "km"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + distance_unit// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -1069,7 +1090,7 @@ class DrivenDistanceActivity:BaseActivity() {
                 val minValue = rightAxis.axisMinimum
                 val maxValue = rightAxis.axisMaximum
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "km"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + distance_unit// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -1094,33 +1115,33 @@ class DrivenDistanceActivity:BaseActivity() {
      * 1년 (12개 데이터) -> 1월 ~ 12월
      * 4개 표기
      */
-    private fun setRecentLineChart() {
+    private fun setRecentLineChartAsDefault() {
         // 데이터 준비
         val entries = listOf(
-            BarEntry(-1f, 1f),
-            BarEntry(-0f, 3f),
-            BarEntry(1f, 5f),
-            BarEntry(2f, 7f),
-            BarEntry(3f, 9f),
-            BarEntry(4f, 11f),
-            BarEntry(5f, 13f),
-            BarEntry(6f, 16f),
-            BarEntry(7f, 19f),
-            BarEntry(8f, 22f),
-            BarEntry(9f, 25f),
-            BarEntry(10f, 28f),
-            BarEntry(11f, 31f),
-            BarEntry(12f, 35f),
-            BarEntry(13f, 39f),
-            BarEntry(14f, 43f),
-            BarEntry(15f, 47f),
-            BarEntry(16f, 51f),
-            BarEntry(17f, 55f),
-            BarEntry(18f, 59f),
-            BarEntry(19f, 66f),
-            BarEntry(20f,73f),
-            BarEntry(21f,79f),
-            BarEntry(22f,80f)
+            BarEntry(-1f, 0f),
+            BarEntry(-0f, 0f),
+            BarEntry(1f, 0f),
+            BarEntry(2f, 0f),
+            BarEntry(3f, 0f),
+            BarEntry(4f, 0f),
+            BarEntry(5f, 0f),
+            BarEntry(6f, 0f),
+            BarEntry(7f, 0f),
+            BarEntry(8f, 0f),
+            BarEntry(9f, 0f),
+            BarEntry(10f, 0f),
+            BarEntry(11f, 0f),
+            BarEntry(12f, 0f),
+            BarEntry(13f, 0f),
+            BarEntry(14f, 0f),
+            BarEntry(15f, 0f),
+            BarEntry(16f, 0f),
+            BarEntry(17f, 0f),
+            BarEntry(18f, 0f),
+            BarEntry(19f, 0f),
+            BarEntry(20f,0f),
+            BarEntry(21f,0f),
+            BarEntry(22f,0f)
         )
 
         // 데이터셋 생성 및 설정
@@ -1178,7 +1199,7 @@ class DrivenDistanceActivity:BaseActivity() {
         leftAxis.setLabelCount(6, true) // 가로 라인의 수를 6로 설정 (강제)
         leftAxis.granularity = 1.0f
         leftAxis.axisMinimum = 0f
-        leftAxis.axisMaximum = 80f
+        leftAxis.axisMaximum = 10f
         leftAxis.gridColor = getColor(R.color.gray_200)
 
 
@@ -1188,7 +1209,7 @@ class DrivenDistanceActivity:BaseActivity() {
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
         rightAxis.granularity = 1.0f
         rightAxis.axisMinimum = 0f
-        rightAxis.axisMaximum = 80f
+        rightAxis.axisMaximum = 10f
         rightAxis.textColor = getColor(R.color.gray_600)
 
         // Y축 커스텀 레이블 포매터 설정
@@ -1198,7 +1219,150 @@ class DrivenDistanceActivity:BaseActivity() {
                 val maxValue = rightAxis.axisMaximum
 
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "km"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + distance_unit// 가장 아래와 위에만 레이블 표시
+                } else {
+                    "" // 나머지 레이블 제거
+                }
+            }
+        }
+        // 차트 업데이트
+        layout_linechart_distance.invalidate()
+    }
+
+    private fun setRecentLineChart(items: List<GraphItem>) {
+
+        var max = 0
+
+        for(item in items){
+            if(transferDistance(item.distance).toDouble() > max.toDouble())
+                max = transferDistance(item.distance).toDouble().toInt()
+        }
+
+        if(max == 0){
+            setRecentLineChartAsDefault()
+            return
+        }
+
+        max++
+
+        val distances = FloatArray(24) { 0f }
+
+        // Iterate over each item and parse the startTime to extract the hour
+        val koreaZoneId = ZoneId.of("Asia/Seoul")
+
+        // Iterate over each item and parse the startTime to extract the hour
+        for (item in items) {
+            val startTime = Instant.parse(item.startTime)
+            val localDateTime = LocalDateTime.ofInstant(startTime, koreaZoneId)
+            val hour = localDateTime.hour
+
+            distances[hour] = transferDistance(item.distance).toFloat()
+        }
+
+
+        val entries = listOf(
+            BarEntry(-1f, distances.get(0)), // 00시
+            BarEntry(-0f, distances.get(1)), // 01시
+            BarEntry(1f, distances.get(2)), // 02시
+            BarEntry(2f, distances.get(3)), // 03시
+            BarEntry(3f, distances.get(4)), // 04시
+            BarEntry(4f, distances.get(5)), // 05시
+            BarEntry(5f, distances.get(6)), // 06시
+            BarEntry(6f, distances.get(7)), // 07시
+            BarEntry(7f, distances.get(8)), // 08시
+            BarEntry(8f, distances.get(9)), // 09시
+            BarEntry(9f, distances.get(10)), // 10시
+            BarEntry(10f, distances.get(11)), // 11시
+            BarEntry(11f, distances.get(12)), // 12시
+            BarEntry(12f, distances.get(13)), // 13시
+            BarEntry(13f, distances.get(14)), // 14시
+            BarEntry(14f, distances.get(15)), // 15시
+            BarEntry(15f, distances.get(16)), // 16시
+            BarEntry(16f, distances.get(17)), // 17시
+            BarEntry(17f, distances.get(18)), // 18시
+            BarEntry(18f, distances.get(19)), // 19시
+            BarEntry(19f, distances.get(20)), // 20시
+            BarEntry(20f,distances.get(21)), // 21시
+            BarEntry(21f,distances.get(22)), // 22시
+            BarEntry(22f,distances.get(23)) // 23시
+        )
+
+        // 데이터셋 생성 및 설정
+        val dataSet = LineDataSet(entries, "Label") // 데이터셋 생성
+        dataSet.color = Color.BLACK // 선 색상 설정
+        dataSet.setDrawValues(false) // 값 표시 여부 설정
+        dataSet.setDrawCircles(false)
+        dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER // 곡선 형태로 설정
+        dataSet.setDrawFilled(true)  // 선 안쪽을 색으로 채우도록 설정
+        dataSet.fillDrawable = getDrawable(R.drawable.line_chart_gradient)
+
+        // 데이터셋 리스트 생성
+        val dataSets = ArrayList<ILineDataSet>()
+        dataSets.add(dataSet)
+
+        // LineData 객체 생성
+        val lineData = LineData(dataSets)
+
+        // LineChart 설정
+        layout_linechart_distance.data = lineData // 데이터 설정
+        layout_linechart_distance.setDrawGridBackground(false) // 그리드 배경 그리기 여부 설정
+        layout_linechart_distance.description.isEnabled = false // 설명 텍스트 사용 여부 설정
+        layout_linechart_distance.legend.isEnabled = false
+        layout_linechart_distance.setTouchEnabled(false)
+        layout_linechart_distance.setExtraOffsets(20f,0f,0f,0f)
+
+
+        // Customizing x-axis labels
+        val xAxis = layout_linechart_distance.xAxis
+        xAxis.axisMinimum = -2f
+        xAxis.axisMaximum = 23f
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
+        xAxis.textColor = getColor(R.color.gray_600)
+        xAxis.labelCount = 24
+
+        // Customizing x-axis labels
+        xAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                return when (value.toInt()) {
+                    0 -> "오전 12시"
+                    6 -> "오전 6시"
+                    12 -> "오후 12시"
+                    18-> "오후 6시"
+                    else -> "" // 나머지 레이블은 비워둠
+                }
+            }
+        }
+
+        // Y축 레이블 및 선 제거
+        val leftAxis = layout_linechart_distance.axisLeft
+        leftAxis.setDrawGridLines(true) // 그리드 라인 표시
+        leftAxis.setDrawAxisLine(false) // 축 라인 제거
+        leftAxis.setDrawLabels(false) // Y축 레이블 제거
+        leftAxis.setLabelCount(6, true) // 가로 라인의 수를 6로 설정 (강제)
+        leftAxis.granularity = 1.0f
+        leftAxis.axisMinimum = 0f
+        leftAxis.axisMaximum = max.toFloat()
+        leftAxis.gridColor = getColor(R.color.gray_200)
+
+
+        val rightAxis = layout_linechart_distance.axisRight
+        rightAxis.setDrawGridLines(false) // 그리드 라인 제거
+        rightAxis.setDrawAxisLine(false) // 축 라인 제거
+        rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.granularity = 1.0f
+        rightAxis.axisMinimum = 0f
+        rightAxis.axisMaximum = max.toFloat()
+        rightAxis.textColor = getColor(R.color.gray_600)
+
+        // Y축 커스텀 레이블 포매터 설정
+        rightAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                val minValue = rightAxis.axisMinimum
+                val maxValue = rightAxis.axisMaximum
+
+                return if (value == minValue || value == maxValue) {
+                    value.toInt().toString() + distance_unit// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -1311,7 +1475,7 @@ class DrivenDistanceActivity:BaseActivity() {
                 val maxValue = rightAxis.axisMaximum
 
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "km"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + distance_unit// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -1424,7 +1588,7 @@ class DrivenDistanceActivity:BaseActivity() {
                 val maxValue = rightAxis.axisMaximum
 
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "km"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + distance_unit// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -1537,7 +1701,7 @@ class DrivenDistanceActivity:BaseActivity() {
                 val maxValue = rightAxis.axisMaximum
 
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "km"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + distance_unit// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -1636,8 +1800,8 @@ class DrivenDistanceActivity:BaseActivity() {
                             "ASC",
                             null,
                             null,
-                            "2024-07-15T00:00:00.000Z",
-                            "2024-07-15T23:59:59.999Z",
+                            recentStartTime,
+                            recentEndTime,
                             "startTime",
                             "hour"
                         ).enqueue(object :Callback<ResponseBody>{
@@ -1652,8 +1816,17 @@ class DrivenDistanceActivity:BaseActivity() {
                                         GetDrivingGraphDataResponse::class.java
                                     )
 
+                                    for(item in getDrivingGraphDataResponse.items){
+                                        Log.d("testestestest","testestestset startTime :: " + item.startTime)
+                                        Log.d("testestestest","testestestset endTime :: " + item.endTime)
+                                        Log.d("testestestest","testestestset distance :: " + item.distance)
+                                        Log.d("testestestest","testestestset :: ")
+
+
+                                    }
+
                                     setRecentBarChart(getDrivingGraphDataResponse.items)
-                                    setRecentLineChart()
+                                    setRecentLineChart(getDrivingGraphDataResponse.items)
                                 }
                             }
 

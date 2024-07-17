@@ -846,8 +846,6 @@ class BluetoothService : Service() {
                     }else{
                         writeToRoomForApi(driveForApi)
                         writeToRoomForApp(driveForApi.tracking_id)
-                        Log.d("testestestest","testsetsetse 3 :: " + driveForApi.tracking_id)
-
                     }
                 }
 
