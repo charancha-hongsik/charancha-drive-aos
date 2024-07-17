@@ -952,7 +952,6 @@ class HighSpeedDrivingActivity:BaseActivity() {
         tv_driving_info2.text = "내 차는 고속 주행\n비율이 높을수록 좋아요"
         tv_driving_info3.text = "1개월 내 차의\n고속 주행 비율이에요"
 
-
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@HighSpeedDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
@@ -971,9 +970,9 @@ class HighSpeedDrivingActivity:BaseActivity() {
                     runOnUiThread{
                         tv_total_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.highSpeedDrivingDistancePercentage)
                         tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.highSpeedDrivingDistancePercentage) + "% 증가"
-                        tv_high_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.highSpeedDrivingDistancePercentage)
-                        tv_low_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.lowSpeedDrivingDistancePercentage)
-                        tv_etc_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.etcSpeedDrivingDistancePercentage)
+                        tv_high_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.highSpeedDrivingDistancePercentage) + "%"
+                        tv_low_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.lowSpeedDrivingDistancePercentage) + "%"
+                        tv_etc_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.etcSpeedDrivingDistancePercentage) + "%"
 
                         setHighSpeedDrivingChartWidthByPercent(drivingDistance.average.highSpeedDrivingDistancePercentage.toFloat()/100)
                         setLowSpeedDrivingChartWidthByPercent(drivingDistance.average.lowSpeedDrivingDistancePercentage.toFloat()/100)
@@ -1015,9 +1014,9 @@ class HighSpeedDrivingActivity:BaseActivity() {
                     runOnUiThread{
                         tv_total_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.highSpeedDrivingDistancePercentage)
                         tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.highSpeedDrivingDistancePercentage) + "% 증가"
-                        tv_high_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.highSpeedDrivingDistancePercentage)
-                        tv_low_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.lowSpeedDrivingDistancePercentage)
-                        tv_etc_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.etcSpeedDrivingDistancePercentage)
+                        tv_high_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.highSpeedDrivingDistancePercentage) + "%"
+                        tv_low_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.lowSpeedDrivingDistancePercentage) + "%"
+                        tv_etc_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.etcSpeedDrivingDistancePercentage) + "%"
 
                         setHighSpeedDrivingChartWidthByPercent(drivingDistance.average.highSpeedDrivingDistancePercentage.toFloat()/100)
                         setLowSpeedDrivingChartWidthByPercent(drivingDistance.average.lowSpeedDrivingDistancePercentage.toFloat()/100)
@@ -1058,9 +1057,9 @@ class HighSpeedDrivingActivity:BaseActivity() {
                     runOnUiThread{
                         tv_total_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.highSpeedDrivingDistancePercentage)
                         tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.highSpeedDrivingDistancePercentage) + "% 증가"
-                        tv_high_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.highSpeedDrivingDistancePercentage)
-                        tv_low_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.lowSpeedDrivingDistancePercentage)
-                        tv_etc_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.etcSpeedDrivingDistancePercentage)
+                        tv_high_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.highSpeedDrivingDistancePercentage) + "%"
+                        tv_low_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.lowSpeedDrivingDistancePercentage) + "%"
+                        tv_etc_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.etcSpeedDrivingDistancePercentage) + "%"
 
                         setHighSpeedDrivingChartWidthByPercent(drivingDistance.average.highSpeedDrivingDistancePercentage.toFloat()/100)
                         setLowSpeedDrivingChartWidthByPercent(drivingDistance.average.lowSpeedDrivingDistancePercentage.toFloat()/100)
