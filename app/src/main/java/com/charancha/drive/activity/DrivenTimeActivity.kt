@@ -1541,50 +1541,55 @@ class DrivenTimeActivity:BaseActivity() {
     }
 
     private fun setMonthLineChart(items: List<GraphItem>, months: List<String>) {
-        var max = 0
+        var max = 0.0
 
         for(item in items){
-            if(secondsToMinutes(item.time).toDouble() > max.toDouble())
-                max = secondsToMinutes(item.time).toDouble().toInt()
+            max += secondsToMinutes(item.time).toDouble()
         }
 
-        if(max == 0){
+        if(max == 0.0){
             setMonthLineChartAsDefault(months)
             return
         }
 
+        val distances = DoubleArray(items.size) { 0.0 }
+
+        for((index,item) in items.withIndex()){
+            distances[index] = item.time
+        }
+
 
         val entries = listOf(
-            BarEntry(-1f, secondsToMinutes(items.get(0).time).toFloat()),
-            BarEntry(-0f, secondsToMinutes(items.get(1).time).toFloat()),
-            BarEntry(1f, secondsToMinutes(items.get(2).time).toFloat()),
-            BarEntry(2f, secondsToMinutes(items.get(3).time).toFloat()),
-            BarEntry(3f, secondsToMinutes(items.get(4).time).toFloat()),
-            BarEntry(4f, secondsToMinutes(items.get(5).time).toFloat()),
-            BarEntry(5f, secondsToMinutes(items.get(6).time).toFloat()),
-            BarEntry(6f, secondsToMinutes(items.get(7).time).toFloat()),
-            BarEntry(7f, secondsToMinutes(items.get(8).time).toFloat()),
-            BarEntry(8f, secondsToMinutes(items.get(9).time).toFloat()),
-            BarEntry(9f, secondsToMinutes(items.get(10).time).toFloat()),
-            BarEntry(10f, secondsToMinutes(items.get(11).time).toFloat()),
-            BarEntry(11f, secondsToMinutes(items.get(12).time).toFloat()),
-            BarEntry(12f, secondsToMinutes(items.get(13).time).toFloat()),
-            BarEntry(13f, secondsToMinutes(items.get(14).time).toFloat()),
-            BarEntry(14f, secondsToMinutes(items.get(15).time).toFloat()),
-            BarEntry(15f, secondsToMinutes(items.get(16).time).toFloat()),
-            BarEntry(16f, secondsToMinutes(items.get(17).time).toFloat()),
-            BarEntry(17f, secondsToMinutes(items.get(18).time).toFloat()),
-            BarEntry(18f, secondsToMinutes(items.get(19).time).toFloat()),
-            BarEntry(19f, secondsToMinutes(items.get(20).time).toFloat()),
-            BarEntry(20f,secondsToMinutes(items.get(21).time).toFloat()),
-            BarEntry(21f,secondsToMinutes(items.get(22).time).toFloat()),
-            BarEntry(22f,secondsToMinutes(items.get(23).time).toFloat()),
-            BarEntry(23f,secondsToMinutes(items.get(24).time).toFloat()),
-            BarEntry(24f,secondsToMinutes(items.get(25).time).toFloat()),
-            BarEntry(25f,secondsToMinutes(items.get(26).time).toFloat()),
-            BarEntry(26f,secondsToMinutes(items.get(27).time).toFloat()),
-            BarEntry(27f,secondsToMinutes(items.get(28).time).toFloat()),
-            BarEntry(28f,secondsToMinutes(items.get(29).time).toFloat())
+            BarEntry(-1f, secondsToMinutes(distances.sliceArray(0..0).sum()).toFloat()),
+            BarEntry(-0f, secondsToMinutes(distances.sliceArray(0..1).sum()).toFloat()),
+            BarEntry(1f, secondsToMinutes(distances.sliceArray(0..2).sum()).toFloat()),
+            BarEntry(2f, secondsToMinutes(distances.sliceArray(0..3).sum()).toFloat()),
+            BarEntry(3f, secondsToMinutes(distances.sliceArray(0..4).sum()).toFloat()),
+            BarEntry(4f, secondsToMinutes(distances.sliceArray(0..5).sum()).toFloat()),
+            BarEntry(5f, secondsToMinutes(distances.sliceArray(0..6).sum()).toFloat()),
+            BarEntry(6f, secondsToMinutes(distances.sliceArray(0..7).sum()).toFloat()),
+            BarEntry(7f, secondsToMinutes(distances.sliceArray(0..8).sum()).toFloat()),
+            BarEntry(8f, secondsToMinutes(distances.sliceArray(0..9).sum()).toFloat()),
+            BarEntry(9f, secondsToMinutes(distances.sliceArray(0..10).sum()).toFloat()),
+            BarEntry(10f, secondsToMinutes(distances.sliceArray(0..11).sum()).toFloat()),
+            BarEntry(11f, secondsToMinutes(distances.sliceArray(0..12).sum()).toFloat()),
+            BarEntry(12f, secondsToMinutes(distances.sliceArray(0..13).sum()).toFloat()),
+            BarEntry(13f, secondsToMinutes(distances.sliceArray(0..14).sum()).toFloat()),
+            BarEntry(14f, secondsToMinutes(distances.sliceArray(0..15).sum()).toFloat()),
+            BarEntry(15f, secondsToMinutes(distances.sliceArray(0..16).sum()).toFloat()),
+            BarEntry(16f, secondsToMinutes(distances.sliceArray(0..17).sum()).toFloat()),
+            BarEntry(17f, secondsToMinutes(distances.sliceArray(0..18).sum()).toFloat()),
+            BarEntry(18f, secondsToMinutes(distances.sliceArray(0..19).sum()).toFloat()),
+            BarEntry(19f, secondsToMinutes(distances.sliceArray(0..20).sum()).toFloat()),
+            BarEntry(20f,secondsToMinutes(distances.sliceArray(0..21).sum()).toFloat()),
+            BarEntry(21f,secondsToMinutes(distances.sliceArray(0..22).sum()).toFloat()),
+            BarEntry(22f,secondsToMinutes(distances.sliceArray(0..23).sum()).toFloat()),
+            BarEntry(23f,secondsToMinutes(distances.sliceArray(0..24).sum()).toFloat()),
+            BarEntry(24f,secondsToMinutes(distances.sliceArray(0..25).sum()).toFloat()),
+            BarEntry(25f,secondsToMinutes(distances.sliceArray(0..26).sum()).toFloat()),
+            BarEntry(26f,secondsToMinutes(distances.sliceArray(0..27).sum()).toFloat()),
+            BarEntry(27f,secondsToMinutes(distances.sliceArray(0..28).sum()).toFloat()),
+            BarEntry(28f,secondsToMinutes(distances.sliceArray(0..29).sum()).toFloat())
         )
 
 
@@ -1791,30 +1796,35 @@ class DrivenTimeActivity:BaseActivity() {
     }
 
     private fun setSixMonthLineChart(items:List<GraphItem>, months: List<String>) {
-        var max = 0
+        var max = 0.0
 
         for(item in items){
-            if(secondsToMinutes(item.time).toDouble() > max.toDouble())
-                max = secondsToMinutes(item.time).toDouble().toInt()
+            max += secondsToMinutes(item.time).toDouble()
         }
 
-        if(max == 0){
-            setSixMonthLineChartAsDefault(months)
+        if(max == 0.0){
+            setMonthLineChartAsDefault(months)
             return
         }
 
+        val distances = DoubleArray(items.size) { 0.0 }
+
+        for((index,item) in items.withIndex()){
+            distances[index] = item.time
+        }
+
         val entries = listOf(
-            BarEntry(-1f, secondsToMinutes(items.get(0).time).toFloat()), // 첫번째 월
+            BarEntry(-1f, secondsToMinutes(distances.sliceArray(0..0).sum()).toFloat()), // 첫번째 월
             BarEntry(0f, 0f),
-            BarEntry(1f, secondsToMinutes(items.get(1).time).toFloat()), // 두번째 월
+            BarEntry(1f, secondsToMinutes(distances.sliceArray(0..1).sum()).toFloat()), // 두번째 월
             BarEntry(2f, 0f),
-            BarEntry(3f, secondsToMinutes(items.get(2).time).toFloat()), // 세번째 월
+            BarEntry(3f, secondsToMinutes(distances.sliceArray(0..2).sum()).toFloat()), // 세번째 월
             BarEntry(4f, 0f),
-            BarEntry(5f, secondsToMinutes(items.get(3).time).toFloat()), // 네번째 월
+            BarEntry(5f, secondsToMinutes(distances.sliceArray(0..3).sum()).toFloat()), // 네번째 월
             BarEntry(6f, 0f),
-            BarEntry(7f, secondsToMinutes(items.get(4).time).toFloat()), // 다섯번째 월
+            BarEntry(7f, secondsToMinutes(distances.sliceArray(0..4).sum()).toFloat()), // 다섯번째 월
             BarEntry(8f, 0f),
-            BarEntry(9f, secondsToMinutes(items.get(5).time).toFloat()) // 여섯번째 월
+            BarEntry(9f, secondsToMinutes(distances.sliceArray(0..5).sum()).toFloat()) // 여섯번째 월
         )
 
         // 데이터셋 생성 및 설정
@@ -2018,43 +2028,47 @@ class DrivenTimeActivity:BaseActivity() {
     }
 
     private fun setYearLineChart(items: List<GraphItem>, months: List<String>) {
-        // 데이터 준비
-        var max = 0
+        var max = 0.0
 
         for(item in items){
-            if(secondsToMinutes(item.time).toDouble() > max.toDouble())
-                max = secondsToMinutes(item.time).toDouble().toInt()
+            max += secondsToMinutes(item.time).toDouble()
         }
 
-        if(max == 0){
-            setYearLineChartAsDefault(months)
+        if(max == 0.0){
+            setMonthLineChartAsDefault(months)
             return
         }
 
+        val distances = DoubleArray(items.size) { 0.0 }
+
+        for((index,item) in items.withIndex()){
+            distances[index] = item.time
+        }
+
         val entries = listOf(
-            BarEntry(-1f, secondsToMinutes(items.get(0).time).toFloat()), // 1월
+            BarEntry(-1f, secondsToMinutes(distances.sliceArray(0..0).sum()).toFloat()), // 1월
             BarEntry(-0f, 0f),
-            BarEntry(1f, secondsToMinutes(items.get(1).time).toFloat()), // 2월
+            BarEntry(1f, secondsToMinutes(distances.sliceArray(0..1).sum()).toFloat()), // 2월
             BarEntry(2f, 0f),
-            BarEntry(3f, secondsToMinutes(items.get(2).time).toFloat()), // 3월
+            BarEntry(3f, secondsToMinutes(distances.sliceArray(0..2).sum()).toFloat()), // 3월
             BarEntry(4f, 0f),
-            BarEntry(5f, secondsToMinutes(items.get(3).time).toFloat()), // 4월
+            BarEntry(5f, secondsToMinutes(distances.sliceArray(0..3).sum()).toFloat()), // 4월
             BarEntry(6f, 0f),
-            BarEntry(7f, secondsToMinutes(items.get(4).time).toFloat()), // 5월
+            BarEntry(7f, secondsToMinutes(distances.sliceArray(0..4).sum()).toFloat()), // 5월
             BarEntry(8f, 0f),
-            BarEntry(9f, secondsToMinutes(items.get(5).time).toFloat()), // 6월
+            BarEntry(9f, secondsToMinutes(distances.sliceArray(0..5).sum()).toFloat()), // 6월
             BarEntry(10f, 0f),
-            BarEntry(11f, secondsToMinutes(items.get(6).time).toFloat()), // 7월
+            BarEntry(11f, secondsToMinutes(distances.sliceArray(0..6).sum()).toFloat()), // 7월
             BarEntry(12f, 0f),
-            BarEntry(13f, secondsToMinutes(items.get(7).time).toFloat()), // 8월
+            BarEntry(13f, secondsToMinutes(distances.sliceArray(0..7).sum()).toFloat()), // 8월
             BarEntry(14f, 0f),
-            BarEntry(15f, secondsToMinutes(items.get(8).time).toFloat()), // 9월
+            BarEntry(15f, secondsToMinutes(distances.sliceArray(0..8).sum()).toFloat()), // 9월
             BarEntry(16f, 0f),
-            BarEntry(17f, secondsToMinutes(items.get(9).time).toFloat()), // 10월
+            BarEntry(17f, secondsToMinutes(distances.sliceArray(0..9).sum()).toFloat()), // 10월
             BarEntry(18f, 0f),
-            BarEntry(19f, secondsToMinutes(items.get(10).time).toFloat()), // 11월
+            BarEntry(19f, secondsToMinutes(distances.sliceArray(0..10).sum()).toFloat()), // 11월
             BarEntry(20f,0f),
-            BarEntry(21f,secondsToMinutes(items.get(11).time).toFloat()) // 12월
+            BarEntry(21f,secondsToMinutes(distances.sliceArray(0..11).sum()).toFloat()) // 12월
         )
         // 데이터셋 생성 및 설정
         val dataSet = LineDataSet(entries, "Label") // 데이터셋 생성

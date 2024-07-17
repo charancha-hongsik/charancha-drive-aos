@@ -186,6 +186,8 @@ class DrivenDistanceActivity:BaseActivity() {
         rightAxis.setDrawGridLines(false) // 그리드 라인 제거
         rightAxis.setDrawAxisLine(false) // 축 라인 제거
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
+
         rightAxis.axisMinimum = 0f
         rightAxis.axisMaximum = 10f
         rightAxis.textColor = getColor(R.color.gray_600)
@@ -430,6 +432,8 @@ class DrivenDistanceActivity:BaseActivity() {
         rightAxis.setDrawGridLines(false) // 그리드 라인 제거
         rightAxis.setDrawAxisLine(false) // 축 라인 제거
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
+
         rightAxis.axisMinimum = 0f
         rightAxis.axisMaximum = 10f
         rightAxis.textColor = getColor(R.color.gray_600)
@@ -751,6 +755,7 @@ class DrivenDistanceActivity:BaseActivity() {
         rightAxis.setDrawGridLines(false) // 그리드 라인 제거
         rightAxis.setDrawAxisLine(false) // 축 라인 제거
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
         rightAxis.axisMinimum = 0f
         rightAxis.axisMaximum = 10f
         rightAxis.textColor = getColor(R.color.gray_600)
@@ -856,6 +861,8 @@ class DrivenDistanceActivity:BaseActivity() {
         rightAxis.setDrawGridLines(false) // 그리드 라인 제거
         rightAxis.setDrawAxisLine(false) // 축 라인 제거
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
+
         rightAxis.axisMinimum = 0f
         rightAxis.axisMaximum = max.toFloat()
         rightAxis.textColor = getColor(R.color.gray_600)
@@ -960,6 +967,8 @@ class DrivenDistanceActivity:BaseActivity() {
         rightAxis.setDrawGridLines(false) // 그리드 라인 제거
         rightAxis.setDrawAxisLine(false) // 축 라인 제거
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
+
         rightAxis.axisMinimum = 0f
         rightAxis.axisMaximum = 10f
         rightAxis.textColor = getColor(R.color.gray_600)
@@ -1072,6 +1081,8 @@ class DrivenDistanceActivity:BaseActivity() {
         rightAxis.setDrawGridLines(false) // 그리드 라인 제거
         rightAxis.setDrawAxisLine(false) // 축 라인 제거
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
+
         rightAxis.axisMinimum = 0f
         rightAxis.axisMaximum = max.toFloat()
         rightAxis.textColor = getColor(R.color.gray_600)
@@ -1199,6 +1210,8 @@ class DrivenDistanceActivity:BaseActivity() {
         rightAxis.setDrawGridLines(false) // 그리드 라인 제거
         rightAxis.setDrawAxisLine(false) // 축 라인 제거
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
+
         rightAxis.granularity = 1.0f
         rightAxis.axisMinimum = 0f
         rightAxis.axisMaximum = 10f
@@ -1342,6 +1355,8 @@ class DrivenDistanceActivity:BaseActivity() {
         rightAxis.setDrawGridLines(false) // 그리드 라인 제거
         rightAxis.setDrawAxisLine(false) // 축 라인 제거
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
+
         rightAxis.granularity = 1.0f
         rightAxis.axisMinimum = 0f
         rightAxis.axisMaximum = max.toFloat()
@@ -1462,6 +1477,8 @@ class DrivenDistanceActivity:BaseActivity() {
         rightAxis.setDrawGridLines(false) // 그리드 라인 제거
         rightAxis.setDrawAxisLine(false) // 축 라인 제거
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
+
         rightAxis.granularity = 1.0f
         rightAxis.axisMinimum = 0f
         rightAxis.axisMaximum = 10f
@@ -1601,6 +1618,7 @@ class DrivenDistanceActivity:BaseActivity() {
         rightAxis.setDrawGridLines(false) // 그리드 라인 제거
         rightAxis.setDrawAxisLine(false) // 축 라인 제거
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
         rightAxis.granularity = 1.0f
         rightAxis.axisMinimum = 0f
         rightAxis.axisMaximum = max.toFloat()
@@ -1716,6 +1734,7 @@ class DrivenDistanceActivity:BaseActivity() {
         rightAxis.setDrawGridLines(false) // 그리드 라인 제거
         rightAxis.setDrawAxisLine(false) // 축 라인 제거
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
         rightAxis.granularity = 1.0f
         rightAxis.axisMinimum = 0f
         rightAxis.axisMaximum = 80f
@@ -1836,6 +1855,7 @@ class DrivenDistanceActivity:BaseActivity() {
         rightAxis.setDrawGridLines(false) // 그리드 라인 제거
         rightAxis.setDrawAxisLine(false) // 축 라인 제거
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
         rightAxis.granularity = 1.0f
         rightAxis.axisMinimum = 0f
         rightAxis.axisMaximum = max.toFloat()
@@ -1947,6 +1967,8 @@ class DrivenDistanceActivity:BaseActivity() {
         rightAxis.setDrawGridLines(false) // 그리드 라인 제거
         rightAxis.setDrawAxisLine(false) // 축 라인 제거
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
+
         rightAxis.granularity = 1.0f
         rightAxis.axisMinimum = 0f
         rightAxis.axisMaximum = 80f
@@ -2077,6 +2099,7 @@ class DrivenDistanceActivity:BaseActivity() {
         rightAxis.setDrawGridLines(false) // 그리드 라인 제거
         rightAxis.setDrawAxisLine(false) // 축 라인 제거
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
         rightAxis.granularity = 1.0f
         rightAxis.axisMinimum = 0f
         rightAxis.axisMaximum = max.toFloat()
