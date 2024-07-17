@@ -1152,7 +1152,7 @@ class DrivenDistanceActivity:BaseActivity() {
         dataSet.color = Color.BLACK // 선 색상 설정
         dataSet.setDrawValues(false) // 값 표시 여부 설정
         dataSet.setDrawCircles(false)
-        dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER // 곡선 형태로 설정
+        dataSet.mode = LineDataSet.Mode.LINEAR // 곡선 형태로 설정
         dataSet.setDrawFilled(true)  // 선 안쪽을 색으로 채우도록 설정
         dataSet.fillDrawable = getDrawable(R.drawable.line_chart_gradient)
 
@@ -1297,7 +1297,7 @@ class DrivenDistanceActivity:BaseActivity() {
         dataSet.color = Color.BLACK // 선 색상 설정
         dataSet.setDrawValues(false) // 값 표시 여부 설정
         dataSet.setDrawCircles(false)
-        dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER // 곡선 형태로 설정
+        dataSet.mode = LineDataSet.Mode.LINEAR // 곡선 형태로 설정
         dataSet.setDrawFilled(true)  // 선 안쪽을 색으로 채우도록 설정
         dataSet.fillDrawable = getDrawable(R.drawable.line_chart_gradient)
 
@@ -1419,7 +1419,7 @@ class DrivenDistanceActivity:BaseActivity() {
         dataSet.color = Color.BLACK // 선 색상 설정
         dataSet.setDrawValues(false) // 값 표시 여부 설정
         dataSet.setDrawCircles(false)
-        dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER // 곡선 형태로 설정
+        dataSet.mode = LineDataSet.Mode.LINEAR // 곡선 형태로 설정
         dataSet.setDrawFilled(true)  // 선 안쪽을 색으로 채우도록 설정
         dataSet.fillDrawable = getDrawable(R.drawable.line_chart_gradient)
 
@@ -1560,7 +1560,7 @@ class DrivenDistanceActivity:BaseActivity() {
         dataSet.color = Color.BLACK // 선 색상 설정
         dataSet.setDrawValues(false) // 값 표시 여부 설정
         dataSet.setDrawCircles(false)
-        dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER // 곡선 형태로 설정
+        dataSet.mode = LineDataSet.Mode.LINEAR // 곡선 형태로 설정
         dataSet.setDrawFilled(true)  // 선 안쪽을 색으로 채우도록 설정
         dataSet.fillDrawable = getDrawable(R.drawable.line_chart_gradient)
 
@@ -1674,7 +1674,7 @@ class DrivenDistanceActivity:BaseActivity() {
         dataSet.color = Color.BLACK // 선 색상 설정
         dataSet.setDrawValues(false) // 값 표시 여부 설정
         dataSet.setDrawCircles(false)
-        dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER // 곡선 형태로 설정
+        dataSet.mode = LineDataSet.Mode.LINEAR // 곡선 형태로 설정
         dataSet.setDrawFilled(true)  // 선 안쪽을 색으로 채우도록 설정
         dataSet.fillDrawable = getDrawable(R.drawable.line_chart_gradient)
 
@@ -1795,7 +1795,7 @@ class DrivenDistanceActivity:BaseActivity() {
         dataSet.color = Color.BLACK // 선 색상 설정
         dataSet.setDrawValues(false) // 값 표시 여부 설정
         dataSet.setDrawCircles(false)
-        dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER // 곡선 형태로 설정
+        dataSet.mode = LineDataSet.Mode.LINEAR // 곡선 형태로 설정
         dataSet.setDrawFilled(true)  // 선 안쪽을 색으로 채우도록 설정
         dataSet.fillDrawable = getDrawable(R.drawable.line_chart_gradient)
 
@@ -1909,7 +1909,7 @@ class DrivenDistanceActivity:BaseActivity() {
         dataSet.color = Color.BLACK // 선 색상 설정
         dataSet.setDrawValues(false) // 값 표시 여부 설정
         dataSet.setDrawCircles(false)
-        dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER // 곡선 형태로 설정
+        dataSet.mode = LineDataSet.Mode.LINEAR // 곡선 형태로 설정
         dataSet.setDrawFilled(true)  // 선 안쪽을 색으로 채우도록 설정
         dataSet.fillDrawable = getDrawable(R.drawable.line_chart_gradient)
 
@@ -2041,7 +2041,7 @@ class DrivenDistanceActivity:BaseActivity() {
         dataSet.color = Color.BLACK // 선 색상 설정
         dataSet.setDrawValues(false) // 값 표시 여부 설정
         dataSet.setDrawCircles(false)
-        dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER // 곡선 형태로 설정
+        dataSet.mode = LineDataSet.Mode.LINEAR // 곡선 형태로 설정
         dataSet.setDrawFilled(true)  // 선 안쪽을 색으로 채우도록 설정
         dataSet.fillDrawable = getDrawable(R.drawable.line_chart_gradient)
 
