@@ -119,7 +119,7 @@ open class BaseActivity: AppCompatActivity(){
 
         var date = startDate
 
-        if (past == 150L || past == 335L) {
+        if (past == 150L || past == 334L) {
             // 범위 내 모든 달 찾기
             while (!date.isAfter(endDate)) {
                 resultList.add(date.format(monthFormatter))
@@ -151,6 +151,32 @@ open class BaseActivity: AppCompatActivity(){
             // 원하는 포맷으로 날짜를 변환
             val formatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일", Locale.KOREAN)
             return localDateTime.format(formatter)
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            // 예외 처리: 날짜 형식이 올바르지 않은 경우 빈 문자열 반환 또는 예외 처리 로직 추가
+            return ""
+        }
+    }
+
+    fun formatDateRange(startDate: String, endDate: String): String {
+        try {
+            // 시작 날짜를 Instant 객체로 파싱
+            val startInstant = Instant.parse(startDate)
+            val endInstant = Instant.parse(endDate)
+
+            // Instant 객체를 로컬 시간대로 변환 (한국 시간대로 설정 예시)
+            val koreaZoneId = ZoneId.of("Asia/Seoul")
+            val startDateTime = LocalDateTime.ofInstant(startInstant, koreaZoneId)
+            val endDateTime = LocalDateTime.ofInstant(endInstant, koreaZoneId)
+
+            // 원하는 포맷으로 날짜를 변환
+            val formatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일", Locale.KOREAN)
+            val formattedStartDate = startDateTime.format(formatter)
+            val formattedEndDate = endDateTime.format(formatter)
+
+            // 포맷된 날짜를 합쳐서 반환
+            return "$formattedStartDate ~ $formattedEndDate"
 
         } catch (e: Exception) {
             e.printStackTrace()

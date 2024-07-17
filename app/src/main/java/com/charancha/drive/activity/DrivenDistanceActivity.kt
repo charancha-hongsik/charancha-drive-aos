@@ -664,8 +664,8 @@ class DrivenDistanceActivity:BaseActivity() {
             "ASC",
             null,
             null,
-            getCurrentAndPastTimeForISO(335).second,
-            getCurrentAndPastTimeForISO(335).first,
+            getCurrentAndPastTimeForISO(334).second,
+            getCurrentAndPastTimeForISO(334).first,
             "startTime",
             "month"
         ).enqueue(object :Callback<ResponseBody>{
@@ -680,8 +680,8 @@ class DrivenDistanceActivity:BaseActivity() {
                         GetDrivingGraphDataResponse::class.java
                     )
 
-                    setYearBarChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(335).third)
-                    setYearLineChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(335).third)
+                    setYearBarChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(334).third)
+                    setYearLineChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(334).third)
                 }
             }
 
@@ -2286,12 +2286,11 @@ class DrivenDistanceActivity:BaseActivity() {
         tv_driving_info2.text = "내 차는 자주\n달릴수록 좋아요"
         tv_driving_info3.text = "1개월 간 주행 거리를\n한눈에 확인해보세요!"
 
-
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
-            getCurrentAndPastTimeForISO(30).second,
-            getCurrentAndPastTimeForISO(30).first,
+            getCurrentAndPastTimeForISO(29).second,
+            getCurrentAndPastTimeForISO(29).first,
             "startTime",
             "day").enqueue(object:Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
@@ -2309,6 +2308,11 @@ class DrivenDistanceActivity:BaseActivity() {
                     tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
 
                     tv_driving_info4.text = "1개월 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요"
+
+
+                    tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+                    tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+                    tv_date3.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
 
                     // TextView에 SpannableString 설정
                     tv_driving_info4.text = CommonUtil.getSpannableString(
@@ -2356,6 +2360,10 @@ class DrivenDistanceActivity:BaseActivity() {
 
                     tv_driving_info4.text = "6개월 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요"
 
+                    tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
+                    tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
+                    tv_date3.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
+
                     tv_driving_info4.text = CommonUtil.getSpannableString(
                         this@DrivenDistanceActivity,
                         "6개월 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요",
@@ -2381,8 +2389,8 @@ class DrivenDistanceActivity:BaseActivity() {
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
-            getCurrentAndPastTimeForISO(335).second,
-            getCurrentAndPastTimeForISO(335).first,
+            getCurrentAndPastTimeForISO(334).second,
+            getCurrentAndPastTimeForISO(334).first,
             "startTime",
             "month").enqueue(object:Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
@@ -2398,6 +2406,10 @@ class DrivenDistanceActivity:BaseActivity() {
                     tv_average_distance.text = transferDistance(drivingDistance.average.totalDistance)
                     tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
                     tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
+
+                    tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
+                    tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
+                    tv_date3.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
 
                     tv_driving_info4.text = "1년 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요"
 

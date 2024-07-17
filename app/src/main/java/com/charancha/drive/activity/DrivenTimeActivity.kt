@@ -666,6 +666,7 @@ class DrivenTimeActivity:BaseActivity() {
     }
 
     private fun callSixMonthChart(){
+
         apiService().getDrivingTimeGraphData(
             "Bearer " + PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.USER_CARID, "")!!,
@@ -707,8 +708,8 @@ class DrivenTimeActivity:BaseActivity() {
             "ASC",
             null,
             null,
-            getCurrentAndPastTimeForISO(335).second,
-            getCurrentAndPastTimeForISO(335).first,
+            getCurrentAndPastTimeForISO(334).second,
+            getCurrentAndPastTimeForISO(334).first,
             "startTime",
             "month"
         ).enqueue(object :Callback<ResponseBody>{
@@ -723,8 +724,8 @@ class DrivenTimeActivity:BaseActivity() {
                         GetDrivingGraphDataResponse::class.java
                     )
 
-                    setYearBarChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(335).third)
-                    setYearLineChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(335).third)
+                    setYearBarChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(334).third)
+                    setYearLineChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(334).third)
                 }
             }
 
@@ -2201,6 +2202,10 @@ class DrivenTimeActivity:BaseActivity() {
 
                         tv_time_info4.text = "최근 내 차는\n" + transferSecondsToHourAndMinutes(recentDrivingDistance.total.totalTime).first +"시간" + transferSecondsToHourAndMinutes(recentDrivingDistance.total.totalTime).second + "분" + " 달렸어요"
 
+                        tv_date1.text = convertDateFormat(recentDrivingDistance.recentStartTime)
+                        tv_date2.text = convertDateFormat(recentDrivingDistance.recentStartTime)
+                        tv_date3.text = convertDateFormat(recentDrivingDistance.recentStartTime)
+
                         tv_time_info4.text = CommonUtil.getSpannableString(
                             this@DrivenTimeActivity,
                             "최근 내 차는\n" + transferSecondsToHourAndMinutes(recentDrivingDistance.total.totalTime).first +"시간" + transferSecondsToHourAndMinutes(recentDrivingDistance.total.totalTime).second + "분" + " 달렸어요",
@@ -2294,8 +2299,8 @@ class DrivenTimeActivity:BaseActivity() {
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
-            getCurrentAndPastTimeForISO(30).second,
-            getCurrentAndPastTimeForISO(30).first,
+            getCurrentAndPastTimeForISO(29).second,
+            getCurrentAndPastTimeForISO(29).first,
             "startTime",
             "day").enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
@@ -2317,6 +2322,10 @@ class DrivenTimeActivity:BaseActivity() {
                     tv_diff_time.text = "+" +transferSecondsToHourAndMinutes(drivingDistance.diffTotal.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.diffTotal.totalTime).second + "분 증가"
 
                     tv_time_info4.text = "1개월 간 내 차는\n" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first +"시간" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second + "분" + " 달렸어요"
+
+                    tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+                    tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+                    tv_date3.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
 
                     tv_time_info4.text = CommonUtil.getSpannableString(
                         this@DrivenTimeActivity,
@@ -2343,10 +2352,10 @@ class DrivenTimeActivity:BaseActivity() {
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
-            getCurrentAndPastTimeForISO(60).second,
-            getCurrentAndPastTimeForISO(60).first,
+            getCurrentAndPastTimeForISO(150).second,
+            getCurrentAndPastTimeForISO(150).first,
             "startTime",
-            "day").enqueue(object: Callback<ResponseBody> {
+            "month").enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200) {
 
@@ -2364,6 +2373,10 @@ class DrivenTimeActivity:BaseActivity() {
                     tv_max_hour.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).first.toString()
                     tv_max_minute.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).second.toString()
                     tv_diff_time.text = "+" +transferSecondsToHourAndMinutes(drivingDistance.diffTotal.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.diffTotal.totalTime).second + "분 증가"
+
+                    tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
+                    tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
+                    tv_date3.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
 
                     tv_time_info4.text = "6개월 간 내 차는\n" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first +"시간" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second + "분" + " 달렸어요"
 
@@ -2393,8 +2406,8 @@ class DrivenTimeActivity:BaseActivity() {
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
-            getCurrentAndPastTimeForISO(365).second,
-            getCurrentAndPastTimeForISO(365).first,
+            getCurrentAndPastTimeForISO(334).second,
+            getCurrentAndPastTimeForISO(334).first,
             "startTime",
             "day").enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
@@ -2416,6 +2429,10 @@ class DrivenTimeActivity:BaseActivity() {
                     tv_diff_time.text = "+" +transferSecondsToHourAndMinutes(drivingDistance.diffTotal.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.diffTotal.totalTime).second + "분 증가"
 
                     tv_time_info4.text = "1년 간 내 차는\n" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first +"시간" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second + "분" + " 달렸어요"
+
+                    tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
+                    tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
+                    tv_date3.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
 
                     tv_time_info4.text = CommonUtil.getSpannableString(
                         this@DrivenTimeActivity,
