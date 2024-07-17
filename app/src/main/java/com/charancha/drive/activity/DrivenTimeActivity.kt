@@ -5,14 +5,16 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import com.charancha.drive.CommonUtil
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
+import com.charancha.drive.retrofit.response.GetDrivingGraphDataResponse
 import com.charancha.drive.retrofit.response.GetDrivingStatisticsResponse
 import com.charancha.drive.retrofit.response.GetRecentDrivingStatisticsResponse
+import com.charancha.drive.retrofit.response.GraphItem
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase
-import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
@@ -22,6 +24,9 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
 
 class DrivenTimeActivity:BaseActivity() {
     lateinit var btn_back:ImageView
@@ -47,8 +52,8 @@ class DrivenTimeActivity:BaseActivity() {
     lateinit var tv_min_minute:TextView
     lateinit var tv_diff_time:TextView
 
-
-
+    var recentStartTime = "2024-07-15T00:00:00.000Z"
+    var recentEndTime = "2024-07-15T23:59:59.999Z"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,8 +61,7 @@ class DrivenTimeActivity:BaseActivity() {
 
         init()
         setResources()
-        setRecentBarChart()
-        setRecentLineChart()
+
         setRecentDrivingTime()
     }
 
@@ -89,36 +93,82 @@ class DrivenTimeActivity:BaseActivity() {
         btn_recent_drive.isSelected = true
     }
 
+    private fun setResources(){
+        btn_back.setOnClickListener { finish() }
+
+        btn_recent_drive.setOnClickListener {
+            setRecentDrivingTime()
+
+            btn_recent_drive.isSelected = true
+            btn_month_drive.isSelected = false
+            btn_six_month_drive.isSelected = false
+            btn_year_drive.isSelected = false
+        }
+
+        btn_month_drive.setOnClickListener {
+            callMonthChart()
+            setMonthDrivingTime()
+
+            btn_recent_drive.isSelected = false
+            btn_month_drive.isSelected = true
+            btn_six_month_drive.isSelected = false
+            btn_year_drive.isSelected = false
+
+        }
+
+        btn_six_month_drive.setOnClickListener {
+            callSixMonthChart()
+            setSixMonthDrivingTime()
+
+            btn_recent_drive.isSelected = false
+            btn_month_drive.isSelected = false
+            btn_six_month_drive.isSelected = true
+            btn_year_drive.isSelected = false
+        }
+
+        btn_year_drive.setOnClickListener {
+            callYearChart()
+            setYearDrivingTime()
+
+            btn_recent_drive.isSelected = false
+            btn_month_drive.isSelected = false
+            btn_six_month_drive.isSelected = false
+            btn_year_drive.isSelected = true
+        }
+    }
+
     /**
      * 24개의 데이터가 내려옴
      */
-    private fun setRecentBarChart() {
+    private fun setRecentBarChartAsDefault() {
+
+        tv_time_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
         val entries = listOf(
-            BarEntry(-1f, 6f),
-            BarEntry(-0f, 10f),
-            BarEntry(1f, 4f),
-            BarEntry(2f, 8f),
-            BarEntry(3f, 6f),
-            BarEntry(4f, 2f),
-            BarEntry(5f, 7f),
-            BarEntry(6f, 5f),
-            BarEntry(7f, 9f),
-            BarEntry(8f, 3f),
-            BarEntry(9f, 4f),
-            BarEntry(10f, 5f),
-            BarEntry(11f, 2f),
-            BarEntry(12f, 7f),
-            BarEntry(13f, 5f),
-            BarEntry(14f, 9f),
-            BarEntry(15f, 3f),
-            BarEntry(16f, 4f),
-            BarEntry(17f, 5f),
-            BarEntry(18f, 9f),
-            BarEntry(19f, 1f),
-            BarEntry(20f,2f),
-            BarEntry(21f,5f),
-            BarEntry(22f,5f)
+            BarEntry(-1f, 0f),
+            BarEntry(-0f, 0f),
+            BarEntry(1f, 0f),
+            BarEntry(2f, 0f),
+            BarEntry(3f, 0f),
+            BarEntry(4f, 0f),
+            BarEntry(5f, 0f),
+            BarEntry(6f, 0f),
+            BarEntry(7f, 0f),
+            BarEntry(8f, 0f),
+            BarEntry(9f, 0f),
+            BarEntry(10f, 0f),
+            BarEntry(11f, 0f),
+            BarEntry(12f, 0f),
+            BarEntry(13f, 0f),
+            BarEntry(14f, 0f),
+            BarEntry(15f, 0f),
+            BarEntry(16f, 0f),
+            BarEntry(17f, 0f),
+            BarEntry(18f, 0f),
+            BarEntry(19f, 0f),
+            BarEntry(20f,0f),
+            BarEntry(21f,0f),
+            BarEntry(22f,0f)
         )
 
         val dataSet = BarDataSet(entries, "Sample Data")
@@ -173,6 +223,8 @@ class DrivenTimeActivity:BaseActivity() {
         rightAxis.setDrawGridLines(false) // 그리드 라인 제거
         rightAxis.setDrawAxisLine(false) // 축 라인 제거
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 5로 설정 (강제)
+
         rightAxis.axisMinimum = 0f
         rightAxis.axisMaximum = 10f
         rightAxis.textColor = getColor(R.color.gray_600)
@@ -183,7 +235,7 @@ class DrivenTimeActivity:BaseActivity() {
                 val minValue = rightAxis.axisMinimum
                 val maxValue = rightAxis.axisMaximum
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "km"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + "분"// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -193,43 +245,63 @@ class DrivenTimeActivity:BaseActivity() {
         layout_barchart_time.invalidate() // refresh
     }
 
+
     /**
-     * 데이터 30개가 내려옴
-     * 각 월요일을 차트 하단에 노출
+     * 24개의 데이터가 내려옴
      */
-    private fun setMonthBarChart() {
+    private fun setRecentBarChart(items : List<GraphItem>) {
+        var max = 0
+
+        for(item in items){
+            if(secondsToMinutes(item.time) > max)
+                max = secondsToMinutes(item.time)
+        }
+
+        if(max == 0){
+            setRecentBarChartAsDefault()
+            return
+        }
+
+
+        val time = FloatArray(24) { 0f }
+
+        // Iterate over each item and parse the startTime to extract the hour
+        val koreaZoneId = ZoneId.of("Asia/Seoul")
+
+        // Iterate over each item and parse the startTime to extract the hour
+        for (item in items) {
+            val startTime = Instant.parse(item.startTime)
+            val localDateTime = LocalDateTime.ofInstant(startTime, koreaZoneId)
+            val hour = localDateTime.hour
+
+            time[hour] = secondsToMinutes(item.time).toFloat()
+        }
 
         val entries = listOf(
-            BarEntry(-1f, 6f),
-            BarEntry(-0f, 10f),
-            BarEntry(1f, 4f),
-            BarEntry(2f, 8f),
-            BarEntry(3f, 6f),
-            BarEntry(4f, 1f),
-            BarEntry(5f, 7f),
-            BarEntry(6f, 5f),
-            BarEntry(7f, 9f),
-            BarEntry(8f, 9f),
-            BarEntry(9f, 4f),
-            BarEntry(10f, 5f),
-            BarEntry(11f, 2f),
-            BarEntry(12f, 7f),
-            BarEntry(13f, 5f),
-            BarEntry(14f, 1f),
-            BarEntry(15f, 3f),
-            BarEntry(16f, 4f),
-            BarEntry(17f, 5f),
-            BarEntry(18f, 9f),
-            BarEntry(19f, 1f),
-            BarEntry(20f,2f),
-            BarEntry(21f,5f),
-            BarEntry(22f,8f),
-            BarEntry(23f,3f),
-            BarEntry(24f,4f),
-            BarEntry(25f,1f),
-            BarEntry(26f,9f),
-            BarEntry(27f,5f),
-            BarEntry(28f,5f)
+            BarEntry(-1f, time.get(0)), // 00시
+            BarEntry(-0f, time.get(1)), // 01시
+            BarEntry(1f, time.get(2)), // 02시
+            BarEntry(2f, time.get(3)), // 03시
+            BarEntry(3f, time.get(4)), // 04시
+            BarEntry(4f, time.get(5)), // 05시
+            BarEntry(5f, time.get(6)), // 06시
+            BarEntry(6f, time.get(7)), // 07시
+            BarEntry(7f, time.get(8)), // 08시
+            BarEntry(8f, time.get(9)), // 09시
+            BarEntry(9f, time.get(10)), // 10시
+            BarEntry(10f, time.get(11)), // 11시
+            BarEntry(11f, time.get(12)), // 12시
+            BarEntry(12f, time.get(13)), // 13시
+            BarEntry(13f, time.get(14)), // 14시
+            BarEntry(14f, time.get(15)), // 15시
+            BarEntry(15f, time.get(16)), // 16시
+            BarEntry(16f, time.get(17)), // 17시
+            BarEntry(17f, time.get(18)), // 18시
+            BarEntry(18f, time.get(19)), // 19시
+            BarEntry(19f, time.get(20)), // 20시
+            BarEntry(20f,time.get(21)), // 21시
+            BarEntry(21f,time.get(22)), // 22시
+            BarEntry(22f,time.get(23)) // 23시
         )
 
         val dataSet = BarDataSet(entries, "Sample Data")
@@ -245,6 +317,125 @@ class DrivenTimeActivity:BaseActivity() {
         layout_barchart_time.animateY(1000)
         layout_barchart_time.legend.isEnabled = false
         layout_barchart_time.setTouchEnabled(false)
+        layout_barchart_time.setExtraOffsets(0f,0f,20f,0f)
+
+        // Customizing x-axis labels
+        val xAxis = layout_barchart_time.xAxis
+        xAxis.granularity = 1f // only intervals of 1 unit
+        xAxis.axisMinimum = -2f
+        xAxis.axisMaximum = 23f
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
+        xAxis.textColor = getColor(R.color.gray_600)
+        xAxis.labelCount = 24
+
+        // Customizing x-axis labels
+        xAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                return when (value.toInt()) {
+                    0 -> "오전 12시"
+                    6 -> "오전 6시"
+                    12 -> "오후 12시"
+                    18-> "오후 6시"
+                    else -> "" // 나머지 레이블은 비워둠
+                }
+            }
+        }
+
+        // Y축 레이블 및 선 제거
+        val leftAxis = layout_barchart_time.axisLeft
+        leftAxis.setDrawGridLines(true) // 그리드 라인 표시
+        leftAxis.setDrawAxisLine(false) // 축 라인 제거
+        leftAxis.setDrawLabels(false) // Y축 레이블 제거
+        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 5로 설정 (강제)
+        leftAxis.granularity = 1f
+        leftAxis.axisMinimum = 0f
+        leftAxis.axisMaximum = max.toFloat()
+        leftAxis.gridColor = getColor(R.color.gray_200)
+
+
+        val rightAxis = layout_barchart_time.axisRight
+        rightAxis.setDrawGridLines(false) // 그리드 라인 제거
+        rightAxis.setDrawAxisLine(false) // 축 라인 제거
+        rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 5로 설정 (강제)
+        rightAxis.granularity = 1f
+        rightAxis.axisMinimum = 0f
+        rightAxis.axisMaximum = max.toFloat()
+        rightAxis.textColor = getColor(R.color.gray_600)
+
+
+        // Y축 커스텀 레이블 포매터 설정
+        rightAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                val minValue = rightAxis.axisMinimum
+                val maxValue = rightAxis.axisMaximum
+                Log.d("testestest","testestesvaluevalue :: " + value)
+
+                return if (value == minValue || value == maxValue) {
+                    value.toInt().toString() + "분"// 가장 아래와 위에만 레이블 표시
+                } else {
+                    "" // 나머지 레이블 제거
+                }
+            }
+        }
+
+        layout_barchart_time.invalidate() // refresh
+    }
+
+
+    /**
+     * 데이터 30개가 내려옴
+     * 각 월요일을 차트 하단에 노출
+     */
+    private fun setMonthBarChartAsDefault(months: List<String>) {
+        val entries = listOf(
+            BarEntry(-1f, 0f),
+            BarEntry(-0f, 0f),
+            BarEntry(1f, 0f),
+            BarEntry(2f, 0f),
+            BarEntry(3f, 0f),
+            BarEntry(4f, 0f),
+            BarEntry(5f, 0f),
+            BarEntry(6f, 0f),
+            BarEntry(7f, 0f),
+            BarEntry(8f, 0f),
+            BarEntry(9f, 0f),
+            BarEntry(10f, 0f),
+            BarEntry(11f, 0f),
+            BarEntry(12f, 0f),
+            BarEntry(13f, 0f),
+            BarEntry(14f, 0f),
+            BarEntry(15f, 0f),
+            BarEntry(16f, 0f),
+            BarEntry(17f, 0f),
+            BarEntry(18f, 0f),
+            BarEntry(19f, 0f),
+            BarEntry(20f,0f),
+            BarEntry(21f,0f),
+            BarEntry(22f,0f),
+            BarEntry(23f,0f),
+            BarEntry(24f,0f),
+            BarEntry(25f,0f),
+            BarEntry(26f,0f),
+            BarEntry(27f,0f),
+            BarEntry(28f,0f)
+        )
+
+        val dataSet = BarDataSet(entries, "Sample Data")
+        dataSet.color = getColor(R.color.gray_200)
+        dataSet.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+        val barData = BarData(dataSet)
+        barData.barWidth = 0.6f
+
+        layout_barchart_time.data = barData
+        layout_barchart_time.setFitBars(true) // make the x-axis fit exactly all bars
+        layout_barchart_time.description.isEnabled = false
+        layout_barchart_time.animateY(1000)
+        layout_barchart_time.legend.isEnabled = false
+        layout_barchart_time.setTouchEnabled(false)
+        layout_barchart_time.setExtraOffsets(0f,0f,20f,0f)
 
         // Customizing x-axis labels
         val xAxis = layout_barchart_time.xAxis
@@ -260,10 +451,10 @@ class DrivenTimeActivity:BaseActivity() {
         xAxis.valueFormatter = object : IAxisValueFormatter {
             override fun getFormattedValue(value: Float, axis: AxisBase?): String {
                 return when (value.toInt()) {
-                    1 -> "6월 17일"
-                    10 -> "6월 24일"
-                    18 -> "7월 1일"
-                    26-> "7월 8일"
+                    1 -> months.get(0)
+                    10 -> months.get(1)
+                    18 -> months.get(2)
+                    26-> months.get(3)
                     else -> "" // 나머지 레이블은 비워둠
                 }
             }
@@ -284,6 +475,7 @@ class DrivenTimeActivity:BaseActivity() {
         rightAxis.setDrawGridLines(false) // 그리드 라인 제거
         rightAxis.setDrawAxisLine(false) // 축 라인 제거
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 5로 설정 (강제)
         rightAxis.axisMinimum = 0f
         rightAxis.axisMaximum = 10f
         rightAxis.textColor = getColor(R.color.gray_600)
@@ -294,7 +486,7 @@ class DrivenTimeActivity:BaseActivity() {
                 val minValue = rightAxis.axisMinimum
                 val maxValue = rightAxis.axisMaximum
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "km"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + "분"// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -304,25 +496,254 @@ class DrivenTimeActivity:BaseActivity() {
         layout_barchart_time.invalidate() // refresh
     }
 
+    /**
+     * 데이터 30개가 내려옴
+     * 각 월요일을 차트 하단에 노출
+     */
+    private fun setMonthBarChart(items : List<GraphItem>, dates:List<String>) {
+
+        var max = 0
+
+        for(item in items){
+            if(secondsToMinutes(item.time) > max)
+                max = secondsToMinutes(item.time)
+        }
+
+        if(max == 0){
+            setMonthBarChartAsDefault(dates)
+            return
+        }
+
+        val entries = listOf(
+            BarEntry(-1f, secondsToMinutes(items.get(0).time).toFloat()),
+            BarEntry(-0f, secondsToMinutes(items.get(1).time).toFloat()),
+            BarEntry(1f, secondsToMinutes(items.get(2).time).toFloat()),
+            BarEntry(2f, secondsToMinutes(items.get(3).time).toFloat()),
+            BarEntry(3f, secondsToMinutes(items.get(4).time).toFloat()),
+            BarEntry(4f, secondsToMinutes(items.get(5).time).toFloat()),
+            BarEntry(5f, secondsToMinutes(items.get(6).time).toFloat()),
+            BarEntry(6f, secondsToMinutes(items.get(7).time).toFloat()),
+            BarEntry(7f, secondsToMinutes(items.get(8).time).toFloat()),
+            BarEntry(8f, secondsToMinutes(items.get(9).time).toFloat()),
+            BarEntry(9f, secondsToMinutes(items.get(10).time).toFloat()),
+            BarEntry(10f, secondsToMinutes(items.get(11).time).toFloat()),
+            BarEntry(11f, secondsToMinutes(items.get(12).time).toFloat()),
+            BarEntry(12f, secondsToMinutes(items.get(13).time).toFloat()),
+            BarEntry(13f, secondsToMinutes(items.get(14).time).toFloat()),
+            BarEntry(14f, secondsToMinutes(items.get(15).time).toFloat()),
+            BarEntry(15f, secondsToMinutes(items.get(16).time).toFloat()),
+            BarEntry(16f, secondsToMinutes(items.get(17).time).toFloat()),
+            BarEntry(17f, secondsToMinutes(items.get(18).time).toFloat()),
+            BarEntry(18f, secondsToMinutes(items.get(19).time).toFloat()),
+            BarEntry(19f, secondsToMinutes(items.get(20).time).toFloat()),
+            BarEntry(20f,secondsToMinutes(items.get(21).time).toFloat()),
+            BarEntry(21f,secondsToMinutes(items.get(22).time).toFloat()),
+            BarEntry(22f,secondsToMinutes(items.get(23).time).toFloat()),
+            BarEntry(23f,secondsToMinutes(items.get(24).time).toFloat()),
+            BarEntry(24f,secondsToMinutes(items.get(25).time).toFloat()),
+            BarEntry(25f,secondsToMinutes(items.get(26).time).toFloat()),
+            BarEntry(26f,secondsToMinutes(items.get(27).time).toFloat()),
+            BarEntry(27f,secondsToMinutes(items.get(28).time).toFloat()),
+            BarEntry(28f,secondsToMinutes(items.get(29).time).toFloat())
+        )
+
+        val dataSet = BarDataSet(entries, "Sample Data")
+        dataSet.color = getColor(R.color.gray_200)
+        dataSet.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+        val barData = BarData(dataSet)
+        barData.barWidth = 0.6f
+
+        layout_barchart_time.data = barData
+        layout_barchart_time.setFitBars(true) // make the x-axis fit exactly all bars
+        layout_barchart_time.description.isEnabled = false
+        layout_barchart_time.animateY(1000)
+        layout_barchart_time.legend.isEnabled = false
+        layout_barchart_time.setTouchEnabled(false)
+        layout_barchart_time.setExtraOffsets(0f,0f,20f,0f)
+
+        // Customizing x-axis labels
+        val xAxis = layout_barchart_time.xAxis
+        xAxis.granularity = 1f // only intervals of 1 unit
+        xAxis.axisMinimum = -2f
+        xAxis.axisMaximum = 29f
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
+        xAxis.textColor = getColor(R.color.gray_600)
+        xAxis.labelCount = 30
+
+        // Customizing x-axis labels
+        xAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                return when (value.toInt()) {
+                    1 -> dates.get(0)
+                    10 -> dates.get(1)
+                    18 -> dates.get(2)
+                    26-> dates.get(3)
+                    else -> "" // 나머지 레이블은 비워둠
+                }
+            }
+        }
+
+        // Y축 레이블 및 선 제거
+        val leftAxis = layout_barchart_time.axisLeft
+        leftAxis.setDrawGridLines(true) // 그리드 라인 표시
+        leftAxis.setDrawAxisLine(false) // 축 라인 제거
+        leftAxis.setDrawLabels(false) // Y축 레이블 제거
+        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 5로 설정 (강제)
+        leftAxis.axisMinimum = 0f
+        leftAxis.axisMaximum = max.toFloat()
+        leftAxis.gridColor = getColor(R.color.gray_200)
+
+
+        val rightAxis = layout_barchart_time.axisRight
+        rightAxis.setDrawGridLines(false) // 그리드 라인 제거
+        rightAxis.setDrawAxisLine(false) // 축 라인 제거
+        rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 5로 설정 (강제)
+        rightAxis.axisMinimum = 0f
+        rightAxis.axisMaximum = max.toFloat()
+        rightAxis.textColor = getColor(R.color.gray_600)
+
+        // Y축 커스텀 레이블 포매터 설정
+        rightAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                val minValue = rightAxis.axisMinimum
+                val maxValue = rightAxis.axisMaximum
+                return if (value == minValue || value == maxValue) {
+                    value.toInt().toString() + "분"// 가장 아래와 위에만 레이블 표시
+                } else {
+                    "" // 나머지 레이블 제거
+                }
+            }
+        }
+
+        layout_barchart_time.invalidate() // refresh
+    }
+
+    private fun callMonthChart(){
+        apiService().getDrivingTimeGraphData(
+            "Bearer " + PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.USER_CARID, "")!!,
+            "ASC",
+            null,
+            null,
+            getCurrentAndPastTimeForISO(29).second,
+            getCurrentAndPastTimeForISO(29).first,
+            "startTime",
+            "day"
+        ).enqueue(object :Callback<ResponseBody>{
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+
+                if(response.code() == 200){
+                    val getDrivingGraphDataResponse = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingGraphDataResponse::class.java
+                    )
+
+                    setMonthBarChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(29).third)
+                    setMonthLineChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(29).third)
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
+
+    private fun callSixMonthChart(){
+        apiService().getDrivingTimeGraphData(
+            "Bearer " + PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.USER_CARID, "")!!,
+            "ASC",
+            null,
+            null,
+            getCurrentAndPastTimeForISO(150).second,
+            getCurrentAndPastTimeForISO(150).first,
+            "startTime",
+            "month"
+        ).enqueue(object :Callback<ResponseBody>{
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+
+                if(response.code() == 200){
+                    val getDrivingGraphDataResponse = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingGraphDataResponse::class.java
+                    )
+
+                    setSixMonthBarChart(getDrivingGraphDataResponse.items,getCurrentAndPastTimeForISO(150).third )
+                    setSixMonthLineChart(getDrivingGraphDataResponse.items,getCurrentAndPastTimeForISO(150).third )
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
+
+    private fun callYearChart(){
+        apiService().getDrivingTimeGraphData(
+            "Bearer " + PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.USER_CARID, "")!!,
+            "ASC",
+            null,
+            null,
+            getCurrentAndPastTimeForISO(335).second,
+            getCurrentAndPastTimeForISO(335).first,
+            "startTime",
+            "month"
+        ).enqueue(object :Callback<ResponseBody>{
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+
+                if(response.code() == 200){
+                    val getDrivingGraphDataResponse = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingGraphDataResponse::class.java
+                    )
+
+                    setYearBarChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(335).third)
+                    setYearLineChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(335).third)
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
 
     /**
      * 6개의 데이터가 내려옴
      * 6개 데이터 뿌려주면 됨
      */
-    private fun setSixMonthBarChart() {
+    private fun setSixMonthBarChartAsDefault(months: List<String>) {
 
         val entries = listOf(
-            BarEntry(-1f, 6f), // 첫번째 월
+            BarEntry(-1f, 0f), // 첫번째 월
             BarEntry(0f, 0f),
-            BarEntry(1f, 8f), // 두번째 월
+            BarEntry(1f, 0f), // 두번째 월
             BarEntry(2f, 0f),
-            BarEntry(3f, 7f), // 세번째 월
+            BarEntry(3f, 0f), // 세번째 월
             BarEntry(4f, 0f),
-            BarEntry(5f, 3f), // 네번째 월
+            BarEntry(5f, 0f), // 네번째 월
             BarEntry(6f, 0f),
-            BarEntry(7f, 2f), // 다섯번째 월
+            BarEntry(7f, 0f), // 다섯번째 월
             BarEntry(8f, 0f),
-            BarEntry(9f, 9f) // 여섯번째 월
+            BarEntry(9f, 0f) // 여섯번째 월
         )
 
         val dataSet = BarDataSet(entries, "Sample Data")
@@ -336,6 +757,7 @@ class DrivenTimeActivity:BaseActivity() {
         layout_barchart_time.animateY(1000)
         layout_barchart_time.legend.isEnabled = false
         layout_barchart_time.setTouchEnabled(false)
+        layout_barchart_time.setExtraOffsets(0f,0f,20f,0f)
 
         // Customizing x-axis labels
         val xAxis = layout_barchart_time.xAxis
@@ -351,12 +773,12 @@ class DrivenTimeActivity:BaseActivity() {
         xAxis.valueFormatter = object : IAxisValueFormatter {
             override fun getFormattedValue(value: Float, axis: AxisBase?): String {
                 return when (value.toInt()) {
-                    -1 -> "1월"
-                    1 -> "2월"
-                    3 -> "3월"
-                    5 -> "4월"
-                    7 -> "5월"
-                    9 -> "6월"
+                    -1 -> months.get(0)
+                    1 -> months.get(1)
+                    3 -> months.get(2)
+                    5 -> months.get(3)
+                    7 -> months.get(4)
+                    9 -> months.get(5)
                     else -> "" // 나머지 레이블은 비워둠
                 }
             }
@@ -377,6 +799,7 @@ class DrivenTimeActivity:BaseActivity() {
         rightAxis.setDrawGridLines(false) // 그리드 라인 제거
         rightAxis.setDrawAxisLine(false) // 축 라인 제거
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 5로 설정 (강제)
         rightAxis.axisMinimum = 0f
         rightAxis.axisMaximum = 10f
         rightAxis.textColor = getColor(R.color.gray_600)
@@ -387,7 +810,114 @@ class DrivenTimeActivity:BaseActivity() {
                 val minValue = rightAxis.axisMinimum
                 val maxValue = rightAxis.axisMaximum
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "km"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + ""// 가장 아래와 위에만 레이블 표시
+                } else {
+                    "" // 나머지 레이블 제거
+                }
+            }
+        }
+
+        layout_barchart_time.invalidate() // refresh
+    }
+
+    /**
+     * 6개의 데이터가 내려옴
+     * 6개 데이터 뿌려주면 됨
+     */
+    private fun setSixMonthBarChart(items : List<GraphItem>, months:List<String>) {
+
+        var max = 0
+
+        for(item in items){
+            if(secondsToMinutes(item.time) > max)
+                max = secondsToMinutes(item.time)
+        }
+
+        if(max == 0){
+            setSixMonthBarChartAsDefault(months)
+            return
+        }
+
+
+        val entries = listOf(
+            BarEntry(-1f, secondsToMinutes(items.get(0).time).toFloat()), // 첫번째 월
+            BarEntry(0f, 0f),
+            BarEntry(1f, secondsToMinutes(items.get(1).time).toFloat()), // 두번째 월
+            BarEntry(2f, 0f),
+            BarEntry(3f, secondsToMinutes(items.get(2).time).toFloat()), // 세번째 월
+            BarEntry(4f, 0f),
+            BarEntry(5f, secondsToMinutes(items.get(3).time).toFloat()), // 네번째 월
+            BarEntry(6f, 0f),
+            BarEntry(7f, secondsToMinutes(items.get(4).time).toFloat()), // 다섯번째 월
+            BarEntry(8f, 0f),
+            BarEntry(9f, secondsToMinutes(items.get(5).time).toFloat()) // 여섯번째 월
+        )
+
+        val dataSet = BarDataSet(entries, "Sample Data")
+        dataSet.color = getColor(R.color.gray_200)
+        dataSet.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+        val barData = BarData(dataSet)
+        layout_barchart_time.data = barData
+        layout_barchart_time.setFitBars(true) // make the x-axis fit exactly all bars
+        layout_barchart_time.description.isEnabled = false
+        layout_barchart_time.animateY(1000)
+        layout_barchart_time.legend.isEnabled = false
+        layout_barchart_time.setTouchEnabled(false)
+        layout_barchart_time.setExtraOffsets(0f,0f,20f,0f)
+
+        // Customizing x-axis labels
+        val xAxis = layout_barchart_time.xAxis
+        xAxis.granularity = 1f // only intervals of 1 unit
+        xAxis.axisMinimum = -2f
+        xAxis.axisMaximum = 10f
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
+        xAxis.textColor = getColor(R.color.gray_600)
+        xAxis.labelCount = 11
+
+        // Customizing x-axis labels
+        xAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                return when (value.toInt()) {
+                    -1 -> months.get(0)
+                    1 -> months.get(1)
+                    3 -> months.get(2)
+                    5 -> months.get(3)
+                    7 -> months.get(4)
+                    9 -> months.get(5)
+                    else -> "" // 나머지 레이블은 비워둠
+                }
+            }
+        }
+
+        // Y축 레이블 및 선 제거
+        val leftAxis = layout_barchart_time.axisLeft
+        leftAxis.setDrawGridLines(true) // 그리드 라인 표시
+        leftAxis.setDrawAxisLine(false) // 축 라인 제거
+        leftAxis.setDrawLabels(false) // Y축 레이블 제거
+        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 5로 설정 (강제)
+        leftAxis.axisMinimum = 0f
+        leftAxis.axisMaximum = max.toFloat()
+        leftAxis.gridColor = getColor(R.color.gray_200)
+
+
+        val rightAxis = layout_barchart_time.axisRight
+        rightAxis.setDrawGridLines(false) // 그리드 라인 제거
+        rightAxis.setDrawAxisLine(false) // 축 라인 제거
+        rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 5로 설정 (강제)
+        rightAxis.axisMinimum = 0f
+        rightAxis.axisMaximum = max.toFloat()
+        rightAxis.textColor = getColor(R.color.gray_600)
+
+        // Y축 커스텀 레이블 포매터 설정
+        rightAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                val minValue = rightAxis.axisMinimum
+                val maxValue = rightAxis.axisMaximum
+                return if (value == minValue || value == maxValue) {
+                    value.toInt().toString() + "분"// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -402,32 +932,32 @@ class DrivenTimeActivity:BaseActivity() {
      * 1월 / 5월 / 8월 / 12월
      */
 
-    private fun setYearBarChart() {
+    private fun setYearBarChartAsDefault(months: List<String>) {
 
         val entries = listOf(
-            BarEntry(-1f, 6f), // 1월
+            BarEntry(-1f, 0f), // 1월
             BarEntry(-0f, 0f),
-            BarEntry(1f, 4f), // 2월
+            BarEntry(1f, 0f), // 2월
             BarEntry(2f, 0f),
-            BarEntry(3f, 6f), // 3월
+            BarEntry(3f, 0f), // 3월
             BarEntry(4f, 0f),
-            BarEntry(5f, 7f), // 4월
+            BarEntry(5f, 0f), // 4월
             BarEntry(6f, 0f),
-            BarEntry(7f, 9f), // 5월
+            BarEntry(7f, 0f), // 5월
             BarEntry(8f, 0f),
-            BarEntry(9f, 4f), // 6월
+            BarEntry(9f, 0f), // 6월
             BarEntry(10f, 0f),
-            BarEntry(11f, 2f), // 7월
+            BarEntry(11f, 0f), // 7월
             BarEntry(12f, 0f),
-            BarEntry(13f, 5f), // 8월
+            BarEntry(13f, 0f), // 8월
             BarEntry(14f, 0f),
-            BarEntry(15f, 3f), // 9월
+            BarEntry(15f, 0f), // 9월
             BarEntry(16f, 0f),
-            BarEntry(17f, 5f), // 10월
+            BarEntry(17f, 0f), // 10월
             BarEntry(18f, 0f),
-            BarEntry(19f, 1f), // 11월
+            BarEntry(19f, 0f), // 11월
             BarEntry(20f,0f),
-            BarEntry(21f,5f) // 12월
+            BarEntry(21f,0f) // 12월
         )
 
         val dataSet = BarDataSet(entries, "Sample Data")
@@ -442,6 +972,7 @@ class DrivenTimeActivity:BaseActivity() {
         layout_barchart_time.animateY(1000)
         layout_barchart_time.legend.isEnabled = false
         layout_barchart_time.setTouchEnabled(false)
+        layout_barchart_time.setExtraOffsets(0f,0f,20f,0f)
 
         // Customizing x-axis labels
         val xAxis = layout_barchart_time.xAxis
@@ -457,10 +988,10 @@ class DrivenTimeActivity:BaseActivity() {
         xAxis.valueFormatter = object : IAxisValueFormatter {
             override fun getFormattedValue(value: Float, axis: AxisBase?): String {
                 return when (value.toInt()) {
-                    -1 -> "1월"
-                    7 -> "5월"
-                    13 -> "8월"
-                    21-> "12월"
+                    -1 -> months.get(0)
+                    7 -> months.get(4)
+                    13 -> months.get(7)
+                    21-> months.get(11)
                     else -> "" // 나머지 레이블은 비워둠
                 }
             }
@@ -481,6 +1012,7 @@ class DrivenTimeActivity:BaseActivity() {
         rightAxis.setDrawGridLines(false) // 그리드 라인 제거
         rightAxis.setDrawAxisLine(false) // 축 라인 제거
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 5로 설정 (강제)
         rightAxis.axisMinimum = 0f
         rightAxis.axisMaximum = 10f
         rightAxis.textColor = getColor(R.color.gray_600)
@@ -491,7 +1023,7 @@ class DrivenTimeActivity:BaseActivity() {
                 val minValue = rightAxis.axisMinimum
                 val maxValue = rightAxis.axisMaximum
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "km"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + "분"// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -500,6 +1032,121 @@ class DrivenTimeActivity:BaseActivity() {
 
         layout_barchart_time.invalidate() // refresh
     }
+
+    private fun setYearBarChart(items : List<GraphItem>, months:List<String>) {
+        var max = 0
+
+        for(item in items){
+            if(secondsToMinutes(item.time) > max)
+                max = secondsToMinutes(item.time)
+        }
+
+        if(max == 0){
+            setYearBarChartAsDefault(months)
+            return
+        }
+
+
+        val entries = listOf(
+            BarEntry(-1f, secondsToMinutes(items.get(0).time).toFloat()), // 1월
+            BarEntry(-0f, 0f),
+            BarEntry(1f, secondsToMinutes(items.get(1).time).toFloat()), // 2월
+            BarEntry(2f, 0f),
+            BarEntry(3f, secondsToMinutes(items.get(2).time).toFloat()), // 3월
+            BarEntry(4f, 0f),
+            BarEntry(5f, secondsToMinutes(items.get(3).time).toFloat()), // 4월
+            BarEntry(6f, 0f),
+            BarEntry(7f, secondsToMinutes(items.get(4).time).toFloat()), // 5월
+            BarEntry(8f, 0f),
+            BarEntry(9f, secondsToMinutes(items.get(5).time).toFloat()), // 6월
+            BarEntry(10f, 0f),
+            BarEntry(11f, secondsToMinutes(items.get(6).time).toFloat()), // 7월
+            BarEntry(12f, 0f),
+            BarEntry(13f, secondsToMinutes(items.get(7).time).toFloat()), // 8월
+            BarEntry(14f, 0f),
+            BarEntry(15f, secondsToMinutes(items.get(8).time).toFloat()), // 9월
+            BarEntry(16f, 0f),
+            BarEntry(17f, secondsToMinutes(items.get(9).time).toFloat()), // 10월
+            BarEntry(18f, 0f),
+            BarEntry(19f, secondsToMinutes(items.get(10).time).toFloat()), // 11월
+            BarEntry(20f,0f),
+            BarEntry(21f,secondsToMinutes(items.get(11).time).toFloat()) // 12월
+        )
+
+        val dataSet = BarDataSet(entries, "Sample Data")
+        dataSet.color = getColor(R.color.gray_200)
+        dataSet.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+        val barData = BarData(dataSet)
+        barData.barWidth = 1.0f
+        layout_barchart_time.data = barData
+        layout_barchart_time.setFitBars(true) // make the x-axis fit exactly all bars
+        layout_barchart_time.description.isEnabled = false
+        layout_barchart_time.animateY(1000)
+        layout_barchart_time.legend.isEnabled = false
+        layout_barchart_time.setTouchEnabled(false)
+        layout_barchart_time.setExtraOffsets(0f,0f,20f,0f)
+
+        // Customizing x-axis labels
+        val xAxis = layout_barchart_time.xAxis
+        xAxis.granularity = 1f // only intervals of 1 unit
+        xAxis.axisMinimum = -2f
+        xAxis.axisMaximum = 22f
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
+        xAxis.textColor = getColor(R.color.gray_600)
+        xAxis.labelCount = 23
+
+        // Customizing x-axis labels
+        xAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                return when (value.toInt()) {
+                    -1 -> months.get(0)
+                    7 -> months.get(4)
+                    13 -> months.get(7)
+                    21-> months.get(11)
+                    else -> "" // 나머지 레이블은 비워둠
+                }
+            }
+        }
+
+        // Y축 레이블 및 선 제거
+        val leftAxis = layout_barchart_time.axisLeft
+        leftAxis.setDrawGridLines(true) // 그리드 라인 표시
+        leftAxis.setDrawAxisLine(false) // 축 라인 제거
+        leftAxis.setDrawLabels(false) // Y축 레이블 제거
+        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 5로 설정 (강제)
+        leftAxis.axisMinimum = 0f
+        leftAxis.axisMaximum = max.toFloat()
+        leftAxis.gridColor = getColor(R.color.gray_200)
+
+
+        val rightAxis = layout_barchart_time.axisRight
+        rightAxis.setDrawGridLines(false) // 그리드 라인 제거
+        rightAxis.setDrawAxisLine(false) // 축 라인 제거
+        rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 5로 설정 (강제)
+
+        rightAxis.axisMinimum = 0f
+        rightAxis.axisMaximum = max.toFloat()
+        rightAxis.textColor = getColor(R.color.gray_600)
+
+        // Y축 커스텀 레이블 포매터 설정
+        rightAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                val minValue = rightAxis.axisMinimum
+                val maxValue = rightAxis.axisMaximum
+                return if (value == minValue || value == maxValue) {
+                    value.toInt().toString() + "분"// 가장 아래와 위에만 레이블 표시
+                } else {
+                    "" // 나머지 레이블 제거
+                }
+            }
+        }
+
+        layout_barchart_time.invalidate() // refresh
+    }
+
 
     /**
      * 최근 주행 (24개 데이터) -> 0시간 ~ 23시간
@@ -515,33 +1162,33 @@ class DrivenTimeActivity:BaseActivity() {
      * 1년 (12개 데이터) -> 1월 ~ 12월
      * 4개 표기
      */
-    private fun setRecentLineChart() {
+    private fun setRecentLineChartAsDefault() {
         // 데이터 준비
         val entries = listOf(
-            BarEntry(-1f, 1f),
-            BarEntry(-0f, 3f),
-            BarEntry(1f, 5f),
-            BarEntry(2f, 7f),
-            BarEntry(3f, 9f),
-            BarEntry(4f, 11f),
-            BarEntry(5f, 13f),
-            BarEntry(6f, 16f),
-            BarEntry(7f, 19f),
-            BarEntry(8f, 22f),
-            BarEntry(9f, 25f),
-            BarEntry(10f, 28f),
-            BarEntry(11f, 31f),
-            BarEntry(12f, 35f),
-            BarEntry(13f, 39f),
-            BarEntry(14f, 43f),
-            BarEntry(15f, 47f),
-            BarEntry(16f, 51f),
-            BarEntry(17f, 55f),
-            BarEntry(18f, 59f),
-            BarEntry(19f, 66f),
-            BarEntry(20f,73f),
-            BarEntry(21f,79f),
-            BarEntry(22f,80f)
+            BarEntry(-1f, 0f),
+            BarEntry(-0f, 0f),
+            BarEntry(1f, 0f),
+            BarEntry(2f, 0f),
+            BarEntry(3f, 0f),
+            BarEntry(4f, 0f),
+            BarEntry(5f, 0f),
+            BarEntry(6f, 0f),
+            BarEntry(7f, 0f),
+            BarEntry(8f, 0f),
+            BarEntry(9f, 0f),
+            BarEntry(10f, 0f),
+            BarEntry(11f, 0f),
+            BarEntry(12f, 0f),
+            BarEntry(13f, 0f),
+            BarEntry(14f, 0f),
+            BarEntry(15f, 0f),
+            BarEntry(16f, 0f),
+            BarEntry(17f, 0f),
+            BarEntry(18f, 0f),
+            BarEntry(19f, 0f),
+            BarEntry(20f,0f),
+            BarEntry(21f,0f),
+            BarEntry(22f,0f)
         )
 
         // 데이터셋 생성 및 설정
@@ -566,7 +1213,7 @@ class DrivenTimeActivity:BaseActivity() {
         layout_linechart_time.description.isEnabled = false // 설명 텍스트 사용 여부 설정
         layout_linechart_time.legend.isEnabled = false
         layout_linechart_time.setTouchEnabled(false)
-        layout_linechart_time.setExtraOffsets(20f,0f,0f,0f)
+        layout_linechart_time.setExtraOffsets(20f,0f,20f,0f)
 
 
         // Customizing x-axis labels
@@ -596,10 +1243,10 @@ class DrivenTimeActivity:BaseActivity() {
         leftAxis.setDrawGridLines(true) // 그리드 라인 표시
         leftAxis.setDrawAxisLine(false) // 축 라인 제거
         leftAxis.setDrawLabels(false) // Y축 레이블 제거
-        leftAxis.setLabelCount(6, true) // 가로 라인의 수를 6로 설정 (강제)
+        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
         leftAxis.granularity = 1.0f
         leftAxis.axisMinimum = 0f
-        leftAxis.axisMaximum = 80f
+        leftAxis.axisMaximum = 10f
         leftAxis.gridColor = getColor(R.color.gray_200)
 
 
@@ -607,9 +1254,10 @@ class DrivenTimeActivity:BaseActivity() {
         rightAxis.setDrawGridLines(false) // 그리드 라인 제거
         rightAxis.setDrawAxisLine(false) // 축 라인 제거
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
         rightAxis.granularity = 1.0f
         rightAxis.axisMinimum = 0f
-        rightAxis.axisMaximum = 80f
+        rightAxis.axisMaximum = 10f
         rightAxis.textColor = getColor(R.color.gray_600)
 
         // Y축 커스텀 레이블 포매터 설정
@@ -619,7 +1267,7 @@ class DrivenTimeActivity:BaseActivity() {
                 val maxValue = rightAxis.axisMaximum
 
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "시간"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + "분"// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -629,32 +1277,60 @@ class DrivenTimeActivity:BaseActivity() {
         layout_linechart_time.invalidate()
     }
 
-    private fun setMonthLineChart() {
-        // 데이터 준비
+    private fun setRecentLineChart(items: List<GraphItem>) {
+
+        var max = 0
+
+        for(item in items){
+            if(secondsToMinutes(item.time).toDouble() > max.toDouble())
+                max = secondsToMinutes(item.time).toDouble().toInt()
+        }
+
+        if(max == 0){
+            setRecentLineChartAsDefault()
+            return
+        }
+
+        val time = FloatArray(24) { 0f }
+
+        // Iterate over each item and parse the startTime to extract the hour
+        val koreaZoneId = ZoneId.of("Asia/Seoul")
+
+        // Iterate over each item and parse the startTime to extract the hour
+        for (item in items) {
+            val startTime = Instant.parse(item.startTime)
+            val localDateTime = LocalDateTime.ofInstant(startTime, koreaZoneId)
+            val hour = localDateTime.hour
+
+            time[hour] = secondsToMinutes(item.time).toFloat()
+        }
+
+
         val entries = listOf(
-            BarEntry(-1f, 1f),
-            BarEntry(-0f, 3f),
-            BarEntry(1f, 5f),
-            BarEntry(2f, 7f),
-            BarEntry(3f, 9f),
-            BarEntry(4f, 11f),
-            BarEntry(5f, 13f),
-            BarEntry(6f, 16f),
-            BarEntry(7f, 19f),
-            BarEntry(8f, 22f),
-            BarEntry(9f, 25f),
-            BarEntry(10f, 28f),
-            BarEntry(11f, 31f),
-            BarEntry(12f, 35f),
-            BarEntry(13f, 39f),
-            BarEntry(14f, 43f),
-            BarEntry(15f, 47f),
-            BarEntry(16f, 51f),
-            BarEntry(17f, 55f),
-            BarEntry(18f, 59f),
-            BarEntry(19f, 66f),
-            BarEntry(20f,73f),
-            BarEntry(21f,79f)
+            BarEntry(-1f, time.get(0)), // 00시
+            BarEntry(-0f, time.get(1)), // 01시
+            BarEntry(1f, time.get(2)), // 02시
+            BarEntry(2f, time.get(3)), // 03시
+            BarEntry(3f, time.get(4)), // 04시
+            BarEntry(4f, time.get(5)), // 05시
+            BarEntry(5f, time.get(6)), // 06시
+            BarEntry(6f, time.get(7)), // 07시
+            BarEntry(7f, time.get(8)), // 08시
+            BarEntry(8f, time.get(9)), // 09시
+            BarEntry(9f, time.get(10)), // 10시
+            BarEntry(10f, time.get(11)), // 11시
+            BarEntry(11f, time.get(12)), // 12시
+            BarEntry(12f, time.get(13)), // 13시
+            BarEntry(13f, time.get(14)), // 14시
+            BarEntry(14f, time.get(15)), // 15시
+            BarEntry(15f, time.get(16)), // 16시
+            BarEntry(16f, time.get(17)), // 17시
+            BarEntry(17f, time.get(18)), // 18시
+            BarEntry(18f, time.get(19)), // 19시
+            BarEntry(19f, time.get(20)), // 20시
+            BarEntry(20f,time.get(21)), // 21시
+            BarEntry(21f,time.get(22)), // 22시
+            BarEntry(22f,time.get(23)) // 23시
         )
 
         // 데이터셋 생성 및 설정
@@ -679,13 +1355,13 @@ class DrivenTimeActivity:BaseActivity() {
         layout_linechart_time.description.isEnabled = false // 설명 텍스트 사용 여부 설정
         layout_linechart_time.legend.isEnabled = false
         layout_linechart_time.setTouchEnabled(false)
-        layout_linechart_time.setExtraOffsets(20f,0f,0f,0f)
+        layout_linechart_time.setExtraOffsets(20f,0f,20f,0f)
 
 
         // Customizing x-axis labels
         val xAxis = layout_linechart_time.xAxis
         xAxis.axisMinimum = -2f
-        xAxis.axisMaximum = 22f
+        xAxis.axisMaximum = 23f
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
         xAxis.textColor = getColor(R.color.gray_600)
@@ -695,10 +1371,10 @@ class DrivenTimeActivity:BaseActivity() {
         xAxis.valueFormatter = object : IAxisValueFormatter {
             override fun getFormattedValue(value: Float, axis: AxisBase?): String {
                 return when (value.toInt()) {
-                    1 -> "오전 12시"
-                    8 -> "오전 6시"
-                    14 -> "오후 12시"
-                    20-> "오후 6시"
+                    0 -> "오전 12시"
+                    6 -> "오전 6시"
+                    12 -> "오후 12시"
+                    18-> "오후 6시"
                     else -> "" // 나머지 레이블은 비워둠
                 }
             }
@@ -709,10 +1385,10 @@ class DrivenTimeActivity:BaseActivity() {
         leftAxis.setDrawGridLines(true) // 그리드 라인 표시
         leftAxis.setDrawAxisLine(false) // 축 라인 제거
         leftAxis.setDrawLabels(false) // Y축 레이블 제거
-        leftAxis.setLabelCount(6, true) // 가로 라인의 수를 6로 설정 (강제)
+        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
         leftAxis.granularity = 1.0f
         leftAxis.axisMinimum = 0f
-        leftAxis.axisMaximum = 80f
+        leftAxis.axisMaximum = max.toFloat()
         leftAxis.gridColor = getColor(R.color.gray_200)
 
 
@@ -720,9 +1396,10 @@ class DrivenTimeActivity:BaseActivity() {
         rightAxis.setDrawGridLines(false) // 그리드 라인 제거
         rightAxis.setDrawAxisLine(false) // 축 라인 제거
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
         rightAxis.granularity = 1.0f
         rightAxis.axisMinimum = 0f
-        rightAxis.axisMaximum = 80f
+        rightAxis.axisMaximum = max.toFloat()
         rightAxis.textColor = getColor(R.color.gray_600)
 
         // Y축 커스텀 레이블 포매터 설정
@@ -730,9 +1407,10 @@ class DrivenTimeActivity:BaseActivity() {
             override fun getFormattedValue(value: Float, axis: AxisBase?): String {
                 val minValue = rightAxis.axisMinimum
                 val maxValue = rightAxis.axisMaximum
+                Log.d("testestest","testsetestset value:: " + value)
 
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "시간"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + "분"// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -742,32 +1420,39 @@ class DrivenTimeActivity:BaseActivity() {
         layout_linechart_time.invalidate()
     }
 
-    private fun setSixMonthLineChart() {
+    private fun setMonthLineChartAsDefault(months: List<String>) {
         // 데이터 준비
         val entries = listOf(
-            BarEntry(-1f, 1f),
-            BarEntry(-0f, 3f),
-            BarEntry(1f, 5f),
-            BarEntry(2f, 7f),
-            BarEntry(3f, 9f),
-            BarEntry(4f, 11f),
-            BarEntry(5f, 13f),
-            BarEntry(6f, 16f),
-            BarEntry(7f, 19f),
-            BarEntry(8f, 22f),
-            BarEntry(9f, 25f),
-            BarEntry(10f, 28f),
-            BarEntry(11f, 31f),
-            BarEntry(12f, 35f),
-            BarEntry(13f, 39f),
-            BarEntry(14f, 43f),
-            BarEntry(15f, 47f),
-            BarEntry(16f, 51f),
-            BarEntry(17f, 55f),
-            BarEntry(18f, 59f),
-            BarEntry(19f, 66f),
-            BarEntry(20f,73f),
-            BarEntry(21f,79f)
+            BarEntry(-1f, 0f),
+            BarEntry(-0f, 0f),
+            BarEntry(1f, 0f),
+            BarEntry(2f, 0f),
+            BarEntry(3f, 0f),
+            BarEntry(4f, 0f),
+            BarEntry(5f, 0f),
+            BarEntry(6f, 0f),
+            BarEntry(7f, 0f),
+            BarEntry(8f, 0f),
+            BarEntry(9f, 0f),
+            BarEntry(10f, 0f),
+            BarEntry(11f, 0f),
+            BarEntry(12f, 0f),
+            BarEntry(13f, 0f),
+            BarEntry(14f, 0f),
+            BarEntry(15f, 0f),
+            BarEntry(16f, 0f),
+            BarEntry(17f, 0f),
+            BarEntry(18f, 0f),
+            BarEntry(19f, 0f),
+            BarEntry(20f,0f),
+            BarEntry(21f,0f),
+            BarEntry(22f,0f),
+            BarEntry(23f,0f),
+            BarEntry(24f,0f),
+            BarEntry(25f,0f),
+            BarEntry(26f,0f),
+            BarEntry(27f,0f),
+            BarEntry(28f,0f),
         )
 
         // 데이터셋 생성 및 설정
@@ -792,26 +1477,26 @@ class DrivenTimeActivity:BaseActivity() {
         layout_linechart_time.description.isEnabled = false // 설명 텍스트 사용 여부 설정
         layout_linechart_time.legend.isEnabled = false
         layout_linechart_time.setTouchEnabled(false)
-        layout_linechart_time.setExtraOffsets(20f,0f,0f,0f)
+        layout_linechart_time.setExtraOffsets(20f,0f,20f,0f)
 
 
         // Customizing x-axis labels
         val xAxis = layout_linechart_time.xAxis
         xAxis.axisMinimum = -2f
-        xAxis.axisMaximum = 22f
+        xAxis.axisMaximum = 29f
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
         xAxis.textColor = getColor(R.color.gray_600)
-        xAxis.labelCount = 24
+        xAxis.labelCount = 30
 
         // Customizing x-axis labels
         xAxis.valueFormatter = object : IAxisValueFormatter {
             override fun getFormattedValue(value: Float, axis: AxisBase?): String {
                 return when (value.toInt()) {
-                    1 -> "오전 12시"
-                    8 -> "오전 6시"
-                    14 -> "오후 12시"
-                    20-> "오후 6시"
+                    1 -> months.get(0)
+                    10 -> months.get(1)
+                    18 -> months.get(2)
+                    26-> months.get(3)
                     else -> "" // 나머지 레이블은 비워둠
                 }
             }
@@ -822,10 +1507,10 @@ class DrivenTimeActivity:BaseActivity() {
         leftAxis.setDrawGridLines(true) // 그리드 라인 표시
         leftAxis.setDrawAxisLine(false) // 축 라인 제거
         leftAxis.setDrawLabels(false) // Y축 레이블 제거
-        leftAxis.setLabelCount(6, true) // 가로 라인의 수를 6로 설정 (강제)
+        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
         leftAxis.granularity = 1.0f
         leftAxis.axisMinimum = 0f
-        leftAxis.axisMaximum = 80f
+        leftAxis.axisMaximum = 10f
         leftAxis.gridColor = getColor(R.color.gray_200)
 
 
@@ -833,9 +1518,10 @@ class DrivenTimeActivity:BaseActivity() {
         rightAxis.setDrawGridLines(false) // 그리드 라인 제거
         rightAxis.setDrawAxisLine(false) // 축 라인 제거
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
         rightAxis.granularity = 1.0f
         rightAxis.axisMinimum = 0f
-        rightAxis.axisMaximum = 80f
+        rightAxis.axisMaximum = 10f
         rightAxis.textColor = getColor(R.color.gray_600)
 
         // Y축 커스텀 레이블 포매터 설정
@@ -845,7 +1531,7 @@ class DrivenTimeActivity:BaseActivity() {
                 val maxValue = rightAxis.axisMaximum
 
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "시간"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + "분"// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -855,32 +1541,166 @@ class DrivenTimeActivity:BaseActivity() {
         layout_linechart_time.invalidate()
     }
 
-    private fun setYearLineChart() {
+    private fun setMonthLineChart(items: List<GraphItem>, months: List<String>) {
+        var max = 0
+
+        for(item in items){
+            if(secondsToMinutes(item.time).toDouble() > max.toDouble())
+                max = secondsToMinutes(item.time).toDouble().toInt()
+        }
+
+        if(max == 0){
+            setMonthLineChartAsDefault(months)
+            return
+        }
+
+
+        val entries = listOf(
+            BarEntry(-1f, secondsToMinutes(items.get(0).time).toFloat()),
+            BarEntry(-0f, secondsToMinutes(items.get(1).time).toFloat()),
+            BarEntry(1f, secondsToMinutes(items.get(2).time).toFloat()),
+            BarEntry(2f, secondsToMinutes(items.get(3).time).toFloat()),
+            BarEntry(3f, secondsToMinutes(items.get(4).time).toFloat()),
+            BarEntry(4f, secondsToMinutes(items.get(5).time).toFloat()),
+            BarEntry(5f, secondsToMinutes(items.get(6).time).toFloat()),
+            BarEntry(6f, secondsToMinutes(items.get(7).time).toFloat()),
+            BarEntry(7f, secondsToMinutes(items.get(8).time).toFloat()),
+            BarEntry(8f, secondsToMinutes(items.get(9).time).toFloat()),
+            BarEntry(9f, secondsToMinutes(items.get(10).time).toFloat()),
+            BarEntry(10f, secondsToMinutes(items.get(11).time).toFloat()),
+            BarEntry(11f, secondsToMinutes(items.get(12).time).toFloat()),
+            BarEntry(12f, secondsToMinutes(items.get(13).time).toFloat()),
+            BarEntry(13f, secondsToMinutes(items.get(14).time).toFloat()),
+            BarEntry(14f, secondsToMinutes(items.get(15).time).toFloat()),
+            BarEntry(15f, secondsToMinutes(items.get(16).time).toFloat()),
+            BarEntry(16f, secondsToMinutes(items.get(17).time).toFloat()),
+            BarEntry(17f, secondsToMinutes(items.get(18).time).toFloat()),
+            BarEntry(18f, secondsToMinutes(items.get(19).time).toFloat()),
+            BarEntry(19f, secondsToMinutes(items.get(20).time).toFloat()),
+            BarEntry(20f,secondsToMinutes(items.get(21).time).toFloat()),
+            BarEntry(21f,secondsToMinutes(items.get(22).time).toFloat()),
+            BarEntry(22f,secondsToMinutes(items.get(23).time).toFloat()),
+            BarEntry(23f,secondsToMinutes(items.get(24).time).toFloat()),
+            BarEntry(24f,secondsToMinutes(items.get(25).time).toFloat()),
+            BarEntry(25f,secondsToMinutes(items.get(26).time).toFloat()),
+            BarEntry(26f,secondsToMinutes(items.get(27).time).toFloat()),
+            BarEntry(27f,secondsToMinutes(items.get(28).time).toFloat()),
+            BarEntry(28f,secondsToMinutes(items.get(29).time).toFloat())
+        )
+
+
+        // 데이터셋 생성 및 설정
+        val dataSet = LineDataSet(entries, "Label") // 데이터셋 생성
+        dataSet.color = Color.BLACK // 선 색상 설정
+        dataSet.setDrawValues(false) // 값 표시 여부 설정
+        dataSet.setDrawCircles(false)
+        dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER // 곡선 형태로 설정
+        dataSet.setDrawFilled(true)  // 선 안쪽을 색으로 채우도록 설정
+        dataSet.fillDrawable = getDrawable(R.drawable.line_chart_gradient)
+
+        // 데이터셋 리스트 생성
+        val dataSets = ArrayList<ILineDataSet>()
+        dataSets.add(dataSet)
+
+        // LineData 객체 생성
+        val lineData = LineData(dataSets)
+
+        // LineChart 설정
+        layout_linechart_time.data = lineData // 데이터 설정
+        layout_linechart_time.setDrawGridBackground(false) // 그리드 배경 그리기 여부 설정
+        layout_linechart_time.description.isEnabled = false // 설명 텍스트 사용 여부 설정
+        layout_linechart_time.legend.isEnabled = false
+        layout_linechart_time.setTouchEnabled(false)
+        layout_linechart_time.setExtraOffsets(20f,0f,20f,0f)
+
+
+        // Customizing x-axis labels
+        val xAxis = layout_linechart_time.xAxis
+        xAxis.axisMinimum = -2f
+        xAxis.axisMaximum = 29f
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
+        xAxis.textColor = getColor(R.color.gray_600)
+        xAxis.labelCount = 30
+
+        // Customizing x-axis labels
+        xAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                return when (value.toInt()) {
+                    1 -> months.get(0)
+                    10 -> months.get(1)
+                    18 -> months.get(2)
+                    26-> months.get(3)
+                    else -> "" // 나머지 레이블은 비워둠
+                }
+            }
+        }
+
+        // Y축 레이블 및 선 제거
+        val leftAxis = layout_linechart_time.axisLeft
+        leftAxis.setDrawGridLines(true) // 그리드 라인 표시
+        leftAxis.setDrawAxisLine(false) // 축 라인 제거
+        leftAxis.setDrawLabels(false) // Y축 레이블 제거
+        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
+        leftAxis.granularity = 1.0f
+        leftAxis.axisMinimum = 0f
+        leftAxis.axisMaximum = max.toFloat()
+        leftAxis.gridColor = getColor(R.color.gray_200)
+
+
+        val rightAxis = layout_linechart_time.axisRight
+        rightAxis.setDrawGridLines(false) // 그리드 라인 제거
+        rightAxis.setDrawAxisLine(false) // 축 라인 제거
+        rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
+        rightAxis.granularity = 1.0f
+        rightAxis.axisMinimum = 0f
+        rightAxis.axisMaximum = max.toFloat()
+        rightAxis.textColor = getColor(R.color.gray_600)
+
+        // Y축 커스텀 레이블 포매터 설정
+        rightAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                val minValue = rightAxis.axisMinimum
+                val maxValue = rightAxis.axisMaximum
+
+                return if (value == minValue || value == maxValue) {
+                    value.toInt().toString() + "분"// 가장 아래와 위에만 레이블 표시
+                } else {
+                    "" // 나머지 레이블 제거
+                }
+            }
+        }
+        // 차트 업데이트
+        layout_linechart_time.invalidate()
+    }
+
+    private fun setSixMonthLineChartAsDefault(months: List<String>) {
         // 데이터 준비
         val entries = listOf(
-            BarEntry(-1f, 1f),
-            BarEntry(-0f, 3f),
-            BarEntry(1f, 5f),
-            BarEntry(2f, 7f),
-            BarEntry(3f, 9f),
-            BarEntry(4f, 11f),
-            BarEntry(5f, 13f),
-            BarEntry(6f, 16f),
-            BarEntry(7f, 19f),
-            BarEntry(8f, 22f),
-            BarEntry(9f, 25f),
-            BarEntry(10f, 28f),
-            BarEntry(11f, 31f),
-            BarEntry(12f, 35f),
-            BarEntry(13f, 39f),
-            BarEntry(14f, 43f),
-            BarEntry(15f, 47f),
-            BarEntry(16f, 51f),
-            BarEntry(17f, 55f),
-            BarEntry(18f, 59f),
-            BarEntry(19f, 66f),
-            BarEntry(20f,73f),
-            BarEntry(21f,79f)
+            BarEntry(-1f, 0f),
+            BarEntry(-0f, 0f),
+            BarEntry(1f, 0f),
+            BarEntry(2f, 0f),
+            BarEntry(3f, 0f),
+            BarEntry(4f, 0f),
+            BarEntry(5f, 0f),
+            BarEntry(6f, 0f),
+            BarEntry(7f, 0f),
+            BarEntry(8f, 0f),
+            BarEntry(9f, 0f),
+            BarEntry(10f, 0f),
+            BarEntry(11f, 0f),
+            BarEntry(12f, 0f),
+            BarEntry(13f, 0f),
+            BarEntry(14f, 0f),
+            BarEntry(15f, 0f),
+            BarEntry(16f, 0f),
+            BarEntry(17f, 0f),
+            BarEntry(18f, 0f),
+            BarEntry(19f, 0f),
+            BarEntry(20f,0f),
+            BarEntry(21f,0f)
         )
 
         // 데이터셋 생성 및 설정
@@ -905,7 +1725,236 @@ class DrivenTimeActivity:BaseActivity() {
         layout_linechart_time.description.isEnabled = false // 설명 텍스트 사용 여부 설정
         layout_linechart_time.legend.isEnabled = false
         layout_linechart_time.setTouchEnabled(false)
-        layout_linechart_time.setExtraOffsets(20f,0f,0f,0f)
+        layout_linechart_time.setExtraOffsets(20f,0f,20f,0f)
+
+
+        // Customizing x-axis labels
+        val xAxis = layout_linechart_time.xAxis
+        xAxis.axisMinimum = -2f
+        xAxis.axisMaximum = 10f
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
+        xAxis.textColor = getColor(R.color.gray_600)
+        xAxis.labelCount = 12
+
+        // Customizing x-axis labels
+        xAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                return when (value.toInt()) {
+                    -1 -> months.get(0)
+                    1 -> months.get(1)
+                    3 -> months.get(2)
+                    5 -> months.get(3)
+                    7 -> months.get(4)
+                    9 -> months.get(5)
+                    else -> "" // 나머지 레이블은 비워둠
+                }
+            }
+        }
+
+        // Y축 레이블 및 선 제거
+        val leftAxis = layout_linechart_time.axisLeft
+        leftAxis.setDrawGridLines(true) // 그리드 라인 표시
+        leftAxis.setDrawAxisLine(false) // 축 라인 제거
+        leftAxis.setDrawLabels(false) // Y축 레이블 제거
+        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
+        leftAxis.granularity = 1.0f
+        leftAxis.axisMinimum = 0f
+        leftAxis.axisMaximum = 80f
+        leftAxis.gridColor = getColor(R.color.gray_200)
+
+
+        val rightAxis = layout_linechart_time.axisRight
+        rightAxis.setDrawGridLines(false) // 그리드 라인 제거
+        rightAxis.setDrawAxisLine(false) // 축 라인 제거
+        rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
+        rightAxis.granularity = 1.0f
+        rightAxis.axisMinimum = 0f
+        rightAxis.axisMaximum = 80f
+        rightAxis.textColor = getColor(R.color.gray_600)
+
+        // Y축 커스텀 레이블 포매터 설정
+        rightAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                val minValue = rightAxis.axisMinimum
+                val maxValue = rightAxis.axisMaximum
+
+                return if (value == minValue || value == maxValue) {
+                    value.toInt().toString() + "분"// 가장 아래와 위에만 레이블 표시
+                } else {
+                    "" // 나머지 레이블 제거
+                }
+            }
+        }
+        // 차트 업데이트
+        layout_linechart_time.invalidate()
+    }
+
+    private fun setSixMonthLineChart(items:List<GraphItem>, months: List<String>) {
+        var max = 0
+
+        for(item in items){
+            if(secondsToMinutes(item.time).toDouble() > max.toDouble())
+                max = secondsToMinutes(item.time).toDouble().toInt()
+        }
+
+        if(max == 0){
+            setSixMonthLineChartAsDefault(months)
+            return
+        }
+
+        val entries = listOf(
+            BarEntry(-1f, secondsToMinutes(items.get(0).time).toFloat()), // 첫번째 월
+            BarEntry(0f, 0f),
+            BarEntry(1f, secondsToMinutes(items.get(1).time).toFloat()), // 두번째 월
+            BarEntry(2f, 0f),
+            BarEntry(3f, secondsToMinutes(items.get(2).time).toFloat()), // 세번째 월
+            BarEntry(4f, 0f),
+            BarEntry(5f, secondsToMinutes(items.get(3).time).toFloat()), // 네번째 월
+            BarEntry(6f, 0f),
+            BarEntry(7f, secondsToMinutes(items.get(4).time).toFloat()), // 다섯번째 월
+            BarEntry(8f, 0f),
+            BarEntry(9f, secondsToMinutes(items.get(5).time).toFloat()) // 여섯번째 월
+        )
+
+        // 데이터셋 생성 및 설정
+        val dataSet = LineDataSet(entries, "Label") // 데이터셋 생성
+        dataSet.color = Color.BLACK // 선 색상 설정
+        dataSet.setDrawValues(false) // 값 표시 여부 설정
+        dataSet.setDrawCircles(false)
+        dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER // 곡선 형태로 설정
+        dataSet.setDrawFilled(true)  // 선 안쪽을 색으로 채우도록 설정
+        dataSet.fillDrawable = getDrawable(R.drawable.line_chart_gradient)
+
+        // 데이터셋 리스트 생성
+        val dataSets = ArrayList<ILineDataSet>()
+        dataSets.add(dataSet)
+
+        // LineData 객체 생성
+        val lineData = LineData(dataSets)
+
+        // LineChart 설정
+        layout_linechart_time.data = lineData // 데이터 설정
+        layout_linechart_time.setDrawGridBackground(false) // 그리드 배경 그리기 여부 설정
+        layout_linechart_time.description.isEnabled = false // 설명 텍스트 사용 여부 설정
+        layout_linechart_time.legend.isEnabled = false
+        layout_linechart_time.setTouchEnabled(false)
+        layout_linechart_time.setExtraOffsets(20f,0f,20f,0f)
+
+
+        // Customizing x-axis labels
+        val xAxis = layout_linechart_time.xAxis
+        xAxis.axisMinimum = -2f
+        xAxis.axisMaximum = 10f
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
+        xAxis.textColor = getColor(R.color.gray_600)
+        xAxis.labelCount = 12
+
+        // Customizing x-axis labels
+        xAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                return when (value.toInt()) {
+                    -1 -> months.get(0)
+                    1 -> months.get(1)
+                    3 -> months.get(2)
+                    5 -> months.get(3)
+                    7 -> months.get(4)
+                    9 -> months.get(5)
+                    else -> "" // 나머지 레이블은 비워둠
+                }
+            }
+        }
+
+        // Y축 레이블 및 선 제거
+        val leftAxis = layout_linechart_time.axisLeft
+        leftAxis.setDrawGridLines(true) // 그리드 라인 표시
+        leftAxis.setDrawAxisLine(false) // 축 라인 제거
+        leftAxis.setDrawLabels(false) // Y축 레이블 제거
+        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
+        leftAxis.granularity = 1.0f
+        leftAxis.axisMinimum = 0f
+        leftAxis.axisMaximum = max.toFloat()
+        leftAxis.gridColor = getColor(R.color.gray_200)
+
+
+        val rightAxis = layout_linechart_time.axisRight
+        rightAxis.setDrawGridLines(false) // 그리드 라인 제거
+        rightAxis.setDrawAxisLine(false) // 축 라인 제거
+        rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
+        rightAxis.granularity = 1.0f
+        rightAxis.axisMinimum = 0f
+        rightAxis.axisMaximum = max.toFloat()
+        rightAxis.textColor = getColor(R.color.gray_600)
+
+        // Y축 커스텀 레이블 포매터 설정
+        rightAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                val minValue = rightAxis.axisMinimum
+                val maxValue = rightAxis.axisMaximum
+
+                return if (value == minValue || value == maxValue) {
+                    value.toInt().toString() + "분"// 가장 아래와 위에만 레이블 표시
+                } else {
+                    "" // 나머지 레이블 제거
+                }
+            }
+        }
+        // 차트 업데이트
+        layout_linechart_time.invalidate()
+    }
+
+    private fun setYearLineChartAsDefault(months: List<String>) {
+        val entries = listOf(
+            BarEntry(-1f, 0f), // 1월
+            BarEntry(-0f, 0f),
+            BarEntry(1f, 0f), // 2월
+            BarEntry(2f, 0f),
+            BarEntry(3f, 0f), // 3월
+            BarEntry(4f, 0f),
+            BarEntry(5f, 0f), // 4월
+            BarEntry(6f, 0f),
+            BarEntry(7f, 0f), // 5월
+            BarEntry(8f, 0f),
+            BarEntry(9f, 0f), // 6월
+            BarEntry(10f, 0f),
+            BarEntry(11f, 0f), // 7월
+            BarEntry(12f, 0f),
+            BarEntry(13f, 0f), // 8월
+            BarEntry(14f, 0f),
+            BarEntry(15f, 0f), // 9월
+            BarEntry(16f, 0f),
+            BarEntry(17f, 0f), // 10월
+            BarEntry(18f, 0f),
+            BarEntry(19f, 0f), // 11월
+            BarEntry(20f,0f),
+            BarEntry(21f,0f) // 12월
+        )
+        // 데이터셋 생성 및 설정
+        val dataSet = LineDataSet(entries, "Label") // 데이터셋 생성
+        dataSet.color = Color.BLACK // 선 색상 설정
+        dataSet.setDrawValues(false) // 값 표시 여부 설정
+        dataSet.setDrawCircles(false)
+        dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER // 곡선 형태로 설정
+        dataSet.setDrawFilled(true)  // 선 안쪽을 색으로 채우도록 설정
+        dataSet.fillDrawable = getDrawable(R.drawable.line_chart_gradient)
+
+        // 데이터셋 리스트 생성
+        val dataSets = ArrayList<ILineDataSet>()
+        dataSets.add(dataSet)
+
+        // LineData 객체 생성
+        val lineData = LineData(dataSets)
+
+        // LineChart 설정
+        layout_linechart_time.data = lineData // 데이터 설정
+        layout_linechart_time.setDrawGridBackground(false) // 그리드 배경 그리기 여부 설정
+        layout_linechart_time.description.isEnabled = false // 설명 텍스트 사용 여부 설정
+        layout_linechart_time.legend.isEnabled = false
+        layout_linechart_time.setTouchEnabled(false)
+        layout_linechart_time.setExtraOffsets(20f,0f,20f,0f)
 
 
         // Customizing x-axis labels
@@ -921,10 +1970,10 @@ class DrivenTimeActivity:BaseActivity() {
         xAxis.valueFormatter = object : IAxisValueFormatter {
             override fun getFormattedValue(value: Float, axis: AxisBase?): String {
                 return when (value.toInt()) {
-                    1 -> "오전 12시"
-                    7 -> "오전 6시"
-                    13 -> "오후 12시"
-                    19-> "오후 6시"
+                    -1 -> months.get(0)
+                    7 -> months.get(4)
+                    13 -> months.get(7)
+                    21-> months.get(11)
                     else -> "" // 나머지 레이블은 비워둠
                 }
             }
@@ -935,7 +1984,7 @@ class DrivenTimeActivity:BaseActivity() {
         leftAxis.setDrawGridLines(true) // 그리드 라인 표시
         leftAxis.setDrawAxisLine(false) // 축 라인 제거
         leftAxis.setDrawLabels(false) // Y축 레이블 제거
-        leftAxis.setLabelCount(6, true) // 가로 라인의 수를 6로 설정 (강제)
+        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
         leftAxis.granularity = 1.0f
         leftAxis.axisMinimum = 0f
         leftAxis.axisMaximum = 80f
@@ -946,6 +1995,7 @@ class DrivenTimeActivity:BaseActivity() {
         rightAxis.setDrawGridLines(false) // 그리드 라인 제거
         rightAxis.setDrawAxisLine(false) // 축 라인 제거
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
         rightAxis.granularity = 1.0f
         rightAxis.axisMinimum = 0f
         rightAxis.axisMaximum = 80f
@@ -958,7 +2008,7 @@ class DrivenTimeActivity:BaseActivity() {
                 val maxValue = rightAxis.axisMaximum
 
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "시간"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + "분"// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -968,56 +2018,131 @@ class DrivenTimeActivity:BaseActivity() {
         layout_linechart_time.invalidate()
     }
 
-    private fun setResources(){
-        btn_back.setOnClickListener { finish() }
+    private fun setYearLineChart(items: List<GraphItem>, months: List<String>) {
+        // 데이터 준비
+        var max = 0
 
-        btn_recent_drive.setOnClickListener {
-            setRecentBarChart()
-            setRecentLineChart()
-            setRecentDrivingTime()
-
-            btn_recent_drive.isSelected = true
-            btn_month_drive.isSelected = false
-            btn_six_month_drive.isSelected = false
-            btn_year_drive.isSelected = false
+        for(item in items){
+            if(secondsToMinutes(item.time).toDouble() > max.toDouble())
+                max = secondsToMinutes(item.time).toDouble().toInt()
         }
 
-        btn_month_drive.setOnClickListener {
-            setMonthBarChart()
-            setMonthLineChart()
-            setMonthDrivingTime()
-
-            btn_recent_drive.isSelected = false
-            btn_month_drive.isSelected = true
-            btn_six_month_drive.isSelected = false
-            btn_year_drive.isSelected = false
-
+        if(max == 0){
+            setYearLineChartAsDefault(months)
+            return
         }
 
-        btn_six_month_drive.setOnClickListener {
-            setSixMonthBarChart()
-            setSixMonthLineChart()
-            setSixMonthDrivingTime()
+        val entries = listOf(
+            BarEntry(-1f, secondsToMinutes(items.get(0).time).toFloat()), // 1월
+            BarEntry(-0f, 0f),
+            BarEntry(1f, secondsToMinutes(items.get(1).time).toFloat()), // 2월
+            BarEntry(2f, 0f),
+            BarEntry(3f, secondsToMinutes(items.get(2).time).toFloat()), // 3월
+            BarEntry(4f, 0f),
+            BarEntry(5f, secondsToMinutes(items.get(3).time).toFloat()), // 4월
+            BarEntry(6f, 0f),
+            BarEntry(7f, secondsToMinutes(items.get(4).time).toFloat()), // 5월
+            BarEntry(8f, 0f),
+            BarEntry(9f, secondsToMinutes(items.get(5).time).toFloat()), // 6월
+            BarEntry(10f, 0f),
+            BarEntry(11f, secondsToMinutes(items.get(6).time).toFloat()), // 7월
+            BarEntry(12f, 0f),
+            BarEntry(13f, secondsToMinutes(items.get(7).time).toFloat()), // 8월
+            BarEntry(14f, 0f),
+            BarEntry(15f, secondsToMinutes(items.get(8).time).toFloat()), // 9월
+            BarEntry(16f, 0f),
+            BarEntry(17f, secondsToMinutes(items.get(9).time).toFloat()), // 10월
+            BarEntry(18f, 0f),
+            BarEntry(19f, secondsToMinutes(items.get(10).time).toFloat()), // 11월
+            BarEntry(20f,0f),
+            BarEntry(21f,secondsToMinutes(items.get(11).time).toFloat()) // 12월
+        )
+        // 데이터셋 생성 및 설정
+        val dataSet = LineDataSet(entries, "Label") // 데이터셋 생성
+        dataSet.color = Color.BLACK // 선 색상 설정
+        dataSet.setDrawValues(false) // 값 표시 여부 설정
+        dataSet.setDrawCircles(false)
+        dataSet.mode = LineDataSet.Mode.CUBIC_BEZIER // 곡선 형태로 설정
+        dataSet.setDrawFilled(true)  // 선 안쪽을 색으로 채우도록 설정
+        dataSet.fillDrawable = getDrawable(R.drawable.line_chart_gradient)
 
-            btn_recent_drive.isSelected = false
-            btn_month_drive.isSelected = false
-            btn_six_month_drive.isSelected = true
-            btn_year_drive.isSelected = false
+        // 데이터셋 리스트 생성
+        val dataSets = ArrayList<ILineDataSet>()
+        dataSets.add(dataSet)
+
+        // LineData 객체 생성
+        val lineData = LineData(dataSets)
+
+        // LineChart 설정
+        layout_linechart_time.data = lineData // 데이터 설정
+        layout_linechart_time.setDrawGridBackground(false) // 그리드 배경 그리기 여부 설정
+        layout_linechart_time.description.isEnabled = false // 설명 텍스트 사용 여부 설정
+        layout_linechart_time.legend.isEnabled = false
+        layout_linechart_time.setTouchEnabled(false)
+        layout_linechart_time.setExtraOffsets(20f,0f,20f,0f)
+
+
+        // Customizing x-axis labels
+        val xAxis = layout_linechart_time.xAxis
+        xAxis.axisMinimum = -2f
+        xAxis.axisMaximum = 22f
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
+        xAxis.textColor = getColor(R.color.gray_600)
+        xAxis.labelCount = 23
+
+        // Customizing x-axis labels
+        xAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                return when (value.toInt()) {
+                    -1 -> months.get(0)
+                    7 -> months.get(4)
+                    13 -> months.get(7)
+                    21-> months.get(11)
+                    else -> "" // 나머지 레이블은 비워둠
+                }
+            }
         }
 
-        btn_year_drive.setOnClickListener {
-            setYearBarChart()
-            setYearLineChart()
-            setYearDrivingTime()
+        // Y축 레이블 및 선 제거
+        val leftAxis = layout_linechart_time.axisLeft
+        leftAxis.setDrawGridLines(true) // 그리드 라인 표시
+        leftAxis.setDrawAxisLine(false) // 축 라인 제거
+        leftAxis.setDrawLabels(false) // Y축 레이블 제거
+        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
+        leftAxis.granularity = 1.0f
+        leftAxis.axisMinimum = 0f
+        leftAxis.axisMaximum = max.toFloat()
+        leftAxis.gridColor = getColor(R.color.gray_200)
 
-            btn_recent_drive.isSelected = false
-            btn_month_drive.isSelected = false
-            btn_six_month_drive.isSelected = false
-            btn_year_drive.isSelected = true
+
+        val rightAxis = layout_linechart_time.axisRight
+        rightAxis.setDrawGridLines(false) // 그리드 라인 제거
+        rightAxis.setDrawAxisLine(false) // 축 라인 제거
+        rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
+        rightAxis.granularity = 1.0f
+        rightAxis.axisMinimum = 0f
+        rightAxis.axisMaximum = max.toFloat()
+        rightAxis.textColor = getColor(R.color.gray_600)
+
+        // Y축 커스텀 레이블 포매터 설정
+        rightAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                val minValue = rightAxis.axisMinimum
+                val maxValue = rightAxis.axisMaximum
+
+                return if (value == minValue || value == maxValue) {
+                    value.toInt().toString() + "분"// 가장 아래와 위에만 레이블 표시
+                } else {
+                    "" // 나머지 레이블 제거
+                }
+            }
         }
-
-
+        // 차트 업데이트
+        layout_linechart_time.invalidate()
     }
+
 
     private fun setRecentDrivingTime(){
         tv_time_info1.text = "최근 1일 주행 시간"
@@ -1044,9 +2169,54 @@ class DrivenTimeActivity:BaseActivity() {
                         tv_min_minute.text = transferSecondsToHourAndMinutes(recentDrivingDistance.min.totalTime).second.toString()
                         tv_max_hour.text = transferSecondsToHourAndMinutes(recentDrivingDistance.max.totalTime).first.toString()
                         tv_max_minute.text = transferSecondsToHourAndMinutes(recentDrivingDistance.max.totalTime).second.toString()
-                        tv_diff_time.text = transferSecondsToHourAndMinutes(recentDrivingDistance.max.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(recentDrivingDistance.max.totalTime).second + "분 증가"
+                        tv_diff_time.text = transferSecondsToHourAndMinutes(recentDrivingDistance.diffTotal.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(recentDrivingDistance.diffTotal.totalTime).second + "분 증가"
+
+                        recentStartTime = recentDrivingDistance.recentStartTime
+                        recentEndTime = recentDrivingDistance.recentEndTime
 
                         tv_time_info4.text = "최근 내 차는\n" + transferSecondsToHourAndMinutes(recentDrivingDistance.total.totalTime).first +"시간" + transferSecondsToHourAndMinutes(recentDrivingDistance.total.totalTime).second + "분" + " 달렸어요"
+
+                        tv_time_info4.text = CommonUtil.getSpannableString(
+                            this@DrivenTimeActivity,
+                            "최근 내 차는\n" + transferSecondsToHourAndMinutes(recentDrivingDistance.total.totalTime).first +"시간" + transferSecondsToHourAndMinutes(recentDrivingDistance.total.totalTime).second + "분" + " 달렸어요",
+                            transferSecondsToHourAndMinutes(recentDrivingDistance.total.totalTime).first.toString() +"시간" + transferSecondsToHourAndMinutes(recentDrivingDistance.total.totalTime).second + "분",
+                            resources.getColor(R.color.pri_500)
+                        )
+
+                        apiService().getDrivingTimeGraphData(
+                            "Bearer " + PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+                            PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.USER_CARID, "")!!,
+                            "ASC",
+                            null,
+                            null,
+                            recentStartTime,
+                            recentEndTime,
+                            "startTime",
+                            "hour"
+                        ).enqueue(object :Callback<ResponseBody>{
+                            override fun onResponse(
+                                call: Call<ResponseBody>,
+                                response: Response<ResponseBody>
+                            ) {
+
+                                if(response.code() == 200){
+                                    val getDrivingGraphDataResponse = Gson().fromJson(
+                                        response.body()?.string(),
+                                        GetDrivingGraphDataResponse::class.java
+                                    )
+
+
+                                    setRecentBarChart(getDrivingGraphDataResponse.items)
+                                    setRecentLineChart(getDrivingGraphDataResponse.items)
+                                }
+                            }
+
+                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                                TODO("Not yet implemented")
+                            }
+
+                        })
+
                     }else{
                         tv_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
                         tv_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
@@ -1059,6 +2229,11 @@ class DrivenTimeActivity:BaseActivity() {
                         tv_diff_time.text = transferSecondsToHourAndMinutes(0.0).first.toString() + "시간 " + transferSecondsToHourAndMinutes(0.0).second + "분 증가"
 
                         tv_time_info4.text = "최근 내 차는\n" + transferSecondsToHourAndMinutes(0.0).first +"시간" + transferSecondsToHourAndMinutes(0.0).second + "분" + " 달렸어요"
+
+
+                        tv_time_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_time_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_time_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                     }
                 }else{
 
@@ -1114,9 +2289,16 @@ class DrivenTimeActivity:BaseActivity() {
                     tv_min_minute.text = transferSecondsToHourAndMinutes(drivingDistance.min.totalTime).second.toString()
                     tv_max_hour.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).first.toString()
                     tv_max_minute.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).second.toString()
-                    tv_diff_time.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).second + "분 증가"
+                    tv_diff_time.text = transferSecondsToHourAndMinutes(drivingDistance.diffTotal.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.diffTotal.totalTime).second + "분 증가"
 
                     tv_time_info4.text = "1개월 간 내 차는\n" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first +"시간" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second + "분" + " 달렸어요"
+
+                    tv_time_info4.text = CommonUtil.getSpannableString(
+                        this@DrivenTimeActivity,
+                        "1개월 간 내 차는\n" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first +"시간" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second + "분" + " 달렸어요",
+                        transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first.toString() +"시간" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second + "분",
+                        resources.getColor(R.color.pri_500)
+                    )
                 }
 
             }
@@ -1156,9 +2338,17 @@ class DrivenTimeActivity:BaseActivity() {
                     tv_min_minute.text = transferSecondsToHourAndMinutes(drivingDistance.min.totalTime).second.toString()
                     tv_max_hour.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).first.toString()
                     tv_max_minute.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).second.toString()
-                    tv_diff_time.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).second + "분 증가"
+                    tv_diff_time.text = transferSecondsToHourAndMinutes(drivingDistance.diffTotal.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.diffTotal.totalTime).second + "분 증가"
 
                     tv_time_info4.text = "6개월 간 내 차는\n" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first +"시간" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second + "분" + " 달렸어요"
+
+                    tv_time_info4.text = CommonUtil.getSpannableString(
+                        this@DrivenTimeActivity,
+                        "6개월 간 내 차는\n" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first +"시간" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second + "분" + " 달렸어요",
+                        transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first.toString() +"시간" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second + "분",
+                        resources.getColor(R.color.pri_500)
+                    )
+
                 }
 
             }
@@ -1198,9 +2388,16 @@ class DrivenTimeActivity:BaseActivity() {
                     tv_min_minute.text = transferSecondsToHourAndMinutes(drivingDistance.min.totalTime).second.toString()
                     tv_max_hour.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).first.toString()
                     tv_max_minute.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).second.toString()
-                    tv_diff_time.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).second + "분 증가"
+                    tv_diff_time.text = transferSecondsToHourAndMinutes(drivingDistance.diffTotal.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.diffTotal.totalTime).second + "분 증가"
 
                     tv_time_info4.text = "1년 간 내 차는\n" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first +"시간" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second + "분" + " 달렸어요"
+
+                    tv_time_info4.text = CommonUtil.getSpannableString(
+                        this@DrivenTimeActivity,
+                        "1년 간 내 차는\n" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first +"시간" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second + "분" + " 달렸어요",
+                        transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first.toString() +"시간" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second + "분",
+                        resources.getColor(R.color.pri_500)
+                    )
                 }
 
             }

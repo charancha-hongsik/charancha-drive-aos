@@ -59,7 +59,6 @@ class DrivenDistanceActivity:BaseActivity() {
         init()
         setResources()
 
-        setRecentBarChartAsDefault()
         setRecentDrivingDistance()
     }
 
@@ -224,8 +223,6 @@ class DrivenDistanceActivity:BaseActivity() {
             return
         }
 
-        max++
-
         val distances = FloatArray(24) { 0f }
 
         // Iterate over each item and parse the startTime to extract the hour
@@ -310,7 +307,7 @@ class DrivenDistanceActivity:BaseActivity() {
         leftAxis.setDrawGridLines(true) // 그리드 라인 표시
         leftAxis.setDrawAxisLine(false) // 축 라인 제거
         leftAxis.setDrawLabels(false) // Y축 레이블 제거
-        leftAxis.setLabelCount(6, true) // 가로 라인의 수를 6 설정 (강제)
+        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 6 설정 (강제)
         leftAxis.axisMinimum = 0f
         leftAxis.axisMaximum = max.toFloat()
         leftAxis.gridColor = getColor(R.color.gray_200)
@@ -320,7 +317,7 @@ class DrivenDistanceActivity:BaseActivity() {
         rightAxis.setDrawGridLines(false) // 그리드 라인 제거
         rightAxis.setDrawAxisLine(false) // 축 라인 제거
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
-        rightAxis.setLabelCount(6, true) // 가로 라인의 수를 6 설정 (강제)
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 6 설정 (강제)
         rightAxis.axisMinimum = 0f
         rightAxis.axisMaximum = max.toFloat()
         rightAxis.textColor = getColor(R.color.gray_600)
@@ -331,6 +328,7 @@ class DrivenDistanceActivity:BaseActivity() {
                 val minValue = rightAxis.axisMinimum
                 val maxValue = rightAxis.axisMaximum
                 return if (value == minValue || value == maxValue) {
+                    Log.d("testsetestset","testsetsetset :: " + value)
                     value.toInt().toString() + distance_unit// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
@@ -470,8 +468,6 @@ class DrivenDistanceActivity:BaseActivity() {
             return
         }
 
-        max++
-
         val entries = listOf(
             BarEntry(-1f, transferDistance(items.get(0).distance).toFloat()),
             BarEntry(-0f, transferDistance(items.get(1).distance).toFloat()),
@@ -557,6 +553,7 @@ class DrivenDistanceActivity:BaseActivity() {
         rightAxis.setDrawGridLines(false) // 그리드 라인 제거
         rightAxis.setDrawAxisLine(false) // 축 라인 제거
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 5로 설정 (강제)
         rightAxis.axisMinimum = 0f
         rightAxis.axisMaximum = max.toFloat()
         rightAxis.textColor = getColor(R.color.gray_600)
@@ -792,7 +789,6 @@ class DrivenDistanceActivity:BaseActivity() {
             return
         }
 
-        max++
 
         val entries = listOf(
             BarEntry(-1f, transferDistance(items.get(0).distance).toFloat()), // 첫번째 월
@@ -997,7 +993,6 @@ class DrivenDistanceActivity:BaseActivity() {
             return
         }
 
-        max++
 
 
         val entries = listOf(
@@ -1193,7 +1188,7 @@ class DrivenDistanceActivity:BaseActivity() {
         leftAxis.setDrawGridLines(true) // 그리드 라인 표시
         leftAxis.setDrawAxisLine(false) // 축 라인 제거
         leftAxis.setDrawLabels(false) // Y축 레이블 제거
-        leftAxis.setLabelCount(6, true) // 가로 라인의 수를 6로 설정 (강제)
+        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
         leftAxis.granularity = 1.0f
         leftAxis.axisMinimum = 0f
         leftAxis.axisMaximum = 10f
@@ -1228,19 +1223,19 @@ class DrivenDistanceActivity:BaseActivity() {
 
     private fun setRecentLineChart(items: List<GraphItem>) {
 
-        var max = 0
+        var max = 0.0
 
         for(item in items){
-            if(transferDistance(item.distance).toDouble() > max.toDouble())
-                max = transferDistance(item.distance).toDouble().toInt()
+            max += transferDistance(item.distance).toDouble()
         }
 
-        if(max == 0){
+        Log.d("testsetset","testestest max :: " + max)
+
+        if(max == 0.0){
             setRecentLineChartAsDefault()
             return
         }
 
-        max++
 
         val distances = FloatArray(24) { 0f }
 
@@ -1258,30 +1253,30 @@ class DrivenDistanceActivity:BaseActivity() {
 
 
         val entries = listOf(
-            BarEntry(-1f, distances.get(0)), // 00시
-            BarEntry(-0f, distances.get(1)), // 01시
-            BarEntry(1f, distances.get(2)), // 02시
-            BarEntry(2f, distances.get(3)), // 03시
-            BarEntry(3f, distances.get(4)), // 04시
-            BarEntry(4f, distances.get(5)), // 05시
-            BarEntry(5f, distances.get(6)), // 06시
-            BarEntry(6f, distances.get(7)), // 07시
-            BarEntry(7f, distances.get(8)), // 08시
-            BarEntry(8f, distances.get(9)), // 09시
-            BarEntry(9f, distances.get(10)), // 10시
-            BarEntry(10f, distances.get(11)), // 11시
-            BarEntry(11f, distances.get(12)), // 12시
-            BarEntry(12f, distances.get(13)), // 13시
-            BarEntry(13f, distances.get(14)), // 14시
-            BarEntry(14f, distances.get(15)), // 15시
-            BarEntry(15f, distances.get(16)), // 16시
-            BarEntry(16f, distances.get(17)), // 17시
-            BarEntry(17f, distances.get(18)), // 18시
-            BarEntry(18f, distances.get(19)), // 19시
-            BarEntry(19f, distances.get(20)), // 20시
-            BarEntry(20f,distances.get(21)), // 21시
-            BarEntry(21f,distances.get(22)), // 22시
-            BarEntry(22f,distances.get(23)) // 23시
+            BarEntry(-1f, distances.sliceArray(0..0).sum()), // 00시
+            BarEntry(-0f, distances.sliceArray(0..1).sum()), // 01시
+            BarEntry(1f, distances.sliceArray(0..2).sum()), // 02시
+            BarEntry(2f, distances.sliceArray(0..3).sum()), // 03시
+            BarEntry(3f, distances.sliceArray(0..4).sum()), // 04시
+            BarEntry(4f, distances.sliceArray(0..5).sum()), // 05시
+            BarEntry(5f, distances.sliceArray(0..6).sum()), // 06시
+            BarEntry(6f, distances.sliceArray(0..7).sum()), // 07시
+            BarEntry(7f, distances.sliceArray(0..8).sum()), // 08시
+            BarEntry(8f, distances.sliceArray(0..9).sum()), // 09시
+            BarEntry(9f, distances.sliceArray(0..10).sum()), // 10시
+            BarEntry(10f, distances.sliceArray(0..11).sum()), // 11시
+            BarEntry(11f, distances.sliceArray(0..12).sum()), // 12시
+            BarEntry(12f, distances.sliceArray(0..13).sum()), // 13시
+            BarEntry(13f, distances.sliceArray(0..14).sum()), // 14시
+            BarEntry(14f, distances.sliceArray(0..15).sum()), // 15시
+            BarEntry(15f, distances.sliceArray(0..16).sum()), // 16시
+            BarEntry(16f, distances.sliceArray(0..17).sum()), // 17시
+            BarEntry(17f, distances.sliceArray(0..18).sum()), // 18시
+            BarEntry(18f, distances.sliceArray(0..19).sum()), // 19시
+            BarEntry(19f, distances.sliceArray(0..20).sum()), // 20시
+            BarEntry(20f,distances.sliceArray(0..21).sum()), // 21시
+            BarEntry(21f,distances.sliceArray(0..22).sum()), // 22시
+            BarEntry(22f,distances.sliceArray(0..23).sum()) // 23시
         )
 
         // 데이터셋 생성 및 설정
@@ -1336,7 +1331,7 @@ class DrivenDistanceActivity:BaseActivity() {
         leftAxis.setDrawGridLines(true) // 그리드 라인 표시
         leftAxis.setDrawAxisLine(false) // 축 라인 제거
         leftAxis.setDrawLabels(false) // Y축 레이블 제거
-        leftAxis.setLabelCount(6, true) // 가로 라인의 수를 6로 설정 (강제)
+        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
         leftAxis.granularity = 1.0f
         leftAxis.axisMinimum = 0f
         leftAxis.axisMaximum = max.toFloat()
@@ -1456,7 +1451,7 @@ class DrivenDistanceActivity:BaseActivity() {
         leftAxis.setDrawGridLines(true) // 그리드 라인 표시
         leftAxis.setDrawAxisLine(false) // 축 라인 제거
         leftAxis.setDrawLabels(false) // Y축 레이블 제거
-        leftAxis.setLabelCount(6, true) // 가로 라인의 수를 6로 설정 (강제)
+        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
         leftAxis.granularity = 1.0f
         leftAxis.axisMinimum = 0f
         leftAxis.axisMaximum = 10f
@@ -1502,39 +1497,44 @@ class DrivenDistanceActivity:BaseActivity() {
             return
         }
 
-        max += 2
+        val distances = DoubleArray(items.size) { 0.0 }
+
+        for((index,item) in items.withIndex()){
+            distances[index] = item.distance
+        }
+
 
         val entries = listOf(
-            BarEntry(-1f, transferDistance(items.get(0).distance).toFloat()),
-            BarEntry(-0f, transferDistance(items.get(1).distance).toFloat()),
-            BarEntry(1f, transferDistance(items.get(2).distance).toFloat()),
-            BarEntry(2f, transferDistance(items.get(3).distance).toFloat()),
-            BarEntry(3f, transferDistance(items.get(4).distance).toFloat()),
-            BarEntry(4f, transferDistance(items.get(5).distance).toFloat()),
-            BarEntry(5f, transferDistance(items.get(6).distance).toFloat()),
-            BarEntry(6f, transferDistance(items.get(7).distance).toFloat()),
-            BarEntry(7f, transferDistance(items.get(8).distance).toFloat()),
-            BarEntry(8f, transferDistance(items.get(9).distance).toFloat()),
-            BarEntry(9f, transferDistance(items.get(10).distance).toFloat()),
-            BarEntry(10f, transferDistance(items.get(11).distance).toFloat()),
-            BarEntry(11f, transferDistance(items.get(12).distance).toFloat()),
-            BarEntry(12f, transferDistance(items.get(13).distance).toFloat()),
-            BarEntry(13f, transferDistance(items.get(14).distance).toFloat()),
-            BarEntry(14f, transferDistance(items.get(15).distance).toFloat()),
-            BarEntry(15f, transferDistance(items.get(16).distance).toFloat()),
-            BarEntry(16f, transferDistance(items.get(17).distance).toFloat()),
-            BarEntry(17f, transferDistance(items.get(18).distance).toFloat()),
-            BarEntry(18f, transferDistance(items.get(19).distance).toFloat()),
-            BarEntry(19f, transferDistance(items.get(20).distance).toFloat()),
-            BarEntry(20f,transferDistance(items.get(21).distance).toFloat()),
-            BarEntry(21f,transferDistance(items.get(22).distance).toFloat()),
-            BarEntry(22f,transferDistance(items.get(23).distance).toFloat()),
-            BarEntry(23f,transferDistance(items.get(24).distance).toFloat()),
-            BarEntry(24f,transferDistance(items.get(25).distance).toFloat()),
-            BarEntry(25f,transferDistance(items.get(26).distance).toFloat()),
-            BarEntry(26f,transferDistance(items.get(27).distance).toFloat()),
-            BarEntry(27f,transferDistance(items.get(28).distance).toFloat()),
-            BarEntry(28f,transferDistance(items.get(29).distance).toFloat())
+            BarEntry(-1f, transferDistance(distances.sliceArray(0..0).sum()).toFloat()),
+            BarEntry(-0f, transferDistance(distances.sliceArray(0..1).sum()).toFloat()),
+            BarEntry(1f, transferDistance(distances.sliceArray(0..2).sum()).toFloat()),
+            BarEntry(2f, transferDistance(distances.sliceArray(0..3).sum()).toFloat()),
+            BarEntry(3f, transferDistance(distances.sliceArray(0..4).sum()).toFloat()),
+            BarEntry(4f, transferDistance(distances.sliceArray(0..5).sum()).toFloat()),
+            BarEntry(5f, transferDistance(distances.sliceArray(0..6).sum()).toFloat()),
+            BarEntry(6f, transferDistance(distances.sliceArray(0..7).sum()).toFloat()),
+            BarEntry(7f, transferDistance(distances.sliceArray(0..8).sum()).toFloat()),
+            BarEntry(8f, transferDistance(distances.sliceArray(0..9).sum()).toFloat()),
+            BarEntry(9f, transferDistance(distances.sliceArray(0..10).sum()).toFloat()),
+            BarEntry(10f, transferDistance(distances.sliceArray(0..11).sum()).toFloat()),
+            BarEntry(11f, transferDistance(distances.sliceArray(0..12).sum()).toFloat()),
+            BarEntry(12f, transferDistance(distances.sliceArray(0..13).sum()).toFloat()),
+            BarEntry(13f, transferDistance(distances.sliceArray(0..14).sum()).toFloat()),
+            BarEntry(14f, transferDistance(distances.sliceArray(0..15).sum()).toFloat()),
+            BarEntry(15f, transferDistance(distances.sliceArray(0..16).sum()).toFloat()),
+            BarEntry(16f, transferDistance(distances.sliceArray(0..17).sum()).toFloat()),
+            BarEntry(17f, transferDistance(distances.sliceArray(0..18).sum()).toFloat()),
+            BarEntry(18f, transferDistance(distances.sliceArray(0..19).sum()).toFloat()),
+            BarEntry(19f, transferDistance(distances.sliceArray(0..20).sum()).toFloat()),
+            BarEntry(20f,transferDistance(distances.sliceArray(0..21).sum()).toFloat()),
+            BarEntry(21f,transferDistance(distances.sliceArray(0..22).sum()).toFloat()),
+            BarEntry(22f,transferDistance(distances.sliceArray(0..23).sum()).toFloat()),
+            BarEntry(23f,transferDistance(distances.sliceArray(0..24).sum()).toFloat()),
+            BarEntry(24f,transferDistance(distances.sliceArray(0..25).sum()).toFloat()),
+            BarEntry(25f,transferDistance(distances.sliceArray(0..26).sum()).toFloat()),
+            BarEntry(26f,transferDistance(distances.sliceArray(0..27).sum()).toFloat()),
+            BarEntry(27f,transferDistance(distances.sliceArray(0..28).sum()).toFloat()),
+            BarEntry(28f,transferDistance(distances.sliceArray(0..29).sum()).toFloat())
         )
 
 
@@ -1705,7 +1705,7 @@ class DrivenDistanceActivity:BaseActivity() {
         leftAxis.setDrawGridLines(true) // 그리드 라인 표시
         leftAxis.setDrawAxisLine(false) // 축 라인 제거
         leftAxis.setDrawLabels(false) // Y축 레이블 제거
-        leftAxis.setLabelCount(6, true) // 가로 라인의 수를 6로 설정 (강제)
+        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
         leftAxis.granularity = 1.0f
         leftAxis.axisMinimum = 0f
         leftAxis.axisMaximum = 80f
@@ -1739,32 +1739,36 @@ class DrivenDistanceActivity:BaseActivity() {
     }
 
     private fun setSixMonthLineChart(items:List<GraphItem>,months: List<String>) {
-        var max = 0
+        var max = 0.0
 
         for(item in items){
-            if(transferDistance(item.distance).toDouble() > max.toDouble())
-                max = transferDistance(item.distance).toDouble().toInt()
+            max += transferDistance(item.distance).toDouble()
         }
 
-        if(max == 0){
+        if(max == 0.0){
             setSixMonthLineChartAsDefault(months)
             return
         }
 
-        max = max+2
+        val distances = DoubleArray(items.size) { 0.0 }
+
+        for((index,item) in items.withIndex()){
+            distances[index] = item.distance
+        }
+
 
         val entries = listOf(
-            BarEntry(-1f, transferDistance(items.get(0).distance).toFloat()), // 첫번째 월
+            BarEntry(-1f, transferDistance(distances.sliceArray(0..0).sum()).toFloat()), // 첫번째 월
             BarEntry(0f, 0f),
-            BarEntry(1f, transferDistance(items.get(1).distance).toFloat()), // 두번째 월
+            BarEntry(1f,  transferDistance(distances.sliceArray(0..1).sum()).toFloat()), // 두번째 월
             BarEntry(2f, 0f),
-            BarEntry(3f, transferDistance(items.get(2).distance).toFloat()), // 세번째 월
+            BarEntry(3f,  transferDistance(distances.sliceArray(0..2).sum()).toFloat()), // 세번째 월
             BarEntry(4f, 0f),
-            BarEntry(5f, transferDistance(items.get(3).distance).toFloat()), // 네번째 월
+            BarEntry(5f,  transferDistance(distances.sliceArray(0..3).sum()).toFloat()), // 네번째 월
             BarEntry(6f, 0f),
-            BarEntry(7f, transferDistance(items.get(4).distance).toFloat()), // 다섯번째 월
+            BarEntry(7f,  transferDistance(distances.sliceArray(0..4).sum()).toFloat()), // 다섯번째 월
             BarEntry(8f, 0f),
-            BarEntry(9f, transferDistance(items.get(5).distance).toFloat()) // 여섯번째 월
+            BarEntry(9f,  transferDistance(distances.sliceArray(0..5).sum()).toFloat()) // 여섯번째 월
         )
 
         // 데이터셋 생성 및 설정
@@ -1821,7 +1825,7 @@ class DrivenDistanceActivity:BaseActivity() {
         leftAxis.setDrawGridLines(true) // 그리드 라인 표시
         leftAxis.setDrawAxisLine(false) // 축 라인 제거
         leftAxis.setDrawLabels(false) // Y축 레이블 제거
-        leftAxis.setLabelCount(6, true) // 가로 라인의 수를 6로 설정 (강제)
+        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
         leftAxis.granularity = 1.0f
         leftAxis.axisMinimum = 0f
         leftAxis.axisMaximum = max.toFloat()
@@ -1855,9 +1859,6 @@ class DrivenDistanceActivity:BaseActivity() {
     }
 
     private fun setYearLineChartAsDefault(months: List<String>) {
-
-
-
         val entries = listOf(
             BarEntry(-1f, 0f), // 1월
             BarEntry(-0f, 0f),
@@ -1935,7 +1936,7 @@ class DrivenDistanceActivity:BaseActivity() {
         leftAxis.setDrawGridLines(true) // 그리드 라인 표시
         leftAxis.setDrawAxisLine(false) // 축 라인 제거
         leftAxis.setDrawLabels(false) // Y축 레이블 제거
-        leftAxis.setLabelCount(6, true) // 가로 라인의 수를 6로 설정 (강제)
+        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
         leftAxis.granularity = 1.0f
         leftAxis.axisMinimum = 0f
         leftAxis.axisMaximum = 80f
@@ -1969,46 +1970,49 @@ class DrivenDistanceActivity:BaseActivity() {
     }
 
     private fun setYearLineChart(items: List<GraphItem>, months: List<String>) {
-        // 데이터 준비
-        var max = 0
+        var max = 0.0
 
         for(item in items){
-            if(transferDistance(item.distance).toDouble() > max.toDouble())
-                max = transferDistance(item.distance).toDouble().toInt()
+            max += transferDistance(item.distance).toDouble()
         }
 
-        if(max == 0){
+        if(max == 0.0){
             setYearLineChartAsDefault(months)
             return
         }
 
-        max = max + 2
+        val distances = DoubleArray(items.size) { 0.0 }
+
+        for((index,item) in items.withIndex()){
+            distances[index] = item.distance
+        }
+
 
 
         val entries = listOf(
-            BarEntry(-1f, transferDistance(items.get(0).distance).toFloat()), // 1월
+            BarEntry(-1f, transferDistance(distances.sliceArray(0..0).sum()).toFloat()), // 1월
             BarEntry(-0f, 0f),
-            BarEntry(1f, transferDistance(items.get(1).distance).toFloat()), // 2월
+            BarEntry(1f, transferDistance(distances.sliceArray(0..1).sum()).toFloat()), // 2월
             BarEntry(2f, 0f),
-            BarEntry(3f, transferDistance(items.get(2).distance).toFloat()), // 3월
+            BarEntry(3f, transferDistance(distances.sliceArray(0..2).sum()).toFloat()), // 3월
             BarEntry(4f, 0f),
-            BarEntry(5f, transferDistance(items.get(3).distance).toFloat()), // 4월
+            BarEntry(5f, transferDistance(distances.sliceArray(0..3).sum()).toFloat()), // 4월
             BarEntry(6f, 0f),
-            BarEntry(7f, transferDistance(items.get(4).distance).toFloat()), // 5월
+            BarEntry(7f, transferDistance(distances.sliceArray(0..4).sum()).toFloat()), // 5월
             BarEntry(8f, 0f),
-            BarEntry(9f, transferDistance(items.get(5).distance).toFloat()), // 6월
+            BarEntry(9f, transferDistance(distances.sliceArray(0..5).sum()).toFloat()), // 6월
             BarEntry(10f, 0f),
-            BarEntry(11f, transferDistance(items.get(6).distance).toFloat()), // 7월
+            BarEntry(11f, transferDistance(distances.sliceArray(0..6).sum()).toFloat()), // 7월
             BarEntry(12f, 0f),
-            BarEntry(13f, transferDistance(items.get(7).distance).toFloat()), // 8월
+            BarEntry(13f, transferDistance(distances.sliceArray(0..7).sum()).toFloat()), // 8월
             BarEntry(14f, 0f),
-            BarEntry(15f, transferDistance(items.get(8).distance).toFloat()), // 9월
+            BarEntry(15f, transferDistance(distances.sliceArray(0..8).sum()).toFloat()), // 9월
             BarEntry(16f, 0f),
-            BarEntry(17f, transferDistance(items.get(9).distance).toFloat()), // 10월
+            BarEntry(17f, transferDistance(distances.sliceArray(0..9).sum()).toFloat()), // 10월
             BarEntry(18f, 0f),
-            BarEntry(19f, transferDistance(items.get(10).distance).toFloat()), // 11월
+            BarEntry(19f, transferDistance(distances.sliceArray(0..10).sum()).toFloat()), // 11월
             BarEntry(20f,0f),
-            BarEntry(21f,transferDistance(items.get(11).distance).toFloat()) // 12월
+            BarEntry(21f,transferDistance(distances.sliceArray(0..11).sum()).toFloat()) // 12월
         )
         // 데이터셋 생성 및 설정
         val dataSet = LineDataSet(entries, "Label") // 데이터셋 생성
@@ -2062,7 +2066,7 @@ class DrivenDistanceActivity:BaseActivity() {
         leftAxis.setDrawGridLines(true) // 그리드 라인 표시
         leftAxis.setDrawAxisLine(false) // 축 라인 제거
         leftAxis.setDrawLabels(false) // Y축 레이블 제거
-        leftAxis.setLabelCount(6, true) // 가로 라인의 수를 6로 설정 (강제)
+        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
         leftAxis.granularity = 1.0f
         leftAxis.axisMinimum = 0f
         leftAxis.axisMaximum = max.toFloat()

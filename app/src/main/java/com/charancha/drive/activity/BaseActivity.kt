@@ -81,6 +81,18 @@ open class BaseActivity: AppCompatActivity(){
         return Pair(hours, minutes)
     }
 
+    fun secondsToHours(milliseconds: Double): Double {
+        return milliseconds / 3600.0
+    }
+
+    fun secondsToMinutes(milliseconds: Double): Int {
+        return (milliseconds / 60.0).toInt()
+    }
+
+    fun minutesToHours(minutes: Int): Double {
+        return minutes / 60.0
+    }
+
 
     fun getCurrentAndPastTimeForISO(past: Long): Triple<String, String, List<String>> {
         // 현재 시간 구하기
