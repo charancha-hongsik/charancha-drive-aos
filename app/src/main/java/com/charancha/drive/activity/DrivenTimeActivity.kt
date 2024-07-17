@@ -52,6 +52,11 @@ class DrivenTimeActivity:BaseActivity() {
     lateinit var tv_min_minute:TextView
     lateinit var tv_diff_time:TextView
 
+    lateinit var tv_date1:TextView
+    lateinit var tv_date2:TextView
+    lateinit var tv_date3:TextView
+
+
     var recentStartTime = "2024-07-15T00:00:00.000Z"
     var recentEndTime = "2024-07-15T23:59:59.999Z"
 
@@ -89,6 +94,10 @@ class DrivenTimeActivity:BaseActivity() {
         tv_min_hour = findViewById(R.id.tv_min_hour)
         tv_min_minute = findViewById(R.id.tv_min_minute)
         tv_diff_time = findViewById(R.id.tv_diff_time)
+
+        tv_date1 = findViewById(R.id.tv_date1)
+        tv_date2 = findViewById(R.id.tv_date2)
+        tv_date3 = findViewById(R.id.tv_date3)
 
         btn_recent_drive.isSelected = true
     }

@@ -49,6 +49,11 @@ class DrivenDistanceActivity:BaseActivity() {
     lateinit var tv_driving_info3:TextView
     lateinit var tv_driving_info4:TextView
 
+    lateinit var tv_date1:TextView
+    lateinit var tv_date2:TextView
+    lateinit var tv_date3:TextView
+
+
     var recentStartTime = "2024-07-15T00:00:00.000Z"
     var recentEndTime = "2024-07-15T23:59:59.999Z"
 
@@ -93,6 +98,10 @@ class DrivenDistanceActivity:BaseActivity() {
         tv_driving_info2 = findViewById(R.id.tv_driving_info2)
         tv_driving_info3 = findViewById(R.id.tv_driving_info3)
         tv_driving_info4 = findViewById(R.id.tv_driving_info4)
+
+        tv_date1 = findViewById(R.id.tv_date1)
+        tv_date2 = findViewById(R.id.tv_date2)
+        tv_date3 = findViewById(R.id.tv_date3)
 
 
 
@@ -2200,6 +2209,10 @@ class DrivenDistanceActivity:BaseActivity() {
                             transferDistance(recentDrivingDistance.total.totalDistance) + distance_unit,
                             resources.getColor(R.color.pri_500)
                         )
+
+                        tv_date1.text = convertDateFormat(recentDrivingDistance.recentStartTime)
+                        tv_date2.text = convertDateFormat(recentDrivingDistance.recentStartTime)
+                        tv_date3.text = convertDateFormat(recentDrivingDistance.recentStartTime)
 
 
                         apiService().getDrivingDistanceGraphData(

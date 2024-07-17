@@ -181,6 +181,7 @@
                 android:paddingBottom="24dp">
 
                 <TextView
+                    android:id="@+id/tv_date1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="2024년 5월 16일"
@@ -221,6 +222,7 @@
                 android:padding="20dp">
 
                 <TextView
+                    android:id="@+id/tv_date2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="2024년 5월 16일"
@@ -400,6 +402,7 @@
                 android:paddingBottom="24dp">
 
                 <TextView
+                    android:id="@+id/tv_date3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="2024년 5월 16일"

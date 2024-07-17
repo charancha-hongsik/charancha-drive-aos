@@ -138,6 +138,27 @@ open class BaseActivity: AppCompatActivity(){
         return Triple(nowFormatted, previousDateFormatted, resultList)
     }
 
+    // 1번 형식의 데이터를 2번 형식의 데이터로 변환하는 함수
+    fun convertDateFormat(dateString: String): String {
+        try {
+            // 입력된 문자열을 Instant 객체로 파싱
+            val instant = Instant.parse(dateString)
+
+            // Instant 객체를 로컬 시간대로 변환 (한국 시간대로 설정 예시)
+            val koreaZoneId = ZoneId.of("Asia/Seoul")
+            val localDateTime = LocalDateTime.ofInstant(instant, koreaZoneId)
+
+            // 원하는 포맷으로 날짜를 변환
+            val formatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일", Locale.KOREAN)
+            return localDateTime.format(formatter)
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            // 예외 처리: 날짜 형식이 올바르지 않은 경우 빈 문자열 반환 또는 예외 처리 로직 추가
+            return ""
+        }
+    }
+
 
 
 }
