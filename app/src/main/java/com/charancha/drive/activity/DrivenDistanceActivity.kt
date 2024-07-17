@@ -339,7 +339,6 @@ class DrivenDistanceActivity:BaseActivity() {
                 val minValue = rightAxis.axisMinimum
                 val maxValue = rightAxis.axisMaximum
                 return if (value == minValue || value == maxValue) {
-                    Log.d("testsetestset","testsetsetset :: " + value)
                     value.toInt().toString() + distance_unit// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거

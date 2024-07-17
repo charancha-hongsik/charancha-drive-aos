@@ -956,8 +956,8 @@ class HighSpeedDrivingActivity:BaseActivity() {
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@HighSpeedDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
-            getCurrentAndPastTimeForISO(30).second,
-            getCurrentAndPastTimeForISO(30).first,
+            getCurrentAndPastTimeForISO(29).second,
+            getCurrentAndPastTimeForISO(29).first,
             "startTime",
             "day").enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
@@ -999,10 +999,10 @@ class HighSpeedDrivingActivity:BaseActivity() {
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@HighSpeedDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
-            getCurrentAndPastTimeForISO(60).second,
-            getCurrentAndPastTimeForISO(60).first,
+            getCurrentAndPastTimeForISO(150).second,
+            getCurrentAndPastTimeForISO(150).first,
             "startTime",
-            "day").enqueue(object: Callback<ResponseBody> {
+            "month").enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200) {
 
@@ -1042,10 +1042,10 @@ class HighSpeedDrivingActivity:BaseActivity() {
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@HighSpeedDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
-            getCurrentAndPastTimeForISO(365).second,
-            getCurrentAndPastTimeForISO(365).first,
+            getCurrentAndPastTimeForISO(334).second,
+            getCurrentAndPastTimeForISO(334).first,
             "startTime",
-            "day").enqueue(object: Callback<ResponseBody> {
+            "month").enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200) {
 
