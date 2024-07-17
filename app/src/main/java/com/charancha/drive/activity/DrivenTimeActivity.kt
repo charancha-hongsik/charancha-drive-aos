@@ -1279,14 +1279,13 @@ class DrivenTimeActivity:BaseActivity() {
 
     private fun setRecentLineChart(items: List<GraphItem>) {
 
-        var max = 0
+        var max = 0.0
 
         for(item in items){
-            if(secondsToMinutes(item.time).toDouble() > max.toDouble())
-                max = secondsToMinutes(item.time).toDouble().toInt()
+            max += secondsToMinutes(item.time).toDouble()
         }
 
-        if(max == 0){
+        if(max == 0.0){
             setRecentLineChartAsDefault()
             return
         }
@@ -1307,30 +1306,30 @@ class DrivenTimeActivity:BaseActivity() {
 
 
         val entries = listOf(
-            BarEntry(-1f, time.get(0)), // 00시
-            BarEntry(-0f, time.get(1)), // 01시
-            BarEntry(1f, time.get(2)), // 02시
-            BarEntry(2f, time.get(3)), // 03시
-            BarEntry(3f, time.get(4)), // 04시
-            BarEntry(4f, time.get(5)), // 05시
-            BarEntry(5f, time.get(6)), // 06시
-            BarEntry(6f, time.get(7)), // 07시
-            BarEntry(7f, time.get(8)), // 08시
-            BarEntry(8f, time.get(9)), // 09시
-            BarEntry(9f, time.get(10)), // 10시
-            BarEntry(10f, time.get(11)), // 11시
-            BarEntry(11f, time.get(12)), // 12시
-            BarEntry(12f, time.get(13)), // 13시
-            BarEntry(13f, time.get(14)), // 14시
-            BarEntry(14f, time.get(15)), // 15시
-            BarEntry(15f, time.get(16)), // 16시
-            BarEntry(16f, time.get(17)), // 17시
-            BarEntry(17f, time.get(18)), // 18시
-            BarEntry(18f, time.get(19)), // 19시
-            BarEntry(19f, time.get(20)), // 20시
-            BarEntry(20f,time.get(21)), // 21시
-            BarEntry(21f,time.get(22)), // 22시
-            BarEntry(22f,time.get(23)) // 23시
+            BarEntry(-1f, time.sliceArray(0..0).sum()), // 00시
+            BarEntry(-0f, time.sliceArray(0..1).sum()), // 01시
+            BarEntry(1f, time.sliceArray(0..2).sum()), // 02시
+            BarEntry(2f, time.sliceArray(0..3).sum()), // 03시
+            BarEntry(3f, time.sliceArray(0..4).sum()), // 04시
+            BarEntry(4f, time.sliceArray(0..5).sum()), // 05시
+            BarEntry(5f, time.sliceArray(0..6).sum()), // 06시
+            BarEntry(6f, time.sliceArray(0..7).sum()), // 07시
+            BarEntry(7f, time.sliceArray(0..8).sum()), // 08시
+            BarEntry(8f, time.sliceArray(0..9).sum()), // 09시
+            BarEntry(9f, time.sliceArray(0..10).sum()), // 10시
+            BarEntry(10f, time.sliceArray(0..11).sum()), // 11시
+            BarEntry(11f, time.sliceArray(0..12).sum()), // 12시
+            BarEntry(12f, time.sliceArray(0..13).sum()), // 13시
+            BarEntry(13f, time.sliceArray(0..14).sum()), // 14시
+            BarEntry(14f, time.sliceArray(0..15).sum()), // 15시
+            BarEntry(15f, time.sliceArray(0..16).sum()), // 16시
+            BarEntry(16f, time.sliceArray(0..17).sum()), // 17시
+            BarEntry(17f, time.sliceArray(0..18).sum()), // 18시
+            BarEntry(18f, time.sliceArray(0..19).sum()), // 19시
+            BarEntry(19f, time.sliceArray(0..20).sum()), // 20시
+            BarEntry(20f,time.sliceArray(0..21).sum()), // 21시
+            BarEntry(21f,time.sliceArray(0..22).sum()), // 22시
+            BarEntry(22f,time.sliceArray(0..23).sum()) // 23시
         )
 
         // 데이터셋 생성 및 설정
