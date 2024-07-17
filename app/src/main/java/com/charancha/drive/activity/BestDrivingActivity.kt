@@ -1,6 +1,7 @@
 package com.charancha.drive.activity
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -9,8 +10,10 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
+import com.charancha.drive.retrofit.response.GetDrivingGraphDataResponse
 import com.charancha.drive.retrofit.response.GetDrivingStatisticsResponse
 import com.charancha.drive.retrofit.response.GetRecentDrivingStatisticsResponse
+import com.charancha.drive.retrofit.response.GraphItem
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.AxisBase
 import com.github.mikephil.charting.components.XAxis
@@ -23,6 +26,9 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.*
 
 class BestDrivingActivity:BaseActivity() {
@@ -44,6 +50,10 @@ class BestDrivingActivity:BaseActivity() {
 
 
     lateinit var layout_barchart_best_driving:BarChart
+
+    var recentStartTime = "2024-07-15T00:00:00.000Z"
+    var recentEndTime = "2024-07-15T23:59:59.999Z"
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,7 +95,6 @@ class BestDrivingActivity:BaseActivity() {
             btn_six_month_drive.isSelected = false
             btn_year_drive.isSelected = false
 
-            setRecentBarChart()
             setRecentDrivingDistance()
 
         }
@@ -96,8 +105,8 @@ class BestDrivingActivity:BaseActivity() {
             btn_six_month_drive.isSelected = false
             btn_year_drive.isSelected = false
 
-            setMonthBarChart()
             setMonthDrivingDistance()
+            callMonthChart()
         }
 
         btn_six_month_drive.setOnClickListener {
@@ -106,8 +115,8 @@ class BestDrivingActivity:BaseActivity() {
             btn_six_month_drive.isSelected = true
             btn_year_drive.isSelected = false
 
-            setSixMonthBarChart()
             setSixMonthDrivingDistance()
+            callSixMonthChart()
         }
 
         btn_year_drive.setOnClickListener {
@@ -116,11 +125,9 @@ class BestDrivingActivity:BaseActivity() {
             btn_six_month_drive.isSelected = false
             btn_year_drive.isSelected = true
 
-            setYearBarChart()
             setYearDrivingDistance()
+            callYearChart()
         }
-
-        setRecentBarChart()
     }
 
 
@@ -154,36 +161,330 @@ class BestDrivingActivity:BaseActivity() {
         }
     }
 
+    private fun setRecentDrivingDistance(){
+        tv_driving_info1.text = "최근 1일 평균 최적 주행"
+        tv_driving_info2.text = "최근 내 차의\n최적 주행 비율이에요"
+
+        apiService().getRecentDrivingStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!).enqueue(object:
+            Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200){
+                    val recentDrivingDistance = Gson().fromJson(
+                        response.body()?.string(),
+                        GetRecentDrivingStatisticsResponse::class.java
+                    )
+                    if(recentDrivingDistance.isRecent){
+                        recentStartTime = recentDrivingDistance.recentStartTime
+                        recentEndTime = recentDrivingDistance.recentEndTime
+
+                        tv_best_percent1.text = String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.average.optimalDrivingPercentage) + "%"
+                        tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.average.optimalDrivingPercentage) + "%"
+                        tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
+
+                        setExtraSpeedDrivingChartWidthByPercent(recentDrivingDistance.average.optimalDrivingPercentage.toFloat()/100)
+
+                        apiService().getDrivingDistanceRatioGraphData(
+                            "Bearer " + PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+                            PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.USER_CARID, "")!!,
+                            "ASC",
+                            null,
+                            null,
+                            recentStartTime,
+                            recentEndTime,
+                            "startTime",
+                            "hour"
+                        ).enqueue(object :Callback<ResponseBody>{
+                            override fun onResponse(
+                                call: Call<ResponseBody>,
+                                response: Response<ResponseBody>
+                            ) {
+
+                                if(response.code() == 200){
+                                    val getDrivingGraphDataResponse = Gson().fromJson(
+                                        response.body()?.string(),
+                                        GetDrivingGraphDataResponse::class.java
+                                    )
+                                    setRecentBarChart(getDrivingGraphDataResponse.items)
+                                }
+                            }
+
+                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                                TODO("Not yet implemented")
+                            }
+
+                        })
+
+                    }else{
+                        tv_best_percent1.text = "0.0"
+                        tv_best_percent2.text = "0.0"
+                        tv_diff_percent.text = "+0.0% 증가"
+                    }
+
+
+                }else{
+
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                tv_best_percent1.text = "0.0"
+                tv_best_percent2.text = "0.0"
+                tv_diff_percent.text = "+0.0% 증가"
+            }
+
+        })
+
+
+
+    }
+
+
+    private fun setMonthDrivingDistance(){
+        tv_driving_info1.text = "1개월 평균 최적 주행"
+        tv_driving_info2.text = "1개월 간 내 차의\n최적 주행 비율이에요"
+
+
+
+        apiService().getDrivingStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            getCurrentAndPastTimeForISO(29).second,
+            getCurrentAndPastTimeForISO(29).first,
+            "startTime",
+            "day").enqueue(object: Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200) {
+
+                    val drivingDistance = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingStatisticsResponse::class.java
+                    )
+
+                    tv_best_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
+                    tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
+                    tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
+
+                    setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat()/100)
+
+                }
+
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
+
+    private fun setSixMonthDrivingDistance(){
+        tv_driving_info1.text = "6개월 평균 최적 주행"
+        tv_driving_info2.text = "6개월 간 내 차의\n최적 주행 비율이에요"
+
+        apiService().getDrivingStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            getCurrentAndPastTimeForISO(150).second,
+            getCurrentAndPastTimeForISO(150).first,
+            "startTime",
+            "day").enqueue(object: Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200) {
+
+                    val drivingDistance = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingStatisticsResponse::class.java
+                    )
+                    tv_best_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
+                    tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
+                    tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
+
+                    setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat()/100)
+
+                }
+
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
+
+    private fun setYearDrivingDistance(){
+        tv_driving_info1.text = "1년 평균 최적 주행"
+        tv_driving_info2.text = "1년 간 내 차의\n최적 주행 비율이에요"
+
+
+        apiService().getDrivingStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            getCurrentAndPastTimeForISO(334).second,
+            getCurrentAndPastTimeForISO(334).first,
+            "startTime",
+            "day").enqueue(object: Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200) {
+
+                    val drivingDistance = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingStatisticsResponse::class.java
+                    )
+                    tv_best_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
+                    tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
+                    tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
+
+                    setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat()/100)
+                }
+
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
+
+    private fun callMonthChart(){
+        apiService().getDrivingDistanceGraphData(
+            "Bearer " + PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.USER_CARID, "")!!,
+            "ASC",
+            null,
+            null,
+            getCurrentAndPastTimeForISO(29).second,
+            getCurrentAndPastTimeForISO(29).first,
+            "startTime",
+            "day"
+        ).enqueue(object :Callback<ResponseBody>{
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+
+                if(response.code() == 200){
+                    val getDrivingGraphDataResponse = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingGraphDataResponse::class.java
+                    )
+
+                    setMonthBarChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(29).third)
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
+
+    private fun callSixMonthChart(){
+        apiService().getDrivingDistanceGraphData(
+            "Bearer " + PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.USER_CARID, "")!!,
+            "ASC",
+            null,
+            null,
+            getCurrentAndPastTimeForISO(150).second,
+            getCurrentAndPastTimeForISO(150).first,
+            "startTime",
+            "month"
+        ).enqueue(object :Callback<ResponseBody>{
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+
+                if(response.code() == 200){
+                    val getDrivingGraphDataResponse = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingGraphDataResponse::class.java
+                    )
+
+                    setSixMonthBarChart(getDrivingGraphDataResponse.items,getCurrentAndPastTimeForISO(150).third )
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
+
+    private fun callYearChart(){
+        apiService().getDrivingDistanceGraphData(
+            "Bearer " + PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.USER_CARID, "")!!,
+            "ASC",
+            null,
+            null,
+            getCurrentAndPastTimeForISO(334).second,
+            getCurrentAndPastTimeForISO(334).first,
+            "startTime",
+            "month"
+        ).enqueue(object :Callback<ResponseBody>{
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+
+                if(response.code() == 200){
+                    val getDrivingGraphDataResponse = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingGraphDataResponse::class.java
+                    )
+
+                    setYearBarChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(334).third)
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
+
+
+
     /**
      * 24개의 데이터가 내려옴
      */
-    private fun setRecentBarChart() {
+    private fun setRecentBarChartAsDefault() {
+
+        tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
         val entries = listOf(
-            BarEntry(-1f, 6f),
-            BarEntry(-0f, 10f),
-            BarEntry(1f, 4f),
-            BarEntry(2f, 8f),
-            BarEntry(3f, 6f),
-            BarEntry(4f, 2f),
-            BarEntry(5f, 7f),
-            BarEntry(6f, 5f),
-            BarEntry(7f, 9f),
-            BarEntry(8f, 3f),
-            BarEntry(9f, 4f),
-            BarEntry(10f, 5f),
-            BarEntry(11f, 2f),
-            BarEntry(12f, 7f),
-            BarEntry(13f, 5f),
-            BarEntry(14f, 9f),
-            BarEntry(15f, 3f),
-            BarEntry(16f, 4f),
-            BarEntry(17f, 5f),
-            BarEntry(18f, 9f),
-            BarEntry(19f, 1f),
-            BarEntry(20f,2f),
-            BarEntry(21f,5f),
-            BarEntry(22f,5f)
+            BarEntry(-1f, 0f),
+            BarEntry(-0f, 0f),
+            BarEntry(1f, 0f),
+            BarEntry(2f, 0f),
+            BarEntry(3f, 0f),
+            BarEntry(4f, 0f),
+            BarEntry(5f, 0f),
+            BarEntry(6f, 0f),
+            BarEntry(7f, 0f),
+            BarEntry(8f, 0f),
+            BarEntry(9f, 0f),
+            BarEntry(10f, 0f),
+            BarEntry(11f, 0f),
+            BarEntry(12f, 0f),
+            BarEntry(13f, 0f),
+            BarEntry(14f, 0f),
+            BarEntry(15f, 0f),
+            BarEntry(16f, 0f),
+            BarEntry(17f, 0f),
+            BarEntry(18f, 0f),
+            BarEntry(19f, 0f),
+            BarEntry(20f,0f),
+            BarEntry(21f,0f),
+            BarEntry(22f,0f)
         )
 
         val dataSet = BarDataSet(entries, "Sample Data")
@@ -238,6 +539,8 @@ class BestDrivingActivity:BaseActivity() {
         rightAxis.setDrawGridLines(false) // 그리드 라인 제거
         rightAxis.setDrawAxisLine(false) // 축 라인 제거
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
+
         rightAxis.axisMinimum = 0f
         rightAxis.axisMaximum = 10f
         rightAxis.textColor = getColor(R.color.gray_600)
@@ -248,7 +551,7 @@ class BestDrivingActivity:BaseActivity() {
                 val minValue = rightAxis.axisMinimum
                 val maxValue = rightAxis.axisMaximum
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "km"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + distance_unit// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -258,43 +561,178 @@ class BestDrivingActivity:BaseActivity() {
         layout_barchart_best_driving.invalidate() // refresh
     }
 
+
+    /**
+     * 24개의 데이터가 내려옴
+     */
+    private fun setRecentBarChart(items : List<GraphItem>) {
+        var max = 0
+
+        for(item in items){
+            Log.d("testsetsetset","teststestset :: " + item.optimalDrivingDistancePercentage)
+
+            if(item.optimalDrivingDistancePercentage > max.toDouble())
+                max = item.optimalDrivingDistancePercentage.toInt()
+        }
+
+        if(max == 0){
+            setRecentBarChartAsDefault()
+            return
+        }
+
+        val distances = FloatArray(24) { 0f }
+
+        // Iterate over each item and parse the startTime to extract the hour
+        val koreaZoneId = ZoneId.of("Asia/Seoul")
+
+        // Iterate over each item and parse the startTime to extract the hour
+        for (item in items) {
+            val startTime = Instant.parse(item.startTime)
+            val localDateTime = LocalDateTime.ofInstant(startTime, koreaZoneId)
+            val hour = localDateTime.hour
+
+
+            distances[hour] = item.optimalDrivingDistancePercentage.toFloat()
+        }
+
+
+        val entries = listOf(
+            BarEntry(-1f, distances.get(0)), // 00시
+            BarEntry(-0f, distances.get(1)), // 01시
+            BarEntry(1f, distances.get(2)), // 02시
+            BarEntry(2f, distances.get(3)), // 03시
+            BarEntry(3f, distances.get(4)), // 04시
+            BarEntry(4f, distances.get(5)), // 05시
+            BarEntry(5f, distances.get(6)), // 06시
+            BarEntry(6f, distances.get(7)), // 07시
+            BarEntry(7f, distances.get(8)), // 08시
+            BarEntry(8f, distances.get(9)), // 09시
+            BarEntry(9f, distances.get(10)), // 10시
+            BarEntry(10f, distances.get(11)), // 11시
+            BarEntry(11f, distances.get(12)), // 12시
+            BarEntry(12f, distances.get(13)), // 13시
+            BarEntry(13f, distances.get(14)), // 14시
+            BarEntry(14f, distances.get(15)), // 15시
+            BarEntry(15f, distances.get(16)), // 16시
+            BarEntry(16f, distances.get(17)), // 17시
+            BarEntry(17f, distances.get(18)), // 18시
+            BarEntry(18f, distances.get(19)), // 19시
+            BarEntry(19f, distances.get(20)), // 20시
+            BarEntry(20f,distances.get(21)), // 21시
+            BarEntry(21f,distances.get(22)), // 22시
+            BarEntry(22f,distances.get(23)) // 23시
+        )
+
+        val dataSet = BarDataSet(entries, "Sample Data")
+        dataSet.color = getColor(R.color.gray_200)
+        dataSet.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+        val barData = BarData(dataSet)
+        barData.barWidth = 0.6f
+
+        layout_barchart_best_driving.data = barData
+        layout_barchart_best_driving.setFitBars(true) // make the x-axis fit exactly all bars
+        layout_barchart_best_driving.description.isEnabled = false
+        layout_barchart_best_driving.animateY(1000)
+        layout_barchart_best_driving.legend.isEnabled = false
+        layout_barchart_best_driving.setTouchEnabled(false)
+
+        // Customizing x-axis labels
+        val xAxis = layout_barchart_best_driving.xAxis
+        xAxis.granularity = 1f // only intervals of 1 unit
+        xAxis.axisMinimum = -2f
+        xAxis.axisMaximum = 23f
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
+        xAxis.textColor = getColor(R.color.gray_600)
+        xAxis.labelCount = 24
+
+        // Customizing x-axis labels
+        xAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                return when (value.toInt()) {
+                    0 -> "오전 12시"
+                    6 -> "오전 6시"
+                    12 -> "오후 12시"
+                    18-> "오후 6시"
+                    else -> "" // 나머지 레이블은 비워둠
+                }
+            }
+        }
+
+        // Y축 레이블 및 선 제거
+        val leftAxis = layout_barchart_best_driving.axisLeft
+        leftAxis.setDrawGridLines(true) // 그리드 라인 표시
+        leftAxis.setDrawAxisLine(false) // 축 라인 제거
+        leftAxis.setDrawLabels(false) // Y축 레이블 제거
+        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 6 설정 (강제)
+        leftAxis.axisMinimum = 0f
+        leftAxis.axisMaximum = max.toFloat()
+        leftAxis.gridColor = getColor(R.color.gray_200)
+
+
+        val rightAxis = layout_barchart_best_driving.axisRight
+        rightAxis.setDrawGridLines(false) // 그리드 라인 제거
+        rightAxis.setDrawAxisLine(false) // 축 라인 제거
+        rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 6 설정 (강제)
+        rightAxis.axisMinimum = 0f
+        rightAxis.axisMaximum = max.toFloat()
+        rightAxis.textColor = getColor(R.color.gray_600)
+
+        // Y축 커스텀 레이블 포매터 설정
+        rightAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                val minValue = rightAxis.axisMinimum
+                val maxValue = rightAxis.axisMaximum
+                return if (value == minValue || value == maxValue) {
+                    value.toInt().toString() + "%"// 가장 아래와 위에만 레이블 표시
+                } else {
+                    "" // 나머지 레이블 제거
+                }
+            }
+        }
+
+        layout_barchart_best_driving.invalidate() // refresh
+    }
+
+
     /**
      * 데이터 30개가 내려옴
      * 각 월요일을 차트 하단에 노출
      */
-    private fun setMonthBarChart() {
-
+    private fun setMonthBarChartAsDefault(months: List<String>) {
         val entries = listOf(
-            BarEntry(-1f, 6f),
-            BarEntry(-0f, 10f),
-            BarEntry(1f, 4f),
-            BarEntry(2f, 8f),
-            BarEntry(3f, 6f),
-            BarEntry(4f, 1f),
-            BarEntry(5f, 7f),
-            BarEntry(6f, 5f),
-            BarEntry(7f, 9f),
-            BarEntry(8f, 9f),
-            BarEntry(9f, 4f),
-            BarEntry(10f, 5f),
-            BarEntry(11f, 2f),
-            BarEntry(12f, 7f),
-            BarEntry(13f, 5f),
-            BarEntry(14f, 1f),
-            BarEntry(15f, 3f),
-            BarEntry(16f, 4f),
-            BarEntry(17f, 5f),
-            BarEntry(18f, 9f),
-            BarEntry(19f, 1f),
-            BarEntry(20f,2f),
-            BarEntry(21f,5f),
-            BarEntry(22f,8f),
-            BarEntry(23f,3f),
-            BarEntry(24f,4f),
-            BarEntry(25f,1f),
-            BarEntry(26f,9f),
-            BarEntry(27f,5f),
-            BarEntry(28f,5f)
+            BarEntry(-1f, 0f),
+            BarEntry(-0f, 0f),
+            BarEntry(1f, 0f),
+            BarEntry(2f, 0f),
+            BarEntry(3f, 0f),
+            BarEntry(4f, 0f),
+            BarEntry(5f, 0f),
+            BarEntry(6f, 0f),
+            BarEntry(7f, 0f),
+            BarEntry(8f, 0f),
+            BarEntry(9f, 0f),
+            BarEntry(10f, 0f),
+            BarEntry(11f, 0f),
+            BarEntry(12f, 0f),
+            BarEntry(13f, 0f),
+            BarEntry(14f, 0f),
+            BarEntry(15f, 0f),
+            BarEntry(16f, 0f),
+            BarEntry(17f, 0f),
+            BarEntry(18f, 0f),
+            BarEntry(19f, 0f),
+            BarEntry(20f,0f),
+            BarEntry(21f,0f),
+            BarEntry(22f,0f),
+            BarEntry(23f,0f),
+            BarEntry(24f,0f),
+            BarEntry(25f,0f),
+            BarEntry(26f,0f),
+            BarEntry(27f,0f),
+            BarEntry(28f,0f)
         )
 
         val dataSet = BarDataSet(entries, "Sample Data")
@@ -325,10 +763,10 @@ class BestDrivingActivity:BaseActivity() {
         xAxis.valueFormatter = object : IAxisValueFormatter {
             override fun getFormattedValue(value: Float, axis: AxisBase?): String {
                 return when (value.toInt()) {
-                    1 -> "6월 17일"
-                    10 -> "6월 24일"
-                    18 -> "7월 1일"
-                    26-> "7월 8일"
+                    1 -> months.get(0)
+                    10 -> months.get(1)
+                    18 -> months.get(2)
+                    26-> months.get(3)
                     else -> "" // 나머지 레이블은 비워둠
                 }
             }
@@ -349,6 +787,8 @@ class BestDrivingActivity:BaseActivity() {
         rightAxis.setDrawGridLines(false) // 그리드 라인 제거
         rightAxis.setDrawAxisLine(false) // 축 라인 제거
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
+
         rightAxis.axisMinimum = 0f
         rightAxis.axisMaximum = 10f
         rightAxis.textColor = getColor(R.color.gray_600)
@@ -359,7 +799,7 @@ class BestDrivingActivity:BaseActivity() {
                 val minValue = rightAxis.axisMinimum
                 val maxValue = rightAxis.axisMaximum
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "km"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + distance_unit// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -369,25 +809,148 @@ class BestDrivingActivity:BaseActivity() {
         layout_barchart_best_driving.invalidate() // refresh
     }
 
+    /**
+     * 데이터 30개가 내려옴
+     * 각 월요일을 차트 하단에 노출
+     */
+    private fun setMonthBarChart(items : List<GraphItem>, dates:List<String>) {
+
+        var max = 0
+
+        for(item in items){
+            if(transferDistance(item.distance).toDouble() > max.toDouble())
+                max = transferDistance(item.distance).toDouble().toInt()
+        }
+
+        if(max == 0){
+            setMonthBarChartAsDefault(dates)
+            return
+        }
+
+        val entries = listOf(
+            BarEntry(-1f, transferDistance(items.get(0).distance).toFloat()),
+            BarEntry(-0f, transferDistance(items.get(1).distance).toFloat()),
+            BarEntry(1f, transferDistance(items.get(2).distance).toFloat()),
+            BarEntry(2f, transferDistance(items.get(3).distance).toFloat()),
+            BarEntry(3f, transferDistance(items.get(4).distance).toFloat()),
+            BarEntry(4f, transferDistance(items.get(5).distance).toFloat()),
+            BarEntry(5f, transferDistance(items.get(6).distance).toFloat()),
+            BarEntry(6f, transferDistance(items.get(7).distance).toFloat()),
+            BarEntry(7f, transferDistance(items.get(8).distance).toFloat()),
+            BarEntry(8f, transferDistance(items.get(9).distance).toFloat()),
+            BarEntry(9f, transferDistance(items.get(10).distance).toFloat()),
+            BarEntry(10f, transferDistance(items.get(11).distance).toFloat()),
+            BarEntry(11f, transferDistance(items.get(12).distance).toFloat()),
+            BarEntry(12f, transferDistance(items.get(13).distance).toFloat()),
+            BarEntry(13f, transferDistance(items.get(14).distance).toFloat()),
+            BarEntry(14f, transferDistance(items.get(15).distance).toFloat()),
+            BarEntry(15f, transferDistance(items.get(16).distance).toFloat()),
+            BarEntry(16f, transferDistance(items.get(17).distance).toFloat()),
+            BarEntry(17f, transferDistance(items.get(18).distance).toFloat()),
+            BarEntry(18f, transferDistance(items.get(19).distance).toFloat()),
+            BarEntry(19f, transferDistance(items.get(20).distance).toFloat()),
+            BarEntry(20f,transferDistance(items.get(21).distance).toFloat()),
+            BarEntry(21f,transferDistance(items.get(22).distance).toFloat()),
+            BarEntry(22f,transferDistance(items.get(23).distance).toFloat()),
+            BarEntry(23f,transferDistance(items.get(24).distance).toFloat()),
+            BarEntry(24f,transferDistance(items.get(25).distance).toFloat()),
+            BarEntry(25f,transferDistance(items.get(26).distance).toFloat()),
+            BarEntry(26f,transferDistance(items.get(27).distance).toFloat()),
+            BarEntry(27f,transferDistance(items.get(28).distance).toFloat()),
+            BarEntry(28f,transferDistance(items.get(29).distance).toFloat())
+        )
+
+        val dataSet = BarDataSet(entries, "Sample Data")
+        dataSet.color = getColor(R.color.gray_200)
+        dataSet.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+        val barData = BarData(dataSet)
+        barData.barWidth = 0.6f
+
+        layout_barchart_best_driving.data = barData
+        layout_barchart_best_driving.setFitBars(true) // make the x-axis fit exactly all bars
+        layout_barchart_best_driving.description.isEnabled = false
+        layout_barchart_best_driving.animateY(1000)
+        layout_barchart_best_driving.legend.isEnabled = false
+        layout_barchart_best_driving.setTouchEnabled(false)
+
+        // Customizing x-axis labels
+        val xAxis = layout_barchart_best_driving.xAxis
+        xAxis.granularity = 1f // only intervals of 1 unit
+        xAxis.axisMinimum = -2f
+        xAxis.axisMaximum = 29f
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
+        xAxis.textColor = getColor(R.color.gray_600)
+        xAxis.labelCount = 30
+
+        // Customizing x-axis labels
+        xAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                return when (value.toInt()) {
+                    1 -> dates.get(0)
+                    10 -> dates.get(1)
+                    18 -> dates.get(2)
+                    26-> dates.get(3)
+                    else -> "" // 나머지 레이블은 비워둠
+                }
+            }
+        }
+
+        // Y축 레이블 및 선 제거
+        val leftAxis = layout_barchart_best_driving.axisLeft
+        leftAxis.setDrawGridLines(true) // 그리드 라인 표시
+        leftAxis.setDrawAxisLine(false) // 축 라인 제거
+        leftAxis.setDrawLabels(false) // Y축 레이블 제거
+        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 5로 설정 (강제)
+        leftAxis.axisMinimum = 0f
+        leftAxis.axisMaximum = max.toFloat()
+        leftAxis.gridColor = getColor(R.color.gray_200)
+
+
+        val rightAxis = layout_barchart_best_driving.axisRight
+        rightAxis.setDrawGridLines(false) // 그리드 라인 제거
+        rightAxis.setDrawAxisLine(false) // 축 라인 제거
+        rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 5로 설정 (강제)
+        rightAxis.axisMinimum = 0f
+        rightAxis.axisMaximum = max.toFloat()
+        rightAxis.textColor = getColor(R.color.gray_600)
+
+        // Y축 커스텀 레이블 포매터 설정
+        rightAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                val minValue = rightAxis.axisMinimum
+                val maxValue = rightAxis.axisMaximum
+                return if (value == minValue || value == maxValue) {
+                    value.toInt().toString() + distance_unit// 가장 아래와 위에만 레이블 표시
+                } else {
+                    "" // 나머지 레이블 제거
+                }
+            }
+        }
+
+        layout_barchart_best_driving.invalidate() // refresh
+    }
 
     /**
      * 6개의 데이터가 내려옴
      * 6개 데이터 뿌려주면 됨
      */
-    private fun setSixMonthBarChart() {
+    private fun setSixMonthBarChartAsDefault(months: List<String>) {
 
         val entries = listOf(
-            BarEntry(-1f, 6f), // 첫번째 월
+            BarEntry(-1f, 0f), // 첫번째 월
             BarEntry(0f, 0f),
-            BarEntry(1f, 8f), // 두번째 월
+            BarEntry(1f, 0f), // 두번째 월
             BarEntry(2f, 0f),
-            BarEntry(3f, 7f), // 세번째 월
+            BarEntry(3f, 0f), // 세번째 월
             BarEntry(4f, 0f),
-            BarEntry(5f, 3f), // 네번째 월
+            BarEntry(5f, 0f), // 네번째 월
             BarEntry(6f, 0f),
-            BarEntry(7f, 2f), // 다섯번째 월
+            BarEntry(7f, 0f), // 다섯번째 월
             BarEntry(8f, 0f),
-            BarEntry(9f, 9f) // 여섯번째 월
+            BarEntry(9f, 0f) // 여섯번째 월
         )
 
         val dataSet = BarDataSet(entries, "Sample Data")
@@ -416,12 +979,12 @@ class BestDrivingActivity:BaseActivity() {
         xAxis.valueFormatter = object : IAxisValueFormatter {
             override fun getFormattedValue(value: Float, axis: AxisBase?): String {
                 return when (value.toInt()) {
-                    -1 -> "1월"
-                    1 -> "2월"
-                    3 -> "3월"
-                    5 -> "4월"
-                    7 -> "5월"
-                    9 -> "6월"
+                    -1 -> months.get(0)
+                    1 -> months.get(1)
+                    3 -> months.get(2)
+                    5 -> months.get(3)
+                    7 -> months.get(4)
+                    9 -> months.get(5)
                     else -> "" // 나머지 레이블은 비워둠
                 }
             }
@@ -442,6 +1005,7 @@ class BestDrivingActivity:BaseActivity() {
         rightAxis.setDrawGridLines(false) // 그리드 라인 제거
         rightAxis.setDrawAxisLine(false) // 축 라인 제거
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
         rightAxis.axisMinimum = 0f
         rightAxis.axisMaximum = 10f
         rightAxis.textColor = getColor(R.color.gray_600)
@@ -452,7 +1016,114 @@ class BestDrivingActivity:BaseActivity() {
                 val minValue = rightAxis.axisMinimum
                 val maxValue = rightAxis.axisMaximum
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "km"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + distance_unit// 가장 아래와 위에만 레이블 표시
+                } else {
+                    "" // 나머지 레이블 제거
+                }
+            }
+        }
+
+        layout_barchart_best_driving.invalidate() // refresh
+    }
+
+    /**
+     * 6개의 데이터가 내려옴
+     * 6개 데이터 뿌려주면 됨
+     */
+    private fun setSixMonthBarChart(items : List<GraphItem>, months:List<String>) {
+
+        var max = 0
+
+        for(item in items){
+            if(transferDistance(item.distance).toDouble() > max.toDouble())
+                max = transferDistance(item.distance).toDouble().toInt()
+        }
+
+        if(max == 0){
+            setSixMonthBarChartAsDefault(months)
+            return
+        }
+
+
+        val entries = listOf(
+            BarEntry(-1f, transferDistance(items.get(0).distance).toFloat()), // 첫번째 월
+            BarEntry(0f, 0f),
+            BarEntry(1f, transferDistance(items.get(1).distance).toFloat()), // 두번째 월
+            BarEntry(2f, 0f),
+            BarEntry(3f, transferDistance(items.get(2).distance).toFloat()), // 세번째 월
+            BarEntry(4f, 0f),
+            BarEntry(5f, transferDistance(items.get(3).distance).toFloat()), // 네번째 월
+            BarEntry(6f, 0f),
+            BarEntry(7f, transferDistance(items.get(4).distance).toFloat()), // 다섯번째 월
+            BarEntry(8f, 0f),
+            BarEntry(9f, transferDistance(items.get(5).distance).toFloat()) // 여섯번째 월
+        )
+
+        val dataSet = BarDataSet(entries, "Sample Data")
+        dataSet.color = getColor(R.color.gray_200)
+        dataSet.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+        val barData = BarData(dataSet)
+        layout_barchart_best_driving.data = barData
+        layout_barchart_best_driving.setFitBars(true) // make the x-axis fit exactly all bars
+        layout_barchart_best_driving.description.isEnabled = false
+        layout_barchart_best_driving.animateY(1000)
+        layout_barchart_best_driving.legend.isEnabled = false
+        layout_barchart_best_driving.setTouchEnabled(false)
+
+        // Customizing x-axis labels
+        val xAxis = layout_barchart_best_driving.xAxis
+        xAxis.granularity = 1f // only intervals of 1 unit
+        xAxis.axisMinimum = -2f
+        xAxis.axisMaximum = 10f
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
+        xAxis.textColor = getColor(R.color.gray_600)
+        xAxis.labelCount = 11
+
+        // Customizing x-axis labels
+        xAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                return when (value.toInt()) {
+                    -1 -> months.get(0)
+                    1 -> months.get(1)
+                    3 -> months.get(2)
+                    5 -> months.get(3)
+                    7 -> months.get(4)
+                    9 -> months.get(5)
+                    else -> "" // 나머지 레이블은 비워둠
+                }
+            }
+        }
+
+        // Y축 레이블 및 선 제거
+        val leftAxis = layout_barchart_best_driving.axisLeft
+        leftAxis.setDrawGridLines(true) // 그리드 라인 표시
+        leftAxis.setDrawAxisLine(false) // 축 라인 제거
+        leftAxis.setDrawLabels(false) // Y축 레이블 제거
+        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 5로 설정 (강제)
+        leftAxis.axisMinimum = 0f
+        leftAxis.axisMaximum = max.toFloat()
+        leftAxis.gridColor = getColor(R.color.gray_200)
+
+
+        val rightAxis = layout_barchart_best_driving.axisRight
+        rightAxis.setDrawGridLines(false) // 그리드 라인 제거
+        rightAxis.setDrawAxisLine(false) // 축 라인 제거
+        rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
+
+        rightAxis.axisMinimum = 0f
+        rightAxis.axisMaximum = max.toFloat()
+        rightAxis.textColor = getColor(R.color.gray_600)
+
+        // Y축 커스텀 레이블 포매터 설정
+        rightAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                val minValue = rightAxis.axisMinimum
+                val maxValue = rightAxis.axisMaximum
+                return if (value == minValue || value == maxValue) {
+                    value.toInt().toString() + distance_unit// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -467,32 +1138,32 @@ class BestDrivingActivity:BaseActivity() {
      * 1월 / 5월 / 8월 / 12월
      */
 
-    private fun setYearBarChart() {
+    private fun setYearBarChartAsDefault(months: List<String>) {
 
         val entries = listOf(
-            BarEntry(-1f, 6f), // 1월
+            BarEntry(-1f, 0f), // 1월
             BarEntry(-0f, 0f),
-            BarEntry(1f, 4f), // 2월
+            BarEntry(1f, 0f), // 2월
             BarEntry(2f, 0f),
-            BarEntry(3f, 6f), // 3월
+            BarEntry(3f, 0f), // 3월
             BarEntry(4f, 0f),
-            BarEntry(5f, 7f), // 4월
+            BarEntry(5f, 0f), // 4월
             BarEntry(6f, 0f),
-            BarEntry(7f, 9f), // 5월
+            BarEntry(7f, 0f), // 5월
             BarEntry(8f, 0f),
-            BarEntry(9f, 4f), // 6월
+            BarEntry(9f, 0f), // 6월
             BarEntry(10f, 0f),
-            BarEntry(11f, 2f), // 7월
+            BarEntry(11f, 0f), // 7월
             BarEntry(12f, 0f),
-            BarEntry(13f, 5f), // 8월
+            BarEntry(13f, 0f), // 8월
             BarEntry(14f, 0f),
-            BarEntry(15f, 3f), // 9월
+            BarEntry(15f, 0f), // 9월
             BarEntry(16f, 0f),
-            BarEntry(17f, 5f), // 10월
+            BarEntry(17f, 0f), // 10월
             BarEntry(18f, 0f),
-            BarEntry(19f, 1f), // 11월
+            BarEntry(19f, 0f), // 11월
             BarEntry(20f,0f),
-            BarEntry(21f,5f) // 12월
+            BarEntry(21f,0f) // 12월
         )
 
         val dataSet = BarDataSet(entries, "Sample Data")
@@ -522,10 +1193,10 @@ class BestDrivingActivity:BaseActivity() {
         xAxis.valueFormatter = object : IAxisValueFormatter {
             override fun getFormattedValue(value: Float, axis: AxisBase?): String {
                 return when (value.toInt()) {
-                    -1 -> "1월"
-                    7 -> "5월"
-                    13 -> "8월"
-                    21-> "12월"
+                    -1 -> months.get(0)
+                    7 -> months.get(4)
+                    13 -> months.get(7)
+                    21-> months.get(11)
                     else -> "" // 나머지 레이블은 비워둠
                 }
             }
@@ -546,6 +1217,8 @@ class BestDrivingActivity:BaseActivity() {
         rightAxis.setDrawGridLines(false) // 그리드 라인 제거
         rightAxis.setDrawAxisLine(false) // 축 라인 제거
         rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
+
         rightAxis.axisMinimum = 0f
         rightAxis.axisMaximum = 10f
         rightAxis.textColor = getColor(R.color.gray_600)
@@ -556,7 +1229,7 @@ class BestDrivingActivity:BaseActivity() {
                 val minValue = rightAxis.axisMinimum
                 val maxValue = rightAxis.axisMaximum
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "km"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + distance_unit// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -566,156 +1239,118 @@ class BestDrivingActivity:BaseActivity() {
         layout_barchart_best_driving.invalidate() // refresh
     }
 
+    private fun setYearBarChart(items : List<GraphItem>, months:List<String>) {
+        var max = 0
 
-    private fun setRecentDrivingDistance(){
-        tv_driving_info1.text = "최근 1일 평균 최적 주행"
-        tv_driving_info2.text = "최근 내 차의\n최적 주행 비율이에요"
+        for(item in items){
+            if(transferDistance(item.distance).toDouble() > max.toDouble())
+                max = transferDistance(item.distance).toDouble().toInt()
+        }
 
-        apiService().getRecentDrivingStatistics(
-            "Bearer " + PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!).enqueue(object:
-            Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200){
-                    val recentDrivingDistance = Gson().fromJson(
-                        response.body()?.string(),
-                        GetRecentDrivingStatisticsResponse::class.java
-                    )
-                    if(recentDrivingDistance.isRecent){
-                        tv_best_percent1.text = String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.average.optimalDrivingPercentage) + "%"
-                        tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.average.optimalDrivingPercentage) + "%"
-                        tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
+        if(max == 0){
+            setYearBarChartAsDefault(months)
+            return
+        }
 
-                        setExtraSpeedDrivingChartWidthByPercent(recentDrivingDistance.average.optimalDrivingPercentage.toFloat()/100)
 
-                    }else{
-                        tv_best_percent1.text = "0.0"
-                        tv_best_percent2.text = "0.0"
-                        tv_diff_percent.text = "+0.0% 증가"
-                    }
-                }else{
 
+        val entries = listOf(
+            BarEntry(-1f, transferDistance(items.get(0).distance).toFloat()), // 1월
+            BarEntry(-0f, 0f),
+            BarEntry(1f, transferDistance(items.get(1).distance).toFloat()), // 2월
+            BarEntry(2f, 0f),
+            BarEntry(3f, transferDistance(items.get(2).distance).toFloat()), // 3월
+            BarEntry(4f, 0f),
+            BarEntry(5f, transferDistance(items.get(3).distance).toFloat()), // 4월
+            BarEntry(6f, 0f),
+            BarEntry(7f, transferDistance(items.get(4).distance).toFloat()), // 5월
+            BarEntry(8f, 0f),
+            BarEntry(9f, transferDistance(items.get(5).distance).toFloat()), // 6월
+            BarEntry(10f, 0f),
+            BarEntry(11f, transferDistance(items.get(6).distance).toFloat()), // 7월
+            BarEntry(12f, 0f),
+            BarEntry(13f, transferDistance(items.get(7).distance).toFloat()), // 8월
+            BarEntry(14f, 0f),
+            BarEntry(15f, transferDistance(items.get(8).distance).toFloat()), // 9월
+            BarEntry(16f, 0f),
+            BarEntry(17f, transferDistance(items.get(9).distance).toFloat()), // 10월
+            BarEntry(18f, 0f),
+            BarEntry(19f, transferDistance(items.get(10).distance).toFloat()), // 11월
+            BarEntry(20f,0f),
+            BarEntry(21f,transferDistance(items.get(11).distance).toFloat()) // 12월
+        )
+
+        val dataSet = BarDataSet(entries, "Sample Data")
+        dataSet.color = getColor(R.color.gray_200)
+        dataSet.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+        val barData = BarData(dataSet)
+        barData.barWidth = 1.0f
+        layout_barchart_best_driving.data = barData
+        layout_barchart_best_driving.setFitBars(true) // make the x-axis fit exactly all bars
+        layout_barchart_best_driving.description.isEnabled = false
+        layout_barchart_best_driving.animateY(1000)
+        layout_barchart_best_driving.legend.isEnabled = false
+        layout_barchart_best_driving.setTouchEnabled(false)
+
+        // Customizing x-axis labels
+        val xAxis = layout_barchart_best_driving.xAxis
+        xAxis.granularity = 1f // only intervals of 1 unit
+        xAxis.axisMinimum = -2f
+        xAxis.axisMaximum = 22f
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
+        xAxis.textColor = getColor(R.color.gray_600)
+        xAxis.labelCount = 23
+
+        // Customizing x-axis labels
+        xAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                return when (value.toInt()) {
+                    -1 -> months.get(0)
+                    7 -> months.get(4)
+                    13 -> months.get(7)
+                    21-> months.get(11)
+                    else -> "" // 나머지 레이블은 비워둠
                 }
             }
+        }
 
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                tv_best_percent1.text = "0.0"
-                tv_best_percent2.text = "0.0"
-                tv_diff_percent.text = "+0.0% 증가"
-            }
-
-        })
-
-
-
-    }
-
-
-    private fun setMonthDrivingDistance(){
-        tv_driving_info1.text = "1개월 평균 최적 주행"
-        tv_driving_info2.text = "1개월 간 내 차의\n최적 주행 비율이에요"
+        // Y축 레이블 및 선 제거
+        val leftAxis = layout_barchart_best_driving.axisLeft
+        leftAxis.setDrawGridLines(true) // 그리드 라인 표시
+        leftAxis.setDrawAxisLine(false) // 축 라인 제거
+        leftAxis.setDrawLabels(false) // Y축 레이블 제거
+        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 5로 설정 (강제)
+        leftAxis.axisMinimum = 0f
+        leftAxis.axisMaximum = max.toFloat()
+        leftAxis.gridColor = getColor(R.color.gray_200)
 
 
+        val rightAxis = layout_barchart_best_driving.axisRight
+        rightAxis.setDrawGridLines(false) // 그리드 라인 제거
+        rightAxis.setDrawAxisLine(false) // 축 라인 제거
+        rightAxis.setDrawLabels(true) // Y축 레이블 활성화
+        rightAxis.setLabelCount(5, true) // 가로 라인의 수를 6로 설정 (강제)
 
-        apiService().getDrivingStatistics(
-            "Bearer " + PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
-            getCurrentAndPastTimeForISO(30).second,
-            getCurrentAndPastTimeForISO(30).first,
-            "startTime",
-            "day").enqueue(object: Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200) {
+        rightAxis.axisMinimum = 0f
+        rightAxis.axisMaximum = max.toFloat()
+        rightAxis.textColor = getColor(R.color.gray_600)
 
-                    val drivingDistance = Gson().fromJson(
-                        response.body()?.string(),
-                        GetDrivingStatisticsResponse::class.java
-                    )
-
-                    tv_best_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
-                    tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
-                    tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
-
-                    setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat()/100)
-
+        // Y축 커스텀 레이블 포매터 설정
+        rightAxis.valueFormatter = object : IAxisValueFormatter {
+            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
+                val minValue = rightAxis.axisMinimum
+                val maxValue = rightAxis.axisMaximum
+                return if (value == minValue || value == maxValue) {
+                    value.toInt().toString() + distance_unit// 가장 아래와 위에만 레이블 표시
+                } else {
+                    "" // 나머지 레이블 제거
                 }
-
             }
+        }
 
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                TODO("Not yet implemented")
-            }
-
-        })
+        layout_barchart_best_driving.invalidate() // refresh
     }
 
-    private fun setSixMonthDrivingDistance(){
-        tv_driving_info1.text = "6개월 평균 최적 주행"
-        tv_driving_info2.text = "6개월 간 내 차의\n최적 주행 비율이에요"
-
-        apiService().getDrivingStatistics(
-            "Bearer " + PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
-            getCurrentAndPastTimeForISO(60).second,
-            getCurrentAndPastTimeForISO(60).first,
-            "startTime",
-            "day").enqueue(object: Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200) {
-
-                    val drivingDistance = Gson().fromJson(
-                        response.body()?.string(),
-                        GetDrivingStatisticsResponse::class.java
-                    )
-                    tv_best_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
-                    tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
-                    tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
-
-                    setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat()/100)
-
-                }
-
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                TODO("Not yet implemented")
-            }
-
-        })
-    }
-
-    private fun setYearDrivingDistance(){
-        tv_driving_info1.text = "1년 평균 최적 주행"
-        tv_driving_info2.text = "1년 간 내 차의\n최적 주행 비율이에요"
-
-
-        apiService().getDrivingStatistics(
-            "Bearer " + PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
-            getCurrentAndPastTimeForISO(365).second,
-            getCurrentAndPastTimeForISO(365).first,
-            "startTime",
-            "day").enqueue(object: Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200) {
-
-                    val drivingDistance = Gson().fromJson(
-                        response.body()?.string(),
-                        GetDrivingStatisticsResponse::class.java
-                    )
-                    tv_best_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
-                    tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
-                    tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
-
-                    setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat()/100)
-                }
-
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                TODO("Not yet implemented")
-            }
-
-        })
-    }
 }
