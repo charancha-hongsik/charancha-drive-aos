@@ -906,7 +906,7 @@ class HighSpeedDrivingActivity:BaseActivity() {
     private fun setRecentDrivingDistance(){
         tv_driving_info1.text = "최근 1일 평균 고속 주행"
         tv_driving_info2.text = "내 차는 고속 주행\n비율이 높을수록 좋아요"
-        tv_driving_info3.text = "최근 내 차의\n고속 주행 비율이에요"
+        tv_driving_info3.text = "최근 내 차의\n고속 주행 비율율이에요"
 
         apiService().getRecentDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@HighSpeedDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
