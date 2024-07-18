@@ -20,8 +20,7 @@ class MainViewModel: ViewModel() {
         viewModelScope.launch {
             val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(context)
             driveDatabase.driveForApiDao().allDrive?.let {
-                for(drive in it)
-                    Log.d("testestestest","testsetsetset drive :: " + drive.toString())
+
             }
         }
     }

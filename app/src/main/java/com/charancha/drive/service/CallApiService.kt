@@ -11,6 +11,7 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.retrofit.ApiServiceInterface
+import com.charancha.drive.retrofit.request.PostDrivingInfoRequest
 import com.charancha.drive.retrofit.response.PostDrivingInfoResponse
 import com.charancha.drive.room.database.DriveDatabase
 import com.charancha.drive.room.entity.DriveForApi
@@ -71,8 +72,16 @@ class CallApiService: Service() {
                     if (it.isNotEmpty()) {
                         for (drive in it) {
 
-                            val driveDtoForApi = DriveForApi(
-                                tracking_id = PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!! + drive.startTimestamp,
+//                            val driveDtoForApi = DriveForApi(
+//                                tracking_id = PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!! + drive.startTimestamp,
+//                                userCarId = PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+//                                startTimestamp = drive.startTimestamp,
+//                                endTimestamp = drive.endTimestamp,
+//                                verification = drive.verification,
+//                                gpses = drive.gpses
+//                            )
+//
+                            val postDrivingInfoRequest = PostDrivingInfoRequest(
                                 userCarId = PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
                                 startTimestamp = drive.startTimestamp,
                                 endTimestamp = drive.endTimestamp,
@@ -81,7 +90,7 @@ class CallApiService: Service() {
                             )
 
                             val gson = Gson()
-                            val jsonParam = gson.toJson(driveDtoForApi)
+                            val jsonParam = gson.toJson(postDrivingInfoRequest)
 
                             apiService().postDrivingInfo("Bearer " + PreferenceUtil.getPref(this@CallApiService,  PreferenceUtil.ACCESS_TOKEN, "")!!, jsonParam.toRequestBody("application/json".toMediaTypeOrNull()))
                                 .enqueue(object : Callback<ResponseBody> {

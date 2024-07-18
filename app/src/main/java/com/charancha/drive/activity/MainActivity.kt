@@ -55,7 +55,6 @@ import java.util.*
  */
 class MainActivity : BaseRefreshActivity() {
     lateinit var btnHistory: ImageButton
-    private val mainViewModel: MainViewModel by viewModels()
 
     lateinit var chart: PieChart
     lateinit var btn_edit:ImageButton

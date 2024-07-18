@@ -318,7 +318,7 @@ class BluetoothService : Service() {
             if (distance_array.isNotEmpty() && distance_array.sum() > 500f) {
                 (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(
                     1,
-                    notification.setContentText("주행 중..(${distance_array.sum()} m) " + getCurrent()).build()
+                    notification.setContentText("주행 중..(${distance_array.sum()} m) ").build()
                 )
             }
         }
@@ -444,7 +444,7 @@ class BluetoothService : Service() {
 
                 (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(
                     1,
-                    notification.setContentText("주행 중..(${distance_array.sum()} m) " + getCurrent()).build()
+                    notification.setContentText("주행 중..(${distance_array.sum()} m) ").build()
                 )
             }
         } catch(e:Exception){
@@ -458,6 +458,7 @@ class BluetoothService : Service() {
      */
     private fun stopSensor(level:String){
         try {
+            refreshNotiText()
             if (sensorState) {
                 if (level == PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL, "")) {
                     sensorState = false
@@ -481,6 +482,7 @@ class BluetoothService : Service() {
 
     fun stopSensor(){
         try {
+            refreshNotiText()
             if (sensorState) {
                 sensorState = false
                 firstLineState = false
@@ -492,8 +494,6 @@ class BluetoothService : Service() {
                 if(distance_array.sum() > 500f){
                     callApi()
                 }
-
-//                callApi()
 
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null

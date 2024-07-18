@@ -38,12 +38,16 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var btn_filter: ImageView
     lateinit var btn_back:ImageView
 
+    private val historyViewModel: MyDriveHistoryViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_drive_history)
 
         init()
 
+        historyViewModel.init(applicationContext)
+        historyViewModel.getAllDrive()
     }
 
     fun init(){

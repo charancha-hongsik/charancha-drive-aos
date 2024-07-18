@@ -35,13 +35,12 @@ class SplashActivity: BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-//        startActivity(Intent(this, MainActivity::class.java))
-
-
         Handler(Looper.getMainLooper()).postDelayed({
             if(PreferenceUtil.getPref(this, PreferenceUtil.REFRESH_TOKEN, "") == ""){
+                Log.d("testsetestset","testsetestset unLoginedProcess ")
                 unLoginedProcess()
             }else {
+                Log.d("testsetestset","testsetestset loginedProcess :: " + PreferenceUtil.getPref(this, PreferenceUtil.REFRESH_TOKEN, ""))
                 loginedProcess()
             }
         }, 2000) // 2000 밀리초 (2초)
