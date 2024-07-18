@@ -44,6 +44,8 @@ class BestDrivingActivity:BaseRefreshActivity() {
 
     lateinit var tv_driving_info1:TextView
     lateinit var tv_driving_info2:TextView
+    lateinit var tv_driving_info3:TextView
+
     lateinit var tv_best_percent1:TextView
     lateinit var tv_diff_percent:TextView
     lateinit var tv_best_percent2:TextView
@@ -86,6 +88,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
 
         tv_driving_info1 = findViewById(R.id.tv_driving_info1)
         tv_driving_info2 = findViewById(R.id.tv_driving_info2)
+        tv_driving_info3 = findViewById(R.id.tv_driving_info3)
         tv_best_percent1 = findViewById(R.id.tv_best_percent1)
         tv_diff_percent = findViewById(R.id.tv_diff_percent)
         tv_best_percent2 = findViewById(R.id.tv_best_percent2)
@@ -191,6 +194,8 @@ class BestDrivingActivity:BaseRefreshActivity() {
 
                         tv_driving_info1.text = "최근 1일 평균 최적 주행"
                         tv_driving_info2.text = "최근 내 차의\n최적 주행 비율이에요"
+                        tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
+
 
                         tv_date1.text = convertDateFormat(recentStartTime)
                         tv_date2.text = convertDateFormat(recentStartTime)
@@ -223,7 +228,15 @@ class BestDrivingActivity:BaseRefreshActivity() {
                             }
 
                             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                                TODO("Not yet implemented")
+                                tv_best_percent1.text = "0.0"
+                                tv_best_percent2.text = "0.0"
+                                tv_diff_percent.text = "+0.0% 증가"
+
+                                tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                                tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                                tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
+                                setExtraSpeedDrivingChartWidthByPercent(0f)
                             }
 
                         })
@@ -235,9 +248,10 @@ class BestDrivingActivity:BaseRefreshActivity() {
 
                         tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
 
                         setExtraSpeedDrivingChartWidthByPercent(0f)
-
                     }
 
 
@@ -250,6 +264,14 @@ class BestDrivingActivity:BaseRefreshActivity() {
                 tv_best_percent1.text = "0.0"
                 tv_best_percent2.text = "0.0"
                 tv_diff_percent.text = "+0.0% 증가"
+
+                tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
+                setRecentBarChartAsDefault()
+
+                setExtraSpeedDrivingChartWidthByPercent(0f)
             }
 
         })
@@ -260,10 +282,8 @@ class BestDrivingActivity:BaseRefreshActivity() {
 
 
     private fun setMonthDrivingDistance(){
-        tv_driving_info1.text = "1개월 평균 최적 주행"
-        tv_driving_info2.text = "1개월 간 내 차의\n최적 주행 비율이에요"
-
-
+        tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+        tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
 
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
@@ -274,35 +294,58 @@ class BestDrivingActivity:BaseRefreshActivity() {
             "day").enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200) {
-
                     val drivingDistance = Gson().fromJson(
                         response.body()?.string(),
                         GetDrivingStatisticsResponse::class.java
                     )
 
-                    tv_best_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
-                    tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
-                    tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
+                    if(drivingDistance.average.optimalDrivingPercentage!=0.0){
+                        tv_best_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
+                        tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
+                        tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
 
-                    tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
-                    tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+                        tv_driving_info1.text = "1개월 평균 최적 주행"
+                        tv_driving_info2.text = "1개월 간 내 차의\n최적 주행 비율이에요"
+                        tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
 
-                    setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat()/100)
+                        setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat()/100)
+                    }else{
+                        tv_best_percent1.text = "0.0"
+                        tv_best_percent2.text = "0.0"
+                        tv_diff_percent.text = "+0.0% 증가"
 
+                        tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
+                        setRecentBarChartAsDefault()
+
+                        setExtraSpeedDrivingChartWidthByPercent(0f)
+                    }
                 }
 
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                TODO("Not yet implemented")
+                tv_best_percent1.text = "0.0"
+                tv_best_percent2.text = "0.0"
+                tv_diff_percent.text = "+0.0% 증가"
+
+                tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
+                setRecentBarChartAsDefault()
+
+                setExtraSpeedDrivingChartWidthByPercent(0f)
             }
 
         })
     }
 
     private fun setSixMonthDrivingDistance(){
-        tv_driving_info1.text = "6개월 평균 최적 주행"
-        tv_driving_info2.text = "6개월 간 내 차의\n최적 주행 비율이에요"
+        tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
+        tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
 
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
@@ -318,30 +361,56 @@ class BestDrivingActivity:BaseRefreshActivity() {
                         response.body()?.string(),
                         GetDrivingStatisticsResponse::class.java
                     )
-                    tv_best_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
-                    tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
-                    tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
 
-                    tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
-                    tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
+                    if(drivingDistance.total.totalDistance != 0.0){
+                        tv_driving_info1.text = "6개월 평균 최적 주행"
+                        tv_driving_info2.text = "6개월 간 내 차의\n최적 주행 비율이에요"
+                        tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
 
-                    setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat()/100)
+
+                        tv_best_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
+                        tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
+                        tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
+
+                        setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat()/100)
+                    }else{
+                        tv_best_percent1.text = "0.0"
+                        tv_best_percent2.text = "0.0"
+                        tv_diff_percent.text = "+0.0% 증가"
+
+                        tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
+                        setRecentBarChartAsDefault()
+
+                        setExtraSpeedDrivingChartWidthByPercent(0f)
+                    }
 
                 }
 
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                TODO("Not yet implemented")
+                tv_best_percent1.text = "0.0"
+                tv_best_percent2.text = "0.0"
+                tv_diff_percent.text = "+0.0% 증가"
+
+                tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
+                setRecentBarChartAsDefault()
+
+                setExtraSpeedDrivingChartWidthByPercent(0f)
             }
 
         })
     }
 
     private fun setYearDrivingDistance(){
-        tv_driving_info1.text = "1년 평균 최적 주행"
-        tv_driving_info2.text = "1년 간 내 차의\n최적 주행 비율이에요"
-
+        tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
+        tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
 
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
@@ -357,20 +426,47 @@ class BestDrivingActivity:BaseRefreshActivity() {
                         response.body()?.string(),
                         GetDrivingStatisticsResponse::class.java
                     )
-                    tv_best_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
-                    tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
-                    tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
 
-                    tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
-                    tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
+                    if(drivingDistance.total.totalDistance != 0.0){
+                        tv_best_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
+                        tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
+                        tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
 
-                    setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat()/100)
+                        tv_driving_info1.text = "1년 평균 최적 주행"
+                        tv_driving_info2.text = "1년 간 내 차의\n최적 주행 비율이에요"
+                        tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
+
+
+                        setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat()/100)
+                    }else{
+                        tv_best_percent1.text = "0.0"
+                        tv_best_percent2.text = "0.0"
+                        tv_diff_percent.text = "+0.0% 증가"
+
+                        tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
+                        setRecentBarChartAsDefault()
+
+                        setExtraSpeedDrivingChartWidthByPercent(0f)
+                    }
                 }
 
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                TODO("Not yet implemented")
+                tv_best_percent1.text = "0.0"
+                tv_best_percent2.text = "0.0"
+                tv_diff_percent.text = "+0.0% 증가"
+
+                tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
+                setRecentBarChartAsDefault()
+
+                setExtraSpeedDrivingChartWidthByPercent(0f)
             }
 
         })
