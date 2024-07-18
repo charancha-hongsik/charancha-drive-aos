@@ -5,7 +5,7 @@ data class DriveItem (
     val createdAt:String,
     val updatedAt:String,
     val userCarId:String,
-    val verification:Double,
+    val verification:String,
     val isActive:Boolean,
     val startTime:String,
     val endTime:String,
