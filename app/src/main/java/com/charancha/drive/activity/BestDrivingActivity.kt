@@ -718,6 +718,8 @@ class BestDrivingActivity:BaseActivity() {
      * 각 월요일을 차트 하단에 노출
      */
     private fun setMonthBarChartAsDefault(months: List<String>) {
+        tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
         val entries = listOf(
             BarEntry(-1f, 0f),
             BarEntry(-0f, 0f),
@@ -954,6 +956,7 @@ class BestDrivingActivity:BaseActivity() {
      * 6개 데이터 뿌려주면 됨
      */
     private fun setSixMonthBarChartAsDefault(months: List<String>) {
+        tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
         val entries = listOf(
             BarEntry(-1f, 0f), // 첫번째 월
@@ -1155,6 +1158,7 @@ class BestDrivingActivity:BaseActivity() {
      */
 
     private fun setYearBarChartAsDefault(months: List<String>) {
+        tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
         val entries = listOf(
             BarEntry(-1f, 0f), // 1월
