@@ -55,7 +55,6 @@ class TermsDetailActivity: BaseRefreshActivity() {
                 }
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    TODO("Not yet implemented")
                 }
 
             })

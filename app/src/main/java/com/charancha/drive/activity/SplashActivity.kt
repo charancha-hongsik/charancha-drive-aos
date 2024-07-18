@@ -168,7 +168,6 @@ class SplashActivity: BaseActivity() {
                                     call: Call<ResponseBody>,
                                     t: Throwable
                                 ) {
-                                    TODO("Not yet implemented")
                                 }
 
                             })
