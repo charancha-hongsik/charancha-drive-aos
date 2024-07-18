@@ -28,6 +28,8 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 
@@ -35,7 +37,6 @@ class MyDriveHistoryActivity: BaseActivity() {
     lateinit var lvHistory:ListView
     lateinit var btn_filter: ImageView
     lateinit var btn_back:ImageView
-    private val historyViewModel: MyDriveHistoryViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +50,10 @@ class MyDriveHistoryActivity: BaseActivity() {
         lvHistory = findViewById(R.id.lv_history)
         btn_filter = findViewById(R.id.btn_filter)
         btn_back = findViewById(R.id.btn_back)
+
+        btn_back.setOnClickListener {
+            finish()
+        }
 
 
         getHistories()
@@ -100,8 +105,15 @@ class MyDriveHistoryActivity: BaseActivity() {
             val tvDate = listItemView!!.findViewById<TextView>(R.id.tv_date)
             val tv_distance = listItemView!!.findViewById<TextView>(R.id.tv_distance)
             val btn_drive_history = listItemView!!.findViewById<ConstraintLayout>(R.id.btn_drive_history)
+            val tv_start_time = listItemView!!.findViewById<TextView>(R.id.tv_start_time)
+            val tv_end_time = listItemView!!.findViewById<TextView>(R.id.tv_end_time)
+
+
             tvDate.text = driveItem?.createdAt
             tv_distance.text = transferDistanceWithUnit(driveItem?.totalDistance!!, PreferenceUtil.getPref(context,  PreferenceUtil.KM_MILE, "km")!!)
+            tv_start_time.text = transformTimeToHHMM(driveItem?.startTime!!)
+            tv_end_time.text = transformTimeToHHMM(driveItem?.endTime!!)
+
 
 
             btn_drive_history.setOnClickListener {
@@ -120,6 +132,17 @@ class MyDriveHistoryActivity: BaseActivity() {
                 val milesPerMeter = 0.000621371
                 return String.format(Locale.KOREAN, "%.3fmile",meters * milesPerMeter)
             }
+        }
+
+        private fun transformTimeToHHMM(isoDate: String):String{
+            // ISO 8601 형식의 날짜 문자열을 ZonedDateTime 객체로 변환
+            val zonedDateTime = ZonedDateTime.parse(isoDate)
+
+            // 원하는 형식의 DateTimeFormatter 생성
+            val formatter = DateTimeFormatter.ofPattern("HH:mm", Locale.KOREAN)
+
+            // 포맷된 문자열 반환
+            return zonedDateTime.format(formatter)
         }
 
     }
