@@ -14,6 +14,17 @@ interface ApiServiceInterface {
     @GET("api/v1/cars/-/user-cars/-/drivings/{drivingId}")
     fun getDrivingInfo(@Header("Authorization") token: String, @Path("drivingId") drivingId: String): Call<ResponseBody>
 
+
+    @GET("api/v1/me/cars/-/user-cars/-/drivings")
+    fun getDrivingHistories(@Header("Authorization") token: String,
+                            @Query("number") number: Int,
+                            @Query("order") order: String,
+                            @Query("afterCursor") afterCursor: String?,
+                            @Query("beforeCursor") beforeCursor: String?,
+                            @Query("key") key: String,
+                            @Query("startTime") startTime: String,
+                            @Query("endTime") endTime: String): Call<ResponseBody>
+
     // 주행 기록 수정
     @PATCH("api/v1/cars/user-cars/drivings/{drivingId}")
     fun patchDrivingInfo(@Header("Authorization") token: String, @Path("drivingId") drivingId: String,@Body body: RequestBody): Call<ResponseBody>
