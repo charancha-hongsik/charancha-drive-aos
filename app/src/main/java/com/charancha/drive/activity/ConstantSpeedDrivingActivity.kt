@@ -192,7 +192,7 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
 
                         setExtraSpeedDrivingChartWidthByPercent(recentDrivingDistance.average.constantSpeedDrivingDistancePercentage.toFloat()/100)
 
-                        apiService().getDrivingDistanceRatioGraphData(
+                        apiService().getDrivingDistanceGraphData(
                             "Bearer " + PreferenceUtil.getPref(this@ConstantSpeedDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
                             PreferenceUtil.getPref(this@ConstantSpeedDrivingActivity, PreferenceUtil.USER_CARID, "")!!,
                             "ASC",

@@ -11,4 +11,13 @@ data class GraphItem (
     val constantSpeedDrivingDistancePercentage:Double,
     val optimalDrivingDistancePercentage:Double,
     val harshDrivingDistancePercentage:Double,
+    val highSpeedDrivingDistance:Double,
+    val lowSpeedDrivingDistance:Double,
+    val etcSpeedDrivingDistance:Double,
+    val constantSpeedDrivingDistance:Double,
+    val rapidAccelerationDistance:Double,
+    val optimalDrivingDistance:Double,
+    val harshDrivingDistance:Double,
+
+
 )
