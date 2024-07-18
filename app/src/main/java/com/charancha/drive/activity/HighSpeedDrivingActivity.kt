@@ -257,652 +257,6 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
         }
     }
 
-
-    private fun setRecentBarChart() {
-        val entries1 = listOf(
-            BarEntry(-1f, 3f),
-            BarEntry(-0f, 7f),
-            BarEntry(1f, 5f),
-            BarEntry(2f, 7f),
-            BarEntry(3f, 3f),
-            BarEntry(4f, 9f),
-            BarEntry(5f, 6f),
-            BarEntry(6f, 7f),
-            BarEntry(7f, 3f),
-            BarEntry(8f, 9f),
-            BarEntry(9f, 7f),
-            BarEntry(10f, 5f),
-            BarEntry(11f, 4f),
-            BarEntry(12f, 8f),
-            BarEntry(13f, 7f),
-            BarEntry(14f, 8f),
-            BarEntry(15f, 7f),
-            BarEntry(16f, 6f),
-            BarEntry(17f, 8f),
-            BarEntry(18f, 5f),
-            BarEntry(19f, 7f),
-            BarEntry(20f,4f),
-            BarEntry(21f,8f),
-            BarEntry(22f,7f)
-        )
-
-        val entries2 = listOf(
-            BarEntry(-1f, 2f),
-            BarEntry(-0f, 5f),
-            BarEntry(1f, 3f),
-            BarEntry(2f, 5f),
-            BarEntry(3f, 2f),
-            BarEntry(4f, 6f),
-            BarEntry(5f, 5f),
-            BarEntry(6f, 6f),
-            BarEntry(7f, 2f),
-            BarEntry(8f, 6f),
-            BarEntry(9f, 5f),
-            BarEntry(10f, 4f),
-            BarEntry(11f, 2f),
-            BarEntry(12f, 4f),
-            BarEntry(13f, 4f),
-            BarEntry(14f, 6f),
-            BarEntry(15f, 4f),
-            BarEntry(16f, 5f),
-            BarEntry(17f, 4f),
-            BarEntry(18f, 2f),
-            BarEntry(19f, 6f),
-            BarEntry(20f,3f),
-            BarEntry(21f,6f),
-            BarEntry(22f,4f)
-        )
-
-        val entries3 = listOf(
-            BarEntry(-1f, 1f),
-            BarEntry(-0f, 3f),
-            BarEntry(1f, 1f),
-            BarEntry(2f, 2f),
-            BarEntry(3f, 1f),
-            BarEntry(4f, 3f),
-            BarEntry(5f, 3f),
-            BarEntry(6f, 3f),
-            BarEntry(7f, 1f),
-            BarEntry(8f, 1f),
-            BarEntry(9f, 3f),
-            BarEntry(10f, 1f),
-            BarEntry(11f, 1f),
-            BarEntry(12f, 1f),
-            BarEntry(13f, 3f),
-            BarEntry(14f, 3f),
-            BarEntry(15f, 2f),
-            BarEntry(16f, 3f),
-            BarEntry(17f, 3f),
-            BarEntry(18f, 1f),
-            BarEntry(19f, 3f),
-            BarEntry(20f,2f),
-            BarEntry(21f,3f),
-            BarEntry(22f,3f)
-        )
-
-        val dataSet1 = BarDataSet(entries1, "Part 1")
-        dataSet1.color = getColor(R.color.gray_700)
-        dataSet1.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
-
-        val dataSet2 = BarDataSet(entries2, "Part 2")
-        dataSet2.color = getColor(R.color.gray_950)
-        dataSet2.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
-
-
-        val dataSet3 = BarDataSet(entries3, "Part 3")
-        dataSet3.color = getColor(R.color.sec_500)
-        dataSet3.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
-
-
-
-        val barData = BarData(dataSet1, dataSet2, dataSet3)
-        barData.barWidth = 0.6f
-
-        layout_barchart_highspeed.data = barData
-        layout_barchart_highspeed.setFitBars(true) // make the x-axis fit exactly all bars
-        layout_barchart_highspeed.description.isEnabled = false
-        layout_barchart_highspeed.animateY(1000)
-        layout_barchart_highspeed.legend.isEnabled = false
-        layout_barchart_highspeed.setTouchEnabled(false)
-
-        // Customizing x-axis labels
-        val xAxis = layout_barchart_highspeed.xAxis
-        xAxis.granularity = 1f // only intervals of 1 unit
-        xAxis.axisMinimum = -2f
-        xAxis.axisMaximum = 23f
-        xAxis.position = XAxis.XAxisPosition.BOTTOM
-        xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
-        xAxis.textColor = getColor(R.color.gray_600)
-        xAxis.labelCount = 24
-
-        // Customizing x-axis labels
-        xAxis.valueFormatter = object : IAxisValueFormatter {
-            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
-                return when (value.toInt()) {
-                    1 -> "오전 12시"
-                    8 -> "오전 6시"
-                    15 -> "오후 12시"
-                    21-> "오후 6시"
-                    else -> "" // 나머지 레이블은 비워둠
-                }
-            }
-        }
-
-        // Y축 레이블 및 선 제거
-        val leftAxis = layout_barchart_highspeed.axisLeft
-        leftAxis.setDrawGridLines(true) // 그리드 라인 표시
-        leftAxis.setDrawAxisLine(false) // 축 라인 제거
-        leftAxis.setDrawLabels(false) // Y축 레이블 제거
-        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 5로 설정 (강제)
-        leftAxis.axisMinimum = 0f
-        leftAxis.axisMaximum = 10f
-        leftAxis.gridColor = getColor(R.color.gray_200)
-
-
-        val rightAxis = layout_barchart_highspeed.axisRight
-        rightAxis.setDrawGridLines(false) // 그리드 라인 제거
-        rightAxis.setDrawAxisLine(false) // 축 라인 제거
-        rightAxis.setDrawLabels(true) // Y축 레이블 활성화
-        rightAxis.axisMinimum = 0f
-        rightAxis.axisMaximum = 10f
-        rightAxis.textColor = getColor(R.color.gray_600)
-
-        // Y축 커스텀 레이블 포매터 설정
-        rightAxis.valueFormatter = object : IAxisValueFormatter {
-            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
-                val minValue = rightAxis.axisMinimum
-                val maxValue = rightAxis.axisMaximum
-                return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "km"// 가장 아래와 위에만 레이블 표시
-                } else {
-                    "" // 나머지 레이블 제거
-                }
-            }
-        }
-
-        layout_barchart_highspeed.invalidate() // refresh
-
-    }
-
-    /**
-     * 데이터 30개가 내려옴
-     * 각 월요일을 차트 하단에 노출
-     */
-    private fun setMonthBarChart() {
-
-        val entries1 = listOf(
-            BarEntry(-1f, 13f),
-            BarEntry(-0f, 10f),
-            BarEntry(1f, 15f),
-            BarEntry(2f, 10f),
-            BarEntry(3f, 16f),
-            BarEntry(4f, 11f),
-            BarEntry(5f, 19f),
-            BarEntry(6f, 9f),
-            BarEntry(7f, 15f),
-            BarEntry(8f, 10f),
-            BarEntry(9f, 11f),
-            BarEntry(10f, 12f),
-            BarEntry(11f, 14f),
-            BarEntry(12f, 3f),
-            BarEntry(13f, 5f),
-            BarEntry(14f, 8f),
-            BarEntry(15f, 9f),
-            BarEntry(16f, 10f),
-            BarEntry(17f, 9f),
-            BarEntry(18f, 13f),
-            BarEntry(19f, 9f),
-            BarEntry(20f,18f),
-            BarEntry(21f,12f),
-            BarEntry(22f,10f),
-            BarEntry(23f,16f),
-            BarEntry(24f,8f),
-            BarEntry(25f,5f),
-            BarEntry(26f,9f),
-            BarEntry(27f,15f),
-            BarEntry(28f,9f)
-        )
-
-        val entries2 = listOf(
-            BarEntry(-1f, 6f),
-            BarEntry(-0f, 5f),
-            BarEntry(1f, 6f),
-            BarEntry(2f, 6f),
-            BarEntry(3f, 5f),
-            BarEntry(4f, 6f),
-            BarEntry(5f, 6f),
-            BarEntry(6f, 6f),
-            BarEntry(7f, 4f),
-            BarEntry(8f, 5f),
-            BarEntry(9f, 5f),
-            BarEntry(10f, 6f),
-            BarEntry(11f, 6f),
-            BarEntry(12f, 2f),
-            BarEntry(13f, 2f),
-            BarEntry(14f, 6f),
-            BarEntry(15f, 5f),
-            BarEntry(16f, 6f),
-            BarEntry(17f, 6f),
-            BarEntry(18f, 5f),
-            BarEntry(19f, 7f),
-            BarEntry(20f,6f),
-            BarEntry(21f,6f),
-            BarEntry(22f,6f),
-            BarEntry(23f,5f),
-            BarEntry(24f,6f),
-            BarEntry(25f,3f),
-            BarEntry(26f,7f),
-            BarEntry(27f,6f),
-            BarEntry(28f,7f)
-        )
-
-        val entries3 = listOf(
-            BarEntry(-1f, 3f),
-            BarEntry(-0f, 2f),
-            BarEntry(1f, 3f),
-            BarEntry(2f, 1f),
-            BarEntry(3f, 2f),
-            BarEntry(4f, 3f),
-            BarEntry(5f, 1f),
-            BarEntry(6f, 3f),
-            BarEntry(7f, 1f),
-            BarEntry(8f, 1f),
-            BarEntry(9f, 3f),
-            BarEntry(10f, 2f),
-            BarEntry(11f, 3f),
-            BarEntry(12f, 1f),
-            BarEntry(13f, 1f),
-            BarEntry(14f, 3f),
-            BarEntry(15f, 2f),
-            BarEntry(16f, 3f),
-            BarEntry(17f, 3f),
-            BarEntry(18f, 2f),
-            BarEntry(19f, 3f),
-            BarEntry(20f,3f),
-            BarEntry(21f,2f),
-            BarEntry(22f,3f),
-            BarEntry(23f,1f),
-            BarEntry(24f,3f),
-            BarEntry(25f,1f),
-            BarEntry(26f,1f),
-            BarEntry(27f,3f),
-            BarEntry(28f,1f)
-        )
-
-        val dataSet1 = BarDataSet(entries1, "Part 1")
-        dataSet1.color = getColor(R.color.gray_700)
-        dataSet1.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
-
-        val dataSet2 = BarDataSet(entries2, "Part 2")
-        dataSet2.color = getColor(R.color.gray_950)
-        dataSet2.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
-
-
-        val dataSet3 = BarDataSet(entries3, "Part 3")
-        dataSet3.color = getColor(R.color.sec_500)
-        dataSet3.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
-
-
-
-        val barData = BarData(dataSet1, dataSet2, dataSet3)
-        barData.barWidth = 0.6f
-
-        layout_barchart_highspeed.data = barData
-        layout_barchart_highspeed.setFitBars(true) // make the x-axis fit exactly all bars
-        layout_barchart_highspeed.description.isEnabled = false
-        layout_barchart_highspeed.animateY(1000)
-        layout_barchart_highspeed.legend.isEnabled = false
-        layout_barchart_highspeed.setTouchEnabled(false)
-
-        // Customizing x-axis labels
-        val xAxis = layout_barchart_highspeed.xAxis
-        xAxis.granularity = 1f // only intervals of 1 unit
-        xAxis.axisMinimum = -2f
-        xAxis.axisMaximum = 29f
-        xAxis.position = XAxis.XAxisPosition.BOTTOM
-        xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
-        xAxis.textColor = getColor(R.color.gray_600)
-        xAxis.labelCount = 30
-
-        // Customizing x-axis labels
-        xAxis.valueFormatter = object : IAxisValueFormatter {
-            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
-                return when (value.toInt()) {
-                    1 -> "6월 17일"
-                    10 -> "6월 24일"
-                    18 -> "7월 1일"
-                    26-> "7월 8일"
-                    else -> "" // 나머지 레이블은 비워둠
-                }
-            }
-        }
-
-        // Y축 레이블 및 선 제거
-        val leftAxis = layout_barchart_highspeed.axisLeft
-        leftAxis.setDrawGridLines(true) // 그리드 라인 표시
-        leftAxis.setDrawAxisLine(false) // 축 라인 제거
-        leftAxis.setDrawLabels(false) // Y축 레이블 제거
-        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 5로 설정 (강제)
-        leftAxis.axisMinimum = 0f
-        leftAxis.axisMaximum = 20f
-        leftAxis.gridColor = getColor(R.color.gray_200)
-
-
-        val rightAxis = layout_barchart_highspeed.axisRight
-        rightAxis.setDrawGridLines(false) // 그리드 라인 제거
-        rightAxis.setDrawAxisLine(false) // 축 라인 제거
-        rightAxis.setDrawLabels(true) // Y축 레이블 활성화
-        rightAxis.axisMinimum = 0f
-        rightAxis.axisMaximum = 20f
-        rightAxis.labelCount = 21
-        rightAxis.textColor = getColor(R.color.gray_600)
-
-        // Y축 커스텀 레이블 포매터 설정
-        rightAxis.valueFormatter = object : IAxisValueFormatter {
-            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
-                val minValue = rightAxis.axisMinimum
-                val maxValue = rightAxis.axisMaximum
-                return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "km"// 가장 아래와 위에만 레이블 표시
-                } else {
-                    "" // 나머지 레이블 제거
-                }
-            }
-        }
-
-        layout_barchart_highspeed.invalidate() // refresh
-    }
-
-    private fun setSixMonthBarChart() {
-
-        val entries1 = listOf(
-            BarEntry(-1f, 10f), // 첫번째 월
-            BarEntry(0f, 0f),
-            BarEntry(1f, 8f), // 두번째 월
-            BarEntry(2f, 0f),
-            BarEntry(3f, 10f), // 세번째 월
-            BarEntry(4f, 0f),
-            BarEntry(5f, 9f), // 네번째 월
-            BarEntry(6f, 0f),
-            BarEntry(7f, 9f), // 다섯번째 월
-            BarEntry(8f, 0f),
-            BarEntry(9f, 9f) // 여섯번째 월
-        )
-
-        val entries2 = listOf(
-            BarEntry(-1f, 6f), // 첫번째 월
-            BarEntry(0f, 0f),
-            BarEntry(1f, 6f), // 두번째 월
-            BarEntry(2f, 0f),
-            BarEntry(3f, 7f), // 세번째 월
-            BarEntry(4f, 0f),
-            BarEntry(5f, 6f), // 네번째 월
-            BarEntry(6f, 0f),
-            BarEntry(7f, 6f), // 다섯번째 월
-            BarEntry(8f, 0f),
-            BarEntry(9f, 7f) // 여섯번째 월
-        )
-
-        val entries3 = listOf(
-            BarEntry(-1f, 3f), // 첫번째 월
-            BarEntry(0f, 0f),
-            BarEntry(1f, 1f), // 두번째 월
-            BarEntry(2f, 0f),
-            BarEntry(3f, 3f), // 세번째 월
-            BarEntry(4f, 0f),
-            BarEntry(5f, 3f), // 네번째 월
-            BarEntry(6f, 0f),
-            BarEntry(7f, 2f), // 다섯번째 월
-            BarEntry(8f, 0f),
-            BarEntry(9f, 1f) // 여섯번째 월
-        )
-
-        val dataSet1 = BarDataSet(entries1, "Part 1")
-        dataSet1.color = getColor(R.color.gray_700)
-        dataSet1.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
-
-        val dataSet2 = BarDataSet(entries2, "Part 2")
-        dataSet2.color = getColor(R.color.gray_950)
-        dataSet2.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
-
-
-        val dataSet3 = BarDataSet(entries3, "Part 3")
-        dataSet3.color = getColor(R.color.sec_500)
-        dataSet3.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
-
-
-
-        val barData = BarData(dataSet1, dataSet2, dataSet3)
-        layout_barchart_highspeed.data = barData
-        layout_barchart_highspeed.setFitBars(true) // make the x-axis fit exactly all bars
-        layout_barchart_highspeed.description.isEnabled = false
-        layout_barchart_highspeed.animateY(1000)
-        layout_barchart_highspeed.legend.isEnabled = false
-        layout_barchart_highspeed.setTouchEnabled(false)
-
-        // Customizing x-axis labels
-        val xAxis = layout_barchart_highspeed.xAxis
-        xAxis.granularity = 1f // only intervals of 1 unit
-        xAxis.axisMinimum = -2f
-        xAxis.axisMaximum = 10f
-        xAxis.position = XAxis.XAxisPosition.BOTTOM
-        xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
-        xAxis.textColor = getColor(R.color.gray_600)
-        xAxis.labelCount = 11
-
-        // Customizing x-axis labels
-        xAxis.valueFormatter = object : IAxisValueFormatter {
-            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
-                return when (value.toInt()) {
-                    -1 -> "1월"
-                    1 -> "2월"
-                    3 -> "3월"
-                    5 -> "4월"
-                    7 -> "5월"
-                    9 -> "6월"
-                    else -> "" // 나머지 레이블은 비워둠
-                }
-            }
-        }
-
-        // Y축 레이블 및 선 제거
-        val leftAxis = layout_barchart_highspeed.axisLeft
-        leftAxis.setDrawGridLines(true) // 그리드 라인 표시
-        leftAxis.setDrawAxisLine(false) // 축 라인 제거
-        leftAxis.setDrawLabels(false) // Y축 레이블 제거
-        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 5로 설정 (강제)
-        leftAxis.axisMinimum = 0f
-        leftAxis.axisMaximum = 10f
-        leftAxis.gridColor = getColor(R.color.gray_200)
-
-
-        val rightAxis = layout_barchart_highspeed.axisRight
-        rightAxis.setDrawGridLines(false) // 그리드 라인 제거
-        rightAxis.setDrawAxisLine(false) // 축 라인 제거
-        rightAxis.setDrawLabels(true) // Y축 레이블 활성화
-        rightAxis.axisMinimum = 0f
-        rightAxis.axisMaximum = 10f
-        rightAxis.textColor = getColor(R.color.gray_600)
-
-        // Y축 커스텀 레이블 포매터 설정
-        rightAxis.valueFormatter = object : IAxisValueFormatter {
-            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
-                val minValue = rightAxis.axisMinimum
-                val maxValue = rightAxis.axisMaximum
-                return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "km"// 가장 아래와 위에만 레이블 표시
-                } else {
-                    "" // 나머지 레이블 제거
-                }
-            }
-        }
-
-        layout_barchart_highspeed.invalidate() // refresh
-    }
-
-    private fun setYearBarChart() {
-
-        val entries1 = listOf(
-            BarEntry(-1f, 8f), // 1월
-            BarEntry(-0f, 0f),
-            BarEntry(1f, 10f), // 2월
-            BarEntry(2f, 0f),
-            BarEntry(3f, 10f), // 3월
-            BarEntry(4f, 0f),
-            BarEntry(5f, 10f), // 4월
-            BarEntry(6f, 0f),
-            BarEntry(7f, 9f), // 5월
-            BarEntry(8f, 0f),
-            BarEntry(9f, 10f), // 6월
-            BarEntry(10f, 0f),
-            BarEntry(11f, 9f), // 7월
-            BarEntry(12f, 0f),
-            BarEntry(13f, 10f), // 8월
-            BarEntry(14f, 0f),
-            BarEntry(15f, 8f), // 9월
-            BarEntry(16f, 0f),
-            BarEntry(17f, 10f), // 10월
-            BarEntry(18f, 0f),
-            BarEntry(19f, 9f), // 11월
-            BarEntry(20f,0f),
-            BarEntry(21f,9f) // 12월
-        )
-
-        val entries2 = listOf(
-            BarEntry(-1f, 6f), // 1월
-            BarEntry(-0f, 0f),
-            BarEntry(1f, 5f), // 2월
-            BarEntry(2f, 0f),
-            BarEntry(3f, 5f), // 3월
-            BarEntry(4f, 0f),
-            BarEntry(5f, 4f), // 4월
-            BarEntry(6f, 0f),
-            BarEntry(7f, 6f), // 5월
-            BarEntry(8f, 0f),
-            BarEntry(9f, 6f), // 6월
-            BarEntry(10f, 0f),
-            BarEntry(11f, 6f), // 7월
-            BarEntry(12f, 0f),
-            BarEntry(13f, 6f), // 8월
-            BarEntry(14f, 0f),
-            BarEntry(15f, 4f), // 9월
-            BarEntry(16f, 0f),
-            BarEntry(17f, 6f), // 10월
-            BarEntry(18f, 0f),
-            BarEntry(19f, 5f), // 11월
-            BarEntry(20f,0f),
-            BarEntry(21f,5f) // 12월
-        )
-
-        val entries3 = listOf(
-            BarEntry(-1f, 2f), // 1월
-            BarEntry(-0f, 0f),
-            BarEntry(1f, 2f), // 2월
-            BarEntry(2f, 0f),
-            BarEntry(3f, 2f), // 3월
-            BarEntry(4f, 0f),
-            BarEntry(5f, 2f), // 4월
-            BarEntry(6f, 0f),
-            BarEntry(7f, 2f), // 5월
-            BarEntry(8f, 0f),
-            BarEntry(9f, 2f), // 6월
-            BarEntry(10f, 0f),
-            BarEntry(11f, 2f), // 7월
-            BarEntry(12f, 0f),
-            BarEntry(13f, 2f), // 8월
-            BarEntry(14f, 0f),
-            BarEntry(15f, 3f), // 9월
-            BarEntry(16f, 0f),
-            BarEntry(17f, 2f), // 10월
-            BarEntry(18f, 0f),
-            BarEntry(19f, 1f), // 11월
-            BarEntry(20f,0f),
-            BarEntry(21f,2f) // 12월
-        )
-
-        val dataSet1 = BarDataSet(entries1, "Part 1")
-        dataSet1.color = getColor(R.color.gray_700)
-        dataSet1.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
-
-        val dataSet2 = BarDataSet(entries2, "Part 2")
-        dataSet2.color = getColor(R.color.gray_950)
-        dataSet2.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
-
-
-        val dataSet3 = BarDataSet(entries3, "Part 3")
-        dataSet3.color = getColor(R.color.sec_500)
-        dataSet3.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
-
-
-
-        val barData = BarData(dataSet1, dataSet2, dataSet3)
-        barData.barWidth = 1.0f
-
-        layout_barchart_highspeed.data = barData
-        layout_barchart_highspeed.setFitBars(true) // make the x-axis fit exactly all bars
-        layout_barchart_highspeed.description.isEnabled = false
-        layout_barchart_highspeed.animateY(1000)
-        layout_barchart_highspeed.legend.isEnabled = false
-        layout_barchart_highspeed.setTouchEnabled(false)
-
-        // Customizing x-axis labels
-        val xAxis = layout_barchart_highspeed.xAxis
-        xAxis.granularity = 1f // only intervals of 1 unit
-        xAxis.axisMinimum = -2f
-        xAxis.axisMaximum = 22f
-        xAxis.position = XAxis.XAxisPosition.BOTTOM
-        xAxis.setDrawGridLines(false) // X축의 그리드 라인 제거
-        xAxis.textColor = getColor(R.color.gray_600)
-        xAxis.labelCount = 23
-
-        // Customizing x-axis labels
-        xAxis.valueFormatter = object : IAxisValueFormatter {
-            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
-                return when (value.toInt()) {
-                    -1 -> "1월"
-                    7 -> "5월"
-                    13 -> "8월"
-                    21-> "12월"
-                    else -> "" // 나머지 레이블은 비워둠
-                }
-            }
-        }
-
-        // Y축 레이블 및 선 제거
-        val leftAxis = layout_barchart_highspeed.axisLeft
-        leftAxis.setDrawGridLines(true) // 그리드 라인 표시
-        leftAxis.setDrawAxisLine(false) // 축 라인 제거
-        leftAxis.setDrawLabels(false) // Y축 레이블 제거
-        leftAxis.setLabelCount(5, true) // 가로 라인의 수를 5로 설정 (강제)
-        leftAxis.axisMinimum = 0f
-        leftAxis.axisMaximum = 10f
-        leftAxis.gridColor = getColor(R.color.gray_200)
-
-
-        val rightAxis = layout_barchart_highspeed.axisRight
-        rightAxis.setDrawGridLines(false) // 그리드 라인 제거
-        rightAxis.setDrawAxisLine(false) // 축 라인 제거
-        rightAxis.setDrawLabels(true) // Y축 레이블 활성화
-        rightAxis.axisMinimum = 0f
-        rightAxis.axisMaximum = 10f
-        rightAxis.textColor = getColor(R.color.gray_600)
-
-        // Y축 커스텀 레이블 포매터 설정
-        rightAxis.valueFormatter = object : IAxisValueFormatter {
-            override fun getFormattedValue(value: Float, axis: AxisBase?): String {
-                val minValue = rightAxis.axisMinimum
-                val maxValue = rightAxis.axisMaximum
-                return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "km"// 가장 아래와 위에만 레이블 표시
-                } else {
-                    "" // 나머지 레이블 제거
-                }
-            }
-        }
-
-        layout_barchart_highspeed.invalidate() // refresh
-    }
-
     private fun setRecentDrivingDistance(){
         tv_driving_info1.text = "최근 1일 평균 고속 주행"
         tv_driving_info2.text = "내 차는 고속 주행\n비율이 높을수록 좋아요"
@@ -1242,8 +596,9 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
         var max = 0
 
         for(item in items){
-            if(transferDistance(item.highSpeedDrivingDistance).toDouble() > max.toDouble())
-                max = transferDistance(item.highSpeedDrivingDistance).toDouble().toInt()
+            val sum = transferDistance(item.highSpeedDrivingDistance).toDouble() + transferDistance(item.lowSpeedDrivingDistance).toDouble() + transferDistance(item.etcSpeedDrivingDistance).toDouble()
+            if(sum > max.toDouble())
+                max = sum.toInt()
         }
 
         if(max == 0){
@@ -1251,7 +606,10 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
             return
         }
 
-        val distances = FloatArray(24) { 0f }
+        val highSpeedDrivingDistances = FloatArray(24) { 0f }
+        val lowSpeedDrivingDistances = FloatArray(24) { 0f }
+        val etcSpeedDrivingDistances = FloatArray(24) { 0f }
+
 
         // Iterate over each item and parse the startTime to extract the hour
         val koreaZoneId = ZoneId.of("Asia/Seoul")
@@ -1262,42 +620,122 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
             val localDateTime = LocalDateTime.ofInstant(startTime, koreaZoneId)
             val hour = localDateTime.hour
 
-            distances[hour] = transferDistance(item.highSpeedDrivingDistance).toFloat()
+            highSpeedDrivingDistances[hour] = transferDistance(item.highSpeedDrivingDistance).toFloat()
         }
 
+        for (item in items) {
+            val startTime = Instant.parse(item.startTime)
+            val localDateTime = LocalDateTime.ofInstant(startTime, koreaZoneId)
+            val hour = localDateTime.hour
 
-        val entries = listOf(
-            BarEntry(-1f, distances.get(0)), // 00시
-            BarEntry(-0f, distances.get(1)), // 01시
-            BarEntry(1f, distances.get(2)), // 02시
-            BarEntry(2f, distances.get(3)), // 03시
-            BarEntry(3f, distances.get(4)), // 04시
-            BarEntry(4f, distances.get(5)), // 05시
-            BarEntry(5f, distances.get(6)), // 06시
-            BarEntry(6f, distances.get(7)), // 07시
-            BarEntry(7f, distances.get(8)), // 08시
-            BarEntry(8f, distances.get(9)), // 09시
-            BarEntry(9f, distances.get(10)), // 10시
-            BarEntry(10f, distances.get(11)), // 11시
-            BarEntry(11f, distances.get(12)), // 12시
-            BarEntry(12f, distances.get(13)), // 13시
-            BarEntry(13f, distances.get(14)), // 14시
-            BarEntry(14f, distances.get(15)), // 15시
-            BarEntry(15f, distances.get(16)), // 16시
-            BarEntry(16f, distances.get(17)), // 17시
-            BarEntry(17f, distances.get(18)), // 18시
-            BarEntry(18f, distances.get(19)), // 19시
-            BarEntry(19f, distances.get(20)), // 20시
-            BarEntry(20f,distances.get(21)), // 21시
-            BarEntry(21f,distances.get(22)), // 22시
-            BarEntry(22f,distances.get(23)) // 23시
+            lowSpeedDrivingDistances[hour] = transferDistance(item.highSpeedDrivingDistance).toFloat() + transferDistance(item.lowSpeedDrivingDistance).toFloat()
+        }
+
+        for (item in items) {
+            val startTime = Instant.parse(item.startTime)
+            val localDateTime = LocalDateTime.ofInstant(startTime, koreaZoneId)
+            val hour = localDateTime.hour
+
+            etcSpeedDrivingDistances[hour] = transferDistance(item.highSpeedDrivingDistance).toFloat() + transferDistance(item.lowSpeedDrivingDistance).toFloat() + transferDistance(item.etcSpeedDrivingDistance).toFloat()
+        }
+
+        val entries1 = listOf(
+            BarEntry(-1f, etcSpeedDrivingDistances.get(0)), // 00시
+            BarEntry(-0f, etcSpeedDrivingDistances.get(1)), // 01시
+            BarEntry(1f, etcSpeedDrivingDistances.get(2)), // 02시
+            BarEntry(2f, etcSpeedDrivingDistances.get(3)), // 03시
+            BarEntry(3f, etcSpeedDrivingDistances.get(4)), // 04시
+            BarEntry(4f, etcSpeedDrivingDistances.get(5)), // 05시
+            BarEntry(5f, etcSpeedDrivingDistances.get(6)), // 06시
+            BarEntry(6f, etcSpeedDrivingDistances.get(7)), // 07시
+            BarEntry(7f, etcSpeedDrivingDistances.get(8)), // 08시
+            BarEntry(8f, etcSpeedDrivingDistances.get(9)), // 09시
+            BarEntry(9f, etcSpeedDrivingDistances.get(10)), // 10시
+            BarEntry(10f, etcSpeedDrivingDistances.get(11)), // 11시
+            BarEntry(11f, etcSpeedDrivingDistances.get(12)), // 12시
+            BarEntry(12f, etcSpeedDrivingDistances.get(13)), // 13시
+            BarEntry(13f, etcSpeedDrivingDistances.get(14)), // 14시
+            BarEntry(14f, etcSpeedDrivingDistances.get(15)), // 15시
+            BarEntry(15f, etcSpeedDrivingDistances.get(16)), // 16시
+            BarEntry(16f, etcSpeedDrivingDistances.get(17)), // 17시
+            BarEntry(17f, etcSpeedDrivingDistances.get(18)), // 18시
+            BarEntry(18f, etcSpeedDrivingDistances.get(19)), // 19시
+            BarEntry(19f, etcSpeedDrivingDistances.get(20)), // 20시
+            BarEntry(20f,etcSpeedDrivingDistances.get(21)), // 21시
+            BarEntry(21f,etcSpeedDrivingDistances.get(22)), // 22시
+            BarEntry(22f,etcSpeedDrivingDistances.get(23)) // 23시
         )
 
-        val dataSet = BarDataSet(entries, "Sample Data")
-        dataSet.color = getColor(R.color.gray_200)
-        dataSet.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+        val entries2 = listOf(
+            BarEntry(-1f, lowSpeedDrivingDistances.get(0)), // 00시
+            BarEntry(-0f, lowSpeedDrivingDistances.get(1)), // 01시
+            BarEntry(1f, lowSpeedDrivingDistances.get(2)), // 02시
+            BarEntry(2f, lowSpeedDrivingDistances.get(3)), // 03시
+            BarEntry(3f, lowSpeedDrivingDistances.get(4)), // 04시
+            BarEntry(4f, lowSpeedDrivingDistances.get(5)), // 05시
+            BarEntry(5f, lowSpeedDrivingDistances.get(6)), // 06시
+            BarEntry(6f, lowSpeedDrivingDistances.get(7)), // 07시
+            BarEntry(7f, lowSpeedDrivingDistances.get(8)), // 08시
+            BarEntry(8f, lowSpeedDrivingDistances.get(9)), // 09시
+            BarEntry(9f, lowSpeedDrivingDistances.get(10)), // 10시
+            BarEntry(10f, lowSpeedDrivingDistances.get(11)), // 11시
+            BarEntry(11f, lowSpeedDrivingDistances.get(12)), // 12시
+            BarEntry(12f, lowSpeedDrivingDistances.get(13)), // 13시
+            BarEntry(13f, lowSpeedDrivingDistances.get(14)), // 14시
+            BarEntry(14f, lowSpeedDrivingDistances.get(15)), // 15시
+            BarEntry(15f, lowSpeedDrivingDistances.get(16)), // 16시
+            BarEntry(16f, lowSpeedDrivingDistances.get(17)), // 17시
+            BarEntry(17f, lowSpeedDrivingDistances.get(18)), // 18시
+            BarEntry(18f, lowSpeedDrivingDistances.get(19)), // 19시
+            BarEntry(19f, lowSpeedDrivingDistances.get(20)), // 20시
+            BarEntry(20f,lowSpeedDrivingDistances.get(21)), // 21시
+            BarEntry(21f,lowSpeedDrivingDistances.get(22)), // 22시
+            BarEntry(22f,lowSpeedDrivingDistances.get(23)) // 23시
+        )
 
-        val barData = BarData(dataSet)
+        val entries3 = listOf(
+            BarEntry(-1f, highSpeedDrivingDistances.get(0)), // 00시
+            BarEntry(-0f, highSpeedDrivingDistances.get(1)), // 01시
+            BarEntry(1f, highSpeedDrivingDistances.get(2)), // 02시
+            BarEntry(2f, highSpeedDrivingDistances.get(3)), // 03시
+            BarEntry(3f, highSpeedDrivingDistances.get(4)), // 04시
+            BarEntry(4f, highSpeedDrivingDistances.get(5)), // 05시
+            BarEntry(5f, highSpeedDrivingDistances.get(6)), // 06시
+            BarEntry(6f, highSpeedDrivingDistances.get(7)), // 07시
+            BarEntry(7f, highSpeedDrivingDistances.get(8)), // 08시
+            BarEntry(8f, highSpeedDrivingDistances.get(9)), // 09시
+            BarEntry(9f, highSpeedDrivingDistances.get(10)), // 10시
+            BarEntry(10f, highSpeedDrivingDistances.get(11)), // 11시
+            BarEntry(11f, highSpeedDrivingDistances.get(12)), // 12시
+            BarEntry(12f, highSpeedDrivingDistances.get(13)), // 13시
+            BarEntry(13f, highSpeedDrivingDistances.get(14)), // 14시
+            BarEntry(14f, highSpeedDrivingDistances.get(15)), // 15시
+            BarEntry(15f, highSpeedDrivingDistances.get(16)), // 16시
+            BarEntry(16f, highSpeedDrivingDistances.get(17)), // 17시
+            BarEntry(17f, highSpeedDrivingDistances.get(18)), // 18시
+            BarEntry(18f, highSpeedDrivingDistances.get(19)), // 19시
+            BarEntry(19f, highSpeedDrivingDistances.get(20)), // 20시
+            BarEntry(20f,highSpeedDrivingDistances.get(21)), // 21시
+            BarEntry(21f,highSpeedDrivingDistances.get(22)), // 22시
+            BarEntry(22f,highSpeedDrivingDistances.get(23)) // 23시
+        )
+
+        val dataSet1 = BarDataSet(entries1, "Part 1")
+        dataSet1.color = getColor(R.color.gray_700)
+        dataSet1.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+        val dataSet2 = BarDataSet(entries2, "Part 2")
+        dataSet2.color = getColor(R.color.gray_950)
+        dataSet2.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+
+        val dataSet3 = BarDataSet(entries3, "Part 3")
+        dataSet3.color = getColor(R.color.sec_500)
+        dataSet3.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+
+
+        val barData = BarData(dataSet1, dataSet2, dataSet3)
         barData.barWidth = 0.6f
 
         layout_barchart_highspeed.data = barData
@@ -1488,8 +926,9 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
         var max = 0
 
         for(item in items){
-            if(transferDistance(item.highSpeedDrivingDistance).toDouble() > max.toDouble())
-                max = transferDistance(item.highSpeedDrivingDistance).toDouble().toInt()
+            val sum = transferDistance(item.highSpeedDrivingDistance).toDouble() + transferDistance(item.lowSpeedDrivingDistance).toDouble() + transferDistance(item.etcSpeedDrivingDistance).toDouble()
+            if(sum > max.toDouble())
+                max = sum.toInt()
         }
 
         if(max == 0){
@@ -1497,45 +936,133 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
             return
         }
 
-        val entries = listOf(
-            BarEntry(-1f, transferDistance(items.get(0).highSpeedDrivingDistance).toFloat()),
-            BarEntry(-0f, transferDistance(items.get(1).highSpeedDrivingDistance).toFloat()),
-            BarEntry(1f, transferDistance(items.get(2).highSpeedDrivingDistance).toFloat()),
-            BarEntry(2f, transferDistance(items.get(3).highSpeedDrivingDistance).toFloat()),
-            BarEntry(3f, transferDistance(items.get(4).highSpeedDrivingDistance).toFloat()),
-            BarEntry(4f, transferDistance(items.get(5).highSpeedDrivingDistance).toFloat()),
-            BarEntry(5f, transferDistance(items.get(6).highSpeedDrivingDistance).toFloat()),
-            BarEntry(6f, transferDistance(items.get(7).highSpeedDrivingDistance).toFloat()),
-            BarEntry(7f, transferDistance(items.get(8).highSpeedDrivingDistance).toFloat()),
-            BarEntry(8f, transferDistance(items.get(9).highSpeedDrivingDistance).toFloat()),
-            BarEntry(9f, transferDistance(items.get(10).highSpeedDrivingDistance).toFloat()),
-            BarEntry(10f, transferDistance(items.get(11).highSpeedDrivingDistance).toFloat()),
-            BarEntry(11f, transferDistance(items.get(12).highSpeedDrivingDistance).toFloat()),
-            BarEntry(12f, transferDistance(items.get(13).highSpeedDrivingDistance).toFloat()),
-            BarEntry(13f, transferDistance(items.get(14).highSpeedDrivingDistance).toFloat()),
-            BarEntry(14f, transferDistance(items.get(15).highSpeedDrivingDistance).toFloat()),
-            BarEntry(15f, transferDistance(items.get(16).highSpeedDrivingDistance).toFloat()),
-            BarEntry(16f, transferDistance(items.get(17).highSpeedDrivingDistance).toFloat()),
-            BarEntry(17f, transferDistance(items.get(18).highSpeedDrivingDistance).toFloat()),
-            BarEntry(18f, transferDistance(items.get(19).highSpeedDrivingDistance).toFloat()),
-            BarEntry(19f, transferDistance(items.get(20).highSpeedDrivingDistance).toFloat()),
-            BarEntry(20f,transferDistance(items.get(21).highSpeedDrivingDistance).toFloat()),
-            BarEntry(21f,transferDistance(items.get(22).highSpeedDrivingDistance).toFloat()),
-            BarEntry(22f,transferDistance(items.get(23).highSpeedDrivingDistance).toFloat()),
-            BarEntry(23f,transferDistance(items.get(24).highSpeedDrivingDistance).toFloat()),
-            BarEntry(24f,transferDistance(items.get(25).highSpeedDrivingDistance).toFloat()),
-            BarEntry(25f,transferDistance(items.get(26).highSpeedDrivingDistance).toFloat()),
-            BarEntry(26f,transferDistance(items.get(27).highSpeedDrivingDistance).toFloat()),
-            BarEntry(27f,transferDistance(items.get(28).highSpeedDrivingDistance).toFloat()),
-            BarEntry(28f,transferDistance(items.get(29).highSpeedDrivingDistance).toFloat())
+        val highSpeedDrivingDistances = FloatArray(30) { 0f }
+        val lowSpeedDrivingDistances = FloatArray(30) { 0f }
+        val etcSpeedDrivingDistances = FloatArray(30) { 0f }
+
+        for((index,item) in items.withIndex()){
+            highSpeedDrivingDistances[index] = transferDistance(item.highSpeedDrivingDistance).toFloat()
+            lowSpeedDrivingDistances[index] = transferDistance(item.highSpeedDrivingDistance).toFloat() + transferDistance(item.lowSpeedDrivingDistance).toFloat()
+            etcSpeedDrivingDistances[index] = transferDistance(item.highSpeedDrivingDistance).toFloat() + transferDistance(item.lowSpeedDrivingDistance).toFloat() + transferDistance(item.etcSpeedDrivingDistance).toFloat()
+        }
+        val entries1 = listOf(
+            BarEntry(-1f, etcSpeedDrivingDistances.get(0)),
+            BarEntry(-0f, etcSpeedDrivingDistances.get(1)),
+            BarEntry(1f, etcSpeedDrivingDistances.get(2)),
+            BarEntry(2f, etcSpeedDrivingDistances.get(3)),
+            BarEntry(3f, etcSpeedDrivingDistances.get(4)),
+            BarEntry(4f, etcSpeedDrivingDistances.get(5)),
+            BarEntry(5f, etcSpeedDrivingDistances.get(6)),
+            BarEntry(6f, etcSpeedDrivingDistances.get(7)),
+            BarEntry(7f, etcSpeedDrivingDistances.get(8)),
+            BarEntry(8f, etcSpeedDrivingDistances.get(9)),
+            BarEntry(9f, etcSpeedDrivingDistances.get(10)),
+            BarEntry(10f, etcSpeedDrivingDistances.get(11)),
+            BarEntry(11f, etcSpeedDrivingDistances.get(12)),
+            BarEntry(12f, etcSpeedDrivingDistances.get(13)),
+            BarEntry(13f, etcSpeedDrivingDistances.get(14)),
+            BarEntry(14f, etcSpeedDrivingDistances.get(15)),
+            BarEntry(15f, etcSpeedDrivingDistances.get(16)),
+            BarEntry(16f, etcSpeedDrivingDistances.get(17)),
+            BarEntry(17f, etcSpeedDrivingDistances.get(18)),
+            BarEntry(18f, etcSpeedDrivingDistances.get(19)),
+            BarEntry(19f, etcSpeedDrivingDistances.get(20)),
+            BarEntry(20f,etcSpeedDrivingDistances.get(21)),
+            BarEntry(21f,etcSpeedDrivingDistances.get(22)),
+            BarEntry(22f,etcSpeedDrivingDistances.get(23)),
+            BarEntry(23f,etcSpeedDrivingDistances.get(24)),
+            BarEntry(24f,etcSpeedDrivingDistances.get(25)),
+            BarEntry(25f,etcSpeedDrivingDistances.get(26)),
+            BarEntry(26f,etcSpeedDrivingDistances.get(27)),
+            BarEntry(27f,etcSpeedDrivingDistances.get(28)),
+            BarEntry(28f,etcSpeedDrivingDistances.get(29))
         )
 
-        val dataSet = BarDataSet(entries, "Sample Data")
-        dataSet.color = getColor(R.color.gray_200)
-        dataSet.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
 
-        val barData = BarData(dataSet)
-        barData.barWidth = 0.6f
+        val entries2 = listOf(
+            BarEntry(-1f, lowSpeedDrivingDistances.get(0)),
+            BarEntry(-0f, lowSpeedDrivingDistances.get(1)),
+            BarEntry(1f, lowSpeedDrivingDistances.get(2)),
+            BarEntry(2f, lowSpeedDrivingDistances.get(3)),
+            BarEntry(3f, lowSpeedDrivingDistances.get(4)),
+            BarEntry(4f, lowSpeedDrivingDistances.get(5)),
+            BarEntry(5f, lowSpeedDrivingDistances.get(6)),
+            BarEntry(6f, lowSpeedDrivingDistances.get(7)),
+            BarEntry(7f, lowSpeedDrivingDistances.get(8)),
+            BarEntry(8f, lowSpeedDrivingDistances.get(9)),
+            BarEntry(9f, lowSpeedDrivingDistances.get(10)),
+            BarEntry(10f, lowSpeedDrivingDistances.get(11)),
+            BarEntry(11f, lowSpeedDrivingDistances.get(12)),
+            BarEntry(12f, lowSpeedDrivingDistances.get(13)),
+            BarEntry(13f, lowSpeedDrivingDistances.get(14)),
+            BarEntry(14f, lowSpeedDrivingDistances.get(15)),
+            BarEntry(15f, lowSpeedDrivingDistances.get(16)),
+            BarEntry(16f, lowSpeedDrivingDistances.get(17)),
+            BarEntry(17f, lowSpeedDrivingDistances.get(18)),
+            BarEntry(18f, lowSpeedDrivingDistances.get(19)),
+            BarEntry(19f, lowSpeedDrivingDistances.get(20)),
+            BarEntry(20f,lowSpeedDrivingDistances.get(21)),
+            BarEntry(21f,lowSpeedDrivingDistances.get(22)),
+            BarEntry(22f,lowSpeedDrivingDistances.get(23)),
+            BarEntry(23f,lowSpeedDrivingDistances.get(24)),
+            BarEntry(24f,lowSpeedDrivingDistances.get(25)),
+            BarEntry(25f,lowSpeedDrivingDistances.get(26)),
+            BarEntry(26f,lowSpeedDrivingDistances.get(27)),
+            BarEntry(27f,lowSpeedDrivingDistances.get(28)),
+            BarEntry(28f,lowSpeedDrivingDistances.get(29))
+        )
+
+        val entries3 = listOf(
+            BarEntry(-1f, highSpeedDrivingDistances.get(0)),
+            BarEntry(-0f, highSpeedDrivingDistances.get(1)),
+            BarEntry(1f, highSpeedDrivingDistances.get(2)),
+            BarEntry(2f, highSpeedDrivingDistances.get(3)),
+            BarEntry(3f, highSpeedDrivingDistances.get(4)),
+            BarEntry(4f, highSpeedDrivingDistances.get(5)),
+            BarEntry(5f, highSpeedDrivingDistances.get(6)),
+            BarEntry(6f, highSpeedDrivingDistances.get(7)),
+            BarEntry(7f, highSpeedDrivingDistances.get(8)),
+            BarEntry(8f, highSpeedDrivingDistances.get(9)),
+            BarEntry(9f, highSpeedDrivingDistances.get(10)),
+            BarEntry(10f, highSpeedDrivingDistances.get(11)),
+            BarEntry(11f, highSpeedDrivingDistances.get(12)),
+            BarEntry(12f, highSpeedDrivingDistances.get(13)),
+            BarEntry(13f, highSpeedDrivingDistances.get(14)),
+            BarEntry(14f, highSpeedDrivingDistances.get(15)),
+            BarEntry(15f, highSpeedDrivingDistances.get(16)),
+            BarEntry(16f, highSpeedDrivingDistances.get(17)),
+            BarEntry(17f, highSpeedDrivingDistances.get(18)),
+            BarEntry(18f, highSpeedDrivingDistances.get(19)),
+            BarEntry(19f, highSpeedDrivingDistances.get(20)),
+            BarEntry(20f,highSpeedDrivingDistances.get(21)),
+            BarEntry(21f,highSpeedDrivingDistances.get(22)),
+            BarEntry(22f,highSpeedDrivingDistances.get(23)),
+            BarEntry(23f,highSpeedDrivingDistances.get(24)),
+            BarEntry(24f,highSpeedDrivingDistances.get(25)),
+            BarEntry(25f,highSpeedDrivingDistances.get(26)),
+            BarEntry(26f,highSpeedDrivingDistances.get(27)),
+            BarEntry(27f,highSpeedDrivingDistances.get(28)),
+            BarEntry(28f,highSpeedDrivingDistances.get(29))
+        )
+
+
+        val dataSet1 = BarDataSet(entries1, "Part 1")
+        dataSet1.color = getColor(R.color.gray_700)
+        dataSet1.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+        val dataSet2 = BarDataSet(entries2, "Part 2")
+        dataSet2.color = getColor(R.color.gray_950)
+        dataSet2.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+
+        val dataSet3 = BarDataSet(entries3, "Part 3")
+        dataSet3.color = getColor(R.color.sec_500)
+        dataSet3.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+
+
+        val barData = BarData(dataSet1, dataSet2, dataSet3)
+        barData.barWidth = 1.0f
 
         layout_barchart_highspeed.data = barData
         layout_barchart_highspeed.setFitBars(true) // make the x-axis fit exactly all bars
@@ -1807,8 +1334,9 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
         var max = 0
 
         for(item in items){
-            if(transferDistance(item.highSpeedDrivingDistance).toDouble() > max.toDouble())
-                max = transferDistance(item.highSpeedDrivingDistance).toDouble().toInt()
+            val sum = transferDistance(item.highSpeedDrivingDistance).toDouble() + transferDistance(item.lowSpeedDrivingDistance).toDouble() + transferDistance(item.etcSpeedDrivingDistance).toDouble()
+            if(sum > max.toDouble())
+                max = sum.toInt()
         }
 
         if(max == 0){
@@ -1816,26 +1344,77 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
             return
         }
 
+        val highSpeedDrivingDistances = FloatArray(6) { 0f }
+        val lowSpeedDrivingDistances = FloatArray(6) { 0f }
+        val etcSpeedDrivingDistances = FloatArray(6) { 0f }
 
-        val entries = listOf(
-            BarEntry(-1f, transferDistance(items.get(0).highSpeedDrivingDistance).toFloat()), // 첫번째 월
+        for((index,item) in items.withIndex()){
+            highSpeedDrivingDistances[index] = transferDistance(item.highSpeedDrivingDistance).toFloat()
+            lowSpeedDrivingDistances[index] = transferDistance(item.highSpeedDrivingDistance).toFloat() + transferDistance(item.lowSpeedDrivingDistance).toFloat()
+            etcSpeedDrivingDistances[index] = transferDistance(item.highSpeedDrivingDistance).toFloat() + transferDistance(item.lowSpeedDrivingDistance).toFloat() + transferDistance(item.etcSpeedDrivingDistance).toFloat()
+        }
+
+
+
+        val entries1 = listOf(
+            BarEntry(-1f, etcSpeedDrivingDistances.get(0)), // 첫번째 월
             BarEntry(0f, 0f),
-            BarEntry(1f, transferDistance(items.get(1).highSpeedDrivingDistance).toFloat()), // 두번째 월
+            BarEntry(1f, etcSpeedDrivingDistances.get(1)), // 두번째 월
             BarEntry(2f, 0f),
-            BarEntry(3f, transferDistance(items.get(2).highSpeedDrivingDistance).toFloat()), // 세번째 월
+            BarEntry(3f, etcSpeedDrivingDistances.get(2)), // 세번째 월
             BarEntry(4f, 0f),
-            BarEntry(5f, transferDistance(items.get(3).highSpeedDrivingDistance).toFloat()), // 네번째 월
+            BarEntry(5f, etcSpeedDrivingDistances.get(3)), // 네번째 월
             BarEntry(6f, 0f),
-            BarEntry(7f, transferDistance(items.get(4).highSpeedDrivingDistance).toFloat()), // 다섯번째 월
+            BarEntry(7f, etcSpeedDrivingDistances.get(4)), // 다섯번째 월
             BarEntry(8f, 0f),
-            BarEntry(9f, transferDistance(items.get(5).highSpeedDrivingDistance).toFloat()) // 여섯번째 월
+            BarEntry(9f, etcSpeedDrivingDistances.get(5)) // 여섯번째 월
         )
 
-        val dataSet = BarDataSet(entries, "Sample Data")
-        dataSet.color = getColor(R.color.gray_200)
-        dataSet.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+        val entries2 = listOf(
+            BarEntry(-1f, lowSpeedDrivingDistances.get(0)), // 첫번째 월
+            BarEntry(0f, 0f),
+            BarEntry(1f, lowSpeedDrivingDistances.get(1)), // 두번째 월
+            BarEntry(2f, 0f),
+            BarEntry(3f, lowSpeedDrivingDistances.get(2)), // 세번째 월
+            BarEntry(4f, 0f),
+            BarEntry(5f, lowSpeedDrivingDistances.get(3)), // 네번째 월
+            BarEntry(6f, 0f),
+            BarEntry(7f, lowSpeedDrivingDistances.get(4)), // 다섯번째 월
+            BarEntry(8f, 0f),
+            BarEntry(9f, lowSpeedDrivingDistances.get(5)) // 여섯번째 월
+        )
 
-        val barData = BarData(dataSet)
+        val entries3 = listOf(
+            BarEntry(-1f, highSpeedDrivingDistances.get(0)), // 첫번째 월
+            BarEntry(0f, 0f),
+            BarEntry(1f, highSpeedDrivingDistances.get(1)), // 두번째 월
+            BarEntry(2f, 0f),
+            BarEntry(3f, highSpeedDrivingDistances.get(2)), // 세번째 월
+            BarEntry(4f, 0f),
+            BarEntry(5f, highSpeedDrivingDistances.get(3)), // 네번째 월
+            BarEntry(6f, 0f),
+            BarEntry(7f, highSpeedDrivingDistances.get(4)), // 다섯번째 월
+            BarEntry(8f, 0f),
+            BarEntry(9f, highSpeedDrivingDistances.get(5)) // 여섯번째 월
+        )
+
+        val dataSet1 = BarDataSet(entries1, "Part 1")
+        dataSet1.color = getColor(R.color.gray_700)
+        dataSet1.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+        val dataSet2 = BarDataSet(entries2, "Part 2")
+        dataSet2.color = getColor(R.color.gray_950)
+        dataSet2.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+
+        val dataSet3 = BarDataSet(entries3, "Part 3")
+        dataSet3.color = getColor(R.color.sec_500)
+        dataSet3.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+
+
+        val barData = BarData(dataSet1, dataSet2, dataSet3)
+
         layout_barchart_highspeed.data = barData
         layout_barchart_highspeed.setFitBars(true) // make the x-axis fit exactly all bars
         layout_barchart_highspeed.description.isEnabled = false
@@ -2015,49 +1594,128 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
         var max = 0
 
         for(item in items){
-            if(transferDistance(item.highSpeedDrivingDistance).toDouble() > max.toDouble())
-                max = transferDistance(item.highSpeedDrivingDistance).toDouble().toInt()
+            val sum = transferDistance(item.highSpeedDrivingDistance).toDouble() + transferDistance(item.lowSpeedDrivingDistance).toDouble() + transferDistance(item.etcSpeedDrivingDistance).toDouble()
+            if(sum > max.toDouble())
+                max = sum.toInt()
         }
 
         if(max == 0){
-            setYearBarChartAsDefault(months)
+            setMonthBarChartAsDefault(months)
             return
         }
 
 
+        val highSpeedDrivingDistances = FloatArray(12) { 0f }
+        val lowSpeedDrivingDistances = FloatArray(12) { 0f }
+        val etcSpeedDrivingDistances = FloatArray(12) { 0f }
 
-        val entries = listOf(
-            BarEntry(-1f, transferDistance(items.get(0).highSpeedDrivingDistance).toFloat()), // 1월
+        for((index,item) in items.withIndex()){
+            highSpeedDrivingDistances[index] = transferDistance(item.highSpeedDrivingDistance).toFloat()
+            lowSpeedDrivingDistances[index] = transferDistance(item.highSpeedDrivingDistance).toFloat() + transferDistance(item.lowSpeedDrivingDistance).toFloat()
+            etcSpeedDrivingDistances[index] = transferDistance(item.highSpeedDrivingDistance).toFloat() + transferDistance(item.lowSpeedDrivingDistance).toFloat() + transferDistance(item.etcSpeedDrivingDistance).toFloat()
+        }
+
+
+
+
+        val entries1 = listOf(
+            BarEntry(-1f, etcSpeedDrivingDistances.get(0)), // 1월
             BarEntry(-0f, 0f),
-            BarEntry(1f, transferDistance(items.get(1).highSpeedDrivingDistance).toFloat()), // 2월
+            BarEntry(1f, etcSpeedDrivingDistances.get(1)), // 2월
             BarEntry(2f, 0f),
-            BarEntry(3f, transferDistance(items.get(2).highSpeedDrivingDistance).toFloat()), // 3월
+            BarEntry(3f, etcSpeedDrivingDistances.get(2)), // 3월
             BarEntry(4f, 0f),
-            BarEntry(5f, transferDistance(items.get(3).highSpeedDrivingDistance).toFloat()), // 4월
+            BarEntry(5f, etcSpeedDrivingDistances.get(3)), // 4월
             BarEntry(6f, 0f),
-            BarEntry(7f, transferDistance(items.get(4).highSpeedDrivingDistance).toFloat()), // 5월
+            BarEntry(7f, etcSpeedDrivingDistances.get(4)), // 5월
             BarEntry(8f, 0f),
-            BarEntry(9f, transferDistance(items.get(5).highSpeedDrivingDistance).toFloat()), // 6월
+            BarEntry(9f, etcSpeedDrivingDistances.get(5)), // 6월
             BarEntry(10f, 0f),
-            BarEntry(11f, transferDistance(items.get(6).highSpeedDrivingDistance).toFloat()), // 7월
+            BarEntry(11f, etcSpeedDrivingDistances.get(6)), // 7월
             BarEntry(12f, 0f),
-            BarEntry(13f, transferDistance(items.get(7).highSpeedDrivingDistance).toFloat()), // 8월
+            BarEntry(13f, etcSpeedDrivingDistances.get(7)), // 8월
             BarEntry(14f, 0f),
-            BarEntry(15f, transferDistance(items.get(8).highSpeedDrivingDistance).toFloat()), // 9월
+            BarEntry(15f, etcSpeedDrivingDistances.get(8)), // 9월
             BarEntry(16f, 0f),
-            BarEntry(17f, transferDistance(items.get(9).highSpeedDrivingDistance).toFloat()), // 10월
+            BarEntry(17f, etcSpeedDrivingDistances.get(9)), // 10월
             BarEntry(18f, 0f),
-            BarEntry(19f, transferDistance(items.get(10).highSpeedDrivingDistance).toFloat()), // 11월
+            BarEntry(19f, etcSpeedDrivingDistances.get(10)), // 11월
             BarEntry(20f,0f),
-            BarEntry(21f,transferDistance(items.get(11).highSpeedDrivingDistance).toFloat()) // 12월
+            BarEntry(21f, etcSpeedDrivingDistances.get(11)) // 12월
         )
 
-        val dataSet = BarDataSet(entries, "Sample Data")
-        dataSet.color = getColor(R.color.gray_200)
-        dataSet.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+        val entries2 = listOf(
+            BarEntry(-1f, lowSpeedDrivingDistances.get(0)), // 1월
+            BarEntry(-0f, 0f),
+            BarEntry(1f, lowSpeedDrivingDistances.get(1)), // 2월
+            BarEntry(2f, 0f),
+            BarEntry(3f, lowSpeedDrivingDistances.get(2)), // 3월
+            BarEntry(4f, 0f),
+            BarEntry(5f, lowSpeedDrivingDistances.get(3)), // 4월
+            BarEntry(6f, 0f),
+            BarEntry(7f, lowSpeedDrivingDistances.get(4)), // 5월
+            BarEntry(8f, 0f),
+            BarEntry(9f, lowSpeedDrivingDistances.get(5)), // 6월
+            BarEntry(10f, 0f),
+            BarEntry(11f, lowSpeedDrivingDistances.get(6)), // 7월
+            BarEntry(12f, 0f),
+            BarEntry(13f, lowSpeedDrivingDistances.get(7)), // 8월
+            BarEntry(14f, 0f),
+            BarEntry(15f, lowSpeedDrivingDistances.get(8)), // 9월
+            BarEntry(16f, 0f),
+            BarEntry(17f, lowSpeedDrivingDistances.get(9)), // 10월
+            BarEntry(18f, 0f),
+            BarEntry(19f, lowSpeedDrivingDistances.get(10)), // 11월
+            BarEntry(20f,0f),
+            BarEntry(21f, lowSpeedDrivingDistances.get(11)) // 12월
+        )
 
-        val barData = BarData(dataSet)
+
+        val entries3 = listOf(
+            BarEntry(-1f, highSpeedDrivingDistances.get(0)), // 1월
+            BarEntry(-0f, 0f),
+            BarEntry(1f, highSpeedDrivingDistances.get(1)), // 2월
+            BarEntry(2f, 0f),
+            BarEntry(3f, highSpeedDrivingDistances.get(2)), // 3월
+            BarEntry(4f, 0f),
+            BarEntry(5f, highSpeedDrivingDistances.get(3)), // 4월
+            BarEntry(6f, 0f),
+            BarEntry(7f, highSpeedDrivingDistances.get(4)), // 5월
+            BarEntry(8f, 0f),
+            BarEntry(9f, highSpeedDrivingDistances.get(5)), // 6월
+            BarEntry(10f, 0f),
+            BarEntry(11f, highSpeedDrivingDistances.get(6)), // 7월
+            BarEntry(12f, 0f),
+            BarEntry(13f, highSpeedDrivingDistances.get(7)), // 8월
+            BarEntry(14f, 0f),
+            BarEntry(15f, highSpeedDrivingDistances.get(8)), // 9월
+            BarEntry(16f, 0f),
+            BarEntry(17f, highSpeedDrivingDistances.get(9)), // 10월
+            BarEntry(18f, 0f),
+            BarEntry(19f, highSpeedDrivingDistances.get(10)), // 11월
+            BarEntry(20f,0f),
+            BarEntry(21f, highSpeedDrivingDistances.get(11)) // 12월
+        )
+
+
+        val dataSet1 = BarDataSet(entries1, "Part 1")
+        dataSet1.color = getColor(R.color.gray_700)
+        dataSet1.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+        val dataSet2 = BarDataSet(entries2, "Part 2")
+        dataSet2.color = getColor(R.color.gray_950)
+        dataSet2.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+
+        val dataSet3 = BarDataSet(entries3, "Part 3")
+        dataSet3.color = getColor(R.color.sec_500)
+        dataSet3.setDrawValues(false) // 막대 위의 값을 표시하지 않도록 설정
+
+
+
+        val barData = BarData(dataSet1, dataSet2, dataSet3)
         barData.barWidth = 1.0f
+
         layout_barchart_highspeed.data = barData
         layout_barchart_highspeed.setFitBars(true) // make the x-axis fit exactly all bars
         layout_barchart_highspeed.description.isEnabled = false
