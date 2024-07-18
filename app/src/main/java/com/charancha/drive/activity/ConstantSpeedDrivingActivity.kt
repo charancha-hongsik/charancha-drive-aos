@@ -48,6 +48,10 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
     lateinit var tv_const_percent2:TextView
     lateinit var tv_driving_info2:TextView
 
+    lateinit var tv_date1:TextView
+    lateinit var tv_date2:TextView
+
+
     var recentStartTime = "2024-07-15T00:00:00.000Z"
     var recentEndTime = "2024-07-15T23:59:59.999Z"
 
@@ -81,6 +85,9 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
         tv_diff_percent = findViewById(R.id.tv_diff_percent)
         tv_const_percent2 = findViewById(R.id.tv_const_percent2)
         tv_driving_info2 = findViewById(R.id.tv_driving_info2)
+
+        tv_date1 = findViewById(R.id.tv_date1)
+        tv_date2 = findViewById(R.id.tv_date2)
 
         btn_recent_drive.isSelected = true
 
@@ -180,6 +187,9 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
                         tv_const_percent2.text = String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.average.constantSpeedDrivingDistancePercentage) + "%"
                         tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.diffAverage.constantSpeedDrivingDistancePercentage) + "% 증가"
 
+                        tv_date1.text = convertDateFormat(recentDrivingDistance.recentStartTime)
+                        tv_date2.text = convertDateFormat(recentDrivingDistance.recentStartTime)
+
                         setExtraSpeedDrivingChartWidthByPercent(recentDrivingDistance.average.constantSpeedDrivingDistancePercentage.toFloat()/100)
 
                         apiService().getDrivingDistanceRatioGraphData(
@@ -244,8 +254,8 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@ConstantSpeedDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
-            getCurrentAndPastTimeForISO(30).second,
-            getCurrentAndPastTimeForISO(30).first,
+            getCurrentAndPastTimeForISO(29).second,
+            getCurrentAndPastTimeForISO(29).first,
             "startTime",
             "day").enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
@@ -259,6 +269,9 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
                     tv_const_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.constantSpeedDrivingDistancePercentage) + "%"
                     tv_const_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.constantSpeedDrivingDistancePercentage) + "%"
                     tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage) + "% 증가"
+
+                    tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+                    tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
 
                     setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.constantSpeedDrivingDistancePercentage.toFloat()/100)
 
@@ -280,8 +293,8 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@ConstantSpeedDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
-            getCurrentAndPastTimeForISO(60).second,
-            getCurrentAndPastTimeForISO(60).first,
+            getCurrentAndPastTimeForISO(150).second,
+            getCurrentAndPastTimeForISO(150).first,
             "startTime",
             "day").enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
@@ -294,6 +307,9 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
                     tv_const_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.constantSpeedDrivingDistancePercentage) + "%"
                     tv_const_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.constantSpeedDrivingDistancePercentage) + "%"
                     tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage) + "% 증가"
+
+                    tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
+                    tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
 
                     setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.constantSpeedDrivingDistancePercentage.toFloat()/100)
 
@@ -316,8 +332,8 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@ConstantSpeedDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
-            getCurrentAndPastTimeForISO(365).second,
-            getCurrentAndPastTimeForISO(365).first,
+            getCurrentAndPastTimeForISO(334).second,
+            getCurrentAndPastTimeForISO(334).first,
             "startTime",
             "day").enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
@@ -330,6 +346,9 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
                     tv_const_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.constantSpeedDrivingDistancePercentage) + "%"
                     tv_const_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.constantSpeedDrivingDistancePercentage) + "%"
                     tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage) + "% 증가"
+
+                    tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
+                    tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
 
                     setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.constantSpeedDrivingDistancePercentage.toFloat()/100)
                 }
