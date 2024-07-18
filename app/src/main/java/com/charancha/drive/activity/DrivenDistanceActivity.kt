@@ -2239,7 +2239,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
     }
 
     private fun setMonthDrivingDistance(){
-        tv_driving_info1.text = "1개월 주행 거리"
+        tv_driving_info1.text = "1개월 평균 주행 거리"
         tv_driving_info2.text = "내 차는 자주\n달릴수록 좋아요"
         tv_driving_info3.text = "1개월 간 주행 거리를\n한눈에 확인해보세요!"
 
@@ -2290,7 +2290,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
     }
 
     private fun setSixMonthDrivingDistance(){
-        tv_driving_info1.text = "6개월 주행 거리"
+        tv_driving_info1.text = "6개월 평균 주행 거리"
         tv_driving_info2.text = "내 차는 자주\n달릴수록 좋아요"
         tv_driving_info3.text = "6개월 주행 거리를\n한눈에 확인해보세요!"
 
@@ -2339,7 +2339,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
     }
 
     private fun setYearDrivingDistance(){
-        tv_driving_info1.text = "1년 주행 거리"
+        tv_driving_info1.text = "1년 평균 주행 거리"
         tv_driving_info2.text = "내 차는 자주\n달릴수록 좋아요"
         tv_driving_info3.text = "1년 주행 거리를\n한눈에 확인해보세요!"
 
