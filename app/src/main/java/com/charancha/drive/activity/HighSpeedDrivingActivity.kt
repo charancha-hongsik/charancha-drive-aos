@@ -1117,7 +1117,6 @@ class HighSpeedDrivingActivity:BaseActivity() {
                     tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
 
                 }
-
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
