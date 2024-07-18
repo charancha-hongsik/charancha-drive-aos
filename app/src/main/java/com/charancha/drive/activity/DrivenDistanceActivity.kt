@@ -2197,23 +2197,27 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
 
                                     setRecentBarChart(getDrivingGraphDataResponse.items)
                                     setRecentLineChart(getDrivingGraphDataResponse.items)
+                                }else{
+                                    setRecentBarChartAsDefault()
                                 }
                             }
 
                             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                                TODO("Not yet implemented")
+                                setRecentBarChartAsDefault()
                             }
 
                         })
 
 
                     }else{
-                        tv_diff_distance.visibility = INVISIBLE
+                        setRecentBarChartAsDefault()
                         tv_total_distance.text = transferDistance(0.0)
                         tv_diff_distance.text = "+" + transferDistance(0.0) + distance_unit + " 증가"
                         tv_average_distance.text = transferDistance(0.0)
                         tv_max_distance.text = transferDistance(0.0)
                         tv_min_distance.text = transferDistance(0.0)
+
+                        tv_diff_distance.visibility = INVISIBLE
 
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -2225,11 +2229,18 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                setRecentBarChartAsDefault()
                 tv_total_distance.text = transferDistance(0.0)
                 tv_diff_distance.text = "+" + transferDistance(0.0) + distance_unit + " 증가"
                 tv_average_distance.text = transferDistance(0.0)
                 tv_max_distance.text = transferDistance(0.0)
                 tv_min_distance.text = transferDistance(0.0)
+
+                tv_diff_distance.visibility = INVISIBLE
+
+                tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_driving_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
             }
 
         })
