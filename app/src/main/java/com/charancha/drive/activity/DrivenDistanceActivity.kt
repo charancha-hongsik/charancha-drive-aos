@@ -2258,7 +2258,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
                         GetDrivingStatisticsResponse::class.java
                     )
 
-                    tv_total_distance.text = transferDistance(drivingDistance.total.totalDistance)
+                    tv_total_distance.text = transferDistance(drivingDistance.average.totalDistance)
                     tv_diff_distance.text = "+" + transferDistance(drivingDistance.diffTotal.totalDistance) + distance_unit + " 증가"
                     tv_average_distance.text = transferDistance(drivingDistance.average.totalDistance)
                     tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
@@ -2309,7 +2309,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
                         GetDrivingStatisticsResponse::class.java
                     )
 
-                    tv_total_distance.text = transferDistance(drivingDistance.total.totalDistance)
+                    tv_total_distance.text = transferDistance(drivingDistance.average.totalDistance)
                     tv_diff_distance.text = "+" + transferDistance(drivingDistance.diffTotal.totalDistance) + distance_unit + " 증가"
                     tv_average_distance.text = transferDistance(drivingDistance.average.totalDistance)
                     tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
@@ -2358,7 +2358,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
                         GetDrivingStatisticsResponse::class.java
                     )
 
-                    tv_total_distance.text = transferDistance(drivingDistance.total.totalDistance)
+                    tv_total_distance.text = transferDistance(drivingDistance.average.totalDistance)
                     tv_diff_distance.text = "+" + transferDistance(drivingDistance.diffTotal.totalDistance) + distance_unit + " 증가"
                     tv_average_distance.text = transferDistance(drivingDistance.average.totalDistance)
                     tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
