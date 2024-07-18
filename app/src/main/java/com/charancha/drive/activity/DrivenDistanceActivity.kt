@@ -225,8 +225,8 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
         var max = 0
 
         for(item in items){
-            if(transferDistance(item.distance).toDouble() > max.toDouble())
-                max = transferDistance(item.distance).toDouble().toInt()
+            if(transferDistance(item.totalDistance).toDouble() > max.toDouble())
+                max = transferDistance(item.totalDistance).toDouble().toInt()
         }
 
         if(max == 0){
@@ -245,7 +245,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
             val localDateTime = LocalDateTime.ofInstant(startTime, koreaZoneId)
             val hour = localDateTime.hour
 
-            distances[hour] = transferDistance(item.distance).toFloat()
+            distances[hour] = transferDistance(item.totalDistance).toFloat()
         }
 
 
@@ -471,8 +471,8 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
         var max = 0
 
         for(item in items){
-            if(transferDistance(item.distance).toDouble() > max.toDouble())
-                max = transferDistance(item.distance).toDouble().toInt()
+            if(transferDistance(item.totalDistance).toDouble() > max.toDouble())
+                max = transferDistance(item.totalDistance).toDouble().toInt()
         }
 
         if(max == 0){
@@ -481,36 +481,36 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
         }
 
         val entries = listOf(
-            BarEntry(-1f, transferDistance(items.get(0).distance).toFloat()),
-            BarEntry(-0f, transferDistance(items.get(1).distance).toFloat()),
-            BarEntry(1f, transferDistance(items.get(2).distance).toFloat()),
-            BarEntry(2f, transferDistance(items.get(3).distance).toFloat()),
-            BarEntry(3f, transferDistance(items.get(4).distance).toFloat()),
-            BarEntry(4f, transferDistance(items.get(5).distance).toFloat()),
-            BarEntry(5f, transferDistance(items.get(6).distance).toFloat()),
-            BarEntry(6f, transferDistance(items.get(7).distance).toFloat()),
-            BarEntry(7f, transferDistance(items.get(8).distance).toFloat()),
-            BarEntry(8f, transferDistance(items.get(9).distance).toFloat()),
-            BarEntry(9f, transferDistance(items.get(10).distance).toFloat()),
-            BarEntry(10f, transferDistance(items.get(11).distance).toFloat()),
-            BarEntry(11f, transferDistance(items.get(12).distance).toFloat()),
-            BarEntry(12f, transferDistance(items.get(13).distance).toFloat()),
-            BarEntry(13f, transferDistance(items.get(14).distance).toFloat()),
-            BarEntry(14f, transferDistance(items.get(15).distance).toFloat()),
-            BarEntry(15f, transferDistance(items.get(16).distance).toFloat()),
-            BarEntry(16f, transferDistance(items.get(17).distance).toFloat()),
-            BarEntry(17f, transferDistance(items.get(18).distance).toFloat()),
-            BarEntry(18f, transferDistance(items.get(19).distance).toFloat()),
-            BarEntry(19f, transferDistance(items.get(20).distance).toFloat()),
-            BarEntry(20f,transferDistance(items.get(21).distance).toFloat()),
-            BarEntry(21f,transferDistance(items.get(22).distance).toFloat()),
-            BarEntry(22f,transferDistance(items.get(23).distance).toFloat()),
-            BarEntry(23f,transferDistance(items.get(24).distance).toFloat()),
-            BarEntry(24f,transferDistance(items.get(25).distance).toFloat()),
-            BarEntry(25f,transferDistance(items.get(26).distance).toFloat()),
-            BarEntry(26f,transferDistance(items.get(27).distance).toFloat()),
-            BarEntry(27f,transferDistance(items.get(28).distance).toFloat()),
-            BarEntry(28f,transferDistance(items.get(29).distance).toFloat())
+            BarEntry(-1f, transferDistance(items.get(0).totalDistance).toFloat()),
+            BarEntry(-0f, transferDistance(items.get(1).totalDistance).toFloat()),
+            BarEntry(1f, transferDistance(items.get(2).totalDistance).toFloat()),
+            BarEntry(2f, transferDistance(items.get(3).totalDistance).toFloat()),
+            BarEntry(3f, transferDistance(items.get(4).totalDistance).toFloat()),
+            BarEntry(4f, transferDistance(items.get(5).totalDistance).toFloat()),
+            BarEntry(5f, transferDistance(items.get(6).totalDistance).toFloat()),
+            BarEntry(6f, transferDistance(items.get(7).totalDistance).toFloat()),
+            BarEntry(7f, transferDistance(items.get(8).totalDistance).toFloat()),
+            BarEntry(8f, transferDistance(items.get(9).totalDistance).toFloat()),
+            BarEntry(9f, transferDistance(items.get(10).totalDistance).toFloat()),
+            BarEntry(10f, transferDistance(items.get(11).totalDistance).toFloat()),
+            BarEntry(11f, transferDistance(items.get(12).totalDistance).toFloat()),
+            BarEntry(12f, transferDistance(items.get(13).totalDistance).toFloat()),
+            BarEntry(13f, transferDistance(items.get(14).totalDistance).toFloat()),
+            BarEntry(14f, transferDistance(items.get(15).totalDistance).toFloat()),
+            BarEntry(15f, transferDistance(items.get(16).totalDistance).toFloat()),
+            BarEntry(16f, transferDistance(items.get(17).totalDistance).toFloat()),
+            BarEntry(17f, transferDistance(items.get(18).totalDistance).toFloat()),
+            BarEntry(18f, transferDistance(items.get(19).totalDistance).toFloat()),
+            BarEntry(19f, transferDistance(items.get(20).totalDistance).toFloat()),
+            BarEntry(20f,transferDistance(items.get(21).totalDistance).toFloat()),
+            BarEntry(21f,transferDistance(items.get(22).totalDistance).toFloat()),
+            BarEntry(22f,transferDistance(items.get(23).totalDistance).toFloat()),
+            BarEntry(23f,transferDistance(items.get(24).totalDistance).toFloat()),
+            BarEntry(24f,transferDistance(items.get(25).totalDistance).toFloat()),
+            BarEntry(25f,transferDistance(items.get(26).totalDistance).toFloat()),
+            BarEntry(26f,transferDistance(items.get(27).totalDistance).toFloat()),
+            BarEntry(27f,transferDistance(items.get(28).totalDistance).toFloat()),
+            BarEntry(28f,transferDistance(items.get(29).totalDistance).toFloat())
         )
 
         val dataSet = BarDataSet(entries, "Sample Data")
@@ -587,6 +587,11 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
     }
 
     private fun callMonthChart(){
+        Log.d("testestestests","testeststesset :: " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!)
+        Log.d("testestestests","testeststesset :: " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.USER_CARID, "")!!)
+        Log.d("testestestests","testeststesset :: " + getCurrentAndPastTimeForISO(29).second)
+        Log.d("testestestests","testeststesset :: " + getCurrentAndPastTimeForISO(29).first)
+
         apiService().getDrivingDistanceGraphData(
             "Bearer " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.USER_CARID, "")!!,
@@ -793,8 +798,8 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
         var max = 0
 
         for(item in items){
-            if(transferDistance(item.distance).toDouble() > max.toDouble())
-                max = transferDistance(item.distance).toDouble().toInt()
+            if(transferDistance(item.totalDistance).toDouble() > max.toDouble())
+                max = transferDistance(item.totalDistance).toDouble().toInt()
         }
 
         if(max == 0){
@@ -804,17 +809,17 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
 
 
         val entries = listOf(
-            BarEntry(-1f, transferDistance(items.get(0).distance).toFloat()), // 첫번째 월
+            BarEntry(-1f, transferDistance(items.get(0).totalDistance).toFloat()), // 첫번째 월
             BarEntry(0f, 0f),
-            BarEntry(1f, transferDistance(items.get(1).distance).toFloat()), // 두번째 월
+            BarEntry(1f, transferDistance(items.get(1).totalDistance).toFloat()), // 두번째 월
             BarEntry(2f, 0f),
-            BarEntry(3f, transferDistance(items.get(2).distance).toFloat()), // 세번째 월
+            BarEntry(3f, transferDistance(items.get(2).totalDistance).toFloat()), // 세번째 월
             BarEntry(4f, 0f),
-            BarEntry(5f, transferDistance(items.get(3).distance).toFloat()), // 네번째 월
+            BarEntry(5f, transferDistance(items.get(3).totalDistance).toFloat()), // 네번째 월
             BarEntry(6f, 0f),
-            BarEntry(7f, transferDistance(items.get(4).distance).toFloat()), // 다섯번째 월
+            BarEntry(7f, transferDistance(items.get(4).totalDistance).toFloat()), // 다섯번째 월
             BarEntry(8f, 0f),
-            BarEntry(9f, transferDistance(items.get(5).distance).toFloat()) // 여섯번째 월
+            BarEntry(9f, transferDistance(items.get(5).totalDistance).toFloat()) // 여섯번째 월
         )
 
         val dataSet = BarDataSet(entries, "Sample Data")
@@ -1001,8 +1006,8 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
         var max = 0
 
         for(item in items){
-            if(transferDistance(item.distance).toDouble() > max.toDouble())
-                max = transferDistance(item.distance).toDouble().toInt()
+            if(transferDistance(item.totalDistance).toDouble() > max.toDouble())
+                max = transferDistance(item.totalDistance).toDouble().toInt()
         }
 
         if(max == 0){
@@ -1013,29 +1018,29 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
 
 
         val entries = listOf(
-            BarEntry(-1f, transferDistance(items.get(0).distance).toFloat()), // 1월
+            BarEntry(-1f, transferDistance(items.get(0).totalDistance).toFloat()), // 1월
             BarEntry(-0f, 0f),
-            BarEntry(1f, transferDistance(items.get(1).distance).toFloat()), // 2월
+            BarEntry(1f, transferDistance(items.get(1).totalDistance).toFloat()), // 2월
             BarEntry(2f, 0f),
-            BarEntry(3f, transferDistance(items.get(2).distance).toFloat()), // 3월
+            BarEntry(3f, transferDistance(items.get(2).totalDistance).toFloat()), // 3월
             BarEntry(4f, 0f),
-            BarEntry(5f, transferDistance(items.get(3).distance).toFloat()), // 4월
+            BarEntry(5f, transferDistance(items.get(3).totalDistance).toFloat()), // 4월
             BarEntry(6f, 0f),
-            BarEntry(7f, transferDistance(items.get(4).distance).toFloat()), // 5월
+            BarEntry(7f, transferDistance(items.get(4).totalDistance).toFloat()), // 5월
             BarEntry(8f, 0f),
-            BarEntry(9f, transferDistance(items.get(5).distance).toFloat()), // 6월
+            BarEntry(9f, transferDistance(items.get(5).totalDistance).toFloat()), // 6월
             BarEntry(10f, 0f),
-            BarEntry(11f, transferDistance(items.get(6).distance).toFloat()), // 7월
+            BarEntry(11f, transferDistance(items.get(6).totalDistance).toFloat()), // 7월
             BarEntry(12f, 0f),
-            BarEntry(13f, transferDistance(items.get(7).distance).toFloat()), // 8월
+            BarEntry(13f, transferDistance(items.get(7).totalDistance).toFloat()), // 8월
             BarEntry(14f, 0f),
-            BarEntry(15f, transferDistance(items.get(8).distance).toFloat()), // 9월
+            BarEntry(15f, transferDistance(items.get(8).totalDistance).toFloat()), // 9월
             BarEntry(16f, 0f),
-            BarEntry(17f, transferDistance(items.get(9).distance).toFloat()), // 10월
+            BarEntry(17f, transferDistance(items.get(9).totalDistance).toFloat()), // 10월
             BarEntry(18f, 0f),
-            BarEntry(19f, transferDistance(items.get(10).distance).toFloat()), // 11월
+            BarEntry(19f, transferDistance(items.get(10).totalDistance).toFloat()), // 11월
             BarEntry(20f,0f),
-            BarEntry(21f,transferDistance(items.get(11).distance).toFloat()) // 12월
+            BarEntry(21f,transferDistance(items.get(11).totalDistance).toFloat()) // 12월
         )
 
         val dataSet = BarDataSet(entries, "Sample Data")
@@ -1247,7 +1252,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
         var max = 0.0
 
         for(item in items){
-            max += transferDistance(item.distance).toDouble()
+            max += transferDistance(item.totalDistance).toDouble()
         }
 
         if(max == 0.0){
@@ -1267,7 +1272,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
             val localDateTime = LocalDateTime.ofInstant(startTime, koreaZoneId)
             val hour = localDateTime.hour
 
-            distances[hour] = transferDistance(item.distance).toFloat()
+            distances[hour] = transferDistance(item.totalDistance).toFloat()
         }
 
 
@@ -1511,7 +1516,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
         var max = 0.0
 
         for(item in items){
-            max += transferDistance(item.distance).toDouble()
+            max += transferDistance(item.totalDistance).toDouble()
         }
 
         if(max == 0.0){
@@ -1522,7 +1527,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
         val distances = DoubleArray(items.size) { 0.0 }
 
         for((index,item) in items.withIndex()){
-            distances[index] = item.distance
+            distances[index] = item.totalDistance
         }
 
 
@@ -1766,7 +1771,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
         var max = 0.0
 
         for(item in items){
-            max += transferDistance(item.distance).toDouble()
+            max += transferDistance(item.totalDistance).toDouble()
         }
 
         if(max == 0.0){
@@ -1777,7 +1782,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
         val distances = DoubleArray(items.size) { 0.0 }
 
         for((index,item) in items.withIndex()){
-            distances[index] = item.distance
+            distances[index] = item.totalDistance
         }
 
 
@@ -2000,7 +2005,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
         var max = 0.0
 
         for(item in items){
-            max += transferDistance(item.distance).toDouble()
+            max += transferDistance(item.totalDistance).toDouble()
         }
 
         if(max == 0.0){
@@ -2011,7 +2016,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
         val distances = DoubleArray(items.size) { 0.0 }
 
         for((index,item) in items.withIndex()){
-            distances[index] = item.distance
+            distances[index] = item.totalDistance
         }
 
 
