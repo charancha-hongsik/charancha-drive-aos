@@ -478,7 +478,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="22dp"
-                            android:text="저속 주행"
+                            android:text="고속 주행"
                             android:textColor="@color/gray_700"
                             android:textAppearance="@style/B1R"
                             android:textFontWeight="400" />

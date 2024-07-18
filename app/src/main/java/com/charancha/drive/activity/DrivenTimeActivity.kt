@@ -2320,8 +2320,8 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                     )
 
                     if(drivingDistance.total.totalTime != 0.0){
-                        tv_hour.text = transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first.toString()
-                        tv_minute.text = transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second.toString()
+                        tv_hour.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).first.toString()
+                        tv_minute.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).second.toString()
                         tv_average_hour.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).first.toString()
                         tv_average_minute.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).second.toString()
                         tv_min_hour.text = transferSecondsToHourAndMinutes(drivingDistance.min.totalTime).first.toString()
@@ -2411,8 +2411,8 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                     )
 
                     if(drivingDistance.total.totalTime != 0.0){
-                        tv_hour.text = transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first.toString()
-                        tv_minute.text = transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second.toString()
+                        tv_hour.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).first.toString()
+                        tv_minute.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).second.toString()
                         tv_average_hour.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).first.toString()
                         tv_average_minute.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).second.toString()
                         tv_min_hour.text = transferSecondsToHourAndMinutes(drivingDistance.min.totalTime).first.toString()
@@ -2496,8 +2496,8 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                     )
 
                     if(drivingDistance.total.totalTime != 0.0){
-                        tv_hour.text = transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first.toString()
-                        tv_minute.text = transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second.toString()
+                        tv_hour.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).first.toString()
+                        tv_minute.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).second.toString()
                         tv_average_hour.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).first.toString()
                         tv_average_minute.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).second.toString()
                         tv_min_hour.text = transferSecondsToHourAndMinutes(drivingDistance.min.totalTime).first.toString()
