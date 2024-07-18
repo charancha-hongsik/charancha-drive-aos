@@ -78,7 +78,6 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
         btn_six_month_drive = findViewById(R.id.btn_six_month_drive)
         btn_year_drive = findViewById(R.id.btn_year_drive)
 
-        tv_driving_info1 = findViewById(R.id.tv_driving_info1)
         tv_driving_info2 = findViewById(R.id.tv_driving_info2)
         tv_driving_info3 = findViewById(R.id.tv_driving_info3)
         tv_total_distance = findViewById(R.id.tv_total_distance)
@@ -1220,7 +1219,6 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                         tv_max_distance.text = transferDistance(0.0)
                         tv_min_distance.text = transferDistance(0.0)
 
-                        tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
@@ -1238,7 +1236,6 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                 tv_max_distance.text = transferDistance(0.0)
                 tv_min_distance.text = transferDistance(0.0)
 
-                tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
@@ -1292,7 +1289,6 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                         tv_max_distance.text = transferDistance(0.0)
                         tv_min_distance.text = transferDistance(0.0)
 
-                        tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
@@ -1309,7 +1305,6 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                 tv_max_distance.text = transferDistance(0.0)
                 tv_min_distance.text = transferDistance(0.0)
 
-                tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
@@ -1356,7 +1351,6 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                         tv_max_distance.text = transferDistance(0.0)
                         tv_min_distance.text = transferDistance(0.0)
 
-                        tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
@@ -1411,7 +1405,6 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                         tv_max_distance.text = transferDistance(0.0)
                         tv_min_distance.text = transferDistance(0.0)
 
-                        tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
@@ -1430,7 +1423,6 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                 tv_max_distance.text = transferDistance(0.0)
                 tv_min_distance.text = transferDistance(0.0)
 
-                tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 

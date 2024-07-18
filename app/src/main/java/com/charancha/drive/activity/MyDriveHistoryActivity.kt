@@ -75,7 +75,6 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
             getCurrentAndPastTimeForISO(29).first).enqueue(object: Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200){
-
                     val getDriveHistroyResponse = Gson().fromJson(
                         response.body()?.string(),
                         GetDriveHistoryResponse::class.java
