@@ -194,7 +194,7 @@ class BestDrivingActivity:BaseActivity() {
 
                         setExtraSpeedDrivingChartWidthByPercent(recentDrivingDistance.average.optimalDrivingPercentage.toFloat()/100)
 
-                        apiService().getDrivingDistanceRatioGraphData(
+                        apiService().getDrivingDistanceGraphData(
                             "Bearer " + PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
                             PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.USER_CARID, "")!!,
                             "ASC",
@@ -484,8 +484,8 @@ class BestDrivingActivity:BaseActivity() {
         var max = 0
 
         for(item in items){
-            if(transferDistance(item.distance).toDouble() > max.toDouble())
-                max = transferDistance(item.distance).toDouble().toInt()
+            if(transferDistance(item.optimalDrivingDistance).toDouble() > max.toDouble())
+                max = transferDistance(item.optimalDrivingDistance).toDouble().toInt()
         }
 
         if(max == 0){
@@ -504,7 +504,7 @@ class BestDrivingActivity:BaseActivity() {
             val localDateTime = LocalDateTime.ofInstant(startTime, koreaZoneId)
             val hour = localDateTime.hour
 
-            distances[hour] = transferDistance(item.distance).toFloat()
+            distances[hour] = transferDistance(item.optimalDrivingDistance).toFloat()
         }
 
 
@@ -730,8 +730,8 @@ class BestDrivingActivity:BaseActivity() {
         var max = 0
 
         for(item in items){
-            if(transferDistance(item.distance).toDouble() > max.toDouble())
-                max = transferDistance(item.distance).toDouble().toInt()
+            if(transferDistance(item.optimalDrivingDistance).toDouble() > max.toDouble())
+                max = transferDistance(item.optimalDrivingDistance).toDouble().toInt()
         }
 
         if(max == 0){
@@ -740,36 +740,36 @@ class BestDrivingActivity:BaseActivity() {
         }
 
         val entries = listOf(
-            BarEntry(-1f, transferDistance(items.get(0).distance).toFloat()),
-            BarEntry(-0f, transferDistance(items.get(1).distance).toFloat()),
-            BarEntry(1f, transferDistance(items.get(2).distance).toFloat()),
-            BarEntry(2f, transferDistance(items.get(3).distance).toFloat()),
-            BarEntry(3f, transferDistance(items.get(4).distance).toFloat()),
-            BarEntry(4f, transferDistance(items.get(5).distance).toFloat()),
-            BarEntry(5f, transferDistance(items.get(6).distance).toFloat()),
-            BarEntry(6f, transferDistance(items.get(7).distance).toFloat()),
-            BarEntry(7f, transferDistance(items.get(8).distance).toFloat()),
-            BarEntry(8f, transferDistance(items.get(9).distance).toFloat()),
-            BarEntry(9f, transferDistance(items.get(10).distance).toFloat()),
-            BarEntry(10f, transferDistance(items.get(11).distance).toFloat()),
-            BarEntry(11f, transferDistance(items.get(12).distance).toFloat()),
-            BarEntry(12f, transferDistance(items.get(13).distance).toFloat()),
-            BarEntry(13f, transferDistance(items.get(14).distance).toFloat()),
-            BarEntry(14f, transferDistance(items.get(15).distance).toFloat()),
-            BarEntry(15f, transferDistance(items.get(16).distance).toFloat()),
-            BarEntry(16f, transferDistance(items.get(17).distance).toFloat()),
-            BarEntry(17f, transferDistance(items.get(18).distance).toFloat()),
-            BarEntry(18f, transferDistance(items.get(19).distance).toFloat()),
-            BarEntry(19f, transferDistance(items.get(20).distance).toFloat()),
-            BarEntry(20f,transferDistance(items.get(21).distance).toFloat()),
-            BarEntry(21f,transferDistance(items.get(22).distance).toFloat()),
-            BarEntry(22f,transferDistance(items.get(23).distance).toFloat()),
-            BarEntry(23f,transferDistance(items.get(24).distance).toFloat()),
-            BarEntry(24f,transferDistance(items.get(25).distance).toFloat()),
-            BarEntry(25f,transferDistance(items.get(26).distance).toFloat()),
-            BarEntry(26f,transferDistance(items.get(27).distance).toFloat()),
-            BarEntry(27f,transferDistance(items.get(28).distance).toFloat()),
-            BarEntry(28f,transferDistance(items.get(29).distance).toFloat())
+            BarEntry(-1f, transferDistance(items.get(0).optimalDrivingDistance).toFloat()),
+            BarEntry(-0f, transferDistance(items.get(1).optimalDrivingDistance).toFloat()),
+            BarEntry(1f, transferDistance(items.get(2).optimalDrivingDistance).toFloat()),
+            BarEntry(2f, transferDistance(items.get(3).optimalDrivingDistance).toFloat()),
+            BarEntry(3f, transferDistance(items.get(4).optimalDrivingDistance).toFloat()),
+            BarEntry(4f, transferDistance(items.get(5).optimalDrivingDistance).toFloat()),
+            BarEntry(5f, transferDistance(items.get(6).optimalDrivingDistance).toFloat()),
+            BarEntry(6f, transferDistance(items.get(7).optimalDrivingDistance).toFloat()),
+            BarEntry(7f, transferDistance(items.get(8).optimalDrivingDistance).toFloat()),
+            BarEntry(8f, transferDistance(items.get(9).optimalDrivingDistance).toFloat()),
+            BarEntry(9f, transferDistance(items.get(10).optimalDrivingDistance).toFloat()),
+            BarEntry(10f, transferDistance(items.get(11).optimalDrivingDistance).toFloat()),
+            BarEntry(11f, transferDistance(items.get(12).optimalDrivingDistance).toFloat()),
+            BarEntry(12f, transferDistance(items.get(13).optimalDrivingDistance).toFloat()),
+            BarEntry(13f, transferDistance(items.get(14).optimalDrivingDistance).toFloat()),
+            BarEntry(14f, transferDistance(items.get(15).optimalDrivingDistance).toFloat()),
+            BarEntry(15f, transferDistance(items.get(16).optimalDrivingDistance).toFloat()),
+            BarEntry(16f, transferDistance(items.get(17).optimalDrivingDistance).toFloat()),
+            BarEntry(17f, transferDistance(items.get(18).optimalDrivingDistance).toFloat()),
+            BarEntry(18f, transferDistance(items.get(19).optimalDrivingDistance).toFloat()),
+            BarEntry(19f, transferDistance(items.get(20).optimalDrivingDistance).toFloat()),
+            BarEntry(20f,transferDistance(items.get(21).optimalDrivingDistance).toFloat()),
+            BarEntry(21f,transferDistance(items.get(22).optimalDrivingDistance).toFloat()),
+            BarEntry(22f,transferDistance(items.get(23).optimalDrivingDistance).toFloat()),
+            BarEntry(23f,transferDistance(items.get(24).optimalDrivingDistance).toFloat()),
+            BarEntry(24f,transferDistance(items.get(25).optimalDrivingDistance).toFloat()),
+            BarEntry(25f,transferDistance(items.get(26).optimalDrivingDistance).toFloat()),
+            BarEntry(26f,transferDistance(items.get(27).optimalDrivingDistance).toFloat()),
+            BarEntry(27f,transferDistance(items.get(28).optimalDrivingDistance).toFloat()),
+            BarEntry(28f,transferDistance(items.get(29).optimalDrivingDistance).toFloat())
         )
 
         val dataSet = BarDataSet(entries, "Sample Data")
@@ -1049,8 +1049,8 @@ class BestDrivingActivity:BaseActivity() {
         var max = 0
 
         for(item in items){
-            if(transferDistance(item.distance).toDouble() > max.toDouble())
-                max = transferDistance(item.distance).toDouble().toInt()
+            if(transferDistance(item.optimalDrivingDistance).toDouble() > max.toDouble())
+                max = transferDistance(item.optimalDrivingDistance).toDouble().toInt()
         }
 
         if(max == 0){
@@ -1060,17 +1060,17 @@ class BestDrivingActivity:BaseActivity() {
 
 
         val entries = listOf(
-            BarEntry(-1f, transferDistance(items.get(0).distance).toFloat()), // 첫번째 월
+            BarEntry(-1f, transferDistance(items.get(0).optimalDrivingDistance).toFloat()), // 첫번째 월
             BarEntry(0f, 0f),
-            BarEntry(1f, transferDistance(items.get(1).distance).toFloat()), // 두번째 월
+            BarEntry(1f, transferDistance(items.get(1).optimalDrivingDistance).toFloat()), // 두번째 월
             BarEntry(2f, 0f),
-            BarEntry(3f, transferDistance(items.get(2).distance).toFloat()), // 세번째 월
+            BarEntry(3f, transferDistance(items.get(2).optimalDrivingDistance).toFloat()), // 세번째 월
             BarEntry(4f, 0f),
-            BarEntry(5f, transferDistance(items.get(3).distance).toFloat()), // 네번째 월
+            BarEntry(5f, transferDistance(items.get(3).optimalDrivingDistance).toFloat()), // 네번째 월
             BarEntry(6f, 0f),
-            BarEntry(7f, transferDistance(items.get(4).distance).toFloat()), // 다섯번째 월
+            BarEntry(7f, transferDistance(items.get(4).optimalDrivingDistance).toFloat()), // 다섯번째 월
             BarEntry(8f, 0f),
-            BarEntry(9f, transferDistance(items.get(5).distance).toFloat()) // 여섯번째 월
+            BarEntry(9f, transferDistance(items.get(5).optimalDrivingDistance).toFloat()) // 여섯번째 월
         )
 
         val dataSet = BarDataSet(entries, "Sample Data")
@@ -1257,8 +1257,8 @@ class BestDrivingActivity:BaseActivity() {
         var max = 0
 
         for(item in items){
-            if(transferDistance(item.distance).toDouble() > max.toDouble())
-                max = transferDistance(item.distance).toDouble().toInt()
+            if(transferDistance(item.optimalDrivingDistance).toDouble() > max.toDouble())
+                max = transferDistance(item.optimalDrivingDistance).toDouble().toInt()
         }
 
         if(max == 0){
@@ -1269,29 +1269,29 @@ class BestDrivingActivity:BaseActivity() {
 
 
         val entries = listOf(
-            BarEntry(-1f, transferDistance(items.get(0).distance).toFloat()), // 1월
+            BarEntry(-1f, transferDistance(items.get(0).optimalDrivingDistance).toFloat()), // 1월
             BarEntry(-0f, 0f),
-            BarEntry(1f, transferDistance(items.get(1).distance).toFloat()), // 2월
+            BarEntry(1f, transferDistance(items.get(1).optimalDrivingDistance).toFloat()), // 2월
             BarEntry(2f, 0f),
-            BarEntry(3f, transferDistance(items.get(2).distance).toFloat()), // 3월
+            BarEntry(3f, transferDistance(items.get(2).optimalDrivingDistance).toFloat()), // 3월
             BarEntry(4f, 0f),
-            BarEntry(5f, transferDistance(items.get(3).distance).toFloat()), // 4월
+            BarEntry(5f, transferDistance(items.get(3).optimalDrivingDistance).toFloat()), // 4월
             BarEntry(6f, 0f),
-            BarEntry(7f, transferDistance(items.get(4).distance).toFloat()), // 5월
+            BarEntry(7f, transferDistance(items.get(4).optimalDrivingDistance).toFloat()), // 5월
             BarEntry(8f, 0f),
-            BarEntry(9f, transferDistance(items.get(5).distance).toFloat()), // 6월
+            BarEntry(9f, transferDistance(items.get(5).optimalDrivingDistance).toFloat()), // 6월
             BarEntry(10f, 0f),
-            BarEntry(11f, transferDistance(items.get(6).distance).toFloat()), // 7월
+            BarEntry(11f, transferDistance(items.get(6).optimalDrivingDistance).toFloat()), // 7월
             BarEntry(12f, 0f),
-            BarEntry(13f, transferDistance(items.get(7).distance).toFloat()), // 8월
+            BarEntry(13f, transferDistance(items.get(7).optimalDrivingDistance).toFloat()), // 8월
             BarEntry(14f, 0f),
-            BarEntry(15f, transferDistance(items.get(8).distance).toFloat()), // 9월
+            BarEntry(15f, transferDistance(items.get(8).optimalDrivingDistance).toFloat()), // 9월
             BarEntry(16f, 0f),
-            BarEntry(17f, transferDistance(items.get(9).distance).toFloat()), // 10월
+            BarEntry(17f, transferDistance(items.get(9).optimalDrivingDistance).toFloat()), // 10월
             BarEntry(18f, 0f),
-            BarEntry(19f, transferDistance(items.get(10).distance).toFloat()), // 11월
+            BarEntry(19f, transferDistance(items.get(10).optimalDrivingDistance).toFloat()), // 11월
             BarEntry(20f,0f),
-            BarEntry(21f,transferDistance(items.get(11).distance).toFloat()) // 12월
+            BarEntry(21f,transferDistance(items.get(11).optimalDrivingDistance).toFloat()) // 12월
         )
 
         val dataSet = BarDataSet(entries, "Sample Data")

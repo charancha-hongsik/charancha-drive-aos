@@ -362,109 +362,6 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
         })
     }
 
-    private fun callMonthChart(){
-        apiService().getDrivingDistanceRatioGraphData(
-            "Bearer " + PreferenceUtil.getPref(this@ConstantSpeedDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this@ConstantSpeedDrivingActivity, PreferenceUtil.USER_CARID, "")!!,
-            "ASC",
-            null,
-            null,
-            getCurrentAndPastTimeForISO(29).second,
-            getCurrentAndPastTimeForISO(29).first,
-            "startTime",
-            "day"
-        ).enqueue(object :Callback<ResponseBody>{
-            override fun onResponse(
-                call: Call<ResponseBody>,
-                response: Response<ResponseBody>
-            ) {
-
-                if(response.code() == 200){
-                    val getDrivingGraphDataResponse = Gson().fromJson(
-                        response.body()?.string(),
-                        GetDrivingGraphDataResponse::class.java
-                    )
-
-                    setMonthBarChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(29).third)
-                }
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                TODO("Not yet implemented")
-            }
-
-        })
-    }
-
-    private fun callSixMonthChart(){
-        apiService().getDrivingDistanceRatioGraphData(
-            "Bearer " + PreferenceUtil.getPref(this@ConstantSpeedDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this@ConstantSpeedDrivingActivity, PreferenceUtil.USER_CARID, "")!!,
-            "ASC",
-            null,
-            null,
-            getCurrentAndPastTimeForISO(150).second,
-            getCurrentAndPastTimeForISO(150).first,
-            "startTime",
-            "month"
-        ).enqueue(object :Callback<ResponseBody>{
-            override fun onResponse(
-                call: Call<ResponseBody>,
-                response: Response<ResponseBody>
-            ) {
-
-                if(response.code() == 200){
-                    val getDrivingGraphDataResponse = Gson().fromJson(
-                        response.body()?.string(),
-                        GetDrivingGraphDataResponse::class.java
-                    )
-
-                    setSixMonthBarChart(getDrivingGraphDataResponse.items,getCurrentAndPastTimeForISO(150).third )
-                }
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                TODO("Not yet implemented")
-            }
-
-        })
-    }
-
-    private fun callYearChart(){
-        apiService().getDrivingDistanceRatioGraphData(
-            "Bearer " + PreferenceUtil.getPref(this@ConstantSpeedDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this@ConstantSpeedDrivingActivity, PreferenceUtil.USER_CARID, "")!!,
-            "ASC",
-            null,
-            null,
-            getCurrentAndPastTimeForISO(334).second,
-            getCurrentAndPastTimeForISO(334).first,
-            "startTime",
-            "month"
-        ).enqueue(object :Callback<ResponseBody>{
-            override fun onResponse(
-                call: Call<ResponseBody>,
-                response: Response<ResponseBody>
-            ) {
-
-                if(response.code() == 200){
-                    val getDrivingGraphDataResponse = Gson().fromJson(
-                        response.body()?.string(),
-                        GetDrivingGraphDataResponse::class.java
-                    )
-
-                    setYearBarChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(334).third)
-                }
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                TODO("Not yet implemented")
-            }
-
-        })
-    }
-
-
 
     /**
      * 24개의 데이터가 내려옴
@@ -582,10 +479,8 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
         var max = 0
 
         for(item in items){
-            if(item.constantSpeedDrivingDistancePercentage > max.toDouble()){
-                max = item.constantSpeedDrivingDistancePercentage.toInt()
-
-            }
+            if(transferDistance(item.constantSpeedDrivingDistance).toDouble() > max.toDouble())
+                max = transferDistance(item.constantSpeedDrivingDistance).toDouble().toInt()
         }
 
         if(max == 0){
@@ -604,8 +499,7 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
             val localDateTime = LocalDateTime.ofInstant(startTime, koreaZoneId)
             val hour = localDateTime.hour
 
-
-            distances[hour] = item.constantSpeedDrivingDistancePercentage.toFloat()
+            distances[hour] = transferDistance(item.constantSpeedDrivingDistance).toFloat()
         }
 
 
@@ -699,7 +593,7 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
                 val minValue = rightAxis.axisMinimum
                 val maxValue = rightAxis.axisMaximum
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "%"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + distance_unit// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -715,8 +609,6 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
      * 각 월요일을 차트 하단에 노출
      */
     private fun setMonthBarChartAsDefault(months: List<String>) {
-        tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-
         val entries = listOf(
             BarEntry(-1f, 0f),
             BarEntry(-0f, 0f),
@@ -833,8 +725,8 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
         var max = 0
 
         for(item in items){
-            if(item.constantSpeedDrivingDistancePercentage > max.toDouble())
-                max = item.constantSpeedDrivingDistancePercentage.toInt()
+            if(transferDistance(item.constantSpeedDrivingDistance).toDouble() > max.toDouble())
+                max = transferDistance(item.constantSpeedDrivingDistance).toDouble().toInt()
         }
 
         if(max == 0){
@@ -843,36 +735,36 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
         }
 
         val entries = listOf(
-            BarEntry(-1f, items.get(0).constantSpeedDrivingDistancePercentage.toFloat()),
-            BarEntry(-0f, items.get(1).constantSpeedDrivingDistancePercentage.toFloat()),
-            BarEntry(1f, items.get(2).constantSpeedDrivingDistancePercentage.toFloat()),
-            BarEntry(2f, items.get(3).constantSpeedDrivingDistancePercentage.toFloat()),
-            BarEntry(3f, items.get(4).constantSpeedDrivingDistancePercentage.toFloat()),
-            BarEntry(4f, items.get(5).constantSpeedDrivingDistancePercentage.toFloat()),
-            BarEntry(5f, items.get(6).constantSpeedDrivingDistancePercentage.toFloat()),
-            BarEntry(6f, items.get(7).constantSpeedDrivingDistancePercentage.toFloat()),
-            BarEntry(7f, items.get(8).constantSpeedDrivingDistancePercentage.toFloat()),
-            BarEntry(8f, items.get(9).constantSpeedDrivingDistancePercentage.toFloat()),
-            BarEntry(9f, items.get(10).constantSpeedDrivingDistancePercentage.toFloat()),
-            BarEntry(10f, items.get(11).constantSpeedDrivingDistancePercentage.toFloat()),
-            BarEntry(11f, items.get(12).constantSpeedDrivingDistancePercentage.toFloat()),
-            BarEntry(12f, items.get(13).constantSpeedDrivingDistancePercentage.toFloat()),
-            BarEntry(13f, items.get(14).constantSpeedDrivingDistancePercentage.toFloat()),
-            BarEntry(14f, items.get(15).constantSpeedDrivingDistancePercentage.toFloat()),
-            BarEntry(15f, items.get(16).constantSpeedDrivingDistancePercentage.toFloat()),
-            BarEntry(16f, items.get(17).constantSpeedDrivingDistancePercentage.toFloat()),
-            BarEntry(17f, items.get(18).constantSpeedDrivingDistancePercentage.toFloat()),
-            BarEntry(18f, items.get(19).constantSpeedDrivingDistancePercentage.toFloat()),
-            BarEntry(19f, items.get(20).constantSpeedDrivingDistancePercentage.toFloat()),
-            BarEntry(20f,items.get(21).constantSpeedDrivingDistancePercentage.toFloat()),
-            BarEntry(21f,items.get(22).constantSpeedDrivingDistancePercentage.toFloat()),
-            BarEntry(22f,items.get(23).constantSpeedDrivingDistancePercentage.toFloat()),
-            BarEntry(23f,items.get(24).constantSpeedDrivingDistancePercentage.toFloat()),
-            BarEntry(24f,items.get(25).constantSpeedDrivingDistancePercentage.toFloat()),
-            BarEntry(25f,items.get(26).constantSpeedDrivingDistancePercentage.toFloat()),
-            BarEntry(26f,items.get(27).constantSpeedDrivingDistancePercentage.toFloat()),
-            BarEntry(27f,items.get(28).constantSpeedDrivingDistancePercentage.toFloat()),
-            BarEntry(28f,items.get(29).constantSpeedDrivingDistancePercentage.toFloat())
+            BarEntry(-1f, transferDistance(items.get(0).constantSpeedDrivingDistance).toFloat()),
+            BarEntry(-0f, transferDistance(items.get(1).constantSpeedDrivingDistance).toFloat()),
+            BarEntry(1f, transferDistance(items.get(2).constantSpeedDrivingDistance).toFloat()),
+            BarEntry(2f, transferDistance(items.get(3).constantSpeedDrivingDistance).toFloat()),
+            BarEntry(3f, transferDistance(items.get(4).constantSpeedDrivingDistance).toFloat()),
+            BarEntry(4f, transferDistance(items.get(5).constantSpeedDrivingDistance).toFloat()),
+            BarEntry(5f, transferDistance(items.get(6).constantSpeedDrivingDistance).toFloat()),
+            BarEntry(6f, transferDistance(items.get(7).constantSpeedDrivingDistance).toFloat()),
+            BarEntry(7f, transferDistance(items.get(8).constantSpeedDrivingDistance).toFloat()),
+            BarEntry(8f, transferDistance(items.get(9).constantSpeedDrivingDistance).toFloat()),
+            BarEntry(9f, transferDistance(items.get(10).constantSpeedDrivingDistance).toFloat()),
+            BarEntry(10f, transferDistance(items.get(11).constantSpeedDrivingDistance).toFloat()),
+            BarEntry(11f, transferDistance(items.get(12).constantSpeedDrivingDistance).toFloat()),
+            BarEntry(12f, transferDistance(items.get(13).constantSpeedDrivingDistance).toFloat()),
+            BarEntry(13f, transferDistance(items.get(14).constantSpeedDrivingDistance).toFloat()),
+            BarEntry(14f, transferDistance(items.get(15).constantSpeedDrivingDistance).toFloat()),
+            BarEntry(15f, transferDistance(items.get(16).constantSpeedDrivingDistance).toFloat()),
+            BarEntry(16f, transferDistance(items.get(17).constantSpeedDrivingDistance).toFloat()),
+            BarEntry(17f, transferDistance(items.get(18).constantSpeedDrivingDistance).toFloat()),
+            BarEntry(18f, transferDistance(items.get(19).constantSpeedDrivingDistance).toFloat()),
+            BarEntry(19f, transferDistance(items.get(20).constantSpeedDrivingDistance).toFloat()),
+            BarEntry(20f,transferDistance(items.get(21).constantSpeedDrivingDistance).toFloat()),
+            BarEntry(21f,transferDistance(items.get(22).constantSpeedDrivingDistance).toFloat()),
+            BarEntry(22f,transferDistance(items.get(23).constantSpeedDrivingDistance).toFloat()),
+            BarEntry(23f,transferDistance(items.get(24).constantSpeedDrivingDistance).toFloat()),
+            BarEntry(24f,transferDistance(items.get(25).constantSpeedDrivingDistance).toFloat()),
+            BarEntry(25f,transferDistance(items.get(26).constantSpeedDrivingDistance).toFloat()),
+            BarEntry(26f,transferDistance(items.get(27).constantSpeedDrivingDistance).toFloat()),
+            BarEntry(27f,transferDistance(items.get(28).constantSpeedDrivingDistance).toFloat()),
+            BarEntry(28f,transferDistance(items.get(29).constantSpeedDrivingDistance).toFloat())
         )
 
         val dataSet = BarDataSet(entries, "Sample Data")
@@ -938,7 +830,7 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
                 val minValue = rightAxis.axisMinimum
                 val maxValue = rightAxis.axisMaximum
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "%"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + distance_unit// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -948,12 +840,113 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
         layout_barchart_constant_speed.invalidate() // refresh
     }
 
+    private fun callMonthChart(){
+        apiService().getDrivingDistanceGraphData(
+            "Bearer " + PreferenceUtil.getPref(this@ConstantSpeedDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this@ConstantSpeedDrivingActivity, PreferenceUtil.USER_CARID, "")!!,
+            "ASC",
+            null,
+            null,
+            getCurrentAndPastTimeForISO(29).second,
+            getCurrentAndPastTimeForISO(29).first,
+            "startTime",
+            "day"
+        ).enqueue(object :Callback<ResponseBody>{
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+
+                if(response.code() == 200){
+                    val getDrivingGraphDataResponse = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingGraphDataResponse::class.java
+                    )
+
+                    setMonthBarChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(29).third)
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
+
+    private fun callSixMonthChart(){
+        apiService().getDrivingDistanceGraphData(
+            "Bearer " + PreferenceUtil.getPref(this@ConstantSpeedDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this@ConstantSpeedDrivingActivity, PreferenceUtil.USER_CARID, "")!!,
+            "ASC",
+            null,
+            null,
+            getCurrentAndPastTimeForISO(150).second,
+            getCurrentAndPastTimeForISO(150).first,
+            "startTime",
+            "month"
+        ).enqueue(object :Callback<ResponseBody>{
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+
+                if(response.code() == 200){
+                    val getDrivingGraphDataResponse = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingGraphDataResponse::class.java
+                    )
+
+                    setSixMonthBarChart(getDrivingGraphDataResponse.items,getCurrentAndPastTimeForISO(150).third )
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
+
+    private fun callYearChart(){
+        apiService().getDrivingDistanceGraphData(
+            "Bearer " + PreferenceUtil.getPref(this@ConstantSpeedDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this@ConstantSpeedDrivingActivity, PreferenceUtil.USER_CARID, "")!!,
+            "ASC",
+            null,
+            null,
+            getCurrentAndPastTimeForISO(334).second,
+            getCurrentAndPastTimeForISO(334).first,
+            "startTime",
+            "month"
+        ).enqueue(object :Callback<ResponseBody>{
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+
+                if(response.code() == 200){
+                    val getDrivingGraphDataResponse = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingGraphDataResponse::class.java
+                    )
+
+                    setYearBarChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(334).third)
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+
+        })
+    }
+
     /**
      * 6개의 데이터가 내려옴
      * 6개 데이터 뿌려주면 됨
      */
     private fun setSixMonthBarChartAsDefault(months: List<String>) {
-        tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
         val entries = listOf(
             BarEntry(-1f, 0f), // 첫번째 월
@@ -1051,8 +1044,8 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
         var max = 0
 
         for(item in items){
-            if(item.constantSpeedDrivingDistancePercentage > max.toDouble())
-                max = item.constantSpeedDrivingDistancePercentage.toInt()
+            if(transferDistance(item.constantSpeedDrivingDistance).toDouble() > max.toDouble())
+                max = transferDistance(item.constantSpeedDrivingDistance).toDouble().toInt()
         }
 
         if(max == 0){
@@ -1062,17 +1055,17 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
 
 
         val entries = listOf(
-            BarEntry(-1f, items.get(0).constantSpeedDrivingDistancePercentage.toFloat()), // 첫번째 월
+            BarEntry(-1f, transferDistance(items.get(0).constantSpeedDrivingDistance).toFloat()), // 첫번째 월
             BarEntry(0f, 0f),
-            BarEntry(1f, items.get(1).constantSpeedDrivingDistancePercentage.toFloat()), // 두번째 월
+            BarEntry(1f, transferDistance(items.get(1).constantSpeedDrivingDistance).toFloat()), // 두번째 월
             BarEntry(2f, 0f),
-            BarEntry(3f, items.get(2).constantSpeedDrivingDistancePercentage.toFloat()), // 세번째 월
+            BarEntry(3f, transferDistance(items.get(2).constantSpeedDrivingDistance).toFloat()), // 세번째 월
             BarEntry(4f, 0f),
-            BarEntry(5f, items.get(3).constantSpeedDrivingDistancePercentage.toFloat()), // 네번째 월
+            BarEntry(5f, transferDistance(items.get(3).constantSpeedDrivingDistance).toFloat()), // 네번째 월
             BarEntry(6f, 0f),
-            BarEntry(7f, items.get(4).constantSpeedDrivingDistancePercentage.toFloat()), // 다섯번째 월
+            BarEntry(7f, transferDistance(items.get(4).constantSpeedDrivingDistance).toFloat()), // 다섯번째 월
             BarEntry(8f, 0f),
-            BarEntry(9f, items.get(5).constantSpeedDrivingDistancePercentage.toFloat()) // 여섯번째 월
+            BarEntry(9f, transferDistance(items.get(5).constantSpeedDrivingDistance).toFloat()) // 여섯번째 월
         )
 
         val dataSet = BarDataSet(entries, "Sample Data")
@@ -1139,7 +1132,7 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
                 val minValue = rightAxis.axisMinimum
                 val maxValue = rightAxis.axisMaximum
                 return if (value == minValue || value == maxValue) {
-                    value.toInt().toString() + "%"// 가장 아래와 위에만 레이블 표시
+                    value.toInt().toString() + distance_unit// 가장 아래와 위에만 레이블 표시
                 } else {
                     "" // 나머지 레이블 제거
                 }
@@ -1155,7 +1148,6 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
      */
 
     private fun setYearBarChartAsDefault(months: List<String>) {
-        tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
         val entries = listOf(
             BarEntry(-1f, 0f), // 1월
@@ -1260,8 +1252,8 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
         var max = 0
 
         for(item in items){
-            if(item.constantSpeedDrivingDistancePercentage > max.toDouble())
-                max = item.constantSpeedDrivingDistancePercentage.toInt()
+            if(transferDistance(item.constantSpeedDrivingDistance).toDouble() > max.toDouble())
+                max = transferDistance(item.constantSpeedDrivingDistance).toDouble().toInt()
         }
 
         if(max == 0){
@@ -1272,29 +1264,29 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
 
 
         val entries = listOf(
-            BarEntry(-1f, items.get(0).constantSpeedDrivingDistancePercentage.toFloat()), // 1월
+            BarEntry(-1f, transferDistance(items.get(0).constantSpeedDrivingDistance).toFloat()), // 1월
             BarEntry(-0f, 0f),
-            BarEntry(1f, items.get(1).constantSpeedDrivingDistancePercentage.toFloat()), // 2월
+            BarEntry(1f, transferDistance(items.get(1).constantSpeedDrivingDistance).toFloat()), // 2월
             BarEntry(2f, 0f),
-            BarEntry(3f, items.get(2).constantSpeedDrivingDistancePercentage.toFloat()), // 3월
+            BarEntry(3f, transferDistance(items.get(2).constantSpeedDrivingDistance).toFloat()), // 3월
             BarEntry(4f, 0f),
-            BarEntry(5f, items.get(3).constantSpeedDrivingDistancePercentage.toFloat()), // 4월
+            BarEntry(5f, transferDistance(items.get(3).constantSpeedDrivingDistance).toFloat()), // 4월
             BarEntry(6f, 0f),
-            BarEntry(7f, items.get(4).constantSpeedDrivingDistancePercentage.toFloat()), // 5월
+            BarEntry(7f, transferDistance(items.get(4).constantSpeedDrivingDistance).toFloat()), // 5월
             BarEntry(8f, 0f),
-            BarEntry(9f, items.get(5).constantSpeedDrivingDistancePercentage.toFloat()), // 6월
+            BarEntry(9f, transferDistance(items.get(5).constantSpeedDrivingDistance).toFloat()), // 6월
             BarEntry(10f, 0f),
-            BarEntry(11f, items.get(6).constantSpeedDrivingDistancePercentage.toFloat()), // 7월
+            BarEntry(11f, transferDistance(items.get(6).constantSpeedDrivingDistance).toFloat()), // 7월
             BarEntry(12f, 0f),
-            BarEntry(13f, items.get(7).constantSpeedDrivingDistancePercentage.toFloat()), // 8월
+            BarEntry(13f, transferDistance(items.get(7).constantSpeedDrivingDistance).toFloat()), // 8월
             BarEntry(14f, 0f),
-            BarEntry(15f, items.get(8).constantSpeedDrivingDistancePercentage.toFloat()), // 9월
+            BarEntry(15f, transferDistance(items.get(8).constantSpeedDrivingDistance).toFloat()), // 9월
             BarEntry(16f, 0f),
-            BarEntry(17f, items.get(9).constantSpeedDrivingDistancePercentage.toFloat()), // 10월
+            BarEntry(17f, transferDistance(items.get(9).constantSpeedDrivingDistance).toFloat()), // 10월
             BarEntry(18f, 0f),
-            BarEntry(19f, items.get(10).constantSpeedDrivingDistancePercentage.toFloat()), // 11월
+            BarEntry(19f, transferDistance(items.get(10).constantSpeedDrivingDistance).toFloat()), // 11월
             BarEntry(20f,0f),
-            BarEntry(21f,items.get(11).constantSpeedDrivingDistancePercentage.toFloat()) // 12월
+            BarEntry(21f,transferDistance(items.get(11).constantSpeedDrivingDistance).toFloat()) // 12월
         )
 
         val dataSet = BarDataSet(entries, "Sample Data")
@@ -1369,5 +1361,6 @@ class ConstantSpeedDrivingActivity:BaseActivity() {
 
         layout_barchart_constant_speed.invalidate() // refresh
     }
+
 
 }
