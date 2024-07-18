@@ -473,6 +473,11 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                         tv_low_speed_percent.text = 0.0.toString()
                         tv_etc_speed_percent.text = 0.0.toString()
 
+
+                        tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
                         setRecentBarChartAsDefault()
 
                         setHighSpeedDrivingChartWidthByPercent(0f)
@@ -490,6 +495,11 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                 tv_high_speed_percent.text = 0.0.toString()
                 tv_low_speed_percent.text = 0.0.toString()
                 tv_etc_speed_percent.text = 0.0.toString()
+
+
+                tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
                 setRecentBarChartAsDefault()
 

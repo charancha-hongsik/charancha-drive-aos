@@ -168,8 +168,8 @@ class BestDrivingActivity:BaseRefreshActivity() {
     }
 
     private fun setRecentDrivingDistance(){
-        tv_driving_info1.text = "최근 1일 평균 최적 주행"
-        tv_driving_info2.text = "최근 내 차의\n최적 주행 비율이에요"
+        tv_date1.text = convertDateFormat(recentStartTime)
+        tv_date2.text = convertDateFormat(recentStartTime)
 
         apiService().getRecentDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
@@ -189,8 +189,11 @@ class BestDrivingActivity:BaseRefreshActivity() {
                         tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.average.optimalDrivingPercentage) + "%"
                         tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
 
-                        tv_date1.text = convertDateFormat(recentDrivingDistance.recentStartTime)
-                        tv_date2.text = convertDateFormat(recentDrivingDistance.recentStartTime)
+                        tv_driving_info1.text = "최근 1일 평균 최적 주행"
+                        tv_driving_info2.text = "최근 내 차의\n최적 주행 비율이에요"
+
+                        tv_date1.text = convertDateFormat(recentStartTime)
+                        tv_date2.text = convertDateFormat(recentStartTime)
 
                         setExtraSpeedDrivingChartWidthByPercent(recentDrivingDistance.average.optimalDrivingPercentage.toFloat()/100)
 
@@ -229,6 +232,12 @@ class BestDrivingActivity:BaseRefreshActivity() {
                         tv_best_percent1.text = "0.0"
                         tv_best_percent2.text = "0.0"
                         tv_diff_percent.text = "+0.0% 증가"
+
+                        tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
+                        setExtraSpeedDrivingChartWidthByPercent(0f)
+
                     }
 
 

@@ -83,8 +83,20 @@ open class BaseRefreshActivity: BaseActivity(){
                 }
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    TODO("Not yet implemented")
-                }
+                    PreferenceUtil.putPref(this@BaseRefreshActivity, PreferenceUtil.ACCESS_TOKEN, "")
+                    PreferenceUtil.putPref(this@BaseRefreshActivity, PreferenceUtil.REFRESH_TOKEN, "")
+                    PreferenceUtil.putPref(this@BaseRefreshActivity, PreferenceUtil.EXPIRES_IN, "")
+                    PreferenceUtil.putPref(this@BaseRefreshActivity, PreferenceUtil.REFRESH_EXPIRES_IN, "")
+                    PreferenceUtil.putPref(this@BaseRefreshActivity, PreferenceUtil.TOKEN_TYPE, "")
+                    PreferenceUtil.putPref(this@BaseRefreshActivity, PreferenceUtil.KEYLESS_ACCOUNT, "")
+                    PreferenceUtil.putPref(this@BaseRefreshActivity, PreferenceUtil.KEYLESS_ACCOUNT_EXPIRE, "")
+                    PreferenceUtil.putPref(this@BaseRefreshActivity, PreferenceUtil.OAUTH_PROVIDER, "")
+                    PreferenceUtil.putPref(this@BaseRefreshActivity, PreferenceUtil.ID_TOKEN, "")
+                    PreferenceUtil.putPref(this@BaseRefreshActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
+                    PreferenceUtil.putPref(this@BaseRefreshActivity, PreferenceUtil.USER_CARID, "")
+
+                    startActivity(Intent(this@BaseRefreshActivity, LoginActivity::class.java))
+                    finish()                }
 
             })
         }?: run{
