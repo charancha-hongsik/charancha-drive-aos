@@ -28,6 +28,8 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -67,7 +69,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         apiService().getDrivingHistories(
             "Bearer " + PreferenceUtil.getPref(this@MyDriveHistoryActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,
             10,
-            "ASC",
+            "DESC",
             null,
             null,
             "startTime",
@@ -112,10 +114,14 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
             val tv_end_time = listItemView!!.findViewById<TextView>(R.id.tv_end_time)
 
 
-            tvDate.text = driveItem?.createdAt
+            tvDate.text = transformTimeToDate(driveItem?.createdAt!!)
             tv_distance.text = transferDistanceWithUnit(driveItem?.totalDistance!!, PreferenceUtil.getPref(context,  PreferenceUtil.KM_MILE, "km")!!)
             tv_start_time.text = transformTimeToHHMM(driveItem?.startTime!!)
             tv_end_time.text = transformTimeToHHMM(driveItem?.endTime!!)
+
+            Log.d("testestest","testsetseestse startTime:: " + driveItem?.startTime!!)
+            Log.d("testestest","testsetseestse endTime :: " + driveItem?.endTime!!)
+
 
 
 
@@ -138,14 +144,37 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         }
 
         private fun transformTimeToHHMM(isoDate: String):String{
-            // ISO 8601 형식의 날짜 문자열을 ZonedDateTime 객체로 변환
-            val zonedDateTime = ZonedDateTime.parse(isoDate)
+            // UTC 시간 파싱
+            val utcTime = LocalDateTime.parse(isoDate, DateTimeFormatter.ISO_DATE_TIME)
 
-            // 원하는 형식의 DateTimeFormatter 생성
-            val formatter = DateTimeFormatter.ofPattern("HH:mm", Locale.KOREAN)
+            // ZonedDateTime으로 변환
+            val zonedUtcTime = utcTime.atZone(ZoneId.of("UTC"))
+
+            // 한국 시간대로 변환 (UTC+9)
+            val kstTime = zonedUtcTime.withZoneSameInstant(ZoneId.of("Asia/Seoul"))
+
+            // HH:mm 형식으로 변환
+            val kstTimeStr = kstTime.format(DateTimeFormatter.ofPattern("HH:mm"))
 
             // 포맷된 문자열 반환
-            return zonedDateTime.format(formatter)
+            return kstTimeStr
+        }
+
+        private fun transformTimeToDate(isoDate: String):String{
+            // UTC 시간 파싱
+            val utcTime = LocalDateTime.parse(isoDate, DateTimeFormatter.ISO_DATE_TIME)
+
+            // ZonedDateTime으로 변환
+            val zonedUtcTime = utcTime.atZone(ZoneId.of("UTC"))
+
+            // 한국 시간대로 변환 (UTC+9)
+            val kstTime = zonedUtcTime.withZoneSameInstant(ZoneId.of("Asia/Seoul"))
+
+            // HH:mm 형식으로 변환
+            val kstTimeStr = kstTime.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일"))
+
+            // 포맷된 문자열 반환
+            return kstTimeStr
         }
 
     }
