@@ -258,9 +258,9 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
     }
 
     private fun setRecentDrivingDistance(){
-        tv_driving_info1.text = "최근 1일 평균 고속 주행"
-        tv_driving_info2.text = "내 차는 고속 주행\n비율이 높을수록 좋아요"
-        tv_driving_info3.text = "최근 내 차의\n고속 주행 비율율이에요"
+
+        tv_date1.text = convertDateFormat(recentStartTime)
+        tv_date2.text = convertDateFormat(recentStartTime)
 
         apiService().getRecentDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@HighSpeedDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
@@ -282,12 +282,16 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                         tv_low_speed_percent.text = String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.average.lowSpeedDrivingDistancePercentage) + "%"
                         tv_etc_speed_percent.text = String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.average.etcSpeedDrivingDistancePercentage) + "%"
 
+                        tv_driving_info1.text = "최근 1일 평균 고속 주행"
+                        tv_driving_info2.text = "내 차는 고속 주행\n비율이 높을수록 좋아요"
+                        tv_driving_info3.text = "최근 내 차의\n고속 주행 비율율이에요"
+
                         setHighSpeedDrivingChartWidthByPercent(recentDrivingDistance.average.highSpeedDrivingDistancePercentage.toFloat()/100)
                         setLowSpeedDrivingChartWidthByPercent(recentDrivingDistance.average.lowSpeedDrivingDistancePercentage.toFloat()/100)
                         setExtraSpeedDrivingChartWidthByPercent(recentDrivingDistance.average.etcSpeedDrivingDistancePercentage.toFloat()/100)
 
-                        tv_date1.text = convertDateFormat(recentDrivingDistance.recentStartTime)
-                        tv_date2.text = convertDateFormat(recentDrivingDistance.recentStartTime)
+                        tv_date1.text = convertDateFormat(recentStartTime)
+                        tv_date2.text = convertDateFormat(recentStartTime)
 
                         apiService().getDrivingDistanceGraphData(
                             "Bearer " + PreferenceUtil.getPref(this@HighSpeedDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
@@ -327,6 +331,13 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                         tv_low_speed_percent.text = 0.0.toString()
                         tv_etc_speed_percent.text = 0.0.toString()
 
+                        setRecentBarChartAsDefault()
+
+                        setHighSpeedDrivingChartWidthByPercent(0f)
+                        setLowSpeedDrivingChartWidthByPercent(0f)
+                        setExtraSpeedDrivingChartWidthByPercent(0f)
+
+
                     }
                 }else{
 
@@ -334,11 +345,17 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                tv_total_percent.text = "0,0"
+                tv_total_percent.text = "0.0"
                 tv_diff_percent.text = "+0.0% 증가"
                 tv_high_speed_percent.text = 0.0.toString()
                 tv_low_speed_percent.text = 0.0.toString()
                 tv_etc_speed_percent.text = 0.0.toString()
+
+                setRecentBarChartAsDefault()
+
+                setHighSpeedDrivingChartWidthByPercent(0f)
+                setLowSpeedDrivingChartWidthByPercent(0f)
+                setExtraSpeedDrivingChartWidthByPercent(0f)
             }
 
         })
@@ -348,9 +365,8 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
     }
 
     private fun setMonthDrivingDistance(){
-        tv_driving_info1.text = "1개월 평균 고속 주행"
-        tv_driving_info2.text = "내 차는 고속 주행\n비율이 높을수록 좋아요"
-        tv_driving_info3.text = "1개월 내 차의\n고속 주행 비율이에요"
+        tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+        tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
 
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@HighSpeedDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
@@ -367,7 +383,8 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                         GetDrivingStatisticsResponse::class.java
                     )
 
-                    runOnUiThread{
+
+                    if(drivingDistance.total.totalDistance != 0.0){
                         tv_total_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.highSpeedDrivingDistancePercentage)
                         tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.highSpeedDrivingDistancePercentage) + "% 증가"
                         tv_high_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.highSpeedDrivingDistancePercentage) + "%"
@@ -378,25 +395,47 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                         setLowSpeedDrivingChartWidthByPercent(drivingDistance.average.lowSpeedDrivingDistancePercentage.toFloat()/100)
                         setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.etcSpeedDrivingDistancePercentage.toFloat()/100)
 
-                        tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
-                        tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+                        tv_driving_info1.text = "1개월 평균 고속 주행"
+                        tv_driving_info2.text = "내 차는 고속 주행\n비율이 높을수록 좋아요"
+                        tv_driving_info3.text = "1개월 내 차의\n고속 주행 비율이에요"
+                    }else{
+                        tv_total_percent.text = "0.0"
+                        tv_diff_percent.text = "+0.0% 증가"
+                        tv_high_speed_percent.text = 0.0.toString()
+                        tv_low_speed_percent.text = 0.0.toString()
+                        tv_etc_speed_percent.text = 0.0.toString()
+
+                        setRecentBarChartAsDefault()
+
+                        setHighSpeedDrivingChartWidthByPercent(0f)
+                        setLowSpeedDrivingChartWidthByPercent(0f)
+                        setExtraSpeedDrivingChartWidthByPercent(0f)
                     }
+
                 }
 
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                TODO("Not yet implemented")
+                tv_total_percent.text = "0.0"
+                tv_diff_percent.text = "+0.0% 증가"
+                tv_high_speed_percent.text = 0.0.toString()
+                tv_low_speed_percent.text = 0.0.toString()
+                tv_etc_speed_percent.text = 0.0.toString()
+
+                setRecentBarChartAsDefault()
+
+                setHighSpeedDrivingChartWidthByPercent(0f)
+                setLowSpeedDrivingChartWidthByPercent(0f)
+                setExtraSpeedDrivingChartWidthByPercent(0f)
             }
 
         })
     }
 
     private fun setSixMonthDrivingDistance(){
-        tv_driving_info1.text = "6개월 평균 고속 주행"
-        tv_driving_info2.text = "내 차는 고속 주행\n비율이 높을수록 좋아요"
-        tv_driving_info3.text = "6개월 내 차의\n고속 주행 비율이에요"
-
+        tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
+        tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
 
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@HighSpeedDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
@@ -413,34 +452,58 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                         GetDrivingStatisticsResponse::class.java
                     )
 
-                    tv_total_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.highSpeedDrivingDistancePercentage)
-                    tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.highSpeedDrivingDistancePercentage) + "% 증가"
-                    tv_high_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.highSpeedDrivingDistancePercentage) + "%"
-                    tv_low_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.lowSpeedDrivingDistancePercentage) + "%"
-                    tv_etc_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.etcSpeedDrivingDistancePercentage) + "%"
+                    if(drivingDistance.total.totalDistance != 0.0){
+                        tv_total_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.highSpeedDrivingDistancePercentage)
+                        tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.highSpeedDrivingDistancePercentage) + "% 증가"
+                        tv_high_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.highSpeedDrivingDistancePercentage) + "%"
+                        tv_low_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.lowSpeedDrivingDistancePercentage) + "%"
+                        tv_etc_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.etcSpeedDrivingDistancePercentage) + "%"
 
-                    tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
-                    tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
+                        tv_driving_info1.text = "6개월 평균 고속 주행"
+                        tv_driving_info2.text = "내 차는 고속 주행\n비율이 높을수록 좋아요"
+                        tv_driving_info3.text = "6개월 내 차의\n고속 주행 비율이에요"
 
-                    setHighSpeedDrivingChartWidthByPercent(drivingDistance.average.highSpeedDrivingDistancePercentage.toFloat()/100)
-                    setLowSpeedDrivingChartWidthByPercent(drivingDistance.average.lowSpeedDrivingDistancePercentage.toFloat()/100)
-                    setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.etcSpeedDrivingDistancePercentage.toFloat()/100)
+                        setHighSpeedDrivingChartWidthByPercent(drivingDistance.average.highSpeedDrivingDistancePercentage.toFloat()/100)
+                        setLowSpeedDrivingChartWidthByPercent(drivingDistance.average.lowSpeedDrivingDistancePercentage.toFloat()/100)
+                        setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.etcSpeedDrivingDistancePercentage.toFloat()/100)
+                    }else{
+                        tv_total_percent.text = "0.0"
+                        tv_diff_percent.text = "+0.0% 증가"
+                        tv_high_speed_percent.text = 0.0.toString()
+                        tv_low_speed_percent.text = 0.0.toString()
+                        tv_etc_speed_percent.text = 0.0.toString()
+
+                        setRecentBarChartAsDefault()
+
+                        setHighSpeedDrivingChartWidthByPercent(0f)
+                        setLowSpeedDrivingChartWidthByPercent(0f)
+                        setExtraSpeedDrivingChartWidthByPercent(0f)
+                    }
 
                 }
 
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                TODO("Not yet implemented")
+                tv_total_percent.text = "0.0"
+                tv_diff_percent.text = "+0.0% 증가"
+                tv_high_speed_percent.text = 0.0.toString()
+                tv_low_speed_percent.text = 0.0.toString()
+                tv_etc_speed_percent.text = 0.0.toString()
+
+                setRecentBarChartAsDefault()
+
+                setHighSpeedDrivingChartWidthByPercent(0f)
+                setLowSpeedDrivingChartWidthByPercent(0f)
+                setExtraSpeedDrivingChartWidthByPercent(0f)
             }
 
         })
     }
 
     private fun setYearDrivingDistance(){
-        tv_driving_info1.text = "1년 평균 고속 주행"
-        tv_driving_info2.text = "내 차는 고속 주행\n비율이 높을수록 좋아요"
-        tv_driving_info3.text = "1년 내 차의\n고속 주행 비율이에요"
+        tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
+        tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
 
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@HighSpeedDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
@@ -457,24 +520,51 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                         GetDrivingStatisticsResponse::class.java
                     )
 
-                    tv_total_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.highSpeedDrivingDistancePercentage)
-                    tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.highSpeedDrivingDistancePercentage) + "% 증가"
-                    tv_high_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.highSpeedDrivingDistancePercentage) + "%"
-                    tv_low_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.lowSpeedDrivingDistancePercentage) + "%"
-                    tv_etc_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.etcSpeedDrivingDistancePercentage) + "%"
+                    if(drivingDistance.total.totalDistance != 0.0){
+                        tv_total_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.highSpeedDrivingDistancePercentage)
+                        tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.highSpeedDrivingDistancePercentage) + "% 증가"
+                        tv_high_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.highSpeedDrivingDistancePercentage) + "%"
+                        tv_low_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.lowSpeedDrivingDistancePercentage) + "%"
+                        tv_etc_speed_percent.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.etcSpeedDrivingDistancePercentage) + "%"
 
-                    setHighSpeedDrivingChartWidthByPercent(drivingDistance.average.highSpeedDrivingDistancePercentage.toFloat()/100)
-                    setLowSpeedDrivingChartWidthByPercent(drivingDistance.average.lowSpeedDrivingDistancePercentage.toFloat()/100)
-                    setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.etcSpeedDrivingDistancePercentage.toFloat()/100)
+                        setHighSpeedDrivingChartWidthByPercent(drivingDistance.average.highSpeedDrivingDistancePercentage.toFloat()/100)
+                        setLowSpeedDrivingChartWidthByPercent(drivingDistance.average.lowSpeedDrivingDistancePercentage.toFloat()/100)
+                        setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.etcSpeedDrivingDistancePercentage.toFloat()/100)
 
-                    tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
-                    tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
+                        tv_driving_info1.text = "1년 평균 고속 주행"
+                        tv_driving_info2.text = "내 차는 고속 주행\n비율이 높을수록 좋아요"
+                        tv_driving_info3.text = "1년 내 차의\n고속 주행 비율이에요"
+                    }else{
+                        tv_total_percent.text = "0.0"
+                        tv_diff_percent.text = "+0.0% 증가"
+                        tv_high_speed_percent.text = 0.0.toString()
+                        tv_low_speed_percent.text = 0.0.toString()
+                        tv_etc_speed_percent.text = 0.0.toString()
+
+                        setRecentBarChartAsDefault()
+
+                        setHighSpeedDrivingChartWidthByPercent(0f)
+                        setLowSpeedDrivingChartWidthByPercent(0f)
+                        setExtraSpeedDrivingChartWidthByPercent(0f)
+                    }
+
+
 
                 }
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                TODO("Not yet implemented")
+                tv_total_percent.text = "0.0"
+                tv_diff_percent.text = "+0.0% 증가"
+                tv_high_speed_percent.text = 0.0.toString()
+                tv_low_speed_percent.text = 0.0.toString()
+                tv_etc_speed_percent.text = 0.0.toString()
+
+                setRecentBarChartAsDefault()
+
+                setHighSpeedDrivingChartWidthByPercent(0f)
+                setLowSpeedDrivingChartWidthByPercent(0f)
+                setExtraSpeedDrivingChartWidthByPercent(0f)
             }
 
         })
