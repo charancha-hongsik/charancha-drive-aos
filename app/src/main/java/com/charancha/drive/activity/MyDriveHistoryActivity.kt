@@ -119,12 +119,6 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
             tv_start_time.text = transformTimeToHHMM(driveItem?.startTime!!)
             tv_end_time.text = transformTimeToHHMM(driveItem?.endTime!!)
 
-            Log.d("testestest","testsetseestse startTime:: " + driveItem?.startTime!!)
-            Log.d("testestest","testsetseestse endTime :: " + driveItem?.endTime!!)
-
-
-
-
             btn_drive_history.setOnClickListener {
                 var intent = Intent(context, DetailDriveHistoryActivity::class.java)
                 intent.putExtra("tracking_id", driveItem?.id)

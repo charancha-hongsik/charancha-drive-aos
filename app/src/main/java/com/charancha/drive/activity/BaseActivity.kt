@@ -193,6 +193,57 @@ open class BaseActivity: AppCompatActivity(){
         }
     }
 
+    fun transformTimeToHHMM(isoDate: String):String{
+        // UTC 시간 파싱
+        val utcTime = LocalDateTime.parse(isoDate, DateTimeFormatter.ISO_DATE_TIME)
+
+        // ZonedDateTime으로 변환
+        val zonedUtcTime = utcTime.atZone(ZoneId.of("UTC"))
+
+        // 한국 시간대로 변환 (UTC+9)
+        val kstTime = zonedUtcTime.withZoneSameInstant(ZoneId.of("Asia/Seoul"))
+
+        // HH:mm 형식으로 변환
+        val kstTimeStr = kstTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+
+        // 포맷된 문자열 반환
+        return kstTimeStr
+    }
+
+    fun transformTimeToDate(isoDate: String):String{
+        // UTC 시간 파싱
+        val utcTime = LocalDateTime.parse(isoDate, DateTimeFormatter.ISO_DATE_TIME)
+
+        // ZonedDateTime으로 변환
+        val zonedUtcTime = utcTime.atZone(ZoneId.of("UTC"))
+
+        // 한국 시간대로 변환 (UTC+9)
+        val kstTime = zonedUtcTime.withZoneSameInstant(ZoneId.of("Asia/Seoul"))
+
+        // HH:mm 형식으로 변환
+        val kstTimeStr = kstTime.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일"))
+
+        // 포맷된 문자열 반환
+        return kstTimeStr
+    }
+
+    fun transformTimeToDateWithTime(isoDate: String):String{
+        // UTC 시간 파싱
+        val utcTime = LocalDateTime.parse(isoDate, DateTimeFormatter.ISO_DATE_TIME)
+
+        // ZonedDateTime으로 변환
+        val zonedUtcTime = utcTime.atZone(ZoneId.of("UTC"))
+
+        // 한국 시간대로 변환 (UTC+9)
+        val kstTime = zonedUtcTime.withZoneSameInstant(ZoneId.of("Asia/Seoul"))
+
+        // HH:mm 형식으로 변환
+        val kstTimeStr = kstTime.format(DateTimeFormatter.ofPattern("yyyy년 M월 d일\nHH시 mm분 ss초"))
+
+        // 포맷된 문자열 반환
+        return kstTimeStr
+    }
+
 
 
 }
