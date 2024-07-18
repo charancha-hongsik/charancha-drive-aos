@@ -31,7 +31,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*
 
-class HighSpeedDrivingActivity:BaseActivity() {
+class HighSpeedDrivingActivity:BaseRefreshActivity() {
     lateinit var layout_high_speed_percent: View
     lateinit var layout_high_speed_extra:View
     lateinit var layout_high_speed_background:ConstraintLayout

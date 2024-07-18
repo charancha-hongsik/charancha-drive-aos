@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAdjusters
 import java.util.*
 
-class DetailManageScoreActivity:BaseActivity(){
+class DetailManageScoreActivity:BaseRefreshActivity(){
     lateinit var tv_detail_managescroe_title: TextView
     lateinit var btn_back: ImageView
     lateinit var btn_choose_date: ImageView

@@ -40,7 +40,7 @@ import java.time.temporal.ChronoUnit
 import java.util.*
 
 
-class DetailDriveHistoryActivity: BaseActivity() {
+class DetailDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var tracking_id:String
 
     val polylines:MutableList<LatLng> = mutableListOf()

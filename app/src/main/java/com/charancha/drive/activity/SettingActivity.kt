@@ -23,7 +23,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.lang.reflect.Type
 
-class SettingActivity:BaseActivity(){
+class SettingActivity:BaseRefreshActivity(){
     lateinit var layout_select_distance_unit: CoordinatorLayout
     lateinit var persistent_bottom_sheet_distance: LinearLayout
     lateinit var behavior: BottomSheetBehavior<LinearLayout>

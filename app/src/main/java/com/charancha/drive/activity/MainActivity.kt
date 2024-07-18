@@ -53,7 +53,7 @@ import java.util.*
  * 5. 최근 주행 총점
  * 6.
  */
-class MainActivity : BaseActivity() {
+class MainActivity : BaseRefreshActivity() {
     lateinit var btnHistory: ImageButton
     private val mainViewModel: MainViewModel by viewModels()
 

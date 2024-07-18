@@ -33,7 +33,7 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 
-class MyDriveHistoryActivity: BaseActivity() {
+class MyDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var lvHistory:ListView
     lateinit var btn_filter: ImageView
     lateinit var btn_back:ImageView

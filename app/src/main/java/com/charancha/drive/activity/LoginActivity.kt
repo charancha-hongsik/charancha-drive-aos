@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View.*
 import android.webkit.*
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
 import com.charancha.drive.retrofit.request.SignInRequest
@@ -14,7 +13,6 @@ import com.charancha.drive.retrofit.request.SignUpRequest
 import com.charancha.drive.retrofit.response.GetMyCarInfoResponse
 import com.charancha.drive.retrofit.response.SignInResponse
 import com.charancha.drive.retrofit.response.TermsAgreeStatusResponse
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import okhttp3.MediaType.Companion.toMediaTypeOrNull

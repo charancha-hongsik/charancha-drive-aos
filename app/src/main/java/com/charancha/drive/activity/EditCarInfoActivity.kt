@@ -26,7 +26,7 @@ import retrofit2.Response
 import java.lang.reflect.Type
 
 
-class EditCarInfoActivity:BaseActivity() {
+class EditCarInfoActivity:BaseRefreshActivity() {
     lateinit var tv_car_no: TextView
     lateinit var tv_car_owner:TextView
     lateinit var tv_car_id:TextView

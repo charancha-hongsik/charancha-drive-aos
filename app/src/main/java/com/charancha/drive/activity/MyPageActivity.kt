@@ -18,7 +18,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.lang.reflect.Type
 
-class MyPageActivity:BaseActivity() {
+class MyPageActivity:BaseRefreshActivity() {
     lateinit var layout_nickname:ConstraintLayout
     lateinit var btn_drive_history:ConstraintLayout
     lateinit var btn_alarm_setting:ConstraintLayout

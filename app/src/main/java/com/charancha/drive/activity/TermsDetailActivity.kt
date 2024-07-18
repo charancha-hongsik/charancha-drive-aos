@@ -13,7 +13,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class TermsDetailActivity: BaseActivity() {
+class TermsDetailActivity: BaseRefreshActivity() {
     lateinit var tvTermsTitle: TextView
     lateinit var tvTermsContents: TextView
     lateinit var btnBackTerm:ImageView

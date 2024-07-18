@@ -19,7 +19,7 @@ import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
 
 
-class OnBoardingActivity: AppCompatActivity() {
+class OnBoardingActivity: BaseRefreshActivity() {
     lateinit var viewpagerOnbaording: ViewPager2
     lateinit var tvOnbaordingText1: TextView
     lateinit var tvOnbaordingText2: TextView

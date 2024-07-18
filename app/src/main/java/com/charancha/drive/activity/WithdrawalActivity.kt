@@ -13,7 +13,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class WithdrawalActivity:BaseActivity() {
+class WithdrawalActivity:BaseRefreshActivity() {
     lateinit var ib_terms1:ImageView
     lateinit var tv_confirm_withdrawal:TextView
     lateinit var tv_cancel_withdrawal:TextView

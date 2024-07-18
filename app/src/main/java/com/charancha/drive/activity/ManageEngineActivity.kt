@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.charancha.drive.R
 
-class ManageEngineActivity:BaseActivity() {
+class ManageEngineActivity:BaseRefreshActivity() {
     lateinit var btn_back: ImageView
     lateinit var view_normal_speed_driving_chart:View
     lateinit var view_optimal_driving_chart:View

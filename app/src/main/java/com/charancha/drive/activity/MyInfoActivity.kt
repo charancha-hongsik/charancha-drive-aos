@@ -21,7 +21,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MyInfoActivity:BaseActivity() {
+class MyInfoActivity:BaseRefreshActivity() {
     lateinit var btn_back:ImageView
     lateinit var tv_nickname:TextView
     lateinit var tv_withdrawal:TextView

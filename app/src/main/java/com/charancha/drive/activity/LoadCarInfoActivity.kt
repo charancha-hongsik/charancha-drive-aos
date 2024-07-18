@@ -21,7 +21,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class LoadCarInfoActivity:BaseActivity() {
+class LoadCarInfoActivity:BaseRefreshActivity() {
     lateinit var iv_animation:ImageView
     lateinit var animation_parent: ConstraintLayout
     lateinit var ib_arrow_register_car:ImageButton

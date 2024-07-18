@@ -29,7 +29,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*
 
-class ConstantSpeedDrivingActivity:BaseActivity() {
+class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
     lateinit var layout_const_speed_percent: View
     lateinit var layout_const_speed_extra:View
     lateinit var layout_const_speed_background:ConstraintLayout

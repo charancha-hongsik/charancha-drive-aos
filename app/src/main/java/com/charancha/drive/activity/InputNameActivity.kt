@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
 
-class InputNameActivity: AppCompatActivity() {
+class InputNameActivity: BaseRefreshActivity() {
     lateinit var et_name:EditText
     lateinit var btn_start: Button
 

@@ -28,7 +28,7 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 
-class DrivenTimeActivity:BaseActivity() {
+class DrivenTimeActivity:BaseRefreshActivity() {
     lateinit var btn_back:ImageView
     lateinit var layout_barchart_time:BarChart
     lateinit var layout_linechart_time:LineChart

@@ -28,7 +28,7 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 
-class AverageDrivenDistanceActivity:BaseActivity() {
+class AverageDrivenDistanceActivity:BaseRefreshActivity() {
     lateinit var btn_back:ImageView
     lateinit var layout_barchart_distance:BarChart
     lateinit var btn_recent_drive:TextView

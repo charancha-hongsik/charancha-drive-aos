@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.widget.ImageView
 import com.charancha.drive.R
 
-class NotificationActivity:BaseActivity() {
+class NotificationActivity:BaseRefreshActivity() {
     lateinit var btn_all_noti: ImageView
     lateinit var btn_drive_history: ImageView
     lateinit var btn_marketing: ImageView
