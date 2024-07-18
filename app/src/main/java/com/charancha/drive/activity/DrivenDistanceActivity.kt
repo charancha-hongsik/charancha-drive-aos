@@ -2143,9 +2143,17 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
                         GetRecentDrivingStatisticsResponse::class.java
                     )
 
+                    tv_date1.text = convertDateFormat(recentStartTime)
+                    tv_date2.text = convertDateFormat(recentStartTime)
+                    tv_date3.text = convertDateFormat(recentStartTime)
+
                     if(recentDrivingDistance.isRecent){
                         recentStartTime = recentDrivingDistance.recentStartTime
                         recentEndTime = recentDrivingDistance.recentEndTime
+
+                        tv_date1.text = convertDateFormat(recentStartTime)
+                        tv_date2.text = convertDateFormat(recentStartTime)
+                        tv_date3.text = convertDateFormat(recentStartTime)
 
                         tv_total_distance.text = transferDistance(recentDrivingDistance.total.totalDistance)
                         tv_diff_distance.visibility = VISIBLE
@@ -2165,10 +2173,6 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
                             transferDistance(recentDrivingDistance.total.totalDistance) + distance_unit,
                             resources.getColor(R.color.pri_500)
                         )
-
-                        tv_date1.text = convertDateFormat(recentDrivingDistance.recentStartTime)
-                        tv_date2.text = convertDateFormat(recentDrivingDistance.recentStartTime)
-                        tv_date3.text = convertDateFormat(recentDrivingDistance.recentStartTime)
 
 
                         apiService().getDrivingDistanceGraphData(
@@ -2198,18 +2202,20 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
                                     setRecentLineChart(getDrivingGraphDataResponse.items)
                                 }else{
                                     setRecentBarChartAsDefault()
+                                    setRecentLineChartAsDefault()
                                 }
                             }
 
                             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                                 setRecentBarChartAsDefault()
-                            }
+                                setRecentLineChartAsDefault()                            }
 
                         })
 
 
                     }else{
                         setRecentBarChartAsDefault()
+                        setRecentLineChartAsDefault()
                         tv_total_distance.text = transferDistance(0.0)
                         tv_diff_distance.text = "+" + transferDistance(0.0) + distance_unit + " 증가"
                         tv_average_distance.text = transferDistance(0.0)
@@ -2230,6 +2236,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 setRecentBarChartAsDefault()
+                setRecentLineChartAsDefault()
                 tv_total_distance.text = transferDistance(0.0)
                 tv_diff_distance.text = "+" + transferDistance(0.0) + distance_unit + " 증가"
                 tv_average_distance.text = transferDistance(0.0)
@@ -2251,6 +2258,9 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
     }
 
     private fun setMonthDrivingDistance(){
+        tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+        tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+        tv_date3.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
 
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
@@ -2276,11 +2286,6 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
                         tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
 
                         tv_driving_info4.text = "1개월 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요"
-
-
-                        tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
-                        tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
-                        tv_date3.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
 
                         tv_driving_info1.text = "1개월 평균 주행 거리"
                         tv_driving_info2.text = "내 차는 자주\n달릴수록 좋아요"
@@ -2343,6 +2348,11 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
 
     private fun setSixMonthDrivingDistance(){
 
+        tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
+        tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
+        tv_date3.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
+
+
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
@@ -2369,10 +2379,6 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
 
 
                         tv_driving_info4.text = "6개월 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요"
-
-                        tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
-                        tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
-                        tv_date3.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
 
                         tv_driving_info1.text = "6개월 평균 주행 거리"
                         tv_driving_info2.text = "내 차는 자주\n달릴수록 좋아요"
@@ -2420,9 +2426,9 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
     }
 
     private fun setYearDrivingDistance(){
-        tv_driving_info1.text = "1년 평균 주행 거리"
-        tv_driving_info2.text = "내 차는 자주\n달릴수록 좋아요"
-        tv_driving_info3.text = "1년 주행 거리를\n한눈에 확인해보세요!"
+        tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
+        tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
+        tv_date3.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
 
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
@@ -2446,10 +2452,9 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
                         tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
                         tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
 
-                        tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
-                        tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
-                        tv_date3.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
-
+                        tv_driving_info1.text = "1년 평균 주행 거리"
+                        tv_driving_info2.text = "내 차는 자주\n달릴수록 좋아요"
+                        tv_driving_info3.text = "1년 주행 거리를\n한눈에 확인해보세요!"
                         tv_driving_info4.text = "1년 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요"
 
                         tv_driving_info4.text = CommonUtil.getSpannableString(

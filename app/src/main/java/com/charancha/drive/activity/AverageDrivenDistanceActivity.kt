@@ -1149,9 +1149,8 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
     }
 
     private fun setRecentDrivingDistance(){
-        tv_driving_info1.text = "최근 1일 1회 평균 주행 거리"
-        tv_driving_info2.text = "1회 평균 주행 거리는 \n높을수록 좋아요"
-        tv_driving_info3.text = "최근 1회 주행 거리를\n한눈에 확인해보세요!"
+        tv_date1.text = convertDateFormat(recentStartTime)
+        tv_date2.text = convertDateFormat(recentStartTime)
 
         apiService().getRecentDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@AverageDrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
@@ -1174,8 +1173,13 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                         recentStartTime = recentDrivingDistance.recentStartTime
                         recentEndTime = recentDrivingDistance.recentEndTime
 
-                        tv_date1.text = convertDateFormat(recentDrivingDistance.recentStartTime)
-                        tv_date2.text = convertDateFormat(recentDrivingDistance.recentStartTime)
+                        tv_driving_info1.text = "최근 1일 1회 평균 주행 거리"
+                        tv_driving_info2.text = "1회 평균 주행 거리는 \n높을수록 좋아요"
+                        tv_driving_info3.text = "최근 1회 주행 거리를\n한눈에 확인해보세요!"
+
+
+                        tv_date1.text = convertDateFormat(recentStartTime)
+                        tv_date2.text = convertDateFormat(recentStartTime)
 
                         apiService().getDrivingDistancePerOneGraphData(
                             "Bearer " + PreferenceUtil.getPref(this@AverageDrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
@@ -1216,6 +1220,12 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                         tv_average_distance.text = transferDistance(0.0)
                         tv_max_distance.text = transferDistance(0.0)
                         tv_min_distance.text = transferDistance(0.0)
+
+                        tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
+                        setRecentBarChartAsDefault()
                     }
                 }else{
 
@@ -1228,6 +1238,12 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                 tv_average_distance.text = transferDistance(0.0)
                 tv_max_distance.text = transferDistance(0.0)
                 tv_min_distance.text = transferDistance(0.0)
+
+                tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
+                setRecentBarChartAsDefault()
             }
 
         })
@@ -1257,29 +1273,57 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                         GetDrivingStatisticsResponse::class.java
                     )
 
-                    tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
-                    tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+                    if(drivingDistance.average.totalDistance != 0.0){
+                        tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+                        tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
 
-                    tv_total_distance.text = transferDistance(drivingDistance.average.totalDistance)
-                    tv_diff_distance.text = "+" + transferDistance(drivingDistance.diffTotal.totalDistance) + distance_unit + " 증가"
-                    tv_average_distance.text = transferDistance(drivingDistance.average.totalDistance)
-                    tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
-                    tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
+                        tv_driving_info1.text = "1개월 1회 평균 주행 거리"
+                        tv_driving_info2.text = "1회 평균 주행 거리는 \n높을수록 좋아요"
+                        tv_driving_info3.text = "1개월 1회 주행 거리를\n한눈에 확인해보세요!"
+
+                        tv_total_distance.text = transferDistance(drivingDistance.average.totalDistance)
+                        tv_diff_distance.text = "+" + transferDistance(drivingDistance.diffTotal.totalDistance) + distance_unit + " 증가"
+                        tv_average_distance.text = transferDistance(drivingDistance.average.totalDistance)
+                        tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
+                        tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
+                    }else{
+                        tv_total_distance.text = transferDistance(0.0)
+                        tv_diff_distance.text = "+" + transferDistance(0.0) + distance_unit + " 증가"
+                        tv_average_distance.text = transferDistance(0.0)
+                        tv_max_distance.text = transferDistance(0.0)
+                        tv_min_distance.text = transferDistance(0.0)
+
+                        tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
+                        setRecentBarChartAsDefault()
+                    }
                 }
 
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                TODO("Not yet implemented")
+                tv_total_distance.text = transferDistance(0.0)
+                tv_diff_distance.text = "+" + transferDistance(0.0) + distance_unit + " 증가"
+                tv_average_distance.text = transferDistance(0.0)
+                tv_max_distance.text = transferDistance(0.0)
+                tv_min_distance.text = transferDistance(0.0)
+
+                tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
+                setRecentBarChartAsDefault()
             }
 
         })
     }
 
     private fun setSixMonthDrivingDistance(){
-        tv_driving_info1.text = "6개월 1회 평균 주행 거리"
-        tv_driving_info2.text = "1회 평균 주행 거리는 \n높을수록 좋아요"
-        tv_driving_info3.text = "6개월 1회 주행 거리를\n한눈에 확인해보세요!"
+        tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
+        tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
+
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@AverageDrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
@@ -1296,14 +1340,29 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                     )
 
 
-                    tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
-                    tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
+                    if(drivingDistance.average.totalDistance != 0.0){
+                        tv_driving_info1.text = "6개월 1회 평균 주행 거리"
+                        tv_driving_info2.text = "1회 평균 주행 거리는 \n높을수록 좋아요"
+                        tv_driving_info3.text = "6개월 1회 주행 거리를\n한눈에 확인해보세요!"
 
-                    tv_total_distance.text = transferDistance(drivingDistance.average.totalDistance)
-                    tv_diff_distance.text = "+" + transferDistance(drivingDistance.diffTotal.totalDistance) + distance_unit + " 증가"
-                    tv_average_distance.text = transferDistance(drivingDistance.average.totalDistance)
-                    tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
-                    tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
+                        tv_total_distance.text = transferDistance(drivingDistance.average.totalDistance)
+                        tv_diff_distance.text = "+" + transferDistance(drivingDistance.diffTotal.totalDistance) + distance_unit + " 증가"
+                        tv_average_distance.text = transferDistance(drivingDistance.average.totalDistance)
+                        tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
+                        tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
+                    }else{
+                        tv_total_distance.text = transferDistance(0.0)
+                        tv_diff_distance.text = "+" + transferDistance(0.0) + distance_unit + " 증가"
+                        tv_average_distance.text = transferDistance(0.0)
+                        tv_max_distance.text = transferDistance(0.0)
+                        tv_min_distance.text = transferDistance(0.0)
+
+                        tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
+                        setRecentBarChartAsDefault()
+                    }
                 }
 
             }
@@ -1316,9 +1375,6 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
     }
 
     private fun setYearDrivingDistance(){
-        tv_driving_info1.text = "1년 1회 평균 주행 거리"
-        tv_driving_info2.text = "1회 평균 주행 거리는 \n높을수록 좋아요"
-        tv_driving_info3.text = "1년 1회 주행 거리를\n한눈에 확인해보세요!"
 
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@AverageDrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
@@ -1335,14 +1391,33 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                         GetDrivingStatisticsResponse::class.java
                     )
 
-                    tv_total_distance.text = transferDistance(drivingDistance.average.totalDistance)
-                    tv_diff_distance.text = "+" + transferDistance(drivingDistance.diffTotal.totalDistance) + distance_unit + " 증가"
-                    tv_average_distance.text = transferDistance(drivingDistance.average.totalDistance)
-                    tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
-                    tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
+                    if(drivingDistance.average.totalDistance != 0.0){
 
-                    tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
-                    tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
+                        tv_total_distance.text = transferDistance(drivingDistance.average.totalDistance)
+                        tv_diff_distance.text = "+" + transferDistance(drivingDistance.diffTotal.totalDistance) + distance_unit + " 증가"
+                        tv_average_distance.text = transferDistance(drivingDistance.average.totalDistance)
+                        tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
+                        tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
+
+                        tv_driving_info1.text = "1년 1회 평균 주행 거리"
+                        tv_driving_info2.text = "1회 평균 주행 거리는 \n높을수록 좋아요"
+                        tv_driving_info3.text = "1년 1회 주행 거리를\n한눈에 확인해보세요!"
+
+                        tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
+                        tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
+                    }else{
+                        tv_total_distance.text = transferDistance(0.0)
+                        tv_diff_distance.text = "+" + transferDistance(0.0) + distance_unit + " 증가"
+                        tv_average_distance.text = transferDistance(0.0)
+                        tv_max_distance.text = transferDistance(0.0)
+                        tv_min_distance.text = transferDistance(0.0)
+
+                        tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
+                        setRecentBarChartAsDefault()
+                    }
 
 
                 }
@@ -1350,7 +1425,17 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                TODO("Not yet implemented")
+                tv_total_distance.text = transferDistance(0.0)
+                tv_diff_distance.text = "+" + transferDistance(0.0) + distance_unit + " 증가"
+                tv_average_distance.text = transferDistance(0.0)
+                tv_max_distance.text = transferDistance(0.0)
+                tv_min_distance.text = transferDistance(0.0)
+
+                tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
+                setRecentBarChartAsDefault()
             }
 
         })
