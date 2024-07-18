@@ -28,6 +28,7 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.*
 
 
 class MyDriveHistoryActivity: BaseActivity() {
@@ -100,7 +101,7 @@ class MyDriveHistoryActivity: BaseActivity() {
             val tv_distance = listItemView!!.findViewById<TextView>(R.id.tv_distance)
             val btn_drive_history = listItemView!!.findViewById<ConstraintLayout>(R.id.btn_drive_history)
             tvDate.text = driveItem?.createdAt
-            tv_distance.text = driveItem?.totalDistance.toString() + "m"
+            tv_distance.text = transferDistanceWithUnit(driveItem?.totalDistance!!, PreferenceUtil.getPref(context,  PreferenceUtil.KM_MILE, "km")!!)
 
 
             btn_drive_history.setOnClickListener {
@@ -111,5 +112,15 @@ class MyDriveHistoryActivity: BaseActivity() {
 
             return listItemView
         }
+
+        fun transferDistanceWithUnit(meters:Double, distance_unit:String):String{
+            if(distance_unit == "km"){
+                return String.format(Locale.KOREAN, "%.3fkm", meters / 1000)
+            }else{
+                val milesPerMeter = 0.000621371
+                return String.format(Locale.KOREAN, "%.3fmile",meters * milesPerMeter)
+            }
+        }
+
     }
 }

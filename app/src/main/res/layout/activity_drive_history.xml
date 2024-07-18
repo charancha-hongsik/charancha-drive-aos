@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/default_background"
+    android:background="@color/gray_50"
     tools:context=".activity.MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -90,6 +90,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:scrollbars="none"
+        android:divider="@color/gray_50"
+        android:dividerHeight="12dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="20dp"
