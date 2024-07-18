@@ -220,6 +220,7 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
         var max = 0
 
         for(item in items){
+            Log.d("testestestestest","testestestset :: " + item.distance)
             if(transferDistance(item.distance).toDouble() > max.toDouble())
                 max = transferDistance(item.distance).toDouble().toInt()
         }
