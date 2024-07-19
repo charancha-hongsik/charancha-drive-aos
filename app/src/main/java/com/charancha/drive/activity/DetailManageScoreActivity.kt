@@ -114,9 +114,6 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
         // listView에 adapter 연결
         listView_choose_date_own.adapter = dateAdapter
 
-
-
-
     }
 
     fun getDateList():MutableList<ChosenDate>{
