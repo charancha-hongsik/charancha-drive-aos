@@ -244,6 +244,30 @@ open class BaseActivity: AppCompatActivity(){
         return kstTimeStr
     }
 
+    fun getDateRange(dateStr:String):Pair<String, String>{
+        // 입력된 문자열을 파싱하여 연도와 월을 추출
+        val regex = Regex("(\\d{4})년 (\\d{1,2})월")
+        val matchResult = regex.find(dateStr)
+
+        if (matchResult != null) {
+            val (year, month) = matchResult.destructured
+            val yearInt = year.toInt()
+            val monthInt = month.toInt()
+
+            // 월의 첫 번째 날
+            val startOfMonth = LocalDateTime.of(yearInt, monthInt, 1, 0, 0, 0, 0)
+            val startOfMonthUTC = startOfMonth.atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT)
+
+            // 월의 마지막 날
+            val endOfMonth = startOfMonth.plusMonths(1).minusNanos(1)
+            val endOfMonthUTC = endOfMonth.atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT)
+
+            return Pair(endOfMonthUTC,startOfMonthUTC)
+        } else {
+            throw IllegalArgumentException("Invalid date format. Please use 'YYYY년 MM월'.")
+        }
+    }
+
 
 
 }
