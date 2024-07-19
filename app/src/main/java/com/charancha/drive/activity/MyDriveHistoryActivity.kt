@@ -173,7 +173,11 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                 }else if(btn_six_month.isSelected){
                     setInquireScope(getLastSixMonthsRangeString())
                     getHistories(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
+
+
                 }else if(btn_each_month.isSelected){
+
+
                     setInquireScope(getDateRangeString(selectedDate))
                     getHistories(getDateRange(selectedDate).second,getDateRange(selectedDate).first)
 
@@ -296,6 +300,9 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                         getDriveHistroyResponse.items.add(DriveItem("","","","","",false,"","",0.0,0.0))
 
                         lv_history.adapter = driveAdapter
+
+                        lv_history.visibility = VISIBLE
+                        layout_no_data.visibility = GONE
                     }else{
                         lv_history.visibility = GONE
                         layout_no_data.visibility = VISIBLE
@@ -543,7 +550,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
             val endOfMonth = startOfMonth.plusMonths(1).minusNanos(1)
             val endOfMonthUTC = endOfMonth.atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT)
 
-            return Pair(startOfMonthUTC, endOfMonthUTC)
+            return Pair(endOfMonthUTC,startOfMonthUTC)
         } else {
             throw IllegalArgumentException("Invalid date format. Please use 'YYYY년 MM월'.")
         }
