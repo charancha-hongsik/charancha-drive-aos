@@ -285,6 +285,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                         GetDriveHistoryResponse::class.java
                     )
 
+
                     if(getDriveHistroyResponse.items.size > 0){
                         val driveAdapter = DriveHistoryAdapter(
                             this@MyDriveHistoryActivity,
@@ -347,12 +348,12 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
 
 
 
-                tvDate.text = transformTimeToDate(driveItem?.createdAt!!)
+                tvDate.text = transformTimeToDate(driveItem?.startTime!!)
                 tv_distance.text = transferDistanceWithUnit(driveItem?.totalDistance!!, PreferenceUtil.getPref(context,  PreferenceUtil.KM_MILE, "km")!!)
                 tv_start_time.text = transformTimeToHHMM(driveItem?.startTime!!)
                 tv_end_time.text = transformTimeToHHMM(driveItem?.endTime!!)
 
-                tvDate2.text = transformTimeToDate(driveItem?.createdAt!!)
+                tvDate2.text = transformTimeToDate(driveItem?.startTime!!)
                 tv_distance2.text = transferDistanceWithUnit(driveItem?.totalDistance!!, PreferenceUtil.getPref(context,  PreferenceUtil.KM_MILE, "km")!!)
                 tv_start_time2.text = transformTimeToHHMM(driveItem?.startTime!!)
                 tv_end_time2.text = transformTimeToHHMM(driveItem?.endTime!!)

@@ -92,6 +92,8 @@ class MainActivity : BaseRefreshActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        Log.d("testestesset","testestestse :: " + PreferenceUtil.getPref(this@MainActivity, PreferenceUtil.USER_CARID, "")!!)
+
         setPieChart()
         setLineChartForBrakes(findViewById(R.id.chart_line_brakes))
         setLineChartForEngine(findViewById(R.id.chart_line_engine))
