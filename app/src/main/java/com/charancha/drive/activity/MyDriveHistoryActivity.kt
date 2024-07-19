@@ -285,7 +285,6 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                         GetDriveHistoryResponse::class.java
                     )
 
-
                     if(getDriveHistroyResponse.items.size > 0){
                         val driveAdapter = DriveHistoryAdapter(
                             this@MyDriveHistoryActivity,
