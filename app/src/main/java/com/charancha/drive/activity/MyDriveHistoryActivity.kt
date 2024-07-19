@@ -331,11 +331,21 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
 
                 val driveItem = getItem(position)
 
+                val layout_not_active = listItemView!!.findViewById<LinearLayout>(R.id.layout_not_active)
+                val layout_active = listItemView!!.findViewById<LinearLayout>(R.id.layout_active)
+
+                val btn_drive_history = listItemView!!.findViewById<ConstraintLayout>(R.id.btn_drive_history)
+
                 val tvDate = listItemView!!.findViewById<TextView>(R.id.tv_date)
                 val tv_distance = listItemView!!.findViewById<TextView>(R.id.tv_distance)
-                val btn_drive_history = listItemView!!.findViewById<ConstraintLayout>(R.id.btn_drive_history)
                 val tv_start_time = listItemView!!.findViewById<TextView>(R.id.tv_start_time)
                 val tv_end_time = listItemView!!.findViewById<TextView>(R.id.tv_end_time)
+
+                val tvDate2 = listItemView!!.findViewById<TextView>(R.id.tv_date2)
+                val tv_distance2 = listItemView!!.findViewById<TextView>(R.id.tv_distance2)
+                val tv_start_time2 = listItemView!!.findViewById<TextView>(R.id.tv_start_time2)
+                val tv_end_time2 = listItemView!!.findViewById<TextView>(R.id.tv_end_time2)
+
 
 
                 tvDate.text = transformTimeToDate(driveItem?.createdAt!!)
@@ -343,10 +353,27 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                 tv_start_time.text = transformTimeToHHMM(driveItem?.startTime!!)
                 tv_end_time.text = transformTimeToHHMM(driveItem?.endTime!!)
 
-                btn_drive_history.setOnClickListener {
-                    var intent = Intent(context, DetailDriveHistoryActivity::class.java)
-                    intent.putExtra("tracking_id", driveItem?.id)
-                    context.startActivity(intent)
+                tvDate2.text = transformTimeToDate(driveItem?.createdAt!!)
+                tv_distance2.text = transferDistanceWithUnit(driveItem?.totalDistance!!, PreferenceUtil.getPref(context,  PreferenceUtil.KM_MILE, "km")!!)
+                tv_start_time2.text = transformTimeToHHMM(driveItem?.startTime!!)
+                tv_end_time2.text = transformTimeToHHMM(driveItem?.endTime!!)
+
+                if(driveItem!!.isActive){
+                    layout_not_active.visibility = GONE
+                    layout_active.visibility = VISIBLE
+
+                    btn_drive_history.isClickable = false
+
+                    btn_drive_history.setOnClickListener {
+                        var intent = Intent(context, DetailDriveHistoryActivity::class.java)
+                        intent.putExtra("tracking_id", driveItem?.id)
+                        context.startActivity(intent)
+                    }
+                }else{
+                    layout_not_active.visibility = VISIBLE
+                    layout_active.visibility = GONE
+
+                    btn_drive_history.isClickable = false
                 }
 
                 return listItemView
