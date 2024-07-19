@@ -71,7 +71,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
     fun getHistoriesMore(meta:Meta, histories: MutableList<DriveItem>){
         apiService().getDrivingHistories(
             "Bearer " + PreferenceUtil.getPref(this@MyDriveHistoryActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,
-            1,
+            30,
             "DESC",
             meta.afterCursor,
             null,
@@ -79,7 +79,6 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
             "",
             "").enqueue(object: Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                Log.d("testestestset","testestsetse :: " + response.code())
                 if(response.code() == 200){
                     val getDriveHistroyResponse = Gson().fromJson(
                         response.body()?.string(),
@@ -102,7 +101,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
     fun getHistories(){
         apiService().getDrivingHistories(
             "Bearer " + PreferenceUtil.getPref(this@MyDriveHistoryActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,
-            1,
+            30,
             "DESC",
             null,
             null,
