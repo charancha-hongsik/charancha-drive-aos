@@ -25,10 +25,10 @@ import com.charancha.drive.CustomDialog
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.PreferenceUtil.HAVE_BEEN_HOME
 import com.charancha.drive.R
+import com.charancha.drive.retrofit.response.GetManageScoreResponse
 import com.charancha.drive.retrofit.response.GetMyCarInfoResponse
 import com.charancha.drive.service.BluetoothService
 import com.charancha.drive.service.CallApiService
-import com.charancha.drive.viewmodel.MainViewModel
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.XAxis
@@ -41,6 +41,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.lang.reflect.Type
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.util.*
 
 
@@ -65,6 +69,9 @@ class MainActivity : BaseRefreshActivity() {
     lateinit var layout_recent_manage_score:ConstraintLayout
     lateinit var tv_car_name:TextView
     lateinit var tv_car_no:TextView
+    lateinit var tv_app_days2:TextView
+    lateinit var tv_average_score:TextView
+    lateinit var tv_increase:TextView
 
     var checkingPermission = false
 
@@ -91,8 +98,6 @@ class MainActivity : BaseRefreshActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        Log.d("testestesset","testestestse :: " + PreferenceUtil.getPref(this@MainActivity, PreferenceUtil.USER_CARID, "")!!)
 
         setPieChart()
         setLineChartForBrakes(findViewById(R.id.chart_line_brakes))
@@ -130,6 +135,7 @@ class MainActivity : BaseRefreshActivity() {
         setBtn()
         setCarInfo()
         setAlarm()
+        getManageScoreForAMonth()
     }
 
     fun checkLocation(){
@@ -274,6 +280,11 @@ class MainActivity : BaseRefreshActivity() {
         layout_recent_manage_score.setOnClickListener{
             startActivity(Intent(this@MainActivity, DetailManageScoreActivity::class.java).putExtra("title","최근 관리 점수"))
         }
+
+        tv_app_days2 = findViewById(R.id.tv_app_days2)
+        tv_average_score = findViewById(R.id.tv_average_score)
+        tv_increase = findViewById(R.id.tv_increase)
+
 
 
     }
@@ -642,6 +653,8 @@ class MainActivity : BaseRefreshActivity() {
                                         GetMyCarInfoResponse::class.java
                                     )
 
+                                    tv_app_days2.text = convertUtcToDaysSince(getMyCarInfoResponse.createdAt)
+
                                     PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.id)
                                     tv_car_name.setText(getMyCarInfoResponse.carName)
                                     tv_car_no.setText(getMyCarInfoResponse.vehicleIdentificationNumber)
@@ -670,5 +683,57 @@ class MainActivity : BaseRefreshActivity() {
             }
         })
     }
+
+    fun convertUtcToDaysSince(utcTimeStr: String): String {
+        // UTC 시간 파싱
+        val utcTime = LocalDateTime.parse(utcTimeStr, DateTimeFormatter.ISO_DATE_TIME)
+
+        // 현재 한국 시간
+        val currentKstTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"))
+
+        // 일수 차이 계산
+        val daysBetween = ChronoUnit.DAYS.between(utcTime, currentKstTime)
+
+        return "${daysBetween + 1}일째"
+    }
+
+    fun getManageScoreForAMonth(){
+        apiService().getManageScoreStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@MainActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            getCurrentAndPastTimeForISO(29).second,
+            getCurrentAndPastTimeForISO(29).first).enqueue(object:
+            Callback<ResponseBody>{
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200){
+                    val getManageScoreResponse = Gson().fromJson(
+                        response.body()?.string(),
+                        GetManageScoreResponse::class.java
+                    )
+
+                    tv_average_score.text = getManageScoreResponse.average.totalEngineScore.toString()
+                    if(getManageScoreResponse.diffAverage.totalEngineScore == 0.0){
+                        tv_increase.text = "변동 없음"
+                        tv_increase.setTextColor(resources.getColor(R.color.gray_500))
+                    }else if(getManageScoreResponse.diffAverage.totalEngineScore > 0.0){
+                        tv_increase.text = "+" + getManageScoreResponse.diffAverage.totalEngineScore + "점 증가"
+                        tv_increase.setTextColor(resources.getColor(R.color.pri_500))
+                    }else if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
+                        tv_increase.text = "-" + getManageScoreResponse.diffAverage.totalEngineScore + "점 하락"
+                        tv_increase.setTextColor(resources.getColor(R.color.sec_500))
+                    }
+
+
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+            }
+
+        })
+    }
+
+
 
 }
