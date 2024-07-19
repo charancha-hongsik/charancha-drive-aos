@@ -362,17 +362,15 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                     layout_active.visibility = VISIBLE
 
                     btn_drive_history.isClickable = false
-
-                    btn_drive_history.setOnClickListener {
-                        var intent = Intent(context, DetailDriveHistoryActivity::class.java)
-                        intent.putExtra("tracking_id", driveItem?.id)
-                        context.startActivity(intent)
-                    }
                 }else{
                     layout_not_active.visibility = VISIBLE
                     layout_active.visibility = GONE
+                }
 
-                    btn_drive_history.isClickable = false
+                btn_drive_history.setOnClickListener {
+                    var intent = Intent(context, DetailDriveHistoryActivity::class.java)
+                    intent.putExtra("tracking_id", driveItem?.id)
+                    context.startActivity(intent)
                 }
 
                 return listItemView

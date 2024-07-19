@@ -179,4 +179,16 @@ interface ApiServiceInterface {
                                 @Query("criteriaTime") criteriaTime: String,
                                 @Query("minimumTimeUnit") minimumTimeUnit: String): Call<ResponseBody>
 
+    // 관리 점수 통계 조회
+    @GET("api/v1/cars/-/user-cars/{userCarId}/score/-/statistics")
+    fun getManageScoreStatistics(@Header("Authorization") token: String,
+                                      @Path("userCarId") userCarId: String,
+                                      @Query("startTime") order: String,
+                                      @Query("endTime") afterCursor: String): Call<ResponseBody>
+
+    // 최근 관리 점수 통계 조회
+    @GET("api/v1/cars/-/user-cars/{userCarId}/score/-/statistics")
+    fun getRecentManageScoreStatistics(@Header("Authorization") token: String,
+                                 @Path("userCarId") userCarId: String): Call<ResponseBody>
+
 }

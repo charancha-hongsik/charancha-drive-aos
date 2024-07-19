@@ -7,5 +7,7 @@ data class GetManageScoreResponse(
     val diffTotal:ManageScore,
     val diffMax:ManageScore,
     val diffMin:ManageScore,
-    val diffAverage:ManageScore
+    val diffAverage:ManageScore,
+    val recentCriteriaAt:String,
+    val isRecent:Boolean
 )

@@ -12,7 +12,15 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.widget.TextViewCompat
 import com.charancha.drive.*
+import com.charancha.drive.retrofit.response.GetManageScoreResponse
+import com.charancha.drive.retrofit.response.GetRecentDrivingStatisticsResponse
+import com.charancha.drive.retrofit.response.SignInResponse
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.gson.Gson
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAdjusters
@@ -39,6 +47,17 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
     lateinit var layout_there_is_data:LinearLayout
     lateinit var layout_no_data:ConstraintLayout
 
+    lateinit var tv_no_score:TextView
+    lateinit var tv_no_score1:TextView
+    lateinit var tv_no_score2:TextView
+    lateinit var iv_no_score:ImageView
+    lateinit var tv_engine_score:TextView
+    lateinit var tv_engine_info_average_distance:TextView
+    lateinit var tv_engine_info_rapid_acc_de_count:TextView
+    lateinit var tv_engine_info_high_speed_driving:TextView
+    lateinit var tv_engine_info_best_driving:TextView
+    lateinit var tv_engine_info_normal_driving:TextView
+    lateinit var tv_increased_score:TextView
 
     lateinit var behavior: BottomSheetBehavior<LinearLayout>
     lateinit var selectedDate:String
@@ -50,6 +69,7 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
         init()
         setResources()
         setListener()
+        setData()
     }
 
     fun init(){
@@ -71,6 +91,18 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
         tv_inquire_scope = findViewById(R.id.tv_inquire_scope)
         layout_there_is_data = findViewById(R.id.layout_there_is_data)
         layout_no_data = findViewById(R.id.layout_no_data)
+
+        tv_no_score = findViewById(R.id.tv_no_score)
+        tv_no_score1 = findViewById(R.id.tv_no_score1)
+        tv_no_score2 = findViewById(R.id.tv_no_score2)
+        iv_no_score = findViewById(R.id.iv_no_score)
+        tv_engine_score = findViewById(R.id.tv_engine_score)
+        tv_engine_info_average_distance = findViewById(R.id.tv_engine_info_average_distance)
+        tv_engine_info_rapid_acc_de_count = findViewById(R.id.tv_engine_info_rapid_acc_de_count)
+        tv_engine_info_high_speed_driving = findViewById(R.id.tv_engine_info_high_speed_driving)
+        tv_engine_info_best_driving = findViewById(R.id.tv_engine_info_best_driving)
+        tv_engine_info_normal_driving = findViewById(R.id.tv_engine_info_normal_driving)
+        tv_increased_score = findViewById(R.id.tv_increased_score)
 
         persistentBottomSheetEvent()
 
@@ -114,6 +146,95 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
         // listView에 adapter 연결
         listView_choose_date_own.adapter = dateAdapter
 
+    }
+
+    fun setData(){
+        if(tv_detail_managescroe_title.text.contains("최근 관리 점수")){
+            apiService().getRecentManageScoreStatistics(
+                "Bearer " + PreferenceUtil.getPref(this@DetailManageScoreActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,
+                PreferenceUtil.getPref(this@DetailManageScoreActivity, PreferenceUtil.USER_CARID, "")!!
+            ).enqueue(object: Callback<ResponseBody>{
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: Response<ResponseBody>
+                ) {
+                    if(response.code() == 200){
+                        val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
+                        if(getManageScoreResponse.total.totalEngineScore != 0.0){
+                            setThereIsDatas(getManageScoreResponse)
+                        }else{
+                            setNoData()
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+                }
+
+            })
+        }else{
+            apiService().getManageScoreStatistics(
+                "Bearer " + PreferenceUtil.getPref(this@DetailManageScoreActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,
+                PreferenceUtil.getPref(this@DetailManageScoreActivity, PreferenceUtil.USER_CARID, "")!!,
+                getCurrentAndPastTimeForISO(334).second,
+                getCurrentAndPastTimeForISO(334).first
+            )
+        }
+    }
+
+    fun setThereIsDatas(getManageScoreResponse:GetManageScoreResponse){
+        layout_no_data.visibility = GONE
+        layout_there_is_data.visibility = VISIBLE
+
+        tv_engine_info_average_distance = findViewById(R.id.tv_engine_info_average_distance)
+        tv_engine_info_rapid_acc_de_count = findViewById(R.id.tv_engine_info_rapid_acc_de_count)
+        tv_engine_info_high_speed_driving = findViewById(R.id.tv_engine_info_high_speed_driving)
+        tv_engine_info_best_driving = findViewById(R.id.tv_engine_info_best_driving)
+        tv_engine_info_normal_driving = findViewById(R.id.tv_engine_info_normal_driving)
+
+        Log.d("testestsetset","testeststs :: " + getManageScoreResponse.total.totalEngineScore)
+
+        tv_no_score.text = getManageScoreResponse.total.totalEngineScore.toString()
+        tv_no_score1.text = getManageScoreResponse.diffTotal.totalEngineScore.toString()
+        tv_no_score2.text = getManageScoreResponse.diffTotal.totalEngineScore.toString()
+//        iv_no_score.setImageDrawable
+        tv_engine_score.text = getManageScoreResponse.total.totalEngineScore.toString()
+        tv_increased_score.text = getManageScoreResponse.diffTotal.totalEngineScore.toString()
+        tv_engine_info_rapid_acc_de_count.text = getManageScoreResponse.total.engineScore.rapidAccelerationDecelerationScore.toString()  + "회"
+        tv_engine_info_high_speed_driving.text = getManageScoreResponse.total.engineScore.rapidAccelerationDecelerationScore.toString()  + "%"
+        tv_engine_info_best_driving.text = getManageScoreResponse.total.engineScore.optimalDrivingScore.toString() + "%"
+        tv_engine_info_normal_driving.text = getManageScoreResponse.total.engineScore.constantDrivingScore.toString() + "%"
+
+        apiService().getRecentDrivingStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@DetailManageScoreActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this@DetailManageScoreActivity, PreferenceUtil.USER_CARID, "")!!
+        ).enqueue(object: Callback<ResponseBody>{
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200){
+                    val recentDrivingDistance = Gson().fromJson(
+                        response.body()?.string(),
+                        GetRecentDrivingStatisticsResponse::class.java
+                    )
+
+                    if(recentDrivingDistance.isRecent){
+                        tv_engine_info_average_distance.text = transferDistanceWithUnit(recentDrivingDistance.average.totalDistance)
+                    }else{
+                        tv_engine_info_average_distance.text = transferDistanceWithUnit(0.0)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+            }
+
+        })
+    }
+
+    fun setNoData(){
+        layout_no_data.visibility = VISIBLE
+        layout_there_is_data.visibility = GONE
     }
 
     fun getDateList():MutableList<ChosenDate>{
@@ -225,16 +346,10 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
             }else{
                 if(btn_a_month.isSelected){
                     setInquireScope(getLastMonthRangeString())
-                    layout_there_is_data.visibility = INVISIBLE
-                    layout_no_data.visibility = VISIBLE
                 }else if(btn_six_month.isSelected){
                     setInquireScope(getLastSixMonthsRangeString())
-                    layout_there_is_data.visibility = VISIBLE
-                    layout_no_data.visibility = GONE
                 }else if(btn_each_month.isSelected){
                     setInquireScope(getDateRangeString(selectedDate))
-                    layout_there_is_data.visibility = VISIBLE
-                    layout_no_data.visibility = GONE
                 }
                 layout_choose_date.visibility = GONE
 

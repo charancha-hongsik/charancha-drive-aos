@@ -90,7 +90,7 @@
                 android:id="@+id/layout_there_is_data"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:orientation="vertical">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -152,6 +152,7 @@
                         app:layout_constraintTop_toBottomOf="@+id/tv_no_score1" />
 
                     <ImageView
+                        android:id="@+id/iv_no_score"
                         android:layout_width="22dp"
                         android:layout_height="22dp"
                         android:src="@drawable/resource_face_soso"
@@ -267,6 +268,7 @@
                                 app:layout_constraintRight_toRightOf="parent" />
 
                             <TextView
+                                android:id="@+id/tv_engine_score"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="0"
@@ -648,7 +650,7 @@
         android:id="@+id/layout_no_data"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
