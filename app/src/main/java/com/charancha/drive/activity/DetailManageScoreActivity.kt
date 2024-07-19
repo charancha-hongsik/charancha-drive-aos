@@ -59,6 +59,9 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
     lateinit var tv_engine_info_normal_driving:TextView
     lateinit var tv_increased_score:TextView
 
+    lateinit var view_engine_chart_background:View
+    lateinit var view_engine_chart_score:View
+
     lateinit var behavior: BottomSheetBehavior<LinearLayout>
     lateinit var selectedDate:String
 
@@ -92,6 +95,9 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
         layout_there_is_data = findViewById(R.id.layout_there_is_data)
         layout_no_data = findViewById(R.id.layout_no_data)
         layout_no_score = findViewById(R.id.layout_no_score)
+
+        view_engine_chart_background = findViewById(R.id.view_engine_chart_background)
+        view_engine_chart_score = findViewById(R.id.view_engine_chart_score)
 
         tv_no_score = findViewById(R.id.tv_no_score)
         tv_no_score1 = findViewById(R.id.tv_no_score1)
@@ -264,6 +270,7 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
     fun setThereIsDatas(getManageScoreResponse:GetManageScoreResponse){
         layout_no_data.visibility = GONE
         layout_there_is_data.visibility = VISIBLE
+        tv_increased_score.visibility = VISIBLE
 
         tv_no_score.text = getManageScoreResponse.total.totalEngineScore.toString()
 
@@ -271,19 +278,40 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
             layout_no_score.background = resources.getDrawable(R.drawable.radius8_sec)
             tv_no_score1.text = "아쉬워요. 지난 주행보다 " + getManageScoreResponse.diffTotal.totalEngineScore + "점 하락했어요"
             iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
+
+            tv_increased_score.text = "-" + getManageScoreResponse.diffTotal.totalEngineScore.toString() + "점 감소"
+            tv_increased_score.setTextColor(resources.getColor(R.color.sec_500))
+
+            tv_increased_score.setTextColor(resources.getColor(R.color.gray_900))
+
+            view_engine_chart_score.background = resources.getDrawable(R.drawable.radius999_sec500)
         }else if(getManageScoreResponse.diffTotal.totalEngineScore == 0.0){
             layout_no_score.background = resources.getDrawable(R.drawable.radius8_gray950)
             tv_no_score1.text = "점수 변동이 없어요"
             iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_good))
 
+            tv_increased_score.text = "변동 없음"
+            tv_increased_score.setTextColor(resources.getColor(R.color.gray_900))
+
+            view_engine_chart_score.background = resources.getDrawable(R.drawable.radius999_gray950)
+
         }else if(getManageScoreResponse.diffTotal.totalEngineScore > 0.0){
             layout_no_score.background = resources.getDrawable(R.drawable.radius8_pri500)
             tv_no_score1.text = "굉장해요! 지난 주행보다 " + getManageScoreResponse.diffTotal.totalEngineScore + "점 얻었어요"
             iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
+
+            tv_increased_score.text =  "+" +getManageScoreResponse.diffTotal.totalEngineScore.toString() + "점 증가"
+            tv_increased_score.setTextColor(resources.getColor(R.color.pri_500))
+
+            view_engine_chart_score.background = resources.getDrawable(R.drawable.radius999_pri500)
+
         }
 
+        setEngineScoreChart((getManageScoreResponse.total.totalEngineScore/600).toFloat())
+
+
+
         tv_engine_score.text = getManageScoreResponse.total.totalEngineScore.toString()
-        tv_increased_score.text = getManageScoreResponse.diffTotal.totalEngineScore.toString()
         tv_engine_info_rapid_acc_de_count.text = getManageScoreResponse.total.engineScore.rapidAccelerationDecelerationScore.toString()  + "회"
         tv_engine_info_high_speed_driving.text = getManageScoreResponse.total.engineScore.rapidAccelerationDecelerationScore.toString()  + "%"
         tv_engine_info_best_driving.text = getManageScoreResponse.total.engineScore.optimalDrivingScore.toString() + "%"
@@ -293,10 +321,13 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
     fun setNoData(){
         layout_no_data.visibility = VISIBLE
         layout_there_is_data.visibility = GONE
+        tv_increased_score.visibility = GONE
+        setEngineScoreChart(0f)
 
         layout_no_score.background = resources.getDrawable(R.drawable.radius8_pri500)
         tv_no_score1.text = "아직 데이터가 없어요. 함께 달려볼까요?"
         iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
+
     }
 
     fun getDateList():MutableList<ChosenDate>{
@@ -329,6 +360,22 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
         return choseDateList
     }
 
+    /**
+     * 0.0 ~ 1
+     */
+    fun setEngineScoreChart(percent:Float){
+        view_engine_chart_background.post {
+            val backgroundWidth = view_engine_chart_background.width
+
+            // Calculate 70% of the background view's width
+            val chartWidth = (backgroundWidth * percent).toInt()
+
+            // Apply the calculated width to view_normal_speed_driving_chart
+            val layoutParams = view_engine_chart_score.layoutParams
+            layoutParams.width = chartWidth
+            view_engine_chart_score.layoutParams = layoutParams
+        }
+    }
 
 
     fun getDateRangeString(yearMonth: String): String {
