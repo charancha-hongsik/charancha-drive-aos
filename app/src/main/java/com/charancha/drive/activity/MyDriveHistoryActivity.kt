@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageView
@@ -22,6 +24,7 @@ import com.charancha.drive.R
 import com.charancha.drive.retrofit.response.DriveItem
 import com.charancha.drive.retrofit.response.GetDriveHistoryResponse
 import com.charancha.drive.retrofit.response.GetMyCarInfoResponse
+import com.charancha.drive.retrofit.response.Meta
 import com.charancha.drive.viewmodel.MyDriveHistoryViewModel
 import com.google.gson.Gson
 import okhttp3.ResponseBody
@@ -65,16 +68,47 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         getHistories()
     }
 
+    fun getHistoriesMore(meta:Meta, histories: MutableList<DriveItem>){
+        apiService().getDrivingHistories(
+            "Bearer " + PreferenceUtil.getPref(this@MyDriveHistoryActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,
+            1,
+            "DESC",
+            meta.afterCursor,
+            null,
+            "startTime",
+            "",
+            "").enqueue(object: Callback<ResponseBody>{
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                Log.d("testestestset","testestsetse :: " + response.code())
+                if(response.code() == 200){
+                    val getDriveHistroyResponse = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDriveHistoryResponse::class.java
+                    )
+
+                    histories.addAll(getDriveHistroyResponse.items)
+
+                    histories.add(DriveItem("","","","","",false,"","",0.0,0.0))
+                    meta.afterCursor = getDriveHistroyResponse.meta.afterCursor
+                    (lvHistory.adapter as DriveHistoryAdapter).notifyDataSetChanged()
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+            }
+        })
+    }
     fun getHistories(){
         apiService().getDrivingHistories(
             "Bearer " + PreferenceUtil.getPref(this@MyDriveHistoryActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,
-            10,
+            1,
             "DESC",
             null,
             null,
             "startTime",
-            getCurrentAndPastTimeForISO(29).second,
-            getCurrentAndPastTimeForISO(29).first).enqueue(object: Callback<ResponseBody>{
+            "",
+            "").enqueue(object: Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200){
                     val getDriveHistroyResponse = Gson().fromJson(
@@ -82,11 +116,19 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                         GetDriveHistoryResponse::class.java
                     )
 
-                    val dateAdapter = DriveHistoryAdapter(
+                    val driveAdapter = DriveHistoryAdapter(
                         this@MyDriveHistoryActivity,
-                        getDriveHistroyResponse.items)
+                        getDriveHistroyResponse.items, getDriveHistroyResponse.meta, object :DriveHistoryAdapter.DriveCallback{
+                            override fun clickedMore(meta: Meta, histories: MutableList<DriveItem>) {
+                                histories.removeLast()
+                                getHistoriesMore(meta, histories)
 
-                    lvHistory.adapter = dateAdapter
+                            }
+                        })
+
+                    getDriveHistroyResponse.items.add(DriveItem("","","","","",false,"","",0.0,0.0))
+
+                    lvHistory.adapter = driveAdapter
                 }
             }
 
@@ -97,35 +139,62 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         })
     }
 
-    class DriveHistoryAdapter(context: Context, histories: List<DriveItem> ) : ArrayAdapter<DriveItem>(context, 0, histories) {
+    class DriveHistoryAdapter(context: Context, val histories: MutableList<DriveItem>, var meta: Meta, val callback:DriveCallback) : ArrayAdapter<DriveItem>(context, 0, histories) {
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            var listItemView = convertView
-            if (listItemView == null) {
-                listItemView = LayoutInflater.from(context).inflate(R.layout.item_drive_history, parent, false)
+
+            if(position != histories.size -1){
+                var listItemView = LayoutInflater.from(context).inflate(R.layout.item_drive_history, parent, false)
+
+
+                val driveItem = getItem(position)
+
+                val tvDate = listItemView!!.findViewById<TextView>(R.id.tv_date)
+                val tv_distance = listItemView!!.findViewById<TextView>(R.id.tv_distance)
+                val btn_drive_history = listItemView!!.findViewById<ConstraintLayout>(R.id.btn_drive_history)
+                val tv_start_time = listItemView!!.findViewById<TextView>(R.id.tv_start_time)
+                val tv_end_time = listItemView!!.findViewById<TextView>(R.id.tv_end_time)
+
+
+                tvDate.text = transformTimeToDate(driveItem?.createdAt!!)
+                tv_distance.text = transferDistanceWithUnit(driveItem?.totalDistance!!, PreferenceUtil.getPref(context,  PreferenceUtil.KM_MILE, "km")!!)
+                tv_start_time.text = transformTimeToHHMM(driveItem?.startTime!!)
+                tv_end_time.text = transformTimeToHHMM(driveItem?.endTime!!)
+
+                btn_drive_history.setOnClickListener {
+                    var intent = Intent(context, DetailDriveHistoryActivity::class.java)
+                    intent.putExtra("tracking_id", driveItem?.id)
+                    context.startActivity(intent)
+                }
+
+                return listItemView
+            } else{
+                var listItemView = LayoutInflater.from(context).inflate(R.layout.item_drive_history_last, parent, false)
+
+                val tv_more = listItemView!!.findViewById<TextView>(R.id.tv_more)
+                val tv_last = listItemView!!.findViewById<TextView>(R.id.tv_last)
+
+                tv_more.setOnClickListener {
+                    if(!meta.afterCursor.isNullOrBlank()){
+                        callback.clickedMore(meta, histories)
+                    }
+                }
+
+                if(meta.afterCursor.isNullOrBlank()){
+                    tv_more.visibility = GONE
+                    tv_last.visibility = VISIBLE
+                }else{
+                    tv_more.visibility = VISIBLE
+                    tv_last.visibility = GONE
+                }
+
+                return listItemView
             }
+        }
 
-            val driveItem = getItem(position)
+        interface DriveCallback {
+            fun clickedMore(meta:Meta, histories: MutableList<DriveItem>)
 
-            val tvDate = listItemView!!.findViewById<TextView>(R.id.tv_date)
-            val tv_distance = listItemView!!.findViewById<TextView>(R.id.tv_distance)
-            val btn_drive_history = listItemView!!.findViewById<ConstraintLayout>(R.id.btn_drive_history)
-            val tv_start_time = listItemView!!.findViewById<TextView>(R.id.tv_start_time)
-            val tv_end_time = listItemView!!.findViewById<TextView>(R.id.tv_end_time)
-
-
-            tvDate.text = transformTimeToDate(driveItem?.createdAt!!)
-            tv_distance.text = transferDistanceWithUnit(driveItem?.totalDistance!!, PreferenceUtil.getPref(context,  PreferenceUtil.KM_MILE, "km")!!)
-            tv_start_time.text = transformTimeToHHMM(driveItem?.startTime!!)
-            tv_end_time.text = transformTimeToHHMM(driveItem?.endTime!!)
-
-            btn_drive_history.setOnClickListener {
-                var intent = Intent(context, DetailDriveHistoryActivity::class.java)
-                intent.putExtra("tracking_id", driveItem?.id)
-                context.startActivity(intent)
-            }
-
-            return listItemView
         }
 
         fun transferDistanceWithUnit(meters:Double, distance_unit:String):String{

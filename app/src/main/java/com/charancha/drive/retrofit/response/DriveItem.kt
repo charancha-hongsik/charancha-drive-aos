@@ -11,4 +11,4 @@ data class DriveItem (
     val endTime:String,
     val totalTime:Double,
     val totalDistance:Double
-)
+    )

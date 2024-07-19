@@ -17,7 +17,7 @@ interface ApiServiceInterface {
 
     @GET("api/v1/me/cars/-/user-cars/-/drivings")
     fun getDrivingHistories(@Header("Authorization") token: String,
-                            @Query("number") number: Int,
+                            @Query("size") size: Int,
                             @Query("order") order: String,
                             @Query("afterCursor") afterCursor: String?,
                             @Query("beforeCursor") beforeCursor: String?,
