@@ -2192,7 +2192,20 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                         tv_min_minute.text = transferSecondsToHourAndMinutes(recentDrivingDistance.min.totalTime).second.toString()
                         tv_max_hour.text = transferSecondsToHourAndMinutes(recentDrivingDistance.max.totalTime).first.toString()
                         tv_max_minute.text = transferSecondsToHourAndMinutes(recentDrivingDistance.max.totalTime).second.toString()
-                        tv_diff_time.text = "+" + transferSecondsToHourAndMinutes(recentDrivingDistance.diffTotal.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(recentDrivingDistance.diffTotal.totalTime).second + "분 증가"
+
+                        if(recentDrivingDistance.diffTotal.totalTime == 0.0){
+                            tv_diff_time.text = "시간 변동이 없어요."
+                            tv_diff_time.setTextColor(resources.getColor(R.color.gray_950))
+
+                        }else if(recentDrivingDistance.diffTotal.totalTime > 0.0){
+                            tv_diff_time.text = "+" + transferSecondsToHourAndMinutes(recentDrivingDistance.diffTotal.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(recentDrivingDistance.diffTotal.totalTime).second + "분 증가"
+                            tv_diff_time.setTextColor(resources.getColor(R.color.pri_500))
+
+                        }else if(recentDrivingDistance.diffTotal.totalTime < 0.0){
+                            tv_diff_time.text = "-" + transferSecondsToHourAndMinutes(recentDrivingDistance.diffTotal.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(recentDrivingDistance.diffTotal.totalTime).second + "분 감소"
+                            tv_diff_time.setTextColor(resources.getColor(R.color.sec_500))
+                        }
+
 
                         recentStartTime = recentDrivingDistance.recentStartTime
                         recentEndTime = recentDrivingDistance.recentEndTime
@@ -2326,7 +2339,20 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                         tv_min_minute.text = transferSecondsToHourAndMinutes(drivingDistance.min.totalTime).second.toString()
                         tv_max_hour.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).first.toString()
                         tv_max_minute.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).second.toString()
-                        tv_diff_time.text = "+" +transferSecondsToHourAndMinutes(drivingDistance.diffTotal.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.diffTotal.totalTime).second + "분 증가"
+
+                        if(drivingDistance.diffTotal.totalTime == 0.0){
+                            tv_diff_time.text = "시간 변동이 없어요."
+                            tv_diff_time.setTextColor(resources.getColor(R.color.gray_950))
+
+                        }else if(drivingDistance.diffTotal.totalTime > 0.0){
+                            tv_diff_time.text = "+" + transferSecondsToHourAndMinutes(drivingDistance.diffTotal.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.diffTotal.totalTime).second + "분 증가"
+                            tv_diff_time.setTextColor(resources.getColor(R.color.pri_500))
+
+                        }else if(drivingDistance.diffTotal.totalTime < 0.0){
+                            tv_diff_time.text = "-" + transferSecondsToHourAndMinutes(drivingDistance.diffTotal.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.diffTotal.totalTime).second + "분 감소"
+                            tv_diff_time.setTextColor(resources.getColor(R.color.sec_500))
+                        }
+
 
                         tv_time_info1.text = "1개월 주행 시간"
                         tv_time_info2.text = "내 차는 자주\n달릴수록 좋아요"
@@ -2417,7 +2443,20 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                         tv_min_minute.text = transferSecondsToHourAndMinutes(drivingDistance.min.totalTime).second.toString()
                         tv_max_hour.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).first.toString()
                         tv_max_minute.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).second.toString()
-                        tv_diff_time.text = "+" +transferSecondsToHourAndMinutes(drivingDistance.diffTotal.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.diffTotal.totalTime).second + "분 증가"
+
+                        if(drivingDistance.diffTotal.totalTime == 0.0){
+                            tv_diff_time.text = "시간 변동이 없어요."
+                            tv_diff_time.setTextColor(resources.getColor(R.color.gray_950))
+
+                        }else if(drivingDistance.diffTotal.totalTime > 0.0){
+                            tv_diff_time.text = "+" + transferSecondsToHourAndMinutes(drivingDistance.diffTotal.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.diffTotal.totalTime).second + "분 증가"
+                            tv_diff_time.setTextColor(resources.getColor(R.color.pri_500))
+
+                        }else if(drivingDistance.diffTotal.totalTime < 0.0){
+                            tv_diff_time.text = "-" + transferSecondsToHourAndMinutes(drivingDistance.diffTotal.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.diffTotal.totalTime).second + "분 감소"
+                            tv_diff_time.setTextColor(resources.getColor(R.color.sec_500))
+                        }
+
 
                         tv_time_info1.text = "6개월 주행 시간"
                         tv_time_info2.text = "내 차는 자주\n달릴수록 좋아요"
@@ -2502,7 +2541,21 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                         tv_min_minute.text = transferSecondsToHourAndMinutes(drivingDistance.min.totalTime).second.toString()
                         tv_max_hour.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).first.toString()
                         tv_max_minute.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).second.toString()
-                        tv_diff_time.text = "+" +transferSecondsToHourAndMinutes(drivingDistance.diffTotal.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.diffTotal.totalTime).second + "분 증가"
+
+
+                        if(drivingDistance.diffTotal.totalTime == 0.0){
+                            tv_diff_time.text = "시간 변동이 없어요."
+                            tv_diff_time.setTextColor(resources.getColor(R.color.gray_950))
+
+                        }else if(drivingDistance.diffTotal.totalTime > 0.0){
+                            tv_diff_time.text = "+" + transferSecondsToHourAndMinutes(drivingDistance.diffTotal.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.diffTotal.totalTime).second + "분 증가"
+                            tv_diff_time.setTextColor(resources.getColor(R.color.pri_500))
+
+                        }else if(drivingDistance.diffTotal.totalTime < 0.0){
+                            tv_diff_time.text = "-" + transferSecondsToHourAndMinutes(drivingDistance.diffTotal.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.diffTotal.totalTime).second + "분 감소"
+                            tv_diff_time.setTextColor(resources.getColor(R.color.sec_500))
+                        }
+
 
                         tv_time_info1.text = "1년 주행 시간"
                         tv_time_info2.text = "내 차는 자주\n달릴수록 좋아요"
