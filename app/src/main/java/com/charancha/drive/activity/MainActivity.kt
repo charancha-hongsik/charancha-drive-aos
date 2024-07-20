@@ -927,18 +927,18 @@ class MainActivity : BaseRefreshActivity() {
                 if(response.code() == 200){
                     val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
                     if(getManageScoreResponse.total.totalEngineScore != 0.0){
-                        tv_recent_score.text = getManageScoreResponse.total.totalEngineScore.toString()
-                        tv_recent_score2.text = getManageScoreResponse.total.totalEngineScore.toString()
-                        tv_engine_score.text = getManageScoreResponse.total.totalEngineScore.toString()
+                        tv_recent_score.text = transferNumWithRounds(getManageScoreResponse.total.totalEngineScore).toString()
+                        tv_recent_score2.text = transferNumWithRounds(getManageScoreResponse.total.totalEngineScore).toString()
+                        tv_engine_score.text = transferNumWithRounds(getManageScoreResponse.total.totalEngineScore).toString()
 
                         if(getManageScoreResponse.diffAverage.totalEngineScore == 0.0){
                             tv_recent_info_text.text = "점수 변동이 없어요"
                             iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_good))
                         }else if(getManageScoreResponse.diffAverage.totalEngineScore > 0.0){
-                            tv_recent_info_text.text = "굉장해요. 지난 주행보다 +" +  getManageScoreResponse.diffAverage.totalEngineScore + "점을 얻었어요!"
+                            tv_recent_info_text.text = "굉장해요. 지난 주행보다 +" +  transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점을 얻었어요!"
                             iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
                         }else if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
-                            tv_recent_info_text.text = "아쉬워요. 지난 주행보다 -" + getManageScoreResponse.diffTotal.totalEngineScore + "점 하락했어요"
+                            tv_recent_info_text.text = "아쉬워요. 지난 주행보다 -" + transferNumWithRounds(getManageScoreResponse.diffTotal.totalEngineScore) + "점 하락했어요"
                             iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
                         }
 
