@@ -10,6 +10,8 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.view.View.*
@@ -99,7 +101,8 @@ class MainActivity : BaseRefreshActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        setPieChart()
+        setPieChart(0.0f)
+
         setLineChartForBrakes(findViewById(R.id.chart_line_brakes))
         setLineChartForEngine(findViewById(R.id.chart_line_engine))
         setLineChartForTire(findViewById(R.id.chart_line_tire))
@@ -344,34 +347,36 @@ class MainActivity : BaseRefreshActivity() {
 
     }
 
-    private fun setPieChart(){
-
+    private fun setPieChart(percent:Float) {
         chart = findViewById(R.id.chart1)
 
         val entries: ArrayList<PieEntry> = ArrayList()
-        entries.add(PieEntry(0f, ""))
-        entries.add(PieEntry(100f, ""))
+        entries.add(PieEntry(percent, ""))
+        entries.add(PieEntry(100-percent, ""))
+
 
         val dataSet = PieDataSet(entries, "")
         dataSet.setColors(ContextCompat.getColor(this, R.color.pie_gradient_end_color), ContextCompat.getColor(this, R.color.gray_50))
         dataSet.setDrawValues(false)
 
         val data = PieData(dataSet)
-        chart?.setData(data)
+        chart?.data = data
 
         // 차트 설정
         chart?.setTouchEnabled(false)
         chart?.setDrawHoleEnabled(true)
-        chart?.setMaxAngle(180f)
-        chart?.setRotationAngle(180f)
+        chart?.setMaxAngle(180f) // Half chart
+        chart?.setRotationAngle(180f) // Rotate to make it a half chart
         chart?.setHoleColor(Color.TRANSPARENT)
         chart?.setHoleRadius(70f)
         chart?.setTransparentCircleRadius(0f)
-        chart?.getDescription()?.isEnabled = false
-        chart?.getLegend()?.isEnabled = false
+        chart?.description?.isEnabled = false
+        chart?.legend?.isEnabled = false
         chart?.animateY(1000)
         chart?.invalidate()
+        chart?.requestLayout()
     }
+
 
     private fun setLineChartForEngine(chart:LineChart){
 
@@ -712,6 +717,7 @@ class MainActivity : BaseRefreshActivity() {
                     )
 
                     tv_average_score.text = getManageScoreResponse.average.totalEngineScore.toString()
+
                     if(getManageScoreResponse.diffAverage.totalEngineScore == 0.0){
                         tv_increase.text = "변동 없음"
                         tv_increase.setTextColor(resources.getColor(R.color.gray_500))
@@ -723,6 +729,7 @@ class MainActivity : BaseRefreshActivity() {
                         tv_increase.setTextColor(resources.getColor(R.color.sec_500))
                     }
 
+                    setPieChart((getManageScoreResponse.average.totalEngineScore/10).toFloat())
 
                 }
             }
