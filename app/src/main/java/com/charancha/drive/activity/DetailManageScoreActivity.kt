@@ -282,7 +282,7 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
                         GetRecentDrivingStatisticsResponse::class.java
                     )
 
-                    if(recentDrivingDistance.isRecent){
+                    if(recentDrivingDistance.total.totalDistance != 0.0){
                         tv_engine_info_average_distance.text = transferDistanceWithUnit(recentDrivingDistance.average.totalDistance)
                         setInquireScope(convertDateFormat(recentDrivingDistance.recentStartTime))
 
@@ -309,14 +309,14 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
         layout_there_is_data.visibility = VISIBLE
         tv_increased_score.visibility = VISIBLE
 
-        tv_no_score.text = getManageScoreResponse.average.totalEngineScore.toString()
+        tv_no_score.text = transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
 
         if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
             layout_no_score.background = resources.getDrawable(R.drawable.radius8_sec)
-            tv_no_score1.text = "아쉬워요. 지난 주행보다 " + getManageScoreResponse.diffAverage.totalEngineScore + "점 하락했어요"
+            tv_no_score1.text = "아쉬워요. 지난 주행보다 " + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 하락했어요"
             iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
 
-            tv_increased_score.text = "-" + getManageScoreResponse.diffAverage.totalEngineScore.toString() + "점 감소"
+            tv_increased_score.text = "-" + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore).toString() + "점 감소"
             tv_increased_score.setTextColor(resources.getColor(R.color.sec_500))
 
             tv_increased_score.setTextColor(resources.getColor(R.color.gray_900))
@@ -334,10 +334,10 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
 
         }else if(getManageScoreResponse.diffAverage.totalEngineScore > 0.0){
             layout_no_score.background = resources.getDrawable(R.drawable.radius8_pri500)
-            tv_no_score1.text = "굉장해요! 지난 주행보다 " + getManageScoreResponse.diffAverage.totalEngineScore + "점 얻었어요"
+            tv_no_score1.text = "굉장해요! 지난 주행보다 " + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 얻었어요"
             iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
 
-            tv_increased_score.text =  "+" +getManageScoreResponse.diffAverage.totalEngineScore.toString() + "점 증가"
+            tv_increased_score.text =  "+" +transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore).toString() + "점 증가"
             tv_increased_score.setTextColor(resources.getColor(R.color.pri_500))
 
             view_engine_chart_score.background = resources.getDrawable(R.drawable.radius999_pri500)
