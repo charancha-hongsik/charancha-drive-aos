@@ -92,6 +92,7 @@ class MainActivity : BaseRefreshActivity() {
     lateinit var view_there_is_diff_time: LinearLayout
     lateinit var iv_there_is_diff_time: ImageView
     lateinit var tv_there_is_diff_time:TextView
+    lateinit var tv_recent_score:TextView
 
 
     var checkingPermission = false
@@ -159,6 +160,7 @@ class MainActivity : BaseRefreshActivity() {
         setAlarm()
         getManageScoreForAMonth()
         getDrivingDistanceForAMonth()
+        setRecentManageScore()
     }
 
     fun checkLocation(){
@@ -321,6 +323,8 @@ class MainActivity : BaseRefreshActivity() {
         view_there_is_diff_time = findViewById(R.id.view_there_is_diff_time)
         iv_there_is_diff_time = findViewById(R.id.iv_there_is_diff_time)
         tv_there_is_diff_time = findViewById(R.id.tv_there_is_diff_time)
+
+        tv_recent_score = findViewById(R.id.tv_recent_score)
 
 
     }
@@ -841,6 +845,33 @@ class MainActivity : BaseRefreshActivity() {
                         tv_there_is_diff_time.setTextColor(resources.getColor(R.color.sec_500))
 
 
+
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+            }
+
+        })
+    }
+
+    fun setRecentManageScore(){
+        apiService().getRecentManageScoreStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@MainActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this@MainActivity, PreferenceUtil.USER_CARID, "")!!
+        ).enqueue(object: Callback<ResponseBody>{
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+                if(response.code() == 200){
+                    val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
+                    if(getManageScoreResponse.total.totalEngineScore != 0.0){
+                        tv_recent_score.text = getManageScoreResponse.total.totalEngineScore.toString()
+                    }else{
+                        tv_recent_score.text = "0"
 
                     }
                 }
