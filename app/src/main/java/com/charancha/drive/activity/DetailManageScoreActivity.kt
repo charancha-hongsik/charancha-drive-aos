@@ -193,7 +193,7 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
                             tv_engine_info_average_distance.text = transferDistanceWithUnit(recentDrivingDistance.average.totalDistance)
                             setInquireScope(convertDateFormat(recentDrivingDistance.recentStartTime))
 
-                            tv_engine_info_rapid_acc_de_count.text = recentDrivingDistance.average.totalRapidCount.toString()
+                            tv_engine_info_rapid_acc_de_count.text = transferNumWithRounds(recentDrivingDistance.average.totalRapidCount).toString()
                             tv_engine_info_high_speed_driving.text = transferNumWithRounds(recentDrivingDistance.average.highSpeedDrivingDistancePercentage).toString()
                             tv_engine_info_best_driving.text = transferNumWithRounds(recentDrivingDistance.average.optimalDrivingPercentage).toString()
                             tv_engine_info_normal_driving.text = transferNumWithRounds(recentDrivingDistance.average.constantSpeedDrivingDistancePercentage).toString()
@@ -284,9 +284,9 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
 
                     if(recentDrivingDistance.total.totalDistance != 0.0){
                         tv_engine_info_average_distance.text = transferDistanceWithUnit(recentDrivingDistance.average.totalDistance)
-                        setInquireScope(convertDateFormat(recentDrivingDistance.recentStartTime))
+//                        setInquireScope(convertDateFormat(recentDrivingDistance.recentStartTime))
 
-                        tv_engine_info_rapid_acc_de_count.text = recentDrivingDistance.average.totalRapidCount.toString() + "회"
+                        tv_engine_info_rapid_acc_de_count.text = transferNumWithRounds(recentDrivingDistance.average.totalRapidCount).toString() + "회"
                         tv_engine_info_high_speed_driving.text = transferNumWithRounds(recentDrivingDistance.average.highSpeedDrivingDistancePercentage).toString() + "%"
                         tv_engine_info_best_driving.text = transferNumWithRounds(recentDrivingDistance.average.optimalDrivingPercentage).toString() + "%"
                         tv_engine_info_normal_driving.text = transferNumWithRounds(recentDrivingDistance.average.constantSpeedDrivingDistancePercentage).toString() + "%"
@@ -328,6 +328,7 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
             iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_good))
 
             tv_increased_score.text = "변동 없음"
+            tv_increased_score.setTextColor(resources.getColor(R.color.gray_900))
             tv_increased_score.setTextColor(resources.getColor(R.color.gray_900))
 
             view_engine_chart_score.background = resources.getDrawable(R.drawable.radius999_gray950)
