@@ -328,7 +328,6 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
 
             tv_increased_score.text = "변동 없음"
             tv_increased_score.setTextColor(resources.getColor(R.color.gray_900))
-            tv_increased_score.setTextColor(resources.getColor(R.color.gray_900))
 
             view_engine_chart_score.background = resources.getDrawable(R.drawable.radius999_gray950)
 
