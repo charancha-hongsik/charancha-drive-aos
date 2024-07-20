@@ -264,26 +264,65 @@
                         app:layout_constraintTop_toBottomOf="@+id/tv_average_distance_title" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/view_diff_distance_background"
                         android:layout_width="wrap_content"
                         android:layout_height="22dp"
                         android:layout_marginTop="4dp"
-                        android:background="@drawable/radius999_gray100"
+                        android:background="@drawable/radius999_sec50"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/tv_average_distance_contents" >
 
                         <View
+                            android:id="@+id/view_no_diff_distance"
                             android:layout_width="5dp"
                             android:layout_height="2dp"
                             android:layout_marginTop="10dp"
                             android:layout_marginBottom="10dp"
                             android:layout_marginLeft="14dp"
                             android:layout_marginRight="14dp"
+                            android:visibility="gone"
                             android:background="@drawable/radius2"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintTop_toTopOf="parent"/>
+
+                        <LinearLayout
+                            android:id="@+id/view_there_is_diff_distance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <ImageView
+                                android:id="@+id/iv_there_is_diff_distance"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/vector_sec"
+                                android:layout_marginLeft="8dp"
+                                android:layout_gravity="center_vertical"/>
+
+                            <TextView
+                                android:id="@+id/tv_there_is_diff_distance"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/C2M"
+                                android:textFontWeight="500"
+                                android:layout_marginTop="4dp"
+                                android:layout_marginBottom="4dp"
+                                android:layout_marginLeft="4dp"
+                                android:layout_marginRight="8dp"
+                                android:layout_gravity="center_vertical"
+                                android:gravity="center_vertical"
+                                android:textColor="@color/sec_500"
+                                android:text="1km"/>
+
+                        </LinearLayout>
+
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -320,6 +359,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
                         android:text="0시간 0분"
+                        android:textFontWeight="500"
                         android:textColor="@color/gray_950"
                         android:textAppearance="@style/ST1M"
                         app:layout_constraintLeft_toLeftOf="parent"
@@ -327,15 +367,17 @@
                         app:layout_constraintTop_toBottomOf="@+id/tv_average_time" />
 
                     <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/view_diff_time_background"
                         android:layout_width="wrap_content"
                         android:layout_height="22dp"
                         android:layout_marginTop="4dp"
-                        android:background="@drawable/radius999_gray100"
+                        android:background="@drawable/radius999_pri50"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/tv_average_time_contents" >
 
                         <View
+                            android:id="@+id/view_no_diff_time"
                             android:layout_width="5dp"
                             android:layout_height="2dp"
                             android:layout_marginTop="10dp"
@@ -343,10 +385,47 @@
                             android:layout_marginLeft="14dp"
                             android:layout_marginRight="14dp"
                             android:background="@drawable/radius2"
+                            android:visibility="gone"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintTop_toTopOf="parent"/>
+
+                        <LinearLayout
+                            android:id="@+id/view_there_is_diff_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <ImageView
+                                android:id="@+id/iv_there_is_diff_time"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/vector_pri"
+                                android:layout_marginLeft="8dp"
+                                android:layout_gravity="center_vertical"/>
+
+                            <TextView
+                                android:id="@+id/tv_there_is_diff_time"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/C2M"
+                                android:textFontWeight="500"
+                                android:layout_marginTop="4dp"
+                                android:layout_marginBottom="4dp"
+                                android:layout_marginLeft="4dp"
+                                android:layout_marginRight="8dp"
+                                android:layout_gravity="center_vertical"
+                                android:gravity="center_vertical"
+                                android:textColor="@color/pri_500"
+                                android:text="1km"/>
+
+                        </LinearLayout>
+
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
