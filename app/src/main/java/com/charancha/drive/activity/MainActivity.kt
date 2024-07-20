@@ -98,6 +98,7 @@ class MainActivity : BaseRefreshActivity() {
     lateinit var btn_one_year:TextView
     lateinit var tv_engine_score:TextView
     lateinit var iv_home_banner:ImageView
+    lateinit var tv_recent_driving_score:TextView
 
 
 
@@ -272,6 +273,7 @@ class MainActivity : BaseRefreshActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setBtn(){
+        tv_recent_driving_score = findViewById(R.id.tv_recent_driving_score)
         btnHistory = findViewById(R.id.btn_history)
         btnHistory.setOnClickListener {
             startActivity(Intent(this, MyPageActivity::class.java))
@@ -348,6 +350,8 @@ class MainActivity : BaseRefreshActivity() {
             btn_six_month.isSelected = false
             btn_one_year.isSelected = false
 
+            tv_recent_driving_score.text = "최근 주행 총점"
+
             setRecentManageScoreForSummary()
         }
 
@@ -356,6 +360,9 @@ class MainActivity : BaseRefreshActivity() {
             btn_one_month.isSelected = true
             btn_six_month.isSelected = false
             btn_one_year.isSelected = false
+
+            tv_recent_driving_score.text = "1개월 평균"
+
 
             setManageSoreForSummary(29)
         }
@@ -366,6 +373,9 @@ class MainActivity : BaseRefreshActivity() {
             btn_six_month.isSelected = true
             btn_one_year.isSelected = false
 
+            tv_recent_driving_score.text = "6개월 평균"
+
+
             setManageSoreForSummary(150)
         }
 
@@ -374,6 +384,8 @@ class MainActivity : BaseRefreshActivity() {
             btn_one_month.isSelected = false
             btn_six_month.isSelected = false
             btn_one_year.isSelected = true
+            tv_recent_driving_score.text = "1년 평균"
+
 
             setManageSoreForSummary(334)
 
@@ -889,7 +901,7 @@ class MainActivity : BaseRefreshActivity() {
                         view_no_diff_time.visibility = GONE
                         view_there_is_diff_time.visibility = VISIBLE
                         iv_there_is_diff_time.setImageDrawable(resources.getDrawable(R.drawable.vector_pri))
-                        tv_there_is_diff_time.setText(transferSecondsToHourAndMinutes(getDrivingStatisticsResponse.average.totalTime).first.toString() + "시간" + transferSecondsToHourAndMinutes(getDrivingStatisticsResponse.average.totalTime).second.toString() + "분")
+                        tv_there_is_diff_time.setText(transferSecondsToHourAndMinutes(getDrivingStatisticsResponse.diffAverage.totalTime).first.toString() + "시간" + transferSecondsToHourAndMinutes(getDrivingStatisticsResponse.diffAverage.totalTime).second.toString() + "분")
                         tv_there_is_diff_time.setTextColor(resources.getColor(R.color.pri_500))
 
 
@@ -899,7 +911,7 @@ class MainActivity : BaseRefreshActivity() {
                         view_no_diff_time.visibility = GONE
                         view_there_is_diff_time.visibility = VISIBLE
                         iv_there_is_diff_time.setImageDrawable(resources.getDrawable(R.drawable.vector_sec))
-                        tv_there_is_diff_time.setText(transferSecondsToHourAndMinutes(getDrivingStatisticsResponse.average.totalTime).first.toString() + "시간" + transferSecondsToHourAndMinutes(getDrivingStatisticsResponse.average.totalTime).second.toString() + "분")
+                        tv_there_is_diff_time.setText(transferSecondsToHourAndMinutes(getDrivingStatisticsResponse.diffAverage.totalTime).first.toString() + "시간" + transferSecondsToHourAndMinutes(getDrivingStatisticsResponse.diffAverage.totalTime).second.toString() + "분")
                         tv_there_is_diff_time.setTextColor(resources.getColor(R.color.sec_500))
 
 
