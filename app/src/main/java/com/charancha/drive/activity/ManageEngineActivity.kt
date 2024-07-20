@@ -2,13 +2,22 @@ package com.charancha.drive.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
+import android.view.View.*
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
+import com.charancha.drive.retrofit.response.GetDrivingStatisticsResponse
+import com.charancha.drive.retrofit.response.GetManageScoreResponse
+import com.google.gson.Gson
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.util.*
 
 class ManageEngineActivity:BaseRefreshActivity() {
     lateinit var btn_back: ImageView
@@ -29,6 +38,19 @@ class ManageEngineActivity:BaseRefreshActivity() {
     lateinit var btn_optimal_driving:TextView
     lateinit var btn_normal_speed_driving:TextView
 
+    lateinit var layout_no_score:ConstraintLayout
+    lateinit var tv_no_score:TextView
+    lateinit var tv_no_score1:TextView
+    lateinit var iv_no_score:ImageView
+
+    lateinit var tv_distance:TextView
+    lateinit var tv_speed_percent:TextView
+    lateinit var tv_optimal_driving_percent:TextView
+
+    lateinit var tv_normal_speed_driving_percent:TextView
+
+    lateinit var tv_optimal_driving_contents:TextView
+    lateinit var tv_normal_speed_driving_contents:TextView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,7 +58,7 @@ class ManageEngineActivity:BaseRefreshActivity() {
         setContentView(R.layout.activity_manage_engine)
 
         init()
-
+        setRecentAllForEngine()
     }
 
     fun init(){
@@ -48,6 +70,20 @@ class ManageEngineActivity:BaseRefreshActivity() {
         btn_back.setOnClickListener {
             finish()
         }
+
+        tv_optimal_driving_contents = findViewById(R.id.tv_optimal_driving_contents)
+
+        tv_optimal_driving_percent = findViewById(R.id.tv_optimal_driving_percent)
+        tv_distance = findViewById(R.id.tv_distance)
+        tv_speed_percent = findViewById(R.id.tv_speed_percent)
+
+        tv_normal_speed_driving_percent = findViewById(R.id.tv_normal_speed_driving_percent)
+        tv_normal_speed_driving_contents = findViewById(R.id.tv_normal_speed_driving_contents)
+
+        layout_no_score = findViewById(R.id.layout_no_score)
+        tv_no_score = findViewById(R.id.tv_no_score)
+        tv_no_score1 = findViewById(R.id.tv_no_score1)
+        iv_no_score = findViewById(R.id.iv_no_score)
 
         view_normal_speed_driving_chart = findViewById(R.id.view_normal_speed_driving_chart)
         view_optimal_driving_chart = findViewById(R.id.view_optimal_driving_chart)
@@ -88,11 +124,41 @@ class ManageEngineActivity:BaseRefreshActivity() {
 
         btn_recent_drive.isSelected = true
 
+        btn_recent_drive.setOnClickListener {
+            btn_recent_drive.isSelected = true
+            btn_month_drive.isSelected = false
+            btn_six_month_drive.isSelected = false
+            btn_year_drive.isSelected = false
 
-        setOptimalDrivingChartWidthByPercent(1f)
-        setNormalSpeedDrivingChartWidthByPercent(0.22f)
-        setOptimalDrivingPercentTextView()
-        setNormalDrivingPercentTextView()
+            setRecentAllForEngine()
+        }
+
+        btn_month_drive.setOnClickListener {
+            btn_recent_drive.isSelected = false
+            btn_month_drive.isSelected = true
+            btn_six_month_drive.isSelected = false
+            btn_year_drive.isSelected = false
+
+            setAllForEngine(29)
+        }
+
+        btn_six_month_drive.setOnClickListener {
+            btn_recent_drive.isSelected = false
+            btn_month_drive.isSelected = false
+            btn_six_month_drive.isSelected = true
+            btn_year_drive.isSelected = false
+
+            setAllForEngine(150)
+        }
+
+        btn_year_drive.setOnClickListener {
+            btn_recent_drive.isSelected = false
+            btn_month_drive.isSelected = false
+            btn_six_month_drive.isSelected = false
+            btn_year_drive.isSelected = true
+
+            setAllForEngine(334)
+        }
     }
 
     /**
@@ -100,15 +166,28 @@ class ManageEngineActivity:BaseRefreshActivity() {
      */
     fun setNormalSpeedDrivingChartWidthByPercent(percent:Float){
         view_normal_speed_driving_chart_background.post {
-            val backgroundWidth = view_normal_speed_driving_chart_background.width
+            if(percent == 0f){
+                val layoutParams = view_normal_speed_driving_chart.layoutParams
+                layoutParams.width = 1
+                view_normal_speed_driving_chart.layoutParams = layoutParams
 
-            // Calculate 70% of the background view's width
-            val chartWidth = (backgroundWidth * percent).toInt()
+                view_normal_speed_driving_chart.visibility = INVISIBLE
 
-            // Apply the calculated width to view_normal_speed_driving_chart
-            val layoutParams = view_normal_speed_driving_chart.layoutParams
-            layoutParams.width = chartWidth
-            view_normal_speed_driving_chart.layoutParams = layoutParams
+            }else{
+                val backgroundWidth = view_normal_speed_driving_chart_background.width
+
+                // Calculate 70% of the background view's width
+                val chartWidth = (backgroundWidth * percent).toInt()
+
+
+                // Apply the calculated width to view_normal_speed_driving_chart
+                val layoutParams = view_normal_speed_driving_chart.layoutParams
+                layoutParams.width = chartWidth
+                view_normal_speed_driving_chart.layoutParams = layoutParams
+
+                view_normal_speed_driving_chart.visibility = VISIBLE
+
+            }
         }
     }
 
@@ -117,15 +196,23 @@ class ManageEngineActivity:BaseRefreshActivity() {
      */
     fun setOptimalDrivingChartWidthByPercent(percent:Float){
         view_optimal_driving_chart_background.post {
-            val backgroundWidth = view_optimal_driving_chart_background.width
+            if(percent == 0f){
+                val layoutParams = view_optimal_driving_chart.layoutParams
+                layoutParams.width = 1
+                view_optimal_driving_chart.layoutParams = layoutParams
 
-            // Calculate 70% of the background view's width
-            val chartWidth = (backgroundWidth * percent).toInt()
+                view_optimal_driving_chart.visibility = INVISIBLE
+            }else{
+                val backgroundWidth = view_optimal_driving_chart_background.width
 
-            // Apply the calculated width to view_normal_speed_driving_chart
-            val layoutParams = view_optimal_driving_chart.layoutParams
-            layoutParams.width = chartWidth
-            view_optimal_driving_chart.layoutParams = layoutParams
+                // Calculate 70% of the background view's width
+                val chartWidth = (backgroundWidth * percent).toInt()
+
+                // Apply the calculated width to view_normal_speed_driving_chart
+                val layoutParams = view_optimal_driving_chart.layoutParams
+                layoutParams.width = chartWidth
+                view_optimal_driving_chart.layoutParams = layoutParams
+            }
         }
     }
 
@@ -175,4 +262,207 @@ class ManageEngineActivity:BaseRefreshActivity() {
 
         return px / density
     }
+
+
+    fun setRecentAllForEngine(){
+        apiService().getRecentManageScoreStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@ManageEngineActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this@ManageEngineActivity, PreferenceUtil.USER_CARID, "")!!
+        ).enqueue(object: Callback<ResponseBody> {
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+                if(response.code() == 200){
+                    val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
+                    if(getManageScoreResponse.total.totalEngineScore != 0.0){
+                        tv_no_score.text = getManageScoreResponse.total.totalEngineScore.toString()
+
+                        if(getManageScoreResponse.diffAverage.totalEngineScore == 0.0){
+                            layout_no_score.background = resources.getDrawable(R.drawable.radius8_sec)
+
+                            tv_no_score1.text = "점수 변동이 없어요"
+                            iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_good))
+                        }else if(getManageScoreResponse.diffAverage.totalEngineScore > 0.0){
+                            layout_no_score.background = resources.getDrawable(R.drawable.radius8_gray950)
+
+                            tv_no_score1.text = "굉장해요. 지난 주행보다 +" +  getManageScoreResponse.diffAverage.totalEngineScore + "점을 얻었어요!"
+                            iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
+                        }else if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
+                            layout_no_score.background = resources.getDrawable(R.drawable.radius8_pri500)
+
+                            tv_no_score1.text = "아쉬워요. 지난 주행보다 -" + getManageScoreResponse.diffTotal.totalEngineScore + "점 하락했어요"
+                            iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
+                        }
+
+                    }else{
+                        layout_no_score.background = resources.getDrawable(R.drawable.radius8_gray800)
+
+                        tv_no_score.text = "0"
+                        tv_no_score1.text = "아직 데이터가 없어요. 함께 달려볼까요?"
+                        iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+            }
+
+        })
+
+        apiService().getRecentDrivingStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@ManageEngineActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,).enqueue(object:
+            Callback<ResponseBody>{
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200){
+                    val getDrivingStatisticsResponse = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingStatisticsResponse::class.java
+                    )
+
+                    if(getDrivingStatisticsResponse.total.totalDistance != 0.0){
+                        tv_optimal_driving_contents.text = "최적 주행이 높을수록 좋아요!"
+                        tv_normal_speed_driving_contents.text = "항속 주행이 높을수록 좋아요!"
+                        tv_distance.text = transferDistance(getDrivingStatisticsResponse.average.totalDistance)
+                        tv_speed_percent.text = getDrivingStatisticsResponse.average.highSpeedDrivingDistancePercentage.toString()
+
+                        tv_optimal_driving_percent.text = String.format(Locale.KOREAN, "%.1f", getDrivingStatisticsResponse.average.optimalDrivingPercentage) + "%"
+                        tv_optimal_driving_percent1.text = String.format(Locale.KOREAN, "%.1f", getDrivingStatisticsResponse.average.optimalDrivingPercentage) + "%"
+                        tv_optimal_driving_percent2.text = String.format(Locale.KOREAN, "%.1f", getDrivingStatisticsResponse.average.optimalDrivingPercentage) + "%"
+
+                        tv_normal_speed_driving_percent.text = String.format(Locale.KOREAN, "%.1f", getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage) + "%"
+                        tv_normal_speed_driving_percent1.text = String.format(Locale.KOREAN, "%.1f", getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage) + "%"
+                        tv_normal_speed_driving_percent2.text = String.format(Locale.KOREAN, "%.1f", getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage) + "%"
+
+
+                        setOptimalDrivingChartWidthByPercent((getDrivingStatisticsResponse.average.optimalDrivingPercentage/100).toFloat())
+                        setNormalSpeedDrivingChartWidthByPercent((getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage/100).toFloat())
+                        setOptimalDrivingPercentTextView()
+                        setNormalDrivingPercentTextView()
+
+                    }else{
+                        tv_optimal_driving_contents.text = "아직 데이터가 없어요."
+                        tv_normal_speed_driving_contents.text = "아직 데이터가 없어요."
+                    }
+
+
+
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+            }
+
+        })
+    }
+
+    fun setAllForEngine(scope:Long){
+        apiService().getManageScoreStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@ManageEngineActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this@ManageEngineActivity, PreferenceUtil.USER_CARID, "")!!,
+            getCurrentAndPastTimeForISO(scope).second,
+            getCurrentAndPastTimeForISO(scope).first
+        ).enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+                if(response.code() == 200){
+                    val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
+                    if(getManageScoreResponse.total.totalEngineScore != 0.0){
+                        tv_no_score.text = getManageScoreResponse.total.totalEngineScore.toString()
+
+                        if(getManageScoreResponse.diffAverage.totalEngineScore == 0.0){
+                            layout_no_score.background = resources.getDrawable(R.drawable.radius8_sec)
+
+                            tv_no_score1.text = "점수 변동이 없어요"
+                            iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_good))
+                        }else if(getManageScoreResponse.diffAverage.totalEngineScore > 0.0){
+                            layout_no_score.background = resources.getDrawable(R.drawable.radius8_gray950)
+
+                            tv_no_score1.text = "굉장해요. 지난 주행보다 +" +  getManageScoreResponse.diffAverage.totalEngineScore + "점을 얻었어요!"
+                            iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
+                        }else if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
+                            layout_no_score.background = resources.getDrawable(R.drawable.radius8_pri500)
+
+                            tv_no_score1.text = "아쉬워요. 지난 주행보다 -" + getManageScoreResponse.diffTotal.totalEngineScore + "점 하락했어요"
+                            iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
+                        }
+
+                    }else{
+                        layout_no_score.background = resources.getDrawable(R.drawable.radius8_gray800)
+
+                        tv_no_score.text = "0"
+                        tv_no_score1.text = "아직 데이터가 없어요. 함께 달려볼까요?"
+                        iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+        })
+        var timUnit = "day"
+
+        if(scope != 29L){
+            timUnit = "month"
+        }
+
+
+        apiService().getDrivingStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@ManageEngineActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            getCurrentAndPastTimeForISO(scope).second,
+            getCurrentAndPastTimeForISO(scope).first,
+            "startTime",
+            timUnit).enqueue(object:
+            Callback<ResponseBody>{
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200){
+                    val getDrivingStatisticsResponse = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingStatisticsResponse::class.java
+                    )
+
+                    if(getDrivingStatisticsResponse.total.totalDistance != 0.0){
+                        tv_optimal_driving_contents.text = "최적 주행이 높을수록 좋아요!"
+                        tv_normal_speed_driving_contents.text = "항속 주행이 높을수록 좋아요!"
+
+
+                        tv_distance.text = transferDistance(getDrivingStatisticsResponse.average.totalDistance)
+                        tv_speed_percent.text = getDrivingStatisticsResponse.average.highSpeedDrivingDistancePercentage.toString()
+
+
+                        tv_optimal_driving_percent.text = String.format(Locale.KOREAN, "%.1f", getDrivingStatisticsResponse.average.optimalDrivingPercentage) + "%"
+                        tv_optimal_driving_percent1.text = String.format(Locale.KOREAN, "%.1f", getDrivingStatisticsResponse.average.optimalDrivingPercentage) + "%"
+                        tv_optimal_driving_percent2.text = String.format(Locale.KOREAN, "%.1f", getDrivingStatisticsResponse.average.optimalDrivingPercentage) + "%"
+
+
+                        tv_normal_speed_driving_percent.text = String.format(Locale.KOREAN, "%.1f", getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage) + "%"
+                        tv_normal_speed_driving_percent1.text = String.format(Locale.KOREAN, "%.1f", getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage) + "%"
+                        tv_normal_speed_driving_percent2.text = String.format(Locale.KOREAN, "%.1f", getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage) + "%"
+
+
+                        setOptimalDrivingChartWidthByPercent((getDrivingStatisticsResponse.average.optimalDrivingPercentage/100).toFloat())
+                        setNormalSpeedDrivingChartWidthByPercent((getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage/100).toFloat())
+                        setOptimalDrivingPercentTextView()
+                        setNormalDrivingPercentTextView()
+                    }else{
+                        tv_optimal_driving_contents.text = "아직 데이터가 없어요."
+                        tv_normal_speed_driving_contents.text = "아직 데이터가 없어요."
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+            }
+
+        })
+    }
+
 }

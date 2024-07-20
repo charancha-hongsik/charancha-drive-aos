@@ -12,9 +12,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.widget.TextViewCompat
 import com.charancha.drive.*
+import com.charancha.drive.retrofit.response.GetDrivingGraphDataResponse
 import com.charancha.drive.retrofit.response.GetManageScoreResponse
 import com.charancha.drive.retrofit.response.GetRecentDrivingStatisticsResponse
-import com.charancha.drive.retrofit.response.SignInResponse
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.Gson
 import okhttp3.ResponseBody
@@ -193,6 +193,10 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
                             tv_engine_info_average_distance.text = transferDistanceWithUnit(recentDrivingDistance.average.totalDistance)
                             setInquireScope(convertDateFormat(recentDrivingDistance.recentStartTime))
 
+                            tv_engine_info_rapid_acc_de_count.text = recentDrivingDistance.total.totalRapidCount.toString()
+                            tv_engine_info_high_speed_driving.text = transferNumWithRounds(recentDrivingDistance.average.highSpeedDrivingDistancePercentage).toString()
+                            tv_engine_info_best_driving.text = transferNumWithRounds(recentDrivingDistance.average.optimalDrivingPercentage).toString()
+                            tv_engine_info_normal_driving.text = transferNumWithRounds(recentDrivingDistance.average.constantSpeedDrivingDistancePercentage).toString()
                         }else{
                             tv_engine_info_average_distance.text = transferDistanceWithUnit(0.0)
                         }
@@ -247,15 +251,48 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
             ) {
-                Log.d("testestest","testsetset startTime :: " + startTime)
-                Log.d("testestest","testsetset endTime :: " + endTime)
-
                 if(response.code() == 200){
                     val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
                     if(getManageScoreResponse.total.totalEngineScore != 0.0){
                         setThereIsDatas(getManageScoreResponse)
                     }else{
                         setNoData()
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+            }
+
+        })
+
+        apiService().getDrivingStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@DetailManageScoreActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this@DetailManageScoreActivity, PreferenceUtil.USER_CARID, "")!!,
+            startTime,
+            endTime,
+            "startTime",
+            "day"
+        ).enqueue(object: Callback<ResponseBody>{
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200){
+                    val recentDrivingDistance = Gson().fromJson(
+                        response.body()?.string(),
+                        GetRecentDrivingStatisticsResponse::class.java
+                    )
+
+                    if(recentDrivingDistance.isRecent){
+                        tv_engine_info_average_distance.text = transferDistanceWithUnit(recentDrivingDistance.average.totalDistance)
+                        setInquireScope(convertDateFormat(recentDrivingDistance.recentStartTime))
+
+                        tv_engine_info_rapid_acc_de_count.text = recentDrivingDistance.total.totalRapidCount.toString() + "회"
+                        tv_engine_info_high_speed_driving.text = transferNumWithRounds(recentDrivingDistance.average.highSpeedDrivingDistancePercentage).toString() + "%"
+                        tv_engine_info_best_driving.text = transferNumWithRounds(recentDrivingDistance.average.optimalDrivingPercentage).toString() + "%"
+                        tv_engine_info_normal_driving.text = transferNumWithRounds(recentDrivingDistance.average.constantSpeedDrivingDistancePercentage).toString() + "%"
+
+                    }else{
+                        tv_engine_info_average_distance.text = transferDistanceWithUnit(0.0)
                     }
                 }
             }
@@ -307,15 +344,9 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
 
         }
 
-        setEngineScoreChart((getManageScoreResponse.total.totalEngineScore/600).toFloat())
+        setEngineScoreChart((getManageScoreResponse.average.totalEngineScore/600).toFloat())
+        tv_engine_score.text = transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
 
-
-
-        tv_engine_score.text = getManageScoreResponse.total.totalEngineScore.toString()
-        tv_engine_info_rapid_acc_de_count.text = getManageScoreResponse.total.engineScore.rapidAccelerationDecelerationScore.toString()  + "회"
-        tv_engine_info_high_speed_driving.text = getManageScoreResponse.total.engineScore.rapidAccelerationDecelerationScore.toString()  + "%"
-        tv_engine_info_best_driving.text = getManageScoreResponse.total.engineScore.optimalDrivingScore.toString() + "%"
-        tv_engine_info_normal_driving.text = getManageScoreResponse.total.engineScore.constantDrivingScore.toString() + "%"
     }
 
     fun setNoData(){

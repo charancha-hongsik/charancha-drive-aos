@@ -1,21 +1,13 @@
 package com.charancha.drive.activity
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.retrofit.ApiServiceInterface
 import com.charancha.drive.retrofit.HeaderInterceptor
-import com.charancha.drive.retrofit.response.SignInResponse
-import com.google.gson.Gson
 import okhttp3.OkHttpClient
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.time.*
@@ -71,6 +63,10 @@ open class BaseActivity: AppCompatActivity(){
             val milesPerMeter = 0.000621371
             return String.format(Locale.KOREAN, "%.3f",meters * milesPerMeter)
         }
+    }
+
+    fun transferNumWithRounds(percent:Double):Double{
+        return String.format(Locale.KOREAN, "%.1f", percent).toDouble()
     }
 
 
