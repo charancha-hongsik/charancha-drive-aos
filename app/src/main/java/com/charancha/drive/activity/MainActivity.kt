@@ -2,6 +2,7 @@ package com.charancha.drive.activity
 
 import android.Manifest.permission.*
 import android.app.*
+import android.content.ActivityNotFoundException
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -10,19 +11,14 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.provider.Settings
-import android.util.Log
 import android.view.View
 import android.view.View.*
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -96,6 +92,13 @@ class MainActivity : BaseRefreshActivity() {
     lateinit var tv_recent_score2:TextView
     lateinit var tv_recent_info_text:TextView
     lateinit var iv_recent_info:ImageView
+    lateinit var btn_recent:TextView
+    lateinit var btn_one_month:TextView
+    lateinit var btn_six_month:TextView
+    lateinit var btn_one_year:TextView
+    lateinit var tv_engine_score:TextView
+    lateinit var iv_home_banner:ImageView
+
 
 
     var checkingPermission = false
@@ -163,7 +166,7 @@ class MainActivity : BaseRefreshActivity() {
         setAlarm()
         getManageScoreForAMonth()
         getDrivingDistanceForAMonth()
-        setRecentManageScore()
+        setRecentManageScoreForSummary()
     }
 
     fun checkLocation(){
@@ -332,6 +335,55 @@ class MainActivity : BaseRefreshActivity() {
         tv_recent_info_text = findViewById(R.id.tv_recent_info_text)
         iv_recent_info = findViewById(R.id.iv_recent_info)
 
+        btn_recent = findViewById(R.id.btn_recent)
+        btn_one_month = findViewById(R.id.btn_one_month)
+        btn_six_month = findViewById(R.id.btn_six_month)
+        btn_one_year = findViewById(R.id.btn_one_year)
+
+        btn_recent.isSelected = true
+
+        btn_recent.setOnClickListener {
+            btn_recent.isSelected = true
+            btn_one_month.isSelected = false
+            btn_six_month.isSelected = false
+            btn_one_year.isSelected = false
+
+            setRecentManageScoreForSummary()
+        }
+
+        btn_one_month.setOnClickListener {
+            btn_recent.isSelected = false
+            btn_one_month.isSelected = true
+            btn_six_month.isSelected = false
+            btn_one_year.isSelected = false
+
+            setManageSoreForSummary(29)
+        }
+
+        btn_six_month.setOnClickListener {
+            btn_recent.isSelected = false
+            btn_one_month.isSelected = false
+            btn_six_month.isSelected = true
+            btn_one_year.isSelected = false
+
+            setManageSoreForSummary(150)
+        }
+
+        btn_one_year.setOnClickListener {
+            btn_recent.isSelected = false
+            btn_one_month.isSelected = false
+            btn_six_month.isSelected = false
+            btn_one_year.isSelected = true
+
+            setManageSoreForSummary(334)
+
+        }
+
+        tv_engine_score = findViewById(R.id.tv_engine_score)
+        iv_home_banner = findViewById(R.id.iv_home_banner)
+        iv_home_banner.setOnClickListener {
+            openChromeWithUrl("https://www.charancha.com/")
+        }
 
     }
 
@@ -863,7 +915,7 @@ class MainActivity : BaseRefreshActivity() {
         })
     }
 
-    fun setRecentManageScore(){
+    fun setRecentManageScoreForSummary(){
         apiService().getRecentManageScoreStatistics(
             "Bearer " + PreferenceUtil.getPref(this@MainActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this@MainActivity, PreferenceUtil.USER_CARID, "")!!
@@ -877,22 +929,25 @@ class MainActivity : BaseRefreshActivity() {
                     if(getManageScoreResponse.total.totalEngineScore != 0.0){
                         tv_recent_score.text = getManageScoreResponse.total.totalEngineScore.toString()
                         tv_recent_score2.text = getManageScoreResponse.total.totalEngineScore.toString()
+                        tv_engine_score.text = getManageScoreResponse.total.totalEngineScore.toString()
+
+                        if(getManageScoreResponse.diffAverage.totalEngineScore == 0.0){
+                            tv_recent_info_text.text = "점수 변동이 없어요"
+                            iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_good))
+                        }else if(getManageScoreResponse.diffAverage.totalEngineScore > 0.0){
+                            tv_recent_info_text.text = "굉장해요. 지난 주행보다 +" +  getManageScoreResponse.diffAverage.totalEngineScore + "점을 얻었어요!"
+                            iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
+                        }else if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
+                            tv_recent_info_text.text = "아쉬워요. 지난 주행보다 -" + getManageScoreResponse.diffTotal.totalEngineScore + "점 하락했어요"
+                            iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
+                        }
+
                     }else{
                         tv_recent_score.text = "0"
                         tv_recent_score2.text = "0"
-                    }
 
-
-
-                    if(getManageScoreResponse.diffAverage.totalEngineScore == 0.0){
-                        tv_recent_info_text.text = "점수 변동이 없어요"
+                        tv_recent_info_text.text = "아직 데이터가 없어요. 함께 달려볼까요?"
                         iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
-                    }else if(getManageScoreResponse.diffAverage.totalEngineScore > 0.0){
-                        tv_recent_info_text.text = "굉장해요. 지난 주행보다 +" +  getManageScoreResponse.diffAverage.totalEngineScore + "점을 얻었어요!"
-                        iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
-                    }else if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
-                        tv_recent_info_text.text = "아쉬워요. 지난 주행보다 -" + getManageScoreResponse.diffTotal.totalEngineScore + "점 하락했어요"
-                        iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
                     }
                 }
             }
@@ -902,6 +957,64 @@ class MainActivity : BaseRefreshActivity() {
             }
 
         })
+    }
+
+    fun setManageSoreForSummary(scope:Long){
+        apiService().getManageScoreStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@MainActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this@MainActivity, PreferenceUtil.USER_CARID, "")!!,
+            getCurrentAndPastTimeForISO(scope).second,
+            getCurrentAndPastTimeForISO(scope).first
+        ).enqueue(object :Callback<ResponseBody>{
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+                if(response.code() == 200){
+                    val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
+                    if(getManageScoreResponse.total.totalEngineScore != 0.0){
+                        tv_recent_score.text = getManageScoreResponse.total.totalEngineScore.toString()
+                        tv_recent_score2.text = getManageScoreResponse.total.totalEngineScore.toString()
+                        tv_engine_score.text = getManageScoreResponse.total.totalEngineScore.toString()
+
+                        if(getManageScoreResponse.diffAverage.totalEngineScore == 0.0){
+                            tv_recent_info_text.text = "점수 변동이 없어요"
+                            iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_good))
+                        }else if(getManageScoreResponse.diffAverage.totalEngineScore > 0.0){
+                            tv_recent_info_text.text = "굉장해요. 지난 주행보다 +" +  getManageScoreResponse.diffAverage.totalEngineScore + "점을 얻었어요!"
+                            iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
+                        }else if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
+                            tv_recent_info_text.text = "아쉬워요. 지난 주행보다 -" + getManageScoreResponse.diffTotal.totalEngineScore + "점 하락했어요"
+                            iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
+                        }
+
+                    }else{
+                        tv_recent_score.text = "0"
+                        tv_recent_score2.text = "0"
+
+                        tv_recent_info_text.text = "아직 데이터가 없어요. 함께 달려볼까요?"
+                        iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+        })
+    }
+
+    fun openChromeWithUrl(url:String){
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.setPackage("com.android.chrome")
+        try {
+            startActivity(intent)
+        } catch (ex: ActivityNotFoundException) {
+            // Chrome browser presumably not installed so allow user to choose instead
+            intent.setPackage(null)
+            startActivity(intent)
+        }
     }
 
 
