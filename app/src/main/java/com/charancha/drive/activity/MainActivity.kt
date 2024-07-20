@@ -811,16 +811,16 @@ class MainActivity : BaseRefreshActivity() {
                         GetManageScoreResponse::class.java
                     )
 
-                    tv_average_score.text = getManageScoreResponse.average.totalEngineScore.toString()
+                    tv_average_score.text = transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
 
                     if(getManageScoreResponse.diffAverage.totalEngineScore == 0.0){
                         tv_increase.text = "변동 없음"
                         tv_increase.setTextColor(resources.getColor(R.color.gray_500))
                     }else if(getManageScoreResponse.diffAverage.totalEngineScore > 0.0){
-                        tv_increase.text = "+" + getManageScoreResponse.diffAverage.totalEngineScore + "점 증가"
+                        tv_increase.text = "+" + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 증가"
                         tv_increase.setTextColor(resources.getColor(R.color.pri_500))
                     }else if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
-                        tv_increase.text = "-" + getManageScoreResponse.diffAverage.totalEngineScore + "점 하락"
+                        tv_increase.text = "-" + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 하락"
                         tv_increase.setTextColor(resources.getColor(R.color.sec_500))
                     }
 

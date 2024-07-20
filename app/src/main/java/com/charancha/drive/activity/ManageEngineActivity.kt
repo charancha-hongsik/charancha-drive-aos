@@ -276,22 +276,22 @@ class ManageEngineActivity:BaseRefreshActivity() {
                 if(response.code() == 200){
                     val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
                     if(getManageScoreResponse.total.totalEngineScore != 0.0){
-                        tv_no_score.text = getManageScoreResponse.total.totalEngineScore.toString()
+                        tv_no_score.text = transferNumWithRounds(getManageScoreResponse.total.totalEngineScore).toString()
 
                         if(getManageScoreResponse.diffAverage.totalEngineScore == 0.0){
-                            layout_no_score.background = resources.getDrawable(R.drawable.radius8_sec)
+                            layout_no_score.background = resources.getDrawable(R.drawable.radius8_gray950)
 
                             tv_no_score1.text = "점수 변동이 없어요"
                             iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_good))
                         }else if(getManageScoreResponse.diffAverage.totalEngineScore > 0.0){
-                            layout_no_score.background = resources.getDrawable(R.drawable.radius8_gray950)
-
-                            tv_no_score1.text = "굉장해요. 지난 주행보다 +" +  getManageScoreResponse.diffAverage.totalEngineScore + "점을 얻었어요!"
-                            iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
-                        }else if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
                             layout_no_score.background = resources.getDrawable(R.drawable.radius8_pri500)
 
-                            tv_no_score1.text = "아쉬워요. 지난 주행보다 -" + getManageScoreResponse.diffTotal.totalEngineScore + "점 하락했어요"
+                            tv_no_score1.text = "굉장해요. 지난 주행보다 +" +  transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점을 얻었어요!"
+                            iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
+                        }else if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
+                            layout_no_score.background = resources.getDrawable(R.drawable.radius8_sec)
+
+                            tv_no_score1.text = "아쉬워요. 지난 주행보다 -" + transferNumWithRounds(getManageScoreResponse.diffTotal.totalEngineScore) + "점 하락했어요"
                             iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
                         }
 
@@ -326,7 +326,7 @@ class ManageEngineActivity:BaseRefreshActivity() {
                         tv_optimal_driving_contents.text = "최적 주행이 높을수록 좋아요!"
                         tv_normal_speed_driving_contents.text = "항속 주행이 높을수록 좋아요!"
                         tv_distance.text = transferDistance(getDrivingStatisticsResponse.average.totalDistance)
-                        tv_speed_percent.text = getDrivingStatisticsResponse.average.highSpeedDrivingDistancePercentage.toString()
+                        tv_speed_percent.text = transferNumWithRounds(getDrivingStatisticsResponse.average.highSpeedDrivingDistancePercentage).toString()
 
                         tv_optimal_driving_percent.text = String.format(Locale.KOREAN, "%.1f", getDrivingStatisticsResponse.average.optimalDrivingPercentage) + "%"
                         tv_optimal_driving_percent1.text = String.format(Locale.KOREAN, "%.1f", getDrivingStatisticsResponse.average.optimalDrivingPercentage) + "%"
@@ -373,22 +373,22 @@ class ManageEngineActivity:BaseRefreshActivity() {
                 if(response.code() == 200){
                     val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
                     if(getManageScoreResponse.total.totalEngineScore != 0.0){
-                        tv_no_score.text = getManageScoreResponse.total.totalEngineScore.toString()
+                        tv_no_score.text = transferNumWithRounds(getManageScoreResponse.total.totalEngineScore).toString()
 
                         if(getManageScoreResponse.diffAverage.totalEngineScore == 0.0){
-                            layout_no_score.background = resources.getDrawable(R.drawable.radius8_sec)
+                            layout_no_score.background = resources.getDrawable(R.drawable.radius8_gray950)
 
                             tv_no_score1.text = "점수 변동이 없어요"
                             iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_good))
                         }else if(getManageScoreResponse.diffAverage.totalEngineScore > 0.0){
-                            layout_no_score.background = resources.getDrawable(R.drawable.radius8_gray950)
-
-                            tv_no_score1.text = "굉장해요. 지난 주행보다 +" +  getManageScoreResponse.diffAverage.totalEngineScore + "점을 얻었어요!"
-                            iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
-                        }else if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
                             layout_no_score.background = resources.getDrawable(R.drawable.radius8_pri500)
 
-                            tv_no_score1.text = "아쉬워요. 지난 주행보다 -" + getManageScoreResponse.diffTotal.totalEngineScore + "점 하락했어요"
+                            tv_no_score1.text = "굉장해요. 지난 주행보다 +" +  transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점을 얻었어요!"
+                            iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
+                        }else if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
+                            layout_no_score.background = resources.getDrawable(R.drawable.radius8_sec)
+
+                            tv_no_score1.text = "아쉬워요. 지난 주행보다 -" + transferNumWithRounds(getManageScoreResponse.diffTotal.totalEngineScore) + "점 하락했어요"
                             iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
                         }
 
@@ -434,7 +434,7 @@ class ManageEngineActivity:BaseRefreshActivity() {
 
 
                         tv_distance.text = transferDistance(getDrivingStatisticsResponse.average.totalDistance)
-                        tv_speed_percent.text = getDrivingStatisticsResponse.average.highSpeedDrivingDistancePercentage.toString()
+                        tv_speed_percent.text = transferNumWithRounds(getDrivingStatisticsResponse.average.highSpeedDrivingDistancePercentage).toString()
 
 
                         tv_optimal_driving_percent.text = String.format(Locale.KOREAN, "%.1f", getDrivingStatisticsResponse.average.optimalDrivingPercentage) + "%"

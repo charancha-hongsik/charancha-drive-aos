@@ -245,6 +245,9 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
             val localDateTime = LocalDateTime.ofInstant(startTime, koreaZoneId)
             val hour = localDateTime.hour
 
+            Log.d("testestestest","testestestse :: " + hour)
+
+
             distances[hour] = transferDistance(item.totalDistance).toFloat()
         }
 
