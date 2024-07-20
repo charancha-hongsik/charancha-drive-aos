@@ -187,7 +187,20 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
 
                         tv_const_percent1.text = String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.average.constantSpeedDrivingDistancePercentage) + "%"
                         tv_const_percent2.text = String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.average.constantSpeedDrivingDistancePercentage) + "%"
-                        tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.diffAverage.constantSpeedDrivingDistancePercentage) + "% 증가"
+
+                        if(recentDrivingDistance.diffAverage.constantSpeedDrivingDistancePercentage == 0.0){
+                            tv_diff_percent.text = "거리 변동이 없어요."
+                            tv_diff_percent.setTextColor(resources.getColor(R.color.gray_950))
+
+                        }else if(recentDrivingDistance.diffTotal.constantSpeedDrivingDistancePercentage > 0.0){
+                            tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.diffAverage.constantSpeedDrivingDistancePercentage) + "% 증가"
+                            tv_diff_percent.setTextColor(resources.getColor(R.color.pri_500))
+
+                        }else if(recentDrivingDistance.diffTotal.constantSpeedDrivingDistancePercentage < 0.0){
+                            tv_diff_percent.text = "-" + String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.diffAverage.constantSpeedDrivingDistancePercentage) + "% 감소"
+                            tv_diff_percent.setTextColor(resources.getColor(R.color.sec_500))
+                        }
+
 
                         tv_driving_info1.text = "최근 1일 평균 항속 주행"
                         tv_driving_info2.text = "최근 내 차의\n항속 주행 비율이에요"
@@ -308,7 +321,21 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
 
                         tv_const_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.constantSpeedDrivingDistancePercentage) + "%"
                         tv_const_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.constantSpeedDrivingDistancePercentage) + "%"
-                        tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage) + "% 증가"
+
+                        if(drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage == 0.0){
+                            tv_diff_percent.text = "거리 변동이 없어요."
+                            tv_diff_percent.setTextColor(resources.getColor(R.color.gray_950))
+
+                        }else if(drivingDistance.diffTotal.constantSpeedDrivingDistancePercentage > 0.0){
+                            tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage) + "% 증가"
+                            tv_diff_percent.setTextColor(resources.getColor(R.color.pri_500))
+
+                        }else if(drivingDistance.diffTotal.constantSpeedDrivingDistancePercentage < 0.0){
+                            tv_diff_percent.text = "-" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage) + "% 감소"
+                            tv_diff_percent.setTextColor(resources.getColor(R.color.sec_500))
+                        }
+
+
 
                         setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.constantSpeedDrivingDistancePercentage.toFloat()/100)
                     }else{
@@ -363,7 +390,22 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                     if(drivingDistance.total.totalDistance != 0.0){
                         tv_const_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.constantSpeedDrivingDistancePercentage) + "%"
                         tv_const_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.constantSpeedDrivingDistancePercentage) + "%"
-                        tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage) + "% 증가"
+
+
+                        if(drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage == 0.0){
+                            tv_diff_percent.text = "거리 변동이 없어요."
+                            tv_diff_percent.setTextColor(resources.getColor(R.color.gray_950))
+
+                        }else if(drivingDistance.diffTotal.constantSpeedDrivingDistancePercentage > 0.0){
+                            tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage) + "% 증가"
+                            tv_diff_percent.setTextColor(resources.getColor(R.color.pri_500))
+
+                        }else if(drivingDistance.diffTotal.constantSpeedDrivingDistancePercentage < 0.0){
+                            tv_diff_percent.text = "-" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage) + "% 감소"
+                            tv_diff_percent.setTextColor(resources.getColor(R.color.sec_500))
+                        }
+
+
 
                         tv_driving_info1.text = "6개월 평균 항속 주행"
                         tv_driving_info2.text = "6개월 간 내 차의\n항속 주행 비율이에요"
@@ -422,7 +464,22 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                     if(drivingDistance.total.totalDistance != 0.0){
                         tv_const_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.constantSpeedDrivingDistancePercentage) + "%"
                         tv_const_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.constantSpeedDrivingDistancePercentage) + "%"
-                        tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage) + "% 증가"
+
+
+                        if(drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage == 0.0){
+                            tv_diff_percent.text = "거리 변동이 없어요."
+                            tv_diff_percent.setTextColor(resources.getColor(R.color.gray_950))
+
+                        }else if(drivingDistance.diffTotal.constantSpeedDrivingDistancePercentage > 0.0){
+                            tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage) + "% 증가"
+                            tv_diff_percent.setTextColor(resources.getColor(R.color.pri_500))
+
+                        }else if(drivingDistance.diffTotal.constantSpeedDrivingDistancePercentage < 0.0){
+                            tv_diff_percent.text = "-" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage) + "% 감소"
+                            tv_diff_percent.setTextColor(resources.getColor(R.color.sec_500))
+                        }
+
+
 
                         tv_driving_info1.text = "1년 평균 항속 주행"
                         tv_driving_info2.text = "1년 간 내 차의\n항속 주행 비율이에요"
