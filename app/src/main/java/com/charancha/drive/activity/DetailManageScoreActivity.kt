@@ -193,7 +193,7 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
                             tv_engine_info_average_distance.text = transferDistanceWithUnit(recentDrivingDistance.average.totalDistance)
                             setInquireScope(convertDateFormat(recentDrivingDistance.recentStartTime))
 
-                            tv_engine_info_rapid_acc_de_count.text = recentDrivingDistance.total.totalRapidCount.toString()
+                            tv_engine_info_rapid_acc_de_count.text = recentDrivingDistance.average.totalRapidCount.toString()
                             tv_engine_info_high_speed_driving.text = transferNumWithRounds(recentDrivingDistance.average.highSpeedDrivingDistancePercentage).toString()
                             tv_engine_info_best_driving.text = transferNumWithRounds(recentDrivingDistance.average.optimalDrivingPercentage).toString()
                             tv_engine_info_normal_driving.text = transferNumWithRounds(recentDrivingDistance.average.constantSpeedDrivingDistancePercentage).toString()
@@ -286,7 +286,7 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
                         tv_engine_info_average_distance.text = transferDistanceWithUnit(recentDrivingDistance.average.totalDistance)
                         setInquireScope(convertDateFormat(recentDrivingDistance.recentStartTime))
 
-                        tv_engine_info_rapid_acc_de_count.text = recentDrivingDistance.total.totalRapidCount.toString() + "회"
+                        tv_engine_info_rapid_acc_de_count.text = recentDrivingDistance.average.totalRapidCount.toString() + "회"
                         tv_engine_info_high_speed_driving.text = transferNumWithRounds(recentDrivingDistance.average.highSpeedDrivingDistancePercentage).toString() + "%"
                         tv_engine_info_best_driving.text = transferNumWithRounds(recentDrivingDistance.average.optimalDrivingPercentage).toString() + "%"
                         tv_engine_info_normal_driving.text = transferNumWithRounds(recentDrivingDistance.average.constantSpeedDrivingDistancePercentage).toString() + "%"
@@ -309,20 +309,20 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
         layout_there_is_data.visibility = VISIBLE
         tv_increased_score.visibility = VISIBLE
 
-        tv_no_score.text = getManageScoreResponse.total.totalEngineScore.toString()
+        tv_no_score.text = getManageScoreResponse.average.totalEngineScore.toString()
 
-        if(getManageScoreResponse.diffTotal.totalEngineScore < 0.0){
+        if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
             layout_no_score.background = resources.getDrawable(R.drawable.radius8_sec)
-            tv_no_score1.text = "아쉬워요. 지난 주행보다 " + getManageScoreResponse.diffTotal.totalEngineScore + "점 하락했어요"
+            tv_no_score1.text = "아쉬워요. 지난 주행보다 " + getManageScoreResponse.diffAverage.totalEngineScore + "점 하락했어요"
             iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
 
-            tv_increased_score.text = "-" + getManageScoreResponse.diffTotal.totalEngineScore.toString() + "점 감소"
+            tv_increased_score.text = "-" + getManageScoreResponse.diffAverage.totalEngineScore.toString() + "점 감소"
             tv_increased_score.setTextColor(resources.getColor(R.color.sec_500))
 
             tv_increased_score.setTextColor(resources.getColor(R.color.gray_900))
 
             view_engine_chart_score.background = resources.getDrawable(R.drawable.radius999_sec500)
-        }else if(getManageScoreResponse.diffTotal.totalEngineScore == 0.0){
+        }else if(getManageScoreResponse.diffAverage.totalEngineScore == 0.0){
             layout_no_score.background = resources.getDrawable(R.drawable.radius8_gray950)
             tv_no_score1.text = "점수 변동이 없어요"
             iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_good))
@@ -332,12 +332,12 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
 
             view_engine_chart_score.background = resources.getDrawable(R.drawable.radius999_gray950)
 
-        }else if(getManageScoreResponse.diffTotal.totalEngineScore > 0.0){
+        }else if(getManageScoreResponse.diffAverage.totalEngineScore > 0.0){
             layout_no_score.background = resources.getDrawable(R.drawable.radius8_pri500)
-            tv_no_score1.text = "굉장해요! 지난 주행보다 " + getManageScoreResponse.diffTotal.totalEngineScore + "점 얻었어요"
+            tv_no_score1.text = "굉장해요! 지난 주행보다 " + getManageScoreResponse.diffAverage.totalEngineScore + "점 얻었어요"
             iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
 
-            tv_increased_score.text =  "+" +getManageScoreResponse.diffTotal.totalEngineScore.toString() + "점 증가"
+            tv_increased_score.text =  "+" +getManageScoreResponse.diffAverage.totalEngineScore.toString() + "점 증가"
             tv_increased_score.setTextColor(resources.getColor(R.color.pri_500))
 
             view_engine_chart_score.background = resources.getDrawable(R.drawable.radius999_pri500)
