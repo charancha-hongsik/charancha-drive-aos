@@ -191,7 +191,7 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
 
                         tv_driving_info1.text = "최근 1일 평균 항속 주행"
                         tv_driving_info2.text = "최근 내 차의\n항속 주행 비율이에요"
-                        tv_driving_info3.text = "내 차는 부드럽게\\n달릴수록 좋아요"
+                        tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
 
                         tv_date1.text = convertDateFormat(recentStartTime)
                         tv_date2.text = convertDateFormat(recentStartTime)
@@ -229,7 +229,6 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                                 tv_const_percent2.text = "0.0"
                                 tv_diff_percent.text = "+0.0% 증가"
 
-                                tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                                 tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                                 tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
@@ -244,7 +243,6 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                         tv_const_percent2.text = "0.0"
                         tv_diff_percent.text = "+0.0% 증가"
 
-                        tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
@@ -256,7 +254,6 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                     tv_const_percent2.text = "0.0"
                     tv_diff_percent.text = "+0.0% 증가"
 
-                    tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                     tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                     tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
@@ -270,7 +267,6 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                 tv_const_percent2.text = "0.0"
                 tv_diff_percent.text = "+0.0% 증가"
 
-                tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
@@ -308,7 +304,7 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                     if(drivingDistance.total.totalDistance != 0.0){
                         tv_driving_info1.text = "1개월 항속 최적 주행"
                         tv_driving_info2.text = "1개월 간 내 차의\n항속 주행 비율이에요"
-                        tv_driving_info3.text = "내 차는 부드럽게\\n달릴수록 좋아요"
+                        tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
 
                         tv_const_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.constantSpeedDrivingDistancePercentage) + "%"
                         tv_const_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.constantSpeedDrivingDistancePercentage) + "%"
@@ -320,7 +316,6 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                         tv_const_percent2.text = "0.0"
                         tv_diff_percent.text = "+0.0% 증가"
 
-                        tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
@@ -337,7 +332,6 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                 tv_const_percent2.text = "0.0"
                 tv_diff_percent.text = "+0.0% 증가"
 
-                tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
@@ -373,7 +367,7 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
 
                         tv_driving_info1.text = "6개월 평균 항속 주행"
                         tv_driving_info2.text = "6개월 간 내 차의\n항속 주행 비율이에요"
-                        tv_driving_info3.text = "내 차는 부드럽게\\n달릴수록 좋아요"
+                        tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
 
                         setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.constantSpeedDrivingDistancePercentage.toFloat()/100)
                     }else{
@@ -381,7 +375,6 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                         tv_const_percent2.text = "0.0"
                         tv_diff_percent.text = "+0.0% 증가"
 
-                        tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
@@ -398,7 +391,6 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                 tv_const_percent2.text = "0.0"
                 tv_diff_percent.text = "+0.0% 증가"
 
-                tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
@@ -434,7 +426,7 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
 
                         tv_driving_info1.text = "1년 평균 항속 주행"
                         tv_driving_info2.text = "1년 간 내 차의\n항속 주행 비율이에요"
-                        tv_driving_info3.text = "내 차는 부드럽게\\n달릴수록 좋아요"
+                        tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
 
                         setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.constantSpeedDrivingDistancePercentage.toFloat()/100)
                     }else{
@@ -442,7 +434,6 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                         tv_const_percent2.text = "0.0"
                         tv_diff_percent.text = "+0.0% 증가"
 
-                        tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
@@ -458,7 +449,6 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                 tv_const_percent2.text = "0.0"
                 tv_diff_percent.text = "+0.0% 증가"
 
-                tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
@@ -474,9 +464,6 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
      * 24개의 데이터가 내려옴
      */
     private fun setRecentBarChartAsDefault() {
-
-        tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-
         val entries = listOf(
             BarEntry(-1f, 0f),
             BarEntry(-0f, 0f),

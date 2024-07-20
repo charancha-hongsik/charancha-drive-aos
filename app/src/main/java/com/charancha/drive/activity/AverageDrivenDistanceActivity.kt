@@ -109,8 +109,6 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
      */
     private fun setRecentBarChartAsDefault() {
 
-        tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-
         val entries = listOf(
             BarEntry(-1f, 0f),
             BarEntry(-0f, 0f),
