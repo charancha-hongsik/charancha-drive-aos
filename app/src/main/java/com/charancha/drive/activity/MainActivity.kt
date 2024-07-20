@@ -93,6 +93,9 @@ class MainActivity : BaseRefreshActivity() {
     lateinit var iv_there_is_diff_time: ImageView
     lateinit var tv_there_is_diff_time:TextView
     lateinit var tv_recent_score:TextView
+    lateinit var tv_recent_score2:TextView
+    lateinit var tv_recent_info_text:TextView
+    lateinit var iv_recent_info:ImageView
 
 
     var checkingPermission = false
@@ -325,6 +328,9 @@ class MainActivity : BaseRefreshActivity() {
         tv_there_is_diff_time = findViewById(R.id.tv_there_is_diff_time)
 
         tv_recent_score = findViewById(R.id.tv_recent_score)
+        tv_recent_score2 = findViewById(R.id.tv_recent_score2)
+        tv_recent_info_text = findViewById(R.id.tv_recent_info_text)
+        iv_recent_info = findViewById(R.id.iv_recent_info)
 
 
     }
@@ -870,9 +876,23 @@ class MainActivity : BaseRefreshActivity() {
                     val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
                     if(getManageScoreResponse.total.totalEngineScore != 0.0){
                         tv_recent_score.text = getManageScoreResponse.total.totalEngineScore.toString()
+                        tv_recent_score2.text = getManageScoreResponse.total.totalEngineScore.toString()
                     }else{
                         tv_recent_score.text = "0"
+                        tv_recent_score2.text = "0"
+                    }
 
+
+
+                    if(getManageScoreResponse.diffAverage.totalEngineScore == 0.0){
+                        tv_recent_info_text.text = "점수 변동이 없어요"
+                        iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
+                    }else if(getManageScoreResponse.diffAverage.totalEngineScore > 0.0){
+                        tv_recent_info_text.text = "굉장해요. 지난 주행보다 +" +  getManageScoreResponse.diffAverage.totalEngineScore + "점을 얻었어요!"
+                        iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
+                    }else if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
+                        tv_recent_info_text.text = "아쉬워요. 지난 주행보다 -" + getManageScoreResponse.diffTotal.totalEngineScore + "점 하락했어요"
+                        iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
                     }
                 }
             }
@@ -883,6 +903,7 @@ class MainActivity : BaseRefreshActivity() {
 
         })
     }
+
 
 
 
