@@ -145,7 +145,7 @@
                             android:layout_height="222dp"
                             android:layout_gravity="center_horizontal" />
                     </FrameLayout>
-                    
+
                     <TextView
                         android:id="@+id/tv_increase"
                         android:layout_width="wrap_content"
@@ -172,7 +172,7 @@
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"/>
 
-                    <TextView
+                    <com.charancha.drive.DelayedClickTextView
                         android:id="@+id/tv_average_score_info"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -225,7 +225,7 @@
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/layout_summary"/>
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <com.charancha.drive.DelayedClickConstraintLayout
                     android:id="@+id/layout_average_distance"
                     android:layout_width="0dp"
                     android:layout_height="105dp"
@@ -326,9 +326,9 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.charancha.drive.DelayedClickConstraintLayout>
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <com.charancha.drive.DelayedClickConstraintLayout
                     android:id="@+id/layout_average_time"
                     android:layout_width="0dp"
                     android:layout_height="105dp"
@@ -429,11 +429,11 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.charancha.drive.DelayedClickConstraintLayout>
 
 
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <com.charancha.drive.DelayedClickConstraintLayout
                     android:id="@+id/layout_recent_manage_score"
                     android:layout_width="0dp"
                     android:layout_height="62dp"
@@ -500,13 +500,13 @@
 
 
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.charancha.drive.DelayedClickConstraintLayout>
 
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <ImageView
+            <com.charancha.drive.DelayedClickImageView
                 android:id="@+id/iv_home_banner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -683,7 +683,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/tv_recent_info_text"
                     app:layout_constraintLeft_toRightOf="@id/btn_six_month"/>
 
-                <androidx.constraintlayout.widget.ConstraintLayout
+                <com.charancha.drive.DelayedClickConstraintLayout
                     android:id="@+id/layout_engine"
                     android:layout_width="match_parent"
                     android:layout_height="64dp"
@@ -748,7 +748,7 @@
 
 
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                </com.charancha.drive.DelayedClickConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layout_tire"
