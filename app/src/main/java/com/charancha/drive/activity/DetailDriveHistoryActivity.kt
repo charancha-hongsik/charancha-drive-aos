@@ -1,6 +1,7 @@
 package com.charancha.drive.activity
 
 import android.animation.ValueAnimator
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -82,6 +83,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var tv_not_mycar:TextView
     lateinit var tv_mycar_scope_info:LinearLayout
 
+    var isActive = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_drive_history)
@@ -104,7 +107,9 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                 setMapData()
             }
         })
-        tracking_id = intent.getStringExtra("tracking_id").toString()
+        tracking_id = intent.getStringExtra("trackingId").toString()
+        isActive = intent.getBooleanExtra("isActive",true)
+
         detailDriveHistoryViewModel.getDrive(tracking_id)
 
         tv_date = findViewById(R.id.tv_date)
@@ -141,6 +146,10 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
     private fun setResources(){
         btn_back.setOnClickListener {
+            val intent = Intent(this@DetailDriveHistoryActivity, MyDriveHistoryActivity::class.java)
+            intent.putExtra("isActive",isActive)
+            intent.putExtra("trackingId",tracking_id)
+            setResult(RESULT_OK, intent)
             finish()
         }
 
@@ -327,8 +336,6 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200){
                     val getDrivingInfoResponse = Gson().fromJson(response.body()?.string(), GetDrivingInfoResponse::class.java)
-
-                    Log.d("testsetsetse","testsetestset totalTime :: " + getDrivingInfoResponse.totalTime)
 
                     tv_date.text = transformTimeToDate(getDrivingInfoResponse.createdAt)
                     tv_distance.text = transferDistanceWithUnit(getDrivingInfoResponse.totalDistance)

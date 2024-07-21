@@ -10,19 +10,16 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.*
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.widget.TextViewCompat
 import com.charancha.drive.ChosenDate
-import com.charancha.drive.DriveHistroyData
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
-import com.charancha.drive.retrofit.response.DriveItem
-import com.charancha.drive.retrofit.response.GetDriveHistoryResponse
-import com.charancha.drive.retrofit.response.GetMyCarInfoResponse
-import com.charancha.drive.retrofit.response.Meta
+import com.charancha.drive.retrofit.response.*
 import com.charancha.drive.viewmodel.MyDriveHistoryViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.Gson
@@ -59,6 +56,8 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var behavior: BottomSheetBehavior<LinearLayout>
     lateinit var selectedDate:String
 
+    lateinit var resultLauncher: ActivityResultLauncher<Intent>
+
 
     private val historyViewModel: MyDriveHistoryViewModel by viewModels()
 
@@ -73,6 +72,13 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
     }
 
     fun init(){
+        resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+            if(it.resultCode == RESULT_OK){
+                val trackingId = it.data?.getStringExtra("trackingId")
+                val isActive = it.data?.getBooleanExtra("isActive",true)
+            }
+        }
+
         lv_history = findViewById(R.id.lv_history)
         btn_back = findViewById(R.id.btn_back)
 
@@ -369,9 +375,11 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                 }
 
                 btn_drive_history.setOnClickListener {
-                    var intent = Intent(context, DetailDriveHistoryActivity::class.java)
-                    intent.putExtra("tracking_id", driveItem?.id)
-                    context.startActivity(intent)
+                    Log.d("testtestet","testestsed :: " + driveItem?.isActive)
+                    (context as MyDriveHistoryActivity).resultLauncher.launch(Intent(context, DetailDriveHistoryActivity::class.java).putExtra("trackingId", driveItem?.id).putExtra("isActive", driveItem?.isActive))
+//                    var intent = Intent(context, DetailDriveHistoryActivity::class.java)
+//                    intent.putExtra("tracking_id", driveItem?.id)
+//                    context.startActivity(intent)
                 }
 
                 return listItemView
