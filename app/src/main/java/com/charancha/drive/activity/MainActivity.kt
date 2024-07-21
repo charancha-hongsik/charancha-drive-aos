@@ -23,10 +23,8 @@ import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.charancha.drive.CustomDialog
-import com.charancha.drive.PreferenceUtil
+import com.charancha.drive.*
 import com.charancha.drive.PreferenceUtil.HAVE_BEEN_HOME
-import com.charancha.drive.R
 import com.charancha.drive.retrofit.response.GetDrivingStatisticsResponse
 import com.charancha.drive.retrofit.response.GetManageScoreResponse
 import com.charancha.drive.retrofit.response.GetMyCarInfoResponse
@@ -61,10 +59,10 @@ import java.util.*
  * 6.
  */
 class MainActivity : BaseRefreshActivity() {
-    lateinit var btnHistory: ImageButton
+    lateinit var btnHistory: ImageView
 
     lateinit var chart: PieChart
-    lateinit var btn_edit:ImageButton
+    lateinit var btn_edit:DelayedClickImageView
     lateinit var layout_engine: ConstraintLayout
     lateinit var layout_average_distance:ConstraintLayout
     lateinit var layout_average_time:ConstraintLayout
@@ -93,10 +91,10 @@ class MainActivity : BaseRefreshActivity() {
     lateinit var tv_recent_score2:TextView
     lateinit var tv_recent_info_text:TextView
     lateinit var iv_recent_info:ImageView
-    lateinit var btn_recent:TextView
-    lateinit var btn_one_month:TextView
-    lateinit var btn_six_month:TextView
-    lateinit var btn_one_year:TextView
+    lateinit var btn_recent:DelayedClickTextView
+    lateinit var btn_one_month:DelayedClickTextView
+    lateinit var btn_six_month:DelayedClickTextView
+    lateinit var btn_one_year:DelayedClickTextView
     lateinit var tv_engine_score:TextView
     lateinit var iv_home_banner:ImageView
     lateinit var tv_recent_driving_score:TextView

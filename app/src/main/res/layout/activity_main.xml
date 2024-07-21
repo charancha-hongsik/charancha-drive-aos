@@ -37,7 +37,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"/>
 
-                <ImageButton
+                <com.charancha.drive.DelayedClickImageView
                     android:id="@+id/btn_history"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
@@ -102,7 +102,7 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent"/>
 
-                <ImageButton
+                <com.charancha.drive.DelayedClickImageView
                     android:id="@+id/btn_edit"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
@@ -612,7 +612,7 @@
                     app:layout_constraintLeft_toRightOf="@+id/tv_recent_info_text"
                     app:layout_constraintTop_toBottomOf="@+id/layout_score" />
 
-                <TextView
+                <com.charancha.drive.DelayedClickTextView
                     android:id="@+id/btn_recent"
                     android:text="@string/recent_driving"
                     android:layout_width="69dp"
@@ -629,7 +629,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/tv_recent_info_text"
                     app:layout_constraintLeft_toLeftOf="parent"/>
 
-                <TextView
+                <com.charancha.drive.DelayedClickTextView
                     android:id="@+id/btn_one_month"
                     android:text="@string/one_month"
                     android:layout_width="49dp"
@@ -647,7 +647,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/tv_recent_info_text"
                     app:layout_constraintLeft_toRightOf="@id/btn_recent"/>
 
-                <TextView
+                <com.charancha.drive.DelayedClickTextView
                     android:id="@+id/btn_six_month"
                     android:text="@string/six_months"
                     android:layout_width="51dp"
@@ -665,7 +665,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/tv_recent_info_text"
                     app:layout_constraintLeft_toRightOf="@id/btn_one_month"/>
 
-                <TextView
+                <com.charancha.drive.DelayedClickTextView
                     android:id="@+id/btn_one_year"
                     android:text="@string/one_year"
                     android:layout_width="37dp"
