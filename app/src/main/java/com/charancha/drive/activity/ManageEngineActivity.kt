@@ -276,7 +276,7 @@ class ManageEngineActivity:BaseRefreshActivity() {
                 if(response.code() == 200){
                     val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
                     if(getManageScoreResponse.total.totalEngineScore != 0.0){
-                        tv_no_score.text = transferNumWithRounds(getManageScoreResponse.total.totalEngineScore).toString()
+                        tv_no_score.text = transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
 
                         if(getManageScoreResponse.diffAverage.totalEngineScore == 0.0){
                             layout_no_score.background = resources.getDrawable(R.drawable.radius8_gray950)
@@ -291,7 +291,7 @@ class ManageEngineActivity:BaseRefreshActivity() {
                         }else if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
                             layout_no_score.background = resources.getDrawable(R.drawable.radius8_sec)
 
-                            tv_no_score1.text = "아쉬워요. 지난 주행보다 -" + transferNumWithRounds(getManageScoreResponse.diffTotal.totalEngineScore) + "점 하락했어요"
+                            tv_no_score1.text = "아쉬워요. 지난 주행보다 -" + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 하락했어요"
                             iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
                         }
 
@@ -373,7 +373,7 @@ class ManageEngineActivity:BaseRefreshActivity() {
                 if(response.code() == 200){
                     val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
                     if(getManageScoreResponse.total.totalEngineScore != 0.0){
-                        tv_no_score.text = transferNumWithRounds(getManageScoreResponse.total.totalEngineScore).toString()
+                        tv_no_score.text = transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
 
                         if(getManageScoreResponse.diffAverage.totalEngineScore == 0.0){
                             layout_no_score.background = resources.getDrawable(R.drawable.radius8_gray950)
@@ -388,7 +388,7 @@ class ManageEngineActivity:BaseRefreshActivity() {
                         }else if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
                             layout_no_score.background = resources.getDrawable(R.drawable.radius8_sec)
 
-                            tv_no_score1.text = "아쉬워요. 지난 주행보다 -" + transferNumWithRounds(getManageScoreResponse.diffTotal.totalEngineScore) + "점 하락했어요"
+                            tv_no_score1.text = "아쉬워요. 지난 주행보다 -" + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 하락했어요"
                             iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
                         }
 

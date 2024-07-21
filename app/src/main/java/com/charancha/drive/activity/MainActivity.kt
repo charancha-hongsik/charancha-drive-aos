@@ -12,6 +12,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.view.View.*
 import android.widget.ImageButton
@@ -810,6 +811,12 @@ class MainActivity : BaseRefreshActivity() {
     }
 
     fun getManageScoreForAMonth(){
+
+        Log.d("testsetetestsetse","testestsetsetsetse :: " +  PreferenceUtil.getPref(this@MainActivity, PreferenceUtil.ACCESS_TOKEN, "")!!)
+        Log.d("testsetetestsetse","testestsetsetsetse :: " +  PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!)
+        Log.d("testsetetestsetse","testestsetsetsetse :: " +  getCurrentAndPastTimeForISO(29).second)
+        Log.d("testsetetestsetse","testestsetsetsetse :: " +  getCurrentAndPastTimeForISO(29).first)
+
         apiService().getManageScoreStatistics(
             "Bearer " + PreferenceUtil.getPref(this@MainActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
@@ -939,9 +946,8 @@ class MainActivity : BaseRefreshActivity() {
                 if(response.code() == 200){
                     val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
                     if(getManageScoreResponse.total.totalEngineScore != 0.0){
-                        tv_recent_score.text = transferNumWithRounds(getManageScoreResponse.total.totalEngineScore).toString()
-                        tv_recent_score2.text = transferNumWithRounds(getManageScoreResponse.total.totalEngineScore).toString()
-                        tv_engine_score.text = transferNumWithRounds(getManageScoreResponse.total.totalEngineScore).toString()
+                        tv_recent_score2.text = transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
+                        tv_engine_score.text = transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
 
                         if(getManageScoreResponse.diffAverage.totalEngineScore == 0.0){
                             tv_recent_info_text.text = "점수 변동이 없어요"
@@ -955,8 +961,8 @@ class MainActivity : BaseRefreshActivity() {
                         }
 
                     }else{
-                        tv_recent_score.text = "0"
                         tv_recent_score2.text = "0"
+                        tv_engine_score.text = "0"
 
                         tv_recent_info_text.text = "아직 데이터가 없어요. 함께 달려볼까요?"
                         iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
@@ -985,9 +991,8 @@ class MainActivity : BaseRefreshActivity() {
                 if(response.code() == 200){
                     val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
                     if(getManageScoreResponse.total.totalEngineScore != 0.0){
-                        tv_recent_score.text = getManageScoreResponse.total.totalEngineScore.toString()
-                        tv_recent_score2.text = getManageScoreResponse.total.totalEngineScore.toString()
-                        tv_engine_score.text = getManageScoreResponse.total.totalEngineScore.toString()
+                        tv_recent_score2.text = getManageScoreResponse.average.totalEngineScore.toString()
+                        tv_engine_score.text = getManageScoreResponse.average.totalEngineScore.toString()
 
                         if(getManageScoreResponse.diffAverage.totalEngineScore == 0.0){
                             tv_recent_info_text.text = "점수 변동이 없어요"
@@ -1001,8 +1006,9 @@ class MainActivity : BaseRefreshActivity() {
                         }
 
                     }else{
-                        tv_recent_score.text = "0"
                         tv_recent_score2.text = "0"
+                        tv_engine_score.text = "0"
+
 
                         tv_recent_info_text.text = "아직 데이터가 없어요. 함께 달려볼까요?"
                         iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
