@@ -424,9 +424,13 @@ class MainActivity : BaseRefreshActivity() {
 
         tv_engine_score = findViewById(R.id.tv_engine_score)
         iv_home_banner = findViewById(R.id.iv_home_banner)
-        iv_home_banner.setOnClickListener {
-            openChromeWithUrl("https://www.charancha.com/")
-        }
+        iv_home_banner.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                openChromeWithUrl("https://www.charancha.com/")
+            }
+
+        })
+
 
     }
 

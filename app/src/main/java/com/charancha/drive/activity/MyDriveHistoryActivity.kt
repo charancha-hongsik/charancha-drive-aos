@@ -168,35 +168,37 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
             btn_select_date_from_list.visibility = VISIBLE
         }
 
-        btn_inquire_date.setOnClickListener {
-            if(layout_select_main.visibility == GONE){
+        btn_inquire_date.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                if(layout_select_main.visibility == GONE){
 
-                listView_choose_date_own.visibility = GONE
-                layout_select_main.visibility = VISIBLE
+                    listView_choose_date_own.visibility = GONE
+                    layout_select_main.visibility = VISIBLE
 
-                tv_selected_date.text = selectedDate
-            }else{
-                if(btn_a_month.isSelected){
-                    setInquireScope(getLastMonthRangeString())
-                    getHistories(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
-                }else if(btn_six_month.isSelected){
-                    setInquireScope(getLastSixMonthsRangeString())
-                    getHistories(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
-
-
-                }else if(btn_each_month.isSelected){
+                    tv_selected_date.text = selectedDate
+                }else{
+                    if(btn_a_month.isSelected){
+                        setInquireScope(getLastMonthRangeString())
+                        getHistories(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+                    }else if(btn_six_month.isSelected){
+                        setInquireScope(getLastSixMonthsRangeString())
+                        getHistories(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
 
 
-                    setInquireScope(getDateRangeString(selectedDate))
-                    getHistories(getDateRange(selectedDate).second,getDateRange(selectedDate).first)
+                    }else if(btn_each_month.isSelected){
 
-                    lv_history.visibility = VISIBLE
-                    layout_no_data.visibility = GONE
-                }
-                layout_choose_date.visibility = GONE
 
-            }
-        }
+                        setInquireScope(getDateRangeString(selectedDate))
+                        getHistories(getDateRange(selectedDate).second,getDateRange(selectedDate).first)
+
+                        lv_history.visibility = VISIBLE
+                        layout_no_data.visibility = GONE
+                    }
+                    layout_choose_date.visibility = GONE
+
+                }            }
+
+        })
 
         getHistories(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
         persistentBottomSheetEvent()

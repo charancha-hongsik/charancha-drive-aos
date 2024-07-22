@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.UnderlineSpan
 import android.util.Log
+import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
@@ -175,93 +176,98 @@ class TermsOfUseActivity: BaseActivity() {
     }
 
     private fun setListener(){
-        ibArrowTerms.setOnClickListener {
-            PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.ACCESS_TOKEN, "")
-            PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.REFRESH_TOKEN, "")
-            PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.EXPIRES_IN, "")
-            PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.REFRESH_EXPIRES_IN, "")
-            PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.TOKEN_TYPE, "")
-            PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.KEYLESS_ACCOUNT, "")
-            PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.KEYLESS_ACCOUNT_EXPIRE, "")
-            PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.OAUTH_PROVIDER, "")
-            PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.ID_TOKEN, "")
-            PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
-            PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.USER_CARID, "")
-            startActivity(Intent(this@TermsOfUseActivity, LoginActivity::class.java))
-            finish()
-        }
+        ibArrowTerms.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.ACCESS_TOKEN, "")
+                PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.REFRESH_TOKEN, "")
+                PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.EXPIRES_IN, "")
+                PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.REFRESH_EXPIRES_IN, "")
+                PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.TOKEN_TYPE, "")
+                PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.KEYLESS_ACCOUNT, "")
+                PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.KEYLESS_ACCOUNT_EXPIRE, "")
+                PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.OAUTH_PROVIDER, "")
+                PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.ID_TOKEN, "")
+                PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
+                PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.USER_CARID, "")
+                startActivity(Intent(this@TermsOfUseActivity, LoginActivity::class.java))
+                finish()            }
 
-        btnNext.setOnClickListener {
-            val acceptedTerms = mutableListOf<Agreements>()
+        })
 
-            for(term in termsSummaryResponse){
+        btnNext.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                val acceptedTerms = mutableListOf<Agreements>()
 
-                if(tvTermsTitle4.text.contains(term.title)){
-                    if(ibTerms4.isSelected){
+                for(term in termsSummaryResponse){
+
+                    if(tvTermsTitle4.text.contains(term.title)){
+                        if(ibTerms4.isSelected){
+                            acceptedTerms.add(Agreements(term.id,1))
+                        }else
+                            acceptedTerms.add(Agreements(term.id,0))
+                    }else{
                         acceptedTerms.add(Agreements(term.id,1))
-                    }else
-                        acceptedTerms.add(Agreements(term.id,0))
-                }else{
-                    acceptedTerms.add(Agreements(term.id,1))
+                    }
                 }
-            }
 
-            val gson = Gson()
-            val jsonParam = gson.toJson(AgreeTermsRequest(acceptedTerms.toList()))
+                val gson = Gson()
+                val jsonParam = gson.toJson(AgreeTermsRequest(acceptedTerms.toList()))
 
-            apiService().postTermsAgree("Bearer " + PreferenceUtil.getPref(this@TermsOfUseActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :Callback<ResponseBody>{
-                override fun onResponse(
-                    call: Call<ResponseBody>,
-                    response: Response<ResponseBody>
-                ) {
-                    if(response.code() == 200 || response.code() == 201){
-                        if(PreferenceUtil.getBooleanPref(this@TermsOfUseActivity, PreferenceUtil.PERMISSION_ALL_CHECKED, false)){
-                            apiService().getMyCarInfo("Bearer " + PreferenceUtil.getPref(this@TermsOfUseActivity, PreferenceUtil.ACCESS_TOKEN, "")).enqueue(object :Callback<ResponseBody>{
-                                override fun onResponse(
-                                    call: Call<ResponseBody>,
-                                    response: Response<ResponseBody>
-                                ) {
-                                    if(response.code() == 200){
-                                        val jsonString = response.body()?.string()
+                apiService().postTermsAgree("Bearer " + PreferenceUtil.getPref(this@TermsOfUseActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :Callback<ResponseBody>{
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+                        if(response.code() == 200 || response.code() == 201){
+                            if(PreferenceUtil.getBooleanPref(this@TermsOfUseActivity, PreferenceUtil.PERMISSION_ALL_CHECKED, false)){
+                                apiService().getMyCarInfo("Bearer " + PreferenceUtil.getPref(this@TermsOfUseActivity, PreferenceUtil.ACCESS_TOKEN, "")).enqueue(object :Callback<ResponseBody>{
+                                    override fun onResponse(
+                                        call: Call<ResponseBody>,
+                                        response: Response<ResponseBody>
+                                    ) {
+                                        if(response.code() == 200){
+                                            val jsonString = response.body()?.string()
 
-                                        val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
-                                        val getMyCarInfoResponse:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
+                                            val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
+                                            val getMyCarInfoResponse:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
 
-                                        if(getMyCarInfoResponse.size > 0){
-                                            startActivity(Intent(this@TermsOfUseActivity, MainActivity::class.java))
-                                            finish()
+                                            if(getMyCarInfoResponse.size > 0){
+                                                startActivity(Intent(this@TermsOfUseActivity, MainActivity::class.java))
+                                                finish()
+                                            }else{
+                                                startActivity(Intent(this@TermsOfUseActivity, OnBoardingActivity::class.java))
+                                                finish()
+                                            }
                                         }else{
                                             startActivity(Intent(this@TermsOfUseActivity, OnBoardingActivity::class.java))
                                             finish()
                                         }
-                                    }else{
+                                    }
+
+                                    override fun onFailure(
+                                        call: Call<ResponseBody>,
+                                        t: Throwable
+                                    ) {
                                         startActivity(Intent(this@TermsOfUseActivity, OnBoardingActivity::class.java))
                                         finish()
                                     }
-                                }
-
-                                override fun onFailure(
-                                    call: Call<ResponseBody>,
-                                    t: Throwable
-                                ) {
-                                    startActivity(Intent(this@TermsOfUseActivity, OnBoardingActivity::class.java))
-                                    finish()
-                                }
-                            })
-                        }else{
-                            startActivity(Intent(this@TermsOfUseActivity, PermissionInfoActivity::class.java))
-                            finish()
+                                })
+                            }else{
+                                startActivity(Intent(this@TermsOfUseActivity, PermissionInfoActivity::class.java))
+                                finish()
+                            }
+                        } else{
+                            Toast.makeText(this@TermsOfUseActivity,"통신 실패",Toast.LENGTH_SHORT).show()
                         }
-                    } else{
-                        Toast.makeText(this@TermsOfUseActivity,"통신 실패",Toast.LENGTH_SHORT).show()
                     }
-                }
 
-                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                }
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    }
 
-            })
-        }
+                })            }
+
+        })
+
 
         btnNext.isClickable = false
 
@@ -312,37 +318,51 @@ class TermsOfUseActivity: BaseActivity() {
             ibTerms5.isSelected = !ibTerms5.isSelected
         }
 
-        tvTermsTitle2.setOnClickListener{
-            for(term in termsSummaryResponse){
-                if(tvTermsTitle2.text.contains(term.title)){
-                    startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
-                }
-            }
-        }
+        tvTermsTitle2.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                for(term in termsSummaryResponse){
+                    if(tvTermsTitle2.text.contains(term.title)){
+                        startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
+                    }
+                }            }
 
-        tvTermsTitle3.setOnClickListener{
-            for(term in termsSummaryResponse){
-                if(tvTermsTitle3.text.contains(term.title)){
-                    startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
-                }
-            }
-        }
+        })
 
-        tvTermsTitle4.setOnClickListener{
-            for(term in termsSummaryResponse){
-                if(tvTermsTitle4.text.contains(term.title)){
-                    startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
-                }
-            }
-        }
+        tvTermsTitle3.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                for(term in termsSummaryResponse){
+                    if(tvTermsTitle3.text.contains(term.title)){
+                        startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
+                    }
+                }            }
 
-        tvTermsTitle5.setOnClickListener{
-            for(term in termsSummaryResponse){
-                if(tvTermsTitle5.text.contains(term.title)){
-                    startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
+        })
+
+        tvTermsTitle4.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                for(term in termsSummaryResponse){
+                    if(tvTermsTitle4.text.contains(term.title)){
+                        startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
+                    }
+                }            }
+
+        })
+
+
+
+
+        tvTermsTitle5.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                tvTermsTitle5.setOnClickListener{
+                    for(term in termsSummaryResponse){
+                        if(tvTermsTitle5.text.contains(term.title)){
+                            startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
+                        }
+                    }
                 }
             }
         }
+        )
     }
 
     private fun checkAllAccept(){

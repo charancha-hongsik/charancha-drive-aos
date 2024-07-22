@@ -135,67 +135,69 @@ class RegisterCarActivity: BaseActivity() {
         }
 
         btn_next = findViewById(R.id.btn_next)
-        btn_next.setOnClickListener {
-
-            when(no){
-                0 -> {
-                    carNo = et_register_car.text.toString()
-                    setCarOwnerPage()
-                }
-
-                1 -> {
-                    carOwner = et_register_car.text.toString()
-                    getPostMyCarResult.launch(Intent(this@RegisterCarActivity, LoadCarInfoActivity::class.java).putExtra("carNo",carNo).putExtra("carOwner",carOwner))
-                }
-
-                2 -> {
-
-                    var carYear = postMyCarResponse.carYear
-                    var carName = postMyCarResponse.carName
-
-                     if(et_car_year.text.toString().isNotEmpty()){
-                         carYear = et_car_year.text.toString()
-                     }
-
-                    if(et_car_model_name.text.toString().isNotEmpty()){
-                        carName = et_car_model_name.text.toString()
+        btn_next.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                when(no){
+                    0 -> {
+                        carNo = et_register_car.text.toString()
+                        setCarOwnerPage()
                     }
 
+                    1 -> {
+                        carOwner = et_register_car.text.toString()
+                        getPostMyCarResult.launch(Intent(this@RegisterCarActivity, LoadCarInfoActivity::class.java).putExtra("carNo",carNo).putExtra("carOwner",carOwner))
+                    }
 
-                    val gson = Gson()
-                    val jsonParam =
-                        gson.toJson(PostMyCarRequest(
-                            licensePlateNumber=tv_car_id.text.toString(),
-                            ownerName=tv_car_owner.text.toString(),
-                            vehicleIdentificationNumber=tv_car_no.text.toString(),
-                            carYear= carYear.toInt(),
-                            carName = carName,
-                            fuel = tv_car_fuel.text.toString()
-                        ))
+                    2 -> {
 
-                    apiService().postMyCar(
-                        "Bearer " + PreferenceUtil.getPref(this@RegisterCarActivity,  PreferenceUtil.ACCESS_TOKEN, ""), jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :
-                        Callback<ResponseBody>{
-                        override fun onResponse(
-                            call: Call<ResponseBody>,
-                            response: Response<ResponseBody>
-                        ) {
-                            PreferenceUtil.putPref(this@RegisterCarActivity,  PreferenceUtil.KM_MILE, "km")
-                            startActivity(Intent(this@RegisterCarActivity, MainActivity::class.java).addFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK))
-                            finish()
+                        var carYear = postMyCarResponse.carYear
+                        var carName = postMyCarResponse.carName
+
+                        if(et_car_year.text.toString().isNotEmpty()){
+                            carYear = et_car_year.text.toString()
                         }
 
-                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
+                        if(et_car_model_name.text.toString().isNotEmpty()){
+                            carName = et_car_model_name.text.toString()
                         }
 
-                    })
 
+                        val gson = Gson()
+                        val jsonParam =
+                            gson.toJson(PostMyCarRequest(
+                                licensePlateNumber=tv_car_id.text.toString(),
+                                ownerName=tv_car_owner.text.toString(),
+                                vehicleIdentificationNumber=tv_car_no.text.toString(),
+                                carYear= carYear.toInt(),
+                                carName = carName,
+                                fuel = tv_car_fuel.text.toString()
+                            ))
+
+                        apiService().postMyCar(
+                            "Bearer " + PreferenceUtil.getPref(this@RegisterCarActivity,  PreferenceUtil.ACCESS_TOKEN, ""), jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :
+                            Callback<ResponseBody>{
+                            override fun onResponse(
+                                call: Call<ResponseBody>,
+                                response: Response<ResponseBody>
+                            ) {
+                                PreferenceUtil.putPref(this@RegisterCarActivity,  PreferenceUtil.KM_MILE, "km")
+                                startActivity(Intent(this@RegisterCarActivity, MainActivity::class.java).addFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK))
+                                finish()
+                            }
+
+                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+                            }
+
+                        })
+
+                    }
                 }
-            }
 
-            no++
-        }
+                no++
+            }
+        })
+
 
         view_register_percent1.isSelected = true
         et_register_car.setOnFocusChangeListener { view, b ->
@@ -207,31 +209,33 @@ class RegisterCarActivity: BaseActivity() {
             }
         }
 
-        ib_arrow_register_car.setOnClickListener {
-            no--
-            when(no){
-                -1 -> {
-                    finish()
-                }
+        ib_arrow_register_car.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                no--
+                when(no){
+                    -1 -> {
+                        finish()
+                    }
 
-                0 -> {
-                    setCarNoPage()
-                }
+                    0 -> {
+                        setCarNoPage()
+                    }
 
-                1 -> {
-                    setCarOwnerPage()
-                }
+                    1 -> {
+                        setCarOwnerPage()
+                    }
 
-                2 -> {
+                    2 -> {
 
 
-                }
+                    }
 
-                3 -> {
+                    3 -> {
 
-                }
-            }
-        }
+                    }
+                }            }
+
+        })
 
         et_register_car.addTextChangedListener(object :TextWatcher{
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {

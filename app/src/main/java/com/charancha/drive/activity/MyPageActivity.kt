@@ -3,6 +3,7 @@ package com.charancha.drive.activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -75,60 +76,78 @@ class MyPageActivity:BaseRefreshActivity() {
     }
 
     fun setListener(){
-        layout_nickname.setOnClickListener {
-            startActivity(Intent(this@MyPageActivity, MyInfoActivity::class.java).putExtra("nickname",getAccountProfilesResponse.nickName).putExtra("email", getAccountProfilesResponse.user.email).putExtra("provider",getAccountProfilesResponse.user.provider.text.en))
-        }
+        layout_nickname.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                startActivity(Intent(this@MyPageActivity, MyInfoActivity::class.java).putExtra("nickname",getAccountProfilesResponse.nickName).putExtra("email", getAccountProfilesResponse.user.email).putExtra("provider",getAccountProfilesResponse.user.provider.text.en))
+            }
 
-        btn_drive_history.setOnClickListener {
-            startActivity(Intent(this@MyPageActivity, MyDriveHistoryActivity::class.java))
-        }
+        })
 
-        btn_alarm_setting.setOnClickListener {
-            startActivity(Intent(this@MyPageActivity, NotificationActivity::class.java))
+        btn_drive_history.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                startActivity(Intent(this@MyPageActivity, MyDriveHistoryActivity::class.java))
+            }
 
-        }
+        })
 
-        btn_setting.setOnClickListener {
-            startActivity(Intent(this@MyPageActivity, SettingActivity::class.java))
-        }
+        btn_alarm_setting.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                startActivity(Intent(this@MyPageActivity, NotificationActivity::class.java))
+            }
+
+        })
+
+        btn_setting.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                startActivity(Intent(this@MyPageActivity, SettingActivity::class.java))
+            }
+        })
 
 
-        btn_terms.setOnClickListener {
-            for(term in termsSummaryResponse){
-                if(term.title.contains("이용약관")){
-                    startActivity(Intent(this@MyPageActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
+        btn_terms.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                for(term in termsSummaryResponse){
+                    if(term.title.contains("이용약관")){
+                        startActivity(Intent(this@MyPageActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
+                    }
                 }
             }
-        }
 
-        btn_personal_info.setOnClickListener {
-            for(term in termsSummaryResponse){
-                if(term.title.contains("개인정보 처리방침")){
-                    startActivity(Intent(this@MyPageActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
+        })
+
+        btn_personal_info.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                for(term in termsSummaryResponse){
+                    if(term.title.contains("개인정보 처리방침")){
+                        startActivity(Intent(this@MyPageActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
+                    }
                 }
             }
-        }
+
+        })
+
 
         btn_back.setOnClickListener { finish() }
 
-        btn_logout.setOnClickListener {
-            PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.ACCESS_TOKEN, "")
-            PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.REFRESH_TOKEN, "")
-            PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.EXPIRES_IN, "")
-            PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.REFRESH_EXPIRES_IN, "")
-            PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.TOKEN_TYPE, "")
-            PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.KEYLESS_ACCOUNT, "")
-            PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.KEYLESS_ACCOUNT_EXPIRE, "")
-            PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.OAUTH_PROVIDER, "")
-            PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.ID_TOKEN, "")
-            PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
-            PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.USER_CARID, "")
+        btn_logout.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.ACCESS_TOKEN, "")
+                PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.REFRESH_TOKEN, "")
+                PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.EXPIRES_IN, "")
+                PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.REFRESH_EXPIRES_IN, "")
+                PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.TOKEN_TYPE, "")
+                PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.KEYLESS_ACCOUNT, "")
+                PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.KEYLESS_ACCOUNT_EXPIRE, "")
+                PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.OAUTH_PROVIDER, "")
+                PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.ID_TOKEN, "")
+                PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
+                PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.USER_CARID, "")
 
-            startActivity(Intent(this@MyPageActivity, LoginActivity::class.java))
-            finish()
-        }
+                startActivity(Intent(this@MyPageActivity, LoginActivity::class.java))
+                finish()
+            }
 
-
+        })
     }
 
     override fun onResume() {
@@ -140,8 +159,6 @@ class MyPageActivity:BaseRefreshActivity() {
         apiService().getAccountProfiles("Bearer " + PreferenceUtil.getPref(this@MyPageActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!).enqueue(object :
             Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-
-                Log.d("testestseest","testestest :: " + response.code())
 
                 if(response.code() == 200){
                     getAccountProfilesResponse = Gson().fromJson(

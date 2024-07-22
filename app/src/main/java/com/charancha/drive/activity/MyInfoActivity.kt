@@ -3,6 +3,7 @@ package com.charancha.drive.activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
@@ -58,44 +59,47 @@ class MyInfoActivity:BaseRefreshActivity() {
             finish()
         }
 
-        tv_withdrawal.setOnClickListener {
-            startActivity(Intent(this@MyInfoActivity, WithdrawalActivity::class.java))
-        }
+        tv_withdrawal.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                startActivity(Intent(this@MyInfoActivity, WithdrawalActivity::class.java))
+            }
 
-        ib_edit_nickname.setOnClickListener {
-            CustomDialogForEditText(this, "내 정보", "별명", nickName,"저장","취소",  object : CustomDialogForEditText.DialogCallback{
-                override fun onConfirm(contents:String) {
-                    val gson = Gson()
-                    val jsonParam =
-                        gson.toJson(PatchProfilesRequest(contents))
+        })
 
-                    apiService().patchAccountProfiles("Bearer " + PreferenceUtil.getPref(this@MyInfoActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :Callback<ResponseBody>{
-                        override fun onResponse(
-                            call: Call<ResponseBody>,
-                            response: Response<ResponseBody>
-                        ) {
-                            if(response.code() == 200){
-                                Toast.makeText(this@MyInfoActivity, "저장 되었습니다.", Toast.LENGTH_SHORT).show()
-                                tv_nickname.text = contents
+        ib_edit_nickname.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                CustomDialogForEditText(this@MyInfoActivity, "내 정보", "별명", nickName,"저장","취소",  object : CustomDialogForEditText.DialogCallback{
+                    override fun onConfirm(contents:String) {
+                        val gson = Gson()
+                        val jsonParam =
+                            gson.toJson(PatchProfilesRequest(contents))
+
+                        apiService().patchAccountProfiles("Bearer " + PreferenceUtil.getPref(this@MyInfoActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :Callback<ResponseBody>{
+                            override fun onResponse(
+                                call: Call<ResponseBody>,
+                                response: Response<ResponseBody>
+                            ) {
+                                if(response.code() == 200){
+                                    Toast.makeText(this@MyInfoActivity, "저장 되었습니다.", Toast.LENGTH_SHORT).show()
+                                    tv_nickname.text = contents
+
+                                }
+                            }
+
+                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
 
                             }
-                        }
 
-                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        })
+                    }
 
-                        }
+                    override fun onCancel() {
 
-                    })
-                }
+                    }
 
-                override fun onCancel() {
+                }).show()            }
 
-                }
-
-            }).show()
-        }
-
-
+        })
     }
 
     fun setResources(){

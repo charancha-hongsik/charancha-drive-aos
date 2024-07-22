@@ -102,63 +102,87 @@ class ManageEngineActivity:BaseRefreshActivity() {
         btn_year_drive = findViewById(R.id.btn_year_drive)
 
         btn_high_speed_driving = findViewById(R.id.btn_high_speed_driving)
-        btn_high_speed_driving.setOnClickListener {
-            startActivity(Intent(this, HighSpeedDrivingActivity::class.java))
-        }
+        btn_high_speed_driving.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                startActivity(Intent(this@ManageEngineActivity, HighSpeedDrivingActivity::class.java))
+            }
 
+        })
 
         btn_average_distance = findViewById(R.id.btn_average_distance)
-        btn_average_distance.setOnClickListener {
-            startActivity(Intent(this, AverageDrivenDistanceActivity::class.java))
-        }
+        btn_average_distance.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                startActivity(Intent(this@ManageEngineActivity, AverageDrivenDistanceActivity::class.java))
+            }
+
+        })
+
 
         btn_optimal_driving = findViewById(R.id.btn_optimal_driving)
-        btn_optimal_driving.setOnClickListener {
-            startActivity(Intent(this, BestDrivingActivity::class.java))
-        }
+        btn_optimal_driving.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                startActivity(Intent(this@ManageEngineActivity, BestDrivingActivity::class.java))
+            }
+
+        })
 
         btn_normal_speed_driving = findViewById(R.id.btn_normal_speed_driving)
-        btn_normal_speed_driving.setOnClickListener {
-            startActivity(Intent(this, ConstantSpeedDrivingActivity::class.java))
-        }
+        btn_normal_speed_driving.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                startActivity(Intent(this@ManageEngineActivity, ConstantSpeedDrivingActivity::class.java))
+            }
+
+        })
+
 
         btn_recent_drive.isSelected = true
 
-        btn_recent_drive.setOnClickListener {
-            btn_recent_drive.isSelected = true
-            btn_month_drive.isSelected = false
-            btn_six_month_drive.isSelected = false
-            btn_year_drive.isSelected = false
+        btn_recent_drive.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                btn_recent_drive.isSelected = true
+                btn_month_drive.isSelected = false
+                btn_six_month_drive.isSelected = false
+                btn_year_drive.isSelected = false
 
-            setRecentAllForEngine()
-        }
+                setRecentAllForEngine()            }
 
-        btn_month_drive.setOnClickListener {
-            btn_recent_drive.isSelected = false
-            btn_month_drive.isSelected = true
-            btn_six_month_drive.isSelected = false
-            btn_year_drive.isSelected = false
+        })
 
-            setAllForEngine(29)
-        }
+        btn_month_drive.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                btn_recent_drive.isSelected = false
+                btn_month_drive.isSelected = true
+                btn_six_month_drive.isSelected = false
+                btn_year_drive.isSelected = false
 
-        btn_six_month_drive.setOnClickListener {
-            btn_recent_drive.isSelected = false
-            btn_month_drive.isSelected = false
-            btn_six_month_drive.isSelected = true
-            btn_year_drive.isSelected = false
+                setAllForEngine(29)
+            }
+        })
 
-            setAllForEngine(150)
-        }
+        btn_six_month_drive.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                btn_recent_drive.isSelected = false
+                btn_month_drive.isSelected = false
+                btn_six_month_drive.isSelected = true
+                btn_year_drive.isSelected = false
 
-        btn_year_drive.setOnClickListener {
-            btn_recent_drive.isSelected = false
-            btn_month_drive.isSelected = false
-            btn_six_month_drive.isSelected = false
-            btn_year_drive.isSelected = true
+                setAllForEngine(150)
+            }
 
-            setAllForEngine(334)
-        }
+        })
+
+        btn_year_drive.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                btn_recent_drive.isSelected = false
+                btn_month_drive.isSelected = false
+                btn_six_month_drive.isSelected = false
+                btn_year_drive.isSelected = true
+
+                setAllForEngine(334)
+            }
+        })
+
+
     }
 
     /**
