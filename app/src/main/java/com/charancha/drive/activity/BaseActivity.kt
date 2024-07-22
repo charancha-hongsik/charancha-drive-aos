@@ -2,6 +2,7 @@ package com.charancha.drive.activity
 
 import android.content.res.Resources
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -290,8 +291,7 @@ open class BaseActivity: AppCompatActivity(){
             }
         }
     }
-
-    fun showTooltip(anchorView: View, subtitle: String, contents: String) {
+    fun showTooltip(anchorView: View, xPx: Float, yPx: Float, subtitle: String, contents: String) {
         val inflater = getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val popupView: View = inflater.inflate(R.layout.layout_tooltip, null)
 
@@ -308,31 +308,17 @@ open class BaseActivity: AppCompatActivity(){
         val popupWidth = popupView.measuredWidth
         val popupHeight = popupView.measuredHeight
 
-        // Get the location of the anchor view on screen
-        val anchorLocation = IntArray(2)
-        anchorView.getLocationOnScreen(anchorLocation)
-        val anchorX = anchorLocation[0]
-        val anchorY = anchorLocation[1]
-
-        // Calculate the xOffset and yOffset for showing the popup
-        val xOffset = (anchorX + anchorView.width + dpToPx(8f)).toInt() // Align popup left with anchor view's right plus a small margin
-        val yOffset = (anchorY - popupHeight - dpToPx(8f)).toInt() // Show popup above the anchor view
-
         // Get the screen width
         val screenWidth = Resources.getSystem().displayMetrics.widthPixels
 
-        // Adjust xOffset if the popup would go off the right side of the screen
-        val adjustedXOffset = if (xOffset + popupWidth > screenWidth - dpToPx(12f)) {
-            screenWidth - popupWidth - dpToPx(12f) // Ensure a 12dp margin from the right edge
-        } else {
-            xOffset
-        }
+        // Calculate the xOffset and yOffset for showing the popup
+        val xOffset = xPx.toInt()  // Align popup left with touch point
+        val yOffset = (yPx - popupHeight).toInt() - dpToPx(30f) // Show popup above the touch point
 
-        // Show the popup window
-        popupWindow.showAtLocation(anchorView, Gravity.NO_GRAVITY, adjustedXOffset, yOffset)
+
+        // Show the popup window at the adjusted location
+        popupWindow.showAtLocation(anchorView, Gravity.NO_GRAVITY, screenWidth-xOffset, yOffset)
     }
-
-
 
 
     private fun pxToDp(px: Float): Int {

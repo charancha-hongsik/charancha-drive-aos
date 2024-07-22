@@ -78,7 +78,7 @@ class ManageEngineActivity:BaseRefreshActivity() {
         iv_tooltip_perone_average = findViewById(R.id.iv_tooltip_perone_average)
         iv_tooltip_perone_average.setOnTouchListener { view, motionEvent ->
             if (motionEvent.action == MotionEvent.ACTION_DOWN) {
-                showTooltip(view,"1회 평균 주행거리란?","차량이 한 번 주행할 때마다 이동한 거/n리의 평균값이에요. 높을수록 좋아요!")
+                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"1회 평균 주행거리란?","차량이 한 번 주행할 때마다 이동한 거/n리의 평균값이에요. 높을수록 좋아요!")
             }
             true
         }
@@ -86,7 +86,7 @@ class ManageEngineActivity:BaseRefreshActivity() {
         iv_tooltip_high_speed = findViewById(R.id.iv_tooltip_high_speed)
         iv_tooltip_high_speed.setOnTouchListener { view, motionEvent ->
             if (motionEvent.action == MotionEvent.ACTION_DOWN) {
-                showTooltip(view,"고속 주행이란?","80km/h 이상 150km/h 미만 사이의 속력으로 주행한 거리에요. 높을수록 좋아요!")
+                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"고속 주행이란?","80km/h 이상 150km/h 미만 사이의 속력으로 주행한 거리에요. 높을수록 좋아요!")
             }
             true
         }
