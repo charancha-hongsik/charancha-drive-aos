@@ -295,29 +295,25 @@ open class BaseActivity: AppCompatActivity(){
         val inflater = getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val popupView: View = inflater.inflate(R.layout.layout_tooltip, null)
 
-        val popupWindow = PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true)
+        // Calculate the maximum allowed width for the popup to ensure it doesn't touch the right edge
+        val screenWidth = Resources.getSystem().displayMetrics.widthPixels
+        val maxPopupWidth = screenWidth
 
-        val tv_subtitle = popupView.findViewById<TextView>(R.id.tv_tootip_subtitle)
-        val tv_contents = popupView.findViewById<TextView>(R.id.tv_tootip_contents)
+        // Set the popup view width to be the maximum allowed width
+        popupView.layoutParams = ViewGroup.LayoutParams(maxPopupWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
 
-        tv_subtitle.text = subtitle
-        tv_contents.text = contents
-
-        // Measure the popup view to get its width and height
+        // Measure the popup view to get its height after adjusting width
         popupView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        val popupWidth = popupView.measuredWidth
         val popupHeight = popupView.measuredHeight
 
-        // Get the screen width
-        val screenWidth = Resources.getSystem().displayMetrics.widthPixels
+        // Calculate the yOffset for showing the popup
+        val yOffset = (yPx - popupHeight - dpToPx(15f)).toInt() // Show popup above the touch point with 12dp margin
 
-        // Calculate the xOffset and yOffset for showing the popup
-        val xOffset = xPx.toInt()  // Align popup left with touch point
-        val yOffset = (yPx - popupHeight).toInt() - dpToPx(30f) // Show popup above the touch point
-
+        // Create PopupWindow with adjusted width
+        val popupWindow = PopupWindow(popupView, maxPopupWidth, ViewGroup.LayoutParams.WRAP_CONTENT, true)
 
         // Show the popup window at the adjusted location
-        popupWindow.showAtLocation(anchorView, Gravity.NO_GRAVITY, screenWidth-xOffset, yOffset)
+        popupWindow.showAtLocation(anchorView, Gravity.NO_GRAVITY, xPx.toInt(), yOffset)
     }
 
 
