@@ -129,9 +129,6 @@ class MainActivity : BaseRefreshActivity() {
 
         setPieChart(0.0f)
 
-        Log.d("testsetset","testestsetse second :: " + getCurrentAndPastTimeForISO(29).second)
-        Log.d("testsetset","testestsetse first :: " + getCurrentAndPastTimeForISO(29).first)
-
         setLineChartForBrakes(findViewById(R.id.chart_line_brakes))
         setLineChartForEngine(findViewById(R.id.chart_line_engine))
         setLineChartForTire(findViewById(R.id.chart_line_tire))
@@ -949,6 +946,7 @@ class MainActivity : BaseRefreshActivity() {
                 if(response.code() == 200){
                     val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
                     if(getManageScoreResponse.total.totalEngineScore != 0.0){
+                        tv_recent_score.text = transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
                         tv_recent_score2.text = transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
                         tv_engine_score.text = transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
 
@@ -994,8 +992,8 @@ class MainActivity : BaseRefreshActivity() {
                 if(response.code() == 200){
                     val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
                     if(getManageScoreResponse.total.totalEngineScore != 0.0){
-                        tv_recent_score2.text = getManageScoreResponse.average.totalEngineScore.toString()
-                        tv_engine_score.text = getManageScoreResponse.average.totalEngineScore.toString()
+                        tv_recent_score2.text = transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
+                        tv_engine_score.text = transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
 
                         if(getManageScoreResponse.diffAverage.totalEngineScore == 0.0){
                             tv_recent_info_text.text = "점수 변동이 없어요"

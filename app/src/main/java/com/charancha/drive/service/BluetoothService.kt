@@ -772,8 +772,8 @@ class BluetoothService : Service() {
         val acceleration = (location.speed * MS_TO_KH) - (pastSpeed * MS_TO_KH)
 
 
-        gpsInfoForApp.add(EachGpsDtoForApp(timeStamp, location.latitude, location.longitude, String.format("%.2f", location.altitude).toDouble()))
-        gpsInfoForApi.add(EachGpsDtoForApi(timeStamp, String.format("%.2f",speed).toFloat() ,String.format("%.2f",distance).toFloat(),String.format("%.2f", location.altitude).toDouble(), String.format("%.2f",acceleration).toFloat()))
+        gpsInfoForApp.add(EachGpsDtoForApp(timeStamp, location.latitude, location.longitude, String.format("%.0f", location.altitude).toDouble()))
+        gpsInfoForApi.add(EachGpsDtoForApi(timeStamp, String.format("%.0f",speed).toFloat() ,String.format("%.0f",distance).toFloat(),String.format("%.0f", location.altitude).toDouble(), String.format("%.0f",acceleration).toFloat()))
 
 
         var HH = getDateFromTimeStampToHH(timeStamp)

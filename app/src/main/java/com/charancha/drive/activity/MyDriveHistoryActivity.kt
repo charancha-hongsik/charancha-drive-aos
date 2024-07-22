@@ -412,10 +412,10 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
 
         fun transferDistanceWithUnit(meters:Double, distance_unit:String):String{
             if(distance_unit == "km"){
-                return String.format(Locale.KOREAN, "%.3fkm", meters / 1000)
+                return String.format(Locale.KOREAN, "%.0fkm", meters / 1000)
             }else{
                 val milesPerMeter = 0.000621371
-                return String.format(Locale.KOREAN, "%.3fmile",meters * milesPerMeter)
+                return String.format(Locale.KOREAN, "%.0fmile",meters * milesPerMeter)
             }
         }
 

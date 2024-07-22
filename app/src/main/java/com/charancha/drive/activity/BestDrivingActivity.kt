@@ -189,19 +189,19 @@ class BestDrivingActivity:BaseRefreshActivity() {
                         recentStartTime = recentDrivingDistance.recentStartTime
                         recentEndTime = recentDrivingDistance.recentEndTime
 
-                        tv_best_percent1.text = String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.average.optimalDrivingPercentage) + "%"
-                        tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.average.optimalDrivingPercentage) + "%"
+                        tv_best_percent1.text = String.format(Locale.KOREAN, "%.0f", recentDrivingDistance.average.optimalDrivingPercentage) + "%"
+                        tv_best_percent2.text = String.format(Locale.KOREAN, "%.0f", recentDrivingDistance.average.optimalDrivingPercentage) + "%"
 
                         if(recentDrivingDistance.diffAverage.optimalDrivingPercentage == 0.0){
                             tv_diff_percent.text = "거리 변동이 없어요."
                             tv_diff_percent.setTextColor(resources.getColor(R.color.gray_950))
 
                         }else if(recentDrivingDistance.diffAverage.optimalDrivingPercentage > 0.0){
-                            tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
+                            tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.0f", recentDrivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
                             tv_diff_percent.setTextColor(resources.getColor(R.color.pri_500))
 
                         }else if(recentDrivingDistance.diffAverage.optimalDrivingPercentage < 0.0){
-                            tv_diff_percent.text = "-" + String.format(Locale.KOREAN, "%.1f", recentDrivingDistance.diffAverage.optimalDrivingPercentage) + "% 감소"
+                            tv_diff_percent.text = "-" + String.format(Locale.KOREAN, "%.0f", recentDrivingDistance.diffAverage.optimalDrivingPercentage) + "% 감소"
                             tv_diff_percent.setTextColor(resources.getColor(R.color.sec_500))
                         }
 
@@ -311,19 +311,19 @@ class BestDrivingActivity:BaseRefreshActivity() {
                     )
 
                     if(drivingDistance.average.optimalDrivingPercentage!=0.0){
-                        tv_best_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
-                        tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
+                        tv_best_percent1.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.optimalDrivingPercentage) + "%"
+                        tv_best_percent2.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.optimalDrivingPercentage) + "%"
 
                         if(drivingDistance.diffAverage.optimalDrivingPercentage == 0.0){
                             tv_diff_percent.text = "거리 변동이 없어요."
                             tv_diff_percent.setTextColor(resources.getColor(R.color.gray_950))
 
                         }else if(drivingDistance.diffAverage.optimalDrivingPercentage > 0.0){
-                            tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
+                            tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.0f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
                             tv_diff_percent.setTextColor(resources.getColor(R.color.pri_500))
 
                         }else if(drivingDistance.diffAverage.optimalDrivingPercentage < 0.0){
-                            tv_diff_percent.text = "-" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 감소"
+                            tv_diff_percent.text = "-" + String.format(Locale.KOREAN, "%.0f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 감소"
                             tv_diff_percent.setTextColor(resources.getColor(R.color.sec_500))
                         }
 
@@ -390,19 +390,19 @@ class BestDrivingActivity:BaseRefreshActivity() {
                         tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
 
 
-                        tv_best_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
-                        tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
+                        tv_best_percent1.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.optimalDrivingPercentage) + "%"
+                        tv_best_percent2.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.optimalDrivingPercentage) + "%"
 
                         if(drivingDistance.diffAverage.optimalDrivingPercentage == 0.0){
                             tv_diff_percent.text = "거리 변동이 없어요."
                             tv_diff_percent.setTextColor(resources.getColor(R.color.gray_950))
 
                         }else if(drivingDistance.diffAverage.optimalDrivingPercentage > 0.0){
-                            tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
+                            tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.0f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
                             tv_diff_percent.setTextColor(resources.getColor(R.color.pri_500))
 
                         }else if(drivingDistance.diffAverage.optimalDrivingPercentage < 0.0){
-                            tv_diff_percent.text = "-" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 감소"
+                            tv_diff_percent.text = "-" + String.format(Locale.KOREAN, "%.0f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 감소"
                             tv_diff_percent.setTextColor(resources.getColor(R.color.sec_500))
                         }
 
@@ -461,8 +461,8 @@ class BestDrivingActivity:BaseRefreshActivity() {
                     )
 
                     if(drivingDistance.total.totalDistance != 0.0){
-                        tv_best_percent1.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
-                        tv_best_percent2.text = String.format(Locale.KOREAN, "%.1f", drivingDistance.average.optimalDrivingPercentage) + "%"
+                        tv_best_percent1.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.optimalDrivingPercentage) + "%"
+                        tv_best_percent2.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.optimalDrivingPercentage) + "%"
 
 
                         if(drivingDistance.diffAverage.optimalDrivingPercentage == 0.0){
@@ -470,11 +470,11 @@ class BestDrivingActivity:BaseRefreshActivity() {
                             tv_diff_percent.setTextColor(resources.getColor(R.color.gray_950))
 
                         }else if(drivingDistance.diffAverage.optimalDrivingPercentage > 0.0){
-                            tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
+                            tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.0f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
                             tv_diff_percent.setTextColor(resources.getColor(R.color.pri_500))
 
                         }else if(drivingDistance.diffAverage.optimalDrivingPercentage < 0.0){
-                            tv_diff_percent.text = "-" + String.format(Locale.KOREAN, "%.1f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 감소"
+                            tv_diff_percent.text = "-" + String.format(Locale.KOREAN, "%.0f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 감소"
                             tv_diff_percent.setTextColor(resources.getColor(R.color.sec_500))
                         }
 

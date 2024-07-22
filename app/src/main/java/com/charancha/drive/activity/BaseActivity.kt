@@ -49,33 +49,33 @@ open class BaseActivity: AppCompatActivity(){
 
     fun transferDistanceWithUnit(meters:Double):String{
         if(distance_unit == "km"){
-            return String.format(Locale.KOREAN, "%.3fkm", meters / 1000)
+            return String.format(Locale.KOREAN, "%.0fkm", meters / 1000)
         }else{
             val milesPerMeter = 0.000621371
-            return String.format(Locale.KOREAN, "%.3fmile",meters * milesPerMeter)
+            return String.format(Locale.KOREAN, "%.0fmile",meters * milesPerMeter)
         }
     }
 
     fun transferDistance(meters:Double):String{
         if(distance_unit == "km"){
-            return String.format(Locale.KOREAN, "%.3f", meters / 1000)
+            return String.format(Locale.KOREAN, "%.0f", meters / 1000)
         }else{
             val milesPerMeter = 0.000621371
-            return String.format(Locale.KOREAN, "%.3f",meters * milesPerMeter)
+            return String.format(Locale.KOREAN, "%.0f",meters * milesPerMeter)
         }
     }
 
-    fun transferNumWithRounds(percent:Double):Double{
-        return String.format(Locale.KOREAN, "%.1f", percent).toDouble()
+    fun transferNumWithRounds(percent:Double):Int{
+        return String.format(Locale.KOREAN, "%.0f", percent).toInt()
     }
 
 
     fun getSpeedWithDistanceUnit(speed: Double):String{
         if(distance_unit == "km"){
-            return String.format(Locale.KOREAN, "%.3fkm/h", speed)
+            return String.format(Locale.KOREAN, "%.0fkm/h", speed)
         }else{
             val milesPerKilometer = 0.621371
-            return String.format(Locale.KOREAN, "%.3fmile/h", speed * milesPerKilometer)
+            return String.format(Locale.KOREAN, "%.0fmile/h", speed * milesPerKilometer)
         }
     }
 
