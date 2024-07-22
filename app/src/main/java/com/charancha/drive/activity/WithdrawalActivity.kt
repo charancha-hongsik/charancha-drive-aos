@@ -3,6 +3,7 @@ package com.charancha.drive.activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -37,45 +38,46 @@ class WithdrawalActivity:BaseRefreshActivity() {
     fun setListener(){
         ib_terms1.setOnClickListener {
             ib_terms1.isSelected = !ib_terms1.isSelected
-
-
         }
 
-        tv_confirm_withdrawal.setOnClickListener {
-            if(ib_terms1.isSelected){
-                apiService().deleteAccount("Bearer " + PreferenceUtil.getPref(this@WithdrawalActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!).enqueue(object:
-                    Callback<ResponseBody> {
-                    override fun onResponse(
-                        call: Call<ResponseBody>,
-                        response: Response<ResponseBody>
-                    ) {
-                        if(response.code() == 200){
-                            PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.ACCESS_TOKEN, "")
-                            PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.REFRESH_TOKEN, "")
-                            PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.EXPIRES_IN, "")
-                            PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.REFRESH_EXPIRES_IN, "")
-                            PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.TOKEN_TYPE, "")
-                            PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.KEYLESS_ACCOUNT, "")
-                            PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.KEYLESS_ACCOUNT_EXPIRE, "")
-                            PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.OAUTH_PROVIDER, "")
-                            PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.ID_TOKEN, "")
-                            PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
-                            PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.USER_CARID, "")
-                            startActivity(Intent(this@WithdrawalActivity, LoginActivity::class.java))
-                            finish()
+        tv_confirm_withdrawal.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                if(ib_terms1.isSelected){
+                    apiService().deleteAccount("Bearer " + PreferenceUtil.getPref(this@WithdrawalActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!).enqueue(object:
+                        Callback<ResponseBody> {
+                        override fun onResponse(
+                            call: Call<ResponseBody>,
+                            response: Response<ResponseBody>
+                        ) {
+                            if(response.code() == 200){
+                                PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.ACCESS_TOKEN, "")
+                                PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.REFRESH_TOKEN, "")
+                                PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.EXPIRES_IN, "")
+                                PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.REFRESH_EXPIRES_IN, "")
+                                PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.TOKEN_TYPE, "")
+                                PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.KEYLESS_ACCOUNT, "")
+                                PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.KEYLESS_ACCOUNT_EXPIRE, "")
+                                PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.OAUTH_PROVIDER, "")
+                                PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.ID_TOKEN, "")
+                                PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
+                                PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.USER_CARID, "")
+                                startActivity(Intent(this@WithdrawalActivity, LoginActivity::class.java))
+                                finish()
+                            }
                         }
-                    }
 
-                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
 
-                    }
+                        }
 
-                })
-            } else{
-                Toast.makeText(this, "약관 동의 후 탈퇴가 가능합니다.",Toast.LENGTH_SHORT).show()
+                    })
+                } else{
+                    Toast.makeText(this@WithdrawalActivity, "약관 동의 후 탈퇴가 가능합니다.",Toast.LENGTH_SHORT).show()
+                }
             }
 
-        }
+        })
+
 
         tv_cancel_withdrawal.setOnClickListener {
             finish()
