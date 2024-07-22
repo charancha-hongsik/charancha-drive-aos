@@ -1,11 +1,19 @@
 package com.charancha.drive.activity
 
+import android.content.res.Resources
 import android.os.Bundle
+import android.util.TypedValue
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.PopupWindow
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.charancha.drive.PreferenceUtil
+import com.charancha.drive.R
 import com.charancha.drive.retrofit.ApiServiceInterface
 import com.charancha.drive.retrofit.HeaderInterceptor
 import okhttp3.OkHttpClient
@@ -283,7 +291,57 @@ open class BaseActivity: AppCompatActivity(){
         }
     }
 
+    fun showTooltip(anchorView: View, subtitle: String, contents: String) {
+        val inflater = getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val popupView: View = inflater.inflate(R.layout.layout_tooltip, null)
 
+        val popupWindow = PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true)
+
+        val tv_subtitle = popupView.findViewById<TextView>(R.id.tv_tootip_subtitle)
+        val tv_contents = popupView.findViewById<TextView>(R.id.tv_tootip_contents)
+
+        tv_subtitle.text = subtitle
+        tv_contents.text = contents
+
+        // Measure the popup view to get its width and height
+        popupView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        val popupWidth = popupView.measuredWidth
+        val popupHeight = popupView.measuredHeight
+
+        // Get the location of the anchor view on screen
+        val anchorLocation = IntArray(2)
+        anchorView.getLocationOnScreen(anchorLocation)
+        val anchorX = anchorLocation[0]
+        val anchorY = anchorLocation[1]
+
+        // Calculate the xOffset and yOffset for showing the popup
+        val xOffset = (anchorX + anchorView.width + dpToPx(8f)).toInt() // Align popup left with anchor view's right plus a small margin
+        val yOffset = (anchorY - popupHeight - dpToPx(8f)).toInt() // Show popup above the anchor view
+
+        // Get the screen width
+        val screenWidth = Resources.getSystem().displayMetrics.widthPixels
+
+        // Adjust xOffset if the popup would go off the right side of the screen
+        val adjustedXOffset = if (xOffset + popupWidth > screenWidth - dpToPx(12f)) {
+            screenWidth - popupWidth - dpToPx(12f) // Ensure a 12dp margin from the right edge
+        } else {
+            xOffset
+        }
+
+        // Show the popup window
+        popupWindow.showAtLocation(anchorView, Gravity.NO_GRAVITY, adjustedXOffset, yOffset)
+    }
+
+
+
+
+    private fun pxToDp(px: Float): Int {
+        return (px / resources.displayMetrics.density).toInt()
+    }
+
+    private fun dpToPx(dp: Float): Int {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics).toInt()
+    }
 
 
 }

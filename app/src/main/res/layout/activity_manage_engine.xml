@@ -201,7 +201,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"/>
 
                 <ImageView
-                    android:id="@+id/ic_question"
+                    android:id="@+id/iv_tooltip_perone_average"
                     android:layout_width="15dp"
                     android:layout_height="15dp"
                     android:src="@drawable/ic_question_filled"
@@ -281,7 +281,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"/>
 
                 <ImageView
-                    android:id="@+id/ic_question2"
+                    android:id="@+id/iv_tooltip_high_speed"
                     android:layout_width="15dp"
                     android:layout_height="15dp"
                     android:src="@drawable/ic_question_filled"

@@ -3,6 +3,7 @@ package com.charancha.drive.activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.view.View.*
 import android.widget.ImageView
@@ -52,6 +53,9 @@ class ManageEngineActivity:BaseRefreshActivity() {
     lateinit var tv_optimal_driving_contents:TextView
     lateinit var tv_normal_speed_driving_contents:TextView
 
+    lateinit var iv_tooltip_perone_average:ImageView
+    lateinit var iv_tooltip_high_speed:ImageView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +74,25 @@ class ManageEngineActivity:BaseRefreshActivity() {
         btn_back.setOnClickListener {
             finish()
         }
+
+        iv_tooltip_perone_average = findViewById(R.id.iv_tooltip_perone_average)
+        iv_tooltip_perone_average.setOnTouchListener { view, motionEvent ->
+            if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+                showTooltip(view,"1회 평균 주행거리란?","차량이 한 번 주행할 때마다 이동한 거/n리의 평균값이에요. 높을수록 좋아요!")
+            }
+            true
+        }
+
+        iv_tooltip_high_speed = findViewById(R.id.iv_tooltip_high_speed)
+        iv_tooltip_high_speed.setOnTouchListener { view, motionEvent ->
+            if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+                showTooltip(view,"고속 주행이란?","80km/h 이상 150km/h 미만 사이의 속력으로 주행한 거리에요. 높을수록 좋아요!")
+            }
+            true
+        }
+
+
+
 
         tv_optimal_driving_contents = findViewById(R.id.tv_optimal_driving_contents)
 
