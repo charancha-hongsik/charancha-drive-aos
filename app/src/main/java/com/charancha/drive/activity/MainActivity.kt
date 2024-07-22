@@ -839,7 +839,7 @@ class MainActivity : BaseRefreshActivity() {
                         tv_increase.text = "+" + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 증가"
                         tv_increase.setTextColor(resources.getColor(R.color.pri_500))
                     }else if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
-                        tv_increase.text = "-" + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 하락"
+                        tv_increase.text = transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore).toString() + "점 하락"
                         tv_increase.setTextColor(resources.getColor(R.color.sec_500))
                     }
 
@@ -957,7 +957,7 @@ class MainActivity : BaseRefreshActivity() {
                             tv_recent_info_text.text = "굉장해요. 지난 주행보다 +" +  transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점을 얻었어요!"
                             iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
                         }else if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
-                            tv_recent_info_text.text = "아쉬워요. 지난 주행보다 -" + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 하락했어요"
+                            tv_recent_info_text.text = "아쉬워요. 지난 주행보다 " + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 하락했어요"
                             iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
                         }
 
@@ -1002,7 +1002,7 @@ class MainActivity : BaseRefreshActivity() {
                             tv_recent_info_text.text = "굉장해요. 지난 주행보다 +" +  transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점을 얻었어요!"
                             iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
                         }else if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
-                            tv_recent_info_text.text = "아쉬워요. 지난 주행보다 -" + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 하락했어요"
+                            tv_recent_info_text.text = "아쉬워요. 지난 주행보다 " + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 하락했어요"
                             iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
                         }
 

@@ -291,7 +291,7 @@ class ManageEngineActivity:BaseRefreshActivity() {
                         }else if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
                             layout_no_score.background = resources.getDrawable(R.drawable.radius8_sec)
 
-                            tv_no_score1.text = "아쉬워요. 지난 주행보다 -" + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 하락했어요"
+                            tv_no_score1.text = "아쉬워요. 지난 주행보다 " + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 하락했어요"
                             iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
                         }
 
@@ -388,7 +388,7 @@ class ManageEngineActivity:BaseRefreshActivity() {
                         }else if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
                             layout_no_score.background = resources.getDrawable(R.drawable.radius8_sec)
 
-                            tv_no_score1.text = "아쉬워요. 지난 주행보다 -" + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 하락했어요"
+                            tv_no_score1.text = "아쉬워요. 지난 주행보다 " + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 하락했어요"
                             iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
                         }
 
