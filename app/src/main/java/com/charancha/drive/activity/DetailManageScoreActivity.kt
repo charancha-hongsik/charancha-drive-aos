@@ -190,13 +190,12 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
                         )
 
                         if(recentDrivingDistance.isRecent){
-                            tv_engine_info_average_distance.text = transferDistanceWithUnit(recentDrivingDistance.average.totalDistance)
-                            setInquireScope(convertDateFormat(recentDrivingDistance.recentStartTime))
+                            tv_engine_info_average_distance.text = transferDistanceWithUnit(recentDrivingDistance.perOne.totalDistance)
 
-                            tv_engine_info_rapid_acc_de_count.text = transferNumWithRounds(recentDrivingDistance.average.totalRapidCount).toString()
-                            tv_engine_info_high_speed_driving.text = transferNumWithRounds(recentDrivingDistance.average.highSpeedDrivingDistancePercentage).toString()
-                            tv_engine_info_best_driving.text = transferNumWithRounds(recentDrivingDistance.average.optimalDrivingPercentage).toString()
-                            tv_engine_info_normal_driving.text = transferNumWithRounds(recentDrivingDistance.average.constantSpeedDrivingDistancePercentage).toString()
+                            tv_engine_info_rapid_acc_de_count.text = transferNumWithRounds(recentDrivingDistance.total.totalRapidCount).toString() + "회"
+                            tv_engine_info_high_speed_driving.text = transferNumWithRounds(recentDrivingDistance.average.highSpeedDrivingDistancePercentage).toString() + "%"
+                            tv_engine_info_best_driving.text = transferNumWithRounds(recentDrivingDistance.average.optimalDrivingPercentage).toString() + "%"
+                            tv_engine_info_normal_driving.text = transferNumWithRounds(recentDrivingDistance.average.constantSpeedDrivingDistancePercentage).toString() + "%"
                         }else{
                             tv_engine_info_average_distance.text = transferDistanceWithUnit(0.0)
                         }
@@ -283,9 +282,9 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
                     )
 
                     if(recentDrivingDistance.total.totalDistance != 0.0){
-                        tv_engine_info_average_distance.text = transferDistanceWithUnit(recentDrivingDistance.average.totalDistance)
+                        tv_engine_info_average_distance.text = transferDistanceWithUnit(recentDrivingDistance.perOne.totalDistance)
 
-                        tv_engine_info_rapid_acc_de_count.text = transferNumWithRounds(recentDrivingDistance.average.totalRapidCount).toString() + "회"
+                        tv_engine_info_rapid_acc_de_count.text = transferNumWithRounds(recentDrivingDistance.total.totalRapidCount).toString() + "회"
                         tv_engine_info_high_speed_driving.text = transferNumWithRounds(recentDrivingDistance.average.highSpeedDrivingDistancePercentage).toString() + "%"
                         tv_engine_info_best_driving.text = transferNumWithRounds(recentDrivingDistance.average.optimalDrivingPercentage).toString() + "%"
                         tv_engine_info_normal_driving.text = transferNumWithRounds(recentDrivingDistance.average.constantSpeedDrivingDistancePercentage).toString() + "%"
