@@ -20,6 +20,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
 import com.charancha.drive.retrofit.request.PostMyCarRequest
+import com.charancha.drive.retrofit.response.GetMyCarInfoResponse
 import com.charancha.drive.retrofit.response.PostMyCarResponse
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.Gson
@@ -180,13 +181,22 @@ class RegisterCarActivity: BaseActivity() {
                                 call: Call<ResponseBody>,
                                 response: Response<ResponseBody>
                             ) {
-                                PreferenceUtil.putPref(this@RegisterCarActivity,  PreferenceUtil.KM_MILE, "km")
-                                startActivity(Intent(this@RegisterCarActivity, MainActivity::class.java).addFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK))
-                                finish()
+                                if(response.code() == 200){
+                                    val getMyCarInfoResponse = Gson().fromJson(
+                                        response.body()?.string(),
+                                        GetMyCarInfoResponse::class.java
+                                    )
+                                    PreferenceUtil.putPref(this@RegisterCarActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.id)
+                                    PreferenceUtil.putPref(this@RegisterCarActivity,  PreferenceUtil.KM_MILE, "km")
+                                    startActivity(Intent(this@RegisterCarActivity, MainActivity::class.java).addFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK))
+                                    finish()
+                                }else{
+                                    Toast.makeText(this@RegisterCarActivity,"차량 등록에 실패했습니다.",Toast.LENGTH_SHORT).show()
+                                }
                             }
 
                             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
+                                Toast.makeText(this@RegisterCarActivity,"차량 등록에 실패했습니다.",Toast.LENGTH_SHORT).show()
                             }
 
                         })
