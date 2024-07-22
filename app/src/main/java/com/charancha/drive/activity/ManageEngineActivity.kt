@@ -55,6 +55,8 @@ class ManageEngineActivity:BaseRefreshActivity() {
 
     lateinit var iv_tooltip_perone_average:ImageView
     lateinit var iv_tooltip_high_speed:ImageView
+    lateinit var iv_tooltip_optimal_driving:ImageView
+    lateinit var iv_tooltip_const_driving:ImageView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,7 +80,7 @@ class ManageEngineActivity:BaseRefreshActivity() {
         iv_tooltip_perone_average = findViewById(R.id.iv_tooltip_perone_average)
         iv_tooltip_perone_average.setOnTouchListener { view, motionEvent ->
             if (motionEvent.action == MotionEvent.ACTION_DOWN) {
-                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"1회 평균 주행거리란?","차량이 한 번 주행할 때마다 이동한 거/n리의 평균값이에요. 높을수록 좋아요!")
+                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"1회 평균 주행거리란?","차량이 한 번 주행할 때마다 이동한 거리의 평균값이에요. 높을수록 좋아요!")
             }
             true
         }
@@ -91,6 +93,21 @@ class ManageEngineActivity:BaseRefreshActivity() {
             true
         }
 
+        iv_tooltip_optimal_driving = findViewById(R.id.iv_tooltip_optimal_driving)
+        iv_tooltip_optimal_driving.setOnTouchListener { view, motionEvent ->
+            if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"최적 주행이란?","급출발, 급가속, 급정지, 급감속을 하지 않고 안정적으로 주행한 거리에요. 높을수록 좋아요!")
+            }
+            true
+        }
+
+        iv_tooltip_const_driving = findViewById(R.id.iv_tooltip_const_driving)
+        iv_tooltip_const_driving.setOnTouchListener { view, motionEvent ->
+            if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"항속 주행이란?","61km/h 이상 141km/h 미만으로 3분 이상 일정한 속도로 주행한 거리에요(속도 변동 5km/h 이내). 높을수록 좋아요!")
+            }
+            true
+        }
 
 
 

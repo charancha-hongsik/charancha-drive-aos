@@ -382,6 +382,7 @@
                     app:layout_constraintBottom_toBottomOf="@+id/tv_optimal_driving_percent"/>
 
                 <ImageView
+                    android:id="@+id/iv_tooltip_optimal_driving"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_question_filled"
@@ -506,6 +507,7 @@
                     app:layout_constraintBottom_toBottomOf="@+id/tv_normal_speed_driving_percent"/>
 
                 <ImageView
+                    android:id="@+id/iv_tooltip_const_driving"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_question_filled"
