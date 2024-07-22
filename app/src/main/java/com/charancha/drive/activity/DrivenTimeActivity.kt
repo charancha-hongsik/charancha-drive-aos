@@ -27,6 +27,7 @@ import retrofit2.Response
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.ZonedDateTime
 
 class DrivenTimeActivity:BaseRefreshActivity() {
     lateinit var btn_back:ImageView
@@ -273,13 +274,10 @@ class DrivenTimeActivity:BaseRefreshActivity() {
         val time = FloatArray(24) { 0f }
 
         // Iterate over each item and parse the startTime to extract the hour
-        val koreaZoneId = ZoneId.of("Asia/Seoul")
-
-        // Iterate over each item and parse the startTime to extract the hour
         for (item in items) {
             val startTime = Instant.parse(item.startTime)
-            val localDateTime = LocalDateTime.ofInstant(startTime, koreaZoneId)
-            val hour = localDateTime.hour
+            val utcDateTime = ZonedDateTime.ofInstant(startTime, ZoneId.of("UTC"))
+            val hour = utcDateTime.hour
 
             time[hour] = secondsToMinutes(item.time).toFloat()
         }
@@ -1298,13 +1296,10 @@ class DrivenTimeActivity:BaseRefreshActivity() {
         val time = DoubleArray(24) { 0.0 }
 
         // Iterate over each item and parse the startTime to extract the hour
-        val koreaZoneId = ZoneId.of("Asia/Seoul")
-
-        // Iterate over each item and parse the startTime to extract the hour
         for (item in items) {
             val startTime = Instant.parse(item.startTime)
-            val localDateTime = LocalDateTime.ofInstant(startTime, koreaZoneId)
-            val hour = localDateTime.hour
+            val utcDateTime = ZonedDateTime.ofInstant(startTime, ZoneId.of("UTC"))
+            val hour = utcDateTime.hour
 
 
             time[hour] = secondsToMinutes(item.time)

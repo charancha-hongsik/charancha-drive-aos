@@ -27,6 +27,7 @@ import retrofit2.Response
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.util.*
 
 class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
@@ -642,13 +643,10 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
         val distances = FloatArray(24) { 0f }
 
         // Iterate over each item and parse the startTime to extract the hour
-        val koreaZoneId = ZoneId.of("Asia/Seoul")
-
-        // Iterate over each item and parse the startTime to extract the hour
         for (item in items) {
             val startTime = Instant.parse(item.startTime)
-            val localDateTime = LocalDateTime.ofInstant(startTime, koreaZoneId)
-            val hour = localDateTime.hour
+            val utcDateTime = ZonedDateTime.ofInstant(startTime, ZoneId.of("UTC"))
+            val hour = utcDateTime.hour
 
             distances[hour] = transferDistance(item.constantSpeedDrivingDistance).toFloat()
         }

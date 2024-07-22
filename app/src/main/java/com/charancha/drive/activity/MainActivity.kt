@@ -129,6 +129,9 @@ class MainActivity : BaseRefreshActivity() {
 
         setPieChart(0.0f)
 
+        Log.d("testsetset","testestsetse second :: " + getCurrentAndPastTimeForISO(29).second)
+        Log.d("testsetset","testestsetse first :: " + getCurrentAndPastTimeForISO(29).first)
+
         setLineChartForBrakes(findViewById(R.id.chart_line_brakes))
         setLineChartForEngine(findViewById(R.id.chart_line_engine))
         setLineChartForTire(findViewById(R.id.chart_line_tire))

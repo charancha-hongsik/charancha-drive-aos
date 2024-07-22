@@ -393,14 +393,6 @@ class BluetoothService : Service() {
     }
 
 
-
-    private fun getCurrent(): String {
-        val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
-        format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
-        val time = Date()
-        return format.format(time)
-    }
-
     inner class CarConnectionQueryHandler(resolver: ContentResolver?) : AsyncQueryHandler(resolver) {
 
         // notify new queryed connection status when query complete
@@ -505,9 +497,6 @@ class BluetoothService : Service() {
     }
 
     private fun initDriveData(level:String){
-
-        val format = SimpleDateFormat("yyyyMMddHHmmss")
-        format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
 
         distance_array = MutableList(24) { 0f } // 23개 시간대의 distance
 

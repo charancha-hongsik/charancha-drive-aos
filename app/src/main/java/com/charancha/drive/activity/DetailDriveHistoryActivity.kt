@@ -226,13 +226,6 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         persistentBottomSheetEvent()
     }
 
-    private fun getDateFromTimeStamp(timeStamp:Long) : String{
-        val format = SimpleDateFormat("yyyy-MM-dd / HH:mm:ss")
-        format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
-        val time = Date()
-
-        return format.format(timeStamp).toString()
-    }
 
     private fun setMapData(){
         // Get the SupportMapFragment and request notification when the map is ready to be used.
