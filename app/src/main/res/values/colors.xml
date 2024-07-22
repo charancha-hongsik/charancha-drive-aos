@@ -54,6 +54,7 @@
     <color name="white_op_5">#0DFFFFFF</color>
 
     <color name="black_op_100">#FF000000</color>
+    <color name="black_op_95">#F2000000</color>
     <color name="black_op_90">#E6000000</color>
     <color name="black_op_80">#CC000000</color>
     <color name="black_op_70">#B3000000</color>
