@@ -1,6 +1,7 @@
 package com.charancha.drive.activity
 
 import android.os.Bundle
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
@@ -263,6 +264,25 @@ open class BaseActivity: AppCompatActivity(){
             throw IllegalArgumentException("Invalid date format. Please use 'YYYY년 MM월'.")
         }
     }
+
+    abstract class OnSingleClickListener: View.OnClickListener {
+        private var lastClickTime = 0L
+
+        abstract fun onSingleClick(v: View?)
+
+        override fun onClick(v: View?) {
+            val currentClickTime = System.currentTimeMillis()
+            val checkTime = currentClickTime - lastClickTime
+
+            lastClickTime = currentClickTime
+
+            // 중복클릭이 아닌경우 onSingleClick 실행
+            if (checkTime > 1500L) {
+                onSingleClick(v)
+            }
+        }
+    }
+
 
 
 

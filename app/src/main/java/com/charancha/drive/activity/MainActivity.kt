@@ -62,12 +62,12 @@ class MainActivity : BaseRefreshActivity() {
     lateinit var btnHistory: ImageView
 
     lateinit var chart: PieChart
-    lateinit var btn_edit:DelayedClickImageView
-    lateinit var layout_engine: DelayedClickConstraintLayout
-    lateinit var layout_average_distance:DelayedClickConstraintLayout
-    lateinit var layout_average_time:DelayedClickConstraintLayout
-    lateinit var tv_average_score_info:DelayedClickTextView
-    lateinit var layout_recent_manage_score:DelayedClickConstraintLayout
+    lateinit var btn_edit:ImageView
+    lateinit var layout_engine: ConstraintLayout
+    lateinit var layout_average_distance:ConstraintLayout
+    lateinit var layout_average_time:ConstraintLayout
+    lateinit var tv_average_score_info:TextView
+    lateinit var layout_recent_manage_score:ConstraintLayout
     lateinit var tv_car_name:TextView
     lateinit var tv_car_no:TextView
     lateinit var tv_app_days2:TextView
@@ -91,12 +91,12 @@ class MainActivity : BaseRefreshActivity() {
     lateinit var tv_recent_score2:TextView
     lateinit var tv_recent_info_text:TextView
     lateinit var iv_recent_info:ImageView
-    lateinit var btn_recent:DelayedClickTextView
-    lateinit var btn_one_month:DelayedClickTextView
-    lateinit var btn_six_month:DelayedClickTextView
-    lateinit var btn_one_year:DelayedClickTextView
+    lateinit var btn_recent:TextView
+    lateinit var btn_one_month:TextView
+    lateinit var btn_six_month:TextView
+    lateinit var btn_one_year:TextView
     lateinit var tv_engine_score:TextView
-    lateinit var iv_home_banner:DelayedClickImageView
+    lateinit var iv_home_banner:ImageView
     lateinit var tv_recent_driving_score:TextView
 
 

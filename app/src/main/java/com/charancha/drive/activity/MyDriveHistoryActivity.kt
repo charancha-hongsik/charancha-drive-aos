@@ -17,7 +17,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.widget.TextViewCompat
 import com.charancha.drive.ChosenDate
-import com.charancha.drive.DelayedClickConstraintLayout
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
 import com.charancha.drive.retrofit.response.*
@@ -101,9 +100,12 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         layout_date_own = findViewById(R.id.layout_date_own)
 
 
-        btn_back.setOnClickListener {
-            finish()
-        }
+        btn_back.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                finish()
+            }
+
+        })
 
         btn_choose_date.setOnClickListener {
             layout_choose_date.visibility = VISIBLE
@@ -341,7 +343,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                 val layout_not_active = listItemView!!.findViewById<LinearLayout>(R.id.layout_not_active)
                 val layout_active = listItemView!!.findViewById<LinearLayout>(R.id.layout_active)
 
-                val btn_drive_history = listItemView!!.findViewById<DelayedClickConstraintLayout>(R.id.btn_drive_history)
+                val btn_drive_history = listItemView!!.findViewById<ConstraintLayout>(R.id.btn_drive_history)
 
                 val tvDate = listItemView!!.findViewById<TextView>(R.id.tv_date)
                 val tv_distance = listItemView!!.findViewById<TextView>(R.id.tv_distance)
@@ -375,11 +377,12 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                     layout_active.visibility = GONE
                 }
 
-                btn_drive_history.setOnClickListener {
-                    Log.d("testestestset","testsestseset btn_drive_history")
-                    (context as MyDriveHistoryActivity).resultLauncher.launch(Intent(context, DetailDriveHistoryActivity::class.java).putExtra("trackingId", driveItem?.id).putExtra("isActive", driveItem?.isActive))
-                }
+                btn_drive_history.setOnClickListener(object:OnSingleClickListener(){
+                    override fun onSingleClick(v: View?) {
+                        (context as MyDriveHistoryActivity).resultLauncher.launch(Intent(context, DetailDriveHistoryActivity::class.java).putExtra("trackingId", driveItem?.id).putExtra("isActive", driveItem?.isActive))
+                    }
 
+                })
                 return listItemView
             } else{
                 var listItemView = LayoutInflater.from(context).inflate(R.layout.item_drive_history_last, parent, false)
@@ -387,11 +390,14 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                 val tv_more = listItemView!!.findViewById<TextView>(R.id.tv_more)
                 val tv_last = listItemView!!.findViewById<TextView>(R.id.tv_last)
 
-                tv_more.setOnClickListener {
-                    if(!meta.afterCursor.isNullOrBlank()){
-                        callback.clickedMore(meta, histories)
-                    }
-                }
+                tv_more.setOnClickListener { object:OnSingleClickListener(){
+                    override fun onSingleClick(v: View?) {
+                        if(!meta.afterCursor.isNullOrBlank()){
+                            callback.clickedMore(meta, histories)
+                        }                    }
+
+                } }
+
 
                 if(meta.afterCursor.isNullOrBlank()){
                     tv_more.visibility = GONE

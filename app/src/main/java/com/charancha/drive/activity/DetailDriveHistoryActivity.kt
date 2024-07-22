@@ -34,10 +34,8 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.text.SimpleDateFormat
 import java.time.*
 import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
 import java.util.*
 
 
@@ -88,6 +86,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_drive_history)
+
+        Log.d("testesteste","testestesse activity_detail_drive_history :: ")
 
         detailDriveHistoryViewModel.init(applicationContext)
 

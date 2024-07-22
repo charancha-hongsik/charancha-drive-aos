@@ -2,6 +2,7 @@ package com.charancha.drive.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.charancha.drive.R
@@ -28,10 +29,13 @@ class PermissionInfoActivity: BaseActivity(){
     }
 
     fun setListener(){
-        layoutPermissionInfoConfirm.setOnClickListener {
-            startActivity(Intent(this@PermissionInfoActivity, PermissionActivity::class.java))
-            finish()
-        }
+        layoutPermissionInfoConfirm.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                startActivity(Intent(this@PermissionInfoActivity, PermissionActivity::class.java))
+                finish()
+            }
+
+        })
     }
 
 }
