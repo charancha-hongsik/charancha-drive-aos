@@ -119,45 +119,54 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
 
         btn_recent_drive.isSelected = true
 
-        btn_recent_drive.setOnClickListener {
-            btn_recent_drive.isSelected = true
-            btn_month_drive.isSelected = false
-            btn_six_month_drive.isSelected = false
-            btn_year_drive.isSelected = false
+        btn_recent_drive.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                btn_recent_drive.isSelected = true
+                btn_month_drive.isSelected = false
+                btn_six_month_drive.isSelected = false
+                btn_year_drive.isSelected = false
 
-            setRecentDrivingDistance()
+                setRecentDrivingDistance()
+            }
 
-        }
+        })
 
-        btn_month_drive.setOnClickListener {
-            btn_recent_drive.isSelected = false
-            btn_month_drive.isSelected = true
-            btn_six_month_drive.isSelected = false
-            btn_year_drive.isSelected = false
+        btn_month_drive.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                btn_recent_drive.isSelected = false
+                btn_month_drive.isSelected = true
+                btn_six_month_drive.isSelected = false
+                btn_year_drive.isSelected = false
 
-            callMonthChart()
-            setMonthDrivingDistance()
-        }
+                callMonthChart()
+                setMonthDrivingDistance()            }
 
-        btn_six_month_drive.setOnClickListener {
-            btn_recent_drive.isSelected = false
-            btn_month_drive.isSelected = false
-            btn_six_month_drive.isSelected = true
-            btn_year_drive.isSelected = false
+        })
 
-            callSixMonthChart()
-            setSixMonthDrivingDistance()
-        }
+        btn_six_month_drive.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                btn_recent_drive.isSelected = false
+                btn_month_drive.isSelected = false
+                btn_six_month_drive.isSelected = true
+                btn_year_drive.isSelected = false
 
-        btn_year_drive.setOnClickListener {
-            btn_recent_drive.isSelected = false
-            btn_month_drive.isSelected = false
-            btn_six_month_drive.isSelected = false
-            btn_year_drive.isSelected = true
+                callSixMonthChart()
+                setSixMonthDrivingDistance()            }
 
-            callYearChart()
-            setYearDrivingDistance()
-        }
+        })
+
+        btn_year_drive.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                btn_recent_drive.isSelected = false
+                btn_month_drive.isSelected = false
+                btn_six_month_drive.isSelected = false
+                btn_year_drive.isSelected = true
+
+                callYearChart()
+                setYearDrivingDistance()            }
+
+        })
+
     }
 
 

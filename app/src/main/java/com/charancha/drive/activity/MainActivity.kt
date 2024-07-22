@@ -274,44 +274,67 @@ class MainActivity : BaseRefreshActivity() {
     private fun setBtn(){
         tv_recent_driving_score = findViewById(R.id.tv_recent_driving_score)
         btnHistory = findViewById(R.id.btn_history)
-        btnHistory.setOnClickListener {
-            startActivity(Intent(this, MyPageActivity::class.java))
+        btnHistory.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                startActivity(Intent(this@MainActivity, MyPageActivity::class.java))
+            }
 
-        }
+        })
+
 
         btn_edit = findViewById(R.id.btn_edit)
-        btn_edit.setOnClickListener{
-            startActivity(Intent(this, EditCarInfoActivity::class.java))
-        }
+        btn_edit.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                startActivity(Intent(this@MainActivity, EditCarInfoActivity::class.java))
+            }
+
+        })
+
 
         tv_car_name = findViewById(R.id.tv_car_name)
         tv_car_no = findViewById(R.id.tv_car_no)
         layout_engine = findViewById(R.id.layout_engine)
-        layout_engine.setOnClickListener {
-            startActivity(Intent(this, ManageEngineActivity::class.java))
-        }
+        layout_engine.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                startActivity(Intent(this@MainActivity, ManageEngineActivity::class.java))
+            }
+
+        })
+
 
         layout_average_distance = findViewById(R.id.layout_average_distance)
         layout_average_time = findViewById(R.id.layout_average_time)
 
-        layout_average_distance.setOnClickListener {
-            startActivity(Intent(this, DrivenDistanceActivity::class.java))
-        }
+        layout_average_distance.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                startActivity(Intent(this@MainActivity, DrivenDistanceActivity::class.java))
+            }
 
-        layout_average_time.setOnClickListener {
-            startActivity(Intent(this, DrivenTimeActivity::class.java))
-        }
+        })
+
+        layout_average_time.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                startActivity(Intent(this@MainActivity, DrivenTimeActivity::class.java))
+            }
+
+        })
 
         tv_average_score_info = findViewById(R.id.tv_average_score_info)
-        tv_average_score_info.setOnClickListener {
-            startActivity(Intent(this@MainActivity, DetailManageScoreActivity::class.java).putExtra("title","평균 관리 점수"))
+        tv_average_score_info.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                startActivity(Intent(this@MainActivity, DetailManageScoreActivity::class.java).putExtra("title","평균 관리 점수"))
+            }
 
-        }
+        })
+
 
         layout_recent_manage_score = findViewById(R.id.layout_recent_manage_score)
-        layout_recent_manage_score.setOnClickListener{
-            startActivity(Intent(this@MainActivity, DetailManageScoreActivity::class.java).putExtra("title","최근 관리 점수"))
-        }
+        layout_recent_manage_score.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                startActivity(Intent(this@MainActivity, DetailManageScoreActivity::class.java).putExtra("title","최근 관리 점수"))
+            }
+
+        })
 
         tv_app_days2 = findViewById(R.id.tv_app_days2)
         tv_average_score = findViewById(R.id.tv_average_score)
@@ -343,52 +366,61 @@ class MainActivity : BaseRefreshActivity() {
 
         btn_recent.isSelected = true
 
-        btn_recent.setOnClickListener {
-            btn_recent.isSelected = true
-            btn_one_month.isSelected = false
-            btn_six_month.isSelected = false
-            btn_one_year.isSelected = false
+        btn_recent.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                btn_recent.isSelected = true
+                btn_one_month.isSelected = false
+                btn_six_month.isSelected = false
+                btn_one_year.isSelected = false
 
-            tv_recent_driving_score.text = "최근 주행 총점"
+                tv_recent_driving_score.text = "최근 주행 총점"
 
-            setRecentManageScoreForSummary()
-        }
+                setRecentManageScoreForSummary()            }
 
-        btn_one_month.setOnClickListener {
-            btn_recent.isSelected = false
-            btn_one_month.isSelected = true
-            btn_six_month.isSelected = false
-            btn_one_year.isSelected = false
+        })
 
-            tv_recent_driving_score.text = "1개월 평균"
+        btn_one_month.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                btn_recent.isSelected = false
+                btn_one_month.isSelected = true
+                btn_six_month.isSelected = false
+                btn_one_year.isSelected = false
+
+                tv_recent_driving_score.text = "1개월 평균"
+
+                setManageSoreForSummary(29)
+            }
+
+        })
+
+        btn_six_month.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                btn_recent.isSelected = false
+                btn_one_month.isSelected = false
+                btn_six_month.isSelected = true
+                btn_one_year.isSelected = false
+
+                tv_recent_driving_score.text = "6개월 평균"
+
+                setManageSoreForSummary(150)
+            }
+
+        })
+
+        btn_one_year.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                btn_recent.isSelected = false
+                btn_one_month.isSelected = false
+                btn_six_month.isSelected = false
+                btn_one_year.isSelected = true
+                tv_recent_driving_score.text = "1년 평균"
 
 
-            setManageSoreForSummary(29)
-        }
-
-        btn_six_month.setOnClickListener {
-            btn_recent.isSelected = false
-            btn_one_month.isSelected = false
-            btn_six_month.isSelected = true
-            btn_one_year.isSelected = false
-
-            tv_recent_driving_score.text = "6개월 평균"
+                setManageSoreForSummary(334)
+            }
+        })
 
 
-            setManageSoreForSummary(150)
-        }
-
-        btn_one_year.setOnClickListener {
-            btn_recent.isSelected = false
-            btn_one_month.isSelected = false
-            btn_six_month.isSelected = false
-            btn_one_year.isSelected = true
-            tv_recent_driving_score.text = "1년 평균"
-
-
-            setManageSoreForSummary(334)
-
-        }
 
         tv_engine_score = findViewById(R.id.tv_engine_score)
         iv_home_banner = findViewById(R.id.iv_home_banner)

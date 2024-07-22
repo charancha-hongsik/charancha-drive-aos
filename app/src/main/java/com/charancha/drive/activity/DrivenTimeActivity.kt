@@ -3,6 +3,7 @@ package com.charancha.drive.activity
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.charancha.drive.CommonUtil
@@ -106,45 +107,52 @@ class DrivenTimeActivity:BaseRefreshActivity() {
     private fun setResources(){
         btn_back.setOnClickListener { finish() }
 
-        btn_recent_drive.setOnClickListener {
-            setRecentDrivingTime()
+        btn_recent_drive.setOnClickListener(object: OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                setRecentDrivingTime()
 
-            btn_recent_drive.isSelected = true
-            btn_month_drive.isSelected = false
-            btn_six_month_drive.isSelected = false
-            btn_year_drive.isSelected = false
-        }
+                btn_recent_drive.isSelected = true
+                btn_month_drive.isSelected = false
+                btn_six_month_drive.isSelected = false
+                btn_year_drive.isSelected = false            }
 
-        btn_month_drive.setOnClickListener {
-            callMonthChart()
-            setMonthDrivingTime()
+        })
 
-            btn_recent_drive.isSelected = false
-            btn_month_drive.isSelected = true
-            btn_six_month_drive.isSelected = false
-            btn_year_drive.isSelected = false
+        btn_month_drive.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                callMonthChart()
+                setMonthDrivingTime()
 
-        }
+                btn_recent_drive.isSelected = false
+                btn_month_drive.isSelected = true
+                btn_six_month_drive.isSelected = false
+                btn_year_drive.isSelected = false            }
 
-        btn_six_month_drive.setOnClickListener {
-            callSixMonthChart()
-            setSixMonthDrivingTime()
+        })
 
-            btn_recent_drive.isSelected = false
-            btn_month_drive.isSelected = false
-            btn_six_month_drive.isSelected = true
-            btn_year_drive.isSelected = false
-        }
+        btn_six_month_drive.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                callSixMonthChart()
+                setSixMonthDrivingTime()
 
-        btn_year_drive.setOnClickListener {
-            callYearChart()
-            setYearDrivingTime()
+                btn_recent_drive.isSelected = false
+                btn_month_drive.isSelected = false
+                btn_six_month_drive.isSelected = true
+                btn_year_drive.isSelected = false            }
 
-            btn_recent_drive.isSelected = false
-            btn_month_drive.isSelected = false
-            btn_six_month_drive.isSelected = false
-            btn_year_drive.isSelected = true
-        }
+        })
+
+        btn_year_drive.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                callYearChart()
+                setYearDrivingTime()
+
+                btn_recent_drive.isSelected = false
+                btn_month_drive.isSelected = false
+                btn_six_month_drive.isSelected = false
+                btn_year_drive.isSelected = true            }
+
+        })
     }
 
     /**

@@ -98,67 +98,72 @@ class EditCarInfoActivity:BaseRefreshActivity() {
             }
         }
 
+        layout_edit.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                var carYear = getMyCarInfoResponse.carYear
+                var carModelName = getMyCarInfoResponse.carName
 
-        layout_edit.setOnClickListener {
-            var carYear = getMyCarInfoResponse.carYear
-            var carModelName = getMyCarInfoResponse.carName
+                if(et_car_year.text.toString().isNotEmpty()){
+                    carYear = et_car_year.text.toString().toInt()
+                }
+                if(et_car_model_name.text.toString().isNotEmpty()){
+                    carModelName = et_car_model_name.text.toString()
+                }
 
-            if(et_car_year.text.toString().isNotEmpty()){
-                carYear = et_car_year.text.toString().toInt()
-            }
-            if(et_car_model_name.text.toString().isNotEmpty()){
-                carModelName = et_car_model_name.text.toString()
-            }
+                val gson = Gson()
+                val jsonParam =
+                    gson.toJson(EditMyCarRequest(getMyCarInfoResponse.licensePlateNumber, getMyCarInfoResponse.ownerName, carYear, carModelName, tv_car_fuel.text.toString()))
 
-            val gson = Gson()
-            val jsonParam =
-                gson.toJson(EditMyCarRequest(getMyCarInfoResponse.licensePlateNumber, getMyCarInfoResponse.ownerName, carYear, carModelName, tv_car_fuel.text.toString()))
-
-            apiService().patchCarInfoByCarId("Bearer " + PreferenceUtil.getPref(this@EditCarInfoActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, getMyCarInfoResponse.id, jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :Callback<ResponseBody>{
-                override fun onResponse(
-                    call: Call<ResponseBody>,
-                    response: Response<ResponseBody>
-                ) {
-                    if(response.code() == 200){
-                        Toast.makeText(this@EditCarInfoActivity, "내 차 정보가 수정되었어요.", Toast.LENGTH_SHORT).show()
-                        finish()
+                apiService().patchCarInfoByCarId("Bearer " + PreferenceUtil.getPref(this@EditCarInfoActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, getMyCarInfoResponse.id, jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :Callback<ResponseBody>{
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+                        if(response.code() == 200){
+                            Toast.makeText(this@EditCarInfoActivity, "내 차 정보가 수정되었어요.", Toast.LENGTH_SHORT).show()
+                            finish()
+                        }
                     }
-                }
 
-                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
 
-                }
+                    }
 
-            })
-        }
+                })
+            }
 
-        layout_delete.setOnClickListener {
-            CustomDialog(this, "자동차 정보 삭제", "자동차 정보를 삭제하면 기존 데이터는 삭제됩니다. 삭제 하시겠습니까?", "삭제","취소",  object : CustomDialog.DialogCallback{
-                override fun onConfirm() {
-                    apiService().deleteMyCarByCarId("Bearer " + PreferenceUtil.getPref(this@EditCarInfoActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, getMyCarInfoResponse.id).enqueue(object :Callback<ResponseBody>{
-                        override fun onResponse(
-                            call: Call<ResponseBody>,
-                            response: Response<ResponseBody>
-                        ) {
-                            if(response.code() == 204){
-                                startActivity(Intent(this@EditCarInfoActivity, OnBoardingActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
-                                finish()
+        })
+
+        layout_delete.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                CustomDialog(this@EditCarInfoActivity, "자동차 정보 삭제", "자동차 정보를 삭제하면 기존 데이터는 삭제됩니다. 삭제 하시겠습니까?", "삭제","취소",  object : CustomDialog.DialogCallback{
+                    override fun onConfirm() {
+                        apiService().deleteMyCarByCarId("Bearer " + PreferenceUtil.getPref(this@EditCarInfoActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, getMyCarInfoResponse.id).enqueue(object :Callback<ResponseBody>{
+                            override fun onResponse(
+                                call: Call<ResponseBody>,
+                                response: Response<ResponseBody>
+                            ) {
+                                if(response.code() == 204){
+                                    startActivity(Intent(this@EditCarInfoActivity, OnBoardingActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+                                    finish()
+                                }
                             }
-                        }
 
-                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                        }
+                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                            }
 
-                    })
-                }
+                        })
+                    }
 
-                override fun onCancel() {
+                    override fun onCancel() {
 
 
-                }
+                    }
 
-            }).show()
-        }
+                }).show()
+            }
+        })
+
 
         val itemList: MutableList<String?> = ArrayList()
 

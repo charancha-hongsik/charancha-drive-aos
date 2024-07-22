@@ -8,6 +8,7 @@ import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.view.View.GONE
+import android.view.View.OnClickListener
 import android.view.View.VISIBLE
 import android.view.animation.LinearInterpolator
 import android.widget.ImageView
@@ -145,13 +146,15 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     }
 
     private fun setResources(){
-        btn_back.setOnClickListener {
-            val intent = Intent(this@DetailDriveHistoryActivity, MyDriveHistoryActivity::class.java)
-            intent.putExtra("isActive",isActive)
-            intent.putExtra("trackingId",tracking_id)
-            setResult(RESULT_OK, intent)
-            finish()
-        }
+        btn_back.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                val intent = Intent(this@DetailDriveHistoryActivity, MyDriveHistoryActivity::class.java)
+                intent.putExtra("isActive",isActive)
+                intent.putExtra("trackingId",tracking_id)
+                setResult(RESULT_OK, intent)
+                finish()
+            }
+        })
 
         btn_choose_mycar.setOnClickListener {
             layout_my_drive.visibility = VISIBLE
@@ -161,55 +164,58 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
             layout_my_drive.visibility = GONE
         }
 
-        btn_set_mycar.setOnClickListener {
-            if(btn_mycar.isSelected){
-                val gson = Gson()
-                val jsonParam =
-                    gson.toJson(PatchDrivingInfo(true))
-                apiService().patchDrivingInfo("Bearer " + PreferenceUtil.getPref(this@DetailDriveHistoryActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, tracking_id,jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object:Callback<ResponseBody>{
-                    override fun onResponse(
-                        call: Call<ResponseBody>,
-                        response: Response<ResponseBody>
-                    ) {
+        btn_set_mycar.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                if(btn_mycar.isSelected){
+                    val gson = Gson()
+                    val jsonParam =
+                        gson.toJson(PatchDrivingInfo(true))
+                    apiService().patchDrivingInfo("Bearer " + PreferenceUtil.getPref(this@DetailDriveHistoryActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, tracking_id,jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object:Callback<ResponseBody>{
+                        override fun onResponse(
+                            call: Call<ResponseBody>,
+                            response: Response<ResponseBody>
+                        ) {
 
-                        if(response.code() == 200){
-                            tv_mycar.visibility = VISIBLE
-                            tv_not_mycar.visibility = GONE
+                            if(response.code() == 200){
+                                tv_mycar.visibility = VISIBLE
+                                tv_not_mycar.visibility = GONE
+                            }
+                            layout_my_drive.visibility = GONE
+
                         }
-                        layout_my_drive.visibility = GONE
 
-                    }
-
-                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                        layout_my_drive.visibility = GONE
-                    }
-
-                })
-            }else{
-                val gson = Gson()
-                val jsonParam =
-                    gson.toJson(PatchDrivingInfo(false))
-
-                apiService().patchDrivingInfo("Bearer " + PreferenceUtil.getPref(this@DetailDriveHistoryActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, tracking_id,jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object:Callback<ResponseBody>{
-                    override fun onResponse(
-                        call: Call<ResponseBody>,
-                        response: Response<ResponseBody>
-                    ) {
-                        if(response.code() == 200){
-                            tv_mycar.visibility = GONE
-                            tv_not_mycar.visibility = VISIBLE
+                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                            layout_my_drive.visibility = GONE
                         }
-                        layout_my_drive.visibility = GONE
 
-                    }
+                    })
+                }else{
+                    val gson = Gson()
+                    val jsonParam =
+                        gson.toJson(PatchDrivingInfo(false))
 
-                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                        layout_my_drive.visibility = GONE
-                    }
-                })
+                    apiService().patchDrivingInfo("Bearer " + PreferenceUtil.getPref(this@DetailDriveHistoryActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, tracking_id,jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object:Callback<ResponseBody>{
+                        override fun onResponse(
+                            call: Call<ResponseBody>,
+                            response: Response<ResponseBody>
+                        ) {
+                            if(response.code() == 200){
+                                tv_mycar.visibility = GONE
+                                tv_not_mycar.visibility = VISIBLE
+                            }
+                            layout_my_drive.visibility = GONE
 
+                        }
+
+                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                            layout_my_drive.visibility = GONE
+                        }
+                    })
+
+                }
             }
-        }
+
+        })
 
         btn_mycar.setOnClickListener {
             btn_mycar.isSelected = true
