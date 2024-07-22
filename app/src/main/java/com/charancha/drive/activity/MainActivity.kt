@@ -763,6 +763,8 @@ class MainActivity : BaseRefreshActivity() {
                                         response.body()?.string(),
                                         GetMyCarInfoResponse::class.java
                                     )
+                                    // 회원가입을 한지
+                                    // 차량등록을 한지
 
                                     tv_app_days2.text = convertUtcToDaysSince(getMyCarInfoResponse.createdAt)
 
@@ -954,7 +956,7 @@ class MainActivity : BaseRefreshActivity() {
                             tv_recent_info_text.text = "굉장해요. 지난 주행보다 +" +  transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점을 얻었어요!"
                             iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
                         }else if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
-                            tv_recent_info_text.text = "아쉬워요. 지난 주행보다 -" + transferNumWithRounds(getManageScoreResponse.diffTotal.totalEngineScore) + "점 하락했어요"
+                            tv_recent_info_text.text = "아쉬워요. 지난 주행보다 -" + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 하락했어요"
                             iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
                         }
 
@@ -999,7 +1001,7 @@ class MainActivity : BaseRefreshActivity() {
                             tv_recent_info_text.text = "굉장해요. 지난 주행보다 +" +  transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점을 얻었어요!"
                             iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
                         }else if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
-                            tv_recent_info_text.text = "아쉬워요. 지난 주행보다 -" + transferNumWithRounds(getManageScoreResponse.diffTotal.totalEngineScore) + "점 하락했어요"
+                            tv_recent_info_text.text = "아쉬워요. 지난 주행보다 -" + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 하락했어요"
                             iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
                         }
 

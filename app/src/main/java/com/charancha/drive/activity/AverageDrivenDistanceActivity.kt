@@ -1288,7 +1288,10 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                         tv_driving_info2.text = "1회 평균 주행 거리는 \n높을수록 좋아요"
                         tv_driving_info3.text = "1개월 1회 주행 거리를\n한눈에 확인해보세요!"
 
-                        tv_total_distance.text = transferDistance(drivingDistance.average.totalDistance)
+                        tv_total_distance.text = transferDistance(drivingDistance.perOne.totalDistance)
+                        tv_average_distance.text = transferDistance(drivingDistance.perOne.totalDistance)
+                        tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
+                        tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
 
                         if(drivingDistance.diffPerOne.totalDistance == 0.0){
                             tv_diff_distance.text = "점수 변동이 없어요."
@@ -1302,10 +1305,6 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                             tv_diff_distance.text = "-" + transferDistance(drivingDistance.diffPerOne.totalDistance) + distance_unit + " 감소"
                             tv_diff_distance.setTextColor(resources.getColor(R.color.sec_500))
                         }
-
-                        tv_average_distance.text = transferDistance(drivingDistance.average.totalDistance)
-                        tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
-                        tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
                     }else{
                         tv_total_distance.text = transferDistance(0.0)
                         tv_diff_distance.text = "+" + transferDistance(0.0) + distance_unit + " 증가"
@@ -1363,7 +1362,10 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                         tv_driving_info2.text = "1회 평균 주행 거리는 \n높을수록 좋아요"
                         tv_driving_info3.text = "6개월 1회 주행 거리를\n한눈에 확인해보세요!"
 
-                        tv_total_distance.text = transferDistance(drivingDistance.average.totalDistance)
+                        tv_total_distance.text = transferDistance(drivingDistance.perOne.totalDistance)
+                        tv_average_distance.text = transferDistance(drivingDistance.perOne.totalDistance)
+                        tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
+                        tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
 
                         if(drivingDistance.diffPerOne.totalDistance == 0.0){
                             tv_diff_distance.text = "점수 변동이 없어요."
@@ -1378,9 +1380,7 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                             tv_diff_distance.setTextColor(resources.getColor(R.color.sec_500))
                         }
 
-                        tv_average_distance.text = transferDistance(drivingDistance.average.totalDistance)
-                        tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
-                        tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
+
                     }else{
                         tv_total_distance.text = transferDistance(0.0)
                         tv_diff_distance.text = "+" + transferDistance(0.0) + distance_unit + " 증가"
@@ -1438,7 +1438,8 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                             tv_diff_distance.setTextColor(resources.getColor(R.color.sec_500))
                         }
 
-                        tv_average_distance.text = transferDistance(drivingDistance.average.totalDistance)
+                        tv_total_distance.text = transferDistance(drivingDistance.perOne.totalDistance)
+                        tv_average_distance.text = transferDistance(drivingDistance.perOne.totalDistance)
                         tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
                         tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
 
