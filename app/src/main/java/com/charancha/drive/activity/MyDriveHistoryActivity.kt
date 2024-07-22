@@ -17,6 +17,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.widget.TextViewCompat
 import com.charancha.drive.ChosenDate
+import com.charancha.drive.DelayedClickConstraintLayout
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
 import com.charancha.drive.retrofit.response.*
@@ -340,7 +341,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                 val layout_not_active = listItemView!!.findViewById<LinearLayout>(R.id.layout_not_active)
                 val layout_active = listItemView!!.findViewById<LinearLayout>(R.id.layout_active)
 
-                val btn_drive_history = listItemView!!.findViewById<ConstraintLayout>(R.id.btn_drive_history)
+                val btn_drive_history = listItemView!!.findViewById<DelayedClickConstraintLayout>(R.id.btn_drive_history)
 
                 val tvDate = listItemView!!.findViewById<TextView>(R.id.tv_date)
                 val tv_distance = listItemView!!.findViewById<TextView>(R.id.tv_distance)
@@ -375,11 +376,8 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                 }
 
                 btn_drive_history.setOnClickListener {
-                    Log.d("testtestet","testestsed :: " + driveItem?.isActive)
+                    Log.d("testestestset","testsestseset btn_drive_history")
                     (context as MyDriveHistoryActivity).resultLauncher.launch(Intent(context, DetailDriveHistoryActivity::class.java).putExtra("trackingId", driveItem?.id).putExtra("isActive", driveItem?.isActive))
-//                    var intent = Intent(context, DetailDriveHistoryActivity::class.java)
-//                    intent.putExtra("tracking_id", driveItem?.id)
-//                    context.startActivity(intent)
                 }
 
                 return listItemView
