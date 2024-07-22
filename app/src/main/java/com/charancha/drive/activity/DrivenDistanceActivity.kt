@@ -2165,7 +2165,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
                             tv_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
 
                         }else if(recentDrivingDistance.diffTotal.totalDistance < 0.0){
-                            tv_diff_distance.text = "-" + transferDistance(recentDrivingDistance.diffTotal.totalDistance) + distance_unit + " 감소"
+                            tv_diff_distance.text = transferDistance(recentDrivingDistance.diffTotal.totalDistance) + distance_unit + " 감소"
                             tv_diff_distance.setTextColor(resources.getColor(R.color.sec_500))
                         }
 
@@ -2300,7 +2300,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
                             tv_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
 
                         }else if(drivingDistance.diffAverage.totalDistance < 0.0){
-                            tv_diff_distance.text = "-" + transferDistance(drivingDistance.diffAverage.totalDistance) + distance_unit + " 감소"
+                            tv_diff_distance.text = transferDistance(drivingDistance.diffAverage.totalDistance) + distance_unit + " 감소"
                             tv_diff_distance.setTextColor(resources.getColor(R.color.sec_500))
                         }
 
@@ -2403,7 +2403,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
                             tv_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
 
                         }else if(drivingDistance.diffAverage.totalDistance < 0.0){
-                            tv_diff_distance.text = "-" + transferDistance(drivingDistance.diffAverage.totalDistance) + distance_unit + " 감소"
+                            tv_diff_distance.text = transferDistance(drivingDistance.diffAverage.totalDistance) + distance_unit + " 감소"
                             tv_diff_distance.setTextColor(resources.getColor(R.color.sec_500))
                         }
 
@@ -2493,7 +2493,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
                             tv_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
 
                         }else if(drivingDistance.diffAverage.totalDistance < 0.0){
-                            tv_diff_distance.text = "-" + transferDistance(drivingDistance.diffAverage.totalDistance) + distance_unit + " 감소"
+                            tv_diff_distance.text = transferDistance(drivingDistance.diffAverage.totalDistance) + distance_unit + " 감소"
                             tv_diff_distance.setTextColor(resources.getColor(R.color.sec_500))
                         }
 

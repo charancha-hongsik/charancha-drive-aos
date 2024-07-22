@@ -314,7 +314,7 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
             tv_no_score1.text = "아쉬워요. 지난 주행보다 " + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 하락했어요"
             iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
 
-            tv_increased_score.text = "-" + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore).toString() + "점 감소"
+            tv_increased_score.text = transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore).toString() + "점 감소"
             tv_increased_score.setTextColor(resources.getColor(R.color.sec_500))
 
             tv_increased_score.setTextColor(resources.getColor(R.color.gray_900))

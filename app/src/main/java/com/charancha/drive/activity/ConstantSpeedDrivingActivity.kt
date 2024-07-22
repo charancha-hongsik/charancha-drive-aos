@@ -209,7 +209,7 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                             tv_diff_percent.setTextColor(resources.getColor(R.color.pri_500))
 
                         }else if(recentDrivingDistance.diffAverage.constantSpeedDrivingDistancePercentage < 0.0){
-                            tv_diff_percent.text = "-" + String.format(Locale.KOREAN, "%.0f", recentDrivingDistance.diffAverage.constantSpeedDrivingDistancePercentage) + "% 감소"
+                            tv_diff_percent.text = String.format(Locale.KOREAN, "%.0f", recentDrivingDistance.diffAverage.constantSpeedDrivingDistancePercentage) + "% 감소"
                             tv_diff_percent.setTextColor(resources.getColor(R.color.sec_500))
                         }
 
@@ -343,7 +343,7 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                             tv_diff_percent.setTextColor(resources.getColor(R.color.pri_500))
 
                         }else if(drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage < 0.0){
-                            tv_diff_percent.text = "-" + String.format(Locale.KOREAN, "%.0f", drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage) + "% 감소"
+                            tv_diff_percent.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage) + "% 감소"
                             tv_diff_percent.setTextColor(resources.getColor(R.color.sec_500))
                         }
 
@@ -413,7 +413,7 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                             tv_diff_percent.setTextColor(resources.getColor(R.color.pri_500))
 
                         }else if(drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage < 0.0){
-                            tv_diff_percent.text = "-" + String.format(Locale.KOREAN, "%.0f", drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage) + "% 감소"
+                            tv_diff_percent.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage) + "% 감소"
                             tv_diff_percent.setTextColor(resources.getColor(R.color.sec_500))
                         }
 
@@ -487,7 +487,7 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                             tv_diff_percent.setTextColor(resources.getColor(R.color.pri_500))
 
                         }else if(drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage < 0.0){
-                            tv_diff_percent.text = "-" + String.format(Locale.KOREAN, "%.0f", drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage) + "% 감소"
+                            tv_diff_percent.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage) + "% 감소"
                             tv_diff_percent.setTextColor(resources.getColor(R.color.sec_500))
                         }
 

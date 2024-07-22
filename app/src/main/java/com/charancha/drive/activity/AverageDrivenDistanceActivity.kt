@@ -1181,7 +1181,7 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                             tv_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
 
                         }else if(recentDrivingDistance.diffPerOne.totalDistance < 0.0){
-                            tv_diff_distance.text = "-" + transferDistance(recentDrivingDistance.diffPerOne.totalDistance) + distance_unit + " 감소"
+                            tv_diff_distance.text = transferDistance(recentDrivingDistance.diffPerOne.totalDistance) + distance_unit + " 감소"
                             tv_diff_distance.setTextColor(resources.getColor(R.color.sec_500))
                         }
 
@@ -1308,7 +1308,7 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                             tv_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
 
                         }else if(drivingDistance.diffPerOne.totalDistance < 0.0){
-                            tv_diff_distance.text = "-" + transferDistance(drivingDistance.diffPerOne.totalDistance) + distance_unit + " 감소"
+                            tv_diff_distance.text = transferDistance(drivingDistance.diffPerOne.totalDistance) + distance_unit + " 감소"
                             tv_diff_distance.setTextColor(resources.getColor(R.color.sec_500))
                         }
                     }else{
@@ -1382,7 +1382,7 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                             tv_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
 
                         }else if(drivingDistance.diffPerOne.totalDistance < 0.0){
-                            tv_diff_distance.text = "-" + transferDistance(drivingDistance.diffPerOne.totalDistance) + distance_unit + " 감소"
+                            tv_diff_distance.text = transferDistance(drivingDistance.diffPerOne.totalDistance) + distance_unit + " 감소"
                             tv_diff_distance.setTextColor(resources.getColor(R.color.sec_500))
                         }
 
@@ -1440,7 +1440,7 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                             tv_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
 
                         }else if(drivingDistance.diffPerOne.totalDistance < 0.0){
-                            tv_diff_distance.text = "-" + transferDistance(drivingDistance.diffPerOne.totalDistance) + distance_unit + " 감소"
+                            tv_diff_distance.text = transferDistance(drivingDistance.diffPerOne.totalDistance) + distance_unit + " 감소"
                             tv_diff_distance.setTextColor(resources.getColor(R.color.sec_500))
                         }
 
