@@ -187,7 +187,7 @@ interface ApiServiceInterface {
                                       @Query("endTime") afterCursor: String): Call<ResponseBody>
 
     // 최근 관리 점수 통계 조회
-    @GET("api/v1/cars/-/user-cars/{userCarId}/score/-/statistics")
+    @GET("api/v1/cars/-/user-cars/{userCarId}/score/-/statistics/recent")
     fun getRecentManageScoreStatistics(@Header("Authorization") token: String,
                                  @Path("userCarId") userCarId: String): Call<ResponseBody>
 

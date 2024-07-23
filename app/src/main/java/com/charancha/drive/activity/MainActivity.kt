@@ -980,22 +980,30 @@ class MainActivity : BaseRefreshActivity() {
             ) {
                 if(response.code() == 200){
                     val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
-                    if(getManageScoreResponse.total.totalEngineScore != 0.0){
-                        tv_recent_score.text = transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
-                        tv_recent_score2.text = transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
-                        tv_engine_score.text = transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
+                    if(getManageScoreResponse.isRecent){
+                        if(getManageScoreResponse.total.totalEngineScore != 0.0){
+                            tv_recent_score.text = transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
+                            tv_recent_score2.text = transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
+                            tv_engine_score.text = transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
 
-                        if(getManageScoreResponse.diffAverage.totalEngineScore == 0.0){
-                            tv_recent_info_text.text = "점수 변동이 없어요"
-                            iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_good))
-                        }else if(getManageScoreResponse.diffAverage.totalEngineScore > 0.0){
-                            tv_recent_info_text.text = "굉장해요. 지난 주행보다 +" +  transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점을 얻었어요!"
-                            iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
-                        }else if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
-                            tv_recent_info_text.text = "아쉬워요. 지난 주행보다 " + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 하락했어요"
-                            iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
+                            if(getManageScoreResponse.diffAverage.totalEngineScore == 0.0){
+                                tv_recent_info_text.text = "점수 변동이 없어요"
+                                iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_good))
+                            }else if(getManageScoreResponse.diffAverage.totalEngineScore > 0.0){
+                                tv_recent_info_text.text = "굉장해요. 지난 주행보다 +" +  transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점을 얻었어요!"
+                                iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
+                            }else if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
+                                tv_recent_info_text.text = "아쉬워요. 지난 주행보다 " + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 하락했어요"
+                                iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
+                            }
+
+                        }else{
+                            tv_recent_score2.text = "0"
+                            tv_engine_score.text = "0"
+
+                            tv_recent_info_text.text = "아직 데이터가 없어요. 함께 달려볼까요?"
+                            iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
                         }
-
                     }else{
                         tv_recent_score2.text = "0"
                         tv_engine_score.text = "0"

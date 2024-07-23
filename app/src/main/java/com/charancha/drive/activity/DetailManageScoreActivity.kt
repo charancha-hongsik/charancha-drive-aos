@@ -154,6 +154,9 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
 
     fun setInitData(){
         if(tv_detail_managescroe_title.text.contains("최근 관리 점수")){
+            Log.d("testestestest","testsetsetset ACCESS_TOKEN :: " + PreferenceUtil.getPref(this@DetailManageScoreActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!)
+            Log.d("testestestest","testsetsetset USER_CARID :: " + PreferenceUtil.getPref(this@DetailManageScoreActivity, PreferenceUtil.USER_CARID, "")!!)
+
             apiService().getRecentManageScoreStatistics(
                 "Bearer " + PreferenceUtil.getPref(this@DetailManageScoreActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,
                 PreferenceUtil.getPref(this@DetailManageScoreActivity, PreferenceUtil.USER_CARID, "")!!
@@ -163,6 +166,8 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
                     response: Response<ResponseBody>
                 ) {
                     if(response.code() == 200){
+
+
                         val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
 
                         if(getManageScoreResponse.isRecent){
@@ -179,6 +184,7 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     setNoData()
+
                 }
 
             })
@@ -193,6 +199,8 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
                             response.body()?.string(),
                             GetRecentDrivingStatisticsResponse::class.java
                         )
+
+                        Log.d("testsetestestse","testestestset 2 :: " + recentDrivingDistance.isRecent)
 
                         if(recentDrivingDistance.isRecent){
                             setInquireScope(convertDateFormat(recentDrivingDistance.recentStartTime))
@@ -261,7 +269,7 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
                     if(getManageScoreResponse.total.totalEngineScore != 0.0){
                         setThereIsDatas(getManageScoreResponse)
                     }else{
-                        setNoData()
+
                     }
                 }
             }
