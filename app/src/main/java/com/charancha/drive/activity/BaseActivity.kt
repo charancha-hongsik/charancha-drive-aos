@@ -2,6 +2,7 @@ package com.charancha.drive.activity
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -168,11 +169,11 @@ open class BaseActivity: AppCompatActivity(){
     fun convertDateFormat(dateString: String): String {
         try {
             // 입력된 문자열을 Instant 객체로 파싱
-            val instant = Instant.parse(dateString)
+            val offsetDateTime = OffsetDateTime.parse(dateString)
 
-            // Instant 객체를 로컬 시간대로 변환 (한국 시간대로 설정 예시)
+            // OffsetDateTime 객체를 로컬 시간대로 변환 (한국 시간대로 설정 예시)
             val koreaZoneId = ZoneId.of("Asia/Seoul")
-            val localDateTime = LocalDateTime.ofInstant(instant, koreaZoneId)
+            val localDateTime = offsetDateTime.atZoneSameInstant(koreaZoneId).toLocalDateTime()
 
             // 원하는 포맷으로 날짜를 변환
             val formatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일", Locale.KOREAN)
@@ -187,14 +188,14 @@ open class BaseActivity: AppCompatActivity(){
 
     fun formatDateRange(startDate: String, endDate: String): String {
         try {
-            // 시작 날짜를 Instant 객체로 파싱
-            val startInstant = Instant.parse(startDate)
-            val endInstant = Instant.parse(endDate)
+            // 시작 날짜와 종료 날짜를 OffsetDateTime 객체로 파싱
+            val startOffsetDateTime = OffsetDateTime.parse(startDate)
+            val endOffsetDateTime = OffsetDateTime.parse(endDate)
 
-            // Instant 객체를 로컬 시간대로 변환 (한국 시간대로 설정 예시)
+            // OffsetDateTime 객체를 로컬 시간대로 변환 (한국 시간대로 설정 예시)
             val koreaZoneId = ZoneId.of("Asia/Seoul")
-            val startDateTime = LocalDateTime.ofInstant(startInstant, koreaZoneId)
-            val endDateTime = LocalDateTime.ofInstant(endInstant, koreaZoneId)
+            val startDateTime = startOffsetDateTime.atZoneSameInstant(koreaZoneId).toLocalDateTime()
+            val endDateTime = endOffsetDateTime.atZoneSameInstant(koreaZoneId).toLocalDateTime()
 
             // 원하는 포맷으로 날짜를 변환
             val formatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일", Locale.KOREAN)

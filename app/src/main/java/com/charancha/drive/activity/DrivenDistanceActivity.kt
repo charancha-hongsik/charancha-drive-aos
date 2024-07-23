@@ -2332,7 +2332,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
                         )
                     }else{
                         tv_total_distance.text = transferDistance(0.0)
-                        tv_diff_distance.text = "+" + transferDistance(0.0) + distance_unit + " 증가"
+                        tv_diff_distance.text = "점수 변동이 없어요."
                         tv_average_distance.text = transferDistance(0.0)
                         tv_max_distance.text = transferDistance(0.0)
                         tv_min_distance.text = transferDistance(0.0)
@@ -2346,7 +2346,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
                     }
                 }else{
                     tv_total_distance.text = transferDistance(0.0)
-                    tv_diff_distance.text = "+" + transferDistance(0.0) + distance_unit + " 증가"
+                    tv_diff_distance.text = "점수 변동이 없어요."
                     tv_average_distance.text = transferDistance(0.0)
                     tv_max_distance.text = transferDistance(0.0)
                     tv_min_distance.text = transferDistance(0.0)

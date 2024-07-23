@@ -254,6 +254,7 @@ class LoginActivity: BaseActivity() {
                                                                             val getMyCarInfoResponse:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
 
                                                                             if(getMyCarInfoResponse.size > 0){
+                                                                                PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.get(0).id)
                                                                                 startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                                                                                 finish()
                                                                             }else{

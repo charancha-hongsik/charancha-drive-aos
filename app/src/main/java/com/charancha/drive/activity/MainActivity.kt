@@ -157,6 +157,8 @@ class MainActivity : BaseRefreshActivity() {
             }
         }
 
+        Log.d("testsetsetest","testseest USER_CARID:: " + PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!)
+
         // 홈화면 진입 여부 체크
         PreferenceUtil.putBooleanPref(this, HAVE_BEEN_HOME, true)
 
@@ -846,12 +848,6 @@ class MainActivity : BaseRefreshActivity() {
     }
 
     fun getManageScoreForAMonth(){
-
-        Log.d("testsetetestsetse","testestsetsetsetse :: " +  PreferenceUtil.getPref(this@MainActivity, PreferenceUtil.ACCESS_TOKEN, "")!!)
-        Log.d("testsetetestsetse","testestsetsetsetse :: " +  PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!)
-        Log.d("testsetetestsetse","testestsetsetsetse :: " +  getCurrentAndPastTimeForISO(29).second)
-        Log.d("testsetetestsetse","testestsetsetsetse :: " +  getCurrentAndPastTimeForISO(29).first)
-
         apiService().getManageScoreStatistics(
             "Bearer " + PreferenceUtil.getPref(this@MainActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,

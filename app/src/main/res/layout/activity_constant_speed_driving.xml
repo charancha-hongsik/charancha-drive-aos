@@ -225,7 +225,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="내 차는 부드럽게\n달릴수록 좋아"
+                    android:text="내 차는 부드럽게\n달릴수록 좋아요"
                     android:textAppearance="@style/ST2SB"
                     android:textFontWeight="600"
                     android:textColor="@color/gray_950"/>
