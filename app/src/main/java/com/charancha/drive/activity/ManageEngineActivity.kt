@@ -2,8 +2,6 @@ package com.charancha.drive.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.MotionEvent
 import android.view.View
 import android.view.View.*
 import android.widget.ImageView
@@ -80,7 +78,7 @@ class ManageEngineActivity:BaseRefreshActivity() {
         iv_tooltip_perone_average = findViewById(R.id.iv_tooltip_perone_average)
         iv_tooltip_perone_average.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltip(this@ManageEngineActivity, "1회 평균 주행거리란?","차량이 한 번 주행할 때마다\n이동한 거리의 평균값이에요.\n높을수록 좋아요!")
+                showTooltip(this@ManageEngineActivity)
             }
         })
 
@@ -90,7 +88,7 @@ class ManageEngineActivity:BaseRefreshActivity() {
         iv_tooltip_high_speed = findViewById(R.id.iv_tooltip_high_speed)
         iv_tooltip_high_speed.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltip(this@ManageEngineActivity, "1회 평균 주행거리란?","차량이 한 번 주행할 때마다\n이동한 거리의 평균값이에요.\n높을수록 좋아요!")
+                showTooltip(this@ManageEngineActivity)
             }
         })
 
@@ -98,14 +96,14 @@ class ManageEngineActivity:BaseRefreshActivity() {
         iv_tooltip_optimal_driving = findViewById(R.id.iv_tooltip_optimal_driving)
         iv_tooltip_optimal_driving.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltip(this@ManageEngineActivity, "1회 평균 주행거리란?","차량이 한 번 주행할 때마다\n이동한 거리의 평균값이에요.\n높을수록 좋아요!")
+                showTooltip(this@ManageEngineActivity )
             }
         })
 
         iv_tooltip_const_driving = findViewById(R.id.iv_tooltip_const_driving)
         iv_tooltip_const_driving.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltip(this@ManageEngineActivity, "1회 평균 주행거리란?","차량이 한 번 주행할 때마다\n이동한 거리의 평균값이에요.\n높을수록 좋아요!")
+                showTooltip(this@ManageEngineActivity)
             }
         })
 

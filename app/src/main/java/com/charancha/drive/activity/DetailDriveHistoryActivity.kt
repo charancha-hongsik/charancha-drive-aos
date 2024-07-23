@@ -6,10 +6,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.view.MotionEvent
 import android.view.View
 import android.view.View.GONE
-import android.view.View.OnClickListener
 import android.view.View.VISIBLE
 import android.view.animation.LinearInterpolator
 import android.widget.ImageView
@@ -168,55 +166,55 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     private fun setResources(){
         iv_tooltip_verification.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltip(this@DetailDriveHistoryActivity, "1회 평균 주행거리란?","차량이 한 번 주행할 때마다\n이동한 거리의 평균값이에요.\n높을수록 좋아요!")
+                showTooltip(this@DetailDriveHistoryActivity)
             }
         })
 
         iv_tooltip_low_speed.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltip(this@DetailDriveHistoryActivity, "1회 평균 주행거리란?","차량이 한 번 주행할 때마다\n이동한 거리의 평균값이에요.\n높을수록 좋아요!")
+                showTooltip(this@DetailDriveHistoryActivity)
             }
         })
 
         iv_tooltip_high_speed.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltip(this@DetailDriveHistoryActivity, "1회 평균 주행거리란?","차량이 한 번 주행할 때마다\n이동한 거리의 평균값이에요.\n높을수록 좋아요!")
+                showTooltip(this@DetailDriveHistoryActivity)
             }
         })
 
         iv_tooltip_rapid_desc.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltip(this@DetailDriveHistoryActivity, "1회 평균 주행거리란?","차량이 한 번 주행할 때마다\n이동한 거리의 평균값이에요.\n높을수록 좋아요!")
+                showTooltip(this@DetailDriveHistoryActivity)
             }
         })
 
         iv_tooltip_high_speed_average.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltip(this@DetailDriveHistoryActivity, "1회 평균 주행거리란?","차량이 한 번 주행할 때마다\n이동한 거리의 평균값이에요.\n높을수록 좋아요!")
+                showTooltip(this@DetailDriveHistoryActivity)
             }
         })
 
         iv_tooltip_low_speed_average.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltip(this@DetailDriveHistoryActivity, "1회 평균 주행거리란?","차량이 한 번 주행할 때마다\n이동한 거리의 평균값이에요.\n높을수록 좋아요!")
+                showTooltip(this@DetailDriveHistoryActivity)
             }
         })
 
         iv_tooltip_rapid_acc.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltip(this@DetailDriveHistoryActivity, "1회 평균 주행거리란?","차량이 한 번 주행할 때마다\n이동한 거리의 평균값이에요.\n높을수록 좋아요!")
+                showTooltip(this@DetailDriveHistoryActivity)
             }
         })
 
         iv_tooltip_rapid_start.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltip(this@DetailDriveHistoryActivity, "1회 평균 주행거리란?","차량이 한 번 주행할 때마다\n이동한 거리의 평균값이에요.\n높을수록 좋아요!")
+                showTooltip(this@DetailDriveHistoryActivity)
             }
         })
 
         iv_tooltip_rapid_stop.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltip(this@DetailDriveHistoryActivity, "1회 평균 주행거리란?","차량이 한 번 주행할 때마다\n이동한 거리의 평균값이에요.\n높을수록 좋아요!")
+                showTooltip(this@DetailDriveHistoryActivity)
             }
         })
 

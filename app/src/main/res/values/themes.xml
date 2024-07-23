@@ -37,6 +37,15 @@
 
     </style>
 
+    <style name="CustomBottomSheetDialog" parent="Theme.Design.Light.BottomSheetDialog">
+        <!-- Customize BottomSheetDialog background -->
+        <item name="bottomSheetStyle">@style/CustomBottomSheet</item>
+    </style>
+
+    <style name="CustomBottomSheet" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/radius24_topleftright_white</item>
+    </style>
+
     <!-- Base application theme. -->
     <style name="Theme.Charanchadrivegray50" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Status bar color. -->

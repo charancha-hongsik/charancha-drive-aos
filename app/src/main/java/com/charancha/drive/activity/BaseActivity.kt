@@ -1,20 +1,14 @@
 package com.charancha.drive.activity
 
 import android.content.Context
-import android.content.res.Resources
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
-import android.view.Gravity
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
 import android.widget.EditText
-import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
 import com.charancha.drive.retrofit.ApiServiceInterface
@@ -311,24 +305,18 @@ open class BaseActivity: AppCompatActivity(){
     }
 
 
-    fun showTooltip(context: Context, subtitle: String, contents: String) {
+    fun showTooltip(context: Context) {
         // Create a BottomSheetDialog
-        val bottomSheetDialog = BottomSheetDialog(context)
+        val bottomSheetDialog = BottomSheetDialog(context, R.style.CustomBottomSheetDialog)
 
         // Inflate the layout
         val bottomSheetView = layoutInflater.inflate(R.layout.dialog_tooltip, null)
-
-        val tv_subtitle = bottomSheetView.findViewById<TextView>(R.id.tv_tooltip_subtitle)
-        val tv_contents = bottomSheetView.findViewById<TextView>(R.id.tv_tooltip_contents)
-
-        tv_subtitle.text = subtitle
-        tv_contents.text = contents
 
         // Set the content view of the dialog
         bottomSheetDialog.setContentView(bottomSheetView)
 
         // Set the close button action
-        bottomSheetView.findViewById<Button>(R.id.closeButton)?.setOnClickListener {
+        bottomSheetView.findViewById<TextView>(R.id.btn_set_mycar)?.setOnClickListener {
             bottomSheetDialog.dismiss()
         }
 
