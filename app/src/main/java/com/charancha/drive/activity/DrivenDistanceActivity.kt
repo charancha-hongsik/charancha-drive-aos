@@ -22,10 +22,8 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
+import java.time.*
+import java.time.format.DateTimeFormatter
 
 class DrivenDistanceActivity:BaseRefreshActivity() {
     lateinit var btn_back:ImageView
@@ -238,17 +236,23 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
         val distances = FloatArray(24) { 0f }
 
         // Iterate over each item and parse the startTime to extract the hour
+
+
         for (item in items) {
-            val startTime = Instant.parse(item.startTime)
+            val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
+            val offsetDateTime = OffsetDateTime.parse(item.startTime, formatter)
+
+            // Convert OffsetDateTime to Instant
+            val startTime = offsetDateTime.toInstant()
+
+            // Convert Instant to ZonedDateTime in UTC
             val utcDateTime = ZonedDateTime.ofInstant(startTime, ZoneId.of("UTC"))
+
+            // Extract the hour from ZonedDateTime
             val hour = utcDateTime.hour
-
-            Log.d("testestestest","testestestse :: " + hour)
-
 
             distances[hour] = transferDistance(item.totalDistance).toFloat()
         }
-
 
         val entries = listOf(
             BarEntry(-1f, distances.get(0)), // 00시
@@ -1266,8 +1270,16 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
 
         // Iterate over each item and parse the startTime to extract the hour
         for (item in items) {
-            val startTime = Instant.parse(item.startTime)
+            val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
+            val offsetDateTime = OffsetDateTime.parse(item.startTime, formatter)
+
+            // Convert OffsetDateTime to Instant
+            val startTime = offsetDateTime.toInstant()
+
+            // Convert Instant to ZonedDateTime in UTC
             val utcDateTime = ZonedDateTime.ofInstant(startTime, ZoneId.of("UTC"))
+
+            // Extract the hour from ZonedDateTime
             val hour = utcDateTime.hour
 
             distances[hour] = transferDistance(item.totalDistance).toFloat()
@@ -2201,6 +2213,8 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
                                 call: Call<ResponseBody>,
                                 response: Response<ResponseBody>
                             ) {
+
+                                Log.d("teatstasdtast","testestasetaset :: " + recentStartTime)
 
                                 if(response.code() == 200){
                                     val getDrivingGraphDataResponse = Gson().fromJson(

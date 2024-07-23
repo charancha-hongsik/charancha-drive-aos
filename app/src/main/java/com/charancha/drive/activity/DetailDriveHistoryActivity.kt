@@ -179,21 +179,21 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
         iv_tooltip_low_speed.setOnTouchListener { view, motionEvent ->
             if (motionEvent.action == MotionEvent.ACTION_DOWN) {
-                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"저속 주행이란?", "저속 주행이란 0km/h 초과 \n40km/h 미만 속력으로 주행한 거리에요.\n높을수록 좋아요!")
+                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"저속 주행이란?", "저속 주행이란 0km/h 초과 40km/h 미만\n속력으로 주행한 거리에요.\n높을수록 좋아요!")
             }
             true
         }
 
         iv_tooltip_high_speed.setOnTouchListener { view, motionEvent ->
             if (motionEvent.action == MotionEvent.ACTION_DOWN) {
-                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"고속 주행이란?","80km/h 이상 \n150km/h 미만 사이의 속력으로 주행한 거리에요.\n높을수록 좋아요!")
+                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"고속 주행이란?","80km/h 이상 150km/h 미만\n사이의 속력으로 주행한 거리에요.\n높을수록 좋아요!")
             }
             true
         }
 
         iv_tooltip_rapid_desc.setOnTouchListener { view, motionEvent ->
             if (motionEvent.action == MotionEvent.ACTION_DOWN) {
-                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"급감속이란?","초당 14km/h이상 감속 주행하고 속도가 6.0km/h 이상인 경우에요. 낮을수록 좋아요!")
+                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"급감속이란?","초당 14km/h이상 감속 주행하고 속도가 6.0km/h 이상인 경우에요.\n낮을수록 좋아요!")
             }
             true
         }
@@ -201,35 +201,35 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
         iv_tooltip_high_speed_average.setOnTouchListener { view, motionEvent ->
             if (motionEvent.action == MotionEvent.ACTION_DOWN) {
-                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"고속 주행 평균 속력이란?","고속 주행 평균 속력은 80km/h 이상 150km/h 이하 속력으로 주행한 거리의 평균 속력이에요")
+                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"고속 주행 평균 속력이란?","고속 주행 평균 속력은 80km/h 이상\n150km/h 이하 속력으로 주행한 거리의 평균 속력이에요")
             }
             true
         }
 
         iv_tooltip_low_speed_average.setOnTouchListener { view, motionEvent ->
             if (motionEvent.action == MotionEvent.ACTION_DOWN) {
-                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"저속 주행 평균 속력이란?","저속 주행 평균 속력은 0km/h 초과 40km/h 미만 속력으로 주행한 거리의 평균 속력이에요")
+                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"저속 주행 평균 속력이란?","저속 주행 평균 속력은 0km/h 초과 40km/h 미만\n속력으로 주행한 거리의 평균 속력이에요")
             }
             true
         }
 
         iv_tooltip_rapid_acc.setOnTouchListener { view, motionEvent ->
             if (motionEvent.action == MotionEvent.ACTION_DOWN) {
-                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"급가속이란?","10km/h 초과 속도에서 초당 10km/h 이상 가속 주행한 경우에요. 낮을수록 좋아요!")
+                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"급가속이란?","10km/h 초과 속도에서 초당 10km/h 이상\n가속 주행한 경우에요.\n낮을수록 좋아요!")
             }
             true
         }
 
         iv_tooltip_rapid_start.setOnTouchListener { view, motionEvent ->
             if (motionEvent.action == MotionEvent.ACTION_DOWN) {
-                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"1회 평균 주행거리란?","차량이 한 번 주행할 때마다 이동한 거리의 평균값이에요. 높을수록 좋아요!")
+                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"1회 평균 주행거리란?","차량이 한 번 주행할 때마다\n이동한 거리의 평균값이에요.\n높을수록 좋아요!")
             }
             true
         }
 
         iv_tooltip_rapid_stop.setOnTouchListener { view, motionEvent ->
             if (motionEvent.action == MotionEvent.ACTION_DOWN) {
-                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"1회 평균 주행거리란?","차량이 한 번 주행할 때마다 이동한 거리의 평균값이에요. 높을수록 좋아요!")
+                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"1회 평균 주행거리란?","차량이 한 번 주행할 때마다\n이동한 거리의 평균값이에요.\n높을수록 좋아요!")
             }
             true
         }

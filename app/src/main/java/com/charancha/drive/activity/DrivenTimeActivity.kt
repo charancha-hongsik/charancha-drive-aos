@@ -25,10 +25,8 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
+import java.time.*
+import java.time.format.DateTimeFormatter
 
 class DrivenTimeActivity:BaseRefreshActivity() {
     lateinit var btn_back:ImageView
@@ -283,11 +281,19 @@ class DrivenTimeActivity:BaseRefreshActivity() {
 
         // Iterate over each item and parse the startTime to extract the hour
         for (item in items) {
-            val startTime = Instant.parse(item.startTime)
+            val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
+            val offsetDateTime = OffsetDateTime.parse(item.startTime, formatter)
+
+            // Convert OffsetDateTime to Instant
+            val startTime = offsetDateTime.toInstant()
+
+            // Convert Instant to ZonedDateTime in UTC
             val utcDateTime = ZonedDateTime.ofInstant(startTime, ZoneId.of("UTC"))
+
+            // Extract the hour from ZonedDateTime
             val hour = utcDateTime.hour
 
-            time[hour] = secondsToMinutes(item.time).toFloat()
+            time[hour] = transferDistance(item.time).toFloat()
         }
 
         val entries = listOf(

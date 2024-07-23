@@ -297,25 +297,39 @@ open class BaseActivity: AppCompatActivity(){
         val inflater = getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val popupView: View = inflater.inflate(R.layout.layout_tooltip, null)
 
-        // Calculate the maximum allowed width for the popup to ensure it doesn't touch the right edge
-        val screenWidth = Resources.getSystem().displayMetrics.widthPixels
-        val maxPopupWidth = screenWidth
+        val tv_tooltip_subtitle = popupView.findViewById<TextView>(R.id.tv_tootip_subtitle)
+        val tv_tooltip_contents = popupView.findViewById<TextView>(R.id.tv_tootip_contents)
 
-        // Set the popup view width to be the maximum allowed width
+        tv_tooltip_subtitle.text = subtitle
+        tv_tooltip_contents.text = contents
+
+        // Define the margins in pixels
+        val marginLeft = dpToPx(12f)
+        val marginRight = dpToPx(12f)
+
+        // Get the screen width
+        val screenWidth = Resources.getSystem().displayMetrics.widthPixels
+
+        // Calculate the maximum allowed width for the popup to ensure it doesn't touch the right edge
+        val maxPopupWidth = (screenWidth - marginLeft - marginRight).coerceAtLeast(dpToPx(100f)) // Ensure minimum width
+
+        // Set the popup view width with margins
         popupView.layoutParams = ViewGroup.LayoutParams(maxPopupWidth, dpToPx(83f))
 
-        // Measure the popup view to get its height after adjusting width
+        // Measure the popup view to get its width and height
         popupView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        val popupWidth = popupView.measuredWidth
         val popupHeight = popupView.measuredHeight
 
-        // Calculate the yOffset for showing the popup
-        val yOffset = (yPx - popupHeight - dpToPx(15f)).toInt() // Show popup above the touch point with 12dp margin
+        // Calculate the xOffset and yOffset for showing the popup
+        val xOffset = (xPx - marginLeft).toInt()  // Adjust xOffset to ensure left margin
+        val yOffset = (yPx - popupHeight - dpToPx(15f)).toInt()  // Show popup above the touch point with 15dp margin
 
         // Create PopupWindow with adjusted width
         val popupWindow = PopupWindow(popupView, maxPopupWidth, ViewGroup.LayoutParams.WRAP_CONTENT, true)
 
         // Show the popup window at the adjusted location
-        popupWindow.showAtLocation(anchorView, Gravity.NO_GRAVITY, xPx.toInt(), yOffset)
+        popupWindow.showAtLocation(anchorView, Gravity.NO_GRAVITY, xOffset, yOffset)
     }
 
 
