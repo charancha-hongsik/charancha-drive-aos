@@ -334,5 +334,17 @@ open class BaseActivity: AppCompatActivity(){
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics).toInt()
     }
 
+    fun getTodayFormattedDate(): String {
+        // 현재 날짜를 가져옴
+        val today = LocalDate.now()
+
+        // 원하는 날짜 형식을 정의
+        val formatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일", Locale.KOREA)
+
+        // 현재 날짜를 지정된 형식으로 포맷
+        return today.format(formatter)
+    }
+
+
 
 }

@@ -172,13 +172,13 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
                                 setNoData()
                             }
                         }else{
-
+                            setNoData()
                         }
                     }
                 }
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
+                    setNoData()
                 }
 
             })
@@ -362,6 +362,9 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
         layout_no_score.background = resources.getDrawable(R.drawable.radius8_pri500)
         tv_no_score1.text = "아직 데이터가 없어요. 함께 달려볼까요?"
         iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
+
+        setInquireScope(getTodayFormattedDate())
+
 
     }
 
