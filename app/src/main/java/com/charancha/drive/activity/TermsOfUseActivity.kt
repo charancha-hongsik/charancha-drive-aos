@@ -264,7 +264,8 @@ class TermsOfUseActivity: BaseActivity() {
                     override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     }
 
-                })            }
+                })
+            }
 
         })
 
