@@ -212,7 +212,7 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                         }
 
 
-                        tv_driving_info1.text = "최근 1일 평균 항속 주행"
+                        tv_driving_info1.text = "최근 1일"
                         tv_driving_info2.text = "최근 내 차의\n항속 주행 비율이에요"
                         tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
 
@@ -325,7 +325,7 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                     )
 
                     if(drivingDistance.total.totalDistance != 0.0){
-                        tv_driving_info1.text = "1개월 항속 최적 주행"
+                        tv_driving_info1.text = "1개월 평균"
                         tv_driving_info2.text = "1개월 간 내 차의\n항속 주행 비율이에요"
                         tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
 
@@ -417,7 +417,7 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
 
 
 
-                        tv_driving_info1.text = "6개월 평균 항속 주행"
+                        tv_driving_info1.text = "6개월 평균"
                         tv_driving_info2.text = "6개월 간 내 차의\n항속 주행 비율이에요"
                         tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
 
@@ -491,7 +491,7 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
 
 
 
-                        tv_driving_info1.text = "1년 평균 항속 주행"
+                        tv_driving_info1.text = "1년 평균"
                         tv_driving_info2.text = "1년 간 내 차의\n항속 주행 비율이에요"
                         tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
 

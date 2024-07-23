@@ -1194,7 +1194,7 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                         recentStartTime = recentDrivingDistance.recentStartTime
                         recentEndTime = recentDrivingDistance.recentEndTime
 
-                        tv_driving_info1.text = "최근 1일 1회 평균 주행 거리"
+                        tv_driving_info1.text = "최근 1일"
                         tv_driving_info2.text = "1회 평균 주행 거리는 \n높을수록 좋아요"
                         tv_driving_info3.text = "최근 1회 주행 거리를\n한눈에 확인해보세요!"
 

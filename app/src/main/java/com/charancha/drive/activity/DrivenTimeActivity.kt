@@ -2223,7 +2223,7 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                         recentStartTime = recentDrivingDistance.recentStartTime
                         recentEndTime = recentDrivingDistance.recentEndTime
 
-                        tv_time_info1.text = "최근 1일 주행 시간"
+                        tv_time_info1.text = "최근 1일"
                         tv_time_info2.text = "내 차는 자주\n달릴수록 좋아요"
                         tv_time_info3.text = "최근 주행 시간을\n한눈에 확인해보세요!"
                         tv_time_info4.text = "최근 내 차는\n" + transferSecondsToHourAndMinutes(recentDrivingDistance.total.totalTime).first +"시간" + transferSecondsToHourAndMinutes(recentDrivingDistance.total.totalTime).second + "분" + " 달렸어요"

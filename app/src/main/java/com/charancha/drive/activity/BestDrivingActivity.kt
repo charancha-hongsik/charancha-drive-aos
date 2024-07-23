@@ -215,7 +215,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
                             tv_diff_percent.setTextColor(resources.getColor(R.color.sec_500))
                         }
 
-                        tv_driving_info1.text = "최근 1일 평균"
+                        tv_driving_info1.text = "최근 1일"
                         tv_driving_info2.text = "최근 내 차의\n최적 주행 비율이에요"
                         tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
 
