@@ -2215,7 +2215,7 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                             tv_diff_time.setTextColor(resources.getColor(R.color.pri_500))
 
                         }else if(recentDrivingDistance.diffAverage.totalTime < 0.0){
-                            tv_diff_time.text = "-" + transferSecondsToHourAndMinutes(recentDrivingDistance.diffAverage.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(recentDrivingDistance.diffAverage.totalTime).second + "분 감소"
+                            tv_diff_time.text = transferSecondsToHourAndMinutes(recentDrivingDistance.diffAverage.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(recentDrivingDistance.diffAverage.totalTime).second + "분 감소"
                             tv_diff_time.setTextColor(resources.getColor(R.color.sec_500))
                         }
 
@@ -2363,7 +2363,7 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                             tv_diff_time.setTextColor(resources.getColor(R.color.pri_500))
 
                         }else if(drivingDistance.diffAverage.totalTime < 0.0){
-                            tv_diff_time.text = "-" + transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).second + "분 감소"
+                            tv_diff_time.text = transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).second + "분 감소"
                             tv_diff_time.setTextColor(resources.getColor(R.color.sec_500))
                         }
 
@@ -2467,7 +2467,7 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                             tv_diff_time.setTextColor(resources.getColor(R.color.pri_500))
 
                         }else if(drivingDistance.diffAverage.totalTime < 0.0){
-                            tv_diff_time.text = "-" + transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).second + "분 감소"
+                            tv_diff_time.text = transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).second + "분 감소"
                             tv_diff_time.setTextColor(resources.getColor(R.color.sec_500))
                         }
 
@@ -2565,7 +2565,7 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                             tv_diff_time.setTextColor(resources.getColor(R.color.pri_500))
 
                         }else if(drivingDistance.diffAverage.totalTime < 0.0){
-                            tv_diff_time.text = "-" + transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).second + "분 감소"
+                            tv_diff_time.text = transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).second + "분 감소"
                             tv_diff_time.setTextColor(resources.getColor(R.color.sec_500))
                         }
 

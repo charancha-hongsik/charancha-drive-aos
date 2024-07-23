@@ -2303,6 +2303,8 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
                         tv_diff_distance.visibility = VISIBLE
                         tv_total_distance.text = transferDistance(drivingDistance.average.totalDistance)
 
+                        Log.d("testetsetset","testsetest :: "+ drivingDistance.diffAverage.totalDistance)
+
                         if(drivingDistance.diffAverage.totalDistance == 0.0){
                             tv_diff_distance.text = "점수 변동이 없어요."
                             tv_diff_distance.setTextColor(resources.getColor(R.color.gray_950))
