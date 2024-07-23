@@ -1,5 +1,6 @@
 package com.charancha.drive.activity
 
+import android.content.Context
 import android.content.res.Resources
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.EditText
 import android.widget.PopupWindow
 import android.widget.TextView
@@ -17,6 +19,7 @@ import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
 import com.charancha.drive.retrofit.ApiServiceInterface
 import com.charancha.drive.retrofit.HeaderInterceptor
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -308,43 +311,29 @@ open class BaseActivity: AppCompatActivity(){
     }
 
 
-    fun showTooltip(anchorView: View, xPx: Float, yPx: Float, subtitle: String, contents: String) {
-        val inflater = getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val popupView: View = inflater.inflate(R.layout.layout_tooltip, null)
+    fun showTooltip(context: Context, subtitle: String, contents: String) {
+        // Create a BottomSheetDialog
+        val bottomSheetDialog = BottomSheetDialog(context)
 
-        val tv_tooltip_subtitle = popupView.findViewById<TextView>(R.id.tv_tootip_subtitle)
-        val tv_tooltip_contents = popupView.findViewById<TextView>(R.id.tv_tootip_contents)
+        // Inflate the layout
+        val bottomSheetView = layoutInflater.inflate(R.layout.dialog_tooltip, null)
 
-        tv_tooltip_subtitle.text = subtitle
-        tv_tooltip_contents.text = contents
+        val tv_subtitle = bottomSheetView.findViewById<TextView>(R.id.tv_tooltip_subtitle)
+        val tv_contents = bottomSheetView.findViewById<TextView>(R.id.tv_tooltip_contents)
 
-        // Define the margins in pixels
-        val marginLeft = dpToPx(12f)
-        val marginRight = dpToPx(12f)
+        tv_subtitle.text = subtitle
+        tv_contents.text = contents
 
-        // Get the screen width
-        val screenWidth = Resources.getSystem().displayMetrics.widthPixels
+        // Set the content view of the dialog
+        bottomSheetDialog.setContentView(bottomSheetView)
 
-        // Calculate the maximum allowed width for the popup to ensure it doesn't touch the right edge
-        val maxPopupWidth = (screenWidth - marginLeft - marginRight).coerceAtLeast(dpToPx(100f)) // Ensure minimum width
+        // Set the close button action
+        bottomSheetView.findViewById<Button>(R.id.closeButton)?.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
 
-        // Set the popup view width with margins
-        popupView.layoutParams = ViewGroup.LayoutParams(maxPopupWidth, dpToPx(83f))
-
-        // Measure the popup view to get its width and height
-        popupView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        val popupWidth = popupView.measuredWidth
-        val popupHeight = popupView.measuredHeight
-
-        // Calculate the xOffset and yOffset for showing the popup
-        val xOffset = (xPx - marginLeft).toInt()  // Adjust xOffset to ensure left margin
-        val yOffset = (yPx - popupHeight - dpToPx(15f)).toInt()  // Show popup above the touch point with 15dp margin
-
-        // Create PopupWindow with adjusted width
-        val popupWindow = PopupWindow(popupView, maxPopupWidth, ViewGroup.LayoutParams.WRAP_CONTENT, true)
-
-        // Show the popup window at the adjusted location
-        popupWindow.showAtLocation(anchorView, Gravity.NO_GRAVITY, xOffset, yOffset)
+        // Show the dialog
+        bottomSheetDialog.show()
     }
 
 
