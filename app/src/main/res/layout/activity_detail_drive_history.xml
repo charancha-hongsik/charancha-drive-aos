@@ -429,6 +429,7 @@
                             android:textFontWeight="400" />
 
                         <ImageView
+                            android:id="@+id/iv_tooltip_verification"
                             android:layout_width="16dp"
                             android:layout_height="16dp"
                             android:layout_marginLeft="2dp"
@@ -484,6 +485,7 @@
                             android:textFontWeight="400" />
 
                         <ImageView
+                            android:id="@+id/iv_tooltip_high_speed"
                             android:layout_width="16dp"
                             android:layout_height="16dp"
                             android:layout_marginLeft="2dp"
@@ -529,6 +531,7 @@
                             android:textFontWeight="400" />
 
                         <ImageView
+                            android:id="@+id/iv_tooltip_low_speed"
                             android:layout_width="16dp"
                             android:layout_height="16dp"
                             android:layout_marginLeft="2dp"
@@ -616,6 +619,7 @@
                             android:textFontWeight="400" />
 
                         <ImageView
+                            android:id="@+id/iv_tooltip_high_speed_average"
                             android:layout_width="16dp"
                             android:layout_height="16dp"
                             android:layout_marginLeft="2dp"
@@ -662,6 +666,7 @@
                             android:textFontWeight="400" />
 
                         <ImageView
+                            android:id="@+id/iv_tooltip_low_speed_average"
                             android:layout_width="16dp"
                             android:layout_height="16dp"
                             android:layout_marginLeft="2dp"
@@ -717,6 +722,7 @@
                             android:textFontWeight="400" />
 
                         <ImageView
+                            android:id="@+id/iv_tooltip_rapid_start"
                             android:layout_width="16dp"
                             android:layout_height="16dp"
                             android:layout_marginLeft="2dp"
@@ -763,6 +769,7 @@
                             android:textFontWeight="400" />
 
                         <ImageView
+                            android:id="@+id/iv_tooltip_rapid_acc"
                             android:layout_width="16dp"
                             android:layout_height="16dp"
                             android:layout_marginLeft="2dp"
@@ -809,6 +816,7 @@
                             android:textFontWeight="400" />
 
                         <ImageView
+                            android:id="@+id/iv_tooltip_rapid_stop"
                             android:layout_width="16dp"
                             android:layout_height="16dp"
                             android:layout_marginLeft="2dp"
@@ -854,6 +862,7 @@
                             android:textFontWeight="400" />
 
                         <ImageView
+                            android:id="@+id/iv_tooltip_rapid_desc"
                             android:layout_width="16dp"
                             android:layout_height="16dp"
                             android:layout_marginLeft="2dp"

@@ -291,6 +291,8 @@ open class BaseActivity: AppCompatActivity(){
             }
         }
     }
+
+
     fun showTooltip(anchorView: View, xPx: Float, yPx: Float, subtitle: String, contents: String) {
         val inflater = getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val popupView: View = inflater.inflate(R.layout.layout_tooltip, null)
@@ -300,7 +302,7 @@ open class BaseActivity: AppCompatActivity(){
         val maxPopupWidth = screenWidth
 
         // Set the popup view width to be the maximum allowed width
-        popupView.layoutParams = ViewGroup.LayoutParams(maxPopupWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
+        popupView.layoutParams = ViewGroup.LayoutParams(maxPopupWidth, dpToPx(83f))
 
         // Measure the popup view to get its height after adjusting width
         popupView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
@@ -315,6 +317,7 @@ open class BaseActivity: AppCompatActivity(){
         // Show the popup window at the adjusted location
         popupWindow.showAtLocation(anchorView, Gravity.NO_GRAVITY, xPx.toInt(), yOffset)
     }
+
 
 
     private fun pxToDp(px: Float): Int {

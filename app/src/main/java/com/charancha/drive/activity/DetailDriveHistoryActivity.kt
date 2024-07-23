@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.view.View.GONE
 import android.view.View.OnClickListener
@@ -82,13 +83,21 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var tv_not_mycar:TextView
     lateinit var tv_mycar_scope_info:LinearLayout
 
+    lateinit var iv_tooltip_verification:ImageView
+    lateinit var iv_tooltip_rapid_desc:ImageView
+    lateinit var iv_tooltip_rapid_stop:ImageView
+    lateinit var iv_tooltip_high_speed_average:ImageView
+    lateinit var iv_tooltip_high_speed:ImageView
+    lateinit var iv_tooltip_low_speed:ImageView
+    lateinit var iv_tooltip_low_speed_average:ImageView
+    lateinit var iv_tooltip_rapid_start:ImageView
+    lateinit var iv_tooltip_rapid_acc:ImageView
+
     var isActive = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_drive_history)
-
-        Log.d("testesteste","testestesse activity_detail_drive_history :: ")
 
         detailDriveHistoryViewModel.init(applicationContext)
 
@@ -143,9 +152,92 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         tv_scope_date_mycar = findViewById(R.id.tv_scope_date_mycar)
         tv_mycar_scope_info = findViewById(R.id.tv_mycar_scope_info)
 
+        iv_tooltip_verification = findViewById(R.id.iv_tooltip_verification)
+        iv_tooltip_low_speed = findViewById(R.id.iv_tooltip_low_speed)
+        iv_tooltip_high_speed = findViewById(R.id.iv_tooltip_high_speed)
+        iv_tooltip_rapid_desc = findViewById(R.id.iv_tooltip_rapid_desc)
+        iv_tooltip_rapid_stop = findViewById(R.id.iv_tooltip_rapid_stop)
+        iv_tooltip_high_speed_average = findViewById(R.id.iv_tooltip_high_speed_average)
+        iv_tooltip_low_speed_average = findViewById(R.id.iv_tooltip_low_speed_average)
+        iv_tooltip_rapid_start = findViewById(R.id.iv_tooltip_rapid_start)
+        iv_tooltip_rapid_acc = findViewById(R.id.iv_tooltip_rapid_acc)
+
+
     }
 
     private fun setResources(){
+        iv_tooltip_verification.setOnTouchListener { view, motionEvent ->
+            if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"데이터 인증이란?",
+                    "주행 이력을 쌓는 방법에 따라 부여돼요.\n" +
+                        "L3 = 안드로이드 오토, 애플 카플레이\n" +
+                        "L2 = 블루투스\n" +
+                        "L1 = 사용자 활동 자동 감지")
+            }
+            true
+        }
+
+        iv_tooltip_low_speed.setOnTouchListener { view, motionEvent ->
+            if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"저속 주행이란?", "저속 주행이란 0km/h 초과 \n40km/h 미만 속력으로 주행한 거리에요.\n높을수록 좋아요!")
+            }
+            true
+        }
+
+        iv_tooltip_high_speed.setOnTouchListener { view, motionEvent ->
+            if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"고속 주행이란?","80km/h 이상 \n150km/h 미만 사이의 속력으로 주행한 거리에요.\n높을수록 좋아요!")
+            }
+            true
+        }
+
+        iv_tooltip_rapid_desc.setOnTouchListener { view, motionEvent ->
+            if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"급감속이란?","초당 14km/h이상 감속 주행하고 속도가 6.0km/h 이상인 경우에요. 낮을수록 좋아요!")
+            }
+            true
+        }
+
+
+        iv_tooltip_high_speed_average.setOnTouchListener { view, motionEvent ->
+            if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"고속 주행 평균 속력이란?","고속 주행 평균 속력은 80km/h 이상 150km/h 이하 속력으로 주행한 거리의 평균 속력이에요")
+            }
+            true
+        }
+
+        iv_tooltip_low_speed_average.setOnTouchListener { view, motionEvent ->
+            if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"저속 주행 평균 속력이란?","저속 주행 평균 속력은 0km/h 초과 40km/h 미만 속력으로 주행한 거리의 평균 속력이에요")
+            }
+            true
+        }
+
+        iv_tooltip_rapid_acc.setOnTouchListener { view, motionEvent ->
+            if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"급가속이란?","10km/h 초과 속도에서 초당 10km/h 이상 가속 주행한 경우에요. 낮을수록 좋아요!")
+            }
+            true
+        }
+
+        iv_tooltip_rapid_start.setOnTouchListener { view, motionEvent ->
+            if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"1회 평균 주행거리란?","차량이 한 번 주행할 때마다 이동한 거리의 평균값이에요. 높을수록 좋아요!")
+            }
+            true
+        }
+
+        iv_tooltip_rapid_stop.setOnTouchListener { view, motionEvent ->
+            if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+                showTooltip(view,motionEvent.rawX, motionEvent.rawY,"1회 평균 주행거리란?","차량이 한 번 주행할 때마다 이동한 거리의 평균값이에요. 높을수록 좋아요!")
+            }
+            true
+        }
+
+
+
+
+
         btn_back.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
                 val intent = Intent(this@DetailDriveHistoryActivity, MyDriveHistoryActivity::class.java)
