@@ -437,19 +437,7 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
 
 
     fun getLastSixMonthsRangeString(): String {
-        val currentDate = LocalDate.now()
-        val startDate = currentDate.minusMonths(6).plusDays(1) // 한 달 전의 첫째 날
-        val endDate = currentDate
-
-        val dateFormatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일")
-        val startDateString = if (startDate.month == endDate.month) {
-            startDate.format(dateFormatter).replaceFirst(" ", "")
-        } else {
-            startDate.format(dateFormatter)
-        }
-        val endDateString = endDate.format(DateTimeFormatter.ofPattern("yyyy년 M월 d일"))
-
-        return "$startDateString ~ $endDateString"
+        return formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
     }
 
     fun setListener(){
