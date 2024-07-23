@@ -105,6 +105,8 @@ class MainActivity : BaseRefreshActivity() {
     override fun onResume() {
         super.onResume()
 
+        setCarInfo()
+
         val bluetoothIntent = Intent(this, BluetoothService::class.java)
         startForegroundService(bluetoothIntent)
 
@@ -157,13 +159,10 @@ class MainActivity : BaseRefreshActivity() {
             }
         }
 
-        Log.d("testsetsetest","testseest USER_CARID:: " + PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!)
-
         // 홈화면 진입 여부 체크
         PreferenceUtil.putBooleanPref(this, HAVE_BEEN_HOME, true)
 
         setBtn()
-        setCarInfo()
         setAlarm()
         getManageScoreForAMonth()
         getDrivingDistanceForAMonth()
@@ -808,6 +807,10 @@ class MainActivity : BaseRefreshActivity() {
                                     PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.id)
                                     tv_car_name.setText(getMyCarInfoResponse.carName)
                                     tv_car_no.setText(getMyCarInfoResponse.vehicleIdentificationNumber)
+
+                                    getManageScoreForAMonth()
+                                    getDrivingDistanceForAMonth()
+                                    setRecentManageScoreForSummary()
                                 }
                             }
 
