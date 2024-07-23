@@ -1,16 +1,16 @@
 package com.charancha.drive.activity
 
 import android.content.Intent
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
-import com.charancha.drive.retrofit.response.GetMyCarInfoResponse
-import com.charancha.drive.retrofit.response.SignInResponse
-import com.charancha.drive.retrofit.response.TermsAgreeStatusResponse
-import com.charancha.drive.retrofit.response.TermsSummaryResponse
+import com.charancha.drive.retrofit.response.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import okhttp3.ResponseBody
@@ -35,15 +35,7 @@ class SplashActivity: BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            if(PreferenceUtil.getPref(this, PreferenceUtil.REFRESH_TOKEN, "") == ""){
-                Log.d("testsetestset","testsetestset unLoginedProcess ")
-                unLoginedProcess()
-            }else {
-                Log.d("testsetestset","testsetestset loginedProcess :: " + PreferenceUtil.getPref(this, PreferenceUtil.REFRESH_TOKEN, ""))
-                loginedProcess()
-            }
-        }, 2000) // 2000 밀리초 (2초)
+        checkForceUpdate()
     }
 
     private fun unLoginedProcess(){
@@ -204,4 +196,102 @@ class SplashActivity: BaseActivity() {
             finish()
         }
     }
+
+    private fun checkForceUpdate(){
+        apiService().getLatest("AOS","PHONE").enqueue(object :Callback<ResponseBody>{
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200) {
+                    val getLatestResponse = Gson().fromJson(
+                        response.body()?.string(),
+                        GetLatestResponse::class.java
+                    )
+
+                    try {
+                        val info = packageManager.getPackageInfo(packageName, 0)
+                        if (info != null && info.versionName != null) {
+                            val currentAppVersion = info.versionName
+                            val majorFromApi =
+                                getLatestResponse.version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
+                                    .toTypedArray()[0]
+                            val minorFromApi =
+                                getLatestResponse.version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
+                                    .toTypedArray()[1]
+                            val patchFromApi =
+                                getLatestResponse.version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
+                                    .toTypedArray()[2]
+                            val major = currentAppVersion.split("\\.".toRegex())
+                                .dropLastWhile { it.isEmpty() }
+                                .toTypedArray()[0]
+                            val minor = currentAppVersion.split("\\.".toRegex())
+                                .dropLastWhile { it.isEmpty() }
+                                .toTypedArray()[1]
+                            val patch = currentAppVersion.split("\\.".toRegex())
+                                .dropLastWhile { it.isEmpty() }
+                                .toTypedArray()[2]
+
+
+
+                            if (patchFromApi.toInt() > patch.toInt()) {
+                                goUpdate()
+                                return
+                            }
+                            if (minorFromApi.toInt() > minor.toInt()) {
+                                goUpdate()
+                                return
+                            }
+                            if (majorFromApi.toInt() > major.toInt()) {
+                                goUpdate()
+                                return
+                            }
+
+
+                        } else {
+                            goSplash()
+                        }
+                    } catch (e: PackageManager.NameNotFoundException) {
+                        goSplash()
+                    }
+                }
+
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                goSplash()
+            }
+
+        })
+    }
+
+    private fun goUpdate(){
+        val app: ApplicationInfo
+        app = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            packageManager.getApplicationInfo(
+                "com.android.vending",
+                PackageManager.ApplicationInfoFlags.of(0)
+            )
+        } else {
+            packageManager.getApplicationInfo(
+                "com.android.vending",
+                PackageManager.GET_META_DATA
+            )
+        }
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.data = Uri.parse(
+            "https://play.google.com/store/apps/details?id=com.charancha"
+        )
+        intent.setPackage("com.android.vending")
+        startActivity(intent)
+        finish()
+    }
+
+    private fun goSplash(){
+        Handler(Looper.getMainLooper()).postDelayed({
+            if(PreferenceUtil.getPref(this, PreferenceUtil.REFRESH_TOKEN, "") == ""){
+                unLoginedProcess()
+            }else {
+                loginedProcess()
+            }
+        }, 2000) // 2000 밀리초 (2초)
+    }
+
 }

@@ -191,4 +191,8 @@ interface ApiServiceInterface {
     fun getRecentManageScoreStatistics(@Header("Authorization") token: String,
                                  @Path("userCarId") userCarId: String): Call<ResponseBody>
 
+    // 최근 관리 점수 통계 조회
+    @GET("api/v1/apps/-/latest")
+    fun getLatest(@Query("os") os: String, @Query("deviceType") deviceType: String): Call<ResponseBody>
+
 }
