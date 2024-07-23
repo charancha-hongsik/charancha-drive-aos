@@ -2185,7 +2185,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
                         tv_max_distance.text = transferDistance(recentDrivingDistance.max.totalDistance)
                         tv_min_distance.text = transferDistance(recentDrivingDistance.min.totalDistance)
 
-                        tv_driving_info1.text = "최근 1일 주행 거리"
+                        tv_driving_info1.text = "최근 1일"
                         tv_driving_info2.text = "내 차는 자주\n달릴수록 좋아요"
                         tv_driving_info3.text = "최근 주행 거리를\n한눈에 확인해보세요!"
                         tv_driving_info4.text = "최근 내 차는\n" + transferDistance(recentDrivingDistance.total.totalDistance) + distance_unit + " 달렸어요"
@@ -2324,7 +2324,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
 
                         tv_driving_info4.text = "1개월 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요"
 
-                        tv_driving_info1.text = "1개월 평균 주행 거리"
+                        tv_driving_info1.text = "1개월 평균"
                         tv_driving_info2.text = "내 차는 자주\n달릴수록 좋아요"
                         tv_driving_info3.text = "1개월 간 주행 거리를\n한눈에 확인해보세요!"
                         // TextView에 SpannableString 설정
@@ -2430,7 +2430,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
 
                         tv_driving_info4.text = "6개월 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요"
 
-                        tv_driving_info1.text = "6개월 평균 주행 거리"
+                        tv_driving_info1.text = "6개월 평균"
                         tv_driving_info2.text = "내 차는 자주\n달릴수록 좋아요"
                         tv_driving_info3.text = "6개월 주행 거리를\n한눈에 확인해보세요!"
                         tv_driving_info4.text = CommonUtil.getSpannableString(
@@ -2515,7 +2515,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
                         tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
                         tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
 
-                        tv_driving_info1.text = "1년 평균 주행 거리"
+                        tv_driving_info1.text = "1년 평균"
                         tv_driving_info2.text = "내 차는 자주\n달릴수록 좋아요"
                         tv_driving_info3.text = "1년 주행 거리를\n한눈에 확인해보세요!"
                         tv_driving_info4.text = "1년 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요"
