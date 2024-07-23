@@ -2192,7 +2192,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
 
                         tv_driving_info4.text = CommonUtil.getSpannableString(
                             this@DrivenDistanceActivity,
-                            "최근 내 차는\n" + transferDistance(recentDrivingDistance.total.totalDistance) + distance_unit + " 달렸어요",
+                            "최근 1일간 내 차는\n" + transferDistance(recentDrivingDistance.total.totalDistance) + distance_unit + " 달렸어요",
                             transferDistance(recentDrivingDistance.total.totalDistance) + distance_unit,
                             resources.getColor(R.color.pri_500)
                         )
@@ -2326,7 +2326,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
                         // TextView에 SpannableString 설정
                         tv_driving_info4.text = CommonUtil.getSpannableString(
                             this@DrivenDistanceActivity,
-                            "1개월 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요",
+                            "최근 1개월 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요",
                             transferDistance(drivingDistance.total.totalDistance) + distance_unit,
                             resources.getColor(R.color.pri_500)
                         )
@@ -2515,7 +2515,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
 
                         tv_driving_info4.text = CommonUtil.getSpannableString(
                             this@DrivenDistanceActivity,
-                            "1년 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요",
+                            "최근 1년 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요",
                             transferDistance(drivingDistance.total.totalDistance) + distance_unit,
                             resources.getColor(R.color.pri_500)
                         )
