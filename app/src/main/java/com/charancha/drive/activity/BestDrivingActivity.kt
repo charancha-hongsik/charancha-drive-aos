@@ -379,6 +379,14 @@ class BestDrivingActivity:BaseRefreshActivity() {
         tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
         tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
 
+
+        Log.d("testsetsetest","testsetseset second :: " + getCurrentAndPastTimeForISO(150).second)
+        Log.d("testsetsetest","testsetseset first :: " + getCurrentAndPastTimeForISO(150).first)
+        Log.d("testsetsetest","testsetseset ACCESS_TOKEN :: " + PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!)
+        Log.d("testsetsetest","testsetseset USER_CARID :: " + PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!)
+
+
+
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,

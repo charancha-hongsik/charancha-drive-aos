@@ -467,7 +467,11 @@ class ManageEngineActivity:BaseRefreshActivity() {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                TODO("Not yet implemented")
+                layout_no_score.background = resources.getDrawable(R.drawable.radius8_gray800)
+
+                tv_no_score.text = "0"
+                tv_no_score1.text = "아직 데이터가 없어요. 함께 달려볼까요?"
+                iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
             }
         })
         var timUnit = "day"

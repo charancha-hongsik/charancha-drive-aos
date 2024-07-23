@@ -293,7 +293,7 @@ class DrivenTimeActivity:BaseRefreshActivity() {
             // Extract the hour from ZonedDateTime
             val hour = utcDateTime.hour
 
-            time[hour] = transferDistance(item.time).toFloat()
+            time[hour] = secondsToMinutes(item.time).toFloat()
         }
 
         val entries = listOf(
@@ -1309,12 +1309,18 @@ class DrivenTimeActivity:BaseRefreshActivity() {
 
         val time = DoubleArray(24) { 0.0 }
 
-        // Iterate over each item and parse the startTime to extract the hour
         for (item in items) {
-            val startTime = Instant.parse(item.startTime)
-            val utcDateTime = ZonedDateTime.ofInstant(startTime, ZoneId.of("UTC"))
-            val hour = utcDateTime.hour
+            val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
+            val offsetDateTime = OffsetDateTime.parse(item.startTime, formatter)
 
+            // Convert OffsetDateTime to Instant
+            val startTime = offsetDateTime.toInstant()
+
+            // Convert Instant to ZonedDateTime in UTC
+            val utcDateTime = ZonedDateTime.ofInstant(startTime, ZoneId.of("UTC"))
+
+            // Extract the hour from ZonedDateTime
+            val hour = utcDateTime.hour
 
             time[hour] = secondsToMinutes(item.time)
         }

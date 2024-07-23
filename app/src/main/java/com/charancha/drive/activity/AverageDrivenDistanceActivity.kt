@@ -1417,6 +1417,10 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
     }
 
     private fun setYearDrivingDistance(){
+        Log.d("testsetetestsetse","testestsetsetsetse :: " +  PreferenceUtil.getPref(this@AverageDrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!)
+        Log.d("testsetetestsetse","testestsetsetsetse :: " +  PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!)
+        Log.d("testsetetestsetse","testestsetsetsetse :: " +  getCurrentAndPastTimeForISO(334).second)
+        Log.d("testsetetestsetse","testestsetsetsetse :: " +  getCurrentAndPastTimeForISO(334).first)
 
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@AverageDrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,

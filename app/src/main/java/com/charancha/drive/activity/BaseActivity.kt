@@ -113,7 +113,22 @@ open class BaseActivity: AppCompatActivity(){
         val now = Instant.now()
 
         // 현재 시간 기준 주어진 일 전 시간 구하기
-        val previousDate = now.minus(past, ChronoUnit.DAYS)
+        var previousDate = now.minus(past, ChronoUnit.DAYS)
+
+        if(past == 150L || past == 334L){
+            // Instant를 LocalDate로 변환합니다.
+            val zoneId = ZoneId.systemDefault()
+            val localDate = previousDate.atZone(zoneId).toLocalDate()
+
+            // 월의 첫 번째 날을 구합니다.
+            val firstDayOfMonth = localDate.withDayOfMonth(1)
+
+            // LocalDate를 ZonedDateTime으로 변환합니다.
+            val zonedDateTime = firstDayOfMonth.atStartOfDay(zoneId)
+
+            // ZonedDateTime을 Instant로 변환합니다.
+            previousDate = zonedDateTime.toInstant()
+        }
 
         // 시간 포맷
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").withZone(ZoneId.of("UTC"))
@@ -286,7 +301,7 @@ open class BaseActivity: AppCompatActivity(){
             lastClickTime = currentClickTime
 
             // 중복클릭이 아닌경우 onSingleClick 실행
-            if (checkTime > 1500L) {
+            if (checkTime > 1000L) {
                 onSingleClick(v)
             }
         }
