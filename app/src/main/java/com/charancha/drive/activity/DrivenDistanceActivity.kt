@@ -2322,7 +2322,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
 
                         tv_driving_info1.text = "1개월 평균"
                         tv_driving_info2.text = "내 차는 자주\n달릴수록 좋아요"
-                        tv_driving_info3.text = "최근 6개월의 기록을\n한눈에 확인해보세요!"
+                        tv_driving_info3.text = "최근 1개월의 기록을\n한눈에 확인해보세요!"
                         // TextView에 SpannableString 설정
                         tv_driving_info4.text = CommonUtil.getSpannableString(
                             this@DrivenDistanceActivity,
