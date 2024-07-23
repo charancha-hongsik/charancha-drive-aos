@@ -450,7 +450,6 @@ class BluetoothService : Service() {
      */
     private fun stopSensor(level:String){
         try {
-            refreshNotiText()
             if (sensorState) {
                 if (level == PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL, "")) {
                     sensorState = false
@@ -466,6 +465,8 @@ class BluetoothService : Service() {
 
                     fusedLocationClient?.removeLocationUpdates(locationCallback)
                     fusedLocationClient = null
+
+                    refreshNotiText()
                 }
             }
         }catch (e:Exception){
@@ -474,7 +475,6 @@ class BluetoothService : Service() {
 
     fun stopSensor(){
         try {
-            refreshNotiText()
             if (sensorState) {
                 sensorState = false
                 firstLineState = false
@@ -489,6 +489,8 @@ class BluetoothService : Service() {
 
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
+
+                refreshNotiText()
 
             }
         }catch(e:Exception){

@@ -164,10 +164,15 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
                 ) {
                     if(response.code() == 200){
                         val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
-                        if(getManageScoreResponse.total.totalEngineScore != 0.0){
-                            setThereIsDatas(getManageScoreResponse)
+
+                        if(getManageScoreResponse.isRecent){
+                            if(getManageScoreResponse.total.totalEngineScore != 0.0){
+                                setThereIsDatas(getManageScoreResponse)
+                            }else{
+                                setNoData()
+                            }
                         }else{
-                            setNoData()
+
                         }
                     }
                 }
@@ -190,6 +195,7 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
                         )
 
                         if(recentDrivingDistance.isRecent){
+                            setInquireScope(convertDateFormat(recentDrivingDistance.recentStartTime))
                             tv_engine_info_average_distance.text = transferDistanceWithUnit(recentDrivingDistance.perOne.totalDistance)
 
                             tv_engine_info_rapid_acc_de_count.text = transferNumWithRounds(recentDrivingDistance.total.totalRapidCount).toString() + "회"
