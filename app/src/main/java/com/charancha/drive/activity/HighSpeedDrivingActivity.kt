@@ -305,7 +305,7 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
 
                         tv_driving_info1.text = "최근 1일"
                         tv_driving_info2.text = "내 차는 고속 주행\n비율이 높을수록 좋아요"
-                        tv_driving_info3.text = "최근 내 차의\n고속 주행 비율율이에요"
+                        tv_driving_info3.text = "최근 1일간 내 차의\n고속 주행 거리에요"
 
                         setHighSpeedDrivingChartWidthByPercent(recentDrivingDistance.average.highSpeedDrivingDistancePercentage.toFloat()/100)
                         setLowSpeedDrivingChartWidthByPercent(recentDrivingDistance.average.lowSpeedDrivingDistancePercentage.toFloat()/100)
@@ -430,7 +430,7 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
 
                         tv_driving_info1.text = "1개월 평균"
                         tv_driving_info2.text = "내 차는 고속 주행\n비율이 높을수록 좋아요"
-                        tv_driving_info3.text = "1개월 내 차의\n고속 주행 비율이에요"
+                        tv_driving_info3.text = "최근 1개월간 내 차의\n고속 주행 거리에요"
                     }else{
                         tv_total_percent.text = "0.0"
                         tv_diff_percent.text = "+0.0% 증가"
@@ -507,7 +507,7 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
 
                         tv_driving_info1.text = "6개월 평균"
                         tv_driving_info2.text = "내 차는 고속 주행\n비율이 높을수록 좋아요"
-                        tv_driving_info3.text = "6개월 내 차의\n고속 주행 비율이에요"
+                        tv_driving_info3.text = "최근 6개월간 내 차의\n고속 주행 거리에요"
 
                         setHighSpeedDrivingChartWidthByPercent(drivingDistance.average.highSpeedDrivingDistancePercentage.toFloat()/100)
                         setLowSpeedDrivingChartWidthByPercent(drivingDistance.average.lowSpeedDrivingDistancePercentage.toFloat()/100)
@@ -602,7 +602,7 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
 
                         tv_driving_info1.text = "1년 평균"
                         tv_driving_info2.text = "내 차는 고속 주행\n비율이 높을수록 좋아요"
-                        tv_driving_info3.text = "1년 내 차의\n고속 주행 비율이에요"
+                        tv_driving_info3.text = "최근 1년간 내 차의\n고속 주행 거리에요"
                     }else{
                         tv_total_percent.text = "0.0"
                         tv_diff_percent.text = "+0.0% 증가"

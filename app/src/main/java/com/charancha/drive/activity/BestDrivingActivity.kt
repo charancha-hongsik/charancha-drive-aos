@@ -216,7 +216,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
                         }
 
                         tv_driving_info1.text = "최근 1일"
-                        tv_driving_info2.text = "최근 내 차의\n최적 주행 비율이에요"
+                        tv_driving_info2.text = "최근 1일간 내 차의\n최적 주행 거리에요"
                         tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
 
 
@@ -339,7 +339,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
 
 
                         tv_driving_info1.text = "1개월 평균"
-                        tv_driving_info2.text = "1개월 간 내 차의\n최적 주행 비율이에요"
+                        tv_driving_info2.text = "최근 1개월간 내 차의\n최적 주행 거리에요"
                         tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
 
                         setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat()/100)
@@ -404,7 +404,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
 
                     if(drivingDistance.total.totalDistance != 0.0){
                         tv_driving_info1.text = "6개월 평균"
-                        tv_driving_info2.text = "6개월 간 내 차의\n최적 주행 비율이에요"
+                        tv_driving_info2.text = "최근 6개월간 내 차의\n최적 주행 거리에요"
                         tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
 
 
@@ -498,7 +498,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
 
 
                         tv_driving_info1.text = "1년 평균"
-                        tv_driving_info2.text = "1년 간 내 차의\n최적 주행 비율이에요"
+                        tv_driving_info2.text = "최근 1년간 내 차의\n최적 주행 거리에요"
                         tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
 
 
