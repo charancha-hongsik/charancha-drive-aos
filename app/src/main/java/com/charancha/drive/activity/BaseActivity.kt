@@ -166,6 +166,8 @@ open class BaseActivity: AppCompatActivity(){
             }
         }
 
+        resultList.removeAt(0)
+
         return Triple(nowFormatted, previousDateFormatted, resultList)
     }
 
