@@ -206,6 +206,8 @@ class BestDrivingActivity:BaseRefreshActivity() {
                         GetRecentDrivingStatisticsResponse::class.java
                     )
                     if(recentDrivingDistance.isRecent){
+                        tv_diff_percent.visibility = View.VISIBLE
+
                         recentStartTime = recentDrivingDistance.recentStartTime
                         recentEndTime = recentDrivingDistance.recentEndTime
 
@@ -286,6 +288,8 @@ class BestDrivingActivity:BaseRefreshActivity() {
                         tv_driving_info1.text = "최근 1일 평균"
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_diff_percent.visibility = View.INVISIBLE
+
 
                         setExtraSpeedDrivingChartWidthByPercent(0f)
                         setRecentBarChartAsDefault()
@@ -301,6 +305,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
                 tv_best_percent1.text = "0.0"
                 tv_best_percent2.text = "0.0"
                 tv_diff_percent.text = "+0.0% 증가"
+                tv_diff_percent.visibility = View.INVISIBLE
 
                 tv_driving_info1.text = "최근 1일 평균"
                 tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -337,6 +342,8 @@ class BestDrivingActivity:BaseRefreshActivity() {
                     )
 
                     if(drivingDistance.average.optimalDrivingPercentage!=0.0){
+                        tv_diff_percent.visibility = View.VISIBLE
+
                         tv_best_percent1.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.optimalDrivingPercentage)
                         tv_best_percent2.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.optimalDrivingPercentage)
 
@@ -364,6 +371,8 @@ class BestDrivingActivity:BaseRefreshActivity() {
                         tv_best_percent2.text = "0.0"
                         tv_diff_percent.text = "+0.0% 증가"
 
+                        tv_diff_percent.visibility = View.INVISIBLE
+
                         tv_driving_info1.text = "일일 평균"
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -380,6 +389,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
                 tv_best_percent1.text = "0.0"
                 tv_best_percent2.text = "0.0"
                 tv_diff_percent.text = "+0.0% 증가"
+                tv_diff_percent.visibility = View.INVISIBLE
 
                 tv_driving_info1.text = "일일 평균"
                 tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -413,6 +423,8 @@ class BestDrivingActivity:BaseRefreshActivity() {
                     )
 
                     if(drivingDistance.total.totalDistance != 0.0){
+                        tv_diff_percent.visibility = View.VISIBLE
+
                         tv_driving_info1.text = "월 평균"
                         tv_driving_info2.text = "최근 6개월간 내 차의\n최적 주행 거리에요"
                         tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
@@ -440,6 +452,8 @@ class BestDrivingActivity:BaseRefreshActivity() {
                         tv_best_percent1.text = "0.0"
                         tv_best_percent2.text = "0.0"
                         tv_diff_percent.text = "+0.0% 증가"
+                        tv_diff_percent.visibility = View.INVISIBLE
+
 
                         tv_driving_info1.text = "월 평균"
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -458,6 +472,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
                 tv_best_percent1.text = "0.0"
                 tv_best_percent2.text = "0.0"
                 tv_diff_percent.text = "+0.0% 증가"
+                tv_diff_percent.visibility = View.INVISIBLE
 
                 tv_driving_info1.text = "월 평균"
                 tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -491,6 +506,8 @@ class BestDrivingActivity:BaseRefreshActivity() {
                     )
 
                     if(drivingDistance.total.totalDistance != 0.0){
+                        tv_diff_percent.visibility = View.VISIBLE
+
                         tv_best_percent1.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.optimalDrivingPercentage)
                         tv_best_percent2.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.optimalDrivingPercentage)
 
@@ -518,6 +535,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
                         tv_best_percent1.text = "0.0"
                         tv_best_percent2.text = "0.0"
                         tv_diff_percent.text = "+0.0% 증가"
+                        tv_diff_percent.visibility = View.INVISIBLE
 
                         tv_driving_info1.text = "월 평균"
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -535,6 +553,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
                 tv_best_percent1.text = "0.0"
                 tv_best_percent2.text = "0.0"
                 tv_diff_percent.text = "+0.0% 증가"
+                tv_diff_percent.visibility = View.INVISIBLE
 
                 tv_driving_info1.text = "월 평균"
                 tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"

@@ -1173,6 +1173,8 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                     )
 
                     if(recentDrivingDistance.isRecent){
+                        tv_diff_distance.visibility = View.VISIBLE
+
                         tv_total_distance.text = transferDistance(recentDrivingDistance.perOne.totalDistance)
                         tv_average_distance.text = transferDistance(recentDrivingDistance.perOne.totalDistance)
                         tv_max_distance.text = transferDistance(recentDrivingDistance.max.totalDistance)
@@ -1250,9 +1252,27 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                         tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
                         setRecentBarChartAsDefault()
+
+                        tv_diff_distance.visibility = View.INVISIBLE
+
                     }
                 }else{
+                    tv_date1.text = getTodayFormattedDate()
+                    tv_date2.text = getTodayFormattedDate()
 
+                    tv_total_distance.text = transferDistance(0.0)
+                    tv_diff_distance.text = "+" + transferDistance(0.0) + distance_unit + " 증가"
+                    tv_average_distance.text = transferDistance(0.0)
+                    tv_max_distance.text = transferDistance(0.0)
+                    tv_min_distance.text = transferDistance(0.0)
+
+                    tv_driving_info1.text = "최근 1일 총합"
+                    tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                    tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
+                    setRecentBarChartAsDefault()
+
+                    tv_diff_distance.visibility = View.INVISIBLE
                 }
             }
 
@@ -1268,6 +1288,9 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                 tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
                 setRecentBarChartAsDefault()
+
+                tv_diff_distance.visibility = View.INVISIBLE
+
             }
 
         })
@@ -1293,6 +1316,9 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                     )
 
                     if(drivingDistance.average.totalDistance != 0.0){
+
+                        tv_diff_distance.visibility = View.VISIBLE
+
                         tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
                         tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
 
@@ -1328,6 +1354,7 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
+                        tv_diff_distance.visibility = View.INVISIBLE
 
                         setRecentBarChartAsDefault()
                     }
@@ -1347,6 +1374,9 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                 tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
                 setRecentBarChartAsDefault()
+
+                tv_diff_distance.visibility = View.INVISIBLE
+
             }
 
         })
@@ -1395,6 +1425,9 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                             tv_diff_distance.setTextColor(resources.getColor(R.color.sec_500))
                         }
 
+                        tv_diff_distance.visibility = View.VISIBLE
+
+
 
                     }else{
                         tv_total_distance.text = transferDistance(0.0)
@@ -1408,6 +1441,9 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                         tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
                         setRecentBarChartAsDefault()
+
+                        tv_diff_distance.visibility = View.INVISIBLE
+
                     }
                 }
 
@@ -1425,6 +1461,9 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                 tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
                 setRecentBarChartAsDefault()
+
+                tv_diff_distance.visibility = View.INVISIBLE
+
             }
 
         })
@@ -1445,6 +1484,8 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                         response.body()?.string(),
                         GetDrivingStatisticsResponse::class.java
                     )
+
+                    tv_diff_distance.visibility = View.VISIBLE
 
                     if(drivingDistance.average.totalDistance != 0.0){
                         if(drivingDistance.diffPerOne.totalDistance == 0.0){
@@ -1483,6 +1524,8 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                         tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
                         setRecentBarChartAsDefault()
+
+                        tv_diff_distance.visibility = View.INVISIBLE
                     }
 
 
@@ -1500,6 +1543,9 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                 tv_driving_info1.text = "월 평균"
                 tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
+                tv_diff_distance.visibility = View.INVISIBLE
+
 
                 setRecentBarChartAsDefault()
             }

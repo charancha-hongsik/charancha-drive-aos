@@ -294,6 +294,9 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                         GetRecentDrivingStatisticsResponse::class.java
                     )
                     if(recentDrivingDistance.isRecent){
+                        tv_diff_percent.visibility = View.VISIBLE
+
+
                         recentStartTime = recentDrivingDistance.recentStartTime
                         recentEndTime = recentDrivingDistance.recentEndTime
 
@@ -367,6 +370,8 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                         tv_driving_info1.text = "최근 1일 평균"
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_diff_percent.visibility = View.INVISIBLE
+
 
 
                         tv_date1.text = getTodayFormattedDate()
@@ -381,7 +386,27 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
 
                     }
                 }else{
+                    tv_total_percent.text = "0.0"
+                    tv_diff_percent.text = "+0.0% 증가"
+                    tv_high_speed_percent.text = 0.0.toString()
+                    tv_low_speed_percent.text = 0.0.toString()
+                    tv_etc_speed_percent.text = 0.0.toString()
 
+                    tv_driving_info1.text = "최근 1일 평균"
+                    tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                    tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                    tv_diff_percent.visibility = View.INVISIBLE
+
+
+
+                    tv_date1.text = getTodayFormattedDate()
+                    tv_date2.text = getTodayFormattedDate()
+
+                    setRecentBarChartAsDefault()
+
+                    setHighSpeedDrivingChartWidthByPercent(0f)
+                    setLowSpeedDrivingChartWidthByPercent(0f)
+                    setExtraSpeedDrivingChartWidthByPercent(0f)
                 }
             }
 
@@ -395,6 +420,7 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                 tv_driving_info1.text = "최근 1일 평균"
                 tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_diff_percent.visibility = View.INVISIBLE
 
                 setRecentBarChartAsDefault()
 
@@ -430,6 +456,9 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
 
 
                     if(drivingDistance.total.totalDistance != 0.0){
+                        tv_diff_percent.visibility = View.VISIBLE
+
+
                         tv_total_percent.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.highSpeedDrivingDistancePercentage)
 
                         if(drivingDistance.diffAverage.highSpeedDrivingDistancePercentage == 0.0){
@@ -462,6 +491,7 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                         tv_high_speed_percent.text = 0.0.toString()
                         tv_low_speed_percent.text = 0.0.toString()
                         tv_etc_speed_percent.text = 0.0.toString()
+                        tv_diff_percent.visibility = View.INVISIBLE
 
                         setRecentBarChartAsDefault()
 
@@ -488,6 +518,7 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                 tv_driving_info1.text = "일일 평균"
                 tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_diff_percent.visibility = View.INVISIBLE
 
                 setRecentBarChartAsDefault()
 
@@ -519,6 +550,8 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                     )
 
                     if(drivingDistance.total.totalDistance != 0.0){
+                        tv_diff_percent.visibility = View.VISIBLE
+
                         tv_total_percent.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.highSpeedDrivingDistancePercentage)
 
                         if(drivingDistance.diffAverage.highSpeedDrivingDistancePercentage == 0.0){
@@ -551,6 +584,7 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                         tv_high_speed_percent.text = 0.0.toString()
                         tv_low_speed_percent.text = 0.0.toString()
                         tv_etc_speed_percent.text = 0.0.toString()
+                        tv_diff_percent.visibility = View.INVISIBLE
 
 
                         tv_driving_info1.text = "월 평균"
@@ -575,6 +609,7 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                 tv_low_speed_percent.text = 0.0.toString()
                 tv_etc_speed_percent.text = 0.0.toString()
 
+                tv_diff_percent.visibility = View.INVISIBLE
 
                 tv_driving_info1.text = "월 평균"
                 tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -610,6 +645,8 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                     )
 
                     if(drivingDistance.total.totalDistance != 0.0){
+                        tv_diff_percent.visibility = View.VISIBLE
+
                         tv_total_percent.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.highSpeedDrivingDistancePercentage)
 
                         if(drivingDistance.diffAverage.highSpeedDrivingDistancePercentage == 0.0){
@@ -644,6 +681,8 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                         tv_etc_speed_percent.text = 0.0.toString()
 
                         setRecentBarChartAsDefault()
+                        tv_diff_percent.visibility = View.INVISIBLE
+
 
                         tv_driving_info1.text = "월 평균"
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -665,6 +704,7 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                 tv_high_speed_percent.text = 0.0.toString()
                 tv_low_speed_percent.text = 0.0.toString()
                 tv_etc_speed_percent.text = 0.0.toString()
+                tv_diff_percent.visibility = View.INVISIBLE
 
                 tv_driving_info1.text = "월 평균"
                 tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"

@@ -2195,6 +2195,8 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                     tv_date3.text = convertDateFormat(recentStartTime)
 
                     if(recentDrivingDistance.isRecent){
+                        tv_diff_time.visibility = View.VISIBLE
+
                         tv_hour.text = transferSecondsToHourAndMinutes(recentDrivingDistance.total.totalTime).first.toString()
                         tv_minute.text = transferSecondsToHourAndMinutes(recentDrivingDistance.total.totalTime).second.toString()
                         tv_average_hour.text = transferSecondsToHourAndMinutes(recentDrivingDistance.average.totalTime).first.toString()
@@ -2285,6 +2287,7 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                         tv_diff_time.text = "+" + transferSecondsToHourAndMinutes(0.0).first.toString() + "시간 " + transferSecondsToHourAndMinutes(0.0).second + "분 증가"
 
                         tv_time_info4.text = "최근 내 차는\n" + transferSecondsToHourAndMinutes(0.0).first +"시간" + transferSecondsToHourAndMinutes(0.0).second + "분" + " 달렸어요"
+                        tv_diff_time.visibility = View.INVISIBLE
 
 
                         tv_time_info1.text = "최근 1일 총합"
@@ -2296,7 +2299,31 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                         setRecentLineChartAsDefault()
                     }
                 }else{
+                    tv_date1.text = getTodayFormattedDate()
+                    tv_date2.text = getTodayFormattedDate()
+                    tv_date3.text = getTodayFormattedDate()
 
+                    tv_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
+                    tv_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
+                    tv_average_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
+                    tv_average_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
+                    tv_min_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
+                    tv_min_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
+                    tv_max_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
+                    tv_max_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
+                    tv_diff_time.text = "+" + transferSecondsToHourAndMinutes(0.0).first.toString() + "시간 " + transferSecondsToHourAndMinutes(0.0).second + "분 증가"
+
+                    tv_time_info4.text = "최근 내 차는\n" + transferSecondsToHourAndMinutes(0.0).first +"시간" + transferSecondsToHourAndMinutes(0.0).second + "분" + " 달렸어요"
+                    tv_diff_time.visibility = View.INVISIBLE
+
+
+                    tv_time_info1.text = "최근 1일 총합"
+                    tv_time_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                    tv_time_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                    tv_time_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
+                    setRecentBarChartAsDefault()
+                    setRecentLineChartAsDefault()
                 }
             }
 
@@ -2310,6 +2337,9 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                 tv_max_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
                 tv_max_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
                 tv_diff_time.text = "+" +transferSecondsToHourAndMinutes(0.0).first.toString() + "시간 " + transferSecondsToHourAndMinutes(0.0).second + "분 증가"
+
+                tv_diff_time.visibility = View.INVISIBLE
+
 
                 tv_time_info1.text = "최근 1일 총합"
                 tv_time_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -2347,6 +2377,9 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                     )
 
                     if(drivingDistance.total.totalTime != 0.0){
+                        tv_diff_time.visibility = View.VISIBLE
+
+
                         tv_hour.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).first.toString()
                         tv_minute.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).second.toString()
                         tv_average_hour.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).first.toString()
@@ -2386,6 +2419,9 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                             resources.getColor(R.color.pri_500)
                         )
                     }else{
+                        tv_diff_time.visibility = View.INVISIBLE
+
+
                         tv_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
                         tv_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
                         tv_average_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
@@ -2420,6 +2456,9 @@ class DrivenTimeActivity:BaseRefreshActivity() {
 
                 tv_time_info4.text = "최근 내 차는\n" + transferSecondsToHourAndMinutes(0.0).first +"시간" + transferSecondsToHourAndMinutes(0.0).second + "분" + " 달렸어요"
 
+                tv_diff_time.visibility = View.INVISIBLE
+
+
                 tv_time_info1.text = "일일 평균"
                 tv_time_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_time_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -2451,6 +2490,9 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                     )
 
                     if(drivingDistance.total.totalTime != 0.0){
+                        tv_diff_time.visibility = View.VISIBLE
+
+
                         tv_hour.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).first.toString()
                         tv_minute.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).second.toString()
                         tv_average_hour.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).first.toString()
@@ -2495,6 +2537,7 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                         tv_max_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
                         tv_diff_time.text = "+" + transferSecondsToHourAndMinutes(0.0).first.toString() + "시간 " + transferSecondsToHourAndMinutes(0.0).second + "분 증가"
 
+                        tv_diff_time.visibility = View.INVISIBLE
 
                         tv_time_info1.text = "월 평균"
                         tv_time_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -2517,6 +2560,7 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                 tv_max_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
                 tv_diff_time.text = "+" + transferSecondsToHourAndMinutes(0.0).first.toString() + "시간 " + transferSecondsToHourAndMinutes(0.0).second + "분 증가"
 
+                tv_diff_time.visibility = View.INVISIBLE
 
                 tv_time_info1.text = "월 평균"
                 tv_time_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -2557,6 +2601,7 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                         tv_max_hour.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).first.toString()
                         tv_max_minute.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).second.toString()
 
+                        tv_diff_time.visibility = View.VISIBLE
 
                         if(drivingDistance.diffAverage.totalTime == 0.0){
                             tv_diff_time.text = "시간 변동이 없어요."
@@ -2595,6 +2640,8 @@ class DrivenTimeActivity:BaseRefreshActivity() {
 
                         tv_time_info4.text = "최근 1년간 내 차는\n" + transferSecondsToHourAndMinutes(0.0).first +"시간" + transferSecondsToHourAndMinutes(0.0).second + "분" + " 달렸어요"
 
+                        tv_diff_time.visibility = View.INVISIBLE
+
                         tv_time_info1.text = "월 평균"
                         tv_time_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_time_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -2614,6 +2661,8 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                 tv_max_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
                 tv_max_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
                 tv_diff_time.text = "+" + transferSecondsToHourAndMinutes(0.0).first.toString() + "시간 " + transferSecondsToHourAndMinutes(0.0).second + "분 증가"
+
+                tv_diff_time.visibility = View.INVISIBLE
 
                 tv_time_info4.text = "최근 내 차는\n" + transferSecondsToHourAndMinutes(0.0).first +"시간" + transferSecondsToHourAndMinutes(0.0).second + "분" + " 달렸어요"
 
