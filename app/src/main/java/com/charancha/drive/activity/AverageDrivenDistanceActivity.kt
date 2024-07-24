@@ -1194,9 +1194,9 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                         recentStartTime = recentDrivingDistance.recentStartTime
                         recentEndTime = recentDrivingDistance.recentEndTime
 
-                        tv_driving_info1.text = "최근 1일"
+                        tv_driving_info1.text = "최근 1일 총합"
                         tv_driving_info2.text = "1회 평균 주행 거리는 \n높을수록 좋아요"
-                        tv_driving_info3.text = "최근 1회 주행 거리를\n한눈에 확인해보세요!"
+                        tv_driving_info3.text = "최근 1회 주행 거리를\n한눈에 확인해 보세요!"
 
 
                         tv_date1.text = convertDateFormat(recentStartTime)
@@ -1272,9 +1272,9 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
     }
 
     private fun setMonthDrivingDistance(){
-        tv_driving_info1.text = "1개월 1회 평균 주행 거리"
+        tv_driving_info1.text = "일일 평균"
         tv_driving_info2.text = "1회 평균 주행 거리는 \n높을수록 좋아요"
-        tv_driving_info3.text = "1개월 1회 주행 거리를\n한눈에 확인해보세요!"
+        tv_driving_info3.text = "1개월 1회 주행 거리를\n한눈에 확인해 보세요!"
 
 
         apiService().getDrivingStatistics(
@@ -1298,7 +1298,7 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
 
                         tv_driving_info1.text = "1개월 1회 평균 주행 거리"
                         tv_driving_info2.text = "1회 평균 주행 거리는 \n높을수록 좋아요"
-                        tv_driving_info3.text = "1개월 1회 주행 거리를\n한눈에 확인해보세요!"
+                        tv_driving_info3.text = "1개월 1회 주행 거리를\n한눈에 확인해 보세요!"
 
                         tv_total_distance.text = transferDistance(drivingDistance.perOne.totalDistance)
                         tv_average_distance.text = transferDistance(drivingDistance.perOne.totalDistance)
@@ -1370,9 +1370,9 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
 
 
                     if(drivingDistance.average.totalDistance != 0.0){
-                        tv_driving_info1.text = "6개월 1회 평균 주행 거리"
+                        tv_driving_info1.text = "월 평균"
                         tv_driving_info2.text = "1회 평균 주행 거리는 \n높을수록 좋아요"
-                        tv_driving_info3.text = "6개월 1회 주행 거리를\n한눈에 확인해보세요!"
+                        tv_driving_info3.text = "6개월 1회 주행 거리를\n한눈에 확인해 보세요!"
 
                         tv_total_distance.text = transferDistance(drivingDistance.perOne.totalDistance)
                         tv_average_distance.text = transferDistance(drivingDistance.perOne.totalDistance)
@@ -1459,7 +1459,7 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                         tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
                         tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
 
-                        tv_driving_info1.text = "1년 1회 평균 주행 거리"
+                        tv_driving_info1.text = "월 평균"
                         tv_driving_info2.text = "1회 평균 주행 거리는 \n높을수록 좋아요"
                         tv_driving_info3.text = "1년 1회 주행 거리를\n한눈에 확인해보세요!"
 
