@@ -50,12 +50,15 @@ class NotificationActivity:BaseRefreshActivity() {
             if(btn_all_noti.isSelected){
                 btn_all_noti.isSelected = false
                 btn_drive_history.isSelected = false
-                btn_marketing.performClick()
+                if(btn_marketing.isSelected)
+                    btn_marketing.performClick()
                 btn_announcement.isSelected = false
             }else{
                 btn_all_noti.isSelected = true
                 btn_drive_history.isSelected = true
-                btn_marketing.performClick()
+
+                if(!btn_marketing.isSelected)
+                    btn_marketing.performClick()
                 btn_announcement.isSelected = true
             }
 
