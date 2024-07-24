@@ -62,6 +62,8 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
     lateinit var tv_date1:TextView
     lateinit var tv_date2:TextView
 
+    lateinit var iv_tooltip_high_low_etc:ImageView
+
 
     lateinit var layout_barchart_highspeed:BarChart
 
@@ -111,6 +113,8 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
         tv_high_speed_percent = findViewById(R.id.tv_high_speed_percent)
         tv_low_speed_percent = findViewById(R.id.tv_low_speed_percent)
         tv_etc_speed_percent = findViewById(R.id.tv_etc_speed_percent)
+
+        iv_tooltip_high_low_etc = findViewById(R.id.iv_tooltip_high_low_etc)
 
         tv_date1 = findViewById(R.id.tv_date1)
         tv_date2 = findViewById(R.id.tv_date2)
@@ -162,7 +166,15 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                 btn_year_drive.isSelected = true
 
                 callYearChart()
-                setYearDrivingDistance()            }
+                setYearDrivingDistance()
+            }
+
+        })
+
+        iv_tooltip_high_low_etc.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                showTooltipForHighLowEtc(this@HighSpeedDrivingActivity)
+            }
 
         })
 

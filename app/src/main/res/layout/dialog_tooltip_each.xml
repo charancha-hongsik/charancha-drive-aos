@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/persistent_bottom_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+        <TextView
+            android:id="@+id/tv_tooltip_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="고속,저속,기타 주행이란?"
+            android:textAppearance="@style/ST1B"
+            android:textFontWeight="700"
+            android:textColor="@color/gray_950"/>
+
+        <TextView
+            android:id="@+id/tv_tooltip_contents"
+            android:layout_width="wrap_content"
+            android:text="고속 주행에 대한 설명이 나옵니다.\n너비별 줄바꿈을 적용합니다."
+            android:layout_marginTop="16dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/B1R"
+            android:textFontWeight="400"
+            android:textColor="@color/gray_700"/>
+
+        <TextView
+            android:id="@+id/btn_set_mycar"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/radius6_gray50"
+            android:gravity="center"
+            android:text="닫기"
+            android:textColor="@color/gray_600"
+            android:layout_weight="600"
+            android:textAppearance="@style/B1SB"/>
+
+
+</LinearLayout>
+
+

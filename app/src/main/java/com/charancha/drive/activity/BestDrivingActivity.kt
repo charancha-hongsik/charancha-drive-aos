@@ -53,6 +53,8 @@ class BestDrivingActivity:BaseRefreshActivity() {
     lateinit var tv_date1:TextView
     lateinit var tv_date2:TextView
 
+    lateinit var iv_tooltip_optimal_driving:ImageView
+
 
     lateinit var layout_barchart_best_driving:BarChart
 
@@ -92,6 +94,14 @@ class BestDrivingActivity:BaseRefreshActivity() {
         tv_best_percent1 = findViewById(R.id.tv_best_percent1)
         tv_diff_percent = findViewById(R.id.tv_diff_percent)
         tv_best_percent2 = findViewById(R.id.tv_best_percent2)
+
+        iv_tooltip_optimal_driving = findViewById(R.id.iv_tooltip_optimal_driving)
+        iv_tooltip_optimal_driving.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                showTooltipForEach(this@BestDrivingActivity, "최적 주행이란?","급출발, 급가속, 급정지, 급감속을 하지 않고 안정적으로 주행한 거리에요. 높을수록 좋아요!")
+            }
+
+        })
 
         tv_date1 = findViewById(R.id.tv_date1)
         tv_date2 = findViewById(R.id.tv_date2)

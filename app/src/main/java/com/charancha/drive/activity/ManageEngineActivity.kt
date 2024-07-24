@@ -79,7 +79,7 @@ class ManageEngineActivity:BaseRefreshActivity() {
         iv_tooltip_perone_average = findViewById(R.id.iv_tooltip_perone_average)
         iv_tooltip_perone_average.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltip(this@ManageEngineActivity)
+                showTooltipForEach(this@ManageEngineActivity, "1회 평균 주행거리란?","차량이 한 번 주행할 때마다 이동한 거리의 평균값이에요. 높을수록 좋아요!")
             }
         })
 
@@ -89,7 +89,7 @@ class ManageEngineActivity:BaseRefreshActivity() {
         iv_tooltip_high_speed = findViewById(R.id.iv_tooltip_high_speed)
         iv_tooltip_high_speed.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltip(this@ManageEngineActivity)
+                showTooltipForEach(this@ManageEngineActivity, "고속 주행이란?","80km/h 이상 150km/h 미만 사이의 속력으로 주행한 거리에요. 높을수록 좋아요!")
             }
         })
 
@@ -97,14 +97,14 @@ class ManageEngineActivity:BaseRefreshActivity() {
         iv_tooltip_optimal_driving = findViewById(R.id.iv_tooltip_optimal_driving)
         iv_tooltip_optimal_driving.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltip(this@ManageEngineActivity )
+                showTooltipForEach(this@ManageEngineActivity, "최적 주행이란?","급출발, 급가속, 급정지, 급감속을 하지 않고 안정적으로 주행한 거리에요. 높을수록 좋아요!")
             }
         })
 
         iv_tooltip_const_driving = findViewById(R.id.iv_tooltip_const_driving)
         iv_tooltip_const_driving.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltip(this@ManageEngineActivity)
+                showTooltipForEach(this@ManageEngineActivity, "항속 주행이란?","61km/h 이상 141km/h 미만으로 3분 이상 일정한 속도로 주행한 거리에요(속도 변동 5km/h 이내). 높을수록 좋아요!")
             }
         })
 

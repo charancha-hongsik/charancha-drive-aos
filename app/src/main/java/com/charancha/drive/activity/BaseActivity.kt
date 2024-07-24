@@ -9,7 +9,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
 import com.charancha.drive.retrofit.ApiServiceInterface
@@ -311,12 +310,37 @@ open class BaseActivity: AppCompatActivity(){
     }
 
 
-    fun showTooltip(context: Context) {
+    fun showTooltipForHighLowEtc(context: Context) {
         // Create a BottomSheetDialog
         val bottomSheetDialog = BottomSheetDialog(context, R.style.CustomBottomSheetDialog)
 
         // Inflate the layout
-        val bottomSheetView = layoutInflater.inflate(R.layout.dialog_tooltip, null)
+        val bottomSheetView = layoutInflater.inflate(R.layout.dialog_tooltip_high_low_etc, null)
+
+        // Set the content view of the dialog
+        bottomSheetDialog.setContentView(bottomSheetView)
+
+        // Set the close button action
+        bottomSheetView.findViewById<TextView>(R.id.btn_set_mycar)?.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
+
+        // Show the dialog
+        bottomSheetDialog.show()
+    }
+
+    fun showTooltipForEach(context: Context, title:String, contents:String) {
+        // Create a BottomSheetDialog
+        val bottomSheetDialog = BottomSheetDialog(context, R.style.CustomBottomSheetDialog)
+
+        // Inflate the layout
+        val bottomSheetView = layoutInflater.inflate(R.layout.dialog_tooltip_each, null)
+        val tv_title = bottomSheetView.findViewById<TextView>(R.id.tv_tooltip_title)
+        val tv_contents = bottomSheetView.findViewById<TextView>(R.id.tv_tooltip_contents)
+
+        tv_title.text = title
+        tv_contents.text = contents
+
 
         // Set the content view of the dialog
         bottomSheetDialog.setContentView(bottomSheetView)

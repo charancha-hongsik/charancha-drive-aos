@@ -166,55 +166,55 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     private fun setResources(){
         iv_tooltip_verification.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltip(this@DetailDriveHistoryActivity)
+                showTooltipForEach(this@DetailDriveHistoryActivity, "1회 평균 주행거리란?","차량이 한 번 주행할 때마다 이동한 거리의 평균값이에요. 높을수록 좋아요!")
             }
         })
 
         iv_tooltip_low_speed.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltip(this@DetailDriveHistoryActivity)
+                showTooltipForEach(this@DetailDriveHistoryActivity, "저속 주행이란?","저속 주행이란 0km/h 초과 40km/h 미만 속력으로 주행한 거리에요. 높을수록 좋아요!")
             }
         })
 
         iv_tooltip_high_speed.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltip(this@DetailDriveHistoryActivity)
+                showTooltipForEach(this@DetailDriveHistoryActivity, "고속 주행이란?","80km/h 이상 150km/h 미만 사이의 속력으로 주행한 거리에요. 높을수록 좋아요!")
             }
         })
 
         iv_tooltip_rapid_desc.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltip(this@DetailDriveHistoryActivity)
+                showTooltipForEach(this@DetailDriveHistoryActivity, "급감속이란?","초당 14km/h이상 감속 주행하고 속도가 6.0km/h 이상인 경우에요. 낮을수록 좋아요!")
             }
         })
 
         iv_tooltip_high_speed_average.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltip(this@DetailDriveHistoryActivity)
+                showTooltipForEach(this@DetailDriveHistoryActivity, "고속 주행 평균 속력이란?","고속 주행 평균 속력은 80km/h 이상 150km/h 이하 속력으로 주행한 거리의 평균 속력이에요")
             }
         })
 
         iv_tooltip_low_speed_average.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltip(this@DetailDriveHistoryActivity)
+                showTooltipForEach(this@DetailDriveHistoryActivity, "저속 주행 평균 속력이란?","저속 주행 평균 속력은 0km/h 초과 40km/h 미만 속력으로 주행한 거리의 평균 속력이에요")
             }
         })
 
         iv_tooltip_rapid_acc.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltip(this@DetailDriveHistoryActivity)
+                showTooltipForEach(this@DetailDriveHistoryActivity, "저속 주행 평균 속력이란?","저속 주행 평균 속력은 0km/h 초과 40km/h 미만 속력으로 주행한 거리의 평균 속력이에요")
             }
         })
 
         iv_tooltip_rapid_start.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltip(this@DetailDriveHistoryActivity)
+                showTooltipForEach(this@DetailDriveHistoryActivity, "급출발이란?","5.0km/h 이하 속도에서 출발하여 초당 10km/h이상 가속 주행한 경우에요. 낮을수록 좋아요!")
             }
         })
 
         iv_tooltip_rapid_stop.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltip(this@DetailDriveHistoryActivity)
+                showTooltipForEach(this@DetailDriveHistoryActivity, "급정지란?","초당 14km/h이상 감속 주행하고 속도가 5.0km/h 이하인 경우에요. 낮을수록 좋아요!")
             }
         })
 

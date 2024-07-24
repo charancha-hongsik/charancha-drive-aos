@@ -51,6 +51,8 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
     lateinit var tv_date1:TextView
     lateinit var tv_date2:TextView
 
+    lateinit var iv_tooltip_const_driving:ImageView
+
 
     var recentStartTime = "2024-07-15T00:00:00.000Z"
     var recentEndTime = "2024-07-15T23:59:59.999Z"
@@ -69,6 +71,8 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
         layout_const_speed_percent = findViewById(R.id.layout_const_speed_percent)
         layout_const_speed_extra = findViewById(R.id.layout_const_speed_extra)
         layout_const_speed_background = findViewById(R.id.layout_const_speed_background)
+
+        iv_tooltip_const_driving = findViewById(R.id.iv_tooltip_const_driving)
 
         btn_back = findViewById(R.id.btn_back)
         btn_back.setOnClickListener { finish() }
@@ -92,6 +96,13 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
 
         btn_recent_drive.isSelected = true
 
+        iv_tooltip_const_driving.setOnClickListener(object :OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                showTooltipForEach(this@ConstantSpeedDrivingActivity, "항속 주행이란?","61km/h 이상 141km/h 미만으로 3분 이상 일정한 속도로 주행한 거리에요(속도 변동 5km/h 이내). 높을수록 좋아요!")
+
+            }
+
+        })
         btn_recent_drive.setOnClickListener(object :OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
                 btn_recent_drive.isSelected = true
