@@ -2,6 +2,9 @@ package com.charancha.drive.activity
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,7 +18,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.core.widget.TextViewCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.charancha.drive.ChosenDate
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
@@ -34,7 +40,7 @@ import java.util.*
 
 
 class MyDriveHistoryActivity: BaseRefreshActivity() {
-    lateinit var lv_history:ListView
+    lateinit var lv_history:RecyclerView
     lateinit var btn_back:ImageView
 
     lateinit var btn_choose_date: ImageView
@@ -310,6 +316,9 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
 
                         getDriveHistroyResponse.items.add(DriveItem("","","","","",false,"","",0.0,0.0))
 
+                        lv_history.layoutManager = LinearLayoutManager(this@MyDriveHistoryActivity)
+                        val dividerItemDecoration = DividerItemDecoration(this@MyDriveHistoryActivity, R.color.gray_50, 50) // 색상 리소스와 구분선 높이 설정
+                        lv_history.addItemDecoration(dividerItemDecoration)
                         lv_history.adapter = driveAdapter
 
                         lv_history.visibility = VISIBLE
@@ -332,137 +341,127 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         })
     }
 
-    class DriveHistoryAdapter(context: Context, val histories: MutableList<DriveItem>, var meta: Meta, val callback:DriveCallback) : ArrayAdapter<DriveItem>(context, 0, histories) {
+    class DriveHistoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val layoutNotActive: LinearLayout = view.findViewById(R.id.layout_not_active)
+        val layoutActive: LinearLayout = view.findViewById(R.id.layout_active)
+        val btnDriveHistory: ConstraintLayout = view.findViewById(R.id.btn_drive_history)
+        val tvDate: TextView = view.findViewById(R.id.tv_date)
+        val tvDistance: TextView = view.findViewById(R.id.tv_distance)
+        val tvStartTime: TextView = view.findViewById(R.id.tv_start_time)
+        val tvEndTime: TextView = view.findViewById(R.id.tv_end_time)
+        val tvDate2: TextView = view.findViewById(R.id.tv_date2)
+        val tvDistance2: TextView = view.findViewById(R.id.tv_distance2)
+        val tvStartTime2: TextView = view.findViewById(R.id.tv_start_time2)
+        val tvEndTime2: TextView = view.findViewById(R.id.tv_end_time2)
+    }
 
-        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+    class DriveHistoryAdapter(
+        private val context: Context,
+        private val histories: MutableList<DriveItem>,
+        private val meta: Meta,
+        private val callback: DriveCallback
+    ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-            if(position != histories.size -1){
-                var listItemView = LayoutInflater.from(context).inflate(R.layout.item_drive_history, parent, false)
+        companion object {
+            private const val VIEW_TYPE_ITEM = 0
+            private const val VIEW_TYPE_LAST_ITEM = 1
+        }
 
+        override fun getItemViewType(position: Int): Int {
+            return if (position == histories.size - 1) VIEW_TYPE_LAST_ITEM else VIEW_TYPE_ITEM
+        }
 
-                val driveItem = getItem(position)
-
-                val layout_not_active = listItemView!!.findViewById<LinearLayout>(R.id.layout_not_active)
-                val layout_active = listItemView!!.findViewById<LinearLayout>(R.id.layout_active)
-
-                val btn_drive_history = listItemView!!.findViewById<ConstraintLayout>(R.id.btn_drive_history)
-
-                val tvDate = listItemView!!.findViewById<TextView>(R.id.tv_date)
-                val tv_distance = listItemView!!.findViewById<TextView>(R.id.tv_distance)
-                val tv_start_time = listItemView!!.findViewById<TextView>(R.id.tv_start_time)
-                val tv_end_time = listItemView!!.findViewById<TextView>(R.id.tv_end_time)
-
-                val tvDate2 = listItemView!!.findViewById<TextView>(R.id.tv_date2)
-                val tv_distance2 = listItemView!!.findViewById<TextView>(R.id.tv_distance2)
-                val tv_start_time2 = listItemView!!.findViewById<TextView>(R.id.tv_start_time2)
-                val tv_end_time2 = listItemView!!.findViewById<TextView>(R.id.tv_end_time2)
-
-
-
-                tvDate.text = transformTimeToDate(driveItem?.startTime!!)
-                tv_distance.text = transferDistanceWithUnit(driveItem?.totalDistance!!, PreferenceUtil.getPref(context,  PreferenceUtil.KM_MILE, "km")!!)
-                tv_start_time.text = transformTimeToHHMM(driveItem?.startTime!!)
-                tv_end_time.text = transformTimeToHHMM(driveItem?.endTime!!)
-
-                tvDate2.text = transformTimeToDate(driveItem?.startTime!!)
-                tv_distance2.text = transferDistanceWithUnit(driveItem?.totalDistance!!, PreferenceUtil.getPref(context,  PreferenceUtil.KM_MILE, "km")!!)
-                tv_start_time2.text = transformTimeToHHMM(driveItem?.startTime!!)
-                tv_end_time2.text = transformTimeToHHMM(driveItem?.endTime!!)
-
-                if(driveItem!!.isActive){
-                    layout_not_active.visibility = GONE
-                    layout_active.visibility = VISIBLE
-
-                    btn_drive_history.isClickable = false
-                }else{
-                    layout_not_active.visibility = VISIBLE
-                    layout_active.visibility = GONE
-                }
-
-                btn_drive_history.setOnClickListener(object:OnSingleClickListener(){
-                    override fun onSingleClick(v: View?) {
-                        (context as MyDriveHistoryActivity).resultLauncher.launch(Intent(context, DetailDriveHistoryActivity::class.java).putExtra("trackingId", driveItem?.id).putExtra("isActive", driveItem?.isActive))
-                    }
-
-                })
-                return listItemView
-            } else{
-                var listItemView = LayoutInflater.from(context).inflate(R.layout.item_drive_history_last, parent, false)
-
-                val tv_more = listItemView!!.findViewById<TextView>(R.id.tv_more)
-                val tv_last = listItemView!!.findViewById<TextView>(R.id.tv_last)
-
-                tv_more.setOnClickListener { object:OnSingleClickListener(){
-                    override fun onSingleClick(v: View?) {
-                        if(!meta.afterCursor.isNullOrBlank()){
-                            callback.clickedMore(meta, histories)
-                        }                    }
-
-                } }
-
-
-                if(meta.afterCursor.isNullOrBlank()){
-                    tv_more.visibility = GONE
-                    tv_last.visibility = VISIBLE
-                }else{
-                    tv_more.visibility = VISIBLE
-                    tv_last.visibility = GONE
-                }
-
-                return listItemView
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+            return if (viewType == VIEW_TYPE_ITEM) {
+                val view = LayoutInflater.from(context).inflate(R.layout.item_drive_history, parent, false)
+                DriveHistoryViewHolder(view)
+            } else {
+                val view = LayoutInflater.from(context).inflate(R.layout.item_drive_history_last, parent, false)
+                LastItemViewHolder(view)
             }
+        }
+
+        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+            if (holder is DriveHistoryViewHolder) {
+                val driveItem = histories[position]
+
+                holder.tvDate.text = transformTimeToDate(driveItem.startTime)
+                holder.tvDistance.text = transferDistanceWithUnit(driveItem.totalDistance, PreferenceUtil.getPref(context, PreferenceUtil.KM_MILE, "km")!!)
+                holder.tvStartTime.text = transformTimeToHHMM(driveItem.startTime)
+                holder.tvEndTime.text = transformTimeToHHMM(driveItem.endTime)
+
+                holder.tvDate2.text = transformTimeToDate(driveItem.startTime)
+                holder.tvDistance2.text = transferDistanceWithUnit(driveItem.totalDistance, PreferenceUtil.getPref(context, PreferenceUtil.KM_MILE, "km")!!)
+                holder.tvStartTime2.text = transformTimeToHHMM(driveItem.startTime)
+                holder.tvEndTime2.text = transformTimeToHHMM(driveItem.endTime)
+
+                if (driveItem.isActive) {
+                    holder.layoutNotActive.visibility = View.GONE
+                    holder.layoutActive.visibility = View.VISIBLE
+                    holder.btnDriveHistory.isClickable = false
+                } else {
+                    holder.layoutNotActive.visibility = View.VISIBLE
+                    holder.layoutActive.visibility = View.GONE
+                }
+
+                holder.btnDriveHistory.setOnClickListener {
+                    (context as MyDriveHistoryActivity).resultLauncher.launch(
+                        Intent(context, DetailDriveHistoryActivity::class.java)
+                            .putExtra("trackingId", driveItem.id)
+                            .putExtra("isActive", driveItem.isActive)
+                    )
+                }
+            } else if (holder is LastItemViewHolder) {
+                if (meta.afterCursor.isNullOrBlank()) {
+                    holder.tvMore.visibility = View.GONE
+                    holder.tvLast.visibility = View.VISIBLE
+                } else {
+                    holder.tvMore.visibility = View.VISIBLE
+                    holder.tvLast.visibility = View.GONE
+                }
+
+                holder.tvMore.setOnClickListener {
+                    callback.clickedMore(meta, histories)
+                }
+            }
+        }
+
+        override fun getItemCount(): Int {
+            return histories.size
+        }
+
+        class LastItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+            val tvMore: TextView = view.findViewById(R.id.tv_more)
+            val tvLast: TextView = view.findViewById(R.id.tv_last)
         }
 
         interface DriveCallback {
-            fun clickedMore(meta:Meta, histories: MutableList<DriveItem>)
-
+            fun clickedMore(meta: Meta, histories: MutableList<DriveItem>)
         }
 
-        fun transferDistanceWithUnit(meters:Double, distance_unit:String):String{
-            if(distance_unit == "km"){
-                return String.format(Locale.KOREAN, "%.0fkm", meters / 1000)
-            }else{
+        private fun transferDistanceWithUnit(meters: Double, distance_unit: String): String {
+            return if (distance_unit == "km") {
+                String.format(Locale.KOREAN, "%.0fkm", meters / 1000)
+            } else {
                 val milesPerMeter = 0.000621371
-                return String.format(Locale.KOREAN, "%.0fmile",meters * milesPerMeter)
+                String.format(Locale.KOREAN, "%.0fmile", meters * milesPerMeter)
             }
         }
 
-        private fun transformTimeToHHMM(isoDate: String):String{
-            // UTC 시간 파싱
+        private fun transformTimeToHHMM(isoDate: String): String {
             val utcTime = LocalDateTime.parse(isoDate, DateTimeFormatter.ISO_DATE_TIME)
-
-            // ZonedDateTime으로 변환
             val zonedUtcTime = utcTime.atZone(ZoneId.of("UTC"))
-
-            // 한국 시간대로 변환 (UTC+9)
             val kstTime = zonedUtcTime.withZoneSameInstant(ZoneId.of("Asia/Seoul"))
-
-            // HH:mm 형식으로 변환
-            val kstTimeStr = kstTime.format(DateTimeFormatter.ofPattern("HH:mm"))
-
-            // 포맷된 문자열 반환
-            return kstTimeStr
+            return kstTime.format(DateTimeFormatter.ofPattern("HH:mm"))
         }
 
-        private fun transformTimeToDate(isoDate: String):String{
-            // UTC 시간 파싱
+        private fun transformTimeToDate(isoDate: String): String {
             val utcTime = LocalDateTime.parse(isoDate, DateTimeFormatter.ISO_DATE_TIME)
-
-            // ZonedDateTime으로 변환
             val zonedUtcTime = utcTime.atZone(ZoneId.of("UTC"))
-
-            // 한국 시간대로 변환 (UTC+9)
             val kstTime = zonedUtcTime.withZoneSameInstant(ZoneId.of("Asia/Seoul"))
-
-            // HH:mm 형식으로 변환
-            val kstTimeStr = kstTime.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일"))
-
-            // 포맷된 문자열 반환
-            return kstTimeStr
+            return kstTime.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일"))
         }
-
     }
-
     private fun persistentBottomSheetEvent() {
         behavior = BottomSheetBehavior.from(persistent_bottom_sheet)
         behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
@@ -573,5 +572,39 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
 
     private fun setInquireScope(scope:String){
         tv_inquire_scope.text = scope
+    }
+
+    class DividerItemDecoration(context: Context, private val colorResId: Int, private val dividerHeight: Int) : RecyclerView.ItemDecoration() {
+
+        private val paint = Paint()
+
+        init {
+            paint.color = ContextCompat.getColor(context, colorResId)
+            paint.style = Paint.Style.FILL
+        }
+
+        override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+            val left = parent.paddingLeft
+            val right = parent.width - parent.paddingRight
+
+            val childCount = parent.childCount
+            for (i in 0 until childCount - 1) {
+                val child = parent.getChildAt(i)
+
+                val params = child.layoutParams as RecyclerView.LayoutParams
+
+                val top = child.bottom + params.bottomMargin
+                val bottom = top + dividerHeight
+
+                c.drawRect(left.toFloat(), top.toFloat(), right.toFloat(), bottom.toFloat(), paint)
+            }
+        }
+
+        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+            // 마지막 아이템이 아닌 경우에만 아래쪽에 공간 추가
+            if (parent.getChildAdapterPosition(view) != state.itemCount - 1) {
+                outRect.bottom = dividerHeight
+            }
+        }
     }
 }
