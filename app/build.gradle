@@ -13,7 +13,7 @@ android {
         minSdk 28
         targetSdk 33
         versionCode 4
-        versionName "1.6.1"
+        versionName "0.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -27,11 +27,11 @@ android {
         }
 
         debug {
-//            buildConfigField "String", "BASE_URL", '"https://dev.milelog.charancha.com/"'
-//            buildConfigField "String", "BASE_LOGIN_URL", '"https://dev.login.milelog.charancha.com/"'
+            buildConfigField "String", "BASE_URL", '"https://dev.milelog.charancha.com/"'
+            buildConfigField "String", "BASE_LOGIN_URL", '"https://dev.login.milelog.charancha.com/"'
 
-            buildConfigField "String", "BASE_URL", '"https://staging.milelog.charancha.com"'
-            buildConfigField "String", "BASE_LOGIN_URL", '"https://staging.login.milelog.charancha.com"'
+//            buildConfigField "String", "BASE_URL", '"https://staging.milelog.charancha.com"'
+//            buildConfigField "String", "BASE_LOGIN_URL", '"https://staging.login.milelog.charancha.com"'
         }
     }
     compileOptions {

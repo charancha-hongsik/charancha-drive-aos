@@ -1,5 +1,6 @@
 package com.charancha.drive.activity
 
+import android.Manifest
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
@@ -8,6 +9,9 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.provider.Settings
+import com.charancha.drive.CustomDialog
+import com.charancha.drive.CustomDialogNoCancel
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
 import com.charancha.drive.retrofit.response.*
@@ -34,7 +38,10 @@ class SplashActivity: BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
+    }
 
+    override fun onResume() {
+        super.onResume()
         checkForceUpdate()
     }
 
@@ -244,6 +251,7 @@ class SplashActivity: BaseActivity() {
                                 return
                             }
 
+                            goSplash()
 
                         } else {
                             goSplash()
@@ -263,25 +271,33 @@ class SplashActivity: BaseActivity() {
     }
 
     private fun goUpdate(){
-        val app: ApplicationInfo
-        app = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            packageManager.getApplicationInfo(
-                "com.android.vending",
-                PackageManager.ApplicationInfoFlags.of(0)
-            )
-        } else {
-            packageManager.getApplicationInfo(
-                "com.android.vending",
-                PackageManager.GET_META_DATA
-            )
-        }
-        val intent = Intent(Intent.ACTION_VIEW)
-        intent.data = Uri.parse(
-            "https://play.google.com/store/apps/details?id=com.charancha"
-        )
-        intent.setPackage("com.android.vending")
-        startActivity(intent)
-        finish()
+        CustomDialogNoCancel(
+            this,
+            "최신 버전 업데이트",
+            "안정적인 서비스 이용을 위해 최신 버전 업데이트가 필요합니다.",
+            "업데이트",
+            object : CustomDialogNoCancel.DialogCallback {
+                override fun onConfirm() {
+                    val app: ApplicationInfo
+                    app = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        packageManager.getApplicationInfo(
+                            "com.android.vending",
+                            PackageManager.ApplicationInfoFlags.of(0)
+                        )
+                    } else {
+                        packageManager.getApplicationInfo(
+                            "com.android.vending",
+                            PackageManager.GET_META_DATA
+                        )
+                    }
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.data = Uri.parse(
+                        "https://play.google.com/store/apps/details?id=com.charancha"
+                    )
+                    intent.setPackage("com.android.vending")
+                    startActivity(intent)
+                }
+            }).show()
     }
 
     private fun goSplash(){
