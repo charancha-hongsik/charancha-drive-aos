@@ -389,7 +389,6 @@ class DrivenTimeActivity:BaseRefreshActivity() {
             override fun getFormattedValue(value: Float, axis: AxisBase?): String {
                 val minValue = rightAxis.axisMinimum
                 val maxValue = rightAxis.axisMaximum
-                Log.d("testestest","testestesvaluevalue :: " + value)
 
                 return if (value == minValue || value == maxValue) {
                     value.toInt().toString() + "분"// 가장 아래와 위에만 레이블 표시
@@ -1429,7 +1428,6 @@ class DrivenTimeActivity:BaseRefreshActivity() {
             override fun getFormattedValue(value: Float, axis: AxisBase?): String {
                 val minValue = rightAxis.axisMinimum
                 val maxValue = rightAxis.axisMaximum
-                Log.d("testestest","testsetestset value:: " + value)
 
                 return if (value == minValue || value == maxValue) {
                     value.toInt().toString() + "분"// 가장 아래와 위에만 레이블 표시
@@ -2452,13 +2450,6 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                     )
 
                     if(drivingDistance.total.totalTime != 0.0){
-                        Log.d("testestsetestest","testestestse 1:: " + getCurrentAndPastTimeForISO(150).second)
-                        Log.d("testestsetestest","testestestse 2:: " + getCurrentAndPastTimeForISO(150).first)
-
-
-                        Log.d("testestsetestest","testestestse 3:: " + drivingDistance.average.totalTime)
-
-
                         tv_hour.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).first.toString()
                         tv_minute.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).second.toString()
                         tv_average_hour.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).first.toString()

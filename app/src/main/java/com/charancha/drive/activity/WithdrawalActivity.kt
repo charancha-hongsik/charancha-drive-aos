@@ -50,17 +50,7 @@ class WithdrawalActivity:BaseRefreshActivity() {
                             response: Response<ResponseBody>
                         ) {
                             if(response.code() == 200){
-                                PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.ACCESS_TOKEN, "")
-                                PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.REFRESH_TOKEN, "")
-                                PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.EXPIRES_IN, "")
-                                PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.REFRESH_EXPIRES_IN, "")
-                                PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.TOKEN_TYPE, "")
-                                PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.KEYLESS_ACCOUNT, "")
-                                PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.KEYLESS_ACCOUNT_EXPIRE, "")
-                                PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.OAUTH_PROVIDER, "")
-                                PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.ID_TOKEN, "")
-                                PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
-                                PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.USER_CARID, "")
+                                logout()
                                 startActivity(Intent(this@WithdrawalActivity, LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
                                 finish()
                             }

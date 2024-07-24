@@ -508,7 +508,6 @@ class BluetoothService : Service() {
         gpsInfoForApp = mutableListOf()
         driveForApp = DriveForApp(
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!! + startTimeStamp,
-            startTimeStamp,
             gpsInfoForApp)
 
 
@@ -844,13 +843,10 @@ class BluetoothService : Service() {
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     writeToRoomForApi(driveForApi)
                     writeToRoomForApp(driveForApi.tracking_id)
-                    Log.d("testestestest","testsetsetse 2 :: " + driveForApi.tracking_id)
-
                 }
             })
 
         } else {
-            Log.d("testestestest","testsetsetse 1 :: " + driveForApi.tracking_id)
             writeToRoomForApi(driveForApi)
             writeToRoomForApp(driveForApi.tracking_id)
         }

@@ -131,17 +131,7 @@ class MyPageActivity:BaseRefreshActivity() {
 
         btn_logout.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.ACCESS_TOKEN, "")
-                PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.REFRESH_TOKEN, "")
-                PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.EXPIRES_IN, "")
-                PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.REFRESH_EXPIRES_IN, "")
-                PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.TOKEN_TYPE, "")
-                PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.KEYLESS_ACCOUNT, "")
-                PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.KEYLESS_ACCOUNT_EXPIRE, "")
-                PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.OAUTH_PROVIDER, "")
-                PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.ID_TOKEN, "")
-                PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
-                PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.USER_CARID, "")
+                logout()
 
                 startActivity(Intent(this@MyPageActivity, LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
                 finish()

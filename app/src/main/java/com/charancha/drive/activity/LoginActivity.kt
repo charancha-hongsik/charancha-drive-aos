@@ -335,6 +335,6 @@ class LoginActivity: BaseActivity() {
     }
 
     fun handleFailLogin(message:String){
-        Log.d("testestestes","testestsetse handleFailLogin :: " + message)
+
     }
 }

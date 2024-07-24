@@ -51,19 +51,8 @@ open class BaseRefreshActivity: BaseActivity(){
                             signInResponse.token_type
                         )
                     }else{
-                        PreferenceUtil.putPref(this@BaseRefreshActivity, PreferenceUtil.ACCESS_TOKEN, "")
-                        PreferenceUtil.putPref(this@BaseRefreshActivity, PreferenceUtil.REFRESH_TOKEN, "")
-                        PreferenceUtil.putPref(this@BaseRefreshActivity, PreferenceUtil.EXPIRES_IN, "")
-                        PreferenceUtil.putPref(this@BaseRefreshActivity, PreferenceUtil.REFRESH_EXPIRES_IN, "")
-                        PreferenceUtil.putPref(this@BaseRefreshActivity, PreferenceUtil.TOKEN_TYPE, "")
-                        PreferenceUtil.putPref(this@BaseRefreshActivity, PreferenceUtil.KEYLESS_ACCOUNT, "")
-                        PreferenceUtil.putPref(this@BaseRefreshActivity, PreferenceUtil.KEYLESS_ACCOUNT_EXPIRE, "")
-                        PreferenceUtil.putPref(this@BaseRefreshActivity, PreferenceUtil.OAUTH_PROVIDER, "")
-                        PreferenceUtil.putPref(this@BaseRefreshActivity, PreferenceUtil.ID_TOKEN, "")
-                        PreferenceUtil.putPref(this@BaseRefreshActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
-                        PreferenceUtil.putPref(this@BaseRefreshActivity, PreferenceUtil.USER_CARID, "")
+                        logout()
 
-                        startActivity(Intent(this@BaseRefreshActivity, LoginActivity::class.java))
                         startActivity(Intent(this@BaseRefreshActivity, LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
 
                         finish()
@@ -82,6 +71,7 @@ open class BaseRefreshActivity: BaseActivity(){
                     PreferenceUtil.putPref(this@BaseRefreshActivity, PreferenceUtil.ID_TOKEN, "")
                     PreferenceUtil.putPref(this@BaseRefreshActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
                     PreferenceUtil.putPref(this@BaseRefreshActivity, PreferenceUtil.USER_CARID, "")
+                    PreferenceUtil.putBooleanPref(this@BaseRefreshActivity, PreferenceUtil.HAVE_BEEN_HOME, false)
 
                     startActivity(Intent(this@BaseRefreshActivity, LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
                     finish()

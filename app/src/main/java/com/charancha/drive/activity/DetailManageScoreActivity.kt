@@ -246,8 +246,6 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
                             GetRecentDrivingStatisticsResponse::class.java
                         )
 
-                        Log.d("testsetestestse","testestestset 2 :: " + recentDrivingDistance.isRecent)
-
                         if(recentDrivingDistance.isRecent){
                             setInquireScope(convertDateFormat(recentDrivingDistance.recentStartTime))
                             tv_engine_info_average_distance.text = transferDistanceWithUnit(recentDrivingDistance.perOne.totalDistance)

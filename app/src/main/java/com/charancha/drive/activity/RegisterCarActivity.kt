@@ -181,8 +181,7 @@ class RegisterCarActivity: BaseActivity() {
                                 call: Call<ResponseBody>,
                                 response: Response<ResponseBody>
                             ) {
-                                Log.d("testsetestest","testestestse :: " + response.code())
-                                if(response.code() == 200){
+                                if(response.code() == 201 || response.code() == 200){
                                     val getMyCarInfoResponse = Gson().fromJson(
                                         response.body()?.string(),
                                         GetMyCarInfoResponse::class.java

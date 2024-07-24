@@ -20,13 +20,13 @@ interface DriveForAppDao {
     /**
      * 모든 Drving 값 가져오기
      */
-    @get:Query("SELECT * FROM drive ORDER BY startTimestamp DESC LIMIT 10")
+    @get:Query("SELECT * FROM drive ORDER BY tracking_Id DESC LIMIT 10")
     val allDriveForApp: List<DriveForApp>?
 
     /**
      * 모든 Drving 값 가져오기
      */
-    @get:Query("SELECT * FROM drive ORDER BY startTimestamp DESC LIMIT 10")
+    @get:Query("SELECT * FROM drive ORDER BY tracking_Id DESC LIMIT 10")
     val allDriveLimit5ForApp: List<DriveForApp>?
 
     @Query("SELECT * FROM drive WHERE tracking_id = :trackingId")

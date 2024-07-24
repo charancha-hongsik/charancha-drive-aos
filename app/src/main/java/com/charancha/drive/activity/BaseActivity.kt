@@ -380,6 +380,21 @@ open class BaseActivity: AppCompatActivity(){
         return today.format(formatter)
     }
 
+    fun logout(){
+        PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.ACCESS_TOKEN, "")
+        PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.REFRESH_TOKEN, "")
+        PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.EXPIRES_IN, "")
+        PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.REFRESH_EXPIRES_IN, "")
+        PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.TOKEN_TYPE, "")
+        PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.KEYLESS_ACCOUNT, "")
+        PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.KEYLESS_ACCOUNT_EXPIRE, "")
+        PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.OAUTH_PROVIDER, "")
+        PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.ID_TOKEN, "")
+        PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
+        PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.USER_CARID, "")
+        PreferenceUtil.putBooleanPref(this@BaseActivity, PreferenceUtil.HAVE_BEEN_HOME, false)
+    }
+
 
 
 }

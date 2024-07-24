@@ -168,17 +168,7 @@ class SplashActivity: BaseActivity() {
 
                             })
                         }else{
-                            PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.ACCESS_TOKEN, "")
-                            PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.REFRESH_TOKEN, "")
-                            PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.EXPIRES_IN, "")
-                            PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.REFRESH_EXPIRES_IN, "")
-                            PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.TOKEN_TYPE, "")
-                            PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.KEYLESS_ACCOUNT, "")
-                            PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.KEYLESS_ACCOUNT_EXPIRE, "")
-                            PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.OAUTH_PROVIDER, "")
-                            PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.ID_TOKEN, "")
-                            PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
-                            PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.USER_CARID, "")
+                            logout()
 
                             startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
                             finish()

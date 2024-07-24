@@ -26,11 +26,8 @@ class MyDriveHistoryViewModel: ViewModel() {
         viewModelScope.launch {
             val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(context)
             driveDatabase.driveForAppDao().allDriveForApp?.let {
-//                setAllDriveDateForApp.value = Event(it.toMutableList())
                 for(drive in it){
                     Log.d("testestests","testestestse ::" + drive.tracking_id)
-                    Log.d("testestests","testestestse ::" + drive.startTimestamp)
-
                 }
             }
         }

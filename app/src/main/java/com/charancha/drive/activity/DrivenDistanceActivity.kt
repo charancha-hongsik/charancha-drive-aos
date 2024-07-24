@@ -476,7 +476,6 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
         var max = 0
 
         for(item in items){
-            Log.d("testsetsetset","teststsetse :: " + item.totalDistance)
             if(transferDistance(item.totalDistance).toDouble() > max.toDouble())
                 max = transferDistance(item.totalDistance).toDouble().toInt()
         }
@@ -2276,10 +2275,6 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
     }
 
     private fun setMonthDrivingDistance(){
-        Log.d("testestsetseest","testestestest second :: " + getCurrentAndPastTimeForISO(29).second)
-        Log.d("testestsetseest","testestestest first :: " + getCurrentAndPastTimeForISO(29).first)
-        Log.d("testestsetest","testestestest :: "  + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!)
-        Log.d("testestsetest","testestestest :: " +  PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!)
         PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!
 
 

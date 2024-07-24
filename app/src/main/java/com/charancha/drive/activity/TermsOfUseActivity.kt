@@ -72,10 +72,6 @@ class TermsOfUseActivity: BaseActivity() {
                     val type: Type = object : TypeToken<List<TermsSummaryResponse?>?>() {}.type
                     termsSummaryResponse = gson.fromJson(jsonString, type)
 
-                    for(term in termsSummaryResponse)
-                        Log.d("testestest","testestest :: " + term.title)
-
-
                     setResource()
                     setListener()
                 }else{
@@ -90,17 +86,7 @@ class TermsOfUseActivity: BaseActivity() {
     }
 
     override fun onBackPressed() {
-        PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.ACCESS_TOKEN, "")
-        PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.REFRESH_TOKEN, "")
-        PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.EXPIRES_IN, "")
-        PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.REFRESH_EXPIRES_IN, "")
-        PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.TOKEN_TYPE, "")
-        PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.KEYLESS_ACCOUNT, "")
-        PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.KEYLESS_ACCOUNT_EXPIRE, "")
-        PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.OAUTH_PROVIDER, "")
-        PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.ID_TOKEN, "")
-        PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
-        PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.USER_CARID, "")
+        logout()
         super.onBackPressed()
     }
 
