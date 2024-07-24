@@ -2241,7 +2241,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
 
                         tv_diff_distance.visibility = INVISIBLE
 
-                        tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_driving_info1.text = "최근 1일 총합"
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -2262,7 +2262,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
 
                 tv_diff_distance.visibility = INVISIBLE
 
-                tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_driving_info1.text = "최근 1일 총합"
                 tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_driving_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -2296,8 +2296,6 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
                         response.body()?.string(),
                         GetDrivingStatisticsResponse::class.java
                     )
-
-                    Log.d("testsetsetes","testsetestse :: " + drivingDistance.max.totalDistance)
 
                     if(drivingDistance.average.totalDistance != 0.0){
                         tv_diff_distance.visibility = VISIBLE
@@ -2339,7 +2337,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
 
                         tv_diff_distance.visibility = INVISIBLE
 
-                        tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_driving_info1.text = "일일 평균"
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -2353,7 +2351,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
 
                     tv_diff_distance.visibility = INVISIBLE
 
-                    tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                    tv_driving_info1.text = "일일 평균"
                     tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                     tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                     tv_driving_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -2370,7 +2368,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
 
                 tv_diff_distance.visibility = INVISIBLE
 
-                tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_driving_info1.text = "일일 평균"
                 tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_driving_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -2442,7 +2440,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
 
                     tv_diff_distance.visibility = INVISIBLE
 
-                    tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                    tv_driving_info1.text = "월 평균"
                     tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                     tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                     tv_driving_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -2459,7 +2457,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
 
                 tv_diff_distance.visibility = INVISIBLE
 
-                tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_driving_info1.text = "월 평균"
                 tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_driving_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -2528,7 +2526,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
 
                         tv_diff_distance.visibility = INVISIBLE
 
-                        tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_driving_info1.text = "월 평균"
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -2546,7 +2544,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
 
                 tv_diff_distance.visibility = INVISIBLE
 
-                tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_driving_info1.text = "월 평균"
                 tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_driving_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"

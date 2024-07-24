@@ -364,6 +364,11 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                         tv_low_speed_percent.text = 0.0.toString()
                         tv_etc_speed_percent.text = 0.0.toString()
 
+                        tv_driving_info1.text = "최근 1일 평균"
+                        tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
+
                         tv_date1.text = getTodayFormattedDate()
                         tv_date2.text = getTodayFormattedDate()
 
@@ -386,6 +391,10 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                 tv_high_speed_percent.text = 0.0.toString()
                 tv_low_speed_percent.text = 0.0.toString()
                 tv_etc_speed_percent.text = 0.0.toString()
+
+                tv_driving_info1.text = "최근 1일 평균"
+                tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
                 setRecentBarChartAsDefault()
 
@@ -456,6 +465,10 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
 
                         setRecentBarChartAsDefault()
 
+                        tv_driving_info1.text = "일일 평균"
+                        tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
                         setHighSpeedDrivingChartWidthByPercent(0f)
                         setLowSpeedDrivingChartWidthByPercent(0f)
                         setExtraSpeedDrivingChartWidthByPercent(0f)
@@ -471,6 +484,10 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                 tv_high_speed_percent.text = 0.0.toString()
                 tv_low_speed_percent.text = 0.0.toString()
                 tv_etc_speed_percent.text = 0.0.toString()
+
+                tv_driving_info1.text = "일일 평균"
+                tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
                 setRecentBarChartAsDefault()
 
@@ -536,7 +553,7 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                         tv_etc_speed_percent.text = 0.0.toString()
 
 
-                        tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_driving_info1.text = "월 평균"
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
@@ -559,7 +576,7 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                 tv_etc_speed_percent.text = 0.0.toString()
 
 
-                tv_driving_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_driving_info1.text = "월 평균"
                 tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
@@ -628,6 +645,10 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
 
                         setRecentBarChartAsDefault()
 
+                        tv_driving_info1.text = "월 평균"
+                        tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
                         setHighSpeedDrivingChartWidthByPercent(0f)
                         setLowSpeedDrivingChartWidthByPercent(0f)
                         setExtraSpeedDrivingChartWidthByPercent(0f)
@@ -644,6 +665,10 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                 tv_high_speed_percent.text = 0.0.toString()
                 tv_low_speed_percent.text = 0.0.toString()
                 tv_etc_speed_percent.text = 0.0.toString()
+
+                tv_driving_info1.text = "월 평균"
+                tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
                 setRecentBarChartAsDefault()
 

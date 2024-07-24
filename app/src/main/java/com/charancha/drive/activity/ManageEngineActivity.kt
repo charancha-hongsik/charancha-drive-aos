@@ -221,6 +221,9 @@ class ManageEngineActivity:BaseRefreshActivity() {
             }
         })
 
+        setNormalSpeedDrivingChartWidthByPercent(0f)
+        setOptimalDrivingChartWidthByPercent(0f)
+
 
     }
 
@@ -416,6 +419,21 @@ class ManageEngineActivity:BaseRefreshActivity() {
                     }else{
                         tv_optimal_driving_contents.text = "아직 데이터가 없어요."
                         tv_normal_speed_driving_contents.text = "아직 데이터가 없어요."
+
+
+                        tv_distance.text = transferDistance(0.0)
+                        tv_speed_percent.text = transferNumWithRounds(0.0).toString()
+
+                        tv_optimal_driving_percent.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+                        tv_optimal_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+                        tv_optimal_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+
+                        tv_normal_speed_driving_percent.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+                        tv_normal_speed_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+                        tv_normal_speed_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+
+                        setOptimalDrivingChartWidthByPercent(0f)
+                        setNormalSpeedDrivingChartWidthByPercent(0f)
                     }
 
 
@@ -424,7 +442,19 @@ class ManageEngineActivity:BaseRefreshActivity() {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                tv_optimal_driving_contents.text = "아직 데이터가 없어요."
+                tv_normal_speed_driving_contents.text = "아직 데이터가 없어요."
 
+                tv_distance.text = transferDistance(0.0)
+                tv_speed_percent.text = transferNumWithRounds(0.0).toString()
+
+                tv_optimal_driving_percent.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+                tv_optimal_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+                tv_optimal_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+
+                tv_normal_speed_driving_percent.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+                tv_normal_speed_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+                tv_normal_speed_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
             }
 
         })
@@ -529,12 +559,43 @@ class ManageEngineActivity:BaseRefreshActivity() {
                     }else{
                         tv_optimal_driving_contents.text = "아직 데이터가 없어요."
                         tv_normal_speed_driving_contents.text = "아직 데이터가 없어요."
+
+
+                        tv_distance.text = transferDistance(0.0)
+                        tv_speed_percent.text = transferNumWithRounds(0.0).toString()
+
+                        tv_optimal_driving_percent.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+                        tv_optimal_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+                        tv_optimal_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+
+                        tv_normal_speed_driving_percent.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+                        tv_normal_speed_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+                        tv_normal_speed_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+
+                        setOptimalDrivingChartWidthByPercent(0f)
+                        setNormalSpeedDrivingChartWidthByPercent(0f)
                     }
                 }
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                tv_optimal_driving_contents.text = "아직 데이터가 없어요."
+                tv_normal_speed_driving_contents.text = "아직 데이터가 없어요."
 
+
+                tv_distance.text = transferDistance(0.0)
+                tv_speed_percent.text = transferNumWithRounds(0.0).toString()
+
+                tv_optimal_driving_percent.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+                tv_optimal_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+                tv_optimal_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+
+                tv_normal_speed_driving_percent.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+                tv_normal_speed_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+                tv_normal_speed_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+
+                setOptimalDrivingChartWidthByPercent(0f)
+                setNormalSpeedDrivingChartWidthByPercent(0f)
             }
 
         })

@@ -1245,6 +1245,7 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                         tv_max_distance.text = transferDistance(0.0)
                         tv_min_distance.text = transferDistance(0.0)
 
+                        tv_driving_info1.text = "최근 1일 총합"
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
@@ -1262,6 +1263,7 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                 tv_max_distance.text = transferDistance(0.0)
                 tv_min_distance.text = transferDistance(0.0)
 
+                tv_driving_info1.text = "최근 1일 총합"
                 tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
@@ -1340,6 +1342,7 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                 tv_max_distance.text = transferDistance(0.0)
                 tv_min_distance.text = transferDistance(0.0)
 
+                tv_driving_info1.text = "일일 평균"
                 tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
@@ -1411,7 +1414,17 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                tv_total_distance.text = transferDistance(0.0)
+                tv_diff_distance.text = "+" + transferDistance(0.0) + distance_unit + " 증가"
+                tv_average_distance.text = transferDistance(0.0)
+                tv_max_distance.text = transferDistance(0.0)
+                tv_min_distance.text = transferDistance(0.0)
 
+                tv_driving_info1.text = "월 평균"
+                tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
+                setRecentBarChartAsDefault()
             }
 
         })
@@ -1484,6 +1497,7 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                 tv_max_distance.text = transferDistance(0.0)
                 tv_min_distance.text = transferDistance(0.0)
 
+                tv_driving_info1.text = "월 평균"
                 tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 

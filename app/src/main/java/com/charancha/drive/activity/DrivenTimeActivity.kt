@@ -2287,6 +2287,7 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                         tv_time_info4.text = "최근 내 차는\n" + transferSecondsToHourAndMinutes(0.0).first +"시간" + transferSecondsToHourAndMinutes(0.0).second + "분" + " 달렸어요"
 
 
+                        tv_time_info1.text = "최근 1일 총합"
                         tv_time_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_time_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_time_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -2310,6 +2311,7 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                 tv_max_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
                 tv_diff_time.text = "+" +transferSecondsToHourAndMinutes(0.0).first.toString() + "시간 " + transferSecondsToHourAndMinutes(0.0).second + "분 증가"
 
+                tv_time_info1.text = "최근 1일 총합"
                 tv_time_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_time_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_time_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -2354,7 +2356,6 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                         tv_max_hour.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).first.toString()
                         tv_max_minute.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).second.toString()
 
-                        Log.d("tetetetetsetet","tetasdtasdtsa :: " + drivingDistance.diffAverage.totalTime)
 
                         if(drivingDistance.diffAverage.totalTime == 0.0){
                             tv_diff_time.text = "시간 변동이 없어요."
@@ -2397,7 +2398,7 @@ class DrivenTimeActivity:BaseRefreshActivity() {
 
                         tv_time_info4.text = "최근 1개월 간 내 차는\n" + transferSecondsToHourAndMinutes(0.0).first +"시간" + transferSecondsToHourAndMinutes(0.0).second + "분" + " 달렸어요"
 
-
+                        tv_time_info1.text = "일일 평균"
                         tv_time_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_time_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_time_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -2419,7 +2420,7 @@ class DrivenTimeActivity:BaseRefreshActivity() {
 
                 tv_time_info4.text = "최근 내 차는\n" + transferSecondsToHourAndMinutes(0.0).first +"시간" + transferSecondsToHourAndMinutes(0.0).second + "분" + " 달렸어요"
 
-
+                tv_time_info1.text = "일일 평균"
                 tv_time_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_time_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_time_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -2495,7 +2496,7 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                         tv_diff_time.text = "+" + transferSecondsToHourAndMinutes(0.0).first.toString() + "시간 " + transferSecondsToHourAndMinutes(0.0).second + "분 증가"
 
 
-                        tv_time_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_time_info1.text = "월 평균"
                         tv_time_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_time_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_time_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -2517,7 +2518,7 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                 tv_diff_time.text = "+" + transferSecondsToHourAndMinutes(0.0).first.toString() + "시간 " + transferSecondsToHourAndMinutes(0.0).second + "분 증가"
 
 
-                tv_time_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_time_info1.text = "월 평균"
                 tv_time_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_time_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_time_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -2570,8 +2571,6 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                             tv_diff_time.setTextColor(resources.getColor(R.color.sec_500))
                         }
 
-                        Log.d("testestestest","testestes :: " + drivingDistance.total.totalTime)
-
 
                         tv_time_info1.text = "월 평균"
                         tv_time_info2.text = "내 차는 자주\n달릴수록 좋아요"
@@ -2596,7 +2595,7 @@ class DrivenTimeActivity:BaseRefreshActivity() {
 
                         tv_time_info4.text = "최근 1년간 내 차는\n" + transferSecondsToHourAndMinutes(0.0).first +"시간" + transferSecondsToHourAndMinutes(0.0).second + "분" + " 달렸어요"
 
-                        tv_time_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_time_info1.text = "월 평균"
                         tv_time_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_time_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_time_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -2618,7 +2617,7 @@ class DrivenTimeActivity:BaseRefreshActivity() {
 
                 tv_time_info4.text = "최근 내 차는\n" + transferSecondsToHourAndMinutes(0.0).first +"시간" + transferSecondsToHourAndMinutes(0.0).second + "분" + " 달렸어요"
 
-                tv_time_info1.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                tv_time_info1.text = "월 평균"
                 tv_time_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_time_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_time_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
