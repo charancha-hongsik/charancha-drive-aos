@@ -72,6 +72,10 @@ class TermsOfUseActivity: BaseActivity() {
                     val type: Type = object : TypeToken<List<TermsSummaryResponse?>?>() {}.type
                     termsSummaryResponse = gson.fromJson(jsonString, type)
 
+                    for(term in termsSummaryResponse)
+                        Log.d("testestest","testestest :: " + term.title)
+
+
                     setResource()
                     setListener()
                 }else{
@@ -110,6 +114,7 @@ class TermsOfUseActivity: BaseActivity() {
         ibTerms4 = findViewById(R.id.ib_terms4)
         ibTerms5 = findViewById(R.id.ib_terms5)
         ibTerms6 = findViewById(R.id.ib_terms6)
+        tvTerms1 = findViewById(R.id.tv_terms1)
         tvTermsTitle1 = findViewById(R.id.tv_terms_title1)
         tvTermsTitle2 = findViewById(R.id.tv_terms_title2)
         tvTermsTitle3 = findViewById(R.id.tv_terms_title3)
@@ -183,6 +188,8 @@ class TermsOfUseActivity: BaseActivity() {
             val content6 = SpannableString(tvTermsTitle6.text.toString())
             content6.setSpan(UnderlineSpan(), 0, content6.length - 5, 0)
             tvTermsTitle6.text = content6
+
+
         }catch (e:Exception){
 
         }
@@ -214,7 +221,6 @@ class TermsOfUseActivity: BaseActivity() {
                 val acceptedTerms = mutableListOf<Agreements>()
 
                 for(term in termsSummaryResponse){
-
                     if(tvTermsTitle4.text.contains(term.title)){
                         if(ibTerms4.isSelected){
                             acceptedTerms.add(Agreements(term.id,1))
@@ -247,7 +253,8 @@ class TermsOfUseActivity: BaseActivity() {
                                             val getMyCarInfoResponse:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
 
                                             if(getMyCarInfoResponse.size > 0){
-                                                startActivity(Intent(this@TermsOfUseActivity, MainActivity::class.java))
+                                                startActivity(Intent(this@TermsOfUseActivity, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+
                                                 finish()
                                             }else{
                                                 startActivity(Intent(this@TermsOfUseActivity, OnBoardingActivity::class.java))
@@ -340,7 +347,7 @@ class TermsOfUseActivity: BaseActivity() {
                     if(tvTermsTitle2.text.contains(term.title)){
                         startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
                     }
-                }            }
+                }}
 
         })
 
@@ -350,8 +357,8 @@ class TermsOfUseActivity: BaseActivity() {
                     if(tvTermsTitle3.text.contains(term.title)){
                         startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
                     }
-                }            }
-
+                }
+            }
         })
 
         tvTermsTitle4.setOnClickListener(object:OnSingleClickListener(){

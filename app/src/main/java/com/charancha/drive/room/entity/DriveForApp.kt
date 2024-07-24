@@ -11,7 +11,6 @@ import com.charancha.drive.room.dto.EachGpsDtoForApp
 @Entity(tableName = "drive")
 data class DriveForApp(
     @ColumnInfo(name="tracking_Id") var tracking_id: String, // APP쪽에서의 임의 tracking_id
-    @ColumnInfo(name="startTimestamp") var startTimestamp:Long,
     @ColumnInfo(name="gpses") var gpses: List<EachGpsDtoForApp>
 ){
     @PrimaryKey(autoGenerate = true)

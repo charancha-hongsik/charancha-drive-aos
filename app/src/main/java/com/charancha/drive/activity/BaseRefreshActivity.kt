@@ -1,28 +1,14 @@
 package com.charancha.drive.activity
 
 import android.content.Intent
-import android.os.Bundle
-import android.util.Log
-import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import androidx.appcompat.app.AppCompatActivity
 import com.charancha.drive.PreferenceUtil
-import com.charancha.drive.retrofit.ApiServiceInterface
-import com.charancha.drive.retrofit.HeaderInterceptor
 import com.charancha.drive.retrofit.response.SignInResponse
 import com.google.gson.Gson
-import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import java.time.*
-import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
-import java.util.*
-import java.util.concurrent.TimeUnit
+
 
 open class BaseRefreshActivity: BaseActivity(){
     override fun onResume() {
@@ -78,6 +64,8 @@ open class BaseRefreshActivity: BaseActivity(){
                         PreferenceUtil.putPref(this@BaseRefreshActivity, PreferenceUtil.USER_CARID, "")
 
                         startActivity(Intent(this@BaseRefreshActivity, LoginActivity::class.java))
+                        startActivity(Intent(this@BaseRefreshActivity, LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+
                         finish()
                     }
                 }
@@ -95,8 +83,9 @@ open class BaseRefreshActivity: BaseActivity(){
                     PreferenceUtil.putPref(this@BaseRefreshActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
                     PreferenceUtil.putPref(this@BaseRefreshActivity, PreferenceUtil.USER_CARID, "")
 
-                    startActivity(Intent(this@BaseRefreshActivity, LoginActivity::class.java))
-                    finish()                }
+                    startActivity(Intent(this@BaseRefreshActivity, LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+                    finish()
+                }
 
             })
         }?: run{

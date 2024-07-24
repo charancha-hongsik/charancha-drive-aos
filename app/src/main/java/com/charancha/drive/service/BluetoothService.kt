@@ -21,6 +21,7 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.work.*
+import com.charancha.drive.BuildConfig
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.retrofit.ApiServiceInterface
 import com.charancha.drive.retrofit.HeaderInterceptor
@@ -913,7 +914,7 @@ class BluetoothService : Service() {
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
             .build()
-        return Retrofit.Builder().baseUrl("http://43.201.46.37:3001/").client(client)
+        return Retrofit.Builder().baseUrl(BuildConfig.BASE_URL).client(client)
             .addConverterFactory(GsonConverterFactory.create()).build().create(
                 ApiServiceInterface::class.java
             )

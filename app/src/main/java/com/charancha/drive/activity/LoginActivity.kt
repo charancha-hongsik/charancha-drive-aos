@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View.*
 import android.webkit.*
+import com.charancha.drive.BuildConfig
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
 import com.charancha.drive.retrofit.request.SignInRequest
@@ -33,7 +34,7 @@ import java.lang.reflect.Type
 class LoginActivity: BaseActivity() {
     lateinit var wv_login:WebView
 
-    val loginUrl = "https://milelog-local.gatch.app"
+    val loginUrl = BuildConfig.BASE_LOGIN_URL
 
     /**
      * 구글 로그인 관련
@@ -255,7 +256,8 @@ class LoginActivity: BaseActivity() {
 
                                                                             if(getMyCarInfoResponse.size > 0){
                                                                                 PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.get(0).id)
-                                                                                startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                                                                                startActivity(Intent(this@LoginActivity, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+
                                                                                 finish()
                                                                             }else{
                                                                                 startActivity(Intent(this@LoginActivity, OnBoardingActivity::class.java))

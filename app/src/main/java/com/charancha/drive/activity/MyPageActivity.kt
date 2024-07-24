@@ -143,7 +143,7 @@ class MyPageActivity:BaseRefreshActivity() {
                 PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
                 PreferenceUtil.putPref(this@MyPageActivity, PreferenceUtil.USER_CARID, "")
 
-                startActivity(Intent(this@MyPageActivity, LoginActivity::class.java))
+                startActivity(Intent(this@MyPageActivity, LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
                 finish()
             }
 

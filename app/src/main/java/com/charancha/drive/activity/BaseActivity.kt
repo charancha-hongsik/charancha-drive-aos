@@ -9,6 +9,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.charancha.drive.BuildConfig
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
 import com.charancha.drive.retrofit.ApiServiceInterface
@@ -32,7 +33,6 @@ open class BaseActivity: AppCompatActivity(){
 
     override fun onResume() {
         super.onResume()
-        Log.d("testsetestseset","teststssetst ::  " + PreferenceUtil.getPref(this@BaseActivity,  PreferenceUtil.KM_MILE, "km")!!)
         distance_unit = PreferenceUtil.getPref(this@BaseActivity,  PreferenceUtil.KM_MILE, "km")!!
 
     }
@@ -44,7 +44,7 @@ open class BaseActivity: AppCompatActivity(){
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
             .build()
-        return Retrofit.Builder().baseUrl("http://43.201.46.37:3001/").client(client)
+        return Retrofit.Builder().baseUrl(BuildConfig.BASE_URL).client(client)
             .addConverterFactory(GsonConverterFactory.create()).build().create(
                 ApiServiceInterface::class.java
             )
@@ -166,7 +166,10 @@ open class BaseActivity: AppCompatActivity(){
             }
         }
 
-        resultList.removeAt(0)
+        if (past == 150L || past == 334L) {
+            resultList.removeAt(0)
+        }
+
 
         return Triple(nowFormatted, previousDateFormatted, resultList)
     }

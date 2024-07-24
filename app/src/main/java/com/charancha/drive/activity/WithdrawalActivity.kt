@@ -61,7 +61,7 @@ class WithdrawalActivity:BaseRefreshActivity() {
                                 PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.ID_TOKEN, "")
                                 PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
                                 PreferenceUtil.putPref(this@WithdrawalActivity, PreferenceUtil.USER_CARID, "")
-                                startActivity(Intent(this@WithdrawalActivity, LoginActivity::class.java))
+                                startActivity(Intent(this@WithdrawalActivity, LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
                                 finish()
                             }
                         }
