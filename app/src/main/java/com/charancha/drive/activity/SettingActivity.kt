@@ -1,5 +1,10 @@
 package com.charancha.drive.activity
 
+import android.content.Intent
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -11,6 +16,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.charancha.drive.BuildConfig
+import com.charancha.drive.CustomDialogNoCancel
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
 import com.charancha.drive.retrofit.response.TermsSummaryResponse
@@ -34,6 +40,7 @@ class SettingActivity:BaseRefreshActivity(){
     lateinit var tv_unit:TextView
     lateinit var tv_version:TextView
     lateinit var btn_back:ImageView
+    lateinit var btn_update:TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +60,13 @@ class SettingActivity:BaseRefreshActivity(){
         tv_unit = findViewById(R.id.tv_unit)
         tv_version = findViewById(R.id.tv_version)
         btn_back = findViewById(R.id.btn_back)
+        btn_update = findViewById(R.id.btn_update)
+        btn_update.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                goUpdate()
+            }
+
+        })
 
         btn_open_set_distance_unit.setOnClickListener {
             layout_select_distance_unit.visibility = VISIBLE
@@ -136,6 +150,37 @@ class SettingActivity:BaseRefreshActivity(){
                 }
             }
         })
+    }
+
+    private fun goUpdate(){
+        CustomDialogNoCancel(
+            this,
+            "최신 버전 업데이트",
+            "안정적인 서비스 이용을 위해 최신 버전 업데이트가 필요합니다.",
+            "업데이트",
+            object : CustomDialogNoCancel.DialogCallback {
+                override fun onConfirm() {
+                    val app: ApplicationInfo
+                    app = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        packageManager.getApplicationInfo(
+                            "com.android.vending",
+                            PackageManager.ApplicationInfoFlags.of(0)
+                        )
+                    } else {
+                        packageManager.getApplicationInfo(
+                            "com.android.vending",
+                            PackageManager.GET_META_DATA
+                        )
+                    }
+
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.data = Uri.parse(
+                        "https://play.google.com/store/apps/details?id=com.charancha"
+                    )
+                    intent.setPackage("com.android.vending")
+                    startActivity(intent)
+                }
+            }).show()
     }
 
 }

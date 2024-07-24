@@ -10,10 +10,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
-import com.charancha.drive.CustomDialog
-import com.charancha.drive.CustomDialogNoCancel
-import com.charancha.drive.PreferenceUtil
-import com.charancha.drive.R
+import com.charancha.drive.*
 import com.charancha.drive.retrofit.response.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -214,48 +211,43 @@ class SplashActivity: BaseActivity() {
                     )
 
                     try {
-                        val info = packageManager.getPackageInfo(packageName, 0)
-                        if (info != null && info.versionName != null) {
-                            val currentAppVersion = info.versionName
-                            val majorFromApi =
-                                getLatestResponse.version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
-                                    .toTypedArray()[0]
-                            val minorFromApi =
-                                getLatestResponse.version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
-                                    .toTypedArray()[1]
-                            val patchFromApi =
-                                getLatestResponse.version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
-                                    .toTypedArray()[2]
-                            val major = currentAppVersion.split("\\.".toRegex())
-                                .dropLastWhile { it.isEmpty() }
+                        val currentAppVersion = BuildConfig.VERSION_NAME
+                        val majorFromApi =
+                            getLatestResponse.version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
                                 .toTypedArray()[0]
-                            val minor = currentAppVersion.split("\\.".toRegex())
-                                .dropLastWhile { it.isEmpty() }
+                        val minorFromApi =
+                            getLatestResponse.version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
                                 .toTypedArray()[1]
-                            val patch = currentAppVersion.split("\\.".toRegex())
-                                .dropLastWhile { it.isEmpty() }
+                        val patchFromApi =
+                            getLatestResponse.version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
                                 .toTypedArray()[2]
+                        val major = currentAppVersion.split("\\.".toRegex())
+                            .dropLastWhile { it.isEmpty() }
+                            .toTypedArray()[0]
+                        val minor = currentAppVersion.split("\\.".toRegex())
+                            .dropLastWhile { it.isEmpty() }
+                            .toTypedArray()[1]
+                        val patch = currentAppVersion.split("\\.".toRegex())
+                            .dropLastWhile { it.isEmpty() }
+                            .toTypedArray()[2]
 
 
-
-                            if (patchFromApi.toInt() > patch.toInt()) {
-                                goUpdate()
-                                return
-                            }
-                            if (minorFromApi.toInt() > minor.toInt()) {
-                                goUpdate()
-                                return
-                            }
-                            if (majorFromApi.toInt() > major.toInt()) {
-                                goUpdate()
-                                return
-                            }
-
-                            goSplash()
-
-                        } else {
-                            goSplash()
+                        if (patchFromApi.toInt() > patch.toInt()) {
+                            goUpdate()
+                            return
                         }
+                        if (minorFromApi.toInt() > minor.toInt()) {
+                            goUpdate()
+                            return
+                        }
+                        if (majorFromApi.toInt() > major.toInt()) {
+                            goUpdate()
+                            return
+                        }
+
+                        goSplash()
+
+
                     } catch (e: PackageManager.NameNotFoundException) {
                         goSplash()
                     }
@@ -290,6 +282,7 @@ class SplashActivity: BaseActivity() {
                             PackageManager.GET_META_DATA
                         )
                     }
+
                     val intent = Intent(Intent.ACTION_VIEW)
                     intent.data = Uri.parse(
                         "https://play.google.com/store/apps/details?id=com.charancha"
