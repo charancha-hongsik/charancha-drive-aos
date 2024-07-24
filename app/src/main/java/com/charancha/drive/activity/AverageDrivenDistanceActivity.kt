@@ -1296,7 +1296,7 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                         tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
                         tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
 
-                        tv_driving_info1.text = "1개월 1회 평균 주행 거리"
+                        tv_driving_info1.text = "일일 평균"
                         tv_driving_info2.text = "1회 평균 주행 거리는 \n높을수록 좋아요"
                         tv_driving_info3.text = "1개월 1회 주행 거리를\n한눈에 확인해 보세요!"
 
@@ -1461,7 +1461,7 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
 
                         tv_driving_info1.text = "월 평균"
                         tv_driving_info2.text = "1회 평균 주행 거리는 \n높을수록 좋아요"
-                        tv_driving_info3.text = "1년 1회 주행 거리를\n한눈에 확인해보세요!"
+                        tv_driving_info3.text = "1년 1회 주행 거리를\n한눈에 확인해 보세요!"
 
                         tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
                         tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
