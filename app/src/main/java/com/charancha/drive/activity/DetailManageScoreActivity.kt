@@ -65,6 +65,13 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
     lateinit var behavior: BottomSheetBehavior<LinearLayout>
     lateinit var selectedDate:String
 
+    lateinit var iv_tooltip_perone_average:ImageView
+    lateinit var iv_tooltip_rapid_acc_dec:ImageView
+    lateinit var iv_tooltip_high_speed:ImageView
+    lateinit var iv_tooltip_optimal_speed:ImageView
+    lateinit var iv_tooltip_const_driving:ImageView
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_managescore)
@@ -95,6 +102,46 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
         layout_there_is_data = findViewById(R.id.layout_there_is_data)
         layout_no_data = findViewById(R.id.layout_no_data)
         layout_no_score = findViewById(R.id.layout_no_score)
+        iv_tooltip_perone_average = findViewById(R.id.iv_tooltip_perone_average)
+        iv_tooltip_perone_average.setOnClickListener(object :OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+
+            }
+
+        })
+        iv_tooltip_rapid_acc_dec = findViewById(R.id.iv_tooltip_rapid_acc_dec)
+        iv_tooltip_rapid_acc_dec.setOnClickListener(object :OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                showTooltipForEach(this@DetailManageScoreActivity, "1회 평균 주행거리란?","차량이 한 번 주행할 때마다 이동한 거리의 평균값이에요. 높을수록 좋아요!")
+
+            }
+
+        })
+        iv_tooltip_high_speed = findViewById(R.id.iv_tooltip_high_speed)
+        iv_tooltip_high_speed.setOnClickListener(object :OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                showTooltipForEach(this@DetailManageScoreActivity, "급가감속 횟수란?","급출발, 급가속, 급정지, 급감속의 모든 횟수에요. 낮을수록 좋아요!")
+
+            }
+
+        })
+        iv_tooltip_optimal_speed = findViewById(R.id.iv_tooltip_optimal_speed)
+        iv_tooltip_optimal_speed.setOnClickListener(object :OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                showTooltipForEach(this@DetailManageScoreActivity, "최적 주행이란?","급출발, 급가속, 급정지, 급감속을 하지 않고 안정적으로 주행한 거리에요. 높을수록 좋아요!")
+
+            }
+
+        })
+        iv_tooltip_const_driving = findViewById(R.id.iv_tooltip_const_driving)
+        iv_tooltip_const_driving.setOnClickListener(object :OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                showTooltipForEach(this@DetailManageScoreActivity, "항속 주행이란?","61km/h 이상 141km/h 미만으로 3분 이상 일정한 속도로 주행한 거리에요(속도 변동 5km/h 이내). 높을수록 좋아요!")
+
+            }
+
+        })
+
 
         view_engine_chart_background = findViewById(R.id.view_engine_chart_background)
         view_engine_chart_score = findViewById(R.id.view_engine_chart_score)

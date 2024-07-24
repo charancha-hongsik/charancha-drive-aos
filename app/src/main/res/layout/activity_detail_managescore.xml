@@ -298,6 +298,7 @@
                                 app:layout_constraintBottom_toBottomOf="parent" />
 
                             <ImageView
+                                android:id="@+id/iv_tooltip_perone_average"
                                 android:layout_width="16dp"
                                 android:layout_height="16dp"
                                 android:layout_marginLeft="2dp"
@@ -338,6 +339,7 @@
                                 app:layout_constraintBottom_toBottomOf="parent" />
 
                             <ImageView
+                                android:id="@+id/iv_tooltip_rapid_acc_dec"
                                 android:layout_width="16dp"
                                 android:layout_height="16dp"
                                 android:layout_marginLeft="2dp"
@@ -379,6 +381,7 @@
                                 app:layout_constraintBottom_toBottomOf="parent" />
 
                             <ImageView
+                                android:id="@+id/iv_tooltip_high_speed"
                                 android:layout_width="16dp"
                                 android:layout_height="16dp"
                                 android:layout_marginLeft="2dp"
@@ -420,6 +423,7 @@
                                 app:layout_constraintBottom_toBottomOf="parent" />
 
                             <ImageView
+                                android:id="@+id/iv_tooltip_optimal_speed"
                                 android:layout_width="16dp"
                                 android:layout_height="16dp"
                                 android:layout_marginLeft="2dp"
@@ -461,6 +465,7 @@
                                 app:layout_constraintBottom_toBottomOf="parent" />
 
                             <ImageView
+                                android:id="@+id/iv_tooltip_const_driving"
                                 android:layout_width="16dp"
                                 android:layout_height="16dp"
                                 android:layout_marginLeft="2dp"

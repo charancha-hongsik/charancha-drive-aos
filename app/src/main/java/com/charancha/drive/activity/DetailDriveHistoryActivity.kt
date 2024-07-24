@@ -166,7 +166,10 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     private fun setResources(){
         iv_tooltip_verification.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltipForEach(this@DetailDriveHistoryActivity, "1회 평균 주행거리란?","차량이 한 번 주행할 때마다 이동한 거리의 평균값이에요. 높을수록 좋아요!")
+                showTooltipForEach(this@DetailDriveHistoryActivity, "데이터 인증이란?","주행 이력을 쌓는 방법에 따라 부여돼요.\n" +
+                        "L3 = 안드로이드 오토, 애플 카플레이\n" +
+                        "L2 = 블루투스\n" +
+                        "L1 = 사용자 활동 자동 감지")
             }
         })
 
