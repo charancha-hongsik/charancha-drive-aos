@@ -28,7 +28,12 @@ open class BaseActivity: AppCompatActivity(){
     var distance_unit = "km"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        distance_unit = PreferenceUtil.getPref(this@BaseActivity,  PreferenceUtil.KM_MILE, "km")!!
+    }
 
+    override fun onResume() {
+        super.onResume()
+        Log.d("testsetestseset","teststssetst ::  " + PreferenceUtil.getPref(this@BaseActivity,  PreferenceUtil.KM_MILE, "km")!!)
         distance_unit = PreferenceUtil.getPref(this@BaseActivity,  PreferenceUtil.KM_MILE, "km")!!
 
     }

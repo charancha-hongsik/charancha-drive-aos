@@ -55,6 +55,7 @@ class ManageEngineActivity:BaseRefreshActivity() {
     lateinit var iv_tooltip_high_speed:ImageView
     lateinit var iv_tooltip_optimal_driving:ImageView
     lateinit var iv_tooltip_const_driving:ImageView
+    lateinit var tv_distance_unit:TextView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -136,6 +137,8 @@ class ManageEngineActivity:BaseRefreshActivity() {
         btn_month_drive = findViewById(R.id.btn_month_drive)
         btn_six_month_drive = findViewById(R.id.btn_six_month_drive)
         btn_year_drive = findViewById(R.id.btn_year_drive)
+        tv_distance_unit = findViewById(R.id.tv_distance_unit)
+        tv_distance_unit.text = distance_unit
 
         btn_high_speed_driving = findViewById(R.id.btn_high_speed_driving)
         btn_high_speed_driving.setOnClickListener(object:OnSingleClickListener(){
