@@ -105,6 +105,7 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
         iv_tooltip_perone_average = findViewById(R.id.iv_tooltip_perone_average)
         iv_tooltip_perone_average.setOnClickListener(object :OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
+                showTooltipForEach(this@DetailManageScoreActivity, "1회 평균 주행거리란?","차량이 한 번 주행할 때마다 이동한 거리의 평균값이에요. 높을수록 좋아요!")
 
             }
 
@@ -112,7 +113,7 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
         iv_tooltip_rapid_acc_dec = findViewById(R.id.iv_tooltip_rapid_acc_dec)
         iv_tooltip_rapid_acc_dec.setOnClickListener(object :OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltipForEach(this@DetailManageScoreActivity, "1회 평균 주행거리란?","차량이 한 번 주행할 때마다 이동한 거리의 평균값이에요. 높을수록 좋아요!")
+                showTooltipForEach(this@DetailManageScoreActivity, "급가감속 횟수란?","급출발, 급가속, 급정지, 급감속의 모든 횟수에요. 낮을수록 좋아요!")
 
             }
 
@@ -120,7 +121,7 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
         iv_tooltip_high_speed = findViewById(R.id.iv_tooltip_high_speed)
         iv_tooltip_high_speed.setOnClickListener(object :OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltipForEach(this@DetailManageScoreActivity, "급가감속 횟수란?","급출발, 급가속, 급정지, 급감속의 모든 횟수에요. 낮을수록 좋아요!")
+                showTooltipForEach(this@DetailManageScoreActivity, "고속 주행이란?","80km/h 이상 150km/h 미만 사이의 속력으로 주행한 거리에요. 높을수록 좋아요!")
 
             }
 
@@ -201,8 +202,6 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
 
     fun setInitData(){
         if(tv_detail_managescroe_title.text.contains("최근 관리 점수")){
-            Log.d("testestestest","testsetsetset ACCESS_TOKEN :: " + PreferenceUtil.getPref(this@DetailManageScoreActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!)
-            Log.d("testestestest","testsetsetset USER_CARID :: " + PreferenceUtil.getPref(this@DetailManageScoreActivity, PreferenceUtil.USER_CARID, "")!!)
 
             apiService().getRecentManageScoreStatistics(
                 "Bearer " + PreferenceUtil.getPref(this@DetailManageScoreActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,
