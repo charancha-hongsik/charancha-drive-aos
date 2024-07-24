@@ -41,12 +41,15 @@ class TermsOfUseActivity: BaseActivity() {
     private lateinit var ibTerms3:ImageButton
     private lateinit var ibTerms4:ImageButton
     private lateinit var ibTerms5:ImageButton
+    private lateinit var ibTerms6:ImageButton
+
     private lateinit var tvTerms1:TextView
     private lateinit var tvTermsTitle1:TextView
     private lateinit var tvTermsTitle2:TextView
     private lateinit var tvTermsTitle3:TextView
     private lateinit var tvTermsTitle4:TextView
     private lateinit var tvTermsTitle5:TextView
+    private lateinit var tvTermsTitle6:TextView
 
 
     lateinit var termsSummaryResponse: List<TermsSummaryResponse>
@@ -106,12 +109,14 @@ class TermsOfUseActivity: BaseActivity() {
         ibTerms3 = findViewById(R.id.ib_terms3)
         ibTerms4 = findViewById(R.id.ib_terms4)
         ibTerms5 = findViewById(R.id.ib_terms5)
-        tvTerms1 = findViewById(R.id.tv_terms1)
+        ibTerms6 = findViewById(R.id.ib_terms6)
         tvTermsTitle1 = findViewById(R.id.tv_terms_title1)
         tvTermsTitle2 = findViewById(R.id.tv_terms_title2)
         tvTermsTitle3 = findViewById(R.id.tv_terms_title3)
         tvTermsTitle4 = findViewById(R.id.tv_terms_title4)
         tvTermsTitle5 = findViewById(R.id.tv_terms_title5)
+        tvTermsTitle6 = findViewById(R.id.tv_terms_title6)
+
 
         try {
             // TextView에 SpannableString 설정
@@ -152,6 +157,12 @@ class TermsOfUseActivity: BaseActivity() {
                 resources.getColor(R.color.gray_400)
             )
 
+            tvTermsTitle6.text = CommonUtil.getSpannableString(
+                this@TermsOfUseActivity,
+                resources.getString(R.string.terms_title6),
+                resources.getString(R.string.terms_title6_gray),
+                resources.getColor(R.color.gray_400)
+            )
 
             val content2 = SpannableString(tvTermsTitle2.text.toString())
             content2.setSpan(UnderlineSpan(), 0, content2.length - 5, 0)
@@ -168,6 +179,10 @@ class TermsOfUseActivity: BaseActivity() {
             val content5 = SpannableString(tvTermsTitle5.text.toString())
             content5.setSpan(UnderlineSpan(), 0, content5.length - 5, 0)
             tvTermsTitle5.text = content5
+
+            val content6 = SpannableString(tvTermsTitle6.text.toString())
+            content6.setSpan(UnderlineSpan(), 0, content6.length - 5, 0)
+            tvTermsTitle6.text = content6
         }catch (e:Exception){
 
         }
@@ -280,7 +295,7 @@ class TermsOfUseActivity: BaseActivity() {
             ibTerms3.isSelected = ibAllAccept.isSelected
             ibTerms4.isSelected = ibAllAccept.isSelected
             ibTerms5.isSelected = ibAllAccept.isSelected
-
+            ibTerms6.isSelected = ibAllAccept.isSelected
 
             checkAllAccept()
         }
@@ -362,8 +377,19 @@ class TermsOfUseActivity: BaseActivity() {
                     }
                 }
             }
-        }
-        )
+        })
+
+        tvTermsTitle6.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                tvTermsTitle6.setOnClickListener{
+                    for(term in termsSummaryResponse){
+                        if(tvTermsTitle6.text.contains(term.title)){
+                            startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
+                        }
+                    }
+                }
+            }
+        })
     }
 
     private fun checkAllAccept(){

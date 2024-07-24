@@ -585,7 +585,7 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
     }
 
     private fun callMonthChart(){
-        apiService().getDrivingDistanceGraphData(
+        apiService().getDrivingDistancePerOneGraphData(
             "Bearer " + PreferenceUtil.getPref(this@AverageDrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this@AverageDrivenDistanceActivity, PreferenceUtil.USER_CARID, "")!!,
             "ASC",
@@ -619,7 +619,7 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
     }
 
     private fun callSixMonthChart(){
-        apiService().getDrivingDistanceGraphData(
+        apiService().getDrivingDistancePerOneGraphData(
             "Bearer " + PreferenceUtil.getPref(this@AverageDrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this@AverageDrivenDistanceActivity, PreferenceUtil.USER_CARID, "")!!,
             "ASC",
@@ -653,7 +653,7 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
     }
 
     private fun callYearChart(){
-        apiService().getDrivingDistanceGraphData(
+        apiService().getDrivingDistancePerOneGraphData(
             "Bearer " + PreferenceUtil.getPref(this@AverageDrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this@AverageDrivenDistanceActivity, PreferenceUtil.USER_CARID, "")!!,
             "ASC",

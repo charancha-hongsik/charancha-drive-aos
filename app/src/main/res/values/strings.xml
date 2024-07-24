@@ -47,8 +47,10 @@
     <string name="terms_title3_gray">(필수)</string>
     <string name="terms_title4">개인정보 수집 및 이용동의 (선택)</string>
     <string name="terms_title4_gray">(선택)</string>
-    <string name="terms_title5">마케팅 정보 수신동의 (선택)</string>
+    <string name="terms_title5">마케팅 정보 수신 동의 (선택)</string>
     <string name="terms_title5_gray">(선택)</string>
+    <string name="terms_title6">위치정보 수집 및 이용 동의 (필수)</string>
+    <string name="terms_title6_gray">(필수)</string>
     <string name="next">다음</string>
 
     <string name="permission_info_text1">편리한 마일로그앱 사용을 위해\n아래의 권한을 허용해주세요</string>

@@ -476,6 +476,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
         var max = 0
 
         for(item in items){
+            Log.d("testsetsetset","teststsetse :: " + item.totalDistance)
             if(transferDistance(item.totalDistance).toDouble() > max.toDouble())
                 max = transferDistance(item.totalDistance).toDouble().toInt()
         }
@@ -592,11 +593,6 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
     }
 
     private fun callMonthChart(){
-        Log.d("testestestests","testeststesset :: " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!)
-        Log.d("testestestests","testeststesset :: " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.USER_CARID, "")!!)
-        Log.d("testestestests","testeststesset :: " + getCurrentAndPastTimeForISO(29).second)
-        Log.d("testestestests","testeststesset :: " + getCurrentAndPastTimeForISO(29).first)
-
         apiService().getDrivingDistanceGraphData(
             "Bearer " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.USER_CARID, "")!!,
@@ -2280,6 +2276,13 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
     }
 
     private fun setMonthDrivingDistance(){
+        Log.d("testestsetseest","testestestest second :: " + getCurrentAndPastTimeForISO(29).second)
+        Log.d("testestsetseest","testestestest first :: " + getCurrentAndPastTimeForISO(29).first)
+        Log.d("testestsetest","testestestest :: "  + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!)
+        Log.d("testestsetest","testestestest :: " +  PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!)
+        PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!
+
+
         tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
         tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
         tv_date3.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
@@ -2298,6 +2301,8 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
                         response.body()?.string(),
                         GetDrivingStatisticsResponse::class.java
                     )
+
+                    Log.d("testsetsetes","testsetestse :: " + drivingDistance.max.totalDistance)
 
                     if(drivingDistance.average.totalDistance != 0.0){
                         tv_diff_distance.visibility = VISIBLE
