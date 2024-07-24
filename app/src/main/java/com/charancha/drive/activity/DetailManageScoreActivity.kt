@@ -211,6 +211,7 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
                             tv_engine_info_best_driving.text = transferNumWithRounds(recentDrivingDistance.average.optimalDrivingPercentage).toString() + "%"
                             tv_engine_info_normal_driving.text = transferNumWithRounds(recentDrivingDistance.average.constantSpeedDrivingDistancePercentage).toString() + "%"
                         }else{
+                            setInquireScope(getTodayFormattedDate())
                             tv_engine_info_average_distance.text = transferDistanceWithUnit(0.0)
                         }
                     }

@@ -1236,6 +1236,9 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                         })
 
                     }else{
+                        tv_date1.text = getTodayFormattedDate()
+                        tv_date2.text = getTodayFormattedDate()
+
                         tv_total_distance.text = transferDistance(0.0)
                         tv_diff_distance.text = "+" + transferDistance(0.0) + distance_unit + " 증가"
                         tv_average_distance.text = transferDistance(0.0)

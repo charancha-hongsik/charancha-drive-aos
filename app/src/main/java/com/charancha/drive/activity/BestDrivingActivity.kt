@@ -270,6 +270,9 @@ class BestDrivingActivity:BaseRefreshActivity() {
                         tv_best_percent2.text = "0.0"
                         tv_diff_percent.text = "+0.0% 증가"
 
+                        tv_date1.text = getTodayFormattedDate()
+                        tv_date2.text = getTodayFormattedDate()
+
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 

@@ -270,6 +270,9 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
+                        tv_date1.text = getTodayFormattedDate()
+                        tv_date2.text = getTodayFormattedDate()
+
                         setRecentBarChartAsDefault()
                         setExtraSpeedDrivingChartWidthByPercent(0f)
                     }

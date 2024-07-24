@@ -352,6 +352,9 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                         tv_low_speed_percent.text = 0.0.toString()
                         tv_etc_speed_percent.text = 0.0.toString()
 
+                        tv_date1.text = getTodayFormattedDate()
+                        tv_date2.text = getTodayFormattedDate()
+
                         setRecentBarChartAsDefault()
 
                         setHighSpeedDrivingChartWidthByPercent(0f)

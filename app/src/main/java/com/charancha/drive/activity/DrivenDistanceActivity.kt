@@ -2153,10 +2153,6 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
                         GetRecentDrivingStatisticsResponse::class.java
                     )
 
-                    tv_date1.text = convertDateFormat(recentStartTime)
-                    tv_date2.text = convertDateFormat(recentStartTime)
-                    tv_date3.text = convertDateFormat(recentStartTime)
-
                     if(recentDrivingDistance.isRecent){
                         recentStartTime = recentDrivingDistance.recentStartTime
                         recentEndTime = recentDrivingDistance.recentEndTime
@@ -2236,6 +2232,10 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
 
 
                     }else{
+                        tv_date1.text = getTodayFormattedDate()
+                        tv_date2.text = getTodayFormattedDate()
+                        tv_date3.text = getTodayFormattedDate()
+
                         setRecentBarChartAsDefault()
                         setRecentLineChartAsDefault()
                         tv_total_distance.text = transferDistance(0.0)

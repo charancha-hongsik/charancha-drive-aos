@@ -2272,6 +2272,10 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                         })
 
                     }else{
+                        tv_date1.text = getTodayFormattedDate()
+                        tv_date2.text = getTodayFormattedDate()
+                        tv_date3.text = getTodayFormattedDate()
+
                         tv_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
                         tv_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
                         tv_average_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()

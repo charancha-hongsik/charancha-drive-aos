@@ -163,9 +163,6 @@ class MainActivity : BaseRefreshActivity() {
 
         setBtn()
         setAlarm()
-        getManageScoreForAMonth()
-        getDrivingDistanceForAMonth()
-        setRecentManageScoreForSummary()
     }
 
     fun checkLocation(){
