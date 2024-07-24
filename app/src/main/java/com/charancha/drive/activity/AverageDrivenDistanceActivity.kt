@@ -1196,7 +1196,7 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
 
                         tv_driving_info1.text = "최근 1일 총합"
                         tv_driving_info2.text = "1회 평균 주행 거리는 \n높을수록 좋아요"
-                        tv_driving_info3.text = "최근 1회 주행 거리를\n한눈에 확인해 보세요!"
+                        tv_driving_info3.text = "최근 1일의 기록을\n한눈에 확인해 보세요!"
 
 
                         tv_date1.text = convertDateFormat(recentStartTime)
@@ -1272,11 +1272,6 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
     }
 
     private fun setMonthDrivingDistance(){
-        tv_driving_info1.text = "일일 평균"
-        tv_driving_info2.text = "1회 평균 주행 거리는 \n높을수록 좋아요"
-        tv_driving_info3.text = "1개월 1회 주행 거리를\n한눈에 확인해 보세요!"
-
-
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@AverageDrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
@@ -1298,7 +1293,7 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
 
                         tv_driving_info1.text = "일일 평균"
                         tv_driving_info2.text = "1회 평균 주행 거리는 \n높을수록 좋아요"
-                        tv_driving_info3.text = "1개월 1회 주행 거리를\n한눈에 확인해 보세요!"
+                        tv_driving_info3.text = "최근 1개월의 기록을\n한눈에 확인해 보세요!"
 
                         tv_total_distance.text = transferDistance(drivingDistance.perOne.totalDistance)
                         tv_average_distance.text = transferDistance(drivingDistance.perOne.totalDistance)
@@ -1324,8 +1319,10 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                         tv_max_distance.text = transferDistance(0.0)
                         tv_min_distance.text = transferDistance(0.0)
 
+                        tv_driving_info1.text = "일일 평균"
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
 
                         setRecentBarChartAsDefault()
                     }
@@ -1372,7 +1369,7 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                     if(drivingDistance.average.totalDistance != 0.0){
                         tv_driving_info1.text = "월 평균"
                         tv_driving_info2.text = "1회 평균 주행 거리는 \n높을수록 좋아요"
-                        tv_driving_info3.text = "6개월 1회 주행 거리를\n한눈에 확인해 보세요!"
+                        tv_driving_info3.text = "최근 6개월의 기록을\n한눈에 확인해 보세요!"
 
                         tv_total_distance.text = transferDistance(drivingDistance.perOne.totalDistance)
                         tv_average_distance.text = transferDistance(drivingDistance.perOne.totalDistance)
@@ -1400,6 +1397,7 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                         tv_max_distance.text = transferDistance(0.0)
                         tv_min_distance.text = transferDistance(0.0)
 
+                        tv_driving_info1.text = "월 평균"
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
@@ -1417,11 +1415,6 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
     }
 
     private fun setYearDrivingDistance(){
-        Log.d("testsetetestsetse","testestsetsetsetse :: " +  PreferenceUtil.getPref(this@AverageDrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!)
-        Log.d("testsetetestsetse","testestsetsetsetse :: " +  PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!)
-        Log.d("testsetetestsetse","testestsetsetsetse :: " +  getCurrentAndPastTimeForISO(334).second)
-        Log.d("testsetetestsetse","testestsetsetsetse :: " +  getCurrentAndPastTimeForISO(334).first)
-
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@AverageDrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
@@ -1461,7 +1454,7 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
 
                         tv_driving_info1.text = "월 평균"
                         tv_driving_info2.text = "1회 평균 주행 거리는 \n높을수록 좋아요"
-                        tv_driving_info3.text = "1년 1회 주행 거리를\n한눈에 확인해 보세요!"
+                        tv_driving_info3.text = "최근 1년의 기록을\n한눈에 확인해 보세요!"
 
                         tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
                         tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
@@ -1472,6 +1465,7 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                         tv_max_distance.text = transferDistance(0.0)
                         tv_min_distance.text = transferDistance(0.0)
 
+                        tv_driving_info1.text = "월 평균"
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
