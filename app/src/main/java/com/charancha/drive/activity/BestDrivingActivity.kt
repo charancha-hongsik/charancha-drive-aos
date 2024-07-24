@@ -215,7 +215,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
                             tv_diff_percent.setTextColor(resources.getColor(R.color.sec_500))
                         }
 
-                        tv_driving_info1.text = "최근 1일"
+                        tv_driving_info1.text = "최근 1일 평균"
                         tv_driving_info2.text = "최근 1일간 내 차의\n최적 주행 거리에요"
                         tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
 
@@ -255,6 +255,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
                                 tv_best_percent2.text = "0.0"
                                 tv_diff_percent.text = "+0.0% 증가"
 
+                                tv_driving_info1.text = "최근 1일 평균"
                                 tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                                 tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
@@ -338,7 +339,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
                         }
 
 
-                        tv_driving_info1.text = "1개월 평균"
+                        tv_driving_info1.text = "일일 평균"
                         tv_driving_info2.text = "최근 1개월간 내 차의\n최적 주행 거리에요"
                         tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
 
@@ -364,6 +365,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
                 tv_best_percent2.text = "0.0"
                 tv_diff_percent.text = "+0.0% 증가"
 
+                tv_driving_info1.text = "일일 평균"
                 tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
@@ -393,7 +395,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
             getCurrentAndPastTimeForISO(150).second,
             getCurrentAndPastTimeForISO(150).first,
             "startTime",
-            "day").enqueue(object: Callback<ResponseBody> {
+            "month").enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200) {
 
@@ -403,7 +405,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
                     )
 
                     if(drivingDistance.total.totalDistance != 0.0){
-                        tv_driving_info1.text = "6개월 평균"
+                        tv_driving_info1.text = "월 평균"
                         tv_driving_info2.text = "최근 6개월간 내 차의\n최적 주행 거리에요"
                         tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
 
@@ -431,6 +433,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
                         tv_best_percent2.text = "0.0"
                         tv_diff_percent.text = "+0.0% 증가"
 
+                        tv_driving_info1.text = "월 평균"
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 
@@ -469,7 +472,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
             getCurrentAndPastTimeForISO(334).second,
             getCurrentAndPastTimeForISO(334).first,
             "startTime",
-            "day").enqueue(object: Callback<ResponseBody> {
+            "month").enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200) {
 
@@ -497,10 +500,9 @@ class BestDrivingActivity:BaseRefreshActivity() {
                         }
 
 
-                        tv_driving_info1.text = "1년 평균"
+                        tv_driving_info1.text = "월 평균"
                         tv_driving_info2.text = "최근 1년간 내 차의\n최적 주행 거리에요"
                         tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
-
 
                         setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat()/100)
                     }else{
@@ -508,6 +510,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
                         tv_best_percent2.text = "0.0"
                         tv_diff_percent.text = "+0.0% 증가"
 
+                        tv_driving_info1.text = "월 평균"
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
 

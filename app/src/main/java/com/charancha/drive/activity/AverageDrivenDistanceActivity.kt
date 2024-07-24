@@ -1356,7 +1356,7 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
             getCurrentAndPastTimeForISO(150).second,
             getCurrentAndPastTimeForISO(150).first,
             "startTime",
-            "day").enqueue(object: Callback<ResponseBody> {
+            "month").enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200) {
 
@@ -1421,7 +1421,7 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
             getCurrentAndPastTimeForISO(334).second,
             getCurrentAndPastTimeForISO(334).first,
             "startTime",
-            "day").enqueue(object: Callback<ResponseBody> {
+            "month").enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200) {
 
@@ -1431,9 +1431,6 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                     )
 
                     if(drivingDistance.average.totalDistance != 0.0){
-
-                        tv_total_distance.text = transferDistance(drivingDistance.average.totalDistance)
-
                         if(drivingDistance.diffPerOne.totalDistance == 0.0){
                             tv_diff_distance.text = "점수 변동이 없어요."
                             tv_diff_distance.setTextColor(resources.getColor(R.color.gray_950))

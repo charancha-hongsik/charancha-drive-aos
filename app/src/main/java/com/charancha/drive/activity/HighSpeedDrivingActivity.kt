@@ -149,7 +149,8 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                 btn_year_drive.isSelected = false
 
                 callSixMonthChart()
-                setSixMonthDrivingDistance()            }
+                setSixMonthDrivingDistance()
+            }
 
         })
 
