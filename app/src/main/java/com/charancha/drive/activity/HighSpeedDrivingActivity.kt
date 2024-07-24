@@ -303,7 +303,7 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                         tv_low_speed_percent.text = String.format(Locale.KOREAN, "%.0f", recentDrivingDistance.average.lowSpeedDrivingDistancePercentage) + "%"
                         tv_etc_speed_percent.text = String.format(Locale.KOREAN, "%.0f", recentDrivingDistance.average.etcSpeedDrivingDistancePercentage) + "%"
 
-                        tv_driving_info1.text = "최근 1일"
+                        tv_driving_info1.text = "최근 1일 평균"
                         tv_driving_info2.text = "내 차는 고속 주행\n비율이 높을수록 좋아요"
                         tv_driving_info3.text = "최근 1일간 내 차의\n고속 주행 거리에요"
 
@@ -428,7 +428,7 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                         setLowSpeedDrivingChartWidthByPercent(drivingDistance.average.lowSpeedDrivingDistancePercentage.toFloat()/100)
                         setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.etcSpeedDrivingDistancePercentage.toFloat()/100)
 
-                        tv_driving_info1.text = "1개월 평균"
+                        tv_driving_info1.text = "일일 평균"
                         tv_driving_info2.text = "내 차는 고속 주행\n비율이 높을수록 좋아요"
                         tv_driving_info3.text = "최근 1개월간 내 차의\n고속 주행 거리에요"
                     }else{
@@ -505,7 +505,7 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                         tv_low_speed_percent.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.lowSpeedDrivingDistancePercentage) + "%"
                         tv_etc_speed_percent.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.etcSpeedDrivingDistancePercentage) + "%"
 
-                        tv_driving_info1.text = "6개월 평균"
+                        tv_driving_info1.text = "월 평균"
                         tv_driving_info2.text = "내 차는 고속 주행\n비율이 높을수록 좋아요"
                         tv_driving_info3.text = "최근 6개월간 내 차의\n고속 주행 거리에요"
 
@@ -600,7 +600,7 @@ class HighSpeedDrivingActivity:BaseRefreshActivity() {
                         setLowSpeedDrivingChartWidthByPercent(drivingDistance.average.lowSpeedDrivingDistancePercentage.toFloat()/100)
                         setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.etcSpeedDrivingDistancePercentage.toFloat()/100)
 
-                        tv_driving_info1.text = "1년 평균"
+                        tv_driving_info1.text = "월 평균"
                         tv_driving_info2.text = "내 차는 고속 주행\n비율이 높을수록 좋아요"
                         tv_driving_info3.text = "최근 1년간 내 차의\n고속 주행 거리에요"
                     }else{
