@@ -2223,9 +2223,9 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                         recentStartTime = recentDrivingDistance.recentStartTime
                         recentEndTime = recentDrivingDistance.recentEndTime
 
-                        tv_time_info1.text = "최근 1일"
+                        tv_time_info1.text = "최근 1일 총합"
                         tv_time_info2.text = "내 차는 자주\n달릴수록 좋아요"
-                        tv_time_info3.text = "최근 1일의 기록을\n한눈에 확인해보세요!"
+                        tv_time_info3.text = "최근 1일의 기록을\n한눈에 확인해 보세요!"
 
                         tv_date1.text = convertDateFormat(recentStartTime)
                         tv_date2.text = convertDateFormat(recentStartTime)
@@ -2368,10 +2368,9 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                         }
 
 
-                        tv_time_info1.text = "1개월 주행 시간"
+                        tv_time_info1.text = "일일 평균"
                         tv_time_info2.text = "내 차는 자주\n달릴수록 좋아요"
-                        tv_time_info3.text = "최근 1개월의 기록을\n한눈에 확인해보세요!"
-                        tv_time_info4.text = "최근 1개월 간 내 차는\n" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first +"시간" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second + "분" + " 달렸어요"
+                        tv_time_info3.text = "최근 1개월의 기록을\n한눈에 확인해 보세요!"
 
                         tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
                         tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
@@ -2379,7 +2378,7 @@ class DrivenTimeActivity:BaseRefreshActivity() {
 
                         tv_time_info4.text = CommonUtil.getSpannableString(
                             this@DrivenTimeActivity,
-                            "최근 1개월 간 내 차는\n" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first +"시간" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second + "분" + " 달렸어요",
+                            "최근 1개월간 내 차는\n" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first +"시간" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second + "분" + " 달렸어요",
                             transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first.toString() +"시간" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second + "분",
                             resources.getColor(R.color.pri_500)
                         )
@@ -2449,6 +2448,13 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                     )
 
                     if(drivingDistance.total.totalTime != 0.0){
+                        Log.d("testestsetestest","testestestse 1:: " + getCurrentAndPastTimeForISO(150).second)
+                        Log.d("testestsetestest","testestestse 2:: " + getCurrentAndPastTimeForISO(150).first)
+
+
+                        Log.d("testestsetestest","testestestse 3:: " + drivingDistance.average.totalTime)
+
+
                         tv_hour.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).first.toString()
                         tv_minute.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).second.toString()
                         tv_average_hour.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).first.toString()
@@ -2472,13 +2478,13 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                         }
 
 
-                        tv_time_info1.text = "6개월 주행 시간"
+                        tv_time_info1.text = "월 평균"
                         tv_time_info2.text = "내 차는 자주\n달릴수록 좋아요"
-                        tv_time_info3.text = "최근 6개월의 기록을\n한눈에 확인해보세요!"
+                        tv_time_info3.text = "최근 6개월의 기록을\n한눈에 확인해 보세요!"
 
                         tv_time_info4.text = CommonUtil.getSpannableString(
                             this@DrivenTimeActivity,
-                            "최근 6개월 간 내 차는\n" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first +"시간" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second + "분" + " 달렸어요",
+                            "최근 6개월간 내 차는\n" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first +"시간" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second + "분" + " 달렸어요",
                             transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first.toString() +"시간" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second + "분",
                             resources.getColor(R.color.pri_500)
                         )
@@ -2569,10 +2575,12 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                             tv_diff_time.setTextColor(resources.getColor(R.color.sec_500))
                         }
 
+                        Log.d("testestestest","testestes :: " + drivingDistance.total.totalTime)
 
-                        tv_time_info1.text = "1년 주행 시간"
+
+                        tv_time_info1.text = "월 평균"
                         tv_time_info2.text = "내 차는 자주\n달릴수록 좋아요"
-                        tv_time_info3.text = "최근 1년의 기록을\n한눈에 확인해보세요!"
+                        tv_time_info3.text = "최근 1년의 기록을\n한눈에 확인해 보세요!"
 
                         tv_time_info4.text = CommonUtil.getSpannableString(
                             this@DrivenTimeActivity,
