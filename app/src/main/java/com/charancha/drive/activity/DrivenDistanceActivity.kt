@@ -1793,15 +1793,15 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
 
         val entries = listOf(
             BarEntry(-1f, transferDistance(distances.sliceArray(0..0).sum()).toFloat()), // 첫번째 월
-            BarEntry(0f, 0f),
+            BarEntry(0f, transferDistance(distances.sliceArray(0..0).sum()).toFloat()),
             BarEntry(1f,  transferDistance(distances.sliceArray(0..1).sum()).toFloat()), // 두번째 월
-            BarEntry(2f, 0f),
+            BarEntry(2f, transferDistance(distances.sliceArray(0..1).sum()).toFloat()),
             BarEntry(3f,  transferDistance(distances.sliceArray(0..2).sum()).toFloat()), // 세번째 월
-            BarEntry(4f, 0f),
+            BarEntry(4f, transferDistance(distances.sliceArray(0..2).sum()).toFloat()),
             BarEntry(5f,  transferDistance(distances.sliceArray(0..3).sum()).toFloat()), // 네번째 월
-            BarEntry(6f, 0f),
+            BarEntry(6f,  transferDistance(distances.sliceArray(0..3).sum()).toFloat()),
             BarEntry(7f,  transferDistance(distances.sliceArray(0..4).sum()).toFloat()), // 다섯번째 월
-            BarEntry(8f, 0f),
+            BarEntry(8f, transferDistance(distances.sliceArray(0..4).sum()).toFloat()),
             BarEntry(9f,  transferDistance(distances.sliceArray(0..5).sum()).toFloat()) // 여섯번째 월
         )
 
@@ -2028,27 +2028,27 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
 
         val entries = listOf(
             BarEntry(-1f, transferDistance(distances.sliceArray(0..0).sum()).toFloat()), // 1월
-            BarEntry(-0f, 0f),
+            BarEntry(-0f, transferDistance(distances.sliceArray(0..0).sum()).toFloat()),
             BarEntry(1f, transferDistance(distances.sliceArray(0..1).sum()).toFloat()), // 2월
-            BarEntry(2f, 0f),
+            BarEntry(2f, transferDistance(distances.sliceArray(0..1).sum()).toFloat()),
             BarEntry(3f, transferDistance(distances.sliceArray(0..2).sum()).toFloat()), // 3월
-            BarEntry(4f, 0f),
+            BarEntry(4f, transferDistance(distances.sliceArray(0..2).sum()).toFloat()),
             BarEntry(5f, transferDistance(distances.sliceArray(0..3).sum()).toFloat()), // 4월
-            BarEntry(6f, 0f),
+            BarEntry(6f, transferDistance(distances.sliceArray(0..3).sum()).toFloat()),
             BarEntry(7f, transferDistance(distances.sliceArray(0..4).sum()).toFloat()), // 5월
-            BarEntry(8f, 0f),
+            BarEntry(8f, transferDistance(distances.sliceArray(0..4).sum()).toFloat()),
             BarEntry(9f, transferDistance(distances.sliceArray(0..5).sum()).toFloat()), // 6월
-            BarEntry(10f, 0f),
+            BarEntry(10f, transferDistance(distances.sliceArray(0..5).sum()).toFloat()),
             BarEntry(11f, transferDistance(distances.sliceArray(0..6).sum()).toFloat()), // 7월
-            BarEntry(12f, 0f),
+            BarEntry(12f,  transferDistance(distances.sliceArray(0..6).sum()).toFloat()),
             BarEntry(13f, transferDistance(distances.sliceArray(0..7).sum()).toFloat()), // 8월
-            BarEntry(14f, 0f),
+            BarEntry(14f, transferDistance(distances.sliceArray(0..7).sum()).toFloat()),
             BarEntry(15f, transferDistance(distances.sliceArray(0..8).sum()).toFloat()), // 9월
-            BarEntry(16f, 0f),
+            BarEntry(16f, transferDistance(distances.sliceArray(0..8).sum()).toFloat()),
             BarEntry(17f, transferDistance(distances.sliceArray(0..9).sum()).toFloat()), // 10월
-            BarEntry(18f, 0f),
+            BarEntry(18f, transferDistance(distances.sliceArray(0..9).sum()).toFloat()),
             BarEntry(19f, transferDistance(distances.sliceArray(0..10).sum()).toFloat()), // 11월
-            BarEntry(20f,0f),
+            BarEntry(20f,transferDistance(distances.sliceArray(0..10).sum()).toFloat()),
             BarEntry(21f,transferDistance(distances.sliceArray(0..11).sum()).toFloat()) // 12월
         )
         // 데이터셋 생성 및 설정

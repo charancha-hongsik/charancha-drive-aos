@@ -1836,15 +1836,15 @@ class DrivenTimeActivity:BaseRefreshActivity() {
 
         val entries = listOf(
             BarEntry(-1f, secondsToMinutes(distances.sliceArray(0..0).sum()).toFloat()), // 첫번째 월
-            BarEntry(0f, 0f),
+            BarEntry(0f, secondsToMinutes(distances.sliceArray(0..0).sum()).toFloat()),
             BarEntry(1f, secondsToMinutes(distances.sliceArray(0..1).sum()).toFloat()), // 두번째 월
-            BarEntry(2f, 0f),
+            BarEntry(2f, secondsToMinutes(distances.sliceArray(0..1).sum()).toFloat()),
             BarEntry(3f, secondsToMinutes(distances.sliceArray(0..2).sum()).toFloat()), // 세번째 월
-            BarEntry(4f, 0f),
+            BarEntry(4f, secondsToMinutes(distances.sliceArray(0..2).sum()).toFloat()),
             BarEntry(5f, secondsToMinutes(distances.sliceArray(0..3).sum()).toFloat()), // 네번째 월
-            BarEntry(6f, 0f),
+            BarEntry(6f, secondsToMinutes(distances.sliceArray(0..3).sum()).toFloat()),
             BarEntry(7f, secondsToMinutes(distances.sliceArray(0..4).sum()).toFloat()), // 다섯번째 월
-            BarEntry(8f, 0f),
+            BarEntry(8f, secondsToMinutes(distances.sliceArray(0..4).sum()).toFloat()),
             BarEntry(9f, secondsToMinutes(distances.sliceArray(0..5).sum()).toFloat()) // 여섯번째 월
         )
 
@@ -2056,7 +2056,7 @@ class DrivenTimeActivity:BaseRefreshActivity() {
         }
 
         if(max == 0.0){
-            setMonthLineChartAsDefault(months)
+            setYearLineChartAsDefault(months)
             return
         }
 
@@ -2068,27 +2068,27 @@ class DrivenTimeActivity:BaseRefreshActivity() {
 
         val entries = listOf(
             BarEntry(-1f, secondsToMinutes(distances.sliceArray(0..0).sum()).toFloat()), // 1월
-            BarEntry(-0f, 0f),
+            BarEntry(-0f, secondsToMinutes(distances.sliceArray(0..0).sum()).toFloat()),
             BarEntry(1f, secondsToMinutes(distances.sliceArray(0..1).sum()).toFloat()), // 2월
-            BarEntry(2f, 0f),
+            BarEntry(2f, secondsToMinutes(distances.sliceArray(0..1).sum()).toFloat()),
             BarEntry(3f, secondsToMinutes(distances.sliceArray(0..2).sum()).toFloat()), // 3월
-            BarEntry(4f, 0f),
+            BarEntry(4f, secondsToMinutes(distances.sliceArray(0..2).sum()).toFloat()),
             BarEntry(5f, secondsToMinutes(distances.sliceArray(0..3).sum()).toFloat()), // 4월
-            BarEntry(6f, 0f),
+            BarEntry(6f, secondsToMinutes(distances.sliceArray(0..3).sum()).toFloat()),
             BarEntry(7f, secondsToMinutes(distances.sliceArray(0..4).sum()).toFloat()), // 5월
-            BarEntry(8f, 0f),
+            BarEntry(8f, secondsToMinutes(distances.sliceArray(0..4).sum()).toFloat()),
             BarEntry(9f, secondsToMinutes(distances.sliceArray(0..5).sum()).toFloat()), // 6월
-            BarEntry(10f, 0f),
+            BarEntry(10f, secondsToMinutes(distances.sliceArray(0..5).sum()).toFloat()),
             BarEntry(11f, secondsToMinutes(distances.sliceArray(0..6).sum()).toFloat()), // 7월
-            BarEntry(12f, 0f),
+            BarEntry(12f, secondsToMinutes(distances.sliceArray(0..6).sum()).toFloat()),
             BarEntry(13f, secondsToMinutes(distances.sliceArray(0..7).sum()).toFloat()), // 8월
-            BarEntry(14f, 0f),
+            BarEntry(14f, secondsToMinutes(distances.sliceArray(0..7).sum()).toFloat()),
             BarEntry(15f, secondsToMinutes(distances.sliceArray(0..8).sum()).toFloat()), // 9월
-            BarEntry(16f, 0f),
+            BarEntry(16f, secondsToMinutes(distances.sliceArray(0..8).sum()).toFloat()),
             BarEntry(17f, secondsToMinutes(distances.sliceArray(0..9).sum()).toFloat()), // 10월
-            BarEntry(18f, 0f),
+            BarEntry(18f, secondsToMinutes(distances.sliceArray(0..9).sum()).toFloat()),
             BarEntry(19f, secondsToMinutes(distances.sliceArray(0..10).sum()).toFloat()), // 11월
-            BarEntry(20f,0f),
+            BarEntry(20f,secondsToMinutes(distances.sliceArray(0..10).sum()).toFloat()),
             BarEntry(21f,secondsToMinutes(distances.sliceArray(0..11).sum()).toFloat()) // 12월
         )
         // 데이터셋 생성 및 설정
