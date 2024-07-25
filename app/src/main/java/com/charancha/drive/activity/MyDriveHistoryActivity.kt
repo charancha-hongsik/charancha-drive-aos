@@ -184,10 +184,10 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                     tv_selected_date.text = selectedDate
                 }else{
                     if(btn_a_month.isSelected){
-                        setInquireScope(getLastMonthRangeString())
+                        setInquireScope(formatDateRangeForAMonth(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first))
                         getHistories(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
                     }else if(btn_six_month.isSelected){
-                        setInquireScope(getLastSixMonthsRangeString())
+                        setInquireScope(formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first))
                         getHistories(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
 
 
@@ -219,7 +219,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         selectedDate = itemList.get(0).date
         tv_selected_date.text = selectedDate
 
-        setInquireScope(getLastMonthRangeString())
+        setInquireScope(formatDateRangeForAMonth(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first))
 
 
         // adapter 생성
@@ -522,40 +522,6 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
 
 
         return choseDateList
-    }
-
-
-    fun getLastMonthRangeString(): String {
-        val currentDate = LocalDate.now()
-        val startDate = currentDate.minusMonths(1).plusDays(1) // 한 달 전의 첫째 날
-        val endDate = currentDate
-
-        val dateFormatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일")
-        val startDateString = if (startDate.month == endDate.month) {
-            startDate.format(dateFormatter).replaceFirst(" ", "")
-        } else {
-            startDate.format(dateFormatter)
-        }
-        val endDateString = endDate.format(DateTimeFormatter.ofPattern("yyyy년 M월 d일"))
-
-        return "$startDateString ~ $endDateString"
-    }
-
-
-    fun getLastSixMonthsRangeString(): String {
-        val currentDate = LocalDate.now()
-        val startDate = currentDate.minusMonths(6).plusDays(1) // 한 달 전의 첫째 날
-        val endDate = currentDate
-
-        val dateFormatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일")
-        val startDateString = if (startDate.month == endDate.month) {
-            startDate.format(dateFormatter).replaceFirst(" ", "")
-        } else {
-            startDate.format(dateFormatter)
-        }
-        val endDateString = endDate.format(DateTimeFormatter.ofPattern("yyyy년 M월 d일"))
-
-        return "$startDateString ~ $endDateString"
     }
 
     fun getDateRangeString(yearMonth: String): String {
