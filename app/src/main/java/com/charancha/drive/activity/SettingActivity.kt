@@ -151,21 +151,21 @@ class SettingActivity:BaseRefreshActivity(){
 
 
                     if (patchFromApi.toInt() > patch.toInt()) {
-                        tv_version.text = "V" + BuildConfig.VERSION_NAME
+                        tv_version.text = "V " + BuildConfig.VERSION_NAME
                         tv_latest.visibility = GONE
                         btn_update.visibility = VISIBLE
 
                         return
                     }
                     if (minorFromApi.toInt() > minor.toInt()) {
-                        tv_version.text = "V" + BuildConfig.VERSION_NAME
+                        tv_version.text = "V " + BuildConfig.VERSION_NAME
                         tv_latest.visibility = GONE
                         btn_update.visibility = VISIBLE
 
                         return
                     }
                     if (majorFromApi.toInt() > major.toInt()) {
-                        tv_version.text = "V" + BuildConfig.VERSION_NAME
+                        tv_version.text = "V " + BuildConfig.VERSION_NAME
                         tv_latest.visibility = GONE
                         btn_update.visibility = VISIBLE
 
@@ -178,7 +178,7 @@ class SettingActivity:BaseRefreshActivity(){
 
 
                 }else{
-                    tv_version.text = "V" + BuildConfig.VERSION_NAME
+                    tv_version.text = "V " + BuildConfig.VERSION_NAME
 
                     tv_latest.visibility = GONE
                     btn_update.visibility = VISIBLE
@@ -188,7 +188,7 @@ class SettingActivity:BaseRefreshActivity(){
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                tv_version.text = "V" + BuildConfig.VERSION_NAME
+                tv_version.text = "V " + BuildConfig.VERSION_NAME
 
                 tv_latest.visibility = GONE
                 btn_update.visibility = VISIBLE
