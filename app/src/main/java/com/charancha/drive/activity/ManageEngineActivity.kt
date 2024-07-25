@@ -339,7 +339,7 @@ class ManageEngineActivity:BaseRefreshActivity() {
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
             ) {
-                if(response.code() == 200){
+                if(response.code() == 200 || response.code() == 201){
                     val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
                     if(getManageScoreResponse.isRecent){
                         if(getManageScoreResponse.total.totalEngineScore != 0.0){
@@ -390,7 +390,7 @@ class ManageEngineActivity:BaseRefreshActivity() {
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,).enqueue(object:
             Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200){
+                if(response.code() == 200 || response.code() == 201){
                     val getDrivingStatisticsResponse = Gson().fromJson(
                         response.body()?.string(),
                         GetDrivingStatisticsResponse::class.java
@@ -471,7 +471,7 @@ class ManageEngineActivity:BaseRefreshActivity() {
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
             ) {
-                if(response.code() == 200){
+                if(response.code() == 200 || response.code() == 201){
                     val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
                     if(getManageScoreResponse.total.totalEngineScore != 0.0){
                         tv_no_score.text = transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()

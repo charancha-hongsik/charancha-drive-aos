@@ -79,7 +79,7 @@ class MyInfoActivity:BaseRefreshActivity() {
                                 call: Call<ResponseBody>,
                                 response: Response<ResponseBody>
                             ) {
-                                if(response.code() == 200){
+                                if(response.code() == 200 || response.code() == 201){
                                     Toast.makeText(this@MyInfoActivity, "저장 되었습니다.", Toast.LENGTH_SHORT).show()
                                     tv_nickname.text = contents
 

@@ -49,7 +49,7 @@ class WithdrawalActivity:BaseRefreshActivity() {
                             call: Call<ResponseBody>,
                             response: Response<ResponseBody>
                         ) {
-                            if(response.code() == 200){
+                            if(response.code() == 200 || response.code() == 201){
                                 logout()
                                 startActivity(Intent(this@WithdrawalActivity, LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
                                 finish()

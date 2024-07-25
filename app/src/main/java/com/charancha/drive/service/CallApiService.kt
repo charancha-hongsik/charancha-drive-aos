@@ -100,7 +100,7 @@ class CallApiService: Service() {
                                         response: Response<ResponseBody>
                                     ) {
 
-                                        if(response.code() == 201){
+                                        if(response.code() == 200 || response.code() == 201){
                                             val postDrivingInfoResponse = gson.fromJson(response.body()?.string(), PostDrivingInfoResponse::class.java)
                                             // update id drive.
                                             // tracking_id to postDrivingInfoResponse.id

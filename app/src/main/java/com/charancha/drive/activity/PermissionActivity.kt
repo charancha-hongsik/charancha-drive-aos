@@ -270,7 +270,7 @@ class PermissionActivity: BaseActivity(){
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
             ) {
-                if(response.code() == 200){
+                if(response.code() == 200 || response.code() == 201){
                     val jsonString = response.body()?.string()
 
                     val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type

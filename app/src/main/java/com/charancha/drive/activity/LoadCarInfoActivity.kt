@@ -122,7 +122,7 @@ class LoadCarInfoActivity:BaseRefreshActivity() {
                     call: Call<ResponseBody>,
                     response: Response<ResponseBody>
                 ) {
-                    if(response.code() == 200){
+                    if(response.code() == 200 || response.code() == 201){
                         response.body()?.let{
                             val intent = Intent(this@LoadCarInfoActivity, RegisterCarActivity::class.java)
                             intent.putExtra("response", it.string())

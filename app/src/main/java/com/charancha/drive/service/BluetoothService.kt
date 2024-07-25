@@ -831,7 +831,7 @@ class BluetoothService : Service() {
                     call: Call<ResponseBody>,
                     response: Response<ResponseBody>
                 ) {
-                    if(response.code() == 201){
+                    if(response.code() == 200 || response.code() == 201){
                         val postDrivingInfoResponse = gson.fromJson(response.body()?.string(), PostDrivingInfoResponse::class.java)
                         writeToRoomForApp(postDrivingInfoResponse.id)
                     }else{

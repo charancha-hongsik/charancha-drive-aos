@@ -119,7 +119,7 @@ class EditCarInfoActivity:BaseRefreshActivity() {
                         call: Call<ResponseBody>,
                         response: Response<ResponseBody>
                     ) {
-                        if(response.code() == 200){
+                        if(response.code() == 200 || response.code() == 201){
                             Toast.makeText(this@EditCarInfoActivity, "내 차 정보가 수정되었어요.", Toast.LENGTH_SHORT).show()
                             finish()
                         }
@@ -206,7 +206,7 @@ class EditCarInfoActivity:BaseRefreshActivity() {
                 response: Response<ResponseBody>
             ) {
 
-                if(response.code() == 200){
+                if(response.code() == 200 || response.code() == 201){
                     val jsonString = response.body()?.string()
 
                     val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
@@ -218,7 +218,7 @@ class EditCarInfoActivity:BaseRefreshActivity() {
                                 call: Call<ResponseBody>,
                                 response: Response<ResponseBody>
                             ) {
-                                if(response.code() == 200){
+                                if(response.code() == 200 || response.code() == 201){
                                     getMyCarInfoResponse = Gson().fromJson(
                                         response.body()?.string(),
                                         GetMyCarInfoResponse::class.java

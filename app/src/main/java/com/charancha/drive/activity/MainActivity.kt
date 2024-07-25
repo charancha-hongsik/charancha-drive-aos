@@ -22,6 +22,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.charancha.drive.*
 import com.charancha.drive.PreferenceUtil.HAVE_BEEN_HOME
+import com.charancha.drive.retrofit.response.GetAccountResponse
 import com.charancha.drive.retrofit.response.GetDrivingStatisticsResponse
 import com.charancha.drive.retrofit.response.GetManageScoreResponse
 import com.charancha.drive.retrofit.response.GetMyCarInfoResponse
@@ -32,7 +33,6 @@ import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import okhttp3.ResponseBody
@@ -163,6 +163,28 @@ class MainActivity : BaseRefreshActivity() {
 
         setBtn()
         setAlarm()
+
+        getAccount()
+    }
+
+    fun getAccount(){
+        apiService().getAccount("Bearer " + PreferenceUtil.getPref(this@MainActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!).enqueue(object:Callback<ResponseBody>{
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                val getAccountResponse = Gson().fromJson(
+                    response.body()?.string(),
+                    GetAccountResponse::class.java
+                )
+
+                if(response.code() == 200 || response.code() == 201){
+                    tv_app_days2.text = convertUtcToDaysSince(getAccountResponse.createdAt)
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+            }
+
+        })
     }
 
     fun checkLocation(){
@@ -777,7 +799,7 @@ class MainActivity : BaseRefreshActivity() {
                 response: Response<ResponseBody>
             ) {
 
-                if(response.code() == 200){
+                if(response.code() == 200 || response.code() == 201){
                     val jsonString = response.body()?.string()
 
                     val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
@@ -790,15 +812,11 @@ class MainActivity : BaseRefreshActivity() {
                                 call: Call<ResponseBody>,
                                 response: Response<ResponseBody>
                             ) {
-                                if(response.code() == 200){
+                                if(response.code() == 200 || response.code() == 201){
                                     val getMyCarInfoResponse = Gson().fromJson(
                                         response.body()?.string(),
                                         GetMyCarInfoResponse::class.java
                                     )
-                                    // 회원가입을 한지
-                                    // 차량등록을 한지
-
-                                    tv_app_days2.text = convertUtcToDaysSince(getMyCarInfoResponse.createdAt)
 
                                     PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.id)
                                     tv_car_name.setText(getMyCarInfoResponse.carName)
@@ -854,7 +872,7 @@ class MainActivity : BaseRefreshActivity() {
             getCurrentAndPastTimeForISO(29).first).enqueue(object:
             Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200){
+                if(response.code() == 200 || response.code() == 201){
                     val getManageScoreResponse = Gson().fromJson(
                         response.body()?.string(),
                         GetManageScoreResponse::class.java
@@ -973,7 +991,7 @@ class MainActivity : BaseRefreshActivity() {
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
             ) {
-                if(response.code() == 200){
+                if(response.code() == 200 || response.code() == 201){
                     val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
                     if(getManageScoreResponse.isRecent){
                         if(getManageScoreResponse.total.totalEngineScore != 0.0){
@@ -1027,7 +1045,7 @@ class MainActivity : BaseRefreshActivity() {
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
             ) {
-                if(response.code() == 200){
+                if(response.code() == 200 || response.code() == 201){
                     val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
                     if(getManageScoreResponse.total.totalEngineScore != 0.0){
                         tv_recent_score2.text = transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()

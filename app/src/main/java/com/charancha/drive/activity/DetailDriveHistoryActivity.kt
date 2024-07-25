@@ -252,7 +252,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                             response: Response<ResponseBody>
                         ) {
 
-                            if(response.code() == 200){
+                            if(response.code() == 200 || response.code() == 201){
                                 tv_mycar.visibility = VISIBLE
                                 tv_not_mycar.visibility = GONE
                             }
@@ -275,7 +275,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                             call: Call<ResponseBody>,
                             response: Response<ResponseBody>
                         ) {
-                            if(response.code() == 200){
+                            if(response.code() == 200 || response.code() == 201){
                                 tv_mycar.visibility = GONE
                                 tv_not_mycar.visibility = VISIBLE
                             }
@@ -409,7 +409,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     private fun getDriveDetail(){
         apiService().getDrivingInfo("Bearer " + PreferenceUtil.getPref(this@DetailDriveHistoryActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, tracking_id).enqueue(object : Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200){
+                if(response.code() == 200 || response.code() == 201){
                     val getDrivingInfoResponse = Gson().fromJson(response.body()?.string(), GetDrivingInfoResponse::class.java)
 
                     tv_date.text = transformTimeToDate(getDrivingInfoResponse.createdAt)

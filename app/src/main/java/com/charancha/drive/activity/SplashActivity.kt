@@ -60,7 +60,7 @@ class SplashActivity: BaseActivity() {
                         call: Call<ResponseBody>,
                         response: Response<ResponseBody>
                     ) {
-                        if(response.code() == 201){
+                        if(response.code() == 200 || response.code() == 201){
                             val signInResponse = gson.fromJson(response.body()?.string(), SignInResponse::class.java)
 
                             PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.ACCESS_TOKEN, signInResponse.access_token)
@@ -116,7 +116,7 @@ class SplashActivity: BaseActivity() {
                                                             call: Call<ResponseBody>,
                                                             response: Response<ResponseBody>
                                                         ) {
-                                                            if(response.code() == 200){
+                                                            if(response.code() == 200 || response.code() == 201){
                                                                 val jsonString = response.body()?.string()
 
                                                                 val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
@@ -195,7 +195,7 @@ class SplashActivity: BaseActivity() {
     private fun checkForceUpdate(){
         apiService().getLatest("AOS","PHONE").enqueue(object :Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200) {
+                if(response.code() == 200 || response.code() == 201) {
                     val getLatestResponse = Gson().fromJson(
                         response.body()?.string(),
                         GetLatestResponse::class.java

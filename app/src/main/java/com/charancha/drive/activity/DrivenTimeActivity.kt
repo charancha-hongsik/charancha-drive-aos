@@ -656,7 +656,7 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                 response: Response<ResponseBody>
             ) {
 
-                if(response.code() == 200){
+                if(response.code() == 200 || response.code() == 201){
                     val getDrivingGraphDataResponse = Gson().fromJson(
                         response.body()?.string(),
                         GetDrivingGraphDataResponse::class.java
@@ -691,7 +691,7 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                 response: Response<ResponseBody>
             ) {
 
-                if(response.code() == 200){
+                if(response.code() == 200 || response.code() == 201){
                     val getDrivingGraphDataResponse = Gson().fromJson(
                         response.body()?.string(),
                         GetDrivingGraphDataResponse::class.java
@@ -725,7 +725,7 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                 response: Response<ResponseBody>
             ) {
 
-                if(response.code() == 200){
+                if(response.code() == 200 || response.code() == 201){
                     val getDrivingGraphDataResponse = Gson().fromJson(
                         response.body()?.string(),
                         GetDrivingGraphDataResponse::class.java

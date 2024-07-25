@@ -608,7 +608,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
                 response: Response<ResponseBody>
             ) {
 
-                if(response.code() == 200){
+                if(response.code() == 200 || response.code() == 201){
                     val getDrivingGraphDataResponse = Gson().fromJson(
                         response.body()?.string(),
                         GetDrivingGraphDataResponse::class.java
@@ -643,7 +643,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
                 response: Response<ResponseBody>
             ) {
 
-                if(response.code() == 200){
+                if(response.code() == 200 || response.code() == 201){
                     val getDrivingGraphDataResponse = Gson().fromJson(
                         response.body()?.string(),
                         GetDrivingGraphDataResponse::class.java
@@ -678,7 +678,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
                 response: Response<ResponseBody>
             ) {
 
-                if(response.code() == 200){
+                if(response.code() == 200 || response.code() == 201){
                     val getDrivingGraphDataResponse = Gson().fromJson(
                         response.body()?.string(),
                         GetDrivingGraphDataResponse::class.java
@@ -2142,7 +2142,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
             "Bearer " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!).enqueue(object:Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200){
+                if(response.code() == 200 || response.code() == 201){
                     val recentDrivingDistance = Gson().fromJson(
                         response.body()?.string(),
                         GetRecentDrivingStatisticsResponse::class.java
@@ -2205,7 +2205,7 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
                                 response: Response<ResponseBody>
                             ) {
 
-                                if(response.code() == 200){
+                                if(response.code() == 200 || response.code() == 201){
                                     val getDrivingGraphDataResponse = Gson().fromJson(
                                         response.body()?.string(),
                                         GetDrivingGraphDataResponse::class.java

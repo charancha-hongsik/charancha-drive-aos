@@ -197,7 +197,7 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!).enqueue(object:
             Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200){
+                if(response.code() == 200 || response.code() == 201){
                     val recentDrivingDistance = Gson().fromJson(
                         response.body()?.string(),
                         GetRecentDrivingStatisticsResponse::class.java
@@ -250,7 +250,7 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                                 response: Response<ResponseBody>
                             ) {
 
-                                if(response.code() == 200){
+                                if(response.code() == 200 || response.code() == 201){
                                     val getDrivingGraphDataResponse = Gson().fromJson(
                                         response.body()?.string(),
                                         GetDrivingGraphDataResponse::class.java
@@ -345,7 +345,7 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
             "startTime",
             "day").enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200) {
+                if(response.code() == 200 || response.code() == 201) {
 
                     val drivingDistance = Gson().fromJson(
                         response.body()?.string(),
@@ -427,7 +427,7 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
             "startTime",
             "month").enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200) {
+                if(response.code() == 200 || response.code() == 201) {
 
                     val drivingDistance = Gson().fromJson(
                         response.body()?.string(),
@@ -508,7 +508,7 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
             "startTime",
             "month").enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200) {
+                if(response.code() == 200 || response.code() == 201) {
 
                     val drivingDistance = Gson().fromJson(
                         response.body()?.string(),
@@ -1073,7 +1073,7 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                 response: Response<ResponseBody>
             ) {
 
-                if(response.code() == 200){
+                if(response.code() == 200 || response.code() == 201){
                     val getDrivingGraphDataResponse = Gson().fromJson(
                         response.body()?.string(),
                         GetDrivingGraphDataResponse::class.java
@@ -1106,7 +1106,7 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                 response: Response<ResponseBody>
             ) {
 
-                if(response.code() == 200){
+                if(response.code() == 200 || response.code() == 201){
                     val getDrivingGraphDataResponse = Gson().fromJson(
                         response.body()?.string(),
                         GetDrivingGraphDataResponse::class.java

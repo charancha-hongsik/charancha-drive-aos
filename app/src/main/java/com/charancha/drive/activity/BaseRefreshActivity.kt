@@ -21,7 +21,7 @@ open class BaseRefreshActivity: BaseActivity(){
             apiService().postReissue(PreferenceUtil.getPref(this, PreferenceUtil.REFRESH_TOKEN, "")!!).enqueue(object :
                 Callback<ResponseBody> {
                 override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                    if(response.code() == 201) {
+                    if(response.code() == 200 || response.code() == 201) {
                         val signInResponse =
                             Gson().fromJson(response.body()?.string(), SignInResponse::class.java)
 

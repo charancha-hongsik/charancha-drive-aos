@@ -211,9 +211,7 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
                     call: Call<ResponseBody>,
                     response: Response<ResponseBody>
                 ) {
-                    if(response.code() == 200){
-
-
+                    if(response.code() == 200 || response.code() == 201){
                         val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
 
                         if(getManageScoreResponse.isRecent){
@@ -240,7 +238,7 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
                 PreferenceUtil.getPref(this@DetailManageScoreActivity, PreferenceUtil.USER_CARID, "")!!
             ).enqueue(object: Callback<ResponseBody>{
                 override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                    if(response.code() == 200){
+                    if(response.code() == 200 || response.code() == 201){
                         val recentDrivingDistance = Gson().fromJson(
                             response.body()?.string(),
                             GetRecentDrivingStatisticsResponse::class.java
@@ -280,7 +278,7 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
                     call: Call<ResponseBody>,
                     response: Response<ResponseBody>
                 ) {
-                    if(response.code() == 200){
+                    if(response.code() == 200 || response.code() == 201){
                         val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
                         if(getManageScoreResponse.total.totalEngineScore != 0.0){
                             setThereIsDatas(getManageScoreResponse)
@@ -334,7 +332,7 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
             "day"
         ).enqueue(object: Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200){
+                if(response.code() == 200 || response.code() == 201){
                     val recentDrivingDistance = Gson().fromJson(
                         response.body()?.string(),
                         GetRecentDrivingStatisticsResponse::class.java
