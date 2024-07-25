@@ -23,6 +23,7 @@ import androidx.core.app.NotificationCompat
 import androidx.work.*
 import com.charancha.drive.BuildConfig
 import com.charancha.drive.PreferenceUtil
+import com.charancha.drive.R
 import com.charancha.drive.retrofit.ApiServiceInterface
 import com.charancha.drive.retrofit.HeaderInterceptor
 import com.charancha.drive.retrofit.request.PostDrivingInfoRequest
@@ -187,7 +188,7 @@ class BluetoothService : Service() {
             notification = NotificationCompat.Builder(this, CHANNEL_ID)
 
 
-            startForeground(1, notification.setSmallIcon(android.R.drawable.btn_star_big_off)
+            startForeground(1, notification.setSmallIcon(R.mipmap.ic_milelog_launcher)
                 .setAutoCancel(false)
                 .setOngoing(true)
                 .setContentText("주행 관찰중이에요.")

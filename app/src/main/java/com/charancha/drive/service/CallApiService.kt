@@ -11,6 +11,7 @@ import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.charancha.drive.BuildConfig
 import com.charancha.drive.PreferenceUtil
+import com.charancha.drive.R
 import com.charancha.drive.retrofit.ApiServiceInterface
 import com.charancha.drive.retrofit.request.PostDrivingInfoRequest
 import com.charancha.drive.retrofit.response.PostDrivingInfoResponse
@@ -56,7 +57,7 @@ class CallApiService: Service() {
         )
         notification = NotificationCompat.Builder(this, CHANNEL_ID)
 
-        startForeground(2, notification.setSmallIcon(android.R.drawable.btn_star_big_off)
+        startForeground(2, notification.setSmallIcon(R.mipmap.ic_milelog_launcher)
             .setAutoCancel(false)
             .setOngoing(true)
             .setContentText("데이터를 보내는 중입니다.")
