@@ -61,6 +61,14 @@ class TermsOfUseActivity: BaseActivity() {
 
         init()
 
+        Log.d("testsetestest","testestsetse TermsOfUseActivity onCreate:: ")
+
+    }
+
+    override fun onResume() {
+        Log.d("testsetestest","testestsetse TermsOfUseActivity onResume:: ")
+
+        super.onResume()
     }
 
     private fun init(){
