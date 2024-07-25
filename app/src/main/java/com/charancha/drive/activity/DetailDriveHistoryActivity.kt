@@ -155,7 +155,6 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         view_map = findViewById(R.id.view_map)
 
         detailDriveHistoryViewModel.setDriveForApp.observe(this@DetailDriveHistoryActivity, DetailDriveHistoryViewModel.EventObserver {
-            Log.d("testsetsetest","testsetsetest :: map data")
             it?.let{
                 for(raw in it.gpses){
                     polylines.add(LatLng(raw.latitude,raw.longtitude))
@@ -164,11 +163,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                 if(polylines.size != 0){
                     view_map.visibility = VISIBLE
                     setMapData()
-                }else{
-                    view_map.visibility = GONE
                 }
-            }?: run{
-                view_map.visibility = GONE
             }
         })
     }
