@@ -26,6 +26,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.lang.reflect.Type
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 
 /**
@@ -247,6 +250,13 @@ class TermsOfUseActivity: BaseActivity() {
 
                                             val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
                                             val getMyCarInfoResponse:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
+
+                                            if(ibTerms5.isSelected){
+                                                Toast.makeText(this@TermsOfUseActivity,getTodayFormattedDate() + " 마일로그 마케팅 정보 수신 동의되었습니다.",Toast.LENGTH_SHORT).show()
+                                            }else{
+                                                Toast.makeText(this@TermsOfUseActivity,getTodayFormattedDate() + " 마일로그 마케팅 정보 수신 거부되었습니다.",Toast.LENGTH_SHORT).show()
+                                            }
+
 
                                             if(getMyCarInfoResponse.size > 0){
                                                 startActivity(Intent(this@TermsOfUseActivity, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
