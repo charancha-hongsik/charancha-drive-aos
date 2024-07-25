@@ -5,5 +5,5 @@ data class GetLatestResponse(
     val deviceType:String,
     val version:String,
     val serviceName:String,
-    val forceUpdate:String,
+    val forceUpdate:Boolean,
 )

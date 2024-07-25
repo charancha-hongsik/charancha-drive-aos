@@ -195,41 +195,45 @@ class SplashActivity: BaseActivity() {
                     )
 
                     try {
-                        val currentAppVersion = BuildConfig.VERSION_NAME
-                        val majorFromApi =
-                            getLatestResponse.version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
+                        if(getLatestResponse.forceUpdate){
+                            val currentAppVersion = BuildConfig.VERSION_NAME
+                            val majorFromApi =
+                                getLatestResponse.version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
+                                    .toTypedArray()[0]
+                            val minorFromApi =
+                                getLatestResponse.version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
+                                    .toTypedArray()[1]
+                            val patchFromApi =
+                                getLatestResponse.version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
+                                    .toTypedArray()[2]
+                            val major = currentAppVersion.split("\\.".toRegex())
+                                .dropLastWhile { it.isEmpty() }
                                 .toTypedArray()[0]
-                        val minorFromApi =
-                            getLatestResponse.version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
+                            val minor = currentAppVersion.split("\\.".toRegex())
+                                .dropLastWhile { it.isEmpty() }
                                 .toTypedArray()[1]
-                        val patchFromApi =
-                            getLatestResponse.version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
+                            val patch = currentAppVersion.split("\\.".toRegex())
+                                .dropLastWhile { it.isEmpty() }
                                 .toTypedArray()[2]
-                        val major = currentAppVersion.split("\\.".toRegex())
-                            .dropLastWhile { it.isEmpty() }
-                            .toTypedArray()[0]
-                        val minor = currentAppVersion.split("\\.".toRegex())
-                            .dropLastWhile { it.isEmpty() }
-                            .toTypedArray()[1]
-                        val patch = currentAppVersion.split("\\.".toRegex())
-                            .dropLastWhile { it.isEmpty() }
-                            .toTypedArray()[2]
 
 
-                        if (patchFromApi.toInt() > patch.toInt()) {
-                            goUpdate()
-                            return
-                        }
-                        if (minorFromApi.toInt() > minor.toInt()) {
-                            goUpdate()
-                            return
-                        }
-                        if (majorFromApi.toInt() > major.toInt()) {
-                            goUpdate()
-                            return
-                        }
+                            if (patchFromApi.toInt() > patch.toInt()) {
+                                goUpdate()
+                                return
+                            }
+                            if (minorFromApi.toInt() > minor.toInt()) {
+                                goUpdate()
+                                return
+                            }
+                            if (majorFromApi.toInt() > major.toInt()) {
+                                goUpdate()
+                                return
+                            }
 
-                        goSplash()
+                            goSplash()
+                        }else{
+                            goSplash()
+                        }
 
 
                     } catch (e: PackageManager.NameNotFoundException) {

@@ -8,8 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
+import android.view.View.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -19,6 +18,7 @@ import com.charancha.drive.BuildConfig
 import com.charancha.drive.CustomDialogNoCancel
 import com.charancha.drive.PreferenceUtil
 import com.charancha.drive.R
+import com.charancha.drive.retrofit.response.GetLatestResponse
 import com.charancha.drive.retrofit.response.TermsSummaryResponse
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.Gson
@@ -117,7 +117,67 @@ class SettingActivity:BaseRefreshActivity(){
             finish()
         }
 
-        tv_version.text = "V" + BuildConfig.VERSION_NAME
+        apiService().getLatest("AOS","PHONE").enqueue(object:Callback<ResponseBody>{
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200 || response.code() == 201) {
+                    val getLatestResponse = Gson().fromJson(
+                        response.body()?.string(),
+                        GetLatestResponse::class.java
+                    )
+
+                    tv_version.text = "V" + getLatestResponse.version
+
+                    val currentAppVersion = BuildConfig.VERSION_NAME
+                    val majorFromApi =
+                        getLatestResponse.version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
+                            .toTypedArray()[0]
+                    val minorFromApi =
+                        getLatestResponse.version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
+                            .toTypedArray()[1]
+                    val patchFromApi =
+                        getLatestResponse.version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
+                            .toTypedArray()[2]
+                    val major = currentAppVersion.split("\\.".toRegex())
+                        .dropLastWhile { it.isEmpty() }
+                        .toTypedArray()[0]
+                    val minor = currentAppVersion.split("\\.".toRegex())
+                        .dropLastWhile { it.isEmpty() }
+                        .toTypedArray()[1]
+                    val patch = currentAppVersion.split("\\.".toRegex())
+                        .dropLastWhile { it.isEmpty() }
+                        .toTypedArray()[2]
+
+
+                    if (patchFromApi.toInt() > patch.toInt()) {
+                        btn_update.visibility = VISIBLE
+                        return
+                    }
+                    if (minorFromApi.toInt() > minor.toInt()) {
+                        btn_update.visibility = VISIBLE
+
+                        return
+                    }
+                    if (majorFromApi.toInt() > major.toInt()) {
+                        btn_update.visibility = VISIBLE
+                        return
+                    }
+
+                    btn_update.visibility = INVISIBLE
+                }else{
+                    tv_version.text = "V" + BuildConfig.VERSION_NAME
+                    btn_update.visibility = VISIBLE
+
+                }
+
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                tv_version.text = "V" + BuildConfig.VERSION_NAME
+                btn_update.visibility = VISIBLE
+
+            }
+
+        })
     }
 
     private fun persistentBottomSheetEvent() {
