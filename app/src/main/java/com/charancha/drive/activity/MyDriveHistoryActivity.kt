@@ -63,6 +63,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var selectedDate:String
 
     lateinit var resultLauncher: ActivityResultLauncher<Intent>
+    var histories: MutableList<DriveItem> = mutableListOf()
 
 
     private val historyViewModel: MyDriveHistoryViewModel by viewModels()
@@ -82,6 +83,15 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
             if(it.resultCode == RESULT_OK){
                 val trackingId = it.data?.getStringExtra("trackingId")
                 val isActive = it.data?.getBooleanExtra("isActive",true)
+
+                for(history in histories){
+                    if(history.id.equals(trackingId)){
+                        history.isActive = isActive!!
+                    }
+                }
+
+
+                (lv_history.adapter as DriveHistoryAdapter).notifyDataSetChanged()
             }
         }
 
@@ -190,9 +200,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                         setInquireScope(formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first))
                         getHistories(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
 
-
                     }else if(btn_each_month.isSelected){
-
 
                         setInquireScope(getDateRangeString(selectedDate))
                         getHistories(getDateRange(selectedDate).second,getDateRange(selectedDate).first)
@@ -315,6 +323,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                             })
 
                         getDriveHistroyResponse.items.add(DriveItem("","","","","",false,"","",0.0,0.0))
+                        histories = getDriveHistroyResponse.items
 
                         lv_history.layoutManager = LinearLayoutManager(this@MyDriveHistoryActivity)
                         val dividerItemDecoration = DividerItemDecoration(this@MyDriveHistoryActivity, R.color.gray_50, 50) // 색상 리소스와 구분선 높이 설정

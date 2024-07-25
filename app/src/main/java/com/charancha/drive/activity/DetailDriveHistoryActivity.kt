@@ -260,6 +260,9 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                             if(response.code() == 200 || response.code() == 201){
                                 tv_mycar.visibility = VISIBLE
                                 tv_not_mycar.visibility = GONE
+
+                                isActive = true
+
                             }
                             layout_my_drive.visibility = GONE
 
@@ -283,6 +286,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                             if(response.code() == 200 || response.code() == 201){
                                 tv_mycar.visibility = GONE
                                 tv_not_mycar.visibility = VISIBLE
+
+                                isActive = false
                             }
                             layout_my_drive.visibility = GONE
 
@@ -435,6 +440,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     tv_rapid_acc_count_info.text = getDrivingInfoResponse.rapidAccelerationCount.toInt().toString() + "회"
                     tv_rapid_stop_count_info.text = getDrivingInfoResponse.rapidStopCount.toInt().toString() + "회"
                     tv_rapid_desc_count_info.text = getDrivingInfoResponse.rapidDecelerationCount.toInt().toString() + "회"
+
+                    isActive = getDrivingInfoResponse.isActive
 
                     if(isMyCarScope(getDrivingInfoResponse.endTime)){
                         tv_scope_date_mycar.text = transformDateTo30Dayslater(getDrivingInfoResponse.endTime)
