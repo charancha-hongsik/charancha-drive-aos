@@ -402,13 +402,13 @@ class ManageEngineActivity:BaseRefreshActivity() {
                         tv_distance.text = transferDistance(getDrivingStatisticsResponse.average.totalDistance)
                         tv_speed_percent.text = transferNumWithRounds(getDrivingStatisticsResponse.average.highSpeedDrivingDistancePercentage).toString()
 
-                        tv_optimal_driving_percent.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.optimalDrivingPercentage) + "%"
-                        tv_optimal_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.optimalDrivingPercentage) + "%"
-                        tv_optimal_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.optimalDrivingPercentage) + "%"
+                        tv_optimal_driving_percent.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.optimalDrivingPercentage)
+                        tv_optimal_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.optimalDrivingPercentage)
+                        tv_optimal_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.optimalDrivingPercentage)
 
-                        tv_normal_speed_driving_percent.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage) + "%"
-                        tv_normal_speed_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage) + "%"
-                        tv_normal_speed_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage) + "%"
+                        tv_normal_speed_driving_percent.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage)
+                        tv_normal_speed_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage)
+                        tv_normal_speed_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage)
 
 
                         setOptimalDrivingChartWidthByPercent((getDrivingStatisticsResponse.average.optimalDrivingPercentage/100).toFloat())
@@ -424,13 +424,13 @@ class ManageEngineActivity:BaseRefreshActivity() {
                         tv_distance.text = transferDistance(0.0)
                         tv_speed_percent.text = transferNumWithRounds(0.0).toString()
 
-                        tv_optimal_driving_percent.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
-                        tv_optimal_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
-                        tv_optimal_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+                        tv_optimal_driving_percent.text = String.format(Locale.KOREAN, "%.0f", 0.0)
+                        tv_optimal_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", 0.0)
+                        tv_optimal_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", 0.0)
 
-                        tv_normal_speed_driving_percent.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
-                        tv_normal_speed_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
-                        tv_normal_speed_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+                        tv_normal_speed_driving_percent.text = String.format(Locale.KOREAN, "%.0f", 0.0)
+                        tv_normal_speed_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", 0.0)
+                        tv_normal_speed_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", 0.0)
 
                         setOptimalDrivingChartWidthByPercent(0f)
                         setNormalSpeedDrivingChartWidthByPercent(0f)
@@ -448,13 +448,12 @@ class ManageEngineActivity:BaseRefreshActivity() {
                 tv_distance.text = transferDistance(0.0)
                 tv_speed_percent.text = transferNumWithRounds(0.0).toString()
 
-                tv_optimal_driving_percent.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
-                tv_optimal_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
-                tv_optimal_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
-
-                tv_normal_speed_driving_percent.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
-                tv_normal_speed_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
-                tv_normal_speed_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+                tv_optimal_driving_percent.text = String.format(Locale.KOREAN, "%.0f", 0.0)
+                tv_optimal_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", 0.0)
+                tv_optimal_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", 0.0)
+                tv_normal_speed_driving_percent.text = String.format(Locale.KOREAN, "%.0f", 0.0)
+                tv_normal_speed_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", 0.0)
+                tv_normal_speed_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", 0.0)
             }
 
         })
@@ -542,14 +541,14 @@ class ManageEngineActivity:BaseRefreshActivity() {
                         tv_speed_percent.text = transferNumWithRounds(getDrivingStatisticsResponse.average.highSpeedDrivingDistancePercentage).toString()
 
 
-                        tv_optimal_driving_percent.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.optimalDrivingPercentage) + "%"
-                        tv_optimal_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.optimalDrivingPercentage) + "%"
-                        tv_optimal_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.optimalDrivingPercentage) + "%"
+                        tv_optimal_driving_percent.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.optimalDrivingPercentage)
+                        tv_optimal_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.optimalDrivingPercentage)
+                        tv_optimal_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.optimalDrivingPercentage)
 
 
-                        tv_normal_speed_driving_percent.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage) + "%"
-                        tv_normal_speed_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage) + "%"
-                        tv_normal_speed_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage) + "%"
+                        tv_normal_speed_driving_percent.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage)
+                        tv_normal_speed_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage)
+                        tv_normal_speed_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage)
 
 
                         setOptimalDrivingChartWidthByPercent((getDrivingStatisticsResponse.average.optimalDrivingPercentage/100).toFloat())
@@ -564,13 +563,13 @@ class ManageEngineActivity:BaseRefreshActivity() {
                         tv_distance.text = transferDistance(0.0)
                         tv_speed_percent.text = transferNumWithRounds(0.0).toString()
 
-                        tv_optimal_driving_percent.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
-                        tv_optimal_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
-                        tv_optimal_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+                        tv_optimal_driving_percent.text = String.format(Locale.KOREAN, "%.0f", 0.0)
+                        tv_optimal_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", 0.0)
+                        tv_optimal_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", 0.0)
 
-                        tv_normal_speed_driving_percent.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
-                        tv_normal_speed_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
-                        tv_normal_speed_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+                        tv_normal_speed_driving_percent.text = String.format(Locale.KOREAN, "%.0f", 0.0)
+                        tv_normal_speed_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", 0.0)
+                        tv_normal_speed_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", 0.0)
 
                         setOptimalDrivingChartWidthByPercent(0f)
                         setNormalSpeedDrivingChartWidthByPercent(0f)
@@ -586,13 +585,13 @@ class ManageEngineActivity:BaseRefreshActivity() {
                 tv_distance.text = transferDistance(0.0)
                 tv_speed_percent.text = transferNumWithRounds(0.0).toString()
 
-                tv_optimal_driving_percent.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
-                tv_optimal_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
-                tv_optimal_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+                tv_optimal_driving_percent.text = String.format(Locale.KOREAN, "%.0f", 0.0)
+                tv_optimal_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", 0.0)
+                tv_optimal_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", 0.0)
 
-                tv_normal_speed_driving_percent.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
-                tv_normal_speed_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
-                tv_normal_speed_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+                tv_normal_speed_driving_percent.text = String.format(Locale.KOREAN, "%.0f", 0.0)
+                tv_normal_speed_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", 0.0)
+                tv_normal_speed_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", 0.0)
 
                 setOptimalDrivingChartWidthByPercent(0f)
                 setNormalSpeedDrivingChartWidthByPercent(0f)
