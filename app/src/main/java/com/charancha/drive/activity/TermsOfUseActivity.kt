@@ -60,14 +60,9 @@ class TermsOfUseActivity: BaseActivity() {
         setContentView(R.layout.activity_terms)
 
         init()
-
-        Log.d("testsetestest","testestsetse TermsOfUseActivity onCreate:: ")
-
     }
 
     override fun onResume() {
-        Log.d("testsetestest","testestsetse TermsOfUseActivity onResume:: ")
-
         super.onResume()
     }
 
@@ -265,11 +260,11 @@ class TermsOfUseActivity: BaseActivity() {
 
                                                 finish()
                                             }else{
-                                                startActivity(Intent(this@TermsOfUseActivity, OnBoardingActivity::class.java))
+                                                startActivity(Intent(this@TermsOfUseActivity, OnBoardingActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
                                                 finish()
                                             }
                                         }else{
-                                            startActivity(Intent(this@TermsOfUseActivity, OnBoardingActivity::class.java))
+                                            startActivity(Intent(this@TermsOfUseActivity, OnBoardingActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
                                             finish()
                                         }
                                     }
@@ -278,12 +273,12 @@ class TermsOfUseActivity: BaseActivity() {
                                         call: Call<ResponseBody>,
                                         t: Throwable
                                     ) {
-                                        startActivity(Intent(this@TermsOfUseActivity, OnBoardingActivity::class.java))
+                                        startActivity(Intent(this@TermsOfUseActivity, OnBoardingActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
                                         finish()
                                     }
                                 })
                             }else{
-                                startActivity(Intent(this@TermsOfUseActivity, PermissionInfoActivity::class.java))
+                                startActivity(Intent(this@TermsOfUseActivity, PermissionInfoActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
                                 finish()
                             }
                         } else{

@@ -818,6 +818,8 @@ class MainActivity : BaseRefreshActivity() {
                                         GetMyCarInfoResponse::class.java
                                     )
 
+                                    Log.d("testestest","testsetse :: " + getMyCarInfoResponse.id)
+
                                     PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.id)
                                     tv_car_name.setText(getMyCarInfoResponse.carName)
                                     tv_car_no.setText(getMyCarInfoResponse.vehicleIdentificationNumber)

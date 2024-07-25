@@ -147,10 +147,12 @@ class RegisterCarActivity: BaseActivity() {
                     1 -> {
                         carOwner = et_register_car.text.toString()
                         getPostMyCarResult.launch(Intent(this@RegisterCarActivity, LoadCarInfoActivity::class.java).putExtra("carNo",carNo).putExtra("carOwner",carOwner))
+
+                        btn_next.isSelected = false
+                        btn_next.isClickable = false
                     }
 
                     2 -> {
-
                         var carYear = postMyCarResponse.carYear
                         var carName = postMyCarResponse.carName
 
@@ -188,7 +190,7 @@ class RegisterCarActivity: BaseActivity() {
                                     )
                                     PreferenceUtil.putPref(this@RegisterCarActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.id)
                                     PreferenceUtil.putPref(this@RegisterCarActivity,  PreferenceUtil.KM_MILE, "km")
-                                    startActivity(Intent(this@RegisterCarActivity, MainActivity::class.java).addFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK))
+                                    startActivity(Intent(this@RegisterCarActivity, MainActivity::class.java))
                                     finish()
                                 }else{
                                     Toast.makeText(this@RegisterCarActivity,"차량 등록에 실패했습니다.",Toast.LENGTH_SHORT).show()
@@ -200,8 +202,8 @@ class RegisterCarActivity: BaseActivity() {
                             }
 
                         })
-
                     }
+
                 }
 
                 no++
@@ -278,8 +280,13 @@ class RegisterCarActivity: BaseActivity() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 p0?.let{
                     if(p0.length>=4 || p0.length==0){
-                        btn_next.isSelected = true
-                        btn_next.isClickable = true
+                        if(tv_car_fuel.text.equals("선택하세요.")){
+                            btn_next.isSelected = false
+                            btn_next.isClickable = false
+                        }else{
+                            btn_next.isSelected = true
+                            btn_next.isClickable = true
+                        }
                     }else{
                         btn_next.isSelected = false
                         btn_next.isClickable = false
@@ -308,6 +315,8 @@ class RegisterCarActivity: BaseActivity() {
 
         val itemList: MutableList<String?> = ArrayList()
 
+        tv_car_fuel.text = "선택하세요."
+
         // 데이터 추가
         itemList.add("가솔린")
         itemList.add("디젤")
@@ -332,6 +341,8 @@ class RegisterCarActivity: BaseActivity() {
         listview.setOnItemClickListener { parent, view, position, l ->
             val fuel = parent.getItemAtPosition(position) as String
             tv_car_fuel.text = fuel
+            btn_next.isClickable = true
+            btn_next.isSelected = true
 
             layout_fuel_select.visibility = GONE
 
@@ -435,7 +446,7 @@ class RegisterCarActivity: BaseActivity() {
         layout_before_inquiry.visibility = GONE
         layout_after_inquiry.visibility = VISIBLE
 
-        tv_car_fuel.text = "가솔린"
+        tv_car_fuel.text = "선택하세요."
         tv_car_owner.text = postMyCarResponse.ownerName
         tv_car_id.text = postMyCarResponse.vehicleIdentificationNumber
         tv_car_no.text = postMyCarResponse.licensePlateNumber

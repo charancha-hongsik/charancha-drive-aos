@@ -36,21 +36,15 @@ class SplashActivity: BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
-
-        Log.d("testsetestest","testestsetse SplashActivity onCreate:: ")
-
     }
 
     override fun onResume() {
         super.onResume()
         checkForceUpdate()
-
-        Log.d("testsetestest","testestsetse LoginActivity onResume:: ")
-
     }
 
     private fun unLoginedProcess(){
-        startActivity(Intent(this@SplashActivity, LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+        startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
 
         finish()
     }
@@ -126,7 +120,7 @@ class SplashActivity: BaseActivity() {
                                                                 val getMyCarInfoResponse:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
 
                                                                 if(getMyCarInfoResponse.size > 0){
-                                                                    startActivity(Intent(this@SplashActivity, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+                                                                    startActivity(Intent(this@SplashActivity, MainActivity::class.java))
 
                                                                     finish()
                                                                 }else{
@@ -169,7 +163,7 @@ class SplashActivity: BaseActivity() {
                         }else{
                             logout()
 
-                            startActivity(Intent(this@SplashActivity, LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+                            startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
                             finish()
                         }
                     }
@@ -178,7 +172,7 @@ class SplashActivity: BaseActivity() {
                         call: Call<ResponseBody>,
                         t: Throwable
                     ) {
-                        startActivity(Intent(this@SplashActivity, LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+                        startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
                         finish()
                     }
 
@@ -186,7 +180,7 @@ class SplashActivity: BaseActivity() {
 
 
             }?: run{
-            startActivity(Intent(this@SplashActivity, LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+            startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
             finish()
         }
     }

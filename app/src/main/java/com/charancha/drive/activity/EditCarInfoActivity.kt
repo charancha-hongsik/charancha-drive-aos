@@ -191,9 +191,7 @@ class EditCarInfoActivity:BaseRefreshActivity() {
         listview.setOnItemClickListener { parent, view, position, l ->
             val fuel = parent.getItemAtPosition(position) as String
             tv_car_fuel.text = fuel
-
             layout_fuel_select.visibility = GONE
-
         }
 
     }
