@@ -1319,8 +1319,8 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
 
                         tv_diff_distance.visibility = View.VISIBLE
 
-                        tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
-                        tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+                        tv_date1.text = formatDateRangeForAMonth(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+                        tv_date2.text = formatDateRangeForAMonth(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
 
                         tv_driving_info1.text = "일일 평균"
                         tv_driving_info2.text = "1회 평균 주행 거리는 \n높을수록 좋아요"

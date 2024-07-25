@@ -2357,9 +2357,9 @@ class DrivenTimeActivity:BaseRefreshActivity() {
     }
 
     private fun setMonthDrivingTime(){
-        tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
-        tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
-        tv_date3.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+        tv_date1.text = formatDateRangeForAMonth(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+        tv_date2.text = formatDateRangeForAMonth(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+        tv_date3.text = formatDateRangeForAMonth(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
 
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
@@ -2408,9 +2408,9 @@ class DrivenTimeActivity:BaseRefreshActivity() {
                         tv_time_info2.text = "내 차는 자주\n달릴수록 좋아요"
                         tv_time_info3.text = "최근 1개월의 기록을\n한눈에 확인해 보세요!"
 
-                        tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
-                        tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
-                        tv_date3.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+                        tv_date1.text = formatDateRangeForAMonth(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+                        tv_date2.text = formatDateRangeForAMonth(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+                        tv_date3.text = formatDateRangeForAMonth(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
 
                         tv_time_info4.text = CommonUtil.getSpannableString(
                             this@DrivenTimeActivity,

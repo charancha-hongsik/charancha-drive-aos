@@ -334,8 +334,8 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
 
     private fun setMonthDrivingDistance(){
 
-        tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
-        tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+        tv_date1.text = formatDateRangeForAMonth(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+        tv_date2.text = formatDateRangeForAMonth(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
 
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@ConstantSpeedDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,

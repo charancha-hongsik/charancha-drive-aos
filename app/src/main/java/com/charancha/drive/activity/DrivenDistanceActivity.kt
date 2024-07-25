@@ -2278,9 +2278,9 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
         PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!
 
 
-        tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
-        tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
-        tv_date3.text = formatDateRange(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+        tv_date1.text = formatDateRangeForAMonth(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+        tv_date2.text = formatDateRangeForAMonth(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+        tv_date3.text = formatDateRangeForAMonth(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
 
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
