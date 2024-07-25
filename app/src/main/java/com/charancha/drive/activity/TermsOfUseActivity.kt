@@ -206,13 +206,26 @@ class TermsOfUseActivity: BaseActivity() {
             override fun onSingleClick(v: View?) {
                 val acceptedTerms = mutableListOf<Agreements>()
 
+
                 for(term in termsSummaryResponse){
                     if(tvTermsTitle4.text.contains(term.title)){
-                        if(ibTerms4.isSelected){
+                        if(term.isRequired == 0)
+                            if(ibTerms4.isSelected){
+                                acceptedTerms.add(Agreements(term.id,1))
+                            }else {
+                                acceptedTerms.add(Agreements(term.id, 0))
+                            }
+                        else{
                             acceptedTerms.add(Agreements(term.id,1))
-                        }else
-                            acceptedTerms.add(Agreements(term.id,0))
-                    }else{
+                        }
+                    } else if(tvTermsTitle5.text.contains(term.title)){
+                        Log.d("testestestset","testsetesse 0:: " + ibTerms5.isSelected)
+                        if(ibTerms5.isSelected){
+                            acceptedTerms.add(Agreements(term.id,1))
+                        }else {
+                            acceptedTerms.add(Agreements(term.id, 0))
+                        }
+                    } else{
                         acceptedTerms.add(Agreements(term.id,1))
                     }
                 }
@@ -327,6 +340,13 @@ class TermsOfUseActivity: BaseActivity() {
             ibTerms5.isSelected = !ibTerms5.isSelected
         }
 
+        ibTerms6.setOnClickListener{
+            ibTerms6.isSelected = !ibTerms6.isSelected
+
+            checkAllAccept()
+
+        }
+
         tvTermsTitle2.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
                 for(term in termsSummaryResponse){
@@ -341,7 +361,8 @@ class TermsOfUseActivity: BaseActivity() {
             override fun onSingleClick(v: View?) {
                 for(term in termsSummaryResponse){
                     if(tvTermsTitle3.text.contains(term.title)){
-                        startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
+                        if(term.isRequired == 1)
+                            startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
                     }
                 }
             }
@@ -351,13 +372,12 @@ class TermsOfUseActivity: BaseActivity() {
             override fun onSingleClick(v: View?) {
                 for(term in termsSummaryResponse){
                     if(tvTermsTitle4.text.contains(term.title)){
-                        startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
+                        if(term.isRequired == 0)
+                            startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
                     }
-                }            }
-
+                }
+            }
         })
-
-
 
 
         tvTermsTitle5.setOnClickListener(object:OnSingleClickListener(){
@@ -386,7 +406,7 @@ class TermsOfUseActivity: BaseActivity() {
     }
 
     private fun checkAllAccept(){
-        btnNext.isSelected = ibTerms1.isSelected && ibTerms2.isSelected && ibTerms3.isSelected
-        btnNext.isClickable = ibTerms1.isSelected && ibTerms2.isSelected && ibTerms3.isSelected
+        btnNext.isSelected = ibTerms1.isSelected && ibTerms2.isSelected && ibTerms3.isSelected && ibTerms6.isSelected
+        btnNext.isClickable = ibTerms1.isSelected && ibTerms2.isSelected && ibTerms3.isSelected && ibTerms6.isSelected
     }
 }
