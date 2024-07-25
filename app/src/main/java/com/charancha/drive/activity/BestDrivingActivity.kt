@@ -263,9 +263,9 @@ class BestDrivingActivity:BaseRefreshActivity() {
                             }
 
                             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                                tv_best_percent1.text = "0.0"
-                                tv_best_percent2.text = "0.0"
-                                tv_diff_percent.text = "+0.0% 증가"
+                                tv_best_percent1.text = "0"
+                                tv_best_percent2.text = "0"
+                                tv_diff_percent.text = "+0% 증가"
 
                                 tv_driving_info1.text = "최근 1일 평균"
                                 tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -278,9 +278,9 @@ class BestDrivingActivity:BaseRefreshActivity() {
                         })
 
                     }else{
-                        tv_best_percent1.text = "0.0"
-                        tv_best_percent2.text = "0.0"
-                        tv_diff_percent.text = "+0.0% 증가"
+                        tv_best_percent1.text = "0"
+                        tv_best_percent2.text = "0"
+                        tv_diff_percent.text = "+0% 증가"
 
                         tv_date1.text = getTodayFormattedDate()
                         tv_date2.text = getTodayFormattedDate()
@@ -302,9 +302,9 @@ class BestDrivingActivity:BaseRefreshActivity() {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                tv_best_percent1.text = "0.0"
-                tv_best_percent2.text = "0.0"
-                tv_diff_percent.text = "+0.0% 증가"
+                tv_best_percent1.text = "0"
+                tv_best_percent2.text = "0"
+                tv_diff_percent.text = "+0% 증가"
                 tv_diff_percent.visibility = View.INVISIBLE
 
                 tv_driving_info1.text = "최근 1일 평균"
@@ -367,9 +367,9 @@ class BestDrivingActivity:BaseRefreshActivity() {
 
                         setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat()/100)
                     }else{
-                        tv_best_percent1.text = "0.0"
-                        tv_best_percent2.text = "0.0"
-                        tv_diff_percent.text = "+0.0% 증가"
+                        tv_best_percent1.text = "0"
+                        tv_best_percent2.text = "0"
+                        tv_diff_percent.text = "+0% 증가"
 
                         tv_diff_percent.visibility = View.INVISIBLE
 
@@ -386,9 +386,9 @@ class BestDrivingActivity:BaseRefreshActivity() {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                tv_best_percent1.text = "0.0"
-                tv_best_percent2.text = "0.0"
-                tv_diff_percent.text = "+0.0% 증가"
+                tv_best_percent1.text = "0"
+                tv_best_percent2.text = "0"
+                tv_diff_percent.text = "+0% 증가"
                 tv_diff_percent.visibility = View.INVISIBLE
 
                 tv_driving_info1.text = "일일 평균"
@@ -449,9 +449,9 @@ class BestDrivingActivity:BaseRefreshActivity() {
 
                         setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat()/100)
                     }else{
-                        tv_best_percent1.text = "0.0"
-                        tv_best_percent2.text = "0.0"
-                        tv_diff_percent.text = "+0.0% 증가"
+                        tv_best_percent1.text = "0"
+                        tv_best_percent2.text = "0"
+                        tv_diff_percent.text = "+0% 증가"
                         tv_diff_percent.visibility = View.INVISIBLE
 
 
@@ -469,9 +469,9 @@ class BestDrivingActivity:BaseRefreshActivity() {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                tv_best_percent1.text = "0.0"
-                tv_best_percent2.text = "0.0"
-                tv_diff_percent.text = "+0.0% 증가"
+                tv_best_percent1.text = "0"
+                tv_best_percent2.text = "0"
+                tv_diff_percent.text = "+0% 증가"
                 tv_diff_percent.visibility = View.INVISIBLE
 
                 tv_driving_info1.text = "월 평균"
@@ -532,9 +532,9 @@ class BestDrivingActivity:BaseRefreshActivity() {
 
                         setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat()/100)
                     }else{
-                        tv_best_percent1.text = "0.0"
-                        tv_best_percent2.text = "0.0"
-                        tv_diff_percent.text = "+0.0% 증가"
+                        tv_best_percent1.text = "0"
+                        tv_best_percent2.text = "0"
+                        tv_diff_percent.text = "+0% 증가"
                         tv_diff_percent.visibility = View.INVISIBLE
 
                         tv_driving_info1.text = "월 평균"
@@ -550,9 +550,9 @@ class BestDrivingActivity:BaseRefreshActivity() {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                tv_best_percent1.text = "0.0"
-                tv_best_percent2.text = "0.0"
-                tv_diff_percent.text = "+0.0% 증가"
+                tv_best_percent1.text = "0"
+                tv_best_percent2.text = "0"
+                tv_diff_percent.text = "+0% 증가"
                 tv_diff_percent.visibility = View.INVISIBLE
 
                 tv_driving_info1.text = "월 평균"
