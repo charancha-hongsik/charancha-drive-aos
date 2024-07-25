@@ -431,8 +431,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     tv_drive_time_info.text = transformSecondsToHHMMSS(getDrivingInfoResponse.totalTime)
                     tv_drive_distance_info.text = transferDistanceWithUnit(getDrivingInfoResponse.totalDistance)
                     tv_drive_verification_info.text = getDrivingInfoResponse.verification
-                    tv_high_speed_driving_percent_info.text = getDrivingInfoResponse.highSpeedDrivingDistancePercentage.toString() + "%"
-                    tv_low_speed_driving_percent_info.text = getDrivingInfoResponse.lowSpeedDrivingDistancePercentage.toString() + "%"
+                    tv_high_speed_driving_percent_info.text = transferNumWithRounds(getDrivingInfoResponse.highSpeedDrivingDistancePercentage).toString() + "%"
+                    tv_low_speed_driving_percent_info.text = transferNumWithRounds(getDrivingInfoResponse.lowSpeedDrivingDistancePercentage).toString() + "%"
                     tv_max_speed_info.text = getSpeedWithDistanceUnit(getDrivingInfoResponse.maxSpeed)
                     tv_high_speed_average_info.text = getSpeedWithDistanceUnit(getDrivingInfoResponse.highSpeedDrivingAverageSpeed)
                     tv_low_speed_average_info.text = getSpeedWithDistanceUnit(getDrivingInfoResponse.lowSpeedDrivingAverageSpeed)
