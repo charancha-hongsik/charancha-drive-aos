@@ -223,6 +223,12 @@ class LoginActivity: BaseActivity() {
                                                             )
                                                         )
 
+                                                        wv_login.clearHistory();
+                                                        wv_login.clearCache(true);
+                                                        wv_login.removeJavascriptInterface("MilelogPublicApi")
+
+                                                        finish()
+
                                                     }else{
                                                         for(term in termsAgreeStatusResponses){
                                                             if(term.terms.isRequired == 1)
@@ -274,6 +280,7 @@ class LoginActivity: BaseActivity() {
                                                                                 wv_login.clearHistory();
                                                                                 wv_login.clearCache(true);
                                                                                 wv_login.removeJavascriptInterface("MilelogPublicApi")
+
                                                                                 finish()
                                                                             }
                                                                         }else{
@@ -307,6 +314,12 @@ class LoginActivity: BaseActivity() {
                                                                 )
                                                             )
 
+                                                            wv_login.clearHistory();
+                                                            wv_login.clearCache(true);
+                                                            wv_login.removeJavascriptInterface("MilelogPublicApi")
+
+                                                            finish()
+
                                                         }
                                                     }
                                                 } else {
@@ -316,6 +329,12 @@ class LoginActivity: BaseActivity() {
                                                             TermsOfUseActivity::class.java
                                                         )
                                                     )
+
+                                                    wv_login.clearHistory();
+                                                    wv_login.clearCache(true);
+                                                    wv_login.removeJavascriptInterface("MilelogPublicApi")
+
+                                                    finish()
 
                                                 }
                                             }

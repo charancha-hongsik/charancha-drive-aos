@@ -188,7 +188,7 @@ class BluetoothService : Service() {
             notification = NotificationCompat.Builder(this, CHANNEL_ID)
 
 
-            startForeground(1, notification.setSmallIcon(R.mipmap.ic_milelog_launcher)
+            startForeground(1, notification.setSmallIcon(R.mipmap.ic_notification)
                 .setAutoCancel(false)
                 .setOngoing(true)
                 .setContentText("주행 관찰중이에요.")

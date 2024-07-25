@@ -57,7 +57,7 @@ class CallApiService: Service() {
         )
         notification = NotificationCompat.Builder(this, CHANNEL_ID)
 
-        startForeground(2, notification.setSmallIcon(R.mipmap.ic_milelog_launcher)
+        startForeground(2, notification.setSmallIcon(R.mipmap.ic_notification)
             .setAutoCancel(false)
             .setOngoing(true)
             .setContentText("데이터를 보내는 중입니다.")

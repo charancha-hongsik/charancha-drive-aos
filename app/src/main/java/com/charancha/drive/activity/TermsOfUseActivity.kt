@@ -91,6 +91,8 @@ class TermsOfUseActivity: BaseActivity() {
 
     override fun onBackPressed() {
         logout()
+        startActivity(Intent(this@TermsOfUseActivity, LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+        finish()
         super.onBackPressed()
     }
 
@@ -187,20 +189,11 @@ class TermsOfUseActivity: BaseActivity() {
 
     }
 
+
     private fun setListener(){
         ibArrowTerms.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.ACCESS_TOKEN, "")
-                PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.REFRESH_TOKEN, "")
-                PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.EXPIRES_IN, "")
-                PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.REFRESH_EXPIRES_IN, "")
-                PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.TOKEN_TYPE, "")
-                PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.KEYLESS_ACCOUNT, "")
-                PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.KEYLESS_ACCOUNT_EXPIRE, "")
-                PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.OAUTH_PROVIDER, "")
-                PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.ID_TOKEN, "")
-                PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
-                PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.USER_CARID, "")
+                logout()
                 startActivity(Intent(this@TermsOfUseActivity, LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
                 finish()
             }

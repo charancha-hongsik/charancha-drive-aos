@@ -1175,21 +1175,22 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                     if(recentDrivingDistance.isRecent){
                         tv_diff_distance.visibility = View.VISIBLE
 
-                        tv_total_distance.text = transferDistance(recentDrivingDistance.perOne.totalDistance)
-                        tv_average_distance.text = transferDistance(recentDrivingDistance.perOne.totalDistance)
-                        tv_max_distance.text = transferDistance(recentDrivingDistance.max.totalDistance)
-                        tv_min_distance.text = transferDistance(recentDrivingDistance.min.totalDistance)
+                        tv_total_distance.text = transferDistance(recentDrivingDistance.perOneTotal.totalDistance)
+                        tv_average_distance.text = transferDistance(recentDrivingDistance.perOneAverage.totalDistance)
+                        tv_min_distance.text = transferDistance(recentDrivingDistance.perOneMin.totalDistance)
+                        tv_max_distance.text = transferDistance(recentDrivingDistance.perOneMax.totalDistance)
 
-                        if(recentDrivingDistance.diffPerOne.totalDistance == 0.0){
+
+                        if(recentDrivingDistance.diffPerOneTotal.totalDistance == 0.0){
                             tv_diff_distance.text = "점수 변동이 없어요."
                             tv_diff_distance.setTextColor(resources.getColor(R.color.gray_950))
 
-                        }else if(recentDrivingDistance.diffPerOne.totalDistance > 0.0){
-                            tv_diff_distance.text = "+" + transferDistance(recentDrivingDistance.diffPerOne.totalDistance) + distance_unit + " 증가"
+                        }else if(recentDrivingDistance.diffPerOneTotal.totalDistance > 0.0){
+                            tv_diff_distance.text = "+" + transferDistance(recentDrivingDistance.diffPerOneTotal.totalDistance) + distance_unit + " 증가"
                             tv_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
 
-                        }else if(recentDrivingDistance.diffPerOne.totalDistance < 0.0){
-                            tv_diff_distance.text = transferDistance(recentDrivingDistance.diffPerOne.totalDistance) + distance_unit + " 감소"
+                        }else if(recentDrivingDistance.diffPerOneTotal.totalDistance < 0.0){
+                            tv_diff_distance.text = transferDistance(recentDrivingDistance.diffPerOneTotal.totalDistance) + distance_unit + " 감소"
                             tv_diff_distance.setTextColor(resources.getColor(R.color.sec_500))
                         }
 
@@ -1326,21 +1327,21 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                         tv_driving_info2.text = "1회 평균 주행 거리는 \n높을수록 좋아요"
                         tv_driving_info3.text = "최근 1개월의 기록을\n한눈에 확인해 보세요!"
 
-                        tv_total_distance.text = transferDistance(drivingDistance.perOne.totalDistance)
-                        tv_average_distance.text = transferDistance(drivingDistance.perOne.totalDistance)
-                        tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
-                        tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
+                        tv_total_distance.text = transferDistance(drivingDistance.perOneAverage.totalDistance)
+                        tv_average_distance.text = transferDistance(drivingDistance.perOneAverage.totalDistance)
+                        tv_max_distance.text = transferDistance(drivingDistance.perOneMax.totalDistance)
+                        tv_min_distance.text = transferDistance(drivingDistance.perOneMin.totalDistance)
 
-                        if(drivingDistance.diffPerOne.totalDistance == 0.0){
+                        if(drivingDistance.diffPerOneAverage.totalDistance == 0.0){
                             tv_diff_distance.text = "점수 변동이 없어요."
                             tv_diff_distance.setTextColor(resources.getColor(R.color.gray_950))
 
-                        }else if(drivingDistance.diffPerOne.totalDistance > 0.0){
-                            tv_diff_distance.text = "+" + transferDistance(drivingDistance.diffPerOne.totalDistance) + distance_unit + " 증가"
+                        }else if(drivingDistance.diffPerOneAverage.totalDistance > 0.0){
+                            tv_diff_distance.text = "+" + transferDistance(drivingDistance.diffPerOneAverage.totalDistance) + distance_unit + " 증가"
                             tv_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
 
-                        }else if(drivingDistance.diffPerOne.totalDistance < 0.0){
-                            tv_diff_distance.text = transferDistance(drivingDistance.diffPerOne.totalDistance) + distance_unit + " 감소"
+                        }else if(drivingDistance.diffPerOneAverage.totalDistance < 0.0){
+                            tv_diff_distance.text = transferDistance(drivingDistance.diffPerOneAverage.totalDistance) + distance_unit + " 감소"
                             tv_diff_distance.setTextColor(resources.getColor(R.color.sec_500))
                         }
                     }else{
@@ -1407,21 +1408,21 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                         tv_driving_info2.text = "1회 평균 주행 거리는 \n높을수록 좋아요"
                         tv_driving_info3.text = "최근 6개월의 기록을\n한눈에 확인해 보세요!"
 
-                        tv_total_distance.text = transferDistance(drivingDistance.perOne.totalDistance)
-                        tv_average_distance.text = transferDistance(drivingDistance.perOne.totalDistance)
-                        tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
-                        tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
+                        tv_total_distance.text = transferDistance(drivingDistance.perOneAverage.totalDistance)
+                        tv_average_distance.text = transferDistance(drivingDistance.perOneAverage.totalDistance)
+                        tv_max_distance.text = transferDistance(drivingDistance.perOneMax.totalDistance)
+                        tv_min_distance.text = transferDistance(drivingDistance.perOneMin.totalDistance)
 
-                        if(drivingDistance.diffPerOne.totalDistance == 0.0){
+                        if(drivingDistance.diffPerOneAverage.totalDistance == 0.0){
                             tv_diff_distance.text = "점수 변동이 없어요."
                             tv_diff_distance.setTextColor(resources.getColor(R.color.gray_950))
 
-                        }else if(drivingDistance.diffPerOne.totalDistance > 0.0){
-                            tv_diff_distance.text = "+" + transferDistance(drivingDistance.diffPerOne.totalDistance) + distance_unit + " 증가"
+                        }else if(drivingDistance.diffPerOneAverage.totalDistance > 0.0){
+                            tv_diff_distance.text = "+" + transferDistance(drivingDistance.diffPerOneAverage.totalDistance) + distance_unit + " 증가"
                             tv_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
 
-                        }else if(drivingDistance.diffPerOne.totalDistance < 0.0){
-                            tv_diff_distance.text = transferDistance(drivingDistance.diffPerOne.totalDistance) + distance_unit + " 감소"
+                        }else if(drivingDistance.diffPerOneAverage.totalDistance < 0.0){
+                            tv_diff_distance.text = transferDistance(drivingDistance.diffPerOneAverage.totalDistance) + distance_unit + " 감소"
                             tv_diff_distance.setTextColor(resources.getColor(R.color.sec_500))
                         }
 
@@ -1488,23 +1489,23 @@ class AverageDrivenDistanceActivity:BaseRefreshActivity() {
                     tv_diff_distance.visibility = View.VISIBLE
 
                     if(drivingDistance.average.totalDistance != 0.0){
-                        if(drivingDistance.diffPerOne.totalDistance == 0.0){
+                        if(drivingDistance.diffPerOneAverage.totalDistance == 0.0){
                             tv_diff_distance.text = "점수 변동이 없어요."
                             tv_diff_distance.setTextColor(resources.getColor(R.color.gray_950))
 
-                        }else if(drivingDistance.diffPerOne.totalDistance > 0.0){
-                            tv_diff_distance.text = "+" + transferDistance(drivingDistance.diffPerOne.totalDistance) + distance_unit + " 증가"
+                        }else if(drivingDistance.diffPerOneAverage.totalDistance > 0.0){
+                            tv_diff_distance.text = "+" + transferDistance(drivingDistance.diffPerOneAverage.totalDistance) + distance_unit + " 증가"
                             tv_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
 
-                        }else if(drivingDistance.diffPerOne.totalDistance < 0.0){
-                            tv_diff_distance.text = transferDistance(drivingDistance.diffPerOne.totalDistance) + distance_unit + " 감소"
+                        }else if(drivingDistance.diffPerOneAverage.totalDistance < 0.0){
+                            tv_diff_distance.text = transferDistance(drivingDistance.diffPerOneAverage.totalDistance) + distance_unit + " 감소"
                             tv_diff_distance.setTextColor(resources.getColor(R.color.sec_500))
                         }
 
-                        tv_total_distance.text = transferDistance(drivingDistance.perOne.totalDistance)
-                        tv_average_distance.text = transferDistance(drivingDistance.perOne.totalDistance)
-                        tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
-                        tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
+                        tv_total_distance.text = transferDistance(drivingDistance.perOneAverage.totalDistance)
+                        tv_average_distance.text = transferDistance(drivingDistance.perOneAverage.totalDistance)
+                        tv_max_distance.text = transferDistance(drivingDistance.perOneMax.totalDistance)
+                        tv_min_distance.text = transferDistance(drivingDistance.perOneMin.totalDistance)
 
                         tv_driving_info1.text = "월 평균"
                         tv_driving_info2.text = "1회 평균 주행 거리는 \n높을수록 좋아요"

@@ -245,8 +245,9 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
                         )
 
                         if(recentDrivingDistance.isRecent){
+
                             setInquireScope(convertDateFormat(recentDrivingDistance.recentStartTime))
-                            tv_engine_info_average_distance.text = transferDistanceWithUnit(recentDrivingDistance.perOne.totalDistance)
+                            tv_engine_info_average_distance.text = transferDistanceWithUnit(recentDrivingDistance.perOneAverage.totalDistance)
 
                             tv_engine_info_rapid_acc_de_count.text = transferNumWithRounds(recentDrivingDistance.total.totalRapidCount).toString() + "회"
                             tv_engine_info_high_speed_driving.text = transferNumWithRounds(recentDrivingDistance.average.highSpeedDrivingDistancePercentage).toString() + "%"
@@ -339,7 +340,7 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
                     )
 
                     if(recentDrivingDistance.total.totalDistance != 0.0){
-                        tv_engine_info_average_distance.text = transferDistanceWithUnit(recentDrivingDistance.perOne.totalDistance)
+                        tv_engine_info_average_distance.text = transferDistanceWithUnit(recentDrivingDistance.perOneAverage.totalDistance)
 
                         tv_engine_info_rapid_acc_de_count.text = transferNumWithRounds(recentDrivingDistance.total.totalRapidCount).toString() + "회"
                         tv_engine_info_high_speed_driving.text = transferNumWithRounds(recentDrivingDistance.average.highSpeedDrivingDistancePercentage).toString() + "%"

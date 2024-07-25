@@ -107,9 +107,6 @@ class MainActivity : BaseRefreshActivity() {
 
         setCarInfo()
 
-        val bluetoothIntent = Intent(this, BluetoothService::class.java)
-        startForegroundService(bluetoothIntent)
-
         if(checkingPermission){
             if(ContextCompat.checkSelfPermission(this, ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED){
                 checkUserActivity()
@@ -126,6 +123,9 @@ class MainActivity : BaseRefreshActivity() {
 
         val callApiIntent = Intent(this, CallApiService::class.java)
         startForegroundService(callApiIntent)
+
+        val bluetoothIntent = Intent(this, BluetoothService::class.java)
+        startForegroundService(bluetoothIntent)
 
         setPieChart(0.0f)
 
