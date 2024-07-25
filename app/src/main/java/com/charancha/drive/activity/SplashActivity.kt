@@ -44,10 +44,13 @@ class SplashActivity: BaseActivity() {
     override fun onResume() {
         super.onResume()
         checkForceUpdate()
+
+        Log.d("testsetestest","testestsetse LoginActivity onResume:: ")
+
     }
 
     private fun unLoginedProcess(){
-        startActivity(Intent(this, LoginActivity::class.java))
+        startActivity(Intent(this@SplashActivity, LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
 
         finish()
     }
@@ -88,12 +91,8 @@ class SplashActivity: BaseActivity() {
                                         var agree = true
 
                                         if(termsAgreeStatusResponses.isEmpty()){
-                                            startActivity(
-                                                Intent(
-                                                    this@SplashActivity,
-                                                    TermsOfUseActivity::class.java
-                                                )
-                                            )
+                                            startActivity(Intent(this@SplashActivity, TermsOfUseActivity::class.java))
+                                            finish()
                                         }else{
                                             for(term in termsAgreeStatusResponses){
                                                 if(term.terms.isRequired == 1)
@@ -150,12 +149,8 @@ class SplashActivity: BaseActivity() {
                                                     })
                                                 }
                                             } else {
-                                                startActivity(
-                                                    Intent(
-                                                        this@SplashActivity,
-                                                        TermsOfUseActivity::class.java
-                                                    )
-                                                )
+                                                startActivity(Intent(this@SplashActivity, TermsOfUseActivity::class.java))
+                                                finish()
                                             }
                                         }
                                     }else{
@@ -174,7 +169,7 @@ class SplashActivity: BaseActivity() {
                         }else{
                             logout()
 
-                            startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
+                            startActivity(Intent(this@SplashActivity, LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
                             finish()
                         }
                     }
@@ -183,7 +178,7 @@ class SplashActivity: BaseActivity() {
                         call: Call<ResponseBody>,
                         t: Throwable
                     ) {
-                        startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
+                        startActivity(Intent(this@SplashActivity, LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
                         finish()
                     }
 
@@ -191,7 +186,7 @@ class SplashActivity: BaseActivity() {
 
 
             }?: run{
-            startActivity(Intent(this, LoginActivity::class.java))
+            startActivity(Intent(this@SplashActivity, LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
             finish()
         }
     }

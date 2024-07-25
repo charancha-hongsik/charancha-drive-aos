@@ -50,6 +50,13 @@ class LoginActivity: BaseActivity() {
         Log.d("testsetestest","testestsetse LoginActivity onCreate:: ")
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        Log.d("testsetestest","testestsetse LoginActivity onResume:: ")
+
+    }
+
     fun setWebview(){
         wv_login = findViewById(R.id.wv_login)
         wv_login.visibility = VISIBLE

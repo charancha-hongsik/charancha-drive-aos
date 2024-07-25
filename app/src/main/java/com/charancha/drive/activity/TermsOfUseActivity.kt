@@ -61,8 +61,6 @@ class TermsOfUseActivity: BaseActivity() {
 
         init()
 
-        Log.d("testsetestest","testestsetse TermsOfUseActivity onCreate:: ")
-
     }
 
     private fun init(){
@@ -200,7 +198,7 @@ class TermsOfUseActivity: BaseActivity() {
                 PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.ID_TOKEN, "")
                 PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
                 PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.USER_CARID, "")
-                startActivity(Intent(this@TermsOfUseActivity, LoginActivity::class.java))
+                startActivity(Intent(this@TermsOfUseActivity, LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
                 finish()
             }
 

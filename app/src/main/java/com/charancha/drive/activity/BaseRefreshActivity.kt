@@ -79,7 +79,7 @@ open class BaseRefreshActivity: BaseActivity(){
 
             })
         }?: run{
-            startActivity(Intent(this, LoginActivity::class.java))
+            startActivity(Intent(this@BaseRefreshActivity, LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
             finish()
         }
     }
