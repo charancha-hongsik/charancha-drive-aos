@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.util.Log
 import com.charancha.drive.*
 import com.charancha.drive.retrofit.response.*
 import com.google.gson.Gson
@@ -35,6 +36,9 @@ class SplashActivity: BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
+
+        Log.d("testsetestest","testestsetse SplashActivity onCreate:: ")
+
     }
 
     override fun onResume() {

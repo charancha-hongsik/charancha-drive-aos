@@ -60,6 +60,9 @@ class TermsOfUseActivity: BaseActivity() {
         setContentView(R.layout.activity_terms)
 
         init()
+
+        Log.d("testsetestest","testestsetse TermsOfUseActivity onCreate:: ")
+
     }
 
     private fun init(){
@@ -198,7 +201,8 @@ class TermsOfUseActivity: BaseActivity() {
                 PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
                 PreferenceUtil.putPref(this@TermsOfUseActivity, PreferenceUtil.USER_CARID, "")
                 startActivity(Intent(this@TermsOfUseActivity, LoginActivity::class.java))
-                finish()            }
+                finish()
+            }
 
         })
 
@@ -219,7 +223,6 @@ class TermsOfUseActivity: BaseActivity() {
                             acceptedTerms.add(Agreements(term.id,1))
                         }
                     } else if(tvTermsTitle5.text.contains(term.title)){
-                        Log.d("testestestset","testsetesse 0:: " + ibTerms5.isSelected)
                         if(ibTerms5.isSelected){
                             acceptedTerms.add(Agreements(term.id,1))
                         }else {

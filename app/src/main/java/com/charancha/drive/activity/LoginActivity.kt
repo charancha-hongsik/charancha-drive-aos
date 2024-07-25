@@ -46,6 +46,8 @@ class LoginActivity: BaseActivity() {
         setContentView(R.layout.activity_login)
 
         setWebview()
+
+        Log.d("testsetestest","testestsetse LoginActivity onCreate:: ")
     }
 
     fun setWebview(){
