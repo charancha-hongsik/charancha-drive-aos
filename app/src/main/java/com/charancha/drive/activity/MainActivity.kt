@@ -188,7 +188,7 @@ class MainActivity : BaseRefreshActivity() {
     }
 
     fun checkLocation(){
-        CustomDialog(this, "위치 정보 권한", "위치 서비스를 사용할 수 없습니다. 기기의 ‘설정 > 개인정보 보호'에서 위치 서비스를 ‘항상'으로 켜주세요 (필수 권한)", "설정으로 이동","취소",  object : CustomDialog.DialogCallback{
+        CustomDialog(this, "위치 정보 권한", "위치 서비스를 사용할 수 없습니다. 기기의 ‘마일로그 > 권한 > 위치”에서 위치 서비스를 “항상 허용\"으로 켜주세요 (필수 권한)", "설정으로 이동","취소",  object : CustomDialog.DialogCallback{
             override fun onConfirm() {
                 val openSettingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
                     val uri: Uri = Uri.fromParts("package", packageName, null)
@@ -215,8 +215,8 @@ class MainActivity : BaseRefreshActivity() {
             if(ContextCompat.checkSelfPermission(this, ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
                 CustomDialog(
                     this,
-                    "동작 및 피트니스",
-                    "동작 및 피트니스 서비스를 사용할 수 없습니다. 기기의 ‘설정 > 개인정보 보호'에서 동작 및 피트니스 서비스를 켜주세요 (필수 권한)",
+                    "신체 활동",
+                    "신체 활동 서비스를 사용할 수 없습니다. 기기의 ‘마일로그 > 권한 > 신체 활동”에서 신체 활동을 “허용\" 으로 켜주세요 (필수 권한)",
                     "설정으로 이동",
                     "취소",
                     object : CustomDialog.DialogCallback {

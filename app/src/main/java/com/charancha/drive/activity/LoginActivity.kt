@@ -222,7 +222,7 @@ class LoginActivity: BaseActivity() {
                                                                 TermsOfUseActivity::class.java
                                                             )
                                                         )
-                                                        finish()
+
                                                     }else{
                                                         for(term in termsAgreeStatusResponses){
                                                             if(term.terms.isRequired == 1)
@@ -242,6 +242,10 @@ class LoginActivity: BaseActivity() {
                                                                         PermissionInfoActivity::class.java
                                                                     )
                                                                 )
+
+                                                                wv_login.clearHistory();
+                                                                wv_login.clearCache(true);
+                                                                wv_login.removeJavascriptInterface("MilelogPublicApi")
                                                                 finish()
                                                             } else {
                                                                 apiService().getMyCarInfo("Bearer " + signInResponse.access_token).enqueue(object :Callback<ResponseBody>{
@@ -259,13 +263,25 @@ class LoginActivity: BaseActivity() {
                                                                                 PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.get(0).id)
                                                                                 startActivity(Intent(this@LoginActivity, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
 
+                                                                                wv_login.clearHistory();
+                                                                                wv_login.clearCache(true);
+                                                                                wv_login.removeJavascriptInterface("MilelogPublicApi")
+
                                                                                 finish()
                                                                             }else{
                                                                                 startActivity(Intent(this@LoginActivity, OnBoardingActivity::class.java))
+
+                                                                                wv_login.clearHistory();
+                                                                                wv_login.clearCache(true);
+                                                                                wv_login.removeJavascriptInterface("MilelogPublicApi")
                                                                                 finish()
                                                                             }
                                                                         }else{
                                                                             startActivity(Intent(this@LoginActivity, OnBoardingActivity::class.java))
+
+                                                                            wv_login.clearHistory();
+                                                                            wv_login.clearCache(true);
+                                                                            wv_login.removeJavascriptInterface("MilelogPublicApi")
                                                                             finish()
                                                                         }
                                                                     }
@@ -275,6 +291,10 @@ class LoginActivity: BaseActivity() {
                                                                         t: Throwable
                                                                     ) {
                                                                         startActivity(Intent(this@LoginActivity, OnBoardingActivity::class.java))
+
+                                                                        wv_login.clearHistory();
+                                                                        wv_login.clearCache(true);
+                                                                        wv_login.removeJavascriptInterface("MilelogPublicApi")
                                                                         finish()
                                                                     }
                                                                 })
@@ -286,7 +306,7 @@ class LoginActivity: BaseActivity() {
                                                                     TermsOfUseActivity::class.java
                                                                 )
                                                             )
-                                                            finish()
+
                                                         }
                                                     }
                                                 } else {
@@ -296,7 +316,7 @@ class LoginActivity: BaseActivity() {
                                                             TermsOfUseActivity::class.java
                                                         )
                                                     )
-                                                    finish()
+
                                                 }
                                             }
 
