@@ -7,13 +7,13 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
+import android.view.View.*
 import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.charancha.drive.PreferenceUtil
@@ -91,6 +91,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var iv_tooltip_rapid_start:ImageView
     lateinit var iv_tooltip_rapid_acc:ImageView
 
+    lateinit var view_map:CardView
+
     var isActive = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -105,16 +107,6 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     }
 
     private fun init(){
-
-        detailDriveHistoryViewModel.setDriveForApp.observe(this@DetailDriveHistoryActivity, DetailDriveHistoryViewModel.EventObserver {
-            for(raw in it.gpses){
-                polylines.add(LatLng(raw.latitude,raw.longtitude))
-            }
-
-            if(polylines.size != 0){
-                setMapData()
-            }
-        })
         tracking_id = intent.getStringExtra("trackingId").toString()
         isActive = intent.getBooleanExtra("isActive",true)
 
@@ -160,7 +152,25 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         iv_tooltip_rapid_start = findViewById(R.id.iv_tooltip_rapid_start)
         iv_tooltip_rapid_acc = findViewById(R.id.iv_tooltip_rapid_acc)
 
+        view_map = findViewById(R.id.view_map)
 
+        detailDriveHistoryViewModel.setDriveForApp.observe(this@DetailDriveHistoryActivity, DetailDriveHistoryViewModel.EventObserver {
+            Log.d("testsetsetest","testsetsetest :: map data")
+            it?.let{
+                for(raw in it.gpses){
+                    polylines.add(LatLng(raw.latitude,raw.longtitude))
+                }
+
+                if(polylines.size != 0){
+                    view_map.visibility = VISIBLE
+                    setMapData()
+                }else{
+                    view_map.visibility = GONE
+                }
+            }?: run{
+                view_map.visibility = GONE
+            }
+        })
     }
 
     private fun setResources(){

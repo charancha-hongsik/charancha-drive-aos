@@ -22,16 +22,26 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "BASE_URL", '"https://milelog.charancha.com/"'
-            buildConfigField "String", "BASE_LOGIN_URL", '"https://login.milelog.charancha.com/"'
+            buildConfigField "String", "BASE_INTRO_URL", '"https://milelog.charancha.com/"'
+            buildConfigField "String", "BASE_API_URL", '"https://milelog.charancha.com/"'
+            buildConfigField "String", "BASE_LOGIN_URL", '"https://milelog.charancha.com/login"'
+            buildConfigField "String", "BASE_TERMS_URL", '"https://milelog.charancha.com/terms-privacy/"'
         }
 
         debug {
-            buildConfigField "String", "BASE_URL", '"https://dev.milelog.charancha.com/"'
-            buildConfigField "String", "BASE_LOGIN_URL", '"https://dev.login.milelog.charancha.com/"'
+            buildConfigField "String", "BASE_INTRO_URL", '"https://dev.milelog.charancha.com/"'
+            buildConfigField "String", "BASE_API_URL", '"https://dev.milelog.charancha.com/"'
+            buildConfigField "String", "BASE_LOGIN_URL", '"https://dev.milelog.charancha.com/login"'
+            buildConfigField "String", "BASE_TERMS_URL", '"https://dev.milelog.charancha.com/terms-privacy/"'
 
-//            buildConfigField "String", "BASE_URL", '"https://staging.milelog.charancha.com"'
-//            buildConfigField "String", "BASE_LOGIN_URL", '"https://staging.login.milelog.charancha.com"'
+        }
+
+        staging {
+            buildConfigField "String", "BASE_INTRO_URL", '"https://staging.milelog.charancha.com/"'
+            buildConfigField "String", "BASE_API_URL", '"https://staging.milelog.charancha.com/"'
+            buildConfigField "String", "BASE_LOGIN_URL", '"https://staging.milelog.charancha.com/login"'
+            buildConfigField "String", "BASE_TERMS_URL", '"https://staging.milelog.charancha.com/terms-privacy/"'
+
         }
     }
     compileOptions {

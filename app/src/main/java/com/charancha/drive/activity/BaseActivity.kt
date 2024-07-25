@@ -44,7 +44,7 @@ open class BaseActivity: AppCompatActivity(){
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
             .build()
-        return Retrofit.Builder().baseUrl(BuildConfig.BASE_URL).client(client)
+        return Retrofit.Builder().baseUrl(BuildConfig.BASE_API_URL).client(client)
             .addConverterFactory(GsonConverterFactory.create()).build().create(
                 ApiServiceInterface::class.java
             )

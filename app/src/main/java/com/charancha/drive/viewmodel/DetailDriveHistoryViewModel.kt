@@ -1,6 +1,7 @@
 package com.charancha.drive.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
@@ -15,8 +16,8 @@ class DetailDriveHistoryViewModel: ViewModel() {
     private val _setAllDriveDateForApp = MutableLiveData<Event<MutableList<DriveForApp>>>()
     val setAllDriveDateForApp: MutableLiveData<Event<MutableList<DriveForApp>>> get() = _setAllDriveDateForApp
 
-    private val _setDriveForApp = MutableLiveData<Event<DriveForApp>>()
-    val setDriveForApp: MutableLiveData<Event<DriveForApp>> get() = _setDriveForApp
+    private val _setDriveForApp = MutableLiveData<Event<DriveForApp?>>()
+    val setDriveForApp: MutableLiveData<Event<DriveForApp?>> get() = _setDriveForApp
 
     fun init(context:Context){
         this.context = context
@@ -35,6 +36,8 @@ class DetailDriveHistoryViewModel: ViewModel() {
             val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(context)
             driveDatabase.driveForAppDao().getDriveByTrackingId(trackingId)?.let {
                 setDriveForApp.value = Event(it)
+            } ?: run{
+                setDriveForApp.value = Event(null)
             }
         }
     }

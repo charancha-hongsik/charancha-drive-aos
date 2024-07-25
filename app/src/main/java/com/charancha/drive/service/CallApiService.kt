@@ -162,7 +162,7 @@ class CallApiService: Service() {
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         val client: OkHttpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
-        return Retrofit.Builder().baseUrl(BuildConfig.BASE_URL).client(client)
+        return Retrofit.Builder().baseUrl(BuildConfig.BASE_API_URL).client(client)
             .addConverterFactory(GsonConverterFactory.create()).build().create(
                 ApiServiceInterface::class.java
             )
