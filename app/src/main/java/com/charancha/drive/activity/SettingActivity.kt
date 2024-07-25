@@ -41,6 +41,7 @@ class SettingActivity:BaseRefreshActivity(){
     lateinit var tv_version:TextView
     lateinit var btn_back:ImageView
     lateinit var btn_update:TextView
+    lateinit var tv_latest:TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +60,7 @@ class SettingActivity:BaseRefreshActivity(){
         btn_open_set_distance_unit = findViewById(R.id.btn_open_set_distance_unit)
         tv_unit = findViewById(R.id.tv_unit)
         tv_version = findViewById(R.id.tv_version)
+        tv_latest = findViewById(R.id.tv_latest)
         btn_back = findViewById(R.id.btn_back)
         btn_update = findViewById(R.id.btn_update)
         btn_update.setOnClickListener(object:OnSingleClickListener(){
@@ -149,22 +151,36 @@ class SettingActivity:BaseRefreshActivity(){
 
 
                     if (patchFromApi.toInt() > patch.toInt()) {
+                        tv_version.text = "V" + BuildConfig.VERSION_NAME
+                        tv_latest.visibility = GONE
                         btn_update.visibility = VISIBLE
+
                         return
                     }
                     if (minorFromApi.toInt() > minor.toInt()) {
+                        tv_version.text = "V" + BuildConfig.VERSION_NAME
+                        tv_latest.visibility = GONE
                         btn_update.visibility = VISIBLE
 
                         return
                     }
                     if (majorFromApi.toInt() > major.toInt()) {
+                        tv_version.text = "V" + BuildConfig.VERSION_NAME
+                        tv_latest.visibility = GONE
                         btn_update.visibility = VISIBLE
+
                         return
                     }
 
-                    btn_update.visibility = INVISIBLE
+
+                    tv_latest.visibility = VISIBLE
+                    btn_update.visibility = GONE
+
+
                 }else{
                     tv_version.text = "V" + BuildConfig.VERSION_NAME
+
+                    tv_latest.visibility = GONE
                     btn_update.visibility = VISIBLE
 
                 }
@@ -173,8 +189,9 @@ class SettingActivity:BaseRefreshActivity(){
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 tv_version.text = "V" + BuildConfig.VERSION_NAME
-                btn_update.visibility = VISIBLE
 
+                tv_latest.visibility = GONE
+                btn_update.visibility = VISIBLE
             }
 
         })

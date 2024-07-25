@@ -164,6 +164,22 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layout_setting" />
 
+    <TextView
+        android:id="@+id/tv_latest"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:text="최신 버전이에요"
+        android:visibility="gone"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="28dp"
+        android:textColor="@color/gray_400"
+        android:textAppearance="@style/C1R"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
+        android:textFontWeight="400"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_setting" />
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/layout_select_distance_unit"
         android:layout_width="0dp"
