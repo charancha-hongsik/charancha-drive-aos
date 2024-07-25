@@ -55,7 +55,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="진짜로 마일로그를\n떠나실건가요?"
+            android:text="진짜로 마일로그를\n떠나실 건가요?"
             android:gravity="left"
             android:layout_gravity="left"
             android:textColor="@color/gray_950"
@@ -71,7 +71,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="22dp"
-            android:text="회원 탈퇴 전 아래 사항을 꼭 확인해주세요!"
+            android:text="회원 탈퇴 전 아래 사항을 꼭 확인해 주세요!"
             android:textAppearance="@style/B1M"
             android:textColor="@color/gray_800"
             android:textFontWeight="500"
@@ -115,7 +115,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="13dp"
-                android:text="해당 데이터는 학 번 삭제되면 복구할 수 없습니다."
+                android:text="해당 데이터는 한 번 삭제되면 복구할 수 없습니다."
                 android:textColor="@color/gray_700"
                 android:textFontWeight="400"
                 android:textAppearance="@style/B1R"/>
