@@ -183,7 +183,8 @@ class ManageEngineActivity:BaseRefreshActivity() {
                 btn_six_month_drive.isSelected = false
                 btn_year_drive.isSelected = false
 
-                setRecentAllForEngine()            }
+                setRecentAllForEngine()
+            }
 
         })
 
@@ -399,7 +400,7 @@ class ManageEngineActivity:BaseRefreshActivity() {
                     if(getDrivingStatisticsResponse.total.totalDistance != 0.0){
                         tv_optimal_driving_contents.text = "최적 주행이 높을수록 좋아요!"
                         tv_normal_speed_driving_contents.text = "항속 주행이 높을수록 좋아요!"
-                        tv_distance.text = transferDistance(getDrivingStatisticsResponse.average.totalDistance)
+                        tv_distance.text = transferDistance(getDrivingStatisticsResponse.perOneAverage.totalDistance)
                         tv_speed_percent.text = transferNumWithRounds(getDrivingStatisticsResponse.average.highSpeedDrivingDistancePercentage).toString()
 
                         tv_optimal_driving_percent.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.optimalDrivingPercentage)
@@ -536,9 +537,7 @@ class ManageEngineActivity:BaseRefreshActivity() {
                         tv_optimal_driving_contents.text = "최적 주행이 높을수록 좋아요!"
                         tv_normal_speed_driving_contents.text = "항속 주행이 높을수록 좋아요!"
 
-
-                        tv_distance.text = transferDistance(getDrivingStatisticsResponse.average.totalDistance)
-                        tv_speed_percent.text = transferNumWithRounds(getDrivingStatisticsResponse.average.highSpeedDrivingDistancePercentage).toString()
+                        tv_speed_percent.text = transferNumWithRounds(getDrivingStatisticsResponse.average.highSpeedDrivingDistancePercentage).toString()/**/
 
 
                         tv_optimal_driving_percent.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.optimalDrivingPercentage)
@@ -598,6 +597,40 @@ class ManageEngineActivity:BaseRefreshActivity() {
             }
 
         })
+
+        apiService().getDrivingStatistics(
+            "Bearer " + PreferenceUtil.getPref(this@ManageEngineActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            getCurrentAndPastTimeForISO(scope).second,
+            getCurrentAndPastTimeForISO(scope).first,
+            "startTime",
+            "").enqueue(object:
+            Callback<ResponseBody>{
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200){
+                    val getDrivingStatisticsResponse = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDrivingStatisticsResponse::class.java
+                    )
+
+                    if(getDrivingStatisticsResponse.total.totalDistance != 0.0){
+                        tv_distance.text = transferDistance(getDrivingStatisticsResponse.perOneAverage.totalDistance)
+                    }else{
+                        tv_optimal_driving_contents.text = "아직 데이터가 없어요."
+                        tv_normal_speed_driving_contents.text = "아직 데이터가 없어요."
+
+
+                        tv_distance.text = transferDistance(0.0)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                tv_distance.text = transferDistance(0.0)
+            }
+
+        })
+
     }
 
 }

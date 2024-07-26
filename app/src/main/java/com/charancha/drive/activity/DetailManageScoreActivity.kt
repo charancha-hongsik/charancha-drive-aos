@@ -334,7 +334,7 @@ class DetailManageScoreActivity:BaseRefreshActivity(){
             startTime,
             endTime,
             "startTime",
-            minimumTimeUnit
+            ""
         ).enqueue(object: Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200 || response.code() == 201){
