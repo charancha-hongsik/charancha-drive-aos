@@ -209,7 +209,7 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                         recentEndTime = recentDrivingDistance.recentEndTime
 
                         tv_const_percent1.text = String.format(Locale.KOREAN, "%.0f", recentDrivingDistance.average.constantSpeedDrivingDistancePercentage)
-                        tv_const_percent2.text = String.format(Locale.KOREAN, "%.0f", recentDrivingDistance.average.constantSpeedDrivingDistancePercentage)
+                        tv_const_percent2.text = String.format(Locale.KOREAN, "%.0f", recentDrivingDistance.average.constantSpeedDrivingDistancePercentage) + "%"
 
                         if(recentDrivingDistance.diffAverage.constantSpeedDrivingDistancePercentage == 0.0){
                             tv_diff_percent.text = "거리 변동이 없어요."
@@ -261,8 +261,8 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                             }
 
                             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                                tv_const_percent1.text = "0.0"
-                                tv_const_percent2.text = "0.0"
+                                tv_const_percent1.text = "0"
+                                tv_const_percent2.text = "0%"
                                 tv_diff_percent.text = "+0.0% 증가"
 
                                 tv_driving_info1.text = "최근 1일 평균"
@@ -280,8 +280,8 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                     }else{
                         tv_diff_percent.visibility = View.INVISIBLE
 
-                        tv_const_percent1.text = "0.0"
-                        tv_const_percent2.text = "0.0"
+                        tv_const_percent1.text = "0"
+                        tv_const_percent2.text = "0%"
                         tv_diff_percent.text = "+0.0% 증가"
 
                         tv_driving_info1.text = "최근 1일 평균"
@@ -297,9 +297,9 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                 }else{
                     tv_diff_percent.visibility = View.INVISIBLE
 
-                    tv_const_percent1.text = "0.0"
-                    tv_const_percent2.text = "0.0"
-                    tv_diff_percent.text = "+0.0% 증가"
+                    tv_const_percent1.text = "0"
+                    tv_const_percent2.text = "0%"
+                    tv_diff_percent.text = "+0% 증가"
 
                     tv_driving_info1.text = "최근 1일 평균"
                     tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -313,9 +313,9 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 tv_diff_percent.visibility = View.INVISIBLE
 
-                tv_const_percent1.text = "0.0"
-                tv_const_percent2.text = "0.0"
-                tv_diff_percent.text = "+0.0% 증가"
+                tv_const_percent1.text = "0"
+                tv_const_percent2.text = "0%"
+                tv_diff_percent.text = "+0% 증가"
 
                 tv_driving_info1.text = "최근 1일 평균"
                 tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -360,7 +360,7 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                         tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
 
                         tv_const_percent1.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.constantSpeedDrivingDistancePercentage)
-                        tv_const_percent2.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.constantSpeedDrivingDistancePercentage)
+                        tv_const_percent2.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.constantSpeedDrivingDistancePercentage) + "%"
 
                         if(drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage == 0.0){
                             tv_diff_percent.text = "거리 변동이 없어요."
@@ -381,9 +381,9 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                     }else{
                         tv_diff_percent.visibility = View.INVISIBLE
 
-                        tv_const_percent1.text = "0.0"
-                        tv_const_percent2.text = "0.0"
-                        tv_diff_percent.text = "+0.0% 증가"
+                        tv_const_percent1.text = "0"
+                        tv_const_percent2.text = "0%"
+                        tv_diff_percent.text = "+0% 증가"
 
                         tv_driving_info1.text = "일일 평균"
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -398,9 +398,9 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                tv_const_percent1.text = "0.0"
-                tv_const_percent2.text = "0.0"
-                tv_diff_percent.text = "+0.0% 증가"
+                tv_const_percent1.text = "0"
+                tv_const_percent2.text = "0%"
+                tv_diff_percent.text = "+0% 증가"
 
                 tv_diff_percent.visibility = View.INVISIBLE
 
@@ -437,7 +437,7 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                         tv_diff_percent.visibility = View.VISIBLE
 
                         tv_const_percent1.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.constantSpeedDrivingDistancePercentage)
-                        tv_const_percent2.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.constantSpeedDrivingDistancePercentage)
+                        tv_const_percent2.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.constantSpeedDrivingDistancePercentage) + "%"
 
 
                         if(drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage == 0.0){
@@ -464,8 +464,8 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                         tv_diff_percent.visibility = View.INVISIBLE
 
                         tv_const_percent1.text = "0.0"
-                        tv_const_percent2.text = "0.0"
-                        tv_diff_percent.text = "+0.0% 증가"
+                        tv_const_percent2.text = "0%"
+                        tv_diff_percent.text = "+0% 증가"
 
                         tv_driving_info1.text = "월 평균"
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -481,8 +481,8 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 tv_const_percent1.text = "0.0"
-                tv_const_percent2.text = "0.0"
-                tv_diff_percent.text = "+0.0% 증가"
+                tv_const_percent2.text = "0%"
+                tv_diff_percent.text = "+0% 증가"
                 tv_diff_percent.visibility = View.INVISIBLE
 
                 tv_driving_info1.text = "월 평균"
@@ -518,7 +518,7 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                         tv_diff_percent.visibility = View.VISIBLE
 
                         tv_const_percent1.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.constantSpeedDrivingDistancePercentage)
-                        tv_const_percent2.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.constantSpeedDrivingDistancePercentage)
+                        tv_const_percent2.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.constantSpeedDrivingDistancePercentage) + "%"
 
 
                         if(drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage == 0.0){
@@ -544,9 +544,9 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
                     }else{
                         tv_diff_percent.visibility = View.INVISIBLE
 
-                        tv_const_percent1.text = "0.0"
-                        tv_const_percent2.text = "0.0"
-                        tv_diff_percent.text = "+0.0% 증가"
+                        tv_const_percent1.text = "0"
+                        tv_const_percent2.text = "0%"
+                        tv_diff_percent.text = "+0% 증가"
 
                         tv_driving_info1.text = "월 평균"
                         tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
@@ -560,9 +560,9 @@ class ConstantSpeedDrivingActivity:BaseRefreshActivity() {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                tv_const_percent1.text = "0.0"
-                tv_const_percent2.text = "0.0"
-                tv_diff_percent.text = "+0.0% 증가"
+                tv_const_percent1.text = "0"
+                tv_const_percent2.text = "0%"
+                tv_diff_percent.text = "+0% 증가"
                 tv_diff_percent.visibility = View.INVISIBLE
 
                 tv_driving_info1.text = "월 평균"

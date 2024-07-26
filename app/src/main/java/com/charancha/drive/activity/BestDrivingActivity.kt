@@ -212,7 +212,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
                         recentEndTime = recentDrivingDistance.recentEndTime
 
                         tv_best_percent1.text = String.format(Locale.KOREAN, "%.0f", recentDrivingDistance.average.optimalDrivingPercentage)
-                        tv_best_percent2.text = String.format(Locale.KOREAN, "%.0f", recentDrivingDistance.average.optimalDrivingPercentage)
+                        tv_best_percent2.text = String.format(Locale.KOREAN, "%.0f", recentDrivingDistance.average.optimalDrivingPercentage) + "%"
 
                         if(recentDrivingDistance.diffAverage.optimalDrivingPercentage == 0.0){
                             tv_diff_percent.text = "거리 변동이 없어요."
@@ -264,7 +264,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
 
                             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                                 tv_best_percent1.text = "0"
-                                tv_best_percent2.text = "0"
+                                tv_best_percent2.text = "0%"
                                 tv_diff_percent.text = "+0% 증가"
 
                                 tv_driving_info1.text = "최근 1일 평균"
@@ -279,7 +279,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
 
                     }else{
                         tv_best_percent1.text = "0"
-                        tv_best_percent2.text = "0"
+                        tv_best_percent2.text = "0%"
                         tv_diff_percent.text = "+0% 증가"
 
                         tv_date1.text = getTodayFormattedDate()
@@ -303,7 +303,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 tv_best_percent1.text = "0"
-                tv_best_percent2.text = "0"
+                tv_best_percent2.text = "0%"
                 tv_diff_percent.text = "+0% 증가"
                 tv_diff_percent.visibility = View.INVISIBLE
 
@@ -345,7 +345,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
                         tv_diff_percent.visibility = View.VISIBLE
 
                         tv_best_percent1.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.optimalDrivingPercentage)
-                        tv_best_percent2.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.optimalDrivingPercentage)
+                        tv_best_percent2.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.optimalDrivingPercentage) + "%"
 
                         if(drivingDistance.diffAverage.optimalDrivingPercentage == 0.0){
                             tv_diff_percent.text = "거리 변동이 없어요."
@@ -368,7 +368,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
                         setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat()/100)
                     }else{
                         tv_best_percent1.text = "0"
-                        tv_best_percent2.text = "0"
+                        tv_best_percent2.text = "0%"
                         tv_diff_percent.text = "+0% 증가"
 
                         tv_diff_percent.visibility = View.INVISIBLE
@@ -387,7 +387,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 tv_best_percent1.text = "0"
-                tv_best_percent2.text = "0"
+                tv_best_percent2.text = "0%"
                 tv_diff_percent.text = "+0% 증가"
                 tv_diff_percent.visibility = View.INVISIBLE
 
@@ -431,7 +431,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
 
 
                         tv_best_percent1.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.optimalDrivingPercentage)
-                        tv_best_percent2.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.optimalDrivingPercentage)
+                        tv_best_percent2.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.optimalDrivingPercentage) + "%"
 
                         if(drivingDistance.diffAverage.optimalDrivingPercentage == 0.0){
                             tv_diff_percent.text = "거리 변동이 없어요."
@@ -450,7 +450,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
                         setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat()/100)
                     }else{
                         tv_best_percent1.text = "0"
-                        tv_best_percent2.text = "0"
+                        tv_best_percent2.text = "0%"
                         tv_diff_percent.text = "+0% 증가"
                         tv_diff_percent.visibility = View.INVISIBLE
 
@@ -470,7 +470,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 tv_best_percent1.text = "0"
-                tv_best_percent2.text = "0"
+                tv_best_percent2.text = "0%"
                 tv_diff_percent.text = "+0% 증가"
                 tv_diff_percent.visibility = View.INVISIBLE
 
@@ -509,7 +509,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
                         tv_diff_percent.visibility = View.VISIBLE
 
                         tv_best_percent1.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.optimalDrivingPercentage)
-                        tv_best_percent2.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.optimalDrivingPercentage)
+                        tv_best_percent2.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.optimalDrivingPercentage) + "%"
 
 
                         if(drivingDistance.diffAverage.optimalDrivingPercentage == 0.0){
@@ -533,7 +533,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
                         setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat()/100)
                     }else{
                         tv_best_percent1.text = "0"
-                        tv_best_percent2.text = "0"
+                        tv_best_percent2.text = "0%"
                         tv_diff_percent.text = "+0% 증가"
                         tv_diff_percent.visibility = View.INVISIBLE
 
@@ -551,7 +551,7 @@ class BestDrivingActivity:BaseRefreshActivity() {
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 tv_best_percent1.text = "0"
-                tv_best_percent2.text = "0"
+                tv_best_percent2.text = "0%"
                 tv_diff_percent.text = "+0% 증가"
                 tv_diff_percent.visibility = View.INVISIBLE
 
