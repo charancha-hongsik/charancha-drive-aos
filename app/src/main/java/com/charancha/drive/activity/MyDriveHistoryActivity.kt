@@ -74,8 +74,14 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
 
         init()
 
+        lv_history.layoutManager = LinearLayoutManager(this@MyDriveHistoryActivity)
+        val dividerItemDecoration = DividerItemDecoration(this@MyDriveHistoryActivity, R.color.gray_50, 50) // 색상 리소스와 구분선 높이 설정
+        lv_history.addItemDecoration(dividerItemDecoration)
+
         historyViewModel.init(applicationContext)
         historyViewModel.getAllDrive()
+
+
     }
 
     fun init(){
@@ -325,9 +331,6 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                         getDriveHistroyResponse.items.add(DriveItem("","","","","",false,"","",0.0,0.0))
                         histories = getDriveHistroyResponse.items
 
-                        lv_history.layoutManager = LinearLayoutManager(this@MyDriveHistoryActivity)
-                        val dividerItemDecoration = DividerItemDecoration(this@MyDriveHistoryActivity, R.color.gray_50, 50) // 색상 리소스와 구분선 높이 설정
-                        lv_history.addItemDecoration(dividerItemDecoration)
                         lv_history.adapter = driveAdapter
 
                         lv_history.visibility = VISIBLE

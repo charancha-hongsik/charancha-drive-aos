@@ -2221,7 +2221,8 @@ class DrivenDistanceActivity:BaseRefreshActivity() {
 
                             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                                 setRecentBarChartAsDefault()
-                                setRecentLineChartAsDefault()                            }
+                                setRecentLineChartAsDefault()
+                            }
 
                         })
 

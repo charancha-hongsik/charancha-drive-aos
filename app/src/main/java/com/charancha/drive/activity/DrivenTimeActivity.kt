@@ -2582,7 +2582,7 @@ class DrivenTimeActivity:BaseRefreshActivity() {
             getCurrentAndPastTimeForISO(334).second,
             getCurrentAndPastTimeForISO(334).first,
             "startTime",
-            "day").enqueue(object: Callback<ResponseBody> {
+            "month").enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200) {
 
