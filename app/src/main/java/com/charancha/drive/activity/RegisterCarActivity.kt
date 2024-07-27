@@ -193,12 +193,14 @@ class RegisterCarActivity: BaseActivity() {
                                     startActivity(Intent(this@RegisterCarActivity, MainActivity::class.java).addFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK))
                                     finish()
                                 }else{
-                                    Toast.makeText(this@RegisterCarActivity,"차량 등록에 실패했습니다.",Toast.LENGTH_SHORT).show()
+                                    showCustomToast(this@RegisterCarActivity,"차량 등록에 실패했습니다.")
+
                                 }
                             }
 
                             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                                Toast.makeText(this@RegisterCarActivity,"차량 등록에 실패했습니다.",Toast.LENGTH_SHORT).show()
+                                showCustomToast(this@RegisterCarActivity,"차량 등록에 실패했습니다.")
+
                             }
 
                         })

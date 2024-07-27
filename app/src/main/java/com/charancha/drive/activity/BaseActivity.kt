@@ -4,10 +4,12 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.charancha.drive.BuildConfig
 import com.charancha.drive.PreferenceUtil
@@ -439,6 +441,21 @@ open class BaseActivity: AppCompatActivity(){
         PreferenceUtil.putBooleanPref(this@BaseActivity, PreferenceUtil.HAVE_BEEN_HOME, false)
     }
 
+    fun showCustomToast(context: Context, message: String) {
+        // Inflate the custom layout
+        val inflater = LayoutInflater.from(context)
+        val layout = inflater.inflate(R.layout.view_toast, null)
+
+        // Set the text in the custom layout
+        val toastText = layout.findViewById<TextView>(R.id.toast_text)
+        toastText.text = message
+
+        // Create and display the toast
+        val toast = Toast(context)
+        toast.duration = Toast.LENGTH_SHORT
+        toast.view = layout
+        toast.show()
+    }
 
 
 }

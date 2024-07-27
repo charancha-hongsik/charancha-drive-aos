@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.Window
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -46,7 +47,7 @@ class CustomDialogForEditText(context: Context, val title:String, val subtitle:S
                 dialogCallback.onConfirm(et_dialog_contents.text.toString())
                 dismiss()
             }else{
-                Toast.makeText(context, "1글자 이상 입력하세요.",Toast.LENGTH_SHORT).show()
+                showCustomToast(context, "1글자 이상 입력하세요.")
             }
         }
 
@@ -106,6 +107,22 @@ class CustomDialogForEditText(context: Context, val title:String, val subtitle:S
         // InputMethodManager를 통해 키보드 올리기
         val imm = editText.context.getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    fun showCustomToast(context: Context, message: String) {
+        // Inflate the custom layout
+        val inflater = LayoutInflater.from(context)
+        val layout = inflater.inflate(R.layout.view_toast, null)
+
+        // Set the text in the custom layout
+        val toastText = layout.findViewById<TextView>(R.id.toast_text)
+        toastText.text = message
+
+        // Create and display the toast
+        val toast = Toast(context)
+        toast.duration = Toast.LENGTH_SHORT
+        toast.view = layout
+        toast.show()
     }
 
 

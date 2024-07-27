@@ -134,7 +134,8 @@ class LoadCarInfoActivity:BaseRefreshActivity() {
                             finish()
                         }
                     }else{
-                        Toast.makeText(this@LoadCarInfoActivity,"차량 번호 또는 소유자명이 일치하지 않습니다.",Toast.LENGTH_SHORT).show()
+                        showCustomToast(this@LoadCarInfoActivity,"차량 번호 또는 소유자명이 일치하지 않습니다.")
+
                         val intent = Intent(this@LoadCarInfoActivity, RegisterCarActivity::class.java)
                         setResult(RESULT_CANCELED, intent)
                         finish()

@@ -252,9 +252,10 @@ class TermsOfUseActivity: BaseActivity() {
                                             val getMyCarInfoResponse:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
 
                                             if(ibTerms5.isSelected){
-                                                Toast.makeText(this@TermsOfUseActivity,getTodayFormattedDate() + " 마일로그 마케팅 정보 수신 동의되었습니다.",Toast.LENGTH_SHORT).show()
+                                                showCustomToast(this@TermsOfUseActivity,getTodayFormattedDate() + " 마일로그 마케팅 정보 수신 동의되었습니다.")
                                             }else{
-                                                Toast.makeText(this@TermsOfUseActivity,getTodayFormattedDate() + " 마일로그 마케팅 정보 수신 거부되었습니다.",Toast.LENGTH_SHORT).show()
+                                                showCustomToast(this@TermsOfUseActivity,getTodayFormattedDate() + " 마일로그 마케팅 정보 수신 거부되었습니다.")
+
                                             }
 
 
@@ -285,7 +286,8 @@ class TermsOfUseActivity: BaseActivity() {
                                 finish()
                             }
                         } else{
-                            Toast.makeText(this@TermsOfUseActivity,"통신 실패",Toast.LENGTH_SHORT).show()
+                            showCustomToast(this@TermsOfUseActivity,"통신 실패")
+
                         }
                     }
 

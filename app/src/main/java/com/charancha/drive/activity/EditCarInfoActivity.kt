@@ -120,7 +120,8 @@ class EditCarInfoActivity:BaseRefreshActivity() {
                         response: Response<ResponseBody>
                     ) {
                         if(response.code() == 200 || response.code() == 201){
-                            Toast.makeText(this@EditCarInfoActivity, "내 차 정보가 수정되었어요.", Toast.LENGTH_SHORT).show()
+                            showCustomToast(this@EditCarInfoActivity, "내 차 정보가 수정되었어요.")
+
                             finish()
                         }
                     }

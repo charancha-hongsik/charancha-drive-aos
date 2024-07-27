@@ -22,9 +22,11 @@ class InputNameActivity: BaseRefreshActivity() {
 
         btn_start.setOnClickListener {
             if(et_name.text.toString() == ""){
-                Toast.makeText(this, "이름을 입력해주세요",Toast.LENGTH_SHORT).show()
+                showCustomToast(this, "이름을 입력해주세요")
+
             } else{
-                Toast.makeText(this, "이름이 저장됐습니다.",Toast.LENGTH_SHORT).show()
+                showCustomToast(this, "이름이 저장됐습니다.")
+
                 PreferenceUtil.putPref(this, PreferenceUtil.USER_NAME, et_name.text.toString())
                 finish()
             }

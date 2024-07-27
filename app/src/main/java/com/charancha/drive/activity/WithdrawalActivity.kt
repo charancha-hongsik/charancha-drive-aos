@@ -62,7 +62,8 @@ class WithdrawalActivity:BaseRefreshActivity() {
 
                     })
                 } else{
-                    Toast.makeText(this@WithdrawalActivity, "약관 동의 후 탈퇴가 가능합니다.",Toast.LENGTH_SHORT).show()
+                    showCustomToast(this@WithdrawalActivity, "약관 동의 후 탈퇴가 가능합니다.")
+
                 }
             }
 
