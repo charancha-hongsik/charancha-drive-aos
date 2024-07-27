@@ -162,6 +162,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
                 if(polylines.size != 0){
                     view_map.visibility = VISIBLE
+                    tv_mycar_scope_info.visibility = GONE
                     setMapData()
                 }
             }
@@ -445,10 +446,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
                     if(isMyCarScope(getDrivingInfoResponse.endTime)){
                         tv_scope_date_mycar.text = transformDateTo30Dayslater(getDrivingInfoResponse.endTime)
-                        tv_mycar_scope_info.visibility = GONE
                     } else{
                         tv_scope_date_mycar.text = "변경 가능 기간이 지났어요."
-                        tv_mycar_scope_info.visibility = VISIBLE
                     }
 
                     if(getDrivingInfoResponse.isActive){
