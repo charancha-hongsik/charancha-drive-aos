@@ -544,4 +544,12 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         })
     }
 
+    override fun onBackPressed() {
+        val intent = Intent(this@DetailDriveHistoryActivity, MyDriveHistoryActivity::class.java)
+        intent.putExtra("isActive",isActive)
+        intent.putExtra("trackingId",tracking_id)
+        setResult(RESULT_OK, intent)
+        finish()
+    }
+
 }

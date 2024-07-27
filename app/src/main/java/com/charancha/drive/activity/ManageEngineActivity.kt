@@ -279,6 +279,8 @@ class ManageEngineActivity:BaseRefreshActivity() {
                 val layoutParams = view_optimal_driving_chart.layoutParams
                 layoutParams.width = chartWidth
                 view_optimal_driving_chart.layoutParams = layoutParams
+                view_optimal_driving_chart.visibility = VISIBLE
+
             }
         }
     }
