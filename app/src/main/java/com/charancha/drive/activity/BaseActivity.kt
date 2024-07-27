@@ -111,7 +111,7 @@ open class BaseActivity: AppCompatActivity(){
 
 
     fun getCurrentAndPastTimeForISO(past: Long): Triple<String, String, List<String>> {
-        // 현재 시간 구하기
+        // 현재 시간 구하기 (ISO 8601)
         val now = Instant.now()
 
         // 현재 시간 기준 주어진 일 전 시간 구하기
@@ -125,8 +125,10 @@ open class BaseActivity: AppCompatActivity(){
             // 월의 첫 번째 날을 구합니다.
             val firstDayOfMonth = localDate.withDayOfMonth(1)
 
+
             // LocalDate를 ZonedDateTime으로 변환합니다.
             val zonedDateTime = firstDayOfMonth.atStartOfDay(zoneId)
+
 
             // ZonedDateTime을 Instant로 변환합니다.
             previousDate = zonedDateTime.toInstant()
@@ -169,8 +171,6 @@ open class BaseActivity: AppCompatActivity(){
         if (past == 150L || past == 334L) {
             resultList.removeAt(0)
         }
-
-
         return Triple(nowFormatted, previousDateFormatted, resultList)
     }
 
@@ -323,11 +323,16 @@ open class BaseActivity: AppCompatActivity(){
 
             // 월의 첫 번째 날
             val startOfMonth = LocalDateTime.of(yearInt, monthInt, 1, 0, 0, 0, 0)
-            val startOfMonthUTC = startOfMonth.atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT)
+            val startOfMonthUTC = startOfMonth.atOffset(ZoneOffset.UTC).minusHours(9).format(DateTimeFormatter.ISO_INSTANT)
 
             // 월의 마지막 날
-            val endOfMonth = startOfMonth.plusMonths(1).minusNanos(1)
-            val endOfMonthUTC = endOfMonth.atOffset(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT)
+            val endOfMonth = startOfMonth.plusMonths(1)
+            val endOfMonthUTC = endOfMonth.atOffset(ZoneOffset.UTC).minusHours(9).format(DateTimeFormatter.ISO_INSTANT)
+
+            Log.d("testsetsetest","testsetsetsese startOfMonthUTC :: " + startOfMonthUTC)
+            Log.d("testsetsetest","testsetsetsese endOfMonthUTC :: " + endOfMonthUTC)
+
+
 
             return Pair(endOfMonthUTC,startOfMonthUTC)
         } else {

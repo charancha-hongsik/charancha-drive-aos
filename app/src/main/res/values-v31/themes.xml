@@ -98,7 +98,6 @@
         <item name="colorControlNormal">@color/gray_950</item> <!-- non focused line color -->
         <item name="colorControlActivated">@color/gray_950</item> <!-- focused line color -->
         <item name="android:editTextColor">@color/gray_950</item>  <!-- text color -->
-        <item name="android:textColorHighlight">@color/gray_950</item> <!-- selected text color -->
         <item name="android:textColorHint">@color/gray_200</item>   <!-- hint color -->
     </style>
 
