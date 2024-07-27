@@ -12,6 +12,7 @@ import com.charancha.drive.R
 import com.charancha.drive.retrofit.request.AgreeTermsRequest
 import com.charancha.drive.retrofit.request.Agreements
 import com.charancha.drive.retrofit.response.GetMyCarInfoResponse
+import com.charancha.drive.retrofit.response.TermsAgreeStatusResponse
 import com.charancha.drive.retrofit.response.TermsSummaryResponse
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -46,39 +47,43 @@ class NotificationActivity:BaseRefreshActivity() {
         btn_back = findViewById(R.id.btn_back)
         tv_marketing = findViewById(R.id.tv_marketing)
 
-        btn_all_noti.setOnClickListener {
-            if(btn_all_noti.isSelected){
-                btn_all_noti.isSelected = false
-                btn_drive_history.isSelected = false
-                if(btn_marketing.isSelected)
-                    btn_marketing.performClick()
-                btn_announcement.isSelected = false
-            }else{
-                btn_all_noti.isSelected = true
-                btn_drive_history.isSelected = true
-
-                if(!btn_marketing.isSelected)
-                    btn_marketing.performClick()
-                btn_announcement.isSelected = true
-            }
-
-        }
-
-        btn_drive_history.setOnClickListener {
-            if(btn_drive_history.isSelected){
-                btn_all_noti.isSelected = false
-                btn_drive_history.isSelected = false
-            }else{
-                if(btn_marketing.isSelected && btn_announcement.isSelected){
+        btn_all_noti.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                if(btn_all_noti.isSelected){
+                    btn_all_noti.isSelected = false
+                    btn_drive_history.isSelected = false
+                    if(btn_marketing.isSelected)
+                        btn_marketing.performClick()
+                    btn_marketing.isSelected = false
+                    btn_announcement.isSelected = false
+                }else{
                     btn_all_noti.isSelected = true
+                    btn_drive_history.isSelected = true
+                    if(!btn_marketing.isSelected)
+                        btn_marketing.performClick()
+                    btn_marketing.isSelected = true
+                    btn_announcement.isSelected = true
                 }
-
-                btn_drive_history.isSelected = true
-
             }
 
-        }
+        })
 
+        btn_drive_history.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                if(btn_drive_history.isSelected){
+                    btn_all_noti.isSelected = false
+                    btn_drive_history.isSelected = false
+                }else{
+                    if(btn_marketing.isSelected && btn_announcement.isSelected){
+                        btn_all_noti.isSelected = true
+                    }
+
+                    btn_drive_history.isSelected = true
+
+                }
+            }
+
+        })
         btn_marketing.setOnClickListener(object:OnSingleClickListener() {
             override fun onSingleClick(v: View?) {
 
@@ -137,24 +142,27 @@ class NotificationActivity:BaseRefreshActivity() {
 
         })
 
-        btn_announcement.setOnClickListener {
-            if(btn_announcement.isSelected){
-                btn_all_noti.isSelected = false
-                btn_announcement.isSelected = false
-            }else{
-                if(btn_drive_history.isSelected && btn_marketing.isSelected){
-                    btn_all_noti.isSelected = true
-                }
+        btn_announcement.setOnClickListener(object:OnSingleClickListener() {
+            override fun onSingleClick(v: View?) {
+                if(btn_announcement.isSelected){
+                    btn_all_noti.isSelected = false
+                    btn_announcement.isSelected = false
+                }else{
+                    if(btn_drive_history.isSelected && btn_marketing.isSelected){
+                        btn_all_noti.isSelected = true
+                    }
 
-                btn_announcement.isSelected = true
+                    btn_announcement.isSelected = true
+                }
             }
 
-
-        }
+        })
 
         btn_back.setOnClickListener {
             finish()
         }
+
+        getMyTerms()
     }
 
     private fun putTerms(id:String, isAgree:Int){
@@ -171,44 +179,26 @@ class NotificationActivity:BaseRefreshActivity() {
                 response: Response<ResponseBody>
             ) {
                 if(response.code() == 200 || response.code() == 201){
-                    if(PreferenceUtil.getBooleanPref(this@NotificationActivity, PreferenceUtil.PERMISSION_ALL_CHECKED, false)){
-                        apiService().getMyCarInfo("Bearer " + PreferenceUtil.getPref(this@NotificationActivity, PreferenceUtil.ACCESS_TOKEN, "")).enqueue(object :Callback<ResponseBody>{
-                            override fun onResponse(
-                                call: Call<ResponseBody>,
-                                response: Response<ResponseBody>
-                            ) {
-                                if(response.code() == 200){
-                                    if(isAgree == 0){
-                                        btn_all_noti.isSelected = false
-                                        btn_marketing.isSelected = false
-                                        showCustomToast(this@NotificationActivity, getTodayFormattedDate() + "마일로그 마케팅 정보 수신 거부되었습니다.")
+                    if(response.code() == 200){
+                        if(isAgree == 0){
+                            btn_all_noti.isSelected = false
+                            btn_marketing.isSelected = false
+                            showCustomToast(this@NotificationActivity, getTodayFormattedDate() + "마일로그 마케팅 정보 수신 거부되었습니다.")
 
-                                    }
-                                    else{
-                                        if(btn_drive_history.isSelected && btn_announcement.isSelected){
-                                            btn_all_noti.isSelected = true
-                                        }
-
-                                        btn_marketing.isSelected = true
-
-                                        showCustomToast(this@NotificationActivity, getTodayFormattedDate() + "마일로그 마케팅 정보 수신 동의되었습니다.")
-
-                                    }
-
-
-
-                                }else{
-
-                                }
+                        }
+                        else{
+                            if(btn_drive_history.isSelected && btn_announcement.isSelected){
+                                btn_all_noti.isSelected = true
                             }
 
-                            override fun onFailure(
-                                call: Call<ResponseBody>,
-                                t: Throwable
-                            ) {
+                            btn_marketing.isSelected = true
 
-                            }
-                        })
+                            showCustomToast(this@NotificationActivity, getTodayFormattedDate() + "마일로그 마케팅 정보 수신 동의되었습니다.")
+
+                        }
+
+
+
                     }else{
 
                     }
@@ -219,6 +209,39 @@ class NotificationActivity:BaseRefreshActivity() {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+            }
+
+        })
+    }
+
+    fun getMyTerms(){
+        apiService().getTermsAgree(
+            "Bearer " + PreferenceUtil.getPref(this@NotificationActivity, PreferenceUtil.ACCESS_TOKEN, ""),
+            "MILELOG_USAGE"
+        ).enqueue(object:Callback<ResponseBody>{
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200 || response.code() == 201){
+                    val jsonString = response.body()?.string()
+
+                    val type: Type = object : TypeToken<List<TermsAgreeStatusResponse?>?>() {}.type
+                    val termsAgreeStatusResponses:List<TermsAgreeStatusResponse> = Gson().fromJson(jsonString, type)
+
+                    for(term in termsAgreeStatusResponses){
+
+                        if(term.terms.title.equals(tv_marketing.text)){
+                            if(term.isAgreed == 1){
+                                btn_marketing.isSelected = true
+                            }else{
+                                btn_marketing.isSelected = false
+
+                            }
+                        }
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
             }
 
         })
