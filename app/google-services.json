@@ -12,12 +12,26 @@
           "package_name": "com.charancha.drive"
         }
       },
-      "oauth_client": [
+      "oauth_client": [],
+      "api_key": [
         {
-          "client_id": "345319283419-7u6i45h9b8n575mulpb6dkb17d8bgr8k.apps.googleusercontent.com",
-          "client_type": 3
+          "current_key": "AIzaSyCWpbMguoV_2wCJ4ATqcbcZPn-Izgd5DGs"
         }
       ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:840489306578:android:3b695fa49e16865c4f600b",
+        "android_client_info": {
+          "package_name": "com.milelog"
+        }
+      },
+      "oauth_client": [],
       "api_key": [
         {
           "current_key": "AIzaSyCWpbMguoV_2wCJ4ATqcbcZPn-Izgd5DGs"

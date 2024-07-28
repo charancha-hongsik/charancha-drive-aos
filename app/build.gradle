@@ -5,15 +5,15 @@ plugins {
 }
 
 android {
-    namespace 'com.charancha.drive'
+    namespace 'com.milelog'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.charancha.drive"
+        applicationId "com.milelog"
         minSdk 28
         targetSdk 33
         versionCode 4
-        versionName "1.6.5"
+        versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
