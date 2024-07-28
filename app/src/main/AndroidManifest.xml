@@ -224,12 +224,6 @@
             android:exported="false"
             android:foregroundServiceType="location|dataSync" />
 
-        <service
-            android:name=".service.CallApiService"
-            android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="dataSync" />
-
         <receiver
             android:name=".activity.MainActivity$AlarmReceiver"
             android:enabled="true"

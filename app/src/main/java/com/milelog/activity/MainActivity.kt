@@ -22,12 +22,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.milelog.R
 import com.milelog.PreferenceUtil.HAVE_BEEN_HOME
-import com.milelog.retrofit.response.GetAccountResponse
-import com.milelog.retrofit.response.GetDrivingStatisticsResponse
-import com.milelog.retrofit.response.GetManageScoreResponse
-import com.milelog.retrofit.response.GetMyCarInfoResponse
 import com.milelog.service.BluetoothService
-import com.milelog.service.CallApiService
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.XAxis
@@ -37,6 +32,11 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.milelog.CustomDialog
 import com.milelog.PreferenceUtil
+import com.milelog.retrofit.request.PostDrivingInfoRequest
+import com.milelog.retrofit.response.*
+import com.milelog.room.database.DriveDatabase
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -47,6 +47,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.*
+import java.util.concurrent.Executors
 
 
 /**
@@ -123,8 +124,6 @@ class MainActivity : BaseRefreshActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val callApiIntent = Intent(this, CallApiService::class.java)
-        startForegroundService(callApiIntent)
 
         val bluetoothIntent = Intent(this, BluetoothService::class.java)
         startForegroundService(bluetoothIntent)
@@ -167,6 +166,7 @@ class MainActivity : BaseRefreshActivity() {
         setAlarm()
 
         getAccount()
+        postDrivingInfoNotSavedData()
     }
 
     fun getAccount(){
@@ -1096,6 +1096,70 @@ class MainActivity : BaseRefreshActivity() {
         }
     }
 
+    fun postDrivingInfoNotSavedData(){
+        if(isInternetConnected(this@MainActivity)){
+            Executors.newSingleThreadExecutor().execute {
+                val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(this@MainActivity)
+                driveDatabase.driveForApiDao().allDriveLimit5?.let {
+                    if (it.isNotEmpty()) {
+                        for (drive in it) {
+                            val postDrivingInfoRequest = PostDrivingInfoRequest(
+                                userCarId = PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+                                startTimestamp = drive.startTimestamp,
+                                endTimestamp = drive.endTimestamp,
+                                verification = drive.verification,
+                                gpses = drive.gpses
+                            )
+
+                            val gson = Gson()
+                            val jsonParam = gson.toJson(postDrivingInfoRequest)
+
+                            apiService().postDrivingInfo("Bearer " + PreferenceUtil.getPref(this@MainActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, jsonParam.toRequestBody("application/json".toMediaTypeOrNull()))
+                                .enqueue(object : Callback<ResponseBody> {
+                                    override fun onResponse(
+                                        call: Call<ResponseBody>,
+                                        response: Response<ResponseBody>
+                                    ) {
+
+                                        if(response.code() == 200 || response.code() == 201){
+                                            val postDrivingInfoResponse = gson.fromJson(response.body()?.string(), PostDrivingInfoResponse::class.java)
+                                            // update id drive.
+                                            // tracking_id to postDrivingInfoResponse.id
+
+                                            // 보낸 데이터 삭제
+                                            driveDatabase.driveForApiDao()
+                                                .deleteByTrackingId(drive.tracking_id)
+
+                                            // DriveForApp tracking_id 저장
+                                            driveDatabase.driveForAppDao()
+                                                .updateTrackingId(drive.tracking_id, postDrivingInfoResponse.id)
+                                        }
+
+//                                        if (drive.tracking_id == it.last().tracking_id) {
+//                                            val intent = Intent(
+//                                                this@MainActivity,
+//                                                CallApiService::class.java
+//                                            )
+//                                            stopService(intent)
+//                                        }
+                                    }
+
+                                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+
+                                    }
+                                })
+                        }
+                    } else {
+
+                    }
+                }
+            }
+
+        }else{
+
+        }
+    }
 
 
 

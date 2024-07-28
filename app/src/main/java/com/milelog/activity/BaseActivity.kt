@@ -1,6 +1,8 @@
 package com.milelog.activity
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
@@ -51,6 +53,17 @@ open class BaseActivity: AppCompatActivity(){
                 ApiServiceInterface::class.java
             )
     }
+
+    fun isInternetConnected(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        val network = connectivityManager.activeNetwork ?: return false
+        val capabilities =
+            connectivityManager.getNetworkCapabilities(network) ?: return false
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    }
+
 
     fun showKeyboard(editText: EditText) {
         // EditText에 포커스 주기
