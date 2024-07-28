@@ -298,11 +298,8 @@ class DetailManageScoreActivity: BaseRefreshActivity(){
         }
     }
 
-    fun setData(scope:Int, startTime:String, endTime:String){
-        var minimumTimeUnit = "day"
-        if(scope == 150){
-            minimumTimeUnit = "month"
-        }
+    fun setData(startTime:String, endTime:String){
+
         apiService().getManageScoreStatistics(
             "Bearer " + PreferenceUtil.getPref(this@DetailManageScoreActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this@DetailManageScoreActivity, PreferenceUtil.USER_CARID, "")!!,
@@ -503,7 +500,7 @@ class DetailManageScoreActivity: BaseRefreshActivity(){
 
 
     fun getLastSixMonthsRangeString(): String {
-        return formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
+        return formatDateRange(getCurrentAndPastTimeForISO(SIX_MONTH).second,getCurrentAndPastTimeForISO(SIX_MONTH).first)
     }
 
     fun setListener(){
@@ -538,14 +535,14 @@ class DetailManageScoreActivity: BaseRefreshActivity(){
             }else{
                 if(btn_a_month.isSelected){
                     setInquireScope(getLastMonthRangeString())
-                    setData(29, getCurrentAndPastTimeForISO(29).second, getCurrentAndPastTimeForISO(29).first)
+                    setData(getCurrentAndPastTimeForISO(29).second, getCurrentAndPastTimeForISO(29).first)
                 }else if(btn_six_month.isSelected){
                     setInquireScope(getLastSixMonthsRangeString())
-                    setData(150, getCurrentAndPastTimeForISO(150).second, getCurrentAndPastTimeForISO(150).first)
+                    setData(getCurrentAndPastTimeForISO(SIX_MONTH).second, getCurrentAndPastTimeForISO(SIX_MONTH).first)
 
                 }else if(btn_each_month.isSelected){
                     setInquireScope(getDateRangeString(selectedDate))
-                    setData(30, getDateRange(selectedDate).second,getDateRange(selectedDate).first)
+                    setData(getDateRange(selectedDate).second,getDateRange(selectedDate).first)
 
                 }
                 layout_choose_date.visibility = GONE

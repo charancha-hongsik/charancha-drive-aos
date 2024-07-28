@@ -30,6 +30,9 @@ import java.util.concurrent.TimeUnit
 
 open class BaseActivity: AppCompatActivity(){
     var distance_unit = "km"
+    var SIX_MONTH = 155L
+    var YEAR = 340L
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         distance_unit = PreferenceUtil.getPref(this@BaseActivity,  PreferenceUtil.KM_MILE, "km")!!
@@ -132,7 +135,7 @@ open class BaseActivity: AppCompatActivity(){
         // 현재 시간 기준 주어진 일 전 시간 구하기
         var previousDate = now.minus(past, ChronoUnit.DAYS)
 
-        if(past == 150L || past == 334L){
+        if(past == SIX_MONTH || past == YEAR){
             // Instant를 LocalDate로 변환합니다.
             val zoneId = ZoneId.systemDefault()
             val localDate = previousDate.atZone(zoneId).toLocalDate()
@@ -167,7 +170,7 @@ open class BaseActivity: AppCompatActivity(){
 
         var date = startDate
 
-        if (past == 150L || past == 334L) {
+        if (past == SIX_MONTH || past == YEAR) {
             // 범위 내 모든 달 찾기
             while (!date.isAfter(endDate)) {
                 resultList.add(date.format(monthFormatter))
@@ -183,9 +186,14 @@ open class BaseActivity: AppCompatActivity(){
             }
         }
 
-        if (past == 150L || past == 334L) {
+        if (past == SIX_MONTH || past == YEAR) {
             resultList.removeAt(0)
         }
+
+        Log.d("testestsetest","testsetestsestset previousDateFormatted :: " + previousDateFormatted)
+        Log.d("testestsetest","testsetestsestset nowFormatted :: " + nowFormatted)
+
+
         return Triple(nowFormatted, previousDateFormatted, resultList)
     }
 

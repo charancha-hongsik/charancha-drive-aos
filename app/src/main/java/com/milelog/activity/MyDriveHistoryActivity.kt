@@ -206,8 +206,8 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                         setInquireScope(formatDateRangeForAMonth(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first))
                         getHistories(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
                     }else if(btn_six_month.isSelected){
-                        setInquireScope(formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first))
-                        getHistories(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
+                        setInquireScope(formatDateRange(getCurrentAndPastTimeForISO(SIX_MONTH).second,getCurrentAndPastTimeForISO(SIX_MONTH).first))
+                        getHistories(getCurrentAndPastTimeForISO(SIX_MONTH).second,getCurrentAndPastTimeForISO(SIX_MONTH).first)
 
                     }else if(btn_each_month.isSelected){
 

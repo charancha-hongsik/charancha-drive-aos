@@ -530,14 +530,14 @@ class HighSpeedDrivingActivity: BaseRefreshActivity() {
     }
 
     private fun setSixMonthDrivingDistance(){
-        tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
-        tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
+        tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(SIX_MONTH).second,getCurrentAndPastTimeForISO(SIX_MONTH).first)
+        tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(SIX_MONTH).second,getCurrentAndPastTimeForISO(SIX_MONTH).first)
 
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@HighSpeedDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
-            getCurrentAndPastTimeForISO(150).second,
-            getCurrentAndPastTimeForISO(150).first,
+            getCurrentAndPastTimeForISO(SIX_MONTH).second,
+            getCurrentAndPastTimeForISO(SIX_MONTH).first,
             "startTime",
             "month").enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
@@ -625,14 +625,14 @@ class HighSpeedDrivingActivity: BaseRefreshActivity() {
     }
 
     private fun setYearDrivingDistance(){
-        tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
-        tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
+        tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(YEAR).second,getCurrentAndPastTimeForISO(YEAR).first)
+        tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(YEAR).second,getCurrentAndPastTimeForISO(YEAR).first)
 
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@HighSpeedDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
-            getCurrentAndPastTimeForISO(334).second,
-            getCurrentAndPastTimeForISO(334).first,
+            getCurrentAndPastTimeForISO(YEAR).second,
+            getCurrentAndPastTimeForISO(YEAR).first,
             "startTime",
             "month").enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
@@ -1427,8 +1427,8 @@ class HighSpeedDrivingActivity: BaseRefreshActivity() {
             "ASC",
             null,
             null,
-            getCurrentAndPastTimeForISO(150).second,
-            getCurrentAndPastTimeForISO(150).first,
+            getCurrentAndPastTimeForISO(SIX_MONTH).second,
+            getCurrentAndPastTimeForISO(SIX_MONTH).first,
             "startTime",
             "month"
         ).enqueue(object :Callback<ResponseBody>{
@@ -1443,7 +1443,7 @@ class HighSpeedDrivingActivity: BaseRefreshActivity() {
                         GetDrivingGraphDataResponse::class.java
                     )
 
-                    setSixMonthBarChart(getDrivingGraphDataResponse.items,getCurrentAndPastTimeForISO(150).third )
+                    setSixMonthBarChart(getDrivingGraphDataResponse.items,getCurrentAndPastTimeForISO(SIX_MONTH).third )
                 }
             }
 
@@ -1460,8 +1460,8 @@ class HighSpeedDrivingActivity: BaseRefreshActivity() {
             "ASC",
             null,
             null,
-            getCurrentAndPastTimeForISO(334).second,
-            getCurrentAndPastTimeForISO(334).first,
+            getCurrentAndPastTimeForISO(YEAR).second,
+            getCurrentAndPastTimeForISO(YEAR).first,
             "startTime",
             "month"
         ).enqueue(object :Callback<ResponseBody>{
@@ -1476,7 +1476,7 @@ class HighSpeedDrivingActivity: BaseRefreshActivity() {
                         GetDrivingGraphDataResponse::class.java
                     )
 
-                    setYearBarChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(334).third)
+                    setYearBarChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(YEAR).third)
                 }
             }
 

@@ -2,6 +2,7 @@ package com.milelog.activity
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View.*
 import android.widget.ImageView
 import android.widget.TextView
@@ -636,8 +637,8 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
             "ASC",
             null,
             null,
-            getCurrentAndPastTimeForISO(150).second,
-            getCurrentAndPastTimeForISO(150).first,
+            getCurrentAndPastTimeForISO(SIX_MONTH).second,
+            getCurrentAndPastTimeForISO(SIX_MONTH).first,
             "startTime",
             "month"
         ).enqueue(object :Callback<ResponseBody>{
@@ -652,8 +653,8 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
                         GetDrivingGraphDataResponse::class.java
                     )
 
-                    setSixMonthBarChart(getDrivingGraphDataResponse.items,getCurrentAndPastTimeForISO(150).third )
-                    setSixMonthLineChart(getDrivingGraphDataResponse.items,getCurrentAndPastTimeForISO(150).third )
+                    setSixMonthBarChart(getDrivingGraphDataResponse.items,getCurrentAndPastTimeForISO(SIX_MONTH).third )
+                    setSixMonthLineChart(getDrivingGraphDataResponse.items,getCurrentAndPastTimeForISO(SIX_MONTH).third )
                 }
             }
 
@@ -671,8 +672,8 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
             "ASC",
             null,
             null,
-            getCurrentAndPastTimeForISO(334).second,
-            getCurrentAndPastTimeForISO(334).first,
+            getCurrentAndPastTimeForISO(YEAR).second,
+            getCurrentAndPastTimeForISO(YEAR).first,
             "startTime",
             "month"
         ).enqueue(object :Callback<ResponseBody>{
@@ -687,8 +688,8 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
                         GetDrivingGraphDataResponse::class.java
                     )
 
-                    setYearBarChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(334).third)
-                    setYearLineChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(334).third)
+                    setYearBarChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(YEAR).third)
+                    setYearLineChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(YEAR).third)
                 }
             }
 
@@ -809,6 +810,8 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
             setSixMonthBarChartAsDefault(months)
             return
         }
+
+        Log.d("testestsetset","testsetsetest :: " + items.size)
 
 
         val entries = listOf(
@@ -2383,16 +2386,16 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
 
     private fun setSixMonthDrivingDistance(){
 
-        tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
-        tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
-        tv_date3.text = formatDateRange(getCurrentAndPastTimeForISO(150).second,getCurrentAndPastTimeForISO(150).first)
+        tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(SIX_MONTH).second,getCurrentAndPastTimeForISO(SIX_MONTH).first)
+        tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(SIX_MONTH).second,getCurrentAndPastTimeForISO(SIX_MONTH).first)
+        tv_date3.text = formatDateRange(getCurrentAndPastTimeForISO(SIX_MONTH).second,getCurrentAndPastTimeForISO(SIX_MONTH).first)
 
 
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
-            getCurrentAndPastTimeForISO(150).second,
-            getCurrentAndPastTimeForISO(150).first,
+            getCurrentAndPastTimeForISO(SIX_MONTH).second,
+            getCurrentAndPastTimeForISO(SIX_MONTH).first,
             "startTime",
             "month").enqueue(object:Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
@@ -2471,15 +2474,15 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
     }
 
     private fun setYearDrivingDistance(){
-        tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
-        tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
-        tv_date3.text = formatDateRange(getCurrentAndPastTimeForISO(334).second,getCurrentAndPastTimeForISO(334).first)
+        tv_date1.text = formatDateRange(getCurrentAndPastTimeForISO(YEAR).second,getCurrentAndPastTimeForISO(YEAR).first)
+        tv_date2.text = formatDateRange(getCurrentAndPastTimeForISO(YEAR).second,getCurrentAndPastTimeForISO(YEAR).first)
+        tv_date3.text = formatDateRange(getCurrentAndPastTimeForISO(YEAR).second,getCurrentAndPastTimeForISO(YEAR).first)
 
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
-            getCurrentAndPastTimeForISO(334).second,
-            getCurrentAndPastTimeForISO(334).first,
+            getCurrentAndPastTimeForISO(YEAR).second,
+            getCurrentAndPastTimeForISO(YEAR).first,
             "startTime",
             "month").enqueue(object:Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {

@@ -422,7 +422,7 @@ class MainActivity : BaseRefreshActivity() {
 
                 tv_recent_driving_score.text = "6개월 평균"
 
-                setManageSoreForSummary(150)
+                setManageSoreForSummary(SIX_MONTH)
             }
 
         })
@@ -436,7 +436,7 @@ class MainActivity : BaseRefreshActivity() {
                 tv_recent_driving_score.text = "1년 평균"
 
 
-                setManageSoreForSummary(334)
+                setManageSoreForSummary(YEAR)
             }
         })
 

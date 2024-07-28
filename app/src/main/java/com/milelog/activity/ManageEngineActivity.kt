@@ -206,7 +206,7 @@ class ManageEngineActivity: BaseRefreshActivity() {
                 btn_six_month_drive.isSelected = true
                 btn_year_drive.isSelected = false
 
-                setAllForEngine(150)
+                setAllForEngine(SIX_MONTH)
             }
 
         })
@@ -218,7 +218,7 @@ class ManageEngineActivity: BaseRefreshActivity() {
                 btn_six_month_drive.isSelected = false
                 btn_year_drive.isSelected = true
 
-                setAllForEngine(334)
+                setAllForEngine(YEAR)
             }
         })
 
