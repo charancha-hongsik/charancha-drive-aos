@@ -64,7 +64,6 @@ class SplashActivity: BaseActivity() {
                         call: Call<ResponseBody>,
                         response: Response<ResponseBody>
                     ) {
-                        Log.d("testestestest","testsetesse postReissue :: " + response.code())
                         if(response.code() == 200 || response.code() == 201){
                             val signInResponse = gson.fromJson(response.body()?.string(), SignInResponse::class.java)
 
