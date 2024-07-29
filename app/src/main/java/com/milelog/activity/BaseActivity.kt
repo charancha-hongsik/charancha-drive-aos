@@ -186,7 +186,7 @@ open class BaseActivity: AppCompatActivity(){
         val previousDateFormatted = formatter.format(previousDate)
 
         // Instant를 ZonedDateTime으로 변환
-        val zoneId = ZoneId.of("UTC")
+        val zoneId = ZoneId.of("Asia/Seoul")
         val startDate = ZonedDateTime.ofInstant(previousDate, zoneId).toLocalDate()
         val endDate = ZonedDateTime.ofInstant(now, zoneId).toLocalDate()
 
@@ -211,18 +211,6 @@ open class BaseActivity: AppCompatActivity(){
                 date = date.plusDays(1)
             }
         }
-
-        if (past == SIX_MONTH || past == YEAR) {
-            if(resultList.size != 6)
-                resultList.removeAt(0)
-        }
-
-        if(past == YEAR){
-            if(resultList.size != 12){
-                resultList.removeAt(0)
-            }
-        }
-
 
         return Triple(nowFormatted, previousDateFormatted, resultList)
     }
