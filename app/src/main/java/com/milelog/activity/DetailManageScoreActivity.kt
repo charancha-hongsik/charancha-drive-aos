@@ -315,13 +315,13 @@ class DetailManageScoreActivity: BaseRefreshActivity(){
                     if(getManageScoreResponse.total.totalEngineScore != 0.0){
                         setThereIsDatas(getManageScoreResponse)
                     }else{
-
+                        setNoData()
                     }
                 }
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
+                setNoData()
             }
 
         })
@@ -417,7 +417,7 @@ class DetailManageScoreActivity: BaseRefreshActivity(){
         tv_no_score1.text = "아직 데이터가 없어요. 함께 달려볼까요?"
         iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
 
-        setInquireScope(getTodayFormattedDate())
+//        setInquireScope(getTodayFormattedDate())
 
 
     }
