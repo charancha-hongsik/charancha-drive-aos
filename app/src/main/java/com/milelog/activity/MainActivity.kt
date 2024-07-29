@@ -125,8 +125,6 @@ class MainActivity : BaseRefreshActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        Log.d("testsetsetset","testsetsetsetse :: " + BuildConfig.BASE_API_URL)
-
         val bluetoothIntent = Intent(this, BluetoothService::class.java)
         startForegroundService(bluetoothIntent)
 
