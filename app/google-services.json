@@ -1,45 +1,44 @@
 {
   "project_info": {
-    "project_number": "840489306578",
-    "project_id": "charancha-drive",
-    "storage_bucket": "charancha-drive.appspot.com"
+    "project_number": "558674903957",
+    "project_id": "milelog-staging-44d15",
+    "storage_bucket": "milelog-staging-44d15.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:840489306578:android:e322a399e88c39ef4f600b",
+        "mobilesdk_app_id": "1:558674903957:android:4e888cbb620d1c8c3d6c9c",
         "android_client_info": {
-          "package_name": "com.charancha.drive"
+          "package_name": "com.milelog.staging"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "558674903957-0b639n15v5fhslhovtgg6rt60397qlpf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.milelog.staging",
+            "certificate_hash": "c0cd94ef1e1f82e07fbdb2dee27845d7822bbaaf"
+          }
+        },
+        {
+          "client_id": "558674903957-g5m9ttj9h0cuorgkbbf8erucn704oc95.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyCWpbMguoV_2wCJ4ATqcbcZPn-Izgd5DGs"
+          "current_key": "AIzaSyARyIqmcNDfZZiSGS_vb4n1bbPBgUnh73Y"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:840489306578:android:3b695fa49e16865c4f600b",
-        "android_client_info": {
-          "package_name": "com.milelog"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCWpbMguoV_2wCJ4ATqcbcZPn-Izgd5DGs"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "558674903957-g5m9ttj9h0cuorgkbbf8erucn704oc95.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

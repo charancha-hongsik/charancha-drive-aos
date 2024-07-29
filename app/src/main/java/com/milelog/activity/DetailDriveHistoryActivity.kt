@@ -257,15 +257,18 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                             call: Call<ResponseBody>,
                             response: Response<ResponseBody>
                         ) {
+                            try {
+                                if (response.code() == 200 || response.code() == 201) {
+                                    tv_mycar.visibility = VISIBLE
+                                    tv_not_mycar.visibility = GONE
 
-                            if(response.code() == 200 || response.code() == 201){
-                                tv_mycar.visibility = VISIBLE
-                                tv_not_mycar.visibility = GONE
+                                    isActive = true
 
-                                isActive = true
+                                }
+                                layout_my_drive.visibility = GONE
+                            }catch (e:Exception){
 
                             }
-                            layout_my_drive.visibility = GONE
 
                         }
 

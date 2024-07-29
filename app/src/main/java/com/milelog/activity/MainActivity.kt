@@ -20,9 +20,6 @@ import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.milelog.R
-import com.milelog.PreferenceUtil.HAVE_BEEN_HOME
-import com.milelog.service.BluetoothService
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.XAxis
@@ -30,12 +27,14 @@ import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.milelog.BuildConfig
 import com.milelog.CustomDialog
 import com.milelog.PreferenceUtil
+import com.milelog.PreferenceUtil.HAVE_BEEN_HOME
+import com.milelog.R
 import com.milelog.retrofit.request.PostDrivingInfoRequest
 import com.milelog.retrofit.response.*
 import com.milelog.room.database.DriveDatabase
+import com.milelog.service.BluetoothService
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
@@ -100,7 +99,6 @@ class MainActivity : BaseRefreshActivity() {
     lateinit var tv_engine_score:TextView
     lateinit var iv_home_banner:ImageView
     lateinit var tv_recent_driving_score:TextView
-
 
 
     var checkingPermission = false
@@ -820,8 +818,6 @@ class MainActivity : BaseRefreshActivity() {
                                         GetMyCarInfoResponse::class.java
                                     )
 
-                                    Log.d("testestest","testsetse :: " + getMyCarInfoResponse.id)
-
                                     PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.id)
                                     tv_car_name.setText(getMyCarInfoResponse.carName)
                                     tv_car_no.setText(getMyCarInfoResponse.vehicleIdentificationNumber)
@@ -876,26 +872,33 @@ class MainActivity : BaseRefreshActivity() {
             getCurrentAndPastTimeForISO(29).first).enqueue(object:
             Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200 || response.code() == 201){
-                    val getManageScoreResponse = Gson().fromJson(
-                        response.body()?.string(),
-                        GetManageScoreResponse::class.java
-                    )
+                try {
+                    if (response.code() == 200 || response.code() == 201) {
+                        val getManageScoreResponse = Gson().fromJson(
+                            response.body()?.string(),
+                            GetManageScoreResponse::class.java
+                        )
 
-                    tv_average_score.text = transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
+                        tv_average_score.text =
+                            transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
 
-                    if(getManageScoreResponse.diffAverage.totalEngineScore == 0.0){
-                        tv_increase.text = "변동 없음"
-                        tv_increase.setTextColor(resources.getColor(R.color.gray_500))
-                    }else if(getManageScoreResponse.diffAverage.totalEngineScore > 0.0){
-                        tv_increase.text = "+" + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 증가"
-                        tv_increase.setTextColor(resources.getColor(R.color.pri_500))
-                    }else if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
-                        tv_increase.text = transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore).toString() + "점 하락"
-                        tv_increase.setTextColor(resources.getColor(R.color.sec_500))
+                        if (getManageScoreResponse.diffAverage.totalEngineScore == 0.0) {
+                            tv_increase.text = "변동 없음"
+                            tv_increase.setTextColor(resources.getColor(R.color.gray_500))
+                        } else if (getManageScoreResponse.diffAverage.totalEngineScore > 0.0) {
+                            tv_increase.text =
+                                "+" + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 증가"
+                            tv_increase.setTextColor(resources.getColor(R.color.pri_500))
+                        } else if (getManageScoreResponse.diffAverage.totalEngineScore < 0.0) {
+                            tv_increase.text =
+                                transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore).toString() + "점 하락"
+                            tv_increase.setTextColor(resources.getColor(R.color.sec_500))
+                        }
+
+                        setPieChart((getManageScoreResponse.average.totalEngineScore / 10).toFloat())
+
                     }
-
-                    setPieChart((getManageScoreResponse.average.totalEngineScore/10).toFloat())
+                }catch (e:Exception){
 
                 }
             }
@@ -917,65 +920,97 @@ class MainActivity : BaseRefreshActivity() {
             "day").enqueue(object:
             Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200){
-                    val getDrivingStatisticsResponse = Gson().fromJson(
-                        response.body()?.string(),
-                        GetDrivingStatisticsResponse::class.java
-                    )
-                    tv_average_distance_contents.text = transferDistanceWithUnit(getDrivingStatisticsResponse.average.totalDistance)
-                    tv_average_time_contents.text = transferSecondsToHourAndMinutes(getDrivingStatisticsResponse.average.totalTime).first.toString() + "시간" + transferSecondsToHourAndMinutes(getDrivingStatisticsResponse.average.totalTime).second.toString() + "분"
+                try {
+                    if (response.code() == 200) {
+                        val getDrivingStatisticsResponse = Gson().fromJson(
+                            response.body()?.string(),
+                            GetDrivingStatisticsResponse::class.java
+                        )
+                        tv_average_distance_contents.text =
+                            transferDistanceWithUnit(getDrivingStatisticsResponse.average.totalDistance)
+                        tv_average_time_contents.text =
+                            transferSecondsToHourAndMinutes(getDrivingStatisticsResponse.average.totalTime).first.toString() + "시간" + transferSecondsToHourAndMinutes(
+                                getDrivingStatisticsResponse.average.totalTime
+                            ).second.toString() + "분"
 
-                    if(getDrivingStatisticsResponse.diffAverage.totalDistance == 0.0){
-                        view_diff_distance_background.background = resources.getDrawable(R.drawable.radius999_gray100)
-                        view_no_diff_distance.visibility = VISIBLE
-                        view_there_is_diff_distance.visibility = GONE
+                        if (getDrivingStatisticsResponse.diffAverage.totalDistance == 0.0) {
+                            view_diff_distance_background.background =
+                                resources.getDrawable(R.drawable.radius999_gray100)
+                            view_no_diff_distance.visibility = VISIBLE
+                            view_there_is_diff_distance.visibility = GONE
 
-                    }else if(getDrivingStatisticsResponse.diffAverage.totalDistance > 0.0){
-                        view_diff_distance_background.background = resources.getDrawable(R.drawable.radius999_pri50)
-                        view_no_diff_distance.visibility = GONE
-                        view_there_is_diff_distance.visibility = VISIBLE
-                        iv_there_is_diff_distance.setImageDrawable(resources.getDrawable(R.drawable.vector_pri))
-                        tv_there_is_diff_distance.setText(transferDistanceWithUnit(getDrivingStatisticsResponse.diffAverage.totalDistance))
-                        tv_there_is_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
+                        } else if (getDrivingStatisticsResponse.diffAverage.totalDistance > 0.0) {
+                            view_diff_distance_background.background =
+                                resources.getDrawable(R.drawable.radius999_pri50)
+                            view_no_diff_distance.visibility = GONE
+                            view_there_is_diff_distance.visibility = VISIBLE
+                            iv_there_is_diff_distance.setImageDrawable(resources.getDrawable(R.drawable.vector_pri))
+                            tv_there_is_diff_distance.setText(
+                                transferDistanceWithUnit(
+                                    getDrivingStatisticsResponse.diffAverage.totalDistance
+                                )
+                            )
+                            tv_there_is_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
 
 
-                    }else if(getDrivingStatisticsResponse.diffAverage.totalDistance < 0.0){
-                        view_diff_distance_background.background = resources.getDrawable(R.drawable.radius999_sec50)
-                        view_no_diff_distance.visibility = GONE
-                        view_there_is_diff_distance.visibility = VISIBLE
-                        iv_there_is_diff_distance.setImageDrawable(resources.getDrawable(R.drawable.vector_sec))
-                        tv_there_is_diff_distance.setText(transferDistanceWithUnit(getDrivingStatisticsResponse.diffAverage.totalDistance))
-                        tv_there_is_diff_distance.setTextColor(resources.getColor(R.color.sec_500))
+                        } else if (getDrivingStatisticsResponse.diffAverage.totalDistance < 0.0) {
+                            view_diff_distance_background.background =
+                                resources.getDrawable(R.drawable.radius999_sec50)
+                            view_no_diff_distance.visibility = GONE
+                            view_there_is_diff_distance.visibility = VISIBLE
+                            iv_there_is_diff_distance.setImageDrawable(resources.getDrawable(R.drawable.vector_sec))
+                            tv_there_is_diff_distance.setText(
+                                transferDistanceWithUnit(
+                                    getDrivingStatisticsResponse.diffAverage.totalDistance
+                                )
+                            )
+                            tv_there_is_diff_distance.setTextColor(resources.getColor(R.color.sec_500))
 
+                        }
+
+                        if (getDrivingStatisticsResponse.diffAverage.totalTime == 0.0) {
+                            view_diff_time_background.background =
+                                resources.getDrawable(R.drawable.radius999_gray100)
+                            view_no_diff_time.visibility = VISIBLE
+                            view_there_is_diff_time.visibility = GONE
+
+
+                        } else if (getDrivingStatisticsResponse.diffAverage.totalTime > 0.0) {
+                            view_diff_time_background.background =
+                                resources.getDrawable(R.drawable.radius999_pri50)
+                            view_no_diff_time.visibility = GONE
+                            view_there_is_diff_time.visibility = VISIBLE
+                            iv_there_is_diff_time.setImageDrawable(resources.getDrawable(R.drawable.vector_pri))
+                            tv_there_is_diff_time.setText(
+                                transferSecondsToHourAndMinutes(
+                                    getDrivingStatisticsResponse.diffAverage.totalTime
+                                ).first.toString() + "시간" + transferSecondsToHourAndMinutes(
+                                    getDrivingStatisticsResponse.diffAverage.totalTime
+                                ).second.toString() + "분"
+                            )
+                            tv_there_is_diff_time.setTextColor(resources.getColor(R.color.pri_500))
+
+
+                        } else if (getDrivingStatisticsResponse.diffAverage.totalTime < 0.0) {
+                            view_diff_time_background.background =
+                                resources.getDrawable(R.drawable.radius999_sec50)
+                            view_no_diff_time.visibility = GONE
+                            view_there_is_diff_time.visibility = VISIBLE
+                            iv_there_is_diff_time.setImageDrawable(resources.getDrawable(R.drawable.vector_sec))
+                            tv_there_is_diff_time.setText(
+                                transferSecondsToHourAndMinutes(
+                                    getDrivingStatisticsResponse.diffAverage.totalTime
+                                ).first.toString() + "시간" + transferSecondsToHourAndMinutes(
+                                    getDrivingStatisticsResponse.diffAverage.totalTime
+                                ).second.toString() + "분"
+                            )
+                            tv_there_is_diff_time.setTextColor(resources.getColor(R.color.sec_500))
+
+
+                        }
                     }
+                }catch (e:Exception){
 
-                    if(getDrivingStatisticsResponse.diffAverage.totalTime == 0.0){
-                        view_diff_time_background.background = resources.getDrawable(R.drawable.radius999_gray100)
-                        view_no_diff_time.visibility = VISIBLE
-                        view_there_is_diff_time.visibility = GONE
-
-
-                    }else if(getDrivingStatisticsResponse.diffAverage.totalTime > 0.0){
-                        view_diff_time_background.background = resources.getDrawable(R.drawable.radius999_pri50)
-                        view_no_diff_time.visibility = GONE
-                        view_there_is_diff_time.visibility = VISIBLE
-                        iv_there_is_diff_time.setImageDrawable(resources.getDrawable(R.drawable.vector_pri))
-                        tv_there_is_diff_time.setText(transferSecondsToHourAndMinutes(getDrivingStatisticsResponse.diffAverage.totalTime).first.toString() + "시간" + transferSecondsToHourAndMinutes(getDrivingStatisticsResponse.diffAverage.totalTime).second.toString() + "분")
-                        tv_there_is_diff_time.setTextColor(resources.getColor(R.color.pri_500))
-
-
-
-                    }else if(getDrivingStatisticsResponse.diffAverage.totalTime < 0.0){
-                        view_diff_time_background.background = resources.getDrawable(R.drawable.radius999_sec50)
-                        view_no_diff_time.visibility = GONE
-                        view_there_is_diff_time.visibility = VISIBLE
-                        iv_there_is_diff_time.setImageDrawable(resources.getDrawable(R.drawable.vector_sec))
-                        tv_there_is_diff_time.setText(transferSecondsToHourAndMinutes(getDrivingStatisticsResponse.diffAverage.totalTime).first.toString() + "시간" + transferSecondsToHourAndMinutes(getDrivingStatisticsResponse.diffAverage.totalTime).second.toString() + "분")
-                        tv_there_is_diff_time.setTextColor(resources.getColor(R.color.sec_500))
-
-
-
-                    }
                 }
             }
 
@@ -995,39 +1030,55 @@ class MainActivity : BaseRefreshActivity() {
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
             ) {
-                if(response.code() == 200 || response.code() == 201){
-                    val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
-                    if(getManageScoreResponse.isRecent){
-                        if(getManageScoreResponse.total.totalEngineScore != 0.0){
-                            tv_recent_score.text = transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
-                            tv_recent_score2.text = transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
-                            tv_engine_score.text = transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
+                try {
+                    if (response.code() == 200 || response.code() == 201) {
+                        val getManageScoreResponse = Gson().fromJson(
+                            response.body()?.string(),
+                            GetManageScoreResponse::class.java
+                        )
+                        if (getManageScoreResponse.isRecent) {
+                            if (getManageScoreResponse.total.totalEngineScore != 0.0) {
+                                tv_recent_score.text =
+                                    transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
+                                tv_recent_score2.text =
+                                    transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
+                                tv_engine_score.text =
+                                    transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
 
-                            if(getManageScoreResponse.diffAverage.totalEngineScore == 0.0){
-                                tv_recent_info_text.text = "점수 변동이 없어요"
-                                iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_good))
-                            }else if(getManageScoreResponse.diffAverage.totalEngineScore > 0.0){
-                                tv_recent_info_text.text = "굉장해요. 지난 주행보다 +" +  transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점을 얻었어요!"
-                                iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
-                            }else if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
-                                tv_recent_info_text.text = "아쉬워요. 지난 주행보다 " + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 하락했어요"
-                                iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
+                                if (getManageScoreResponse.diffAverage.totalEngineScore == 0.0) {
+                                    tv_recent_info_text.text = "점수 변동이 없어요"
+                                    iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_good))
+                                } else if (getManageScoreResponse.diffAverage.totalEngineScore > 0.0) {
+                                    tv_recent_info_text.text =
+                                        "굉장해요. 지난 주행보다 +" + transferNumWithRounds(
+                                            getManageScoreResponse.diffAverage.totalEngineScore
+                                        ) + "점을 얻었어요!"
+                                    iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
+                                } else if (getManageScoreResponse.diffAverage.totalEngineScore < 0.0) {
+                                    tv_recent_info_text.text =
+                                        "아쉬워요. 지난 주행보다 " + transferNumWithRounds(
+                                            getManageScoreResponse.diffAverage.totalEngineScore
+                                        ) + "점 하락했어요"
+                                    iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
+                                }
+
+                            } else {
+                                tv_recent_score2.text = "0"
+                                tv_engine_score.text = "0"
+
+                                tv_recent_info_text.text = "아직 데이터가 없어요. 함께 달려볼까요?"
+                                iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
                             }
-
-                        }else{
+                        } else {
                             tv_recent_score2.text = "0"
                             tv_engine_score.text = "0"
 
                             tv_recent_info_text.text = "아직 데이터가 없어요. 함께 달려볼까요?"
                             iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
                         }
-                    }else{
-                        tv_recent_score2.text = "0"
-                        tv_engine_score.text = "0"
-
-                        tv_recent_info_text.text = "아직 데이터가 없어요. 함께 달려볼까요?"
-                        iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
                     }
+                }catch (e:Exception){
+
                 }
             }
 
@@ -1049,31 +1100,42 @@ class MainActivity : BaseRefreshActivity() {
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
             ) {
-                if(response.code() == 200 || response.code() == 201){
-                    val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
-                    if(getManageScoreResponse.total.totalEngineScore != 0.0){
-                        tv_recent_score2.text = transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
-                        tv_engine_score.text = transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
+                try {
+                    if (response.code() == 200 || response.code() == 201) {
+                        val getManageScoreResponse = Gson().fromJson(
+                            response.body()?.string(),
+                            GetManageScoreResponse::class.java
+                        )
+                        if (getManageScoreResponse.total.totalEngineScore != 0.0) {
+                            tv_recent_score2.text =
+                                transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
+                            tv_engine_score.text =
+                                transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
 
-                        if(getManageScoreResponse.diffAverage.totalEngineScore == 0.0){
-                            tv_recent_info_text.text = "점수 변동이 없어요"
-                            iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_good))
-                        }else if(getManageScoreResponse.diffAverage.totalEngineScore > 0.0){
-                            tv_recent_info_text.text = "굉장해요. 지난 주행보다 +" +  transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점을 얻었어요!"
-                            iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
-                        }else if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
-                            tv_recent_info_text.text = "아쉬워요. 지난 주행보다 " + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 하락했어요"
-                            iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
+                            if (getManageScoreResponse.diffAverage.totalEngineScore == 0.0) {
+                                tv_recent_info_text.text = "점수 변동이 없어요"
+                                iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_good))
+                            } else if (getManageScoreResponse.diffAverage.totalEngineScore > 0.0) {
+                                tv_recent_info_text.text =
+                                    "굉장해요. 지난 주행보다 +" + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점을 얻었어요!"
+                                iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
+                            } else if (getManageScoreResponse.diffAverage.totalEngineScore < 0.0) {
+                                tv_recent_info_text.text =
+                                    "아쉬워요. 지난 주행보다 " + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 하락했어요"
+                                iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
+                            }
+
+                        } else {
+                            tv_recent_score2.text = "0"
+                            tv_engine_score.text = "0"
+
+
+                            tv_recent_info_text.text = "아직 데이터가 없어요. 함께 달려볼까요?"
+                            iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
                         }
-
-                    }else{
-                        tv_recent_score2.text = "0"
-                        tv_engine_score.text = "0"
-
-
-                        tv_recent_info_text.text = "아직 데이터가 없어요. 함께 달려볼까요?"
-                        iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
                     }
+                }catch (e:Exception){
+
                 }
             }
 
@@ -1120,20 +1182,27 @@ class MainActivity : BaseRefreshActivity() {
                                         call: Call<ResponseBody>,
                                         response: Response<ResponseBody>
                                     ) {
+                                        try {
 
-                                        if(response.code() == 200 || response.code() == 201){
-                                            val postDrivingInfoResponse = gson.fromJson(response.body()?.string(), PostDrivingInfoResponse::class.java)
-                                            // update id drive.
-                                            // tracking_id to postDrivingInfoResponse.id
+                                            if (response.code() == 200 || response.code() == 201) {
+                                                val postDrivingInfoResponse = gson.fromJson(
+                                                    response.body()?.string(),
+                                                    PostDrivingInfoResponse::class.java
+                                                )
+                                                // update id drive.
+                                                // tracking_id to postDrivingInfoResponse.id
 
-                                            // 보낸 데이터 삭제
-                                            driveDatabase.driveForApiDao()
-                                                .deleteByTrackingId(drive.tracking_id)
+                                                // 보낸 데이터 삭제
+                                                driveDatabase.driveForApiDao()
+                                                    .deleteByTrackingId(drive.tracking_id)
 
-                                            // DriveForApp tracking_id 저장
-                                            driveDatabase.driveForAppDao()
-                                                .updateTrackingId(drive.tracking_id, postDrivingInfoResponse.id)
-                                        }
+                                                // DriveForApp tracking_id 저장
+                                                driveDatabase.driveForAppDao()
+                                                    .updateTrackingId(
+                                                        drive.tracking_id,
+                                                        postDrivingInfoResponse.id
+                                                    )
+                                            }
 
 //                                        if (drive.tracking_id == it.last().tracking_id) {
 //                                            val intent = Intent(
@@ -1142,6 +1211,9 @@ class MainActivity : BaseRefreshActivity() {
 //                                            )
 //                                            stopService(intent)
 //                                        }
+                                        }catch (e:Exception){
+
+                                        }
                                     }
 
                                     override fun onFailure(call: Call<ResponseBody>, t: Throwable) {

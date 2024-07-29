@@ -198,103 +198,134 @@ class BestDrivingActivity: BaseRefreshActivity() {
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!).enqueue(object:
             Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200 || response.code() == 201){
-                    val recentDrivingDistance = Gson().fromJson(
-                        response.body()?.string(),
-                        GetRecentDrivingStatisticsResponse::class.java
-                    )
-                    if(recentDrivingDistance.isRecent){
-                        tv_diff_percent.visibility = View.VISIBLE
+                try {
+                    if (response.code() == 200 || response.code() == 201) {
+                        val recentDrivingDistance = Gson().fromJson(
+                            response.body()?.string(),
+                            GetRecentDrivingStatisticsResponse::class.java
+                        )
+                        if (recentDrivingDistance.isRecent) {
+                            tv_diff_percent.visibility = View.VISIBLE
 
-                        recentStartTime = recentDrivingDistance.recentStartTime
-                        recentEndTime = recentDrivingDistance.recentEndTime
+                            recentStartTime = recentDrivingDistance.recentStartTime
+                            recentEndTime = recentDrivingDistance.recentEndTime
 
-                        tv_best_percent1.text = String.format(Locale.KOREAN, "%.0f", recentDrivingDistance.average.optimalDrivingPercentage)
-                        tv_best_percent2.text = String.format(Locale.KOREAN, "%.0f", recentDrivingDistance.average.optimalDrivingPercentage) + "%"
+                            tv_best_percent1.text = String.format(
+                                Locale.KOREAN,
+                                "%.0f",
+                                recentDrivingDistance.average.optimalDrivingPercentage
+                            )
+                            tv_best_percent2.text = String.format(
+                                Locale.KOREAN,
+                                "%.0f",
+                                recentDrivingDistance.average.optimalDrivingPercentage
+                            ) + "%"
 
-                        if(recentDrivingDistance.diffAverage.optimalDrivingPercentage == 0.0){
-                            tv_diff_percent.text = "거리 변동이 없어요."
-                            tv_diff_percent.setTextColor(resources.getColor(R.color.gray_950))
+                            if (recentDrivingDistance.diffAverage.optimalDrivingPercentage == 0.0) {
+                                tv_diff_percent.text = "거리 변동이 없어요."
+                                tv_diff_percent.setTextColor(resources.getColor(R.color.gray_950))
 
-                        }else if(recentDrivingDistance.diffAverage.optimalDrivingPercentage > 0.0){
-                            tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.0f", recentDrivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
-                            tv_diff_percent.setTextColor(resources.getColor(R.color.pri_500))
+                            } else if (recentDrivingDistance.diffAverage.optimalDrivingPercentage > 0.0) {
+                                tv_diff_percent.text = "+" + String.format(
+                                    Locale.KOREAN,
+                                    "%.0f",
+                                    recentDrivingDistance.diffAverage.optimalDrivingPercentage
+                                ) + "% 증가"
+                                tv_diff_percent.setTextColor(resources.getColor(R.color.pri_500))
 
-                        }else if(recentDrivingDistance.diffAverage.optimalDrivingPercentage < 0.0){
-                            tv_diff_percent.text = String.format(Locale.KOREAN, "%.0f", recentDrivingDistance.diffAverage.optimalDrivingPercentage) + "% 감소"
-                            tv_diff_percent.setTextColor(resources.getColor(R.color.sec_500))
+                            } else if (recentDrivingDistance.diffAverage.optimalDrivingPercentage < 0.0) {
+                                tv_diff_percent.text = String.format(
+                                    Locale.KOREAN,
+                                    "%.0f",
+                                    recentDrivingDistance.diffAverage.optimalDrivingPercentage
+                                ) + "% 감소"
+                                tv_diff_percent.setTextColor(resources.getColor(R.color.sec_500))
+                            }
+
+                            tv_driving_info1.text = "최근 1일 평균"
+                            tv_driving_info2.text = "최근 1일간 내 차의\n최적 주행 거리에요"
+                            tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
+
+
+                            tv_date1.text = convertDateFormat(recentStartTime)
+                            tv_date2.text = convertDateFormat(recentStartTime)
+
+                            setExtraSpeedDrivingChartWidthByPercent(recentDrivingDistance.average.optimalDrivingPercentage.toFloat() / 100)
+
+                            apiService().getDrivingDistanceGraphData(
+                                "Bearer " + PreferenceUtil.getPref(
+                                    this@BestDrivingActivity,
+                                    PreferenceUtil.ACCESS_TOKEN,
+                                    ""
+                                )!!,
+                                PreferenceUtil.getPref(
+                                    this@BestDrivingActivity,
+                                    PreferenceUtil.USER_CARID,
+                                    ""
+                                )!!,
+                                "ASC",
+                                null,
+                                null,
+                                recentStartTime,
+                                recentEndTime,
+                                "startTime",
+                                "hour"
+                            ).enqueue(object : Callback<ResponseBody> {
+                                override fun onResponse(
+                                    call: Call<ResponseBody>,
+                                    response: Response<ResponseBody>
+                                ) {
+                                    try {
+                                        if (response.code() == 200 || response.code() == 201) {
+                                            val getDrivingGraphDataResponse = Gson().fromJson(
+                                                response.body()?.string(),
+                                                GetDrivingGraphDataResponse::class.java
+                                            )
+                                            setRecentBarChart(getDrivingGraphDataResponse.items)
+                                        }
+                                    }catch (e:Exception){
+
+                                    }
+                                }
+
+                                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                                    tv_best_percent1.text = "0"
+                                    tv_best_percent2.text = "0%"
+                                    tv_diff_percent.text = "+0% 증가"
+
+                                    tv_driving_info1.text = "최근 1일 평균"
+                                    tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                                    tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
+                                    setExtraSpeedDrivingChartWidthByPercent(0f)
+                                    setRecentBarChartAsDefault()
+                                }
+
+                            })
+
+                        } else {
+                            tv_best_percent1.text = "0"
+                            tv_best_percent2.text = "0%"
+                            tv_diff_percent.text = "+0% 증가"
+
+                            tv_date1.text = getTodayFormattedDate()
+                            tv_date2.text = getTodayFormattedDate()
+
+                            tv_driving_info1.text = "최근 1일 평균"
+                            tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                            tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                            tv_diff_percent.visibility = View.INVISIBLE
+
+
+                            setExtraSpeedDrivingChartWidthByPercent(0f)
+                            setRecentBarChartAsDefault()
                         }
 
-                        tv_driving_info1.text = "최근 1일 평균"
-                        tv_driving_info2.text = "최근 1일간 내 차의\n최적 주행 거리에요"
-                        tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
 
+                    } else {
 
-                        tv_date1.text = convertDateFormat(recentStartTime)
-                        tv_date2.text = convertDateFormat(recentStartTime)
-
-                        setExtraSpeedDrivingChartWidthByPercent(recentDrivingDistance.average.optimalDrivingPercentage.toFloat()/100)
-
-                        apiService().getDrivingDistanceGraphData(
-                            "Bearer " + PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-                            PreferenceUtil.getPref(this@BestDrivingActivity, PreferenceUtil.USER_CARID, "")!!,
-                            "ASC",
-                            null,
-                            null,
-                            recentStartTime,
-                            recentEndTime,
-                            "startTime",
-                            "hour"
-                        ).enqueue(object :Callback<ResponseBody>{
-                            override fun onResponse(
-                                call: Call<ResponseBody>,
-                                response: Response<ResponseBody>
-                            ) {
-
-                                if(response.code() == 200 || response.code() == 201){
-                                    val getDrivingGraphDataResponse = Gson().fromJson(
-                                        response.body()?.string(),
-                                        GetDrivingGraphDataResponse::class.java
-                                    )
-                                    setRecentBarChart(getDrivingGraphDataResponse.items)
-                                }
-                            }
-
-                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                                tv_best_percent1.text = "0"
-                                tv_best_percent2.text = "0%"
-                                tv_diff_percent.text = "+0% 증가"
-
-                                tv_driving_info1.text = "최근 1일 평균"
-                                tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-                                tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-
-                                setExtraSpeedDrivingChartWidthByPercent(0f)
-                                setRecentBarChartAsDefault()
-                            }
-
-                        })
-
-                    }else{
-                        tv_best_percent1.text = "0"
-                        tv_best_percent2.text = "0%"
-                        tv_diff_percent.text = "+0% 증가"
-
-                        tv_date1.text = getTodayFormattedDate()
-                        tv_date2.text = getTodayFormattedDate()
-
-                        tv_driving_info1.text = "최근 1일 평균"
-                        tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-                        tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-                        tv_diff_percent.visibility = View.INVISIBLE
-
-
-                        setExtraSpeedDrivingChartWidthByPercent(0f)
-                        setRecentBarChartAsDefault()
                     }
-
-
-                }else{
+                }catch (e:Exception){
 
                 }
             }
@@ -333,52 +364,72 @@ class BestDrivingActivity: BaseRefreshActivity() {
             "startTime",
             "day").enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200 || response.code() == 201) {
-                    val drivingDistance = Gson().fromJson(
-                        response.body()?.string(),
-                        GetDrivingStatisticsResponse::class.java
-                    )
+                try {
+                    if (response.code() == 200 || response.code() == 201) {
+                        val drivingDistance = Gson().fromJson(
+                            response.body()?.string(),
+                            GetDrivingStatisticsResponse::class.java
+                        )
 
-                    if(drivingDistance.average.optimalDrivingPercentage!=0.0){
-                        tv_diff_percent.visibility = View.VISIBLE
+                        if (drivingDistance.average.optimalDrivingPercentage != 0.0) {
+                            tv_diff_percent.visibility = View.VISIBLE
 
-                        tv_best_percent1.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.optimalDrivingPercentage)
-                        tv_best_percent2.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.optimalDrivingPercentage) + "%"
+                            tv_best_percent1.text = String.format(
+                                Locale.KOREAN,
+                                "%.0f",
+                                drivingDistance.average.optimalDrivingPercentage
+                            )
+                            tv_best_percent2.text = String.format(
+                                Locale.KOREAN,
+                                "%.0f",
+                                drivingDistance.average.optimalDrivingPercentage
+                            ) + "%"
 
-                        if(drivingDistance.diffAverage.optimalDrivingPercentage == 0.0){
-                            tv_diff_percent.text = "거리 변동이 없어요."
-                            tv_diff_percent.setTextColor(resources.getColor(R.color.gray_950))
+                            if (drivingDistance.diffAverage.optimalDrivingPercentage == 0.0) {
+                                tv_diff_percent.text = "거리 변동이 없어요."
+                                tv_diff_percent.setTextColor(resources.getColor(R.color.gray_950))
 
-                        }else if(drivingDistance.diffAverage.optimalDrivingPercentage > 0.0){
-                            tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.0f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
-                            tv_diff_percent.setTextColor(resources.getColor(R.color.pri_500))
+                            } else if (drivingDistance.diffAverage.optimalDrivingPercentage > 0.0) {
+                                tv_diff_percent.text = "+" + String.format(
+                                    Locale.KOREAN,
+                                    "%.0f",
+                                    drivingDistance.diffAverage.optimalDrivingPercentage
+                                ) + "% 증가"
+                                tv_diff_percent.setTextColor(resources.getColor(R.color.pri_500))
 
-                        }else if(drivingDistance.diffAverage.optimalDrivingPercentage < 0.0){
-                            tv_diff_percent.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 감소"
-                            tv_diff_percent.setTextColor(resources.getColor(R.color.sec_500))
+                            } else if (drivingDistance.diffAverage.optimalDrivingPercentage < 0.0) {
+                                tv_diff_percent.text = String.format(
+                                    Locale.KOREAN,
+                                    "%.0f",
+                                    drivingDistance.diffAverage.optimalDrivingPercentage
+                                ) + "% 감소"
+                                tv_diff_percent.setTextColor(resources.getColor(R.color.sec_500))
+                            }
+
+
+                            tv_driving_info1.text = "일일 평균"
+                            tv_driving_info2.text = "최근 1개월간 내 차의\n최적 주행 거리에요"
+                            tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
+
+                            setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat() / 100)
+                        } else {
+                            tv_best_percent1.text = "0"
+                            tv_best_percent2.text = "0%"
+                            tv_diff_percent.text = "+0% 증가"
+
+                            tv_diff_percent.visibility = View.INVISIBLE
+
+                            tv_driving_info1.text = "일일 평균"
+                            tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                            tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
+                            setRecentBarChartAsDefault()
+
+                            setExtraSpeedDrivingChartWidthByPercent(0f)
                         }
-
-
-                        tv_driving_info1.text = "일일 평균"
-                        tv_driving_info2.text = "최근 1개월간 내 차의\n최적 주행 거리에요"
-                        tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
-
-                        setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat()/100)
-                    }else{
-                        tv_best_percent1.text = "0"
-                        tv_best_percent2.text = "0%"
-                        tv_diff_percent.text = "+0% 증가"
-
-                        tv_diff_percent.visibility = View.INVISIBLE
-
-                        tv_driving_info1.text = "일일 평균"
-                        tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-                        tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-
-                        setRecentBarChartAsDefault()
-
-                        setExtraSpeedDrivingChartWidthByPercent(0f)
                     }
+                }catch (e:Exception){
+
                 }
 
             }
@@ -413,54 +464,74 @@ class BestDrivingActivity: BaseRefreshActivity() {
             "startTime",
             "month").enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200 || response.code() == 201) {
+                try {
+                    if (response.code() == 200 || response.code() == 201) {
 
-                    val drivingDistance = Gson().fromJson(
-                        response.body()?.string(),
-                        GetDrivingStatisticsResponse::class.java
-                    )
+                        val drivingDistance = Gson().fromJson(
+                            response.body()?.string(),
+                            GetDrivingStatisticsResponse::class.java
+                        )
 
-                    if(drivingDistance.total.totalDistance != 0.0){
-                        tv_diff_percent.visibility = View.VISIBLE
+                        if (drivingDistance.total.totalDistance != 0.0) {
+                            tv_diff_percent.visibility = View.VISIBLE
 
-                        tv_driving_info1.text = "월 평균"
-                        tv_driving_info2.text = "최근 6개월간 내 차의\n최적 주행 거리에요"
-                        tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
+                            tv_driving_info1.text = "월 평균"
+                            tv_driving_info2.text = "최근 6개월간 내 차의\n최적 주행 거리에요"
+                            tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
 
 
-                        tv_best_percent1.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.optimalDrivingPercentage)
-                        tv_best_percent2.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.optimalDrivingPercentage) + "%"
+                            tv_best_percent1.text = String.format(
+                                Locale.KOREAN,
+                                "%.0f",
+                                drivingDistance.average.optimalDrivingPercentage
+                            )
+                            tv_best_percent2.text = String.format(
+                                Locale.KOREAN,
+                                "%.0f",
+                                drivingDistance.average.optimalDrivingPercentage
+                            ) + "%"
 
-                        if(drivingDistance.diffAverage.optimalDrivingPercentage == 0.0){
-                            tv_diff_percent.text = "거리 변동이 없어요."
-                            tv_diff_percent.setTextColor(resources.getColor(R.color.gray_950))
+                            if (drivingDistance.diffAverage.optimalDrivingPercentage == 0.0) {
+                                tv_diff_percent.text = "거리 변동이 없어요."
+                                tv_diff_percent.setTextColor(resources.getColor(R.color.gray_950))
 
-                        }else if(drivingDistance.diffAverage.optimalDrivingPercentage > 0.0){
-                            tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.0f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
-                            tv_diff_percent.setTextColor(resources.getColor(R.color.pri_500))
+                            } else if (drivingDistance.diffAverage.optimalDrivingPercentage > 0.0) {
+                                tv_diff_percent.text = "+" + String.format(
+                                    Locale.KOREAN,
+                                    "%.0f",
+                                    drivingDistance.diffAverage.optimalDrivingPercentage
+                                ) + "% 증가"
+                                tv_diff_percent.setTextColor(resources.getColor(R.color.pri_500))
 
-                        }else if(drivingDistance.diffAverage.optimalDrivingPercentage < 0.0){
-                            tv_diff_percent.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 감소"
-                            tv_diff_percent.setTextColor(resources.getColor(R.color.sec_500))
+                            } else if (drivingDistance.diffAverage.optimalDrivingPercentage < 0.0) {
+                                tv_diff_percent.text = String.format(
+                                    Locale.KOREAN,
+                                    "%.0f",
+                                    drivingDistance.diffAverage.optimalDrivingPercentage
+                                ) + "% 감소"
+                                tv_diff_percent.setTextColor(resources.getColor(R.color.sec_500))
+                            }
+
+
+                            setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat() / 100)
+                        } else {
+                            tv_best_percent1.text = "0"
+                            tv_best_percent2.text = "0%"
+                            tv_diff_percent.text = "+0% 증가"
+                            tv_diff_percent.visibility = View.INVISIBLE
+
+
+                            tv_driving_info1.text = "월 평균"
+                            tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                            tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
+                            setRecentBarChartAsDefault()
+
+                            setExtraSpeedDrivingChartWidthByPercent(0f)
                         }
 
-
-                        setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat()/100)
-                    }else{
-                        tv_best_percent1.text = "0"
-                        tv_best_percent2.text = "0%"
-                        tv_diff_percent.text = "+0% 증가"
-                        tv_diff_percent.visibility = View.INVISIBLE
-
-
-                        tv_driving_info1.text = "월 평균"
-                        tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-                        tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-
-                        setRecentBarChartAsDefault()
-
-                        setExtraSpeedDrivingChartWidthByPercent(0f)
                     }
+                }catch (e:Exception){
 
                 }
 
@@ -496,53 +567,73 @@ class BestDrivingActivity: BaseRefreshActivity() {
             "startTime",
             "month").enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200 || response.code() == 201) {
+                try {
+                    if (response.code() == 200 || response.code() == 201) {
 
-                    val drivingDistance = Gson().fromJson(
-                        response.body()?.string(),
-                        GetDrivingStatisticsResponse::class.java
-                    )
+                        val drivingDistance = Gson().fromJson(
+                            response.body()?.string(),
+                            GetDrivingStatisticsResponse::class.java
+                        )
 
-                    if(drivingDistance.total.totalDistance != 0.0){
-                        tv_diff_percent.visibility = View.VISIBLE
+                        if (drivingDistance.total.totalDistance != 0.0) {
+                            tv_diff_percent.visibility = View.VISIBLE
 
-                        tv_best_percent1.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.optimalDrivingPercentage)
-                        tv_best_percent2.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.average.optimalDrivingPercentage) + "%"
+                            tv_best_percent1.text = String.format(
+                                Locale.KOREAN,
+                                "%.0f",
+                                drivingDistance.average.optimalDrivingPercentage
+                            )
+                            tv_best_percent2.text = String.format(
+                                Locale.KOREAN,
+                                "%.0f",
+                                drivingDistance.average.optimalDrivingPercentage
+                            ) + "%"
 
 
-                        if(drivingDistance.diffAverage.optimalDrivingPercentage == 0.0){
-                            tv_diff_percent.text = "거리 변동이 없어요."
-                            tv_diff_percent.setTextColor(resources.getColor(R.color.gray_950))
+                            if (drivingDistance.diffAverage.optimalDrivingPercentage == 0.0) {
+                                tv_diff_percent.text = "거리 변동이 없어요."
+                                tv_diff_percent.setTextColor(resources.getColor(R.color.gray_950))
 
-                        }else if(drivingDistance.diffAverage.optimalDrivingPercentage > 0.0){
-                            tv_diff_percent.text = "+" + String.format(Locale.KOREAN, "%.0f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 증가"
-                            tv_diff_percent.setTextColor(resources.getColor(R.color.pri_500))
+                            } else if (drivingDistance.diffAverage.optimalDrivingPercentage > 0.0) {
+                                tv_diff_percent.text = "+" + String.format(
+                                    Locale.KOREAN,
+                                    "%.0f",
+                                    drivingDistance.diffAverage.optimalDrivingPercentage
+                                ) + "% 증가"
+                                tv_diff_percent.setTextColor(resources.getColor(R.color.pri_500))
 
-                        }else if(drivingDistance.diffAverage.optimalDrivingPercentage < 0.0){
-                            tv_diff_percent.text = String.format(Locale.KOREAN, "%.0f", drivingDistance.diffAverage.optimalDrivingPercentage) + "% 감소"
-                            tv_diff_percent.setTextColor(resources.getColor(R.color.sec_500))
+                            } else if (drivingDistance.diffAverage.optimalDrivingPercentage < 0.0) {
+                                tv_diff_percent.text = String.format(
+                                    Locale.KOREAN,
+                                    "%.0f",
+                                    drivingDistance.diffAverage.optimalDrivingPercentage
+                                ) + "% 감소"
+                                tv_diff_percent.setTextColor(resources.getColor(R.color.sec_500))
+                            }
+
+
+                            tv_driving_info1.text = "월 평균"
+                            tv_driving_info2.text = "최근 1년간 내 차의\n최적 주행 거리에요"
+                            tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
+
+                            setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat() / 100)
+                        } else {
+                            tv_best_percent1.text = "0"
+                            tv_best_percent2.text = "0%"
+                            tv_diff_percent.text = "+0% 증가"
+                            tv_diff_percent.visibility = View.INVISIBLE
+
+                            tv_driving_info1.text = "월 평균"
+                            tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                            tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
+                            setRecentBarChartAsDefault()
+
+                            setExtraSpeedDrivingChartWidthByPercent(0f)
                         }
-
-
-                        tv_driving_info1.text = "월 평균"
-                        tv_driving_info2.text = "최근 1년간 내 차의\n최적 주행 거리에요"
-                        tv_driving_info3.text = "내 차는 부드럽게\n달릴수록 좋아요"
-
-                        setExtraSpeedDrivingChartWidthByPercent(drivingDistance.average.optimalDrivingPercentage.toFloat()/100)
-                    }else{
-                        tv_best_percent1.text = "0"
-                        tv_best_percent2.text = "0%"
-                        tv_diff_percent.text = "+0% 증가"
-                        tv_diff_percent.visibility = View.INVISIBLE
-
-                        tv_driving_info1.text = "월 평균"
-                        tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-                        tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-
-                        setRecentBarChartAsDefault()
-
-                        setExtraSpeedDrivingChartWidthByPercent(0f)
                     }
+                }catch (e:Exception){
+
                 }
 
             }
@@ -1062,14 +1153,20 @@ class BestDrivingActivity: BaseRefreshActivity() {
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
             ) {
+                try {
+                    if (response.code() == 200 || response.code() == 201) {
+                        val getDrivingGraphDataResponse = Gson().fromJson(
+                            response.body()?.string(),
+                            GetDrivingGraphDataResponse::class.java
+                        )
 
-                if(response.code() == 200 || response.code() == 201){
-                    val getDrivingGraphDataResponse = Gson().fromJson(
-                        response.body()?.string(),
-                        GetDrivingGraphDataResponse::class.java
-                    )
+                        setMonthBarChart(
+                            getDrivingGraphDataResponse.items,
+                            getCurrentAndPastTimeForISO(29).third
+                        )
+                    }
+                }catch (e:Exception){
 
-                    setMonthBarChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(29).third)
                 }
             }
 
@@ -1096,14 +1193,21 @@ class BestDrivingActivity: BaseRefreshActivity() {
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
             ) {
+                try {
 
-                if(response.code() == 200 || response.code() == 201){
-                    val getDrivingGraphDataResponse = Gson().fromJson(
-                        response.body()?.string(),
-                        GetDrivingGraphDataResponse::class.java
-                    )
+                    if (response.code() == 200 || response.code() == 201) {
+                        val getDrivingGraphDataResponse = Gson().fromJson(
+                            response.body()?.string(),
+                            GetDrivingGraphDataResponse::class.java
+                        )
 
-                    setSixMonthBarChart(getDrivingGraphDataResponse.items,getCurrentAndPastTimeForISO(SIX_MONTH).third )
+                        setSixMonthBarChart(
+                            getDrivingGraphDataResponse.items,
+                            getCurrentAndPastTimeForISO(SIX_MONTH).third
+                        )
+                    }
+                }catch (e:Exception){
+
                 }
             }
 
@@ -1130,14 +1234,21 @@ class BestDrivingActivity: BaseRefreshActivity() {
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
             ) {
+                try {
 
-                if(response.code() == 200 || response.code() == 201){
-                    val getDrivingGraphDataResponse = Gson().fromJson(
-                        response.body()?.string(),
-                        GetDrivingGraphDataResponse::class.java
-                    )
+                    if (response.code() == 200 || response.code() == 201) {
+                        val getDrivingGraphDataResponse = Gson().fromJson(
+                            response.body()?.string(),
+                            GetDrivingGraphDataResponse::class.java
+                        )
 
-                    setYearBarChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(YEAR).third)
+                        setYearBarChart(
+                            getDrivingGraphDataResponse.items,
+                            getCurrentAndPastTimeForISO(YEAR).third
+                        )
+                    }
+                }catch (e:Exception){
+
                 }
             }
 

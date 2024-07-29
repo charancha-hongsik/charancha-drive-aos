@@ -342,43 +342,60 @@ class ManageEngineActivity: BaseRefreshActivity() {
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
             ) {
-                if(response.code() == 200 || response.code() == 201){
-                    val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
-                    if(getManageScoreResponse.isRecent){
-                        if(getManageScoreResponse.total.totalEngineScore != 0.0){
-                            tv_no_score.text = transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
+                try {
+                    if (response.code() == 200 || response.code() == 201) {
+                        val getManageScoreResponse = Gson().fromJson(
+                            response.body()?.string(),
+                            GetManageScoreResponse::class.java
+                        )
+                        if (getManageScoreResponse.isRecent) {
+                            if (getManageScoreResponse.total.totalEngineScore != 0.0) {
+                                tv_no_score.text =
+                                    transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
 
-                            if(getManageScoreResponse.diffAverage.totalEngineScore == 0.0){
-                                layout_no_score.background = resources.getDrawable(R.drawable.radius8_gray950)
+                                if (getManageScoreResponse.diffAverage.totalEngineScore == 0.0) {
+                                    layout_no_score.background =
+                                        resources.getDrawable(R.drawable.radius8_gray950)
 
-                                tv_no_score1.text = "점수 변동이 없어요"
-                                iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_good))
-                            }else if(getManageScoreResponse.diffAverage.totalEngineScore > 0.0){
-                                layout_no_score.background = resources.getDrawable(R.drawable.radius8_pri500)
+                                    tv_no_score1.text = "점수 변동이 없어요"
+                                    iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_good))
+                                } else if (getManageScoreResponse.diffAverage.totalEngineScore > 0.0) {
+                                    layout_no_score.background =
+                                        resources.getDrawable(R.drawable.radius8_pri500)
 
-                                tv_no_score1.text = "굉장해요. 지난 주행보다 +" +  transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점을 얻었어요!"
-                                iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
-                            }else if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
-                                layout_no_score.background = resources.getDrawable(R.drawable.radius8_sec)
+                                    tv_no_score1.text = "굉장해요. 지난 주행보다 +" + transferNumWithRounds(
+                                        getManageScoreResponse.diffAverage.totalEngineScore
+                                    ) + "점을 얻었어요!"
+                                    iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
+                                } else if (getManageScoreResponse.diffAverage.totalEngineScore < 0.0) {
+                                    layout_no_score.background =
+                                        resources.getDrawable(R.drawable.radius8_sec)
 
-                                tv_no_score1.text = "아쉬워요. 지난 주행보다 " + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 하락했어요"
-                                iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
+                                    tv_no_score1.text = "아쉬워요. 지난 주행보다 " + transferNumWithRounds(
+                                        getManageScoreResponse.diffAverage.totalEngineScore
+                                    ) + "점 하락했어요"
+                                    iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
+                                }
+
+                            } else {
+                                layout_no_score.background =
+                                    resources.getDrawable(R.drawable.radius8_gray800)
+
+                                tv_no_score.text = "0"
+                                tv_no_score1.text = "아직 데이터가 없어요. 함께 달려볼까요?"
+                                iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
                             }
-
-                        }else{
-                            layout_no_score.background = resources.getDrawable(R.drawable.radius8_gray800)
+                        } else {
+                            layout_no_score.background =
+                                resources.getDrawable(R.drawable.radius8_gray800)
 
                             tv_no_score.text = "0"
                             tv_no_score1.text = "아직 데이터가 없어요. 함께 달려볼까요?"
                             iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
                         }
-                    }else{
-                        layout_no_score.background = resources.getDrawable(R.drawable.radius8_gray800)
-
-                        tv_no_score.text = "0"
-                        tv_no_score1.text = "아직 데이터가 없어요. 함께 달려볼까요?"
-                        iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
                     }
+                }catch (e:Exception){
+
                 }
             }
 
@@ -393,53 +410,88 @@ class ManageEngineActivity: BaseRefreshActivity() {
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,).enqueue(object:
             Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200 || response.code() == 201){
-                    val getDrivingStatisticsResponse = Gson().fromJson(
-                        response.body()?.string(),
-                        GetDrivingStatisticsResponse::class.java
-                    )
+                try {
+                    if (response.code() == 200 || response.code() == 201) {
+                        val getDrivingStatisticsResponse = Gson().fromJson(
+                            response.body()?.string(),
+                            GetDrivingStatisticsResponse::class.java
+                        )
 
-                    if(getDrivingStatisticsResponse.total.totalDistance != 0.0){
-                        tv_optimal_driving_contents.text = "최적 주행이 높을수록 좋아요!"
-                        tv_normal_speed_driving_contents.text = "항속 주행이 높을수록 좋아요!"
-                        tv_distance.text = transferDistance(getDrivingStatisticsResponse.perOneAverage.totalDistance)
-                        tv_speed_percent.text = transferNumWithRounds(getDrivingStatisticsResponse.average.highSpeedDrivingDistancePercentage).toString()
+                        if (getDrivingStatisticsResponse.total.totalDistance != 0.0) {
+                            tv_optimal_driving_contents.text = "최적 주행이 높을수록 좋아요!"
+                            tv_normal_speed_driving_contents.text = "항속 주행이 높을수록 좋아요!"
+                            tv_distance.text =
+                                transferDistance(getDrivingStatisticsResponse.perOneAverage.totalDistance)
+                            tv_speed_percent.text =
+                                transferNumWithRounds(getDrivingStatisticsResponse.average.highSpeedDrivingDistancePercentage).toString()
 
-                        tv_optimal_driving_percent.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.optimalDrivingPercentage)
-                        tv_optimal_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.optimalDrivingPercentage) + "%"
-                        tv_optimal_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.optimalDrivingPercentage) + "%"
+                            tv_optimal_driving_percent.text = String.format(
+                                Locale.KOREAN,
+                                "%.0f",
+                                getDrivingStatisticsResponse.average.optimalDrivingPercentage
+                            )
+                            tv_optimal_driving_percent1.text = String.format(
+                                Locale.KOREAN,
+                                "%.0f",
+                                getDrivingStatisticsResponse.average.optimalDrivingPercentage
+                            ) + "%"
+                            tv_optimal_driving_percent2.text = String.format(
+                                Locale.KOREAN,
+                                "%.0f",
+                                getDrivingStatisticsResponse.average.optimalDrivingPercentage
+                            ) + "%"
 
-                        tv_normal_speed_driving_percent.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage)
-                        tv_normal_speed_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage) + "%"
-                        tv_normal_speed_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage) + "%"
+                            tv_normal_speed_driving_percent.text = String.format(
+                                Locale.KOREAN,
+                                "%.0f",
+                                getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage
+                            )
+                            tv_normal_speed_driving_percent1.text = String.format(
+                                Locale.KOREAN,
+                                "%.0f",
+                                getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage
+                            ) + "%"
+                            tv_normal_speed_driving_percent2.text = String.format(
+                                Locale.KOREAN,
+                                "%.0f",
+                                getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage
+                            ) + "%"
 
 
-                        setOptimalDrivingChartWidthByPercent((getDrivingStatisticsResponse.average.optimalDrivingPercentage/100).toFloat())
-                        setNormalSpeedDrivingChartWidthByPercent((getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage/100).toFloat())
-                        setOptimalDrivingPercentTextView()
-                        setNormalDrivingPercentTextView()
+                            setOptimalDrivingChartWidthByPercent((getDrivingStatisticsResponse.average.optimalDrivingPercentage / 100).toFloat())
+                            setNormalSpeedDrivingChartWidthByPercent((getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage / 100).toFloat())
+                            setOptimalDrivingPercentTextView()
+                            setNormalDrivingPercentTextView()
 
-                    }else{
-                        tv_optimal_driving_contents.text = "아직 데이터가 없어요."
-                        tv_normal_speed_driving_contents.text = "아직 데이터가 없어요."
+                        } else {
+                            tv_optimal_driving_contents.text = "아직 데이터가 없어요."
+                            tv_normal_speed_driving_contents.text = "아직 데이터가 없어요."
 
 
-                        tv_distance.text = transferDistance(0.0)
-                        tv_speed_percent.text = transferNumWithRounds(0.0).toString()
+                            tv_distance.text = transferDistance(0.0)
+                            tv_speed_percent.text = transferNumWithRounds(0.0).toString()
 
-                        tv_optimal_driving_percent.text = String.format(Locale.KOREAN, "%.0f", 0.0)
-                        tv_optimal_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
-                        tv_optimal_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+                            tv_optimal_driving_percent.text =
+                                String.format(Locale.KOREAN, "%.0f", 0.0)
+                            tv_optimal_driving_percent1.text =
+                                String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+                            tv_optimal_driving_percent2.text =
+                                String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
 
-                        tv_normal_speed_driving_percent.text = String.format(Locale.KOREAN, "%.0f", 0.0)
-                        tv_normal_speed_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
-                        tv_normal_speed_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+                            tv_normal_speed_driving_percent.text =
+                                String.format(Locale.KOREAN, "%.0f", 0.0)
+                            tv_normal_speed_driving_percent1.text =
+                                String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+                            tv_normal_speed_driving_percent2.text =
+                                String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
 
-                        setOptimalDrivingChartWidthByPercent(0f)
-                        setNormalSpeedDrivingChartWidthByPercent(0f)
+                            setOptimalDrivingChartWidthByPercent(0f)
+                            setNormalSpeedDrivingChartWidthByPercent(0f)
+                        }
+
+
                     }
-
-
+                }catch (e:Exception){
 
                 }
             }
@@ -473,35 +525,49 @@ class ManageEngineActivity: BaseRefreshActivity() {
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
             ) {
-                if(response.code() == 200 || response.code() == 201){
-                    val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
-                    if(getManageScoreResponse.total.totalEngineScore != 0.0){
-                        tv_no_score.text = transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
+                try {
+                    if (response.code() == 200 || response.code() == 201) {
+                        val getManageScoreResponse = Gson().fromJson(
+                            response.body()?.string(),
+                            GetManageScoreResponse::class.java
+                        )
+                        if (getManageScoreResponse.total.totalEngineScore != 0.0) {
+                            tv_no_score.text =
+                                transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
 
-                        if(getManageScoreResponse.diffAverage.totalEngineScore == 0.0){
-                            layout_no_score.background = resources.getDrawable(R.drawable.radius8_gray950)
+                            if (getManageScoreResponse.diffAverage.totalEngineScore == 0.0) {
+                                layout_no_score.background =
+                                    resources.getDrawable(R.drawable.radius8_gray950)
 
-                            tv_no_score1.text = "점수 변동이 없어요"
-                            iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_good))
-                        }else if(getManageScoreResponse.diffAverage.totalEngineScore > 0.0){
-                            layout_no_score.background = resources.getDrawable(R.drawable.radius8_pri500)
+                                tv_no_score1.text = "점수 변동이 없어요"
+                                iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_good))
+                            } else if (getManageScoreResponse.diffAverage.totalEngineScore > 0.0) {
+                                layout_no_score.background =
+                                    resources.getDrawable(R.drawable.radius8_pri500)
 
-                            tv_no_score1.text = "굉장해요. 지난 주행보다 +" +  transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점을 얻었어요!"
-                            iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
-                        }else if(getManageScoreResponse.diffAverage.totalEngineScore < 0.0){
-                            layout_no_score.background = resources.getDrawable(R.drawable.radius8_sec)
+                                tv_no_score1.text =
+                                    "굉장해요. 지난 주행보다 +" + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점을 얻었어요!"
+                                iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
+                            } else if (getManageScoreResponse.diffAverage.totalEngineScore < 0.0) {
+                                layout_no_score.background =
+                                    resources.getDrawable(R.drawable.radius8_sec)
 
-                            tv_no_score1.text = "아쉬워요. 지난 주행보다 " + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 하락했어요"
-                            iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
+                                tv_no_score1.text =
+                                    "아쉬워요. 지난 주행보다 " + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 하락했어요"
+                                iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
+                            }
+
+                        } else {
+                            layout_no_score.background =
+                                resources.getDrawable(R.drawable.radius8_gray800)
+
+                            tv_no_score.text = "0"
+                            tv_no_score1.text = "아직 데이터가 없어요. 함께 달려볼까요?"
+                            iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
                         }
-
-                    }else{
-                        layout_no_score.background = resources.getDrawable(R.drawable.radius8_gray800)
-
-                        tv_no_score.text = "0"
-                        tv_no_score1.text = "아직 데이터가 없어요. 함께 달려볼까요?"
-                        iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
                     }
+                }catch (e:Exception){
+
                 }
             }
 
@@ -529,52 +595,87 @@ class ManageEngineActivity: BaseRefreshActivity() {
             timUnit).enqueue(object:
             Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200){
-                    val getDrivingStatisticsResponse = Gson().fromJson(
-                        response.body()?.string(),
-                        GetDrivingStatisticsResponse::class.java
-                    )
+                try {
+                    if (response.code() == 200) {
+                        val getDrivingStatisticsResponse = Gson().fromJson(
+                            response.body()?.string(),
+                            GetDrivingStatisticsResponse::class.java
+                        )
 
-                    if(getDrivingStatisticsResponse.total.totalDistance != 0.0){
-                        tv_optimal_driving_contents.text = "최적 주행이 높을수록 좋아요!"
-                        tv_normal_speed_driving_contents.text = "항속 주행이 높을수록 좋아요!"
+                        if (getDrivingStatisticsResponse.total.totalDistance != 0.0) {
+                            tv_optimal_driving_contents.text = "최적 주행이 높을수록 좋아요!"
+                            tv_normal_speed_driving_contents.text = "항속 주행이 높을수록 좋아요!"
 
-                        tv_speed_percent.text = transferNumWithRounds(getDrivingStatisticsResponse.average.highSpeedDrivingDistancePercentage).toString()/**/
-
-
-                        tv_optimal_driving_percent.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.optimalDrivingPercentage)
-                        tv_optimal_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.optimalDrivingPercentage) + "%"
-                        tv_optimal_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.optimalDrivingPercentage) + "%"
+                            tv_speed_percent.text =
+                                transferNumWithRounds(getDrivingStatisticsResponse.average.highSpeedDrivingDistancePercentage).toString()/**/
 
 
-                        tv_normal_speed_driving_percent.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage)
-                        tv_normal_speed_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage) + "%"
-                        tv_normal_speed_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage) + "%"
+                            tv_optimal_driving_percent.text = String.format(
+                                Locale.KOREAN,
+                                "%.0f",
+                                getDrivingStatisticsResponse.average.optimalDrivingPercentage
+                            )
+                            tv_optimal_driving_percent1.text = String.format(
+                                Locale.KOREAN,
+                                "%.0f",
+                                getDrivingStatisticsResponse.average.optimalDrivingPercentage
+                            ) + "%"
+                            tv_optimal_driving_percent2.text = String.format(
+                                Locale.KOREAN,
+                                "%.0f",
+                                getDrivingStatisticsResponse.average.optimalDrivingPercentage
+                            ) + "%"
 
 
-                        setOptimalDrivingChartWidthByPercent((getDrivingStatisticsResponse.average.optimalDrivingPercentage/100).toFloat())
-                        setNormalSpeedDrivingChartWidthByPercent((getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage/100).toFloat())
-                        setOptimalDrivingPercentTextView()
-                        setNormalDrivingPercentTextView()
-                    }else{
-                        tv_optimal_driving_contents.text = "아직 데이터가 없어요."
-                        tv_normal_speed_driving_contents.text = "아직 데이터가 없어요."
+                            tv_normal_speed_driving_percent.text = String.format(
+                                Locale.KOREAN,
+                                "%.0f",
+                                getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage
+                            )
+                            tv_normal_speed_driving_percent1.text = String.format(
+                                Locale.KOREAN,
+                                "%.0f",
+                                getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage
+                            ) + "%"
+                            tv_normal_speed_driving_percent2.text = String.format(
+                                Locale.KOREAN,
+                                "%.0f",
+                                getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage
+                            ) + "%"
 
 
-                        tv_distance.text = transferDistance(0.0)
-                        tv_speed_percent.text = transferNumWithRounds(0.0).toString()
+                            setOptimalDrivingChartWidthByPercent((getDrivingStatisticsResponse.average.optimalDrivingPercentage / 100).toFloat())
+                            setNormalSpeedDrivingChartWidthByPercent((getDrivingStatisticsResponse.average.constantSpeedDrivingDistancePercentage / 100).toFloat())
+                            setOptimalDrivingPercentTextView()
+                            setNormalDrivingPercentTextView()
+                        } else {
+                            tv_optimal_driving_contents.text = "아직 데이터가 없어요."
+                            tv_normal_speed_driving_contents.text = "아직 데이터가 없어요."
 
-                        tv_optimal_driving_percent.text = String.format(Locale.KOREAN, "%.0f", 0.0)
-                        tv_optimal_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
-                        tv_optimal_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
 
-                        tv_normal_speed_driving_percent.text = String.format(Locale.KOREAN, "%.0f", 0.0)
-                        tv_normal_speed_driving_percent1.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
-                        tv_normal_speed_driving_percent2.text = String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+                            tv_distance.text = transferDistance(0.0)
+                            tv_speed_percent.text = transferNumWithRounds(0.0).toString()
 
-                        setOptimalDrivingChartWidthByPercent(0f)
-                        setNormalSpeedDrivingChartWidthByPercent(0f)
+                            tv_optimal_driving_percent.text =
+                                String.format(Locale.KOREAN, "%.0f", 0.0)
+                            tv_optimal_driving_percent1.text =
+                                String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+                            tv_optimal_driving_percent2.text =
+                                String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+
+                            tv_normal_speed_driving_percent.text =
+                                String.format(Locale.KOREAN, "%.0f", 0.0)
+                            tv_normal_speed_driving_percent1.text =
+                                String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+                            tv_normal_speed_driving_percent2.text =
+                                String.format(Locale.KOREAN, "%.0f", 0.0) + "%"
+
+                            setOptimalDrivingChartWidthByPercent(0f)
+                            setNormalSpeedDrivingChartWidthByPercent(0f)
+                        }
                     }
+                }catch (e:Exception){
+
                 }
             }
 
@@ -609,21 +710,26 @@ class ManageEngineActivity: BaseRefreshActivity() {
             "").enqueue(object:
             Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200){
-                    val getDrivingStatisticsResponse = Gson().fromJson(
-                        response.body()?.string(),
-                        GetDrivingStatisticsResponse::class.java
-                    )
+                try {
+                    if (response.code() == 200) {
+                        val getDrivingStatisticsResponse = Gson().fromJson(
+                            response.body()?.string(),
+                            GetDrivingStatisticsResponse::class.java
+                        )
 
-                    if(getDrivingStatisticsResponse.total.totalDistance != 0.0){
-                        tv_distance.text = transferDistance(getDrivingStatisticsResponse.perOneAverage.totalDistance)
-                    }else{
-                        tv_optimal_driving_contents.text = "아직 데이터가 없어요."
-                        tv_normal_speed_driving_contents.text = "아직 데이터가 없어요."
+                        if (getDrivingStatisticsResponse.total.totalDistance != 0.0) {
+                            tv_distance.text =
+                                transferDistance(getDrivingStatisticsResponse.perOneAverage.totalDistance)
+                        } else {
+                            tv_optimal_driving_contents.text = "아직 데이터가 없어요."
+                            tv_normal_speed_driving_contents.text = "아직 데이터가 없어요."
 
 
-                        tv_distance.text = transferDistance(0.0)
+                            tv_distance.text = transferDistance(0.0)
+                        }
                     }
+                }catch (e:Exception){
+
                 }
             }
 

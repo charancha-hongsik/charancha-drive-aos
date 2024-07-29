@@ -655,15 +655,25 @@ class DrivenTimeActivity: BaseRefreshActivity() {
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
             ) {
+                try {
 
-                if(response.code() == 200 || response.code() == 201){
-                    val getDrivingGraphDataResponse = Gson().fromJson(
-                        response.body()?.string(),
-                        GetDrivingGraphDataResponse::class.java
-                    )
+                    if (response.code() == 200 || response.code() == 201) {
+                        val getDrivingGraphDataResponse = Gson().fromJson(
+                            response.body()?.string(),
+                            GetDrivingGraphDataResponse::class.java
+                        )
 
-                    setMonthBarChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(29).third)
-                    setMonthLineChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(29).third)
+                        setMonthBarChart(
+                            getDrivingGraphDataResponse.items,
+                            getCurrentAndPastTimeForISO(29).third
+                        )
+                        setMonthLineChart(
+                            getDrivingGraphDataResponse.items,
+                            getCurrentAndPastTimeForISO(29).third
+                        )
+                    }
+                }catch (e:Exception){
+
                 }
             }
 
@@ -690,15 +700,25 @@ class DrivenTimeActivity: BaseRefreshActivity() {
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
             ) {
+                try {
 
-                if(response.code() == 200 || response.code() == 201){
-                    val getDrivingGraphDataResponse = Gson().fromJson(
-                        response.body()?.string(),
-                        GetDrivingGraphDataResponse::class.java
-                    )
+                    if (response.code() == 200 || response.code() == 201) {
+                        val getDrivingGraphDataResponse = Gson().fromJson(
+                            response.body()?.string(),
+                            GetDrivingGraphDataResponse::class.java
+                        )
 
-                    setSixMonthBarChart(getDrivingGraphDataResponse.items,getCurrentAndPastTimeForISO(SIX_MONTH).third )
-                    setSixMonthLineChart(getDrivingGraphDataResponse.items,getCurrentAndPastTimeForISO(SIX_MONTH).third )
+                        setSixMonthBarChart(
+                            getDrivingGraphDataResponse.items,
+                            getCurrentAndPastTimeForISO(SIX_MONTH).third
+                        )
+                        setSixMonthLineChart(
+                            getDrivingGraphDataResponse.items,
+                            getCurrentAndPastTimeForISO(SIX_MONTH).third
+                        )
+                    }
+                }catch (e:Exception){
+
                 }
             }
 
@@ -724,15 +744,25 @@ class DrivenTimeActivity: BaseRefreshActivity() {
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
             ) {
+                try {
 
-                if(response.code() == 200 || response.code() == 201){
-                    val getDrivingGraphDataResponse = Gson().fromJson(
-                        response.body()?.string(),
-                        GetDrivingGraphDataResponse::class.java
-                    )
+                    if (response.code() == 200 || response.code() == 201) {
+                        val getDrivingGraphDataResponse = Gson().fromJson(
+                            response.body()?.string(),
+                            GetDrivingGraphDataResponse::class.java
+                        )
 
-                    setYearBarChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(YEAR).third)
-                    setYearLineChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(YEAR).third)
+                        setYearBarChart(
+                            getDrivingGraphDataResponse.items,
+                            getCurrentAndPastTimeForISO(YEAR).third
+                        )
+                        setYearLineChart(
+                            getDrivingGraphDataResponse.items,
+                            getCurrentAndPastTimeForISO(YEAR).third
+                        )
+                    }
+                }catch (e:Exception){
+
                 }
             }
 
@@ -2188,94 +2218,163 @@ class DrivenTimeActivity: BaseRefreshActivity() {
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!).enqueue(object:
             Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200){
-                    val recentDrivingDistance = Gson().fromJson(
-                        response.body()?.string(),
-                        GetRecentDrivingStatisticsResponse::class.java
-                    )
-
-                    tv_date1.text = convertDateFormat(recentStartTime)
-                    tv_date2.text = convertDateFormat(recentStartTime)
-                    tv_date3.text = convertDateFormat(recentStartTime)
-
-                    if(recentDrivingDistance.isRecent){
-                        tv_diff_time.visibility = View.VISIBLE
-
-                        tv_hour.text = transferSecondsToHourAndMinutes(recentDrivingDistance.total.totalTime).first.toString()
-                        tv_minute.text = transferSecondsToHourAndMinutes(recentDrivingDistance.total.totalTime).second.toString()
-                        tv_average_hour.text = transferSecondsToHourAndMinutes(recentDrivingDistance.average.totalTime).first.toString()
-                        tv_average_minute.text = transferSecondsToHourAndMinutes(recentDrivingDistance.average.totalTime).second.toString()
-                        tv_min_hour.text = transferSecondsToHourAndMinutes(recentDrivingDistance.min.totalTime).first.toString()
-                        tv_min_minute.text = transferSecondsToHourAndMinutes(recentDrivingDistance.min.totalTime).second.toString()
-                        tv_max_hour.text = transferSecondsToHourAndMinutes(recentDrivingDistance.max.totalTime).first.toString()
-                        tv_max_minute.text = transferSecondsToHourAndMinutes(recentDrivingDistance.max.totalTime).second.toString()
-
-                        if(recentDrivingDistance.diffAverage.totalTime == 0.0){
-                            tv_diff_time.text = "시간 변동이 없어요."
-                            tv_diff_time.setTextColor(resources.getColor(R.color.gray_950))
-
-                        }else if(recentDrivingDistance.diffAverage.totalTime > 0.0){
-                            tv_diff_time.text = "+" + transferSecondsToHourAndMinutes(recentDrivingDistance.diffAverage.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(recentDrivingDistance.diffAverage.totalTime).second + "분 증가"
-                            tv_diff_time.setTextColor(resources.getColor(R.color.pri_500))
-
-                        }else if(recentDrivingDistance.diffAverage.totalTime < 0.0){
-                            tv_diff_time.text = transferSecondsToHourAndMinutes(recentDrivingDistance.diffAverage.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(recentDrivingDistance.diffAverage.totalTime).second + "분 감소"
-                            tv_diff_time.setTextColor(resources.getColor(R.color.sec_500))
-                        }
-
-
-                        recentStartTime = recentDrivingDistance.recentStartTime
-                        recentEndTime = recentDrivingDistance.recentEndTime
-
-                        tv_time_info1.text = "최근 1일 총합"
-                        tv_time_info2.text = "내 차는 자주\n달릴수록 좋아요"
-                        tv_time_info3.text = "최근 1일의 기록을\n한눈에 확인해 보세요!"
+                try {
+                    if (response.code() == 200) {
+                        val recentDrivingDistance = Gson().fromJson(
+                            response.body()?.string(),
+                            GetRecentDrivingStatisticsResponse::class.java
+                        )
 
                         tv_date1.text = convertDateFormat(recentStartTime)
                         tv_date2.text = convertDateFormat(recentStartTime)
                         tv_date3.text = convertDateFormat(recentStartTime)
 
-                        tv_time_info4.text = CommonUtil.getSpannableString(
-                            this@DrivenTimeActivity,
-                            "최근 1일간 내 차는\n" + transferSecondsToHourAndMinutes(recentDrivingDistance.total.totalTime).first +"시간" + transferSecondsToHourAndMinutes(recentDrivingDistance.total.totalTime).second + "분" + " 달렸어요",
-                            transferSecondsToHourAndMinutes(recentDrivingDistance.total.totalTime).first.toString() +"시간" + transferSecondsToHourAndMinutes(recentDrivingDistance.total.totalTime).second + "분",
-                            resources.getColor(R.color.pri_500)
-                        )
+                        if (recentDrivingDistance.isRecent) {
+                            tv_diff_time.visibility = View.VISIBLE
 
-                        apiService().getDrivingTimeGraphData(
-                            "Bearer " + PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-                            PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.USER_CARID, "")!!,
-                            "ASC",
-                            null,
-                            null,
-                            recentStartTime,
-                            recentEndTime,
-                            "startTime",
-                            "hour"
-                        ).enqueue(object :Callback<ResponseBody>{
-                            override fun onResponse(
-                                call: Call<ResponseBody>,
-                                response: Response<ResponseBody>
-                            ) {
+                            tv_hour.text =
+                                transferSecondsToHourAndMinutes(recentDrivingDistance.total.totalTime).first.toString()
+                            tv_minute.text =
+                                transferSecondsToHourAndMinutes(recentDrivingDistance.total.totalTime).second.toString()
+                            tv_average_hour.text =
+                                transferSecondsToHourAndMinutes(recentDrivingDistance.average.totalTime).first.toString()
+                            tv_average_minute.text =
+                                transferSecondsToHourAndMinutes(recentDrivingDistance.average.totalTime).second.toString()
+                            tv_min_hour.text =
+                                transferSecondsToHourAndMinutes(recentDrivingDistance.min.totalTime).first.toString()
+                            tv_min_minute.text =
+                                transferSecondsToHourAndMinutes(recentDrivingDistance.min.totalTime).second.toString()
+                            tv_max_hour.text =
+                                transferSecondsToHourAndMinutes(recentDrivingDistance.max.totalTime).first.toString()
+                            tv_max_minute.text =
+                                transferSecondsToHourAndMinutes(recentDrivingDistance.max.totalTime).second.toString()
 
-                                if(response.code() == 200){
-                                    val getDrivingGraphDataResponse = Gson().fromJson(
-                                        response.body()?.string(),
-                                        GetDrivingGraphDataResponse::class.java
-                                    )
+                            if (recentDrivingDistance.diffAverage.totalTime == 0.0) {
+                                tv_diff_time.text = "시간 변동이 없어요."
+                                tv_diff_time.setTextColor(resources.getColor(R.color.gray_950))
+
+                            } else if (recentDrivingDistance.diffAverage.totalTime > 0.0) {
+                                tv_diff_time.text =
+                                    "+" + transferSecondsToHourAndMinutes(recentDrivingDistance.diffAverage.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(
+                                        recentDrivingDistance.diffAverage.totalTime
+                                    ).second + "분 증가"
+                                tv_diff_time.setTextColor(resources.getColor(R.color.pri_500))
+
+                            } else if (recentDrivingDistance.diffAverage.totalTime < 0.0) {
+                                tv_diff_time.text =
+                                    transferSecondsToHourAndMinutes(recentDrivingDistance.diffAverage.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(
+                                        recentDrivingDistance.diffAverage.totalTime
+                                    ).second + "분 감소"
+                                tv_diff_time.setTextColor(resources.getColor(R.color.sec_500))
+                            }
 
 
-                                    setRecentBarChart(getDrivingGraphDataResponse.items)
-                                    setRecentLineChart(getDrivingGraphDataResponse.items)
+                            recentStartTime = recentDrivingDistance.recentStartTime
+                            recentEndTime = recentDrivingDistance.recentEndTime
+
+                            tv_time_info1.text = "최근 1일 총합"
+                            tv_time_info2.text = "내 차는 자주\n달릴수록 좋아요"
+                            tv_time_info3.text = "최근 1일의 기록을\n한눈에 확인해 보세요!"
+
+                            tv_date1.text = convertDateFormat(recentStartTime)
+                            tv_date2.text = convertDateFormat(recentStartTime)
+                            tv_date3.text = convertDateFormat(recentStartTime)
+
+                            tv_time_info4.text = CommonUtil.getSpannableString(
+                                this@DrivenTimeActivity,
+                                "최근 1일간 내 차는\n" + transferSecondsToHourAndMinutes(
+                                    recentDrivingDistance.total.totalTime
+                                ).first + "시간" + transferSecondsToHourAndMinutes(
+                                    recentDrivingDistance.total.totalTime
+                                ).second + "분" + " 달렸어요",
+                                transferSecondsToHourAndMinutes(recentDrivingDistance.total.totalTime).first.toString() + "시간" + transferSecondsToHourAndMinutes(
+                                    recentDrivingDistance.total.totalTime
+                                ).second + "분",
+                                resources.getColor(R.color.pri_500)
+                            )
+
+                            apiService().getDrivingTimeGraphData(
+                                "Bearer " + PreferenceUtil.getPref(
+                                    this@DrivenTimeActivity,
+                                    PreferenceUtil.ACCESS_TOKEN,
+                                    ""
+                                )!!,
+                                PreferenceUtil.getPref(
+                                    this@DrivenTimeActivity,
+                                    PreferenceUtil.USER_CARID,
+                                    ""
+                                )!!,
+                                "ASC",
+                                null,
+                                null,
+                                recentStartTime,
+                                recentEndTime,
+                                "startTime",
+                                "hour"
+                            ).enqueue(object : Callback<ResponseBody> {
+                                override fun onResponse(
+                                    call: Call<ResponseBody>,
+                                    response: Response<ResponseBody>
+                                ) {
+                                    try {
+                                        if (response.code() == 200) {
+                                            val getDrivingGraphDataResponse = Gson().fromJson(
+                                                response.body()?.string(),
+                                                GetDrivingGraphDataResponse::class.java
+                                            )
+
+
+                                            setRecentBarChart(getDrivingGraphDataResponse.items)
+                                            setRecentLineChart(getDrivingGraphDataResponse.items)
+                                        }
+                                    }catch (e:Exception){
+
+                                    }
                                 }
-                            }
 
-                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                            }
+                                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                                }
 
-                        })
+                            })
 
-                    }else{
+                        } else {
+                            tv_date1.text = getTodayFormattedDate()
+                            tv_date2.text = getTodayFormattedDate()
+                            tv_date3.text = getTodayFormattedDate()
+
+                            tv_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
+                            tv_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
+                            tv_average_hour.text =
+                                transferSecondsToHourAndMinutes(0.0).first.toString()
+                            tv_average_minute.text =
+                                transferSecondsToHourAndMinutes(0.0).second.toString()
+                            tv_min_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
+                            tv_min_minute.text =
+                                transferSecondsToHourAndMinutes(0.0).second.toString()
+                            tv_max_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
+                            tv_max_minute.text =
+                                transferSecondsToHourAndMinutes(0.0).second.toString()
+                            tv_diff_time.text =
+                                "+" + transferSecondsToHourAndMinutes(0.0).first.toString() + "시간 " + transferSecondsToHourAndMinutes(
+                                    0.0
+                                ).second + "분 증가"
+
+                            tv_time_info4.text =
+                                "최근 내 차는\n" + transferSecondsToHourAndMinutes(0.0).first + "시간" + transferSecondsToHourAndMinutes(
+                                    0.0
+                                ).second + "분" + " 달렸어요"
+                            tv_diff_time.visibility = View.INVISIBLE
+
+
+                            tv_time_info1.text = "최근 1일 총합"
+                            tv_time_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                            tv_time_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                            tv_time_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+
+                            setRecentBarChartAsDefault()
+                            setRecentLineChartAsDefault()
+                        }
+                    } else {
                         tv_date1.text = getTodayFormattedDate()
                         tv_date2.text = getTodayFormattedDate()
                         tv_date3.text = getTodayFormattedDate()
@@ -2283,14 +2382,21 @@ class DrivenTimeActivity: BaseRefreshActivity() {
                         tv_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
                         tv_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
                         tv_average_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
-                        tv_average_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
+                        tv_average_minute.text =
+                            transferSecondsToHourAndMinutes(0.0).second.toString()
                         tv_min_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
                         tv_min_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
                         tv_max_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
                         tv_max_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
-                        tv_diff_time.text = "+" + transferSecondsToHourAndMinutes(0.0).first.toString() + "시간 " + transferSecondsToHourAndMinutes(0.0).second + "분 증가"
+                        tv_diff_time.text =
+                            "+" + transferSecondsToHourAndMinutes(0.0).first.toString() + "시간 " + transferSecondsToHourAndMinutes(
+                                0.0
+                            ).second + "분 증가"
 
-                        tv_time_info4.text = "최근 내 차는\n" + transferSecondsToHourAndMinutes(0.0).first +"시간" + transferSecondsToHourAndMinutes(0.0).second + "분" + " 달렸어요"
+                        tv_time_info4.text =
+                            "최근 내 차는\n" + transferSecondsToHourAndMinutes(0.0).first + "시간" + transferSecondsToHourAndMinutes(
+                                0.0
+                            ).second + "분" + " 달렸어요"
                         tv_diff_time.visibility = View.INVISIBLE
 
 
@@ -2302,32 +2408,8 @@ class DrivenTimeActivity: BaseRefreshActivity() {
                         setRecentBarChartAsDefault()
                         setRecentLineChartAsDefault()
                     }
-                }else{
-                    tv_date1.text = getTodayFormattedDate()
-                    tv_date2.text = getTodayFormattedDate()
-                    tv_date3.text = getTodayFormattedDate()
+                }catch (e:Exception){
 
-                    tv_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
-                    tv_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
-                    tv_average_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
-                    tv_average_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
-                    tv_min_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
-                    tv_min_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
-                    tv_max_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
-                    tv_max_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
-                    tv_diff_time.text = "+" + transferSecondsToHourAndMinutes(0.0).first.toString() + "시간 " + transferSecondsToHourAndMinutes(0.0).second + "분 증가"
-
-                    tv_time_info4.text = "최근 내 차는\n" + transferSecondsToHourAndMinutes(0.0).first +"시간" + transferSecondsToHourAndMinutes(0.0).second + "분" + " 달렸어요"
-                    tv_diff_time.visibility = View.INVISIBLE
-
-
-                    tv_time_info1.text = "최근 1일 총합"
-                    tv_time_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-                    tv_time_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-                    tv_time_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-
-                    setRecentBarChartAsDefault()
-                    setRecentLineChartAsDefault()
                 }
             }
 
@@ -2373,76 +2455,117 @@ class DrivenTimeActivity: BaseRefreshActivity() {
             "startTime",
             "day").enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200) {
+                try {
+                    if (response.code() == 200) {
 
-                    val drivingDistance = Gson().fromJson(
-                        response.body()?.string(),
-                        GetDrivingStatisticsResponse::class.java
-                    )
-
-                    if(drivingDistance.total.totalTime != 0.0){
-                        tv_diff_time.visibility = View.VISIBLE
-
-
-                        tv_hour.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).first.toString()
-                        tv_minute.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).second.toString()
-                        tv_average_hour.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).first.toString()
-                        tv_average_minute.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).second.toString()
-                        tv_min_hour.text = transferSecondsToHourAndMinutes(drivingDistance.min.totalTime).first.toString()
-                        tv_min_minute.text = transferSecondsToHourAndMinutes(drivingDistance.min.totalTime).second.toString()
-                        tv_max_hour.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).first.toString()
-                        tv_max_minute.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).second.toString()
-
-
-                        if(drivingDistance.diffAverage.totalTime == 0.0){
-                            tv_diff_time.text = "시간 변동이 없어요."
-                            tv_diff_time.setTextColor(resources.getColor(R.color.gray_950))
-
-                        }else if(drivingDistance.diffAverage.totalTime > 0.0){
-                            tv_diff_time.text = "+" + transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).second + "분 증가"
-                            tv_diff_time.setTextColor(resources.getColor(R.color.pri_500))
-
-                        }else if(drivingDistance.diffAverage.totalTime < 0.0){
-                            tv_diff_time.text = transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).second + "분 감소"
-                            tv_diff_time.setTextColor(resources.getColor(R.color.sec_500))
-                        }
-
-
-                        tv_time_info1.text = "일일 평균"
-                        tv_time_info2.text = "내 차는 자주\n달릴수록 좋아요"
-                        tv_time_info3.text = "최근 1개월의 기록을\n한눈에 확인해 보세요!"
-
-                        tv_date1.text = formatDateRangeForAMonth(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
-                        tv_date2.text = formatDateRangeForAMonth(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
-                        tv_date3.text = formatDateRangeForAMonth(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
-
-                        tv_time_info4.text = CommonUtil.getSpannableString(
-                            this@DrivenTimeActivity,
-                            "최근 1개월간 내 차는\n" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first +"시간" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second + "분" + " 달렸어요",
-                            transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first.toString() +"시간" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second + "분",
-                            resources.getColor(R.color.pri_500)
+                        val drivingDistance = Gson().fromJson(
+                            response.body()?.string(),
+                            GetDrivingStatisticsResponse::class.java
                         )
-                    }else{
-                        tv_diff_time.visibility = View.INVISIBLE
+
+                        if (drivingDistance.total.totalTime != 0.0) {
+                            tv_diff_time.visibility = View.VISIBLE
 
 
-                        tv_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
-                        tv_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
-                        tv_average_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
-                        tv_average_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
-                        tv_min_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
-                        tv_min_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
-                        tv_max_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
-                        tv_max_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
-                        tv_diff_time.text = "+" + transferSecondsToHourAndMinutes(0.0).first.toString() + "시간 " + transferSecondsToHourAndMinutes(0.0).second + "분 증가"
+                            tv_hour.text =
+                                transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).first.toString()
+                            tv_minute.text =
+                                transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).second.toString()
+                            tv_average_hour.text =
+                                transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).first.toString()
+                            tv_average_minute.text =
+                                transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).second.toString()
+                            tv_min_hour.text =
+                                transferSecondsToHourAndMinutes(drivingDistance.min.totalTime).first.toString()
+                            tv_min_minute.text =
+                                transferSecondsToHourAndMinutes(drivingDistance.min.totalTime).second.toString()
+                            tv_max_hour.text =
+                                transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).first.toString()
+                            tv_max_minute.text =
+                                transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).second.toString()
 
-                        tv_time_info4.text = "최근 1개월 간 내 차는\n" + transferSecondsToHourAndMinutes(0.0).first +"시간" + transferSecondsToHourAndMinutes(0.0).second + "분" + " 달렸어요"
 
-                        tv_time_info1.text = "일일 평균"
-                        tv_time_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-                        tv_time_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-                        tv_time_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                            if (drivingDistance.diffAverage.totalTime == 0.0) {
+                                tv_diff_time.text = "시간 변동이 없어요."
+                                tv_diff_time.setTextColor(resources.getColor(R.color.gray_950))
+
+                            } else if (drivingDistance.diffAverage.totalTime > 0.0) {
+                                tv_diff_time.text =
+                                    "+" + transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(
+                                        drivingDistance.diffAverage.totalTime
+                                    ).second + "분 증가"
+                                tv_diff_time.setTextColor(resources.getColor(R.color.pri_500))
+
+                            } else if (drivingDistance.diffAverage.totalTime < 0.0) {
+                                tv_diff_time.text =
+                                    transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(
+                                        drivingDistance.diffAverage.totalTime
+                                    ).second + "분 감소"
+                                tv_diff_time.setTextColor(resources.getColor(R.color.sec_500))
+                            }
+
+
+                            tv_time_info1.text = "일일 평균"
+                            tv_time_info2.text = "내 차는 자주\n달릴수록 좋아요"
+                            tv_time_info3.text = "최근 1개월의 기록을\n한눈에 확인해 보세요!"
+
+                            tv_date1.text = formatDateRangeForAMonth(
+                                getCurrentAndPastTimeForISO(29).second,
+                                getCurrentAndPastTimeForISO(29).first
+                            )
+                            tv_date2.text = formatDateRangeForAMonth(
+                                getCurrentAndPastTimeForISO(29).second,
+                                getCurrentAndPastTimeForISO(29).first
+                            )
+                            tv_date3.text = formatDateRangeForAMonth(
+                                getCurrentAndPastTimeForISO(29).second,
+                                getCurrentAndPastTimeForISO(29).first
+                            )
+
+                            tv_time_info4.text = CommonUtil.getSpannableString(
+                                this@DrivenTimeActivity,
+                                "최근 1개월간 내 차는\n" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first + "시간" + transferSecondsToHourAndMinutes(
+                                    drivingDistance.total.totalTime
+                                ).second + "분" + " 달렸어요",
+                                transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first.toString() + "시간" + transferSecondsToHourAndMinutes(
+                                    drivingDistance.total.totalTime
+                                ).second + "분",
+                                resources.getColor(R.color.pri_500)
+                            )
+                        } else {
+                            tv_diff_time.visibility = View.INVISIBLE
+
+
+                            tv_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
+                            tv_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
+                            tv_average_hour.text =
+                                transferSecondsToHourAndMinutes(0.0).first.toString()
+                            tv_average_minute.text =
+                                transferSecondsToHourAndMinutes(0.0).second.toString()
+                            tv_min_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
+                            tv_min_minute.text =
+                                transferSecondsToHourAndMinutes(0.0).second.toString()
+                            tv_max_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
+                            tv_max_minute.text =
+                                transferSecondsToHourAndMinutes(0.0).second.toString()
+                            tv_diff_time.text =
+                                "+" + transferSecondsToHourAndMinutes(0.0).first.toString() + "시간 " + transferSecondsToHourAndMinutes(
+                                    0.0
+                                ).second + "분 증가"
+
+                            tv_time_info4.text =
+                                "최근 1개월 간 내 차는\n" + transferSecondsToHourAndMinutes(0.0).first + "시간" + transferSecondsToHourAndMinutes(
+                                    0.0
+                                ).second + "분" + " 달렸어요"
+
+                            tv_time_info1.text = "일일 평균"
+                            tv_time_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                            tv_time_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                            tv_time_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        }
                     }
+                }catch (e:Exception){
+
                 }
 
             }
@@ -2486,68 +2609,97 @@ class DrivenTimeActivity: BaseRefreshActivity() {
             "startTime",
             "month").enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200) {
+                try {
+                    if (response.code() == 200) {
 
-                    val drivingDistance = Gson().fromJson(
-                        response.body()?.string(),
-                        GetDrivingStatisticsResponse::class.java
-                    )
+                        val drivingDistance = Gson().fromJson(
+                            response.body()?.string(),
+                            GetDrivingStatisticsResponse::class.java
+                        )
 
-                    if(drivingDistance.total.totalTime != 0.0){
-                        tv_diff_time.visibility = View.VISIBLE
+                        if (drivingDistance.total.totalTime != 0.0) {
+                            tv_diff_time.visibility = View.VISIBLE
 
 
-                        tv_hour.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).first.toString()
-                        tv_minute.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).second.toString()
-                        tv_average_hour.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).first.toString()
-                        tv_average_minute.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).second.toString()
-                        tv_min_hour.text = transferSecondsToHourAndMinutes(drivingDistance.min.totalTime).first.toString()
-                        tv_min_minute.text = transferSecondsToHourAndMinutes(drivingDistance.min.totalTime).second.toString()
-                        tv_max_hour.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).first.toString()
-                        tv_max_minute.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).second.toString()
+                            tv_hour.text =
+                                transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).first.toString()
+                            tv_minute.text =
+                                transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).second.toString()
+                            tv_average_hour.text =
+                                transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).first.toString()
+                            tv_average_minute.text =
+                                transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).second.toString()
+                            tv_min_hour.text =
+                                transferSecondsToHourAndMinutes(drivingDistance.min.totalTime).first.toString()
+                            tv_min_minute.text =
+                                transferSecondsToHourAndMinutes(drivingDistance.min.totalTime).second.toString()
+                            tv_max_hour.text =
+                                transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).first.toString()
+                            tv_max_minute.text =
+                                transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).second.toString()
 
-                        if(drivingDistance.diffAverage.totalTime == 0.0){
-                            tv_diff_time.text = "시간 변동이 없어요."
-                            tv_diff_time.setTextColor(resources.getColor(R.color.gray_950))
+                            if (drivingDistance.diffAverage.totalTime == 0.0) {
+                                tv_diff_time.text = "시간 변동이 없어요."
+                                tv_diff_time.setTextColor(resources.getColor(R.color.gray_950))
 
-                        }else if(drivingDistance.diffAverage.totalTime > 0.0){
-                            tv_diff_time.text = "+" + transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).second + "분 증가"
-                            tv_diff_time.setTextColor(resources.getColor(R.color.pri_500))
+                            } else if (drivingDistance.diffAverage.totalTime > 0.0) {
+                                tv_diff_time.text =
+                                    "+" + transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(
+                                        drivingDistance.diffAverage.totalTime
+                                    ).second + "분 증가"
+                                tv_diff_time.setTextColor(resources.getColor(R.color.pri_500))
 
-                        }else if(drivingDistance.diffAverage.totalTime < 0.0){
-                            tv_diff_time.text = transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).second + "분 감소"
-                            tv_diff_time.setTextColor(resources.getColor(R.color.sec_500))
+                            } else if (drivingDistance.diffAverage.totalTime < 0.0) {
+                                tv_diff_time.text =
+                                    transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(
+                                        drivingDistance.diffAverage.totalTime
+                                    ).second + "분 감소"
+                                tv_diff_time.setTextColor(resources.getColor(R.color.sec_500))
+                            }
+
+
+                            tv_time_info1.text = "월 평균"
+                            tv_time_info2.text = "내 차는 자주\n달릴수록 좋아요"
+                            tv_time_info3.text = "최근 6개월의 기록을\n한눈에 확인해 보세요!"
+
+                            tv_time_info4.text = CommonUtil.getSpannableString(
+                                this@DrivenTimeActivity,
+                                "최근 6개월간 내 차는\n" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first + "시간" + transferSecondsToHourAndMinutes(
+                                    drivingDistance.total.totalTime
+                                ).second + "분" + " 달렸어요",
+                                transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first.toString() + "시간" + transferSecondsToHourAndMinutes(
+                                    drivingDistance.total.totalTime
+                                ).second + "분",
+                                resources.getColor(R.color.pri_500)
+                            )
+                        } else {
+                            tv_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
+                            tv_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
+                            tv_average_hour.text =
+                                transferSecondsToHourAndMinutes(0.0).first.toString()
+                            tv_average_minute.text =
+                                transferSecondsToHourAndMinutes(0.0).second.toString()
+                            tv_min_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
+                            tv_min_minute.text =
+                                transferSecondsToHourAndMinutes(0.0).second.toString()
+                            tv_max_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
+                            tv_max_minute.text =
+                                transferSecondsToHourAndMinutes(0.0).second.toString()
+                            tv_diff_time.text =
+                                "+" + transferSecondsToHourAndMinutes(0.0).first.toString() + "시간 " + transferSecondsToHourAndMinutes(
+                                    0.0
+                                ).second + "분 증가"
+
+                            tv_diff_time.visibility = View.INVISIBLE
+
+                            tv_time_info1.text = "월 평균"
+                            tv_time_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                            tv_time_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                            tv_time_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         }
 
-
-                        tv_time_info1.text = "월 평균"
-                        tv_time_info2.text = "내 차는 자주\n달릴수록 좋아요"
-                        tv_time_info3.text = "최근 6개월의 기록을\n한눈에 확인해 보세요!"
-
-                        tv_time_info4.text = CommonUtil.getSpannableString(
-                            this@DrivenTimeActivity,
-                            "최근 6개월간 내 차는\n" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first +"시간" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second + "분" + " 달렸어요",
-                            transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first.toString() +"시간" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second + "분",
-                            resources.getColor(R.color.pri_500)
-                        )
-                    }else{
-                        tv_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
-                        tv_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
-                        tv_average_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
-                        tv_average_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
-                        tv_min_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
-                        tv_min_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
-                        tv_max_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
-                        tv_max_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
-                        tv_diff_time.text = "+" + transferSecondsToHourAndMinutes(0.0).first.toString() + "시간 " + transferSecondsToHourAndMinutes(0.0).second + "분 증가"
-
-                        tv_diff_time.visibility = View.INVISIBLE
-
-                        tv_time_info1.text = "월 평균"
-                        tv_time_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-                        tv_time_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-                        tv_time_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                     }
+                }catch (e:Exception){
 
                 }
 
@@ -2588,69 +2740,101 @@ class DrivenTimeActivity: BaseRefreshActivity() {
             "startTime",
             "month").enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200) {
+                try {
+                    if (response.code() == 200) {
 
-                    val drivingDistance = Gson().fromJson(
-                        response.body()?.string(),
-                        GetDrivingStatisticsResponse::class.java
-                    )
-
-                    if(drivingDistance.total.totalTime != 0.0){
-                        tv_hour.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).first.toString()
-                        tv_minute.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).second.toString()
-                        tv_average_hour.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).first.toString()
-                        tv_average_minute.text = transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).second.toString()
-                        tv_min_hour.text = transferSecondsToHourAndMinutes(drivingDistance.min.totalTime).first.toString()
-                        tv_min_minute.text = transferSecondsToHourAndMinutes(drivingDistance.min.totalTime).second.toString()
-                        tv_max_hour.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).first.toString()
-                        tv_max_minute.text = transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).second.toString()
-
-                        tv_diff_time.visibility = View.VISIBLE
-
-                        if(drivingDistance.diffAverage.totalTime == 0.0){
-                            tv_diff_time.text = "시간 변동이 없어요."
-                            tv_diff_time.setTextColor(resources.getColor(R.color.gray_950))
-
-                        }else if(drivingDistance.diffAverage.totalTime > 0.0){
-                            tv_diff_time.text = "+" + transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).second + "분 증가"
-                            tv_diff_time.setTextColor(resources.getColor(R.color.pri_500))
-
-                        }else if(drivingDistance.diffAverage.totalTime < 0.0){
-                            tv_diff_time.text = transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).second + "분 감소"
-                            tv_diff_time.setTextColor(resources.getColor(R.color.sec_500))
-                        }
-
-
-                        tv_time_info1.text = "월 평균"
-                        tv_time_info2.text = "내 차는 자주\n달릴수록 좋아요"
-                        tv_time_info3.text = "최근 1년의 기록을\n한눈에 확인해 보세요!"
-
-                        tv_time_info4.text = CommonUtil.getSpannableString(
-                            this@DrivenTimeActivity,
-                            "최근 1년간 내 차는\n" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first +"시간" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second + "분" + " 달렸어요",
-                            transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first.toString() +"시간" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).second + "분",
-                            resources.getColor(R.color.pri_500)
+                        val drivingDistance = Gson().fromJson(
+                            response.body()?.string(),
+                            GetDrivingStatisticsResponse::class.java
                         )
-                    }else{
-                        tv_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
-                        tv_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
-                        tv_average_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
-                        tv_average_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
-                        tv_min_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
-                        tv_min_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
-                        tv_max_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
-                        tv_max_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
-                        tv_diff_time.text = "+" + transferSecondsToHourAndMinutes(0.0).first.toString() + "시간 " + transferSecondsToHourAndMinutes(0.0).second + "분 증가"
 
-                        tv_time_info4.text = "최근 1년간 내 차는\n" + transferSecondsToHourAndMinutes(0.0).first +"시간" + transferSecondsToHourAndMinutes(0.0).second + "분" + " 달렸어요"
+                        if (drivingDistance.total.totalTime != 0.0) {
+                            tv_hour.text =
+                                transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).first.toString()
+                            tv_minute.text =
+                                transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).second.toString()
+                            tv_average_hour.text =
+                                transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).first.toString()
+                            tv_average_minute.text =
+                                transferSecondsToHourAndMinutes(drivingDistance.average.totalTime).second.toString()
+                            tv_min_hour.text =
+                                transferSecondsToHourAndMinutes(drivingDistance.min.totalTime).first.toString()
+                            tv_min_minute.text =
+                                transferSecondsToHourAndMinutes(drivingDistance.min.totalTime).second.toString()
+                            tv_max_hour.text =
+                                transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).first.toString()
+                            tv_max_minute.text =
+                                transferSecondsToHourAndMinutes(drivingDistance.max.totalTime).second.toString()
 
-                        tv_diff_time.visibility = View.INVISIBLE
+                            tv_diff_time.visibility = View.VISIBLE
 
-                        tv_time_info1.text = "월 평균"
-                        tv_time_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-                        tv_time_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-                        tv_time_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                            if (drivingDistance.diffAverage.totalTime == 0.0) {
+                                tv_diff_time.text = "시간 변동이 없어요."
+                                tv_diff_time.setTextColor(resources.getColor(R.color.gray_950))
+
+                            } else if (drivingDistance.diffAverage.totalTime > 0.0) {
+                                tv_diff_time.text =
+                                    "+" + transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(
+                                        drivingDistance.diffAverage.totalTime
+                                    ).second + "분 증가"
+                                tv_diff_time.setTextColor(resources.getColor(R.color.pri_500))
+
+                            } else if (drivingDistance.diffAverage.totalTime < 0.0) {
+                                tv_diff_time.text =
+                                    transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(
+                                        drivingDistance.diffAverage.totalTime
+                                    ).second + "분 감소"
+                                tv_diff_time.setTextColor(resources.getColor(R.color.sec_500))
+                            }
+
+
+                            tv_time_info1.text = "월 평균"
+                            tv_time_info2.text = "내 차는 자주\n달릴수록 좋아요"
+                            tv_time_info3.text = "최근 1년의 기록을\n한눈에 확인해 보세요!"
+
+                            tv_time_info4.text = CommonUtil.getSpannableString(
+                                this@DrivenTimeActivity,
+                                "최근 1년간 내 차는\n" + transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first + "시간" + transferSecondsToHourAndMinutes(
+                                    drivingDistance.total.totalTime
+                                ).second + "분" + " 달렸어요",
+                                transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first.toString() + "시간" + transferSecondsToHourAndMinutes(
+                                    drivingDistance.total.totalTime
+                                ).second + "분",
+                                resources.getColor(R.color.pri_500)
+                            )
+                        } else {
+                            tv_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
+                            tv_minute.text = transferSecondsToHourAndMinutes(0.0).second.toString()
+                            tv_average_hour.text =
+                                transferSecondsToHourAndMinutes(0.0).first.toString()
+                            tv_average_minute.text =
+                                transferSecondsToHourAndMinutes(0.0).second.toString()
+                            tv_min_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
+                            tv_min_minute.text =
+                                transferSecondsToHourAndMinutes(0.0).second.toString()
+                            tv_max_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
+                            tv_max_minute.text =
+                                transferSecondsToHourAndMinutes(0.0).second.toString()
+                            tv_diff_time.text =
+                                "+" + transferSecondsToHourAndMinutes(0.0).first.toString() + "시간 " + transferSecondsToHourAndMinutes(
+                                    0.0
+                                ).second + "분 증가"
+
+                            tv_time_info4.text =
+                                "최근 1년간 내 차는\n" + transferSecondsToHourAndMinutes(0.0).first + "시간" + transferSecondsToHourAndMinutes(
+                                    0.0
+                                ).second + "분" + " 달렸어요"
+
+                            tv_diff_time.visibility = View.INVISIBLE
+
+                            tv_time_info1.text = "월 평균"
+                            tv_time_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                            tv_time_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                            tv_time_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        }
                     }
+                }catch (e:Exception){
+
                 }
 
             }

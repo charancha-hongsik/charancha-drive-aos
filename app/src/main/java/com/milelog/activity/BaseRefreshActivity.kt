@@ -21,41 +21,53 @@ open class BaseRefreshActivity: BaseActivity(){
             apiService().postReissue(PreferenceUtil.getPref(this, PreferenceUtil.REFRESH_TOKEN, "")!!).enqueue(object :
                 Callback<ResponseBody> {
                 override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                    if(response.code() == 200 || response.code() == 201) {
-                        val signInResponse =
-                            Gson().fromJson(response.body()?.string(), SignInResponse::class.java)
+                    try {
+                        if (response.code() == 200 || response.code() == 201) {
+                            val signInResponse =
+                                Gson().fromJson(
+                                    response.body()?.string(),
+                                    SignInResponse::class.java
+                                )
 
-                        PreferenceUtil.putPref(
-                            this@BaseRefreshActivity,
-                            PreferenceUtil.ACCESS_TOKEN,
-                            signInResponse.access_token
-                        )
-                        PreferenceUtil.putPref(
-                            this@BaseRefreshActivity,
-                            PreferenceUtil.REFRESH_TOKEN,
-                            signInResponse.refresh_token
-                        )
-                        PreferenceUtil.putPref(
-                            this@BaseRefreshActivity,
-                            PreferenceUtil.EXPIRES_IN,
-                            signInResponse.expires_in
-                        )
-                        PreferenceUtil.putPref(
-                            this@BaseRefreshActivity,
-                            PreferenceUtil.REFRESH_EXPIRES_IN,
-                            signInResponse.refresh_expires_in
-                        )
-                        PreferenceUtil.putPref(
-                            this@BaseRefreshActivity,
-                            PreferenceUtil.TOKEN_TYPE,
-                            signInResponse.token_type
-                        )
-                    }else{
-                        logout()
+                            PreferenceUtil.putPref(
+                                this@BaseRefreshActivity,
+                                PreferenceUtil.ACCESS_TOKEN,
+                                signInResponse.access_token
+                            )
+                            PreferenceUtil.putPref(
+                                this@BaseRefreshActivity,
+                                PreferenceUtil.REFRESH_TOKEN,
+                                signInResponse.refresh_token
+                            )
+                            PreferenceUtil.putPref(
+                                this@BaseRefreshActivity,
+                                PreferenceUtil.EXPIRES_IN,
+                                signInResponse.expires_in
+                            )
+                            PreferenceUtil.putPref(
+                                this@BaseRefreshActivity,
+                                PreferenceUtil.REFRESH_EXPIRES_IN,
+                                signInResponse.refresh_expires_in
+                            )
+                            PreferenceUtil.putPref(
+                                this@BaseRefreshActivity,
+                                PreferenceUtil.TOKEN_TYPE,
+                                signInResponse.token_type
+                            )
+                        } else {
+                            logout()
 
-                        startActivity(Intent(this@BaseRefreshActivity, LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+                            startActivity(
+                                Intent(
+                                    this@BaseRefreshActivity,
+                                    LoginActivity::class.java
+                                ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                            )
 
-                        finish()
+                            finish()
+                        }
+                    }catch (e:Exception){
+
                     }
                 }
 

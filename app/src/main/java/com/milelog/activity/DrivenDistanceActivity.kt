@@ -611,15 +611,24 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
             ) {
+                try {
+                    if (response.code() == 200 || response.code() == 201) {
+                        val getDrivingGraphDataResponse = Gson().fromJson(
+                            response.body()?.string(),
+                            GetDrivingGraphDataResponse::class.java
+                        )
 
-                if(response.code() == 200 || response.code() == 201){
-                    val getDrivingGraphDataResponse = Gson().fromJson(
-                        response.body()?.string(),
-                        GetDrivingGraphDataResponse::class.java
-                    )
+                        setMonthBarChart(
+                            getDrivingGraphDataResponse.items,
+                            getCurrentAndPastTimeForISO(29).third
+                        )
+                        setMonthLineChart(
+                            getDrivingGraphDataResponse.items,
+                            getCurrentAndPastTimeForISO(29).third
+                        )
+                    }
+                }catch (e:Exception){
 
-                    setMonthBarChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(29).third)
-                    setMonthLineChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(29).third)
                 }
             }
 
@@ -646,15 +655,26 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
             ) {
+                try {
 
-                if(response.code() == 200 || response.code() == 201){
-                    val getDrivingGraphDataResponse = Gson().fromJson(
-                        response.body()?.string(),
-                        GetDrivingGraphDataResponse::class.java
-                    )
 
-                    setSixMonthBarChart(getDrivingGraphDataResponse.items,getCurrentAndPastTimeForISO(SIX_MONTH).third )
-                    setSixMonthLineChart(getDrivingGraphDataResponse.items,getCurrentAndPastTimeForISO(SIX_MONTH).third )
+                    if (response.code() == 200 || response.code() == 201) {
+                        val getDrivingGraphDataResponse = Gson().fromJson(
+                            response.body()?.string(),
+                            GetDrivingGraphDataResponse::class.java
+                        )
+
+                        setSixMonthBarChart(
+                            getDrivingGraphDataResponse.items,
+                            getCurrentAndPastTimeForISO(SIX_MONTH).third
+                        )
+                        setSixMonthLineChart(
+                            getDrivingGraphDataResponse.items,
+                            getCurrentAndPastTimeForISO(SIX_MONTH).third
+                        )
+                    }
+                }catch (e:Exception){
+
                 }
             }
 
@@ -681,15 +701,24 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
             ) {
+                try {
+                    if (response.code() == 200 || response.code() == 201) {
+                        val getDrivingGraphDataResponse = Gson().fromJson(
+                            response.body()?.string(),
+                            GetDrivingGraphDataResponse::class.java
+                        )
 
-                if(response.code() == 200 || response.code() == 201){
-                    val getDrivingGraphDataResponse = Gson().fromJson(
-                        response.body()?.string(),
-                        GetDrivingGraphDataResponse::class.java
-                    )
+                        setYearBarChart(
+                            getDrivingGraphDataResponse.items,
+                            getCurrentAndPastTimeForISO(YEAR).third
+                        )
+                        setYearLineChart(
+                            getDrivingGraphDataResponse.items,
+                            getCurrentAndPastTimeForISO(YEAR).third
+                        )
+                    }
+                }catch (e:Exception){
 
-                    setYearBarChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(YEAR).third)
-                    setYearLineChart(getDrivingGraphDataResponse.items, getCurrentAndPastTimeForISO(YEAR).third)
                 }
             }
 
@@ -2148,112 +2177,135 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
             "Bearer " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!).enqueue(object:Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200 || response.code() == 201){
-                    val recentDrivingDistance = Gson().fromJson(
-                        response.body()?.string(),
-                        GetRecentDrivingStatisticsResponse::class.java
-                    )
-
-                    if(recentDrivingDistance.isRecent){
-                        recentStartTime = recentDrivingDistance.recentStartTime
-                        recentEndTime = recentDrivingDistance.recentEndTime
-
-                        tv_date1.text = convertDateFormat(recentStartTime)
-                        tv_date2.text = convertDateFormat(recentStartTime)
-                        tv_date3.text = convertDateFormat(recentStartTime)
-
-                        tv_total_distance.text = transferDistance(recentDrivingDistance.total.totalDistance)
-                        tv_diff_distance.visibility = VISIBLE
-
-                        if(recentDrivingDistance.diffTotal.totalDistance == 0.0){
-                            tv_diff_distance.text = "점수 변동이 없어요."
-                            tv_diff_distance.setTextColor(resources.getColor(R.color.gray_950))
-
-                        }else if(recentDrivingDistance.diffTotal.totalDistance > 0.0){
-                            tv_diff_distance.text = "+" + transferDistance(recentDrivingDistance.diffTotal.totalDistance) + distance_unit + " 증가"
-                            tv_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
-
-                        }else if(recentDrivingDistance.diffTotal.totalDistance < 0.0){
-                            tv_diff_distance.text = transferDistance(recentDrivingDistance.diffTotal.totalDistance) + distance_unit + " 감소"
-                            tv_diff_distance.setTextColor(resources.getColor(R.color.sec_500))
-                        }
-
-                        tv_average_distance.text = transferDistance(recentDrivingDistance.average.totalDistance)
-                        tv_max_distance.text = transferDistance(recentDrivingDistance.max.totalDistance)
-                        tv_min_distance.text = transferDistance(recentDrivingDistance.min.totalDistance)
-
-                        tv_driving_info1.text = "최근 1일 총합"
-                        tv_driving_info2.text = "내 차는 자주\n달릴수록 좋아요"
-                        tv_driving_info3.text = "최근 1일의 기록을\n한눈에 확인해 보세요!"
-                        tv_driving_info4.text = "최근 1일간 내 차는\n" + transferDistance(recentDrivingDistance.total.totalDistance) + distance_unit + " 달렸어요"
-
-                        tv_driving_info4.text = CommonUtil.getSpannableString(
-                            this@DrivenDistanceActivity,
-                            "최근 1일간 내 차는\n" + transferDistance(recentDrivingDistance.total.totalDistance) + distance_unit + " 달렸어요",
-                            transferDistance(recentDrivingDistance.total.totalDistance) + distance_unit,
-                            resources.getColor(R.color.pri_500)
+                try {
+                    if (response.code() == 200 || response.code() == 201) {
+                        val recentDrivingDistance = Gson().fromJson(
+                            response.body()?.string(),
+                            GetRecentDrivingStatisticsResponse::class.java
                         )
 
+                        if (recentDrivingDistance.isRecent) {
+                            recentStartTime = recentDrivingDistance.recentStartTime
+                            recentEndTime = recentDrivingDistance.recentEndTime
 
-                        apiService().getDrivingDistanceGraphData(
-                            "Bearer " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-                            PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.USER_CARID, "")!!,
-                            "ASC",
-                            null,
-                            null,
-                            recentStartTime,
-                            recentEndTime,
-                            "startTime",
-                            "hour"
-                        ).enqueue(object :Callback<ResponseBody>{
-                            override fun onResponse(
-                                call: Call<ResponseBody>,
-                                response: Response<ResponseBody>
-                            ) {
+                            tv_date1.text = convertDateFormat(recentStartTime)
+                            tv_date2.text = convertDateFormat(recentStartTime)
+                            tv_date3.text = convertDateFormat(recentStartTime)
 
-                                if(response.code() == 200 || response.code() == 201){
-                                    val getDrivingGraphDataResponse = Gson().fromJson(
-                                        response.body()?.string(),
-                                        GetDrivingGraphDataResponse::class.java
-                                    )
+                            tv_total_distance.text =
+                                transferDistance(recentDrivingDistance.total.totalDistance)
+                            tv_diff_distance.visibility = VISIBLE
 
-                                    setRecentBarChart(getDrivingGraphDataResponse.items)
-                                    setRecentLineChart(getDrivingGraphDataResponse.items)
-                                }else{
+                            if (recentDrivingDistance.diffTotal.totalDistance == 0.0) {
+                                tv_diff_distance.text = "점수 변동이 없어요."
+                                tv_diff_distance.setTextColor(resources.getColor(R.color.gray_950))
+
+                            } else if (recentDrivingDistance.diffTotal.totalDistance > 0.0) {
+                                tv_diff_distance.text =
+                                    "+" + transferDistance(recentDrivingDistance.diffTotal.totalDistance) + distance_unit + " 증가"
+                                tv_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
+
+                            } else if (recentDrivingDistance.diffTotal.totalDistance < 0.0) {
+                                tv_diff_distance.text =
+                                    transferDistance(recentDrivingDistance.diffTotal.totalDistance) + distance_unit + " 감소"
+                                tv_diff_distance.setTextColor(resources.getColor(R.color.sec_500))
+                            }
+
+                            tv_average_distance.text =
+                                transferDistance(recentDrivingDistance.average.totalDistance)
+                            tv_max_distance.text =
+                                transferDistance(recentDrivingDistance.max.totalDistance)
+                            tv_min_distance.text =
+                                transferDistance(recentDrivingDistance.min.totalDistance)
+
+                            tv_driving_info1.text = "최근 1일 총합"
+                            tv_driving_info2.text = "내 차는 자주\n달릴수록 좋아요"
+                            tv_driving_info3.text = "최근 1일의 기록을\n한눈에 확인해 보세요!"
+                            tv_driving_info4.text =
+                                "최근 1일간 내 차는\n" + transferDistance(recentDrivingDistance.total.totalDistance) + distance_unit + " 달렸어요"
+
+                            tv_driving_info4.text = CommonUtil.getSpannableString(
+                                this@DrivenDistanceActivity,
+                                "최근 1일간 내 차는\n" + transferDistance(recentDrivingDistance.total.totalDistance) + distance_unit + " 달렸어요",
+                                transferDistance(recentDrivingDistance.total.totalDistance) + distance_unit,
+                                resources.getColor(R.color.pri_500)
+                            )
+
+
+                            apiService().getDrivingDistanceGraphData(
+                                "Bearer " + PreferenceUtil.getPref(
+                                    this@DrivenDistanceActivity,
+                                    PreferenceUtil.ACCESS_TOKEN,
+                                    ""
+                                )!!,
+                                PreferenceUtil.getPref(
+                                    this@DrivenDistanceActivity,
+                                    PreferenceUtil.USER_CARID,
+                                    ""
+                                )!!,
+                                "ASC",
+                                null,
+                                null,
+                                recentStartTime,
+                                recentEndTime,
+                                "startTime",
+                                "hour"
+                            ).enqueue(object : Callback<ResponseBody> {
+                                override fun onResponse(
+                                    call: Call<ResponseBody>,
+                                    response: Response<ResponseBody>
+                                ) {
+                                    try {
+                                        if (response.code() == 200 || response.code() == 201) {
+                                            val getDrivingGraphDataResponse = Gson().fromJson(
+                                                response.body()?.string(),
+                                                GetDrivingGraphDataResponse::class.java
+                                            )
+
+                                            setRecentBarChart(getDrivingGraphDataResponse.items)
+                                            setRecentLineChart(getDrivingGraphDataResponse.items)
+                                        } else {
+                                            setRecentBarChartAsDefault()
+                                            setRecentLineChartAsDefault()
+                                        }
+                                    }catch (e:Exception){
+
+                                    }
+                                }
+
+                                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                                     setRecentBarChartAsDefault()
                                     setRecentLineChartAsDefault()
                                 }
-                            }
 
-                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                                setRecentBarChartAsDefault()
-                                setRecentLineChartAsDefault()
-                            }
-
-                        })
+                            })
 
 
-                    }else{
-                        tv_date1.text = getTodayFormattedDate()
-                        tv_date2.text = getTodayFormattedDate()
-                        tv_date3.text = getTodayFormattedDate()
+                        } else {
+                            tv_date1.text = getTodayFormattedDate()
+                            tv_date2.text = getTodayFormattedDate()
+                            tv_date3.text = getTodayFormattedDate()
 
-                        setRecentBarChartAsDefault()
-                        setRecentLineChartAsDefault()
-                        tv_total_distance.text = transferDistance(0.0)
-                        tv_diff_distance.text = "+" + transferDistance(0.0) + distance_unit + " 증가"
-                        tv_average_distance.text = transferDistance(0.0)
-                        tv_max_distance.text = transferDistance(0.0)
-                        tv_min_distance.text = transferDistance(0.0)
+                            setRecentBarChartAsDefault()
+                            setRecentLineChartAsDefault()
+                            tv_total_distance.text = transferDistance(0.0)
+                            tv_diff_distance.text =
+                                "+" + transferDistance(0.0) + distance_unit + " 증가"
+                            tv_average_distance.text = transferDistance(0.0)
+                            tv_max_distance.text = transferDistance(0.0)
+                            tv_min_distance.text = transferDistance(0.0)
 
-                        tv_diff_distance.visibility = INVISIBLE
+                            tv_diff_distance.visibility = INVISIBLE
 
-                        tv_driving_info1.text = "최근 1일 총합"
-                        tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-                        tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-                        tv_driving_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                            tv_driving_info1.text = "최근 1일 총합"
+                            tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                            tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                            tv_driving_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        }
+                    } else {
+
                     }
-                }else{
+                }catch (e:Exception){
 
                 }
             }
@@ -2297,45 +2349,66 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
             "startTime",
             "day").enqueue(object:Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200) {
+                try {
+                    if (response.code() == 200) {
 
-                    val drivingDistance = Gson().fromJson(
-                        response.body()?.string(),
-                        GetDrivingStatisticsResponse::class.java
-                    )
-
-                    if(drivingDistance.average.totalDistance != 0.0){
-                        tv_diff_distance.visibility = VISIBLE
-                        tv_total_distance.text = transferDistance(drivingDistance.average.totalDistance)
-
-                        if(drivingDistance.diffAverage.totalDistance == 0.0){
-                            tv_diff_distance.text = "점수 변동이 없어요."
-                            tv_diff_distance.setTextColor(resources.getColor(R.color.gray_950))
-
-                        }else if(drivingDistance.diffAverage.totalDistance > 0.0){
-                            tv_diff_distance.text = "+" + transferDistance(drivingDistance.diffAverage.totalDistance) + distance_unit + " 증가"
-                            tv_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
-
-                        }else if(drivingDistance.diffAverage.totalDistance < 0.0){
-                            tv_diff_distance.text = transferDistance(drivingDistance.diffAverage.totalDistance) + distance_unit + " 감소"
-                            tv_diff_distance.setTextColor(resources.getColor(R.color.sec_500))
-                        }
-
-                        tv_average_distance.text = transferDistance(drivingDistance.average.totalDistance)
-                        tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
-                        tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
-
-                        tv_driving_info1.text = "일일 평균"
-                        tv_driving_info2.text = "내 차는 자주\n달릴수록 좋아요"
-                        tv_driving_info3.text = "최근 1개월의 기록을\n한눈에 확인해 보세요!"
-                        // TextView에 SpannableString 설정
-                        tv_driving_info4.text = CommonUtil.getSpannableString(
-                            this@DrivenDistanceActivity,
-                            "최근 1개월간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요",
-                            transferDistance(drivingDistance.total.totalDistance) + distance_unit,
-                            resources.getColor(R.color.pri_500)
+                        val drivingDistance = Gson().fromJson(
+                            response.body()?.string(),
+                            GetDrivingStatisticsResponse::class.java
                         )
-                    }else{
+
+                        if (drivingDistance.average.totalDistance != 0.0) {
+                            tv_diff_distance.visibility = VISIBLE
+                            tv_total_distance.text =
+                                transferDistance(drivingDistance.average.totalDistance)
+
+                            if (drivingDistance.diffAverage.totalDistance == 0.0) {
+                                tv_diff_distance.text = "점수 변동이 없어요."
+                                tv_diff_distance.setTextColor(resources.getColor(R.color.gray_950))
+
+                            } else if (drivingDistance.diffAverage.totalDistance > 0.0) {
+                                tv_diff_distance.text =
+                                    "+" + transferDistance(drivingDistance.diffAverage.totalDistance) + distance_unit + " 증가"
+                                tv_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
+
+                            } else if (drivingDistance.diffAverage.totalDistance < 0.0) {
+                                tv_diff_distance.text =
+                                    transferDistance(drivingDistance.diffAverage.totalDistance) + distance_unit + " 감소"
+                                tv_diff_distance.setTextColor(resources.getColor(R.color.sec_500))
+                            }
+
+                            tv_average_distance.text =
+                                transferDistance(drivingDistance.average.totalDistance)
+                            tv_max_distance.text =
+                                transferDistance(drivingDistance.max.totalDistance)
+                            tv_min_distance.text =
+                                transferDistance(drivingDistance.min.totalDistance)
+
+                            tv_driving_info1.text = "일일 평균"
+                            tv_driving_info2.text = "내 차는 자주\n달릴수록 좋아요"
+                            tv_driving_info3.text = "최근 1개월의 기록을\n한눈에 확인해 보세요!"
+                            // TextView에 SpannableString 설정
+                            tv_driving_info4.text = CommonUtil.getSpannableString(
+                                this@DrivenDistanceActivity,
+                                "최근 1개월간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요",
+                                transferDistance(drivingDistance.total.totalDistance) + distance_unit,
+                                resources.getColor(R.color.pri_500)
+                            )
+                        } else {
+                            tv_total_distance.text = transferDistance(0.0)
+                            tv_diff_distance.text = "점수 변동이 없어요."
+                            tv_average_distance.text = transferDistance(0.0)
+                            tv_max_distance.text = transferDistance(0.0)
+                            tv_min_distance.text = transferDistance(0.0)
+
+                            tv_diff_distance.visibility = INVISIBLE
+
+                            tv_driving_info1.text = "일일 평균"
+                            tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                            tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                            tv_driving_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        }
+                    } else {
                         tv_total_distance.text = transferDistance(0.0)
                         tv_diff_distance.text = "점수 변동이 없어요."
                         tv_average_distance.text = transferDistance(0.0)
@@ -2349,19 +2422,8 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
                         tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                         tv_driving_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                     }
-                }else{
-                    tv_total_distance.text = transferDistance(0.0)
-                    tv_diff_distance.text = "점수 변동이 없어요."
-                    tv_average_distance.text = transferDistance(0.0)
-                    tv_max_distance.text = transferDistance(0.0)
-                    tv_min_distance.text = transferDistance(0.0)
+                }catch (e:Exception){
 
-                    tv_diff_distance.visibility = INVISIBLE
-
-                    tv_driving_info1.text = "일일 평균"
-                    tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-                    tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-                    tv_driving_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 }
 
             }
@@ -2399,58 +2461,68 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
             "startTime",
             "month").enqueue(object:Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200) {
+                try {
+                    if (response.code() == 200) {
 
-                    val drivingDistance = Gson().fromJson(
-                        response.body()?.string(),
-                        GetDrivingStatisticsResponse::class.java
-                    )
+                        val drivingDistance = Gson().fromJson(
+                            response.body()?.string(),
+                            GetDrivingStatisticsResponse::class.java
+                        )
 
-                    if(drivingDistance.average.totalDistance != 0.0){
-                        tv_total_distance.text = transferDistance(drivingDistance.average.totalDistance)
+                        if (drivingDistance.average.totalDistance != 0.0) {
+                            tv_total_distance.text =
+                                transferDistance(drivingDistance.average.totalDistance)
 
-                        if(drivingDistance.diffAverage.totalDistance == 0.0){
-                            tv_diff_distance.text = "점수 변동이 없어요."
-                            tv_diff_distance.setTextColor(resources.getColor(R.color.gray_950))
+                            if (drivingDistance.diffAverage.totalDistance == 0.0) {
+                                tv_diff_distance.text = "점수 변동이 없어요."
+                                tv_diff_distance.setTextColor(resources.getColor(R.color.gray_950))
 
-                        }else if(drivingDistance.diffAverage.totalDistance > 0.0){
-                            tv_diff_distance.text = "+" + transferDistance(drivingDistance.diffAverage.totalDistance) + distance_unit + " 증가"
-                            tv_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
+                            } else if (drivingDistance.diffAverage.totalDistance > 0.0) {
+                                tv_diff_distance.text =
+                                    "+" + transferDistance(drivingDistance.diffAverage.totalDistance) + distance_unit + " 증가"
+                                tv_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
 
-                        }else if(drivingDistance.diffAverage.totalDistance < 0.0){
-                            tv_diff_distance.text = transferDistance(drivingDistance.diffAverage.totalDistance) + distance_unit + " 감소"
-                            tv_diff_distance.setTextColor(resources.getColor(R.color.sec_500))
+                            } else if (drivingDistance.diffAverage.totalDistance < 0.0) {
+                                tv_diff_distance.text =
+                                    transferDistance(drivingDistance.diffAverage.totalDistance) + distance_unit + " 감소"
+                                tv_diff_distance.setTextColor(resources.getColor(R.color.sec_500))
+                            }
+
+                            tv_average_distance.text =
+                                transferDistance(drivingDistance.average.totalDistance)
+                            tv_max_distance.text =
+                                transferDistance(drivingDistance.max.totalDistance)
+                            tv_min_distance.text =
+                                transferDistance(drivingDistance.min.totalDistance)
+
+                            tv_diff_distance.visibility = VISIBLE
+
+                            tv_driving_info1.text = "월 평균"
+                            tv_driving_info2.text = "내 차는 자주\n달릴수록 좋아요"
+                            tv_driving_info3.text = "최근 6개월의 기록을\n한눈에 확인해 보세요!"
+                            tv_driving_info4.text = CommonUtil.getSpannableString(
+                                this@DrivenDistanceActivity,
+                                "최근 6개월간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요",
+                                transferDistance(drivingDistance.total.totalDistance) + distance_unit,
+                                resources.getColor(R.color.pri_500)
+                            )
                         }
+                    } else {
+                        tv_total_distance.text = transferDistance(0.0)
+                        tv_diff_distance.text = "+" + transferDistance(0.0) + distance_unit + " 증가"
+                        tv_average_distance.text = transferDistance(0.0)
+                        tv_max_distance.text = transferDistance(0.0)
+                        tv_min_distance.text = transferDistance(0.0)
 
-                        tv_average_distance.text = transferDistance(drivingDistance.average.totalDistance)
-                        tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
-                        tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
-
-                        tv_diff_distance.visibility = VISIBLE
+                        tv_diff_distance.visibility = INVISIBLE
 
                         tv_driving_info1.text = "월 평균"
-                        tv_driving_info2.text = "내 차는 자주\n달릴수록 좋아요"
-                        tv_driving_info3.text = "최근 6개월의 기록을\n한눈에 확인해 보세요!"
-                        tv_driving_info4.text = CommonUtil.getSpannableString(
-                            this@DrivenDistanceActivity,
-                            "최근 6개월간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요",
-                            transferDistance(drivingDistance.total.totalDistance) + distance_unit,
-                            resources.getColor(R.color.pri_500)
-                        )
+                        tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        tv_driving_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                     }
-                }else{
-                    tv_total_distance.text = transferDistance(0.0)
-                    tv_diff_distance.text = "+" + transferDistance(0.0) + distance_unit + " 증가"
-                    tv_average_distance.text = transferDistance(0.0)
-                    tv_max_distance.text = transferDistance(0.0)
-                    tv_min_distance.text = transferDistance(0.0)
+                }catch (e:Exception){
 
-                    tv_diff_distance.visibility = INVISIBLE
-
-                    tv_driving_info1.text = "월 평균"
-                    tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-                    tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-                    tv_driving_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
                 }
 
             }
@@ -2486,58 +2558,70 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
             "startTime",
             "month").enqueue(object:Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200) {
+                try {
+                    if (response.code() == 200) {
 
-                    val drivingDistance = Gson().fromJson(
-                        response.body()?.string(),
-                        GetDrivingStatisticsResponse::class.java
-                    )
-
-                    if(drivingDistance.average.totalDistance != 0.0){
-                        tv_total_distance.text = transferDistance(drivingDistance.average.totalDistance)
-
-                        if(drivingDistance.diffAverage.totalDistance == 0.0){
-                            tv_diff_distance.text = "점수 변동이 없어요."
-                            tv_diff_distance.setTextColor(resources.getColor(R.color.gray_950))
-
-                        }else if(drivingDistance.diffAverage.totalDistance > 0.0){
-                            tv_diff_distance.text = "+" + transferDistance(drivingDistance.diffAverage.totalDistance) + distance_unit + " 증가"
-                            tv_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
-
-                        }else if(drivingDistance.diffAverage.totalDistance < 0.0){
-                            tv_diff_distance.text = transferDistance(drivingDistance.diffAverage.totalDistance) + distance_unit + " 감소"
-                            tv_diff_distance.setTextColor(resources.getColor(R.color.sec_500))
-                        }
-
-                        tv_average_distance.text = transferDistance(drivingDistance.average.totalDistance)
-                        tv_max_distance.text = transferDistance(drivingDistance.max.totalDistance)
-                        tv_min_distance.text = transferDistance(drivingDistance.min.totalDistance)
-
-                        tv_driving_info1.text = "월 평균"
-                        tv_driving_info2.text = "내 차는 자주\n달릴수록 좋아요"
-                        tv_driving_info3.text = "최근 1년의 기록을\n한눈에 확인해 보세요!"
-                        tv_driving_info4.text = "최근 1년 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요"
-
-                        tv_driving_info4.text = CommonUtil.getSpannableString(
-                            this@DrivenDistanceActivity,
-                            "최근 1년 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요",
-                            transferDistance(drivingDistance.total.totalDistance) + distance_unit,
-                            resources.getColor(R.color.pri_500)
+                        val drivingDistance = Gson().fromJson(
+                            response.body()?.string(),
+                            GetDrivingStatisticsResponse::class.java
                         )
-                    }else{
-                        tv_total_distance.text = transferDistance(0.0)
-                        tv_diff_distance.text = "+" + transferDistance(0.0) + distance_unit + " 증가"
-                        tv_average_distance.text = transferDistance(0.0)
-                        tv_max_distance.text = transferDistance(0.0)
-                        tv_min_distance.text = transferDistance(0.0)
 
-                        tv_diff_distance.visibility = INVISIBLE
+                        if (drivingDistance.average.totalDistance != 0.0) {
+                            tv_total_distance.text =
+                                transferDistance(drivingDistance.average.totalDistance)
 
-                        tv_driving_info1.text = "월 평균"
-                        tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-                        tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
-                        tv_driving_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                            if (drivingDistance.diffAverage.totalDistance == 0.0) {
+                                tv_diff_distance.text = "점수 변동이 없어요."
+                                tv_diff_distance.setTextColor(resources.getColor(R.color.gray_950))
+
+                            } else if (drivingDistance.diffAverage.totalDistance > 0.0) {
+                                tv_diff_distance.text =
+                                    "+" + transferDistance(drivingDistance.diffAverage.totalDistance) + distance_unit + " 증가"
+                                tv_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
+
+                            } else if (drivingDistance.diffAverage.totalDistance < 0.0) {
+                                tv_diff_distance.text =
+                                    transferDistance(drivingDistance.diffAverage.totalDistance) + distance_unit + " 감소"
+                                tv_diff_distance.setTextColor(resources.getColor(R.color.sec_500))
+                            }
+
+                            tv_average_distance.text =
+                                transferDistance(drivingDistance.average.totalDistance)
+                            tv_max_distance.text =
+                                transferDistance(drivingDistance.max.totalDistance)
+                            tv_min_distance.text =
+                                transferDistance(drivingDistance.min.totalDistance)
+
+                            tv_driving_info1.text = "월 평균"
+                            tv_driving_info2.text = "내 차는 자주\n달릴수록 좋아요"
+                            tv_driving_info3.text = "최근 1년의 기록을\n한눈에 확인해 보세요!"
+                            tv_driving_info4.text =
+                                "최근 1년 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요"
+
+                            tv_driving_info4.text = CommonUtil.getSpannableString(
+                                this@DrivenDistanceActivity,
+                                "최근 1년 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요",
+                                transferDistance(drivingDistance.total.totalDistance) + distance_unit,
+                                resources.getColor(R.color.pri_500)
+                            )
+                        } else {
+                            tv_total_distance.text = transferDistance(0.0)
+                            tv_diff_distance.text =
+                                "+" + transferDistance(0.0) + distance_unit + " 증가"
+                            tv_average_distance.text = transferDistance(0.0)
+                            tv_max_distance.text = transferDistance(0.0)
+                            tv_min_distance.text = transferDistance(0.0)
+
+                            tv_diff_distance.visibility = INVISIBLE
+
+                            tv_driving_info1.text = "월 평균"
+                            tv_driving_info2.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                            tv_driving_info3.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                            tv_driving_info4.text = "아직 데이터가 없어요.\n함께 달려볼까요?"
+                        }
                     }
+                }catch (e:Exception){
+
                 }
 
             }
