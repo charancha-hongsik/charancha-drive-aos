@@ -13,12 +13,12 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.milelog.BuildConfig
 import com.milelog.PreferenceUtil
 import com.milelog.R
 import com.milelog.retrofit.ApiServiceInterface
 import com.milelog.retrofit.HeaderInterceptor
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -130,15 +130,39 @@ open class BaseActivity: AppCompatActivity(){
 
     fun getCurrentAndPastTimeForISO(past: Long): Triple<String, String, List<String>> {
         // 현재 시간 구하기 (ISO 8601)
-        val now = Instant.now()
+        var now = Instant.now()
 
         // 현재 시간 기준 주어진 일 전 시간 구하기
-        var previousDate = now.minus(past, ChronoUnit.DAYS)
+        var previousDate = now
 
-        if(past == SIX_MONTH || past == YEAR){
+        if(past == 29L){
+            previousDate = now.minus(past, ChronoUnit.DAYS)
+        }
+
+        if(past == SIX_MONTH){
             // Instant를 LocalDate로 변환합니다.
             val zoneId = ZoneId.systemDefault()
-            val localDate = previousDate.atZone(zoneId).toLocalDate()
+            val localDate = previousDate.atZone(zoneId).toLocalDate().minusMonths(5)
+
+
+            // 월의 첫 번째 날을 구합니다.
+            val firstDayOfMonth = localDate.withDayOfMonth(1)
+
+
+            // LocalDate를 ZonedDateTime으로 변환합니다.
+            val zonedDateTime = firstDayOfMonth.atStartOfDay(zoneId)
+
+
+            // ZonedDateTime을 Instant로 변환합니다.
+            previousDate = zonedDateTime.toInstant()
+
+        }
+
+        if(past == YEAR){
+            // Instant를 LocalDate로 변환합니다.
+            val zoneId = ZoneId.systemDefault()
+            val localDate = previousDate.atZone(zoneId).toLocalDate().minusMonths(11)
+
 
             // 월의 첫 번째 날을 구합니다.
             val firstDayOfMonth = localDate.withDayOfMonth(1)
@@ -151,6 +175,8 @@ open class BaseActivity: AppCompatActivity(){
             // ZonedDateTime을 Instant로 변환합니다.
             previousDate = zonedDateTime.toInstant()
         }
+
+
 
         // 시간 포맷
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").withZone(ZoneId.of("UTC"))
@@ -187,11 +213,15 @@ open class BaseActivity: AppCompatActivity(){
         }
 
         if (past == SIX_MONTH || past == YEAR) {
-            resultList.removeAt(0)
+            if(resultList.size != 6)
+                resultList.removeAt(0)
         }
 
-        Log.d("testestsetest","testsetestsestset previousDateFormatted :: " + previousDateFormatted)
-        Log.d("testestsetest","testsetestsestset nowFormatted :: " + nowFormatted)
+        if(past == YEAR){
+            if(resultList.size != 12){
+                resultList.removeAt(0)
+            }
+        }
 
 
         return Triple(nowFormatted, previousDateFormatted, resultList)
@@ -351,10 +381,6 @@ open class BaseActivity: AppCompatActivity(){
             // 월의 마지막 날
             val endOfMonth = startOfMonth.plusMonths(1)
             val endOfMonthUTC = endOfMonth.atOffset(ZoneOffset.UTC).minusHours(9).format(DateTimeFormatter.ISO_INSTANT)
-
-            Log.d("testsetsetest","testsetsetsese startOfMonthUTC :: " + startOfMonthUTC)
-            Log.d("testsetsetest","testsetsetsese endOfMonthUTC :: " + endOfMonthUTC)
-
 
 
             return Pair(endOfMonthUTC,startOfMonthUTC)

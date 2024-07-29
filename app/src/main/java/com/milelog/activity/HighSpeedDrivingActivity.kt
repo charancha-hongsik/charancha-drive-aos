@@ -1,6 +1,7 @@
 package com.milelog.activity
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
