@@ -211,7 +211,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
         iv_tooltip_rapid_acc.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltipForEach(this@DetailDriveHistoryActivity, "저속 주행 평균 속력이란?","저속 주행 평균 속력은 0km/h 초과 40km/h 미만 속력으로 주행한 거리의 평균 속력이에요")
+                showTooltipForEach(this@DetailDriveHistoryActivity, "급가속이란?","10km/h 초과 속도에서 초당 10km/h 이상 가속 주행한 경우에요. 낮을수록 좋아요!")
             }
         })
 

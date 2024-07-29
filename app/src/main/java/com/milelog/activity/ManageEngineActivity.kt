@@ -89,7 +89,7 @@ class ManageEngineActivity: BaseRefreshActivity() {
         iv_tooltip_high_speed = findViewById(R.id.iv_tooltip_high_speed)
         iv_tooltip_high_speed.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showTooltipForEach(this@ManageEngineActivity, "고속 주행이란?","80km/h 이상 150km/h 미만 사이의 속력으로 주행한 거리에요. 높을수록 좋아요!")
+                showTooltipForHighLowEtc(this@ManageEngineActivity)
             }
         })
 
