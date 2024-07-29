@@ -119,7 +119,8 @@ class SettingActivity: BaseRefreshActivity(){
                         GetLatestResponse::class.java
                     )
 
-                    tv_version.text = "V" + getLatestResponse.version
+                    tv_version.text = "V " + BuildConfig.VERSION_NAME
+
 
                     val currentAppVersion = BuildConfig.VERSION_NAME
                     val majorFromApi =
@@ -141,23 +142,33 @@ class SettingActivity: BaseRefreshActivity(){
                         .dropLastWhile { it.isEmpty() }
                         .toTypedArray()[2]
 
+                    if (majorFromApi.toInt() > major.toInt()) {
+                        tv_latest.visibility = GONE
+                        btn_update.visibility = VISIBLE
+                        return
+                    }else if(majorFromApi.toInt() == major.toInt()){
+
+                    }else{
+                        tv_latest.visibility = VISIBLE
+                        btn_update.visibility = GONE
+                        return
+                    }
+
+                    if (minorFromApi.toInt() > minor.toInt()) {
+                        tv_latest.visibility = GONE
+                        btn_update.visibility = VISIBLE
+
+                        return
+                    }else if(minorFromApi.toInt() == minor.toInt()){
+
+                    }else{
+                        tv_latest.visibility = VISIBLE
+                        btn_update.visibility = GONE
+                        return
+                    }
+
 
                     if (patchFromApi.toInt() > patch.toInt()) {
-                        tv_version.text = "V " + BuildConfig.VERSION_NAME
-                        tv_latest.visibility = GONE
-                        btn_update.visibility = VISIBLE
-
-                        return
-                    }
-                    if (minorFromApi.toInt() > minor.toInt()) {
-                        tv_version.text = "V " + BuildConfig.VERSION_NAME
-                        tv_latest.visibility = GONE
-                        btn_update.visibility = VISIBLE
-
-                        return
-                    }
-                    if (majorFromApi.toInt() > major.toInt()) {
-                        tv_version.text = "V " + BuildConfig.VERSION_NAME
                         tv_latest.visibility = GONE
                         btn_update.visibility = VISIBLE
 
@@ -165,8 +176,8 @@ class SettingActivity: BaseRefreshActivity(){
                     }
 
 
-                    tv_latest.visibility = VISIBLE
-                    btn_update.visibility = GONE
+
+
 
 
                 }else{
