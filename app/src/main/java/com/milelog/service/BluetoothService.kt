@@ -317,16 +317,7 @@ class BluetoothService : Service() {
     }
 
     fun refreshNotiText(){
-        if(sensorState) {
-            if (distance_array.isNotEmpty() && distance_array.sum() > 500f) {
-                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(
-                    1,
-                    notification.setContentText("주행 중..(${distance_array.sum()} m) ").build()
-                )
-            }
-        }
-        else
-            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중이에요.").build())
+        (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중이에요.").build())
     }
 
     inner class ActivityRecognitionReceiver : BroadcastReceiver() {
@@ -436,11 +427,6 @@ class BluetoothService : Service() {
                 driveDatabase = DriveDatabase.getDatabase(this)
                 initDriveData(level)
                 setLocation()
-
-                (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(
-                    1,
-                    notification.setContentText("주행 중..(${distance_array.sum()} m) ").build()
-                )
             }
         } catch(e:Exception){
 

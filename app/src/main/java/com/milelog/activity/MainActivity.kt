@@ -30,6 +30,7 @@ import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.milelog.BuildConfig
 import com.milelog.CustomDialog
 import com.milelog.PreferenceUtil
 import com.milelog.retrofit.request.PostDrivingInfoRequest
@@ -124,6 +125,7 @@ class MainActivity : BaseRefreshActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        Log.d("testsetsetset","testsetsetsetse :: " + BuildConfig.BASE_API_URL)
 
         val bluetoothIntent = Intent(this, BluetoothService::class.java)
         startForegroundService(bluetoothIntent)

@@ -194,7 +194,6 @@ class SplashActivity: BaseActivity() {
     private fun checkForceUpdate(){
         apiService().getLatest("AOS","PHONE").enqueue(object :Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                Log.d("testestestest","testsetesse getLatest :: " + response.code())
 
 
                 if(response.code() == 200 || response.code() == 201) {
