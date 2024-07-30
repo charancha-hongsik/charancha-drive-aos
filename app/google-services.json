@@ -1,41 +1,41 @@
 {
   "project_info": {
-    "project_number": "558674903957",
-    "project_id": "milelog-staging-44d15",
-    "storage_bucket": "milelog-staging-44d15.appspot.com"
+    "project_number": "503123841855",
+    "project_id": "milelog-prod",
+    "storage_bucket": "milelog-prod.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:558674903957:android:4e888cbb620d1c8c3d6c9c",
+        "mobilesdk_app_id": "1:503123841855:android:07014b68ebe94163d0f98a",
         "android_client_info": {
-          "package_name": "com.milelog.staging"
+          "package_name": "com.milelog"
         }
       },
       "oauth_client": [
         {
-          "client_id": "558674903957-0b639n15v5fhslhovtgg6rt60397qlpf.apps.googleusercontent.com",
+          "client_id": "503123841855-9204m7geno4cu2f0vpbhrvft2foih27o.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.milelog.staging",
-            "certificate_hash": "c0cd94ef1e1f82e07fbdb2dee27845d7822bbaaf"
+            "package_name": "com.milelog",
+            "certificate_hash": "29e66facc6b7bd0cb778e88ed9b5a2a5fe664cf3"
           }
         },
         {
-          "client_id": "558674903957-g5m9ttj9h0cuorgkbbf8erucn704oc95.apps.googleusercontent.com",
+          "client_id": "503123841855-4nm88cc24hpeufhiafcour5kd17ucqbq.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyARyIqmcNDfZZiSGS_vb4n1bbPBgUnh73Y"
+          "current_key": "AIzaSyB8WRIRoNHWf148zvRF0lrpBBmDe0N5llM"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "558674903957-g5m9ttj9h0cuorgkbbf8erucn704oc95.apps.googleusercontent.com",
+              "client_id": "503123841855-4nm88cc24hpeufhiafcour5kd17ucqbq.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
