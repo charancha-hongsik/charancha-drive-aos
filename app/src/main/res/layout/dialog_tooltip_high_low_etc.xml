@@ -29,7 +29,7 @@
         <TextView
             android:id="@+id/tv_tooltip_contents1"
             android:layout_width="wrap_content"
-            android:text="고속 주행에 대한 설명이 나옵니다.\n너비별 줄바꿈을 적용합니다."
+            android:text="고속 주행: 80km/h 이상 150km/h 미만 사이의 속력으로 주행한 거리에요."
             android:layout_marginTop="4dp"
             android:layout_height="wrap_content"
             android:textAppearance="@style/B1R"
@@ -49,7 +49,7 @@
         <TextView
             android:id="@+id/tv_tooltip_contents2"
             android:layout_width="wrap_content"
-            android:text="저속 주행에 대한 설명이 나옵니다.\n너비별 줄바꿈을 적용합니다."
+            android:text="저속 주행: 0km/h 초과 40km/h 미만 속력으로 주행한 거리에요."
             android:layout_marginTop="4dp"
             android:layout_height="wrap_content"
             android:textAppearance="@style/B1R"
@@ -70,7 +70,7 @@
         <TextView
             android:id="@+id/tv_tooltip_contents3"
             android:layout_width="wrap_content"
-            android:text="기타 주행에 대한 설명이 나옵니다.\n너비별 줄바꿈을 적용합니다."
+            android:text="기타 주행: “150km/h 이상”, “40km/h 이상 80km/h 미만” 사이의 속력으로 주행한 거리에요."
             android:layout_marginTop="4dp"
             android:layout_height="wrap_content"
             android:textAppearance="@style/B1R"

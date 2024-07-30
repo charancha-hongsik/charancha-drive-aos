@@ -25,6 +25,7 @@ import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.milelog.CustomDialog
@@ -100,6 +101,8 @@ class MainActivity : BaseRefreshActivity() {
     lateinit var iv_home_banner:ImageView
     lateinit var tv_recent_driving_score:TextView
 
+    private lateinit var firebaseAnalytics: FirebaseAnalytics
+
 
     var checkingPermission = false
 
@@ -122,6 +125,9 @@ class MainActivity : BaseRefreshActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // FirebaseAnalytics 인스턴스 초기화
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
 
         val bluetoothIntent = Intent(this, BluetoothService::class.java)
         startForegroundService(bluetoothIntent)

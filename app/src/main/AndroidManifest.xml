@@ -45,9 +45,13 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDvhAX3KfrDG8Xi9U_OhmHhpwXWGL5af7M"/>
 
-        <meta-data
-            android:name="google_analytics_automatic_screen_reporting_enabled"
-            android:value="true" />
+<!--        <meta-data-->
+<!--            android:name="google_analytics_automatic_screen_reporting_enabled"-->
+<!--            android:value="true" />-->
+
+<!--        <meta-data-->
+<!--            android:name="google_analytics_adid_collection_enabled"-->
+<!--            android:value="false" />-->
 
         <activity
             android:name=".activity.SplashActivity"
