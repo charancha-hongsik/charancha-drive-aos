@@ -1,4 +1,4 @@
-package com.charancha.drive
+package com.milelog
 
 import org.junit.Test
 

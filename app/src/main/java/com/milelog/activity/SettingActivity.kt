@@ -235,7 +235,7 @@ class SettingActivity: BaseRefreshActivity(){
     private fun goUpdate(){
         val intent = Intent(Intent.ACTION_VIEW)
         intent.data = Uri.parse(
-            "https://play.google.com/store/apps/details?id=com.charancha"
+            "https://play.google.com/store/apps/details?id=com.milelog"
         )
         intent.setPackage("com.android.vending")
         startActivity(intent)
