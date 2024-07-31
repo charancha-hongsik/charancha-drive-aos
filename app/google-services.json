@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "503123841855-j5uuen6154vmf11spmr7109f39l5c0ch.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.milelog",
+            "certificate_hash": "33ba017e594b052a160fc90e30393e7420bfda1d"
+          }
+        },
+        {
           "client_id": "503123841855-4nm88cc24hpeufhiafcour5kd17ucqbq.apps.googleusercontent.com",
           "client_type": 3
         }
