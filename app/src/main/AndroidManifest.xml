@@ -27,6 +27,10 @@
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <!-- API 버전 33 (OS 13)  이상 -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- API 버전 34 (OS 14)  이상 -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+
 
 
     <application

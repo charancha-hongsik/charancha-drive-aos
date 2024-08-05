@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "261058280037",
+    "project_id": "milelog-dev",
+    "storage_bucket": "milelog-dev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:261058280037:android:a32ec14c3bfd2038c0648c",
+        "android_client_info": {
+          "package_name": "com.milelog.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "261058280037-01mbgop2tmihaa8abmbjm5mip20ftmko.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.milelog.dev",
+            "certificate_hash": "29e66facc6b7bd0cb778e88ed9b5a2a5fe664cf3"
+          }
+        },
+        {
+          "client_id": "261058280037-q7h5r2r541bnu4g4s29j28buapagukd5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBmkw-8_jiAZ0x2gWvUwePk0Rb8Fhwp4eU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "261058280037-q7h5r2r541bnu4g4s29j28buapagukd5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "261058280037-6uhokl5obk4k31duc0cd9ikcpkh4k8ib.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.milelog.dev"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
