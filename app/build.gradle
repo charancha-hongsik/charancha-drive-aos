@@ -159,6 +159,7 @@ dependencies {
     // Add the dependency for the Analytics library
     // When using the BoM, you don't specify versions in Firebase library dependencies
     implementation 'com.google.firebase:firebase-analytics-ktx:21.2.0'
+    implementation 'com.google.firebase:firebase-messaging:23.0.3'
 
 
     // viewPager

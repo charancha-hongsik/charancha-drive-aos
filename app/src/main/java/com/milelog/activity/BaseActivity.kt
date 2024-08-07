@@ -4,6 +4,8 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -14,6 +16,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.messaging.FirebaseMessaging
 import com.milelog.BuildConfig
 import com.milelog.PreferenceUtil
 import com.milelog.R
@@ -43,6 +46,25 @@ open class BaseActivity: AppCompatActivity(){
         distance_unit = PreferenceUtil.getPref(this@BaseActivity,  PreferenceUtil.KM_MILE, "km")!!
 
     }
+
+    fun getFcmToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            try {
+                if (task.isComplete) {
+                    val token = task.result
+                    val handler = Handler(Looper.getMainLooper())
+                    handler.postDelayed(
+                        {
+                            Log.d("testestseset","testestest :: " + token)
+                        },
+                        5000
+                    )
+                }
+            } catch (e: java.lang.Exception) {
+            }
+        }
+    }
+
 
     fun apiService(): ApiServiceInterface {
         val client: OkHttpClient = OkHttpClient.Builder()

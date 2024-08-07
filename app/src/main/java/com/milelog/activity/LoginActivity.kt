@@ -44,6 +44,7 @@ class LoginActivity: BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        getFcmToken()
         setWebview()
     }
 
