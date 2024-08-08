@@ -464,7 +464,11 @@ class BluetoothService : Service() {
 
 
     fun refreshNotiText(){
-        (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중이에요.").build())
+        if(sensorState)
+            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 중..").build())
+        else
+            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중이에요.").build())
+
     }
 
     inner class WalkingDetectReceiver : BroadcastReceiver() {
@@ -541,6 +545,8 @@ class BluetoothService : Service() {
                 driveDatabase = DriveDatabase.getDatabase(this)
                 initDriveData(level)
                 setLocation()
+
+                refreshNotiText()
             }
         } catch(e:Exception){
 
@@ -568,6 +574,8 @@ class BluetoothService : Service() {
 
                     fusedLocationClient?.removeLocationUpdates(locationCallback)
                     fusedLocationClient = null
+
+                    refreshNotiText()
                 }
             }
         }catch (e:Exception){
@@ -590,6 +598,8 @@ class BluetoothService : Service() {
 
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
+
+                refreshNotiText()
             }
         }catch(e:Exception){
 
