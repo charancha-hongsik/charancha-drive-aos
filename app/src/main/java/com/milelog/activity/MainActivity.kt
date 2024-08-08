@@ -1,5 +1,6 @@
 package com.milelog.activity
 
+import android.Manifest
 import android.Manifest.permission.*
 import android.app.*
 import android.content.ActivityNotFoundException
@@ -124,9 +125,18 @@ class MainActivity : BaseRefreshActivity() {
         }
 
         if(ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            if(!isMyServiceRunning(BluetoothService::class.java)){
-                val bluetoothIntent = Intent(this, BluetoothService::class.java)
-                startForegroundService(bluetoothIntent)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                if (ActivityCompat.checkSelfPermission(applicationContext, ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED) {
+                    if(!isMyServiceRunning(BluetoothService::class.java)){
+                        val bluetoothIntent = Intent(this, BluetoothService::class.java)
+                        startForegroundService(bluetoothIntent)
+                    }
+                }
+            }else{
+                if(!isMyServiceRunning(BluetoothService::class.java)){
+                    val bluetoothIntent = Intent(this, BluetoothService::class.java)
+                    startForegroundService(bluetoothIntent)
+                }
             }
         }
     }
