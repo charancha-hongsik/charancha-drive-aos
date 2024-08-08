@@ -223,9 +223,9 @@ class EditCarInfoActivity: BaseRefreshActivity() {
                                         GetMyCarInfoResponse::class.java
                                     )
 
-                                    tv_car_no.text = getMyCarInfoResponse.vehicleIdentificationNumber
+                                    tv_car_no.text = getMyCarInfoResponse.licensePlateNumber
                                     tv_car_owner.text = getMyCarInfoResponse.ownerName
-                                    tv_car_id.text = getMyCarInfoResponse.licensePlateNumber
+                                    tv_car_id.text = getMyCarInfoResponse.vehicleIdentificationNumber
                                     et_car_model_name.hint = getMyCarInfoResponse.carName
                                     et_car_year.hint = getMyCarInfoResponse.carYear.toString()
                                     tv_car_fuel.text = getMyCarInfoResponse.fuel
