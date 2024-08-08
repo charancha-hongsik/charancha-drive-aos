@@ -474,6 +474,7 @@ class BluetoothService : Service() {
     inner class WalkingDetectReceiver : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {
+            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("WalkingDetectReceiver onReceive").build())
             if (ActivityTransitionResult.hasResult(intent)) {
                 refreshNotiText()
                 val result = ActivityTransitionResult.extractResult(intent)
