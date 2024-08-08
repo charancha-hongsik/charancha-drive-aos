@@ -343,7 +343,7 @@ class BluetoothService : Service() {
             }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                flag = FLAG_IMMUTABLE or FLAG_UPDATE_CURRENT
+                flag = FLAG_IMMUTABLE or FLAG_ALLOW_UNSAFE_IMPLICIT_INTENT
             }
 
             val pendingIntent = getBroadcast(
