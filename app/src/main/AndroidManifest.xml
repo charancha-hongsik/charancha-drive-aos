@@ -27,6 +27,14 @@
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <!-- API 버전 33 (OS 13)  이상 -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- API 버전 34 (OS 14)  이상 -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_HEALTH" />
+    <uses-permission android:name="android.permission.HIGH_SAMPLING_RATE_SENSORS"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE"/>
+
+
 
 
     <application
@@ -230,8 +238,8 @@
         <service
             android:name=".service.BluetoothService"
             android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="location|dataSync" />
+            android:exported="true"
+            android:foregroundServiceType="location|dataSync|health|connectedDevice" />
 
         <receiver
             android:name=".activity.MainActivity$AlarmReceiver"

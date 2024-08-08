@@ -119,6 +119,13 @@ class MainActivity : BaseRefreshActivity() {
 
             checkingPermission = false
         }
+
+        if(ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            if(!isMyServiceRunning(BluetoothService::class.java)){
+                val bluetoothIntent = Intent(this, BluetoothService::class.java)
+                startForegroundService(bluetoothIntent)
+            }
+        }
     }
 
 
@@ -128,9 +135,6 @@ class MainActivity : BaseRefreshActivity() {
 
         // FirebaseAnalytics 인스턴스 초기화
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
-
-        val bluetoothIntent = Intent(this, BluetoothService::class.java)
-        startForegroundService(bluetoothIntent)
 
         setPieChart(0.0f)
 
@@ -167,7 +171,6 @@ class MainActivity : BaseRefreshActivity() {
         PreferenceUtil.putBooleanPref(this, HAVE_BEEN_HOME, true)
 
         setBtn()
-        setAlarm()
 
         getAccount()
         postDrivingInfoNotSavedData()
@@ -260,37 +263,6 @@ class MainActivity : BaseRefreshActivity() {
                     }).show()
             }
         }
-    }
-
-
-
-    private fun setAlarm(){
-        var flag = PendingIntent.FLAG_UPDATE_CURRENT
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            flag = PendingIntent.FLAG_MUTABLE
-        }
-
-        // 알람 매니저 초기화
-        val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-
-        // 알람이 트리거될 때 브로드캐스트를 발생시킬 인텐트 생성
-        val intent = Intent(this, AlarmReceiver::class.java)
-        val alarmIntent = PendingIntent.getBroadcast(this, 0, intent, flag)
-
-        // 주기적으로 알람 예약
-        val calendar: Calendar = Calendar.getInstance().apply {
-            timeInMillis = System.currentTimeMillis()
-            add(Calendar.MINUTE, 1)
-            add(Calendar.HOUR_OF_DAY, 1)
-        }
-
-        // RTC_WAKEUP을 사용하여 디바이스를 깨웁니다.
-        alarmManager.setRepeating(
-            AlarmManager.RTC_WAKEUP,
-            calendar.timeInMillis,
-              1 * 60 * 60 * 1000,
-            alarmIntent
-        )
     }
 
 
@@ -780,14 +752,6 @@ class MainActivity : BaseRefreshActivity() {
         chart.getAxisRight().setDrawGridLines(false)
         chart.animateX(1500)
         chart.invalidate()
-    }
-
-    class AlarmReceiver : BroadcastReceiver() {
-
-        override fun onReceive(context: Context, intent: Intent) {
-            val bluetoothIntent = Intent(context, BluetoothService::class.java)
-            context.startForegroundService(bluetoothIntent)
-        }
     }
 
     private fun checkPermission(permissions: Array<String>, code: Int) {

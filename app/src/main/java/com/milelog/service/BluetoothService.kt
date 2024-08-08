@@ -1,14 +1,14 @@
 package com.milelog.service
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.*
 import android.app.PendingIntent.*
 import android.bluetooth.*
 import android.bluetooth.BluetoothClass.Device.AUDIO_VIDEO_HANDSFREE
-import android.bluetooth.BluetoothClass.Service.*
 import android.content.*
 import android.content.pm.PackageManager
+import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_HEALTH
 import android.database.Cursor
 import android.location.Location
 import android.net.ConnectivityManager
@@ -17,8 +17,10 @@ import android.net.Uri
 import android.os.Build
 import android.os.IBinder
 import android.os.Looper
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import androidx.work.*
 import com.milelog.BuildConfig
 import com.milelog.PreferenceUtil
@@ -28,7 +30,6 @@ import com.milelog.retrofit.HeaderInterceptor
 import com.milelog.retrofit.request.PostDrivingInfoRequest
 import com.milelog.retrofit.response.PostDrivingInfoResponse
 import com.milelog.room.database.DriveDatabase
-import com.milelog.room.dto.*
 import com.milelog.room.entity.DriveForApp
 import com.milelog.room.entity.DriveForApi
 import com.google.android.gms.location.*
@@ -81,8 +82,6 @@ class BluetoothService : Service() {
         const val L3 = "L3"
         const val L2 = "L2"
         const val L1 = "L1"
-
-
 
         private const val QUERY_TOKEN = 42
 
@@ -188,14 +187,25 @@ class BluetoothService : Service() {
             )
             notification = NotificationCompat.Builder(this, CHANNEL_ID)
 
-
-            startForeground(1, notification.setSmallIcon(R.mipmap.ic_notification)
-                .setAutoCancel(false)
-                .setOngoing(true)
-                .setContentText("주행 관찰중이에요.")
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setOnlyAlertOnce(true)
-                .build())
+            if (Build.VERSION.SDK_INT >= 34) {
+                startForeground(1, notification
+                    .setSmallIcon(R.mipmap.ic_notification)
+                    .setAutoCancel(false)
+                    .setOngoing(true)
+                    .setContentText("주행 관찰중이에요.")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setOnlyAlertOnce(true)
+                    .build(), FOREGROUND_SERVICE_TYPE_HEALTH)
+            }else{
+                startForeground(1, notification
+                    .setSmallIcon(R.mipmap.ic_notification)
+                    .setAutoCancel(false)
+                    .setOngoing(true)
+                    .setContentText("주행 관찰중이에요.")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setOnlyAlertOnce(true)
+                    .build())
+            }
 
             sensorState = false
 
@@ -208,44 +218,75 @@ class BluetoothService : Service() {
     override fun onCreate() {
         setLocation2()
 
-        registerReceiver(TransitionsReceiver(), filter)
+        // Detecting L2/L3 Receiver
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(TransitionsReceiver(), filter, RECEIVER_EXPORTED)
+        } else {
+            registerReceiver(TransitionsReceiver(), filter)
+        }
 
-        registerReceiver(WalkingDetectReceiver(),IntentFilter().apply {
-            addAction(TRANSITIONS_RECEIVER_ACTION)
-        })
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Detecting L1 Receiver
+            registerReceiver(WalkingDetectReceiver(), IntentFilter().apply {
+                addAction(TRANSITIONS_RECEIVER_ACTION)
+            }, RECEIVER_EXPORTED)
+        } else {
+            // Detecting L1 Receiver
+            registerReceiver(WalkingDetectReceiver(), IntentFilter().apply {
+                addAction(TRANSITIONS_RECEIVER_ACTION)
+            })
+        }
 
-        registerReceiver(ActivityRecognitionReceiver(),IntentFilter().apply {
-            addAction(TRANSITIONS_RECEIVER_ACTION2)
-        })
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Detecting L1 Receiver
+            registerReceiver(ActivityRecognitionReceiver(),IntentFilter().apply {
+                addAction(TRANSITIONS_RECEIVER_ACTION2)
+            }, RECEIVER_EXPORTED)
+        } else {
+            // Detecting L1 Receiver
+            registerReceiver(ActivityRecognitionReceiver(),IntentFilter().apply {
+                addAction(TRANSITIONS_RECEIVER_ACTION2)
+            })
+        }
 
         super.onCreate()
     }
 
+    inner class ActivityRecognitionReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            intent?.let{
+                if (ActivityRecognitionResult.hasResult(intent)) {
+                    val result = ActivityRecognitionResult.extractResult(intent)
+                    result?.let{
+                        val probableActivities = it.probableActivities
+                        for (activity in probableActivities) {
+                            handleDetectedActivity(activity)
+                        }
+                    }
+                }
+            }
+        }
 
-    private fun scheduleWalkingDetectWork() {
-        try {
-            val workRequest = PeriodicWorkRequest.Builder(
-                WalkingDetectWorker::class.java,
-                15, TimeUnit.MINUTES
-            ).build()
+        private fun handleDetectedActivity(activity: DetectedActivity) {
+            if(activity.type == DetectedActivity.WALKING) {
+                // Walking 활동에 들어감
+                if(sensorState){
+                    scheduleWalkingDetectWork()
+                }
+            } else if(activity.type == DetectedActivity.IN_VEHICLE){
+                // Vehicle 활동에 들어감
+                if(!sensorState){
+                    scheduleWalkingDetectWork()
+                }
 
-            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                "WalkingDetectWork",
-                ExistingPeriodicWorkPolicy.REPLACE,
-                workRequest
-            )
-
-
-        }catch (e:Exception){
-
+            }
         }
     }
 
-
-
     class WalkingDetectWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
 
-        private val activityRecognitionClient: ActivityRecognitionClient = ActivityRecognition.getClient(context)
+        private val activityRecognitionClient: ActivityRecognitionClient =
+            ActivityRecognition.getClient(context)
 
         override fun doWork(): Result {
             requestActivityUpdates()
@@ -300,6 +341,11 @@ class BluetoothService : Service() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 flag = FLAG_MUTABLE
             }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                flag = FLAG_IMMUTABLE
+            }
+
             val pendingIntent = getBroadcast(
                 applicationContext,
                 0,
@@ -307,8 +353,26 @@ class BluetoothService : Service() {
                 flag
             )
 
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                if (ActivityCompat.checkSelfPermission(
+                        applicationContext,
+                        Manifest.permission.ACTIVITY_RECOGNITION
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return
+                }
+            }
+
             activityRecognitionClient.requestActivityTransitionUpdates(request, pendingIntent)
                 .addOnSuccessListener {
+
                 }
                 .addOnFailureListener {
 
@@ -316,42 +380,96 @@ class BluetoothService : Service() {
         }
     }
 
+
+    private fun scheduleWalkingDetectWork() {
+        try {
+            val workRequest = PeriodicWorkRequest.Builder(
+                WalkingDetectWorker::class.java,
+                15, TimeUnit.MINUTES
+            ).build()
+
+            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "WalkingDetectWork",
+                ExistingPeriodicWorkPolicy.REPLACE,
+                workRequest
+            )
+
+
+        }catch (e:Exception){
+
+        }
+    }
+
+    private fun setLocation2() {
+        // FusedLocationProviderClient 초기화
+
+        fusedLocationClient2 = LocationServices.getFusedLocationProviderClient(this)
+
+
+        // 위치 업데이트 요청 설정
+        locationRequest2 = LocationRequest.create()
+        locationRequest2.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+        locationRequest2.setInterval(INTERVAL2) // INTERVAL 마다 업데이트 요청
+
+
+        // 위치 업데이트 리스너 생성
+        locationCallback2 = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                locationResult.lastLocation?.let {
+                    val location: Location = it
+
+                    if(location.speed*MS_TO_KH > 30f){
+                        if(!sensorState){
+                            scheduleWalkingDetectWork()
+                        }
+                    }
+                }
+            }
+        }
+
+        // 위치 업데이트 요청 시작
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
+
+        // 마지막 위치 처리
+        fusedLocationClient2?.lastLocation!!
+            .addOnSuccessListener { location: Location? ->
+                if (location != null) {
+
+                }
+            }
+
+        fusedLocationClient2?.requestLocationUpdates(
+            locationRequest2,
+            locationCallback2,
+            Looper.getMainLooper()
+        )
+    }
+
+
+
     fun refreshNotiText(){
         (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중이에요.").build())
     }
 
-    inner class ActivityRecognitionReceiver : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            if (ActivityRecognitionResult.hasResult(intent)) {
-                val result = ActivityRecognitionResult.extractResult(intent)
-                val probableActivities = result.probableActivities
-                for (activity in probableActivities) {
-                    handleDetectedActivity(activity)
-                }
-            }
-        }
-
-        private fun handleDetectedActivity(activity: DetectedActivity) {
-            if(activity.type == DetectedActivity.WALKING) {
-                // Walking 활동에 들어감
-                if(sensorState){
-                    scheduleWalkingDetectWork()
-                }
-            } else if(activity.type == DetectedActivity.IN_VEHICLE){
-                // Vehicle 활동에 들어감
-                if(!sensorState){
-                    scheduleWalkingDetectWork()
-                }
-
-            }
-        }
-    }
-
-
     inner class WalkingDetectReceiver : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {
-
             if (ActivityTransitionResult.hasResult(intent)) {
                 refreshNotiText()
                 val result = ActivityTransitionResult.extractResult(intent)
@@ -364,8 +482,6 @@ class BluetoothService : Service() {
                             if (transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
                                 // Walking 활동에 들어감
                                 if(sensorState){
-                                    scheduleWalkingDetectWork()
-
                                     stopSensor()
 
                                 }
@@ -374,8 +490,6 @@ class BluetoothService : Service() {
                             if (transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
                                 // Vehicle 활동에 들어감
                                 if(!sensorState){
-                                    scheduleWalkingDetectWork()
-
                                 }
                                 startSensor(L1)
                             }
@@ -454,8 +568,6 @@ class BluetoothService : Service() {
 
                     fusedLocationClient?.removeLocationUpdates(locationCallback)
                     fusedLocationClient = null
-
-                    refreshNotiText()
                 }
             }
         }catch (e:Exception){
@@ -478,9 +590,6 @@ class BluetoothService : Service() {
 
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
-
-                refreshNotiText()
-
             }
         }catch(e:Exception){
 
@@ -511,37 +620,38 @@ class BluetoothService : Service() {
     }
 
     inner class TransitionsReceiver : BroadcastReceiver() {
-        @SuppressLint("MissingPermission")
         override fun onReceive(context: Context?, intent: Intent?) {
-            if(intent?.action == BluetoothDevice.ACTION_ACL_CONNECTED){
-                val bluetoothManager: BluetoothManager = getSystemService(BluetoothManager::class.java)
-                val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
+            if(ContextCompat.checkSelfPermission(this@BluetoothService, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED){
+                if(intent?.action == BluetoothDevice.ACTION_ACL_CONNECTED){
+                    val bluetoothManager: BluetoothManager = getSystemService(BluetoothManager::class.java)
+                    val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
 
 
-                val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
+                    val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
 
-                pairedDevices?.forEach { device ->
-                    if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
-                        if(isConnected(device)){
-                            startSensor(L2)
+                    pairedDevices?.forEach { device ->
+                        if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
+                            if(isConnected(device)){
+                                startSensor(L2)
+                            }
                         }
                     }
-                }
 
-            } else if(intent?.action == BluetoothDevice.ACTION_ACL_DISCONNECTED){
-                val bluetoothManager: BluetoothManager = getSystemService(BluetoothManager::class.java)
-                val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
+                } else if(intent?.action == BluetoothDevice.ACTION_ACL_DISCONNECTED){
+                    val bluetoothManager: BluetoothManager = getSystemService(BluetoothManager::class.java)
+                    val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
 
-                val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
-                pairedDevices?.forEach { device ->
-                    if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
-                        if(!isConnected(device)){
-                            stopSensor(L2)
+                    val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
+                    pairedDevices?.forEach { device ->
+                        if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
+                            if(!isConnected(device)){
+                                stopSensor(L2)
+                            }
                         }
                     }
+                } else{
+                    queryForState()
                 }
-            } else{
-                queryForState()
             }
         }
     }
@@ -566,65 +676,6 @@ class BluetoothService : Service() {
             null,
             null,
             null
-        )
-    }
-
-    private fun setLocation2() {
-        // FusedLocationProviderClient 초기화
-
-        fusedLocationClient2 = LocationServices.getFusedLocationProviderClient(this)
-
-
-        // 위치 업데이트 요청 설정
-        locationRequest2 = LocationRequest.create()
-        locationRequest2.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-        locationRequest2.setInterval(INTERVAL2) // INTERVAL 마다 업데이트 요청
-
-
-        // 위치 업데이트 리스너 생성
-        locationCallback2 = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult) {
-                val location: Location = locationResult.lastLocation
-
-                if(location.speed*MS_TO_KH > 30f){
-                    if(!sensorState){
-                        scheduleWalkingDetectWork()
-                    }
-                }
-            }
-        }
-
-        // 위치 업데이트 요청 시작
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return
-        }
-
-        // 마지막 위치 처리
-        fusedLocationClient2?.lastLocation!!
-            .addOnSuccessListener { location: Location? ->
-                if (location != null) {
-
-                }
-            }
-
-        fusedLocationClient2?.requestLocationUpdates(
-            locationRequest2,
-            locationCallback2,
-            Looper.getMainLooper()
         )
     }
 
@@ -654,49 +705,53 @@ class BluetoothService : Service() {
                      * W0D-74 1행 데이터 삭제
                      */
                     if(!firstLineState){
-                        val location: Location = locationResult.lastLocation
-                        val timeStamp = location.time
+                        locationResult.lastLocation?.let{
+                            val location: Location = it
+                            val timeStamp = location.time
 
-                        /**
-                         * WD-46 1행 데이터와 같은 데이터 삭제
-                         */
-                        if(firstLineLocation != null){
-                            if(firstLineLocation!!.latitude == location.latitude && firstLineLocation!!.longitude == location.longitude){
-                                pastLocation = location
-                                pastTimeStamp = location.time
-                            } else{
-                                /**
-                                 * W0D-78 중복시간 삭제
-                                 */
-
-                                if(getDateFromTimeStampToSS(pastTimeStamp) != getDateFromTimeStampToSS(timeStamp)){
-
-                                    /**
-                                     * W0D-75 1초간 이동거리 70m 이상이면 제외
-                                     */
-
-                                    if(pastLocation!=null){
-                                        if((pastLocation!!.distanceTo(location) * 1000 / (timeStamp-pastTimeStamp)) > 70){
-                                            pastTimeStamp = timeStamp
-                                            pastLocation = location
-                                        } else {
-                                            processLocationCallback(location, timeStamp)
-                                        }
-                                    } else{
-                                        processLocationCallback(location, timeStamp)
-                                    }
-                                }else{
+                            /**
+                             * WD-46 1행 데이터와 같은 데이터 삭제
+                             */
+                            if(firstLineLocation != null){
+                                if(firstLineLocation!!.latitude == location.latitude && firstLineLocation!!.longitude == location.longitude){
                                     pastLocation = location
                                     pastTimeStamp = location.time
+                                } else{
+                                    /**
+                                     * W0D-78 중복시간 삭제
+                                     */
 
+                                    if(getDateFromTimeStampToSS(pastTimeStamp) != getDateFromTimeStampToSS(timeStamp)){
+
+                                        /**
+                                         * W0D-75 1초간 이동거리 70m 이상이면 제외
+                                         */
+
+                                        if(pastLocation!=null){
+                                            if((pastLocation!!.distanceTo(location) * 1000 / (timeStamp-pastTimeStamp)) > 70){
+                                                pastTimeStamp = timeStamp
+                                                pastLocation = location
+                                            } else {
+                                                processLocationCallback(location, timeStamp)
+                                            }
+                                        } else{
+                                            processLocationCallback(location, timeStamp)
+                                        }
+                                    }else{
+                                        pastLocation = location
+                                        pastTimeStamp = location.time
+
+                                    }
                                 }
                             }
                         }
                     }else{
-                        firstLineState = false
-                        firstLineLocation = locationResult.lastLocation
-                        pastLocation = locationResult.lastLocation
-                        pastTimeStamp = locationResult.lastLocation.time
+                        locationResult.lastLocation?.let{
+                            firstLineState = false
+                            firstLineLocation = it
+                            pastLocation = it
+                            pastTimeStamp = it.time
+                        }
                     }
                 }catch (e:Exception){
 
@@ -867,23 +922,8 @@ class BluetoothService : Service() {
         return format.format(timeStamp).toInt()
     }
 
-    private fun getDateFromTimeStampToHHMM(timeStamp:Long) : Int{
-        val format = SimpleDateFormat("HHmm")
-        format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
-
-        return format.format(timeStamp).toInt()
-    }
-
-
     private fun getDateFromTimeStampToSS(timeStamp:Long) : Int{
         val format = SimpleDateFormat("ss")
-        format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
-
-        return format.format(timeStamp).toInt()
-    }
-
-    private fun getDateFromTimeStampToMM(timeStamp:Long) : Int{
-        val format = SimpleDateFormat("mm")
         format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
 
         return format.format(timeStamp).toInt()
