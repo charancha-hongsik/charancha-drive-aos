@@ -60,6 +60,10 @@ class LoginActivity: BaseActivity() {
         wv_login.settings.cacheMode = WebSettings.LOAD_DEFAULT
         wv_login.settings.textZoom = 100 // System 텍스트 사이즈 변경되지 않게
 
+        wv_login.clearCache(true)
+        wv_login.clearHistory()
+        CookieManager.getInstance().removeAllCookie()
+        CookieManager.getInstance().removeSessionCookie()
 
 
         //chrome inspect 디버깅 모드
