@@ -170,7 +170,7 @@ class BluetoothService : Service() {
     val CHANNEL_ID = "my_channel_02"
     val channel = NotificationChannel(
         CHANNEL_ID,
-        "check blueToothConnect",
+        "상단바(필수)",
         NotificationManager.IMPORTANCE_HIGH
     )
 
