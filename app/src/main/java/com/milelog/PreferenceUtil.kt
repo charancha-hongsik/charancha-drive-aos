@@ -31,6 +31,8 @@ object PreferenceUtil {
     val ID_TOKEN = "idToken"
     val ACCOUNT_ADDRESS = "accountAddress"
     val USER_CARID = "user_carid"
+    val GIFT_EXPORTED = "gift_exported"
+
 
 
     /**
