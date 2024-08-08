@@ -7,6 +7,8 @@ import android.bluetooth.*
 import android.bluetooth.BluetoothClass.Device.AUDIO_VIDEO_HANDSFREE
 import android.content.*
 import android.content.pm.PackageManager
+import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_HEALTH
 import android.database.Cursor
 import android.location.Location
 import android.net.ConnectivityManager
@@ -80,8 +82,6 @@ class BluetoothService : Service() {
         const val L3 = "L3"
         const val L2 = "L2"
         const val L1 = "L1"
-
-
 
         private const val QUERY_TOKEN = 42
 
@@ -170,7 +170,7 @@ class BluetoothService : Service() {
     val CHANNEL_ID = "my_channel_02"
     val channel = NotificationChannel(
         CHANNEL_ID,
-        "check blueToothConnect",
+        "상단바(필수)",
         NotificationManager.IMPORTANCE_HIGH
     )
 
@@ -187,14 +187,25 @@ class BluetoothService : Service() {
             )
             notification = NotificationCompat.Builder(this, CHANNEL_ID)
 
-
-            startForeground(1, notification.setSmallIcon(R.mipmap.ic_notification)
-                .setAutoCancel(false)
-                .setOngoing(true)
-                .setContentText("주행 관찰중이에요.")
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setOnlyAlertOnce(true)
-                .build())
+            if (Build.VERSION.SDK_INT >= 34) {
+                startForeground(1, notification
+                    .setSmallIcon(R.mipmap.ic_notification)
+                    .setAutoCancel(false)
+                    .setOngoing(true)
+                    .setContentText("주행 관찰중이에요.")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setOnlyAlertOnce(true)
+                    .build(), FOREGROUND_SERVICE_TYPE_HEALTH)
+            }else{
+                startForeground(1, notification
+                    .setSmallIcon(R.mipmap.ic_notification)
+                    .setAutoCancel(false)
+                    .setOngoing(true)
+                    .setContentText("주행 관찰중이에요.")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setOnlyAlertOnce(true)
+                    .build())
+            }
 
             sensorState = false
 
@@ -274,7 +285,8 @@ class BluetoothService : Service() {
 
     class WalkingDetectWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
 
-        private val activityRecognitionClient: ActivityRecognitionClient = ActivityRecognition.getClient(context)
+        private val activityRecognitionClient: ActivityRecognitionClient =
+            ActivityRecognition.getClient(context)
 
         override fun doWork(): Result {
             requestActivityUpdates()
@@ -330,7 +342,7 @@ class BluetoothService : Service() {
                 flag = FLAG_MUTABLE
             }
 
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                 flag = FLAG_IMMUTABLE
             }
 
@@ -341,23 +353,26 @@ class BluetoothService : Service() {
                 flag
             )
 
-            if (ActivityCompat.checkSelfPermission(
-                    applicationContext,
-                    Manifest.permission.ACTIVITY_RECOGNITION
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                if (ActivityCompat.checkSelfPermission(
+                        applicationContext,
+                        Manifest.permission.ACTIVITY_RECOGNITION
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return
+                }
             }
 
             activityRecognitionClient.requestActivityTransitionUpdates(request, pendingIntent)
                 .addOnSuccessListener {
+
                 }
                 .addOnFailureListener {
 
@@ -455,7 +470,6 @@ class BluetoothService : Service() {
     inner class WalkingDetectReceiver : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {
-
             if (ActivityTransitionResult.hasResult(intent)) {
                 refreshNotiText()
                 val result = ActivityTransitionResult.extractResult(intent)
@@ -554,8 +568,6 @@ class BluetoothService : Service() {
 
                     fusedLocationClient?.removeLocationUpdates(locationCallback)
                     fusedLocationClient = null
-
-                    refreshNotiText()
                 }
             }
         }catch (e:Exception){
@@ -578,9 +590,6 @@ class BluetoothService : Service() {
 
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
-
-                refreshNotiText()
-
             }
         }catch(e:Exception){
 

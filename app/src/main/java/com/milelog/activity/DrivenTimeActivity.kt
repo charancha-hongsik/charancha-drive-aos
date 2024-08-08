@@ -2249,21 +2249,21 @@ class DrivenTimeActivity: BaseRefreshActivity() {
                             tv_max_minute.text =
                                 transferSecondsToHourAndMinutes(recentDrivingDistance.max.totalTime).second.toString()
 
-                            if (recentDrivingDistance.diffAverage.totalTime == 0.0) {
+                            if (recentDrivingDistance.diffTotal.totalTime == 0.0) {
                                 tv_diff_time.text = "시간 변동이 없어요."
                                 tv_diff_time.setTextColor(resources.getColor(R.color.gray_950))
 
-                            } else if (recentDrivingDistance.diffAverage.totalTime > 0.0) {
+                            } else if (recentDrivingDistance.diffTotal.totalTime > 0.0) {
                                 tv_diff_time.text =
-                                    "+" + transferSecondsToHourAndMinutes(recentDrivingDistance.diffAverage.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(
-                                        recentDrivingDistance.diffAverage.totalTime
+                                    "+" + transferSecondsToHourAndMinutes(recentDrivingDistance.diffTotal.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(
+                                        recentDrivingDistance.diffTotal.totalTime
                                     ).second + "분 증가"
                                 tv_diff_time.setTextColor(resources.getColor(R.color.pri_500))
 
-                            } else if (recentDrivingDistance.diffAverage.totalTime < 0.0) {
+                            } else if (recentDrivingDistance.diffTotal.totalTime < 0.0) {
                                 tv_diff_time.text =
-                                    transferSecondsToHourAndMinutes(recentDrivingDistance.diffAverage.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(
-                                        recentDrivingDistance.diffAverage.totalTime
+                                    transferSecondsToHourAndMinutes(recentDrivingDistance.diffTotal.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(
+                                        recentDrivingDistance.diffTotal.totalTime
                                     ).second + "분 감소"
                                 tv_diff_time.setTextColor(resources.getColor(R.color.sec_500))
                             }

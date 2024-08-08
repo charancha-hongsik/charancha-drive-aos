@@ -29,7 +29,7 @@ android {
         minSdk 28
         targetSdk 34
         versionCode 1
-        versionName "1.0.0"
+        versionName "1.0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -107,7 +107,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     // fused Location Provider
-    implementation 'com.google.android.gms:play-services-location:15.0.1'
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
 
     // Room
     implementation "androidx.room:room-runtime:2.4.0"

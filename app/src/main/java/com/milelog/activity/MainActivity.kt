@@ -100,6 +100,9 @@ class MainActivity : BaseRefreshActivity() {
     lateinit var tv_engine_score:TextView
     lateinit var iv_home_banner:ImageView
     lateinit var tv_recent_driving_score:TextView
+    lateinit var btn_close_gift:ImageView
+
+    lateinit var layout_start_app:ConstraintLayout
 
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
@@ -186,6 +189,9 @@ class MainActivity : BaseRefreshActivity() {
 
                 if(response.code() == 200 || response.code() == 201){
                     tv_app_days2.text = convertUtcToDaysSince(getAccountResponse.createdAt)
+                    if(convertUtcToDaysSinceForInt(getAccountResponse.createdAt) > 14){
+                        layout_start_app.visibility = GONE
+                    }
                 }
             }
 
@@ -359,6 +365,8 @@ class MainActivity : BaseRefreshActivity() {
         btn_one_month = findViewById(R.id.btn_one_month)
         btn_six_month = findViewById(R.id.btn_six_month)
         btn_one_year = findViewById(R.id.btn_one_year)
+        layout_start_app = findViewById(R.id.layout_start_app)
+        btn_close_gift = findViewById(R.id.btn_close_gift)
 
         btn_recent.isSelected = true
 
@@ -427,7 +435,21 @@ class MainActivity : BaseRefreshActivity() {
 
         })
 
+        btn_close_gift.setOnClickListener(object: OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                PreferenceUtil.putBooleanPref(this@MainActivity,
+                    PreferenceUtil.GIFT_EXPORTED, false)
 
+                layout_start_app.visibility = GONE
+            }
+
+        })
+
+        if(PreferenceUtil.getBooleanPref(this, PreferenceUtil.GIFT_EXPORTED, true)){
+            layout_start_app.visibility = VISIBLE
+        }else{
+            layout_start_app.visibility = GONE
+        }
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
@@ -832,6 +854,19 @@ class MainActivity : BaseRefreshActivity() {
         val daysBetween = ChronoUnit.DAYS.between(utcTime, currentKstTime)
 
         return "${daysBetween + 1}일째"
+    }
+
+    fun convertUtcToDaysSinceForInt(utcTimeStr: String): Int {
+        // UTC 시간 파싱
+        val utcTime = LocalDateTime.parse(utcTimeStr, DateTimeFormatter.ISO_DATE_TIME)
+
+        // 현재 한국 시간
+        val currentKstTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"))
+
+        // 일수 차이 계산
+        val daysBetween = ChronoUnit.DAYS.between(utcTime, currentKstTime)
+
+        return daysBetween.toInt() + 1
     }
 
     fun getManageScoreForAMonth(){

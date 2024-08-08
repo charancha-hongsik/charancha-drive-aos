@@ -75,19 +75,76 @@
                 android:textColor="@color/pri_500"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_app_days1" />
+            
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_start_app"
+                android:layout_width="match_parent"
+                android:layout_height="172dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/radius8_gray100_with_gray200border"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_app_days2">
+
+                <ImageView
+                    android:id="@+id/btn_close_gift"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_close_gray"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginRight="12dp"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:src="@drawable/ic_gift"/>
+
+                    <ImageView
+                        android:layout_width="160dp"
+                        android:layout_height="46dp"
+                        android:src="@drawable/ic_gift_text"
+                        android:layout_marginTop="4dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textFontWeight="400"
+                        android:textColor="@color/gray_600"
+                        android:textAppearance="@style/C1R"
+                        android:text="앱을 종료해도 자동으로 주행이 기록돼요.\n스마트폰 재부팅 시 다시 앱을 실행해 주세요."
+                        android:layout_marginTop="12dp"/>
+
+
+                </LinearLayout>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/layout_summary_info"
                 android:layout_width="match_parent"
                 android:layout_height="492dp"
-                android:layout_marginTop="28dp"
+                android:layout_marginTop="16dp"
                 android:paddingTop="20dp"
                 android:paddingRight="20dp"
                 android:paddingLeft="20dp"
                 android:background="@drawable/radius8"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_app_days2">
+                app:layout_constraintTop_toBottomOf="@+id/layout_start_app">
 
 
                 <TextView
