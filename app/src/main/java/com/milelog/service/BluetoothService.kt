@@ -343,7 +343,7 @@ class BluetoothService : Service() {
             }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                flag = FLAG_IMMUTABLE
+                flag = FLAG_IMMUTABLE or FLAG_UPDATE_CURRENT
             }
 
             val pendingIntent = getBroadcast(
@@ -372,7 +372,7 @@ class BluetoothService : Service() {
 
             activityRecognitionClient.requestActivityTransitionUpdates(request, pendingIntent)
                 .addOnSuccessListener {
-
+                    Log.d("testestestest","testestestest")
                 }
                 .addOnFailureListener {
 
