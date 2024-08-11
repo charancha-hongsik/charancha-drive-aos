@@ -239,7 +239,7 @@
             android:name=".service.BluetoothService"
             android:enabled="true"
             android:exported="true"
-            android:foregroundServiceType="location|dataSync|health|connectedDevice" />
+            android:foregroundServiceType="location|dataSync|connectedDevice" />
 
         <receiver
             android:name=".activity.MainActivity$AlarmReceiver"

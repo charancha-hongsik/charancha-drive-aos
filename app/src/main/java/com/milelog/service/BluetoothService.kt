@@ -7,8 +7,6 @@ import android.bluetooth.*
 import android.bluetooth.BluetoothClass.Device.AUDIO_VIDEO_HANDSFREE
 import android.content.*
 import android.content.pm.PackageManager
-import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
-import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_HEALTH
 import android.database.Cursor
 import android.location.Location
 import android.net.ConnectivityManager
@@ -195,7 +193,7 @@ class BluetoothService : Service() {
                     .setContentText("주행 관찰중이에요.")
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setOnlyAlertOnce(true)
-                    .build(), FOREGROUND_SERVICE_TYPE_HEALTH)
+                    .build())
             }else{
                 startForeground(1, notification
                     .setSmallIcon(R.mipmap.ic_notification)
@@ -342,10 +340,6 @@ class BluetoothService : Service() {
                 flag = FLAG_MUTABLE
             }
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-                flag = FLAG_IMMUTABLE
-            }
-
             val pendingIntent = getBroadcast(
                 applicationContext,
                 0,
@@ -372,7 +366,7 @@ class BluetoothService : Service() {
 
             activityRecognitionClient.requestActivityTransitionUpdates(request, pendingIntent)
                 .addOnSuccessListener {
-
+                    Log.d("testestestest","testestestest")
                 }
                 .addOnFailureListener {
 
@@ -541,6 +535,8 @@ class BluetoothService : Service() {
                 driveDatabase = DriveDatabase.getDatabase(this)
                 initDriveData(level)
                 setLocation()
+
+                refreshNotiText()
             }
         } catch(e:Exception){
 
@@ -568,6 +564,8 @@ class BluetoothService : Service() {
 
                     fusedLocationClient?.removeLocationUpdates(locationCallback)
                     fusedLocationClient = null
+
+                    refreshNotiText()
                 }
             }
         }catch (e:Exception){
@@ -590,6 +588,8 @@ class BluetoothService : Service() {
 
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
+
+                refreshNotiText()
             }
         }catch(e:Exception){
 
