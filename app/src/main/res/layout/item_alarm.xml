@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_noti"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:orientation="vertical"
+    android:background="@drawable/radius12_white950">
+    
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/iv_alarm"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_drive_history_alarm" />
+        
+        <TextView
+            android:id="@id/tv_alarm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"
+            android:textAppearance="@style/B2SB"
+            android:layout_weight="600"
+            android:textColor="@color/gray_950"
+            android:text="주행이력"/>
+
+        <ImageView
+            android:id="@+id/ic_required"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_required"
+            android:layout_marginTop="3dp"
+            android:layout_marginLeft="4dp"/>
+        
+        
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_alarm_contents"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="26dp"
+        android:layout_marginTop="6dp"
+        android:textColor="@color/gray_700"
+        android:textFontWeight="400"
+        android:textAppearance="@style/B2R"
+        android:text="고속 주행 비율이 지난달 보다 23% 늘었어요!"
+        />
+
+    <TextView
+        android:id="@+id/tv_alarm_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="26dp"
+        android:textColor="@color/gray_400"
+        android:textFontWeight="400"
+        android:textAppearance="@style/C1R"
+        android:text="조금 전"
+        />
+
+</LinearLayout>

@@ -1,9 +1,14 @@
 package com.milelog.activity
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
+import android.util.Log
 import com.milelog.PreferenceUtil
 import com.milelog.retrofit.response.SignInResponse
 import com.google.gson.Gson
+import com.milelog.retrofit.ApiServiceInterface
+import okhttp3.Interceptor
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -95,4 +100,46 @@ open class BaseRefreshActivity: BaseActivity(){
             finish()
         }
     }
+
+    class AuthInterceptor(
+        private val apiService: ApiServiceInterface // 토큰 갱신을 위한 ApiService
+    ) : Interceptor {
+
+        override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+            var request = chain.request()
+            var response = chain.proceed(request)
+
+            val originalRequest = chain.request()
+            val requestBuilder = originalRequest.newBuilder()
+                .header("Content-Type", "application/json")
+
+            // 401 Unauthorized 에러가 발생한 경우
+//            if (response.code == 401) {
+//                synchronized(this) {
+//                    // 토큰 갱신을 시도합니다.
+//                    val newTokenResponse = apiService.postReissue().execute()
+//                    if (newTokenResponse.isSuccessful) {
+//                        // 새 토큰을 저장합니다.
+//                        val newToken = newTokenResponse.body()?.token
+////                        prefs.edit().putString("access_token", newToken).apply()
+//
+//                        // 원래 요청에 새 토큰을 추가하여 재시도합니다.
+//                        val newRequest = request.newBuilder()
+//                            .header("Authorization", "Bearer $newToken")
+//                            .build()
+//
+//                        response.close() // 이전 응답 닫기
+//                        response = chain.proceed(newRequest) // 새 요청을 수행
+//                    }
+//                }
+//            }
+
+            Log.d("testsetestest","testsetestes request.url :: " + request.url)
+
+            Log.d("testsetestest","testsetestes AuthInterceptor :: " + response.code)
+
+            return response
+        }
+    }
+
 }

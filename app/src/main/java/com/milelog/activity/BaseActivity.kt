@@ -3,7 +3,10 @@ package com.milelog.activity
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -14,12 +17,26 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.gson.Gson
 import com.milelog.BuildConfig
 import com.milelog.PreferenceUtil
 import com.milelog.R
 import com.milelog.retrofit.ApiServiceInterface
 import com.milelog.retrofit.HeaderInterceptor
+import com.milelog.retrofit.request.PostConnectDeviceRequest
+import com.milelog.retrofit.request.PostDeviceInfoRequest
+import com.milelog.retrofit.request.PostDrivingInfoRequest
+import com.milelog.retrofit.response.PostConnectDeviceResponse
+import com.milelog.retrofit.response.SignInResponse
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.time.*
@@ -43,6 +60,72 @@ open class BaseActivity: AppCompatActivity(){
         distance_unit = PreferenceUtil.getPref(this@BaseActivity,  PreferenceUtil.KM_MILE, "km")!!
 
     }
+
+    fun dpToPx(context: Context, dp: Int): Int {
+        val resources = context.resources
+        return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            dp.toFloat(),
+            resources.displayMetrics
+        ).toInt()
+    }
+
+    fun setFcmToken(tokenProcessCallback: LoginActivity.TokenProcessCallback) {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            try {
+                if (task.isComplete) {
+                    val token = task.result
+                    val handler = Handler(Looper.getMainLooper())
+                    handler.postDelayed(
+                        {
+                            Log.d("tetsetsetset","testsetsetes token :: " + token)
+                            if(!PreferenceUtil.getBooleanPref(this@BaseActivity, PreferenceUtil.POST_DEVICE_INFO_STATE, false)){
+                                val postDeviceInfoRequest = PostDeviceInfoRequest(
+                                    manufacturer = Build.MANUFACTURER,
+                                    model = Build.MODEL,
+                                    os = "AOS",
+                                    osVersion = Build.VERSION.SDK_INT.toString(),
+                                    deviceType = "PHONE",
+                                    appVersion = BuildConfig.VERSION_NAME,
+                                    fcmDeviceToken = token
+                                )
+
+                                val gson = Gson()
+                                val jsonParam = gson.toJson(postDeviceInfoRequest)
+
+                                apiService().postDeviceInfo(jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object : Callback<ResponseBody> {
+                                    override fun onResponse(
+                                        call: Call<ResponseBody>,
+                                        response: Response<ResponseBody>
+                                    ) {
+                                        if (response.code() == 200 || response.code() == 201){
+                                            val postConnectDeviceResponse = gson.fromJson(response.body()?.string(), PostConnectDeviceResponse::class.java)
+
+                                            PreferenceUtil.putBooleanPref(this@BaseActivity, PreferenceUtil.POST_DEVICE_INFO_STATE, true)
+                                            PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.DEVICE_ID_FOR_FCM, postConnectDeviceResponse.id)
+                                        }
+
+                                        tokenProcessCallback.completeProcess()
+
+                                    }
+
+                                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                                        tokenProcessCallback.completeProcess()
+
+                                    }
+                                })
+                            }else{
+                                tokenProcessCallback.completeProcess()
+                            }
+                        },
+                        5000
+                    )
+                }
+            } catch (e: java.lang.Exception) {
+            }
+        }
+    }
+
 
     fun apiService(): ApiServiceInterface {
         val client: OkHttpClient = OkHttpClient.Builder()
@@ -446,7 +529,7 @@ open class BaseActivity: AppCompatActivity(){
         return (px / resources.displayMetrics.density).toInt()
     }
 
-    private fun dpToPx(dp: Float): Int {
+    fun dpToPx(dp: Float): Int {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics).toInt()
     }
 
@@ -462,6 +545,34 @@ open class BaseActivity: AppCompatActivity(){
     }
 
     fun logout(){
+
+        PreferenceUtil.getPref(this@BaseActivity, PreferenceUtil.DEVICE_ID_FOR_FCM, "")?.let{
+
+            val gson = Gson()
+            val jsonParam =
+                gson.toJson(PostConnectDeviceRequest(it))
+
+
+            apiService().postDisconnectDevice("Bearer " + PreferenceUtil.getPref(this@BaseActivity, PreferenceUtil.ACCESS_TOKEN, ""), makeRequestBody(jsonParam)).enqueue(object:Callback<ResponseBody>{
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: Response<ResponseBody>
+                ) {
+                    if(response.code() == 200 || response.code() == 201){
+
+                    }
+                }
+
+                override fun onFailure(
+                    call: Call<ResponseBody>,
+                    t: Throwable
+                ) {
+                }
+
+            })
+        }
+
+
         PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.ACCESS_TOKEN, "")
         PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.REFRESH_TOKEN, "")
         PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.EXPIRES_IN, "")
@@ -473,6 +584,8 @@ open class BaseActivity: AppCompatActivity(){
         PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.ID_TOKEN, "")
         PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
         PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.USER_CARID, "")
+        PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.USER_ID, "")
+
         PreferenceUtil.putBooleanPref(this@BaseActivity, PreferenceUtil.HAVE_BEEN_HOME, false)
     }
 
@@ -490,6 +603,10 @@ open class BaseActivity: AppCompatActivity(){
         toast.duration = Toast.LENGTH_SHORT
         toast.view = layout
         toast.show()
+    }
+
+    fun makeRequestBody(jsonParam:String):RequestBody{
+        return jsonParam.toRequestBody("application/json".toMediaTypeOrNull())
     }
 
 

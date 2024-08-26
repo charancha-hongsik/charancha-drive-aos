@@ -195,4 +195,43 @@ interface ApiServiceInterface {
     @GET("api/v1/apps/-/latest")
     fun getLatest(@Query("os") os: String, @Query("deviceType") deviceType: String): Call<ResponseBody>
 
+    // 디바이스 정보 저장
+    @POST("api/v1/devices")
+    fun postDeviceInfo(@Body body: RequestBody): Call<ResponseBody>
+
+    // 디바이스 정보 수정
+    @PATCH("api/v1/devices/{deviceId}")
+    fun patchDeviceInfo(@Path("deviceId") deviceId: String, @Body body: RequestBody): Call<ResponseBody>
+
+    // 내 디바이스로 연결
+    @POST("api/v1/me/devices/connect")
+    fun postConnectDevice(@Header("Authorization") token: String, @Body body: RequestBody): Call<ResponseBody>
+
+
+    // 내 디바이스로 해제
+    @POST("api/v1/me/devices/disconnect")
+    fun postDisconnectDevice(@Header("Authorization") token: String, @Body body: RequestBody): Call<ResponseBody>
+
+    @GET("api/v1/notifications")
+    fun getNotificationLists(@Header("Authorization") token: String,
+                            @Query("size") size: Int,
+                            @Query("order") order: String,
+                            @Query("afterCursor") afterCursor: String?,
+                            @Query("beforeCursor") beforeCursor: String?,
+                            @Query("name") name: String?,
+                            @Query("isActive") isActive: Boolean?): Call<ResponseBody>
+
+    @GET("api/v1/me/notifications/-/agreements")
+    fun getMyNotificationAgreed(@Header("Authorization") token: String,
+                             @Query("size") size: Int,
+                             @Query("order") order: String,
+                             @Query("afterCursor") afterCursor: String?,
+                             @Query("beforeCursor") beforeCursor: String?,
+                             @Query("isAgreed") isAgreed: Boolean?): Call<ResponseBody>
+
+
+    @PUT("api/v1/me/notifications/agreements")
+    fun putMyNotificationAgreed(@Header("Authorization") token: String,
+                                @Body body: RequestBody): Call<ResponseBody>
+
 }

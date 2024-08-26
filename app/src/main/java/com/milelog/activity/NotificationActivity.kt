@@ -1,6 +1,7 @@
 package com.milelog.activity
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -12,6 +13,12 @@ import com.milelog.retrofit.response.TermsAgreeStatusResponse
 import com.milelog.retrofit.response.TermsSummaryResponse
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.milelog.retrofit.request.PostConnectDeviceRequest
+import com.milelog.retrofit.request.PutNotificationAgreements
+import com.milelog.retrofit.response.GetMyNotificationAgreedItem
+import com.milelog.retrofit.response.GetMyNotificationAgreedResponse
+import com.milelog.retrofit.response.GetNotificationItem
+import com.milelog.retrofit.response.GetNotificationListsResponse
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
@@ -27,6 +34,11 @@ class NotificationActivity: BaseRefreshActivity() {
     lateinit var btn_announcement:ImageView
     lateinit var btn_back:ImageView
     lateinit var tv_marketing: TextView
+    lateinit var getNotificationLists:GetNotificationListsResponse
+    lateinit var getMyNotificationAgreedResponse: GetMyNotificationAgreedResponse
+    var driveHistoryId:String? = null
+    var announcementId:String? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,17 +59,32 @@ class NotificationActivity: BaseRefreshActivity() {
             override fun onSingleClick(v: View?) {
                 if(btn_all_noti.isSelected){
                     btn_all_noti.isSelected = false
-                    btn_drive_history.isSelected = false
+
                     if(btn_marketing.isSelected)
                         btn_marketing.performClick()
                     btn_marketing.isSelected = false
+
+                    if(btn_drive_history.isSelected)
+                        btn_drive_history.performClick()
+                    btn_drive_history.isSelected = false
+
+                    if(btn_announcement.isSelected)
+                        btn_announcement.performClick()
                     btn_announcement.isSelected = false
+
                 }else{
                     btn_all_noti.isSelected = true
-                    btn_drive_history.isSelected = true
+
                     if(!btn_marketing.isSelected)
                         btn_marketing.performClick()
                     btn_marketing.isSelected = true
+
+                    if(!btn_drive_history.isSelected)
+                        btn_drive_history.performClick()
+                    btn_drive_history.isSelected = true
+
+                    if(!btn_announcement.isSelected)
+                        btn_announcement.performClick()
                     btn_announcement.isSelected = true
                 }
             }
@@ -66,20 +93,13 @@ class NotificationActivity: BaseRefreshActivity() {
 
         btn_drive_history.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                if(btn_drive_history.isSelected){
-                    btn_all_noti.isSelected = false
-                    btn_drive_history.isSelected = false
-                }else{
-                    if(btn_marketing.isSelected && btn_announcement.isSelected){
-                        btn_all_noti.isSelected = true
-                    }
-
-                    btn_drive_history.isSelected = true
-
+                driveHistoryId?.let{
+                    putMyNotificationAgreed(driveHistoryId, !btn_drive_history.isSelected )
                 }
             }
 
         })
+
         btn_marketing.setOnClickListener(object: OnSingleClickListener() {
             override fun onSingleClick(v: View?) {
 
@@ -140,15 +160,8 @@ class NotificationActivity: BaseRefreshActivity() {
 
         btn_announcement.setOnClickListener(object: OnSingleClickListener() {
             override fun onSingleClick(v: View?) {
-                if(btn_announcement.isSelected){
-                    btn_all_noti.isSelected = false
-                    btn_announcement.isSelected = false
-                }else{
-                    if(btn_drive_history.isSelected && btn_marketing.isSelected){
-                        btn_all_noti.isSelected = true
-                    }
-
-                    btn_announcement.isSelected = true
+                announcementId?.let{
+                    putMyNotificationAgreed(announcementId, !btn_announcement.isSelected)
                 }
             }
 
@@ -159,6 +172,7 @@ class NotificationActivity: BaseRefreshActivity() {
         }
 
         getMyTerms()
+        getNotificationLists()
     }
 
     private fun putTerms(id:String, isAgree:Int){
@@ -231,6 +245,139 @@ class NotificationActivity: BaseRefreshActivity() {
                                 btn_marketing.isSelected = false
 
                             }
+                        }
+                    }
+
+                    if(btn_drive_history.isSelected && btn_announcement.isSelected && btn_marketing.isSelected){
+                        btn_all_noti.isSelected = true
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+            }
+
+        })
+    }
+
+    fun getNotificationLists(){
+        apiService().getNotificationLists(
+            token = "Bearer " + PreferenceUtil.getPref(this@NotificationActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,
+            size = 20,
+            order = "DESC",
+            afterCursor = null,
+            beforeCursor = null,
+            name = null,
+            isActive = null).enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+                if(response.code() == 200 || response.code() == 201){
+                    getNotificationLists = Gson().fromJson(
+                        response.body()?.string(),
+                        GetNotificationListsResponse::class.java
+                    )
+
+                    for(item in getNotificationLists.items){
+                        if(item.name.equals("주행이력")){
+                            driveHistoryId = item.id
+                        } else if(item.name.equals("공지사항")){
+                            announcementId = item.id
+                        }
+                    }
+
+                    getMyNotificationAgreed()
+
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+            }
+
+        })
+
+    }
+
+    fun getMyNotificationAgreed(){
+        apiService().getMyNotificationAgreed(
+            token = "Bearer " + PreferenceUtil.getPref(this@NotificationActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,
+            size = 20,
+            order = "DESC",
+            afterCursor = null,
+            beforeCursor = null,
+            isAgreed = null).enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+                if(response.code() == 200 || response.code() == 201){
+                    getMyNotificationAgreedResponse = Gson().fromJson(
+                        response.body()?.string(),
+                        GetMyNotificationAgreedResponse::class.java
+                    )
+                    if(getMyNotificationAgreedResponse.items.size > 0){
+                        for(item in getMyNotificationAgreedResponse.items){
+                            if(item.notificationId == driveHistoryId){
+                                btn_drive_history.isSelected = item.isAgreed
+
+                            } else if(item.notificationId == announcementId){
+                                btn_announcement.isSelected = item.isAgreed
+                            }
+                        }
+
+                        if(btn_drive_history.isSelected && btn_announcement.isSelected && btn_marketing.isSelected){
+                            btn_all_noti.isSelected = true
+                        }
+                    }
+
+
+
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+            }
+
+        })
+    }
+
+    fun putMyNotificationAgreed(id:String?, agreed:Boolean){
+        val gson = Gson()
+        val jsonParam =
+            gson.toJson(PutNotificationAgreements(id!!,agreed))
+
+        apiService().putMyNotificationAgreed(
+            token = "Bearer " + PreferenceUtil.getPref(this@NotificationActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,
+            body = makeRequestBody(jsonParam)
+        ).enqueue(object: Callback<ResponseBody>{
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200 || response.code() == 201){
+                    val getMyNotificationAgreedItem = Gson().fromJson(response.body()?.string(), GetMyNotificationAgreedItem::class.java)
+
+                    if(id.equals(driveHistoryId)){
+                        if(!getMyNotificationAgreedItem.isAgreed){
+                            btn_all_noti.isSelected = false
+                            btn_drive_history.isSelected = false
+                        }else{
+                            if(btn_marketing.isSelected && btn_announcement.isSelected){
+                                btn_all_noti.isSelected = true
+                            }
+
+                            btn_drive_history.isSelected = true
+                        }
+                    }else if(id.equals(announcementId)){
+                        if(!getMyNotificationAgreedItem.isAgreed){
+                            btn_all_noti.isSelected = false
+                            btn_announcement.isSelected = false
+                        }else{
+                            if(btn_drive_history.isSelected && btn_marketing.isSelected){
+                                btn_all_noti.isSelected = true
+                            }
+                            btn_announcement.isSelected = true
                         }
                     }
                 }

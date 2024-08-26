@@ -3,6 +3,7 @@ package com.milelog.activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.util.Log
 import android.view.View.*
 import android.webkit.*
 import com.milelog.BuildConfig
@@ -10,11 +11,10 @@ import com.milelog.PreferenceUtil
 import com.milelog.R
 import com.milelog.retrofit.request.SignInRequest
 import com.milelog.retrofit.request.SignUpRequest
-import com.milelog.retrofit.response.GetMyCarInfoResponse
-import com.milelog.retrofit.response.SignInResponse
-import com.milelog.retrofit.response.TermsAgreeStatusResponse
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.milelog.retrofit.request.PostConnectDeviceRequest
+import com.milelog.retrofit.response.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
@@ -44,6 +44,11 @@ class LoginActivity: BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        setFcmToken(object :TokenProcessCallback{
+            override fun completeProcess() {
+
+            }
+        })
         setWebview()
     }
 
@@ -59,11 +64,10 @@ class LoginActivity: BaseActivity() {
         wv_login.settings.domStorageEnabled = true
         wv_login.settings.cacheMode = WebSettings.LOAD_DEFAULT
         wv_login.settings.textZoom = 100 // System 텍스트 사이즈 변경되지 않게
-
-        wv_login.clearCache(true)
-        wv_login.clearHistory()
-        CookieManager.getInstance().removeAllCookie()
-        CookieManager.getInstance().removeSessionCookie()
+//        wv_login.clearCache(true)
+//        wv_login.clearHistory()
+//        CookieManager.getInstance().removeAllCookie()
+//        CookieManager.getInstance().removeSessionCookie()
 
 
         //chrome inspect 디버깅 모드
@@ -170,186 +174,68 @@ class LoginActivity: BaseActivity() {
                                         response: Response<ResponseBody>
                                     ) {
 
-                                        val signInResponse = gson.fromJson(
-                                            response.body()?.string(),
-                                            SignInResponse::class.java
-                                        )
+                                        if (response.code() == 201) {
+                                            val signInResponse = gson.fromJson(
+                                                response.body()?.string(),
+                                                SignInResponse::class.java
+                                            )
 
-                                        PreferenceUtil.putPref(
-                                            this@LoginActivity,
-                                            PreferenceUtil.ACCESS_TOKEN,
-                                            signInResponse.access_token
-                                        )
-                                        PreferenceUtil.putPref(
-                                            this@LoginActivity,
-                                            PreferenceUtil.REFRESH_TOKEN,
-                                            signInResponse.refresh_token
-                                        )
-                                        PreferenceUtil.putPref(
-                                            this@LoginActivity,
-                                            PreferenceUtil.EXPIRES_IN,
-                                            signInResponse.expires_in
-                                        )
-                                        PreferenceUtil.putPref(
-                                            this@LoginActivity,
-                                            PreferenceUtil.REFRESH_EXPIRES_IN,
-                                            signInResponse.refresh_expires_in
-                                        )
-                                        PreferenceUtil.putPref(
-                                            this@LoginActivity,
-                                            PreferenceUtil.TOKEN_TYPE,
-                                            signInResponse.token_type
-                                        )
+                                            PreferenceUtil.putPref(
+                                                this@LoginActivity,
+                                                PreferenceUtil.ACCESS_TOKEN,
+                                                signInResponse.access_token
+                                            )
+                                            PreferenceUtil.putPref(
+                                                this@LoginActivity,
+                                                PreferenceUtil.REFRESH_TOKEN,
+                                                signInResponse.refresh_token
+                                            )
+                                            PreferenceUtil.putPref(
+                                                this@LoginActivity,
+                                                PreferenceUtil.EXPIRES_IN,
+                                                signInResponse.expires_in
+                                            )
+                                            PreferenceUtil.putPref(
+                                                this@LoginActivity,
+                                                PreferenceUtil.REFRESH_EXPIRES_IN,
+                                                signInResponse.refresh_expires_in
+                                            )
+                                            PreferenceUtil.putPref(
+                                                this@LoginActivity,
+                                                PreferenceUtil.TOKEN_TYPE,
+                                                signInResponse.token_type
+                                            )
 
-                                        apiService().getTermsAgree(
-                                            "Bearer " + signInResponse.access_token,
-                                            "MILELOG_USAGE"
-                                        ).enqueue(object : Callback<ResponseBody> {
-                                            override fun onResponse(
-                                                call: Call<ResponseBody>,
-                                                response: Response<ResponseBody>
-                                            ) {
+                                            PreferenceUtil.getPref(this@LoginActivity, PreferenceUtil.DEVICE_ID_FOR_FCM, "")?.let{
 
-                                                if (response.code() == 200 || response.code() == 201) {
-                                                    val jsonString = response.body()?.string()
+                                                val gson = Gson()
+                                                val jsonParam =
+                                                    gson.toJson(PostConnectDeviceRequest(it))
 
-                                                    val type: Type = object : TypeToken<List<TermsAgreeStatusResponse?>?>() {}.type
-                                                    val termsAgreeStatusResponses:List<TermsAgreeStatusResponse> = Gson().fromJson(jsonString, type)
 
-                                                    var agree = true
-
-                                                    if(termsAgreeStatusResponses.isEmpty()){
-                                                        startActivity(
-                                                            Intent(
-                                                                this@LoginActivity,
-                                                                TermsOfUseActivity::class.java
-                                                            )
-                                                        )
-
-                                                        wv_login.clearHistory();
-                                                        wv_login.clearCache(true);
-                                                        wv_login.removeJavascriptInterface("MilelogPublicApi")
-
-                                                        finish()
-
-                                                    }else{
-                                                        for(term in termsAgreeStatusResponses){
-                                                            if(term.terms.isRequired == 1)
-                                                                if(term.terms.isActive == 0)
-                                                                    agree = false
-                                                        }
-                                                        if (agree) {
-                                                            if (!PreferenceUtil.getBooleanPref(
-                                                                    this@LoginActivity,
-                                                                    PreferenceUtil.PERMISSION_ALL_CHECKED,
-                                                                    false
-                                                                )
-                                                            ) {
-                                                                startActivity(
-                                                                    Intent(
-                                                                        this@LoginActivity,
-                                                                        PermissionInfoActivity::class.java
-                                                                    )
-                                                                )
-
-                                                                wv_login.clearHistory();
-                                                                wv_login.clearCache(true);
-                                                                wv_login.removeJavascriptInterface("MilelogPublicApi")
-                                                                finish()
-                                                            } else {
-                                                                apiService().getMyCarInfo("Bearer " + signInResponse.access_token).enqueue(object :Callback<ResponseBody>{
-                                                                    override fun onResponse(
-                                                                        call: Call<ResponseBody>,
-                                                                        response: Response<ResponseBody>
-                                                                    ) {
-                                                                        if(response.code() == 200 || response.code() == 201){
-                                                                            val jsonString = response.body()?.string()
-
-                                                                            val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
-                                                                            val getMyCarInfoResponse:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
-
-                                                                            if(getMyCarInfoResponse.size > 0){
-                                                                                PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.get(0).id)
-                                                                                startActivity(Intent(this@LoginActivity, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
-
-                                                                                wv_login.clearHistory();
-                                                                                wv_login.clearCache(true);
-                                                                                wv_login.removeJavascriptInterface("MilelogPublicApi")
-
-                                                                                finish()
-                                                                            }else{
-                                                                                startActivity(Intent(this@LoginActivity, OnBoardingActivity::class.java))
-
-                                                                                wv_login.clearHistory();
-                                                                                wv_login.clearCache(true);
-                                                                                wv_login.removeJavascriptInterface("MilelogPublicApi")
-
-                                                                                finish()
-                                                                            }
-                                                                        }else{
-                                                                            startActivity(Intent(this@LoginActivity, OnBoardingActivity::class.java))
-
-                                                                            wv_login.clearHistory();
-                                                                            wv_login.clearCache(true);
-                                                                            wv_login.removeJavascriptInterface("MilelogPublicApi")
-                                                                            finish()
-                                                                        }
-                                                                    }
-
-                                                                    override fun onFailure(
-                                                                        call: Call<ResponseBody>,
-                                                                        t: Throwable
-                                                                    ) {
-                                                                        startActivity(Intent(this@LoginActivity, OnBoardingActivity::class.java))
-
-                                                                        wv_login.clearHistory();
-                                                                        wv_login.clearCache(true);
-                                                                        wv_login.removeJavascriptInterface("MilelogPublicApi")
-                                                                        finish()
-                                                                    }
-                                                                })
-                                                            }
-                                                        } else {
-                                                            startActivity(
-                                                                Intent(
-                                                                    this@LoginActivity,
-                                                                    TermsOfUseActivity::class.java
-                                                                )
-                                                            )
-
-                                                            wv_login.clearHistory();
-                                                            wv_login.clearCache(true);
-                                                            wv_login.removeJavascriptInterface("MilelogPublicApi")
-
-                                                            finish()
+                                                apiService().postConnectDevice("Bearer " + signInResponse.access_token, makeRequestBody(jsonParam)).enqueue(object:Callback<ResponseBody>{
+                                                    override fun onResponse(
+                                                        call: Call<ResponseBody>,
+                                                        response: Response<ResponseBody>
+                                                    ) {
+                                                        if(response.code() == 200 || response.code() == 201){
 
                                                         }
+                                                        handleAfterSuccessLogin(signInResponse = signInResponse)
                                                     }
-                                                } else {
-                                                    startActivity(
-                                                        Intent(
-                                                            this@LoginActivity,
-                                                            TermsOfUseActivity::class.java
-                                                        )
-                                                    )
 
-                                                    wv_login.clearHistory();
-                                                    wv_login.clearCache(true);
-                                                    wv_login.removeJavascriptInterface("MilelogPublicApi")
+                                                    override fun onFailure(
+                                                        call: Call<ResponseBody>,
+                                                        t: Throwable
+                                                    ) {
+                                                        handleAfterSuccessLogin(signInResponse = signInResponse)
+                                                    }
 
-                                                    finish()
-
-                                                }
+                                                })
+                                            }?:{
+                                                handleAfterSuccessLogin(signInResponse = signInResponse)
                                             }
-
-                                            override fun onFailure(
-                                                call: Call<ResponseBody>,
-                                                t: Throwable
-                                            ) {
-
-                                            }
-
-                                        })
+                                        }
                                     }
 
                                     override fun onFailure(
@@ -377,7 +263,163 @@ class LoginActivity: BaseActivity() {
         }
     }
 
+    fun handleAfterSuccessLogin(signInResponse:SignInResponse){
+        apiService().getTermsAgree(
+            "Bearer " + signInResponse.access_token,
+            "MILELOG_USAGE"
+        ).enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+
+                if (response.code() == 200 || response.code() == 201) {
+                    val jsonString = response.body()?.string()
+
+                    val type: Type = object : TypeToken<List<TermsAgreeStatusResponse?>?>() {}.type
+                    val termsAgreeStatusResponses:List<TermsAgreeStatusResponse> = Gson().fromJson(jsonString, type)
+
+                    var agree = true
+
+                    if(termsAgreeStatusResponses.isEmpty()){
+                        startActivity(
+                            Intent(
+                                this@LoginActivity,
+                                TermsOfUseActivity::class.java
+                            )
+                        )
+
+//                        wv_login.clearHistory()
+//                        wv_login.clearCache(true);
+//                        wv_login.removeJavascriptInterface("MilelogPublicApi")
+
+                        finish()
+
+                    }else{
+                        for(term in termsAgreeStatusResponses){
+                            if(term.terms.isRequired == 1)
+                                if(term.terms.isActive == 0)
+                                    agree = false
+                        }
+                        if (agree) {
+                            if (!PreferenceUtil.getBooleanPref(
+                                    this@LoginActivity,
+                                    PreferenceUtil.PERMISSION_ALL_CHECKED,
+                                    false
+                                )
+                            ) {
+                                startActivity(
+                                    Intent(
+                                        this@LoginActivity,
+                                        PermissionInfoActivity::class.java
+                                    )
+                                )
+
+//                                wv_login.clearHistory();
+//                                wv_login.clearCache(true);
+//                                wv_login.removeJavascriptInterface("MilelogPublicApi")
+                                finish()
+                            } else {
+                                apiService().getMyCarInfo("Bearer " + signInResponse.access_token).enqueue(object :Callback<ResponseBody>{
+                                    override fun onResponse(
+                                        call: Call<ResponseBody>,
+                                        response: Response<ResponseBody>
+                                    ) {
+                                        if(response.code() == 200 || response.code() == 201){
+                                            val jsonString = response.body()?.string()
+
+                                            val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
+                                            val getMyCarInfoResponse:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
+
+                                            if(getMyCarInfoResponse.size > 0){
+                                                PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.get(0).id)
+                                                startActivity(Intent(this@LoginActivity, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+
+//                                                wv_login.clearHistory();
+//                                                wv_login.clearCache(true);
+//                                                wv_login.removeJavascriptInterface("MilelogPublicApi")
+
+                                                finish()
+                                            }else{
+                                                startActivity(Intent(this@LoginActivity, OnBoardingActivity::class.java))
+
+//                                                wv_login.clearHistory();
+//                                                wv_login.clearCache(true);
+//                                                wv_login.removeJavascriptInterface("MilelogPublicApi")
+
+                                                finish()
+                                            }
+                                        }else{
+                                            startActivity(Intent(this@LoginActivity, OnBoardingActivity::class.java))
+
+//                                            wv_login.clearHistory();
+//                                            wv_login.clearCache(true);
+//                                            wv_login.removeJavascriptInterface("MilelogPublicApi")
+                                            finish()
+                                        }
+                                    }
+
+                                    override fun onFailure(
+                                        call: Call<ResponseBody>,
+                                        t: Throwable
+                                    ) {
+                                        startActivity(Intent(this@LoginActivity, OnBoardingActivity::class.java))
+
+//                                        wv_login.clearHistory();
+//                                        wv_login.clearCache(true);
+//                                        wv_login.removeJavascriptInterface("MilelogPublicApi")
+                                        finish()
+                                    }
+                                })
+                            }
+                        } else {
+                            startActivity(
+                                Intent(
+                                    this@LoginActivity,
+                                    TermsOfUseActivity::class.java
+                                )
+                            )
+
+//                            wv_login.clearHistory();
+//                            wv_login.clearCache(true);
+//                            wv_login.removeJavascriptInterface("MilelogPublicApi")
+
+                            finish()
+
+                        }
+                    }
+                } else {
+                    startActivity(
+                        Intent(
+                            this@LoginActivity,
+                            TermsOfUseActivity::class.java
+                        )
+                    )
+
+//                    wv_login.clearHistory();
+//                    wv_login.clearCache(true);
+//                    wv_login.removeJavascriptInterface("MilelogPublicApi")
+
+                    finish()
+
+                }
+            }
+
+            override fun onFailure(
+                call: Call<ResponseBody>,
+                t: Throwable
+            ) {
+
+            }
+
+        })
+    }
+
     fun handleFailLogin(message:String){
 
+    }
+
+    interface TokenProcessCallback {
+        fun completeProcess()
     }
 }

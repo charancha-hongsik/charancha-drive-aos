@@ -9,6 +9,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.Address
+import android.location.Geocoder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -43,6 +45,7 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.IOException
 import java.lang.reflect.Type
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -102,6 +105,7 @@ class MainActivity : BaseRefreshActivity() {
     lateinit var iv_home_banner:ImageView
     lateinit var tv_recent_driving_score:TextView
     lateinit var btn_close_gift:ImageView
+    lateinit var btn_noti:ImageView
 
     lateinit var layout_start_app:ConstraintLayout
 
@@ -151,6 +155,8 @@ class MainActivity : BaseRefreshActivity() {
 
         setPieChart(0.0f)
 
+        Log.d("testsetsetest","testsetsetse ACCESS_TOKEN:: " + PreferenceUtil.getPref(this@MainActivity, PreferenceUtil.ACCESS_TOKEN, "")!!)
+
         setLineChartForBrakes(findViewById(R.id.chart_line_brakes))
         setLineChartForEngine(findViewById(R.id.chart_line_engine))
         setLineChartForTire(findViewById(R.id.chart_line_tire))
@@ -189,7 +195,36 @@ class MainActivity : BaseRefreshActivity() {
         postDrivingInfoNotSavedData()
     }
 
+    fun getAddressFromLatLng(context: Context, latitude: Double, longitude: Double): String? {
+        val geocoder = Geocoder(context, Locale.getDefault())
+        return try {
+            val addresses: List<Address> = geocoder.getFromLocation(latitude, longitude, 1)!!
+            if (addresses.isNotEmpty()) {
+                val address: Address = addresses[0]
+                // 주소를 구성하는 필드들을 결합하여 완전한 주소를 생성
+
+                Log.d("testestsest","testestestesse countryName :: " + address.countryName)
+                Log.d("testestsest","testestestesse adminArea :: " + address.adminArea)
+                Log.d("testestsest","testestestesse subLocality :: " + address.subLocality)
+                Log.d("testestsest","testestestesse thoroughfare :: " + address.thoroughfare)
+                Log.d("testestsest","testestestesse featureName :: " + address.featureName)
+                Log.d("testestsest", "testestestesse address :: $address")
+
+
+
+                address.getAddressLine(0)
+
+            } else {
+                null
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
+        }
+    }
+
     fun getAccount(){
+
         apiService().getAccount("Bearer " + PreferenceUtil.getPref(this@MainActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!).enqueue(object:Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 val getAccountResponse = Gson().fromJson(
@@ -202,6 +237,11 @@ class MainActivity : BaseRefreshActivity() {
                     if(convertUtcToDaysSinceForInt(getAccountResponse.createdAt) > 14){
                         layout_start_app.visibility = GONE
                     }
+
+                    Log.d("testsetestest","testsetsetses :: " + getAccountResponse.id)
+
+                    PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.USER_ID, getAccountResponse.id)
+
                 }
             }
 
@@ -378,6 +418,15 @@ class MainActivity : BaseRefreshActivity() {
         layout_start_app = findViewById(R.id.layout_start_app)
         btn_close_gift = findViewById(R.id.btn_close_gift)
 
+        btn_noti = findViewById(R.id.btn_noti)
+        btn_noti.setOnClickListener(object :OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                startActivity(Intent(this@MainActivity, AlarmActivity::class.java))
+
+            }
+
+        })
+
         btn_recent.isSelected = true
 
         btn_recent.setOnClickListener(object: OnSingleClickListener(){
@@ -389,7 +438,8 @@ class MainActivity : BaseRefreshActivity() {
 
                 tv_recent_driving_score.text = "최근 주행 총점"
 
-                setRecentManageScoreForSummary()            }
+                setRecentManageScoreForSummary()
+            }
 
         })
 

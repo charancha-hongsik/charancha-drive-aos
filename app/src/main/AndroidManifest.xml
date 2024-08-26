@@ -68,8 +68,15 @@
             android:theme="@style/Theme.Charanchadrivesplash"
             android:exported="true">
             <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="milelog" android:host="splash"/>
             </intent-filter>
         </activity>
 
@@ -110,6 +117,11 @@
             android:screenOrientation="portrait"
             android:exported="true"/>
 
+        <activity
+            android:name=".activity.AlarmDetailActivity"
+            android:theme="@style/Theme.Charanchadrivegray50"
+            android:screenOrientation="portrait"
+            android:exported="true"/>
 
         <activity
             android:name=".activity.DrivenTimeActivity"
@@ -215,15 +227,38 @@
             android:exported="true"/>
 
         <activity
+            android:name=".activity.AlarmActivity"
+            android:theme="@style/Theme.Charanchadrivegray50"
+            android:screenOrientation="portrait"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="milelog" android:host="alarm"/>
+            </intent-filter>
+        </activity>
+
+        <activity
             android:name=".activity.MainActivity"
             android:screenOrientation="portrait"
             android:exported="true"
             android:launchMode="singleTop"/>
 
+
+
         <activity
             android:name=".activity.MyDriveHistoryActivity"
             android:screenOrientation="portrait"
-            android:exported="true"/>
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="milelog" android:host="history"/>
+            </intent-filter>
+        </activity>
 
         <activity
             android:name=".activity.DetailDriveHistoryActivity"
@@ -239,7 +274,7 @@
             android:name=".service.BluetoothService"
             android:enabled="true"
             android:exported="true"
-            android:foregroundServiceType="location|dataSync|connectedDevice" />
+            android:foregroundServiceType="location|dataSync|health|connectedDevice" />
 
         <receiver
             android:name=".activity.MainActivity$AlarmReceiver"
@@ -249,6 +284,14 @@
                 <action android:name="com.example.myapp.ALARM_TRIGGERED" />
             </intent-filter>
         </receiver>
+
+        <service
+            android:name=".service.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
 
     </application>

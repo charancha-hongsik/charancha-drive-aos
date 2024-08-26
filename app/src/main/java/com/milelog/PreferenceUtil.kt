@@ -16,6 +16,16 @@ object PreferenceUtil {
     const val PERMISSION_ACCESS_ALARM_THREE_TIMES = "PERMISSION_ACCESS_FINE_LOCATION_THREE_TIMES"
     const val PERMISSION_ALL_CHECKED = "PERMISSION_ALL_CHECKED"
 
+    // Device ID For FCM
+    // /api/v1/me/devices/connect(disconnect) 호출 시 Request로 사용 될 Device Id
+    const val DEVICE_ID_FOR_FCM = "DEVICE_ID_FOR_FCM"
+
+    // FCM Token을 이미 보냈는지 체크
+    const val POST_DEVICE_INFO_STATE = "POST_DEVICE_STATE"
+
+    // 사용자의 Unique ID -> 사용자마다 알람 리스트 따로 저장
+    const val USER_ID = "USER_ID"
+
 
     /**
      * 로그인 및 로그아웃 시 처리 필요
