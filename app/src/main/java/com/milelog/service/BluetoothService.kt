@@ -172,43 +172,40 @@ class BluetoothService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if(!sensorState){
-            carConnectionQueryHandler = CarConnectionQueryHandler(contentResolver)
-
-            (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
-                channel
-            )
-            notification = NotificationCompat.Builder(this, CHANNEL_ID)
-
-            if (Build.VERSION.SDK_INT >= 34) {
-                startForeground(1, notification
-                    .setSmallIcon(R.mipmap.ic_notification)
-                    .setAutoCancel(false)
-                    .setOngoing(true)
-                    .setContentText("주행 관찰중이에요.")
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setOnlyAlertOnce(true)
-                    .build(), FOREGROUND_SERVICE_TYPE_HEALTH)
-            }else{
-                startForeground(1, notification
-                    .setSmallIcon(R.mipmap.ic_notification)
-                    .setAutoCancel(false)
-                    .setOngoing(true)
-                    .setContentText("주행 관찰중이에요.")
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setOnlyAlertOnce(true)
-                    .build())
-            }
-
-            sensorState = false
-
-        }
-
         return START_REDELIVER_INTENT
     }
 
     override fun onCreate() {
         // Detecting L2/L3 Receiver
+
+        carConnectionQueryHandler = CarConnectionQueryHandler(contentResolver)
+
+        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
+            channel
+        )
+        notification = NotificationCompat.Builder(this, CHANNEL_ID)
+
+        if (Build.VERSION.SDK_INT >= 34) {
+            startForeground(1, notification
+                .setSmallIcon(R.mipmap.ic_notification)
+                .setAutoCancel(false)
+                .setOngoing(true)
+                .setContentText("주행 관찰중이에요.")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setOnlyAlertOnce(true)
+                .build(), FOREGROUND_SERVICE_TYPE_HEALTH)
+        }else{
+            startForeground(1, notification
+                .setSmallIcon(R.mipmap.ic_notification)
+                .setAutoCancel(false)
+                .setOngoing(true)
+                .setContentText("주행 관찰중이에요.")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setOnlyAlertOnce(true)
+                .build())
+        }
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(TransitionsReceiver(), filter, RECEIVER_EXPORTED)
         } else {
