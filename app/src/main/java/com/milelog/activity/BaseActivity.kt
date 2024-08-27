@@ -78,7 +78,7 @@ open class BaseActivity: AppCompatActivity(){
                     val handler = Handler(Looper.getMainLooper())
                     handler.postDelayed(
                         {
-                            Log.d("tetsetsetset","testsetsetes token :: " + token)
+                            Log.d("tetsetsetset","testsetsetes token1 :: " + token)
                             if(!PreferenceUtil.getBooleanPref(this@BaseActivity, PreferenceUtil.POST_DEVICE_INFO_STATE, false)){
                                 val postDeviceInfoRequest = PostDeviceInfoRequest(
                                     manufacturer = Build.MANUFACTURER,
