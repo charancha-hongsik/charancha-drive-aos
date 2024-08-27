@@ -26,62 +26,62 @@ class HeaderInterceptor(val context: Context) : Interceptor {
 
 
         // 401 Unauthorized 처리
-        if (response.code == 401) {
-            PreferenceUtil.getPref(context, PreferenceUtil.REFRESH_TOKEN, "")?.let{
-                // Refresh token을 이용해 새로운 액세스 토큰 요청
-                val newTokenResponse = apiService().postReissue(it).execute()
+        if(!request.url.toString().contains("reissue")){
+            if (response.code == 401) {
+                PreferenceUtil.getPref(context, PreferenceUtil.REFRESH_TOKEN, "")?.let{
+                    // Refresh token을 이용해 새로운 액세스 토큰 요청
+                    val newTokenResponse = apiService().postReissue(it).execute()
 
-                return if (newTokenResponse.isSuccessful) {
+                    return if (newTokenResponse.isSuccessful) {
 
-                    response.close()
+                        response.close()
 
-                    val signInResponse =
-                        Gson().fromJson(
-                            newTokenResponse.body()?.string(),
-                            SignInResponse::class.java
+                        val signInResponse =
+                            Gson().fromJson(
+                                newTokenResponse.body()?.string(),
+                                SignInResponse::class.java
+                            )
+
+                        PreferenceUtil.putPref(
+                            context,
+                            PreferenceUtil.ACCESS_TOKEN,
+                            signInResponse.access_token
+                        )
+                        PreferenceUtil.putPref(
+                            context,
+                            PreferenceUtil.REFRESH_TOKEN,
+                            signInResponse.refresh_token
+                        )
+                        PreferenceUtil.putPref(
+                            context,
+                            PreferenceUtil.EXPIRES_IN,
+                            signInResponse.expires_in
+                        )
+                        PreferenceUtil.putPref(
+                            context,
+                            PreferenceUtil.REFRESH_EXPIRES_IN,
+                            signInResponse.refresh_expires_in
+                        )
+                        PreferenceUtil.putPref(
+                            context,
+                            PreferenceUtil.TOKEN_TYPE,
+                            signInResponse.token_type
                         )
 
-                    PreferenceUtil.putPref(
-                        context,
-                        PreferenceUtil.ACCESS_TOKEN,
-                        signInResponse.access_token
-                    )
-                    PreferenceUtil.putPref(
-                        context,
-                        PreferenceUtil.REFRESH_TOKEN,
-                        signInResponse.refresh_token
-                    )
-                    PreferenceUtil.putPref(
-                        context,
-                        PreferenceUtil.EXPIRES_IN,
-                        signInResponse.expires_in
-                    )
-                    PreferenceUtil.putPref(
-                        context,
-                        PreferenceUtil.REFRESH_EXPIRES_IN,
-                        signInResponse.refresh_expires_in
-                    )
-                    PreferenceUtil.putPref(
-                        context,
-                        PreferenceUtil.TOKEN_TYPE,
-                        signInResponse.token_type
-                    )
+                        // 새로운 토큰으로 원래 요청 재시도
+                        val newRequest = originalRequest.newBuilder()
+                            .header("Authorization", "Bearer ${signInResponse.access_token}")
+                            .build()
 
-                    // 새로운 토큰으로 원래 요청 재시도
-                    val newRequest = originalRequest.newBuilder()
-                        .header("Authorization", "Bearer ${signInResponse.access_token}")
-                        .build()
-
-                    // 재시도 요청 보내기
-                    chain.proceed(newRequest)
-                } else {
-                    // Refresh 실패시 원래 response 반환
-                    response
+                        // 재시도 요청 보내기
+                        chain.proceed(newRequest)
+                    } else {
+                        // Refresh 실패시 원래 response 반환
+                        response
+                    }
                 }
             }
         }
-
-
 
         return response
     }
