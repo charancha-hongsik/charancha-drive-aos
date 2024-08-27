@@ -18,12 +18,12 @@ import retrofit2.Response
 open class BaseRefreshActivity: BaseActivity(){
     override fun onResume() {
         super.onResume()
-        postReissueAndCall()
+//        postReissueAndCall()
     }
 
     fun postReissueAndCall(){
         PreferenceUtil.getPref(this@BaseRefreshActivity, PreferenceUtil.REFRESH_TOKEN, "")?.let{
-            apiService().postReissue(PreferenceUtil.getPref(this, PreferenceUtil.REFRESH_TOKEN, "")!!).enqueue(object :
+            apiService().postReissue(it).enqueue(object :
                 Callback<ResponseBody> {
                 override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                     try {
