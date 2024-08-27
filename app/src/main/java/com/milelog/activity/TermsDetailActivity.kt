@@ -49,6 +49,8 @@ class TermsDetailActivity: BaseRefreshActivity() {
                         val gson = Gson()
                         val termsDetailResponse = gson.fromJson(response.body()?.string(), TermDetailResponse::class.java)
                         tvTermsContents.setText(termsDetailResponse.content)
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }
 

@@ -393,6 +393,8 @@ class ManageEngineActivity: BaseRefreshActivity() {
                             tv_no_score1.text = "아직 데이터가 없어요. 함께 달려볼까요?"
                             iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
                         }
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }catch (e:Exception){
 
@@ -490,6 +492,8 @@ class ManageEngineActivity: BaseRefreshActivity() {
                         }
 
 
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }catch (e:Exception){
 
@@ -565,6 +569,8 @@ class ManageEngineActivity: BaseRefreshActivity() {
                             tv_no_score1.text = "아직 데이터가 없어요. 함께 달려볼까요?"
                             iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
                         }
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }catch (e:Exception){
 
@@ -673,6 +679,8 @@ class ManageEngineActivity: BaseRefreshActivity() {
                             setOptimalDrivingChartWidthByPercent(0f)
                             setNormalSpeedDrivingChartWidthByPercent(0f)
                         }
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }catch (e:Exception){
 
@@ -727,6 +735,8 @@ class ManageEngineActivity: BaseRefreshActivity() {
 
                             tv_distance.text = transferDistance(0.0)
                         }
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }catch (e:Exception){
 

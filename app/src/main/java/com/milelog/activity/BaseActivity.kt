@@ -1,6 +1,7 @@
 package com.milelog.activity
 
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
@@ -103,6 +104,8 @@ open class BaseActivity: AppCompatActivity(){
 
                                             PreferenceUtil.putBooleanPref(this@BaseActivity, PreferenceUtil.POST_DEVICE_INFO_STATE, true)
                                             PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.DEVICE_ID_FOR_FCM, postConnectDeviceResponse.id)
+                                        }else if(response.code() == 401){
+                                            logout()
                                         }
 
                                         tokenProcessCallback.completeProcess()
@@ -545,48 +548,64 @@ open class BaseActivity: AppCompatActivity(){
     }
 
     fun logout(){
+        if(PreferenceUtil.getPref(this@BaseActivity,PreferenceUtil.REFRESH_TOKEN,"") != "") {
+            PreferenceUtil.getPref(this@BaseActivity, PreferenceUtil.DEVICE_ID_FOR_FCM, "")?.let {
 
-        PreferenceUtil.getPref(this@BaseActivity, PreferenceUtil.DEVICE_ID_FOR_FCM, "")?.let{
-
-            val gson = Gson()
-            val jsonParam =
-                gson.toJson(PostConnectDeviceRequest(it))
+                val gson = Gson()
+                val jsonParam =
+                    gson.toJson(PostConnectDeviceRequest(it))
 
 
-            apiService().postDisconnectDevice("Bearer " + PreferenceUtil.getPref(this@BaseActivity, PreferenceUtil.ACCESS_TOKEN, ""), makeRequestBody(jsonParam)).enqueue(object:Callback<ResponseBody>{
-                override fun onResponse(
-                    call: Call<ResponseBody>,
-                    response: Response<ResponseBody>
-                ) {
-                    if(response.code() == 200 || response.code() == 201){
+                apiService().postDisconnectDevice(
+                    "Bearer " + PreferenceUtil.getPref(
+                        this@BaseActivity,
+                        PreferenceUtil.ACCESS_TOKEN,
+                        ""
+                    ), makeRequestBody(jsonParam)
+                ).enqueue(object : Callback<ResponseBody> {
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+                        if (response.code() == 200 || response.code() == 201) {
 
+                        }
                     }
-                }
 
-                override fun onFailure(
-                    call: Call<ResponseBody>,
-                    t: Throwable
-                ) {
-                }
+                    override fun onFailure(
+                        call: Call<ResponseBody>,
+                        t: Throwable
+                    ) {
+                    }
 
-            })
+                })
+            }
+
+
+            PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.ACCESS_TOKEN, "")
+            PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.REFRESH_TOKEN, "")
+            PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.EXPIRES_IN, "")
+            PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.REFRESH_EXPIRES_IN, "")
+            PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.TOKEN_TYPE, "")
+            PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.KEYLESS_ACCOUNT, "")
+            PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.KEYLESS_ACCOUNT_EXPIRE, "")
+            PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.OAUTH_PROVIDER, "")
+            PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.ID_TOKEN, "")
+            PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
+            PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.USER_CARID, "")
+            PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.USER_ID, "")
+
+            PreferenceUtil.putBooleanPref(this@BaseActivity, PreferenceUtil.HAVE_BEEN_HOME, false)
+
+            startActivity(
+                Intent(
+                    this@BaseActivity,
+                    LoginActivity::class.java
+                ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            )
+            finish()
+
         }
-
-
-        PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.ACCESS_TOKEN, "")
-        PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.REFRESH_TOKEN, "")
-        PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.EXPIRES_IN, "")
-        PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.REFRESH_EXPIRES_IN, "")
-        PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.TOKEN_TYPE, "")
-        PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.KEYLESS_ACCOUNT, "")
-        PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.KEYLESS_ACCOUNT_EXPIRE, "")
-        PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.OAUTH_PROVIDER, "")
-        PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.ID_TOKEN, "")
-        PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
-        PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.USER_CARID, "")
-        PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.USER_ID, "")
-
-        PreferenceUtil.putBooleanPref(this@BaseActivity, PreferenceUtil.HAVE_BEEN_HOME, false)
     }
 
     fun showCustomToast(context: Context, message: String) {

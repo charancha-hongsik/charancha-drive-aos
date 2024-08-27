@@ -607,6 +607,8 @@ class AverageDrivenDistanceActivity: BaseRefreshActivity() {
                             getDrivingGraphDataResponse.items,
                             getCurrentAndPastTimeForISO(29).third
                         )
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }catch (e:Exception){
 
@@ -647,6 +649,8 @@ class AverageDrivenDistanceActivity: BaseRefreshActivity() {
                             getDrivingGraphDataResponse.items,
                             getCurrentAndPastTimeForISO(SIX_MONTH).third
                         )
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }catch (e:Exception){
 
@@ -687,6 +691,8 @@ class AverageDrivenDistanceActivity: BaseRefreshActivity() {
                             getDrivingGraphDataResponse.items,
                             getCurrentAndPastTimeForISO(YEAR).third
                         )
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }catch (e:Exception){
 
@@ -1259,6 +1265,8 @@ class AverageDrivenDistanceActivity: BaseRefreshActivity() {
 
 
                                             setRecentBarChart(getDrivingGraphDataResponse.items)
+                                        }else if(response.code() == 401){
+                                            logout()
                                         }
                                     }catch (e:Exception){
 
@@ -1291,6 +1299,8 @@ class AverageDrivenDistanceActivity: BaseRefreshActivity() {
                             tv_diff_distance.visibility = View.INVISIBLE
 
                         }
+                    } else if(response.code() == 401){
+                        logout()
                     } else {
                         tv_date1.text = getTodayFormattedDate()
                         tv_date2.text = getTodayFormattedDate()
@@ -1410,6 +1420,8 @@ class AverageDrivenDistanceActivity: BaseRefreshActivity() {
 
                             setRecentBarChartAsDefault()
                         }
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }catch (e:Exception){
 
@@ -1507,6 +1519,8 @@ class AverageDrivenDistanceActivity: BaseRefreshActivity() {
                             tv_diff_distance.visibility = View.INVISIBLE
 
                         }
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }catch (e:Exception){
 
@@ -1608,6 +1622,8 @@ class AverageDrivenDistanceActivity: BaseRefreshActivity() {
                         }
 
 
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }catch (e:Exception){
 

@@ -421,6 +421,8 @@ class HighSpeedDrivingActivity: BaseRefreshActivity() {
 
 
                         }
+                    } else if(response.code() == 401){
+                        logout()
                     } else {
                         tv_total_percent.text = "0.0"
                         tv_diff_percent.text = "+0.0% 증가"

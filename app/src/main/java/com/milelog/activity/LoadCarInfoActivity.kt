@@ -130,7 +130,9 @@ class LoadCarInfoActivity: BaseRefreshActivity() {
                             setResult(RESULT_CANCELED, intent)
                             finish()
                         }
-                    }else{
+                    }else if(response.code() == 401){
+                        logout()
+                    } else{
                         showCustomToast(this@LoadCarInfoActivity,"차량 번호 또는 소유자명이 일치하지 않습니다.")
 
                         val intent = Intent(this@LoadCarInfoActivity, RegisterCarActivity::class.java)

@@ -193,7 +193,9 @@ class RegisterCarActivity: BaseActivity() {
                                     PreferenceUtil.putPref(this@RegisterCarActivity,  PreferenceUtil.KM_MILE, "km")
                                     startActivity(Intent(this@RegisterCarActivity, MainActivity::class.java).addFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK))
                                     finish()
-                                }else{
+                                }else if(response.code() == 401){
+                                    logout()
+                                } else{
                                     showCustomToast(this@RegisterCarActivity,"차량 등록에 실패했습니다.")
 
                                 }

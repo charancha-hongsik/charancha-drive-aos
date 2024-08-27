@@ -167,9 +167,6 @@ class SplashActivity: BaseActivity() {
                             })
                         }else{
                             logout()
-
-                            startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
-                            finish()
                         }
                     }
 

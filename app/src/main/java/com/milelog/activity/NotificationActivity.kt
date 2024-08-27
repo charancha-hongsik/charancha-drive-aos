@@ -118,8 +118,8 @@ class NotificationActivity: BaseRefreshActivity() {
                                         putTerms(term.id, 0)
                                     }
                                 }
-                            }else{
-
+                            }else if(response.code() == 401){
+                                logout()
                             }
                         }
 
@@ -143,8 +143,8 @@ class NotificationActivity: BaseRefreshActivity() {
                                         putTerms(term.id, 1)
                                     }
                                 }
-                            }else{
-
+                            }else if(response.code() == 401){
+                                logout()
                             }
                         }
 
@@ -189,32 +189,24 @@ class NotificationActivity: BaseRefreshActivity() {
                 response: Response<ResponseBody>
             ) {
                 if(response.code() == 200 || response.code() == 201){
-                    if(response.code() == 200){
-                        if(isAgree == 0){
-                            btn_all_noti.isSelected = false
-                            btn_marketing.isSelected = false
-                            showCustomToast(this@NotificationActivity, getTodayFormattedDate() + "마일로그 마케팅 정보 수신 거부되었습니다.")
-
-                        }
-                        else{
-                            if(btn_drive_history.isSelected && btn_announcement.isSelected){
-                                btn_all_noti.isSelected = true
-                            }
-
-                            btn_marketing.isSelected = true
-
-                            showCustomToast(this@NotificationActivity, getTodayFormattedDate() + "마일로그 마케팅 정보 수신 동의되었습니다.")
-
-                        }
-
-
-
-                    }else{
+                    if(isAgree == 0){
+                        btn_all_noti.isSelected = false
+                        btn_marketing.isSelected = false
+                        showCustomToast(this@NotificationActivity, getTodayFormattedDate() + "마일로그 마케팅 정보 수신 거부되었습니다.")
 
                     }
-                } else{
-                    showCustomToast(this@NotificationActivity,"통신 실패")
+                    else{
+                        if(btn_drive_history.isSelected && btn_announcement.isSelected){
+                            btn_all_noti.isSelected = true
+                        }
 
+                        btn_marketing.isSelected = true
+
+                        showCustomToast(this@NotificationActivity, getTodayFormattedDate() + "마일로그 마케팅 정보 수신 동의되었습니다.")
+
+                    }
+                } else if(response.code() == 401){
+                    logout()
                 }
             }
 
@@ -251,6 +243,8 @@ class NotificationActivity: BaseRefreshActivity() {
                     if(btn_drive_history.isSelected && btn_announcement.isSelected && btn_marketing.isSelected){
                         btn_all_noti.isSelected = true
                     }
+                }else if(response.code() == 401){
+                    logout()
                 }
             }
 
@@ -290,6 +284,8 @@ class NotificationActivity: BaseRefreshActivity() {
 
                     getMyNotificationAgreed()
 
+                }else if(response.code() == 401){
+                    logout()
                 }
             }
 
@@ -335,6 +331,8 @@ class NotificationActivity: BaseRefreshActivity() {
 
 
 
+                }else if(response.code() == 401){
+                    logout()
                 }
             }
 
@@ -380,6 +378,8 @@ class NotificationActivity: BaseRefreshActivity() {
                             btn_announcement.isSelected = true
                         }
                     }
+                }else if(response.code() == 401){
+                    logout()
                 }
             }
 

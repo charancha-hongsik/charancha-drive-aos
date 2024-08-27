@@ -224,6 +224,8 @@ class DetailManageScoreActivity: BaseRefreshActivity(){
                         }else{
                             setNoData()
                         }
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }
 
@@ -258,6 +260,8 @@ class DetailManageScoreActivity: BaseRefreshActivity(){
                             setInquireScope(getTodayFormattedDate())
                             tv_engine_info_average_distance.text = transferDistanceWithUnit(0.0)
                         }
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }
 
@@ -287,6 +291,8 @@ class DetailManageScoreActivity: BaseRefreshActivity(){
                         }else{
                             setNoData()
                         }
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }
 
@@ -317,6 +323,8 @@ class DetailManageScoreActivity: BaseRefreshActivity(){
                     }else{
                         setNoData()
                     }
+                }else if(response.code() == 401){
+                    logout()
                 }
             }
 
@@ -352,6 +360,8 @@ class DetailManageScoreActivity: BaseRefreshActivity(){
                     }else{
                         tv_engine_info_average_distance.text = transferDistanceWithUnit(0.0)
                     }
+                }else if(response.code() == 401){
+                    logout()
                 }
             }
 

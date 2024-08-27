@@ -62,7 +62,9 @@ class MyPageActivity: BaseRefreshActivity() {
                     val type: Type = object : TypeToken<List<TermsSummaryResponse?>?>() {}.type
                     termsSummaryResponse = gson.fromJson(jsonString, type)
 
-                }else{
+                }else if(response.code() == 401){
+                    logout()
+                } else{
 
                 }
             }
@@ -132,9 +134,6 @@ class MyPageActivity: BaseRefreshActivity() {
         btn_logout.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
                 logout()
-
-                startActivity(Intent(this@MyPageActivity, LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
-                finish()
             }
 
         })
@@ -159,6 +158,8 @@ class MyPageActivity: BaseRefreshActivity() {
                     tv_email.text = getAccountProfilesResponse.user.email
                     tv_nickname.text = getAccountProfilesResponse.nickName + "님"
 
+                }else if(response.code() == 401){
+                    logout()
                 }
             }
 

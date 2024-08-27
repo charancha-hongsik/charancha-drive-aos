@@ -671,6 +671,8 @@ class DrivenTimeActivity: BaseRefreshActivity() {
                             getDrivingGraphDataResponse.items,
                             getCurrentAndPastTimeForISO(29).third
                         )
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }catch (e:Exception){
 
@@ -716,6 +718,8 @@ class DrivenTimeActivity: BaseRefreshActivity() {
                             getDrivingGraphDataResponse.items,
                             getCurrentAndPastTimeForISO(SIX_MONTH).third
                         )
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }catch (e:Exception){
 
@@ -760,6 +764,8 @@ class DrivenTimeActivity: BaseRefreshActivity() {
                             getDrivingGraphDataResponse.items,
                             getCurrentAndPastTimeForISO(YEAR).third
                         )
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }catch (e:Exception){
 

@@ -26,7 +26,6 @@ object PreferenceUtil {
     // 사용자의 Unique ID -> 사용자마다 알람 리스트 따로 저장
     const val USER_ID = "USER_ID"
 
-
     /**
      * 로그인 및 로그아웃 시 처리 필요
      */

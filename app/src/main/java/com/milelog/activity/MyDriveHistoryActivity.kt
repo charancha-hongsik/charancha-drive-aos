@@ -290,6 +290,8 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                     histories.add(DriveItem("","","","","",false,"","",0.0,0.0))
                     meta.afterCursor = getDriveHistroyResponse.meta.afterCursor
                     (lv_history.adapter as DriveHistoryAdapter).notifyDataSetChanged()
+                }else if(response.code() == 401){
+                    logout()
                 }else{
                     lv_history.visibility = GONE
                     layout_no_data.visibility = VISIBLE
@@ -343,6 +345,8 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                         layout_no_data.visibility = VISIBLE
                     }
 
+                } else if(response.code() == 401){
+                    logout()
                 } else{
                     lv_history.visibility = GONE
                     layout_no_data.visibility = VISIBLE

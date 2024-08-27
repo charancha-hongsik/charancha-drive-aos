@@ -180,7 +180,9 @@ class SettingActivity: BaseRefreshActivity(){
 
 
 
-                }else{
+                }else if(response.code() == 401){
+                    logout()
+                } else{
                     tv_version.text = "V " + BuildConfig.VERSION_NAME
 
                     tv_latest.visibility = GONE

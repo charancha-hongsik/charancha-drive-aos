@@ -79,6 +79,8 @@ class MyInfoActivity: BaseRefreshActivity() {
 
                                     tv_nickname.text = contents
 
+                                }else if(response.code() == 401){
+                                    logout()
                                 }
                             }
 

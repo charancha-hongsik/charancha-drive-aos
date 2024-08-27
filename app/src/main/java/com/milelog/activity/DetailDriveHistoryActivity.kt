@@ -264,6 +264,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
                                     isActive = true
 
+                                }else if(response.code() == 401){
+                                    logout()
                                 }
                                 layout_my_drive.visibility = GONE
                             }catch (e:Exception){
@@ -292,6 +294,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                                 tv_not_mycar.visibility = VISIBLE
 
                                 isActive = false
+                            }else if(response.code() == 401){
+                                logout()
                             }
                             layout_my_drive.visibility = GONE
 
@@ -464,6 +468,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                         btn_mycar.isSelected = false
                         btn_not_mycar.isSelected = true
                     }
+                }else if(response.code() == 401){
+                    logout()
                 }
             }
 

@@ -281,6 +281,8 @@ class ConstantSpeedDrivingActivity: BaseRefreshActivity() {
                                             )
                                             setRecentBarChart(getDrivingGraphDataResponse.items)
 
+                                        }else if(response.code() == 401){
+                                            logout()
                                         }
                                     }catch (e:Exception){
 
@@ -321,6 +323,8 @@ class ConstantSpeedDrivingActivity: BaseRefreshActivity() {
                             setRecentBarChartAsDefault()
                             setExtraSpeedDrivingChartWidthByPercent(0f)
                         }
+                    } else if(response.code() == 401){
+                        logout()
                     } else {
                         tv_diff_percent.visibility = View.INVISIBLE
 
@@ -440,6 +444,8 @@ class ConstantSpeedDrivingActivity: BaseRefreshActivity() {
                             setExtraSpeedDrivingChartWidthByPercent(0f)
                         }
 
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }catch (e:Exception){
 
@@ -542,6 +548,8 @@ class ConstantSpeedDrivingActivity: BaseRefreshActivity() {
                             setExtraSpeedDrivingChartWidthByPercent(0f)
                         }
 
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }catch (e:Exception){
 
@@ -642,6 +650,8 @@ class ConstantSpeedDrivingActivity: BaseRefreshActivity() {
                             setRecentBarChartAsDefault()
                             setExtraSpeedDrivingChartWidthByPercent(0f)
                         }
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }catch (e:Exception){
 
@@ -1172,6 +1182,8 @@ class ConstantSpeedDrivingActivity: BaseRefreshActivity() {
                             getDrivingGraphDataResponse.items,
                             getCurrentAndPastTimeForISO(29).third
                         )
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }catch (e:Exception){
 

@@ -123,6 +123,8 @@ class EditCarInfoActivity: BaseRefreshActivity() {
                             showCustomToast(this@EditCarInfoActivity, "내 차 정보가 수정되었어요.")
 
                             finish()
+                        }else if(response.code() == 401){
+                            logout()
                         }
                     }
 
@@ -147,6 +149,8 @@ class EditCarInfoActivity: BaseRefreshActivity() {
                                 if(response.code() == 204){
                                     startActivity(Intent(this@EditCarInfoActivity, OnBoardingActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
                                     finish()
+                                }else if(response.code() == 401){
+                                    logout()
                                 }
                             }
 
@@ -230,6 +234,8 @@ class EditCarInfoActivity: BaseRefreshActivity() {
                                     et_car_year.hint = getMyCarInfoResponse.carYear.toString()
                                     tv_car_fuel.text = getMyCarInfoResponse.fuel
 
+                                }else if(response.code() == 401){
+                                    logout()
                                 }
                             }
 
@@ -241,8 +247,8 @@ class EditCarInfoActivity: BaseRefreshActivity() {
                     }else{
 
                     }
-                }else{
-
+                }else if(response.code() == 401){
+                    logout()
                 }
             }
 

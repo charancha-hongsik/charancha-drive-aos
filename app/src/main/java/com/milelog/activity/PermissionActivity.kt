@@ -285,7 +285,9 @@ class PermissionActivity: BaseActivity(){
                         startActivity(Intent(this@PermissionActivity, OnBoardingActivity::class.java))
                         finish()
                     }
-                }else{
+                }else if(response.code() == 401){
+                    logout()
+                } else{
                     PreferenceUtil.putBooleanPref(this@PermissionActivity, PreferenceUtil.PERMISSION_ALL_CHECKED, true)
 
                     startActivity(Intent(this@PermissionActivity, OnBoardingActivity::class.java))

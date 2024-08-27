@@ -282,6 +282,8 @@ class BestDrivingActivity: BaseRefreshActivity() {
                                                 GetDrivingGraphDataResponse::class.java
                                             )
                                             setRecentBarChart(getDrivingGraphDataResponse.items)
+                                        }else if(response.code() == 401){
+                                            logout()
                                         }
                                     }catch (e:Exception){
 
@@ -322,8 +324,8 @@ class BestDrivingActivity: BaseRefreshActivity() {
                         }
 
 
-                    } else {
-
+                    } else if(response.code() == 401){
+                        logout()
                     }
                 }catch (e:Exception){
 
@@ -427,6 +429,8 @@ class BestDrivingActivity: BaseRefreshActivity() {
 
                             setExtraSpeedDrivingChartWidthByPercent(0f)
                         }
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }catch (e:Exception){
 
@@ -530,6 +534,8 @@ class BestDrivingActivity: BaseRefreshActivity() {
                             setExtraSpeedDrivingChartWidthByPercent(0f)
                         }
 
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }catch (e:Exception){
 
@@ -631,6 +637,8 @@ class BestDrivingActivity: BaseRefreshActivity() {
 
                             setExtraSpeedDrivingChartWidthByPercent(0f)
                         }
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }catch (e:Exception){
 
@@ -1164,6 +1172,8 @@ class BestDrivingActivity: BaseRefreshActivity() {
                             getDrivingGraphDataResponse.items,
                             getCurrentAndPastTimeForISO(29).third
                         )
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }catch (e:Exception){
 
@@ -1205,6 +1215,8 @@ class BestDrivingActivity: BaseRefreshActivity() {
                             getDrivingGraphDataResponse.items,
                             getCurrentAndPastTimeForISO(SIX_MONTH).third
                         )
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }catch (e:Exception){
 
@@ -1246,6 +1258,8 @@ class BestDrivingActivity: BaseRefreshActivity() {
                             getDrivingGraphDataResponse.items,
                             getCurrentAndPastTimeForISO(YEAR).third
                         )
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }catch (e:Exception){
 

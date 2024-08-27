@@ -80,13 +80,19 @@ class HeaderInterceptor(val context: Context) : Interceptor {
                             .header("isRetry", "true") // 재시도 플래그 추가
                             .build()
 
+                        Log.d("testestsetest","testestsesetse newRequest :: " + newRequest.url)
+                        val response2 = chain.proceed(newRequest)
+                        Log.d("testestsetest","testestsesetse response2 :: " + response2.code)
+
                         // 재시도 요청 보내기
-                        chain.proceed(newRequest)
+                        response2
                     } else {
                         // Refresh 실패시 원래 response 반환
                         response
                     }
                 }
+
+
             }
         }
 

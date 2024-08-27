@@ -77,7 +77,9 @@ class TermsOfUseActivity: BaseActivity() {
 
                     setResource()
                     setListener()
-                }else{
+                }else if(response.code() == 401){
+                    logout()
+                } else{
 
                 }
             }
@@ -90,8 +92,6 @@ class TermsOfUseActivity: BaseActivity() {
 
     override fun onBackPressed() {
         logout()
-        startActivity(Intent(this@TermsOfUseActivity, LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
-        finish()
         super.onBackPressed()
     }
 
@@ -193,8 +193,6 @@ class TermsOfUseActivity: BaseActivity() {
         ibArrowTerms.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
                 logout()
-                startActivity(Intent(this@TermsOfUseActivity, LoginActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
-                finish()
             }
 
         })
@@ -263,7 +261,9 @@ class TermsOfUseActivity: BaseActivity() {
                                                 startActivity(Intent(this@TermsOfUseActivity, OnBoardingActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
                                                 finish()
                                             }
-                                        }else{
+                                        }else if(response.code() == 401){
+                                            logout()
+                                        } else{
                                             startActivity(Intent(this@TermsOfUseActivity, OnBoardingActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
                                             finish()
                                         }
@@ -281,6 +281,8 @@ class TermsOfUseActivity: BaseActivity() {
                                 startActivity(Intent(this@TermsOfUseActivity, PermissionInfoActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
                                 finish()
                             }
+                        } else if(response.code() == 401){
+                            logout()
                         } else{
                             showCustomToast(this@TermsOfUseActivity,"통신 실패")
 

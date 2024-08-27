@@ -247,6 +247,8 @@ class MainActivity : BaseRefreshActivity() {
 
                     PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.USER_ID, getAccountResponse.id)
 
+                } else if(response.code() == 401){
+                    logout()
                 }
             }
 
@@ -882,6 +884,8 @@ class MainActivity : BaseRefreshActivity() {
                                     getManageScoreForAMonth()
                                     getDrivingDistanceForAMonth()
                                     setRecentManageScoreForSummary()
+                                }else if(response.code() == 401){
+                                    logout()
                                 }
                             }
 
@@ -894,8 +898,8 @@ class MainActivity : BaseRefreshActivity() {
                         startActivity(Intent(this@MainActivity, SplashActivity::class.java))
                         finish()
                     }
-                }else{
-
+                }else if(response.code() == 401){
+                    logout()
                 }
             }
 
@@ -967,6 +971,8 @@ class MainActivity : BaseRefreshActivity() {
 
                         setPieChart((getManageScoreResponse.average.totalEngineScore / 10).toFloat())
 
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }catch (e:Exception){
 
@@ -991,7 +997,7 @@ class MainActivity : BaseRefreshActivity() {
             Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 try {
-                    if (response.code() == 200) {
+                    if (response.code() == 200 || response.code() == 201) {
                         val getDrivingStatisticsResponse = Gson().fromJson(
                             response.body()?.string(),
                             GetDrivingStatisticsResponse::class.java
@@ -1078,6 +1084,8 @@ class MainActivity : BaseRefreshActivity() {
 
 
                         }
+                    } else if(response.code() == 401){
+                        logout()
                     }
                 }catch (e:Exception){
 
@@ -1146,6 +1154,8 @@ class MainActivity : BaseRefreshActivity() {
                             tv_recent_info_text.text = "아직 데이터가 없어요. 함께 달려볼까요?"
                             iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
                         }
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }catch (e:Exception){
 
@@ -1203,6 +1213,8 @@ class MainActivity : BaseRefreshActivity() {
                             tv_recent_info_text.text = "아직 데이터가 없어요. 함께 달려볼까요?"
                             iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
                         }
+                    }else if(response.code() == 401){
+                        logout()
                     }
                 }catch (e:Exception){
 
@@ -1273,6 +1285,8 @@ class MainActivity : BaseRefreshActivity() {
                                                         drive.tracking_id,
                                                         postDrivingInfoResponse.id
                                                     )
+                                            } else if(response.code() == 401){
+                                                logout()
                                             }
 
 //                                        if (drive.tracking_id == it.last().tracking_id) {
