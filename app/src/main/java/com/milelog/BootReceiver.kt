@@ -113,7 +113,7 @@ class BootReceiver : BroadcastReceiver() {
                                     }
                                 })
                             }else{
-
+                                sendRegistrationToServer(context, token)
                             }
                         },
                         5000
@@ -144,7 +144,7 @@ class BootReceiver : BroadcastReceiver() {
                         response: Response<ResponseBody>
                     ) {
                         if (response.code() == 200 || response.code() == 201){
-
+                            Log.d("testsetestest","testestestest :: " + response.code())
                         }
                     }
 
@@ -172,3 +172,4 @@ class BootReceiver : BroadcastReceiver() {
             )
     }
 }
+

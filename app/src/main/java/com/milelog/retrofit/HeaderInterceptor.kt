@@ -16,13 +16,16 @@ class HeaderInterceptor(val context: Context) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
 
         val originalRequest = chain.request()
+
+        // 요청이 이미 재시도된 것인지 확인하는 플래그
+        if (originalRequest.header("isRetry") == "true") {
+            return chain.proceed(originalRequest)
+        }
+
         val requestBuilder = originalRequest.newBuilder()
             .header("Content-Type", "application/json")
         val request = requestBuilder.build()
         val response = chain.proceed(request)
-
-        Log.d("testestestest","testestestest request url :: " + request.url)
-        Log.d("testestestest","testestestest response.code :: " + response.code)
 
 
         // 401 Unauthorized 처리
@@ -71,6 +74,7 @@ class HeaderInterceptor(val context: Context) : Interceptor {
                         // 새로운 토큰으로 원래 요청 재시도
                         val newRequest = originalRequest.newBuilder()
                             .header("Authorization", "Bearer ${signInResponse.access_token}")
+                            .header("isRetry", "true") // 재시도 플래그 추가
                             .build()
 
                         // 재시도 요청 보내기
