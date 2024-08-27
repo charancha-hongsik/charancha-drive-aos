@@ -180,19 +180,31 @@ class BluetoothService : Service() {
             )
             notification = NotificationCompat.Builder(this, CHANNEL_ID)
 
-
-            startForeground(1, notification.setSmallIcon(R.mipmap.ic_notification)
-                .setAutoCancel(false)
-                .setOngoing(true)
-                .setContentText("주행 관찰중이에요.")
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setOnlyAlertOnce(true)
-                .build())
+            if (Build.VERSION.SDK_INT >= 34) {
+                startForeground(1, notification
+                    .setSmallIcon(R.mipmap.ic_notification)
+                    .setAutoCancel(false)
+                    .setOngoing(true)
+                    .setContentText("주행 관찰중이에요.")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setOnlyAlertOnce(true)
+                    .build(), FOREGROUND_SERVICE_TYPE_HEALTH)
+            }else{
+                startForeground(1, notification
+                    .setSmallIcon(R.mipmap.ic_notification)
+                    .setAutoCancel(false)
+                    .setOngoing(true)
+                    .setContentText("주행 관찰중이에요.")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setOnlyAlertOnce(true)
+                    .build())
+            }
 
             sensorState = false
 
             scheduleWalkingDetectWork()
         }
+
         return START_REDELIVER_INTENT
     }
 

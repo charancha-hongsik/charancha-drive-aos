@@ -131,6 +131,7 @@ class MainActivity : BaseRefreshActivity() {
         if(ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 if (ActivityCompat.checkSelfPermission(applicationContext, ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED) {
+                    Log.d("testsetsetset","testsetestset :: " + isMyServiceRunning(BluetoothService::class.java))
                     if(!isMyServiceRunning(BluetoothService::class.java)){
                         val bluetoothIntent = Intent(this, BluetoothService::class.java)
                         startForegroundService(bluetoothIntent)
@@ -1232,6 +1233,7 @@ class MainActivity : BaseRefreshActivity() {
             Executors.newSingleThreadExecutor().execute {
                 val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(this@MainActivity)
                 driveDatabase.driveForApiDao().allDriveLimit5?.let {
+                    Log.d("testestestestset","testestestestsetse postDrivingInfoNotSavedData size :: " + it.size)
                     if (it.isNotEmpty()) {
                         for (drive in it) {
                             val postDrivingInfoRequest = PostDrivingInfoRequest(

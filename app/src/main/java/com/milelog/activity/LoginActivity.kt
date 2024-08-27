@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View.*
 import android.webkit.*
+import androidx.browser.customtabs.CustomTabsIntent
 import com.milelog.BuildConfig
 import com.milelog.PreferenceUtil
 import com.milelog.R
@@ -54,7 +55,7 @@ class LoginActivity: BaseActivity() {
 //        val builder = CustomTabsIntent.Builder()
 //        val customTabsIntent = builder.build()
 //        customTabsIntent
-//        customTabsIntent.launchUrl(this, Uri.parse(loginUrl))
+//        customTabsIntent.launchUrl(this, Uri.parse("https://accounts.google.com/o/oauth2/v2/auth?client_id=261058280037-q7h5r2r541bnu4g4s29j28buapagukd5.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Fdev.milelog.charancha.com%2Fcallback&response_type=id_token+token&scope=openid+email+profile&nonce=6303802816258351306621586903820938577566340891518799089734464251242280008709&prompt=select_account"))
 
 //        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(loginUrl))
 //        intent.setPackage("com.android.chrome")
@@ -185,6 +186,13 @@ class LoginActivity: BaseActivity() {
             activity.handleFailLogin(message)
         }
 
+        @JavascriptInterface
+        fun test_login(){
+            val builder = CustomTabsIntent.Builder()
+            val customTabsIntent = builder.build()
+            customTabsIntent.launchUrl(activity, Uri.parse("https://accounts.google.com/o/oauth2/v2/auth?client_id=261058280037-q7h5r2r541bnu4g4s29j28buapagukd5.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Fdev.milelog.charancha.com%2Fcallback&response_type=id_token+token&scope=openid+email+profile&nonce=6303802816258351306621586903820938577566340891518799089734464251242280008709&prompt=select_account"))
+
+        }
     }
 
 

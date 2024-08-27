@@ -27,6 +27,9 @@ class HeaderInterceptor(val context: Context) : Interceptor {
         val request = requestBuilder.build()
         val response = chain.proceed(request)
 
+        Log.d("etestestest","testestsesetse url:: " + request.url)
+        Log.d("etestestest","testestsesetse code:: " + response.code)
+
 
         // 401 Unauthorized 처리
         if(!request.url.toString().contains("reissue")){
