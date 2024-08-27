@@ -210,8 +210,23 @@
         <activity
             android:name=".activity.LoginActivity"
             android:theme="@style/Theme.Charanchadrivewhite100"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:exported="true"/>
+            android:exported="true"
+            android:windowSoftInputMode="adjustNothing">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="milelog" android:host="login"
+                    tools:ignore="AppLinkUrlError"/>
+            </intent-filter>
+
+        </activity>
 
         <activity
             android:name=".activity.TermsOfUseActivity"

@@ -2,6 +2,7 @@ package com.milelog.activity
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View.*
@@ -49,7 +50,50 @@ class LoginActivity: BaseActivity() {
 
             }
         })
+
+//        val builder = CustomTabsIntent.Builder()
+//        val customTabsIntent = builder.build()
+//        customTabsIntent
+//        customTabsIntent.launchUrl(this, Uri.parse(loginUrl))
+
+//        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(loginUrl))
+//        intent.setPackage("com.android.chrome")
+//        startActivity(intent)
+
+
         setWebview()
+    }
+
+    /**
+     * window.location.href = "intent://login?test1=hongsik1232331&test2=value2#Intent;scheme=milelog;package=com.milelog.dev;end"
+     */
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        Log.d("YourActivity", "testestestsetse onNewIntent")
+
+        intent?.let{
+            handleIntent(it)
+        }
+    }
+
+    private fun handleIntent(intent: Intent) {
+        // 인텐트가 VIEW 액션을 가지고 있는지 확인
+        if (intent.action == Intent.ACTION_VIEW) {
+            // URI 가져오기
+            val uri: Uri? = intent.data
+
+            uri?.let {
+                // 호스트 확인
+                val host = it.host
+                // 쿼리 파라미터 추출
+                val test1 = it.getQueryParameter("test1")
+                val test2 = it.getQueryParameter("test2")
+
+                // test1, test2 값을 사용하여 처리
+                Log.d("YourActivity", "testestestsetse testest test1: $test1, test2: $test2")
+
+            }
+        }
     }
 
 
@@ -64,11 +108,6 @@ class LoginActivity: BaseActivity() {
         wv_login.settings.domStorageEnabled = true
         wv_login.settings.cacheMode = WebSettings.LOAD_DEFAULT
         wv_login.settings.textZoom = 100 // System 텍스트 사이즈 변경되지 않게
-//        wv_login.clearCache(true)
-//        wv_login.clearHistory()
-//        CookieManager.getInstance().removeAllCookie()
-//        CookieManager.getInstance().removeSessionCookie()
-
 
         //chrome inspect 디버깅 모드
         WebView.setWebContentsDebuggingEnabled(true)
@@ -131,6 +170,7 @@ class LoginActivity: BaseActivity() {
     class MilelogPublicApi(val activity: LoginActivity) {
         @JavascriptInterface
         fun successLogin(keylessAccount: String, keylessAccountExpire:String, oauthProvider:String, idToken:String, accountAddress:String) {
+            Log.d("testestestsete","testsetestsetsetse :: " + keylessAccount)
             PreferenceUtil.putPref(activity, PreferenceUtil.KEYLESS_ACCOUNT, keylessAccount)
             PreferenceUtil.putPref(activity, PreferenceUtil.KEYLESS_ACCOUNT_EXPIRE, keylessAccountExpire)
             PreferenceUtil.putPref(activity, PreferenceUtil.OAUTH_PROVIDER, oauthProvider)
@@ -289,10 +329,6 @@ class LoginActivity: BaseActivity() {
                             )
                         )
 
-//                        wv_login.clearHistory()
-//                        wv_login.clearCache(true);
-//                        wv_login.removeJavascriptInterface("MilelogPublicApi")
-
                         finish()
 
                     }else{
@@ -315,9 +351,6 @@ class LoginActivity: BaseActivity() {
                                     )
                                 )
 
-//                                wv_login.clearHistory();
-//                                wv_login.clearCache(true);
-//                                wv_login.removeJavascriptInterface("MilelogPublicApi")
                                 finish()
                             } else {
                                 apiService().getMyCarInfo("Bearer " + signInResponse.access_token).enqueue(object :Callback<ResponseBody>{
@@ -335,26 +368,15 @@ class LoginActivity: BaseActivity() {
                                                 PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.get(0).id)
                                                 startActivity(Intent(this@LoginActivity, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
 
-//                                                wv_login.clearHistory();
-//                                                wv_login.clearCache(true);
-//                                                wv_login.removeJavascriptInterface("MilelogPublicApi")
-
                                                 finish()
                                             }else{
                                                 startActivity(Intent(this@LoginActivity, OnBoardingActivity::class.java))
-
-//                                                wv_login.clearHistory();
-//                                                wv_login.clearCache(true);
-//                                                wv_login.removeJavascriptInterface("MilelogPublicApi")
 
                                                 finish()
                                             }
                                         }else{
                                             startActivity(Intent(this@LoginActivity, OnBoardingActivity::class.java))
 
-//                                            wv_login.clearHistory();
-//                                            wv_login.clearCache(true);
-//                                            wv_login.removeJavascriptInterface("MilelogPublicApi")
                                             finish()
                                         }
                                     }
@@ -365,9 +387,6 @@ class LoginActivity: BaseActivity() {
                                     ) {
                                         startActivity(Intent(this@LoginActivity, OnBoardingActivity::class.java))
 
-//                                        wv_login.clearHistory();
-//                                        wv_login.clearCache(true);
-//                                        wv_login.removeJavascriptInterface("MilelogPublicApi")
                                         finish()
                                     }
                                 })
@@ -380,10 +399,6 @@ class LoginActivity: BaseActivity() {
                                 )
                             )
 
-//                            wv_login.clearHistory();
-//                            wv_login.clearCache(true);
-//                            wv_login.removeJavascriptInterface("MilelogPublicApi")
-
                             finish()
 
                         }
@@ -395,10 +410,6 @@ class LoginActivity: BaseActivity() {
                             TermsOfUseActivity::class.java
                         )
                     )
-
-//                    wv_login.clearHistory();
-//                    wv_login.clearCache(true);
-//                    wv_login.removeJavascriptInterface("MilelogPublicApi")
 
                     finish()
 
