@@ -193,6 +193,10 @@ class MainActivity : BaseRefreshActivity() {
 
         getAccount()
         postDrivingInfoNotSavedData()
+
+        if(intent.getBooleanExtra("deeplink",false)){
+            startActivity(Intent(this@MainActivity, AlarmActivity::class.java))
+        }
     }
 
     fun getAddressFromLatLng(context: Context, latitude: Double, longitude: Double): String? {

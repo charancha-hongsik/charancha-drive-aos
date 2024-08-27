@@ -26,6 +26,7 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import com.milelog.BuildConfig
+import com.milelog.MyApplication
 import com.milelog.PreferenceUtil
 import com.milelog.R
 import com.milelog.retrofit.ApiServiceInterface
@@ -203,9 +204,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
      */
     private fun sendNotification(title:String, body:String, deepLink:String, timestamp:String, img: Bitmap?, type:String) {
         // Assign "splash://example" if deepLink is null
-        var safeDeepLink = "milelog://alarm"
+        var safeDeepLink = "milelog://splash"
+        if(MyApplication.isInForeground){
+            safeDeepLink = "milelog://alarm"
+        }
 
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(safeDeepLink))
+        intent.putExtra("deeplink",true)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         val pendingIntent = PendingIntent.getActivity(
             this, 0, intent,
