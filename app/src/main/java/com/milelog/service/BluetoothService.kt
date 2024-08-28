@@ -164,7 +164,7 @@ class BluetoothService : Service() {
     val channel = NotificationChannel(
         CHANNEL_ID,
         "상단바(필수)",
-        NotificationManager.IMPORTANCE_HIGH
+        NotificationManager.IMPORTANCE_DEFAULT
     )
 
     override fun onBind(p0: Intent?): IBinder? {

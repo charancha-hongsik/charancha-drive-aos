@@ -98,7 +98,7 @@ class NotificationActivity: BaseRefreshActivity() {
                 }
             }
 
-        })
+        }
 
         btn_marketing.setOnClickListener(object: OnSingleClickListener() {
             override fun onSingleClick(v: View?) {
@@ -188,6 +188,10 @@ class NotificationActivity: BaseRefreshActivity() {
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
             ) {
+                Log.d("testsetest","testestestsest id :: " + id)
+                Log.d("testsetest","testestestsest isAgree :: " + isAgree)
+
+
                 if(response.code() == 200 || response.code() == 201){
                     if(isAgree == 0){
                         btn_all_noti.isSelected = false
