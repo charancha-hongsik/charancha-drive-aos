@@ -220,8 +220,6 @@ class BluetoothService : Service() {
                     .build())
             }
 
-            sensorState = false
-
             scheduleWalkingDetectWork()
         }
     }
@@ -272,8 +270,6 @@ class BluetoothService : Service() {
                     .setOnlyAlertOnce(true)
                     .build())
             }
-
-            sensorState = false
 
             scheduleWalkingDetectWork()
         }
@@ -389,6 +385,8 @@ class BluetoothService : Service() {
 
                     if(distance_array.sum() > 500f){
                         callApi()
+                    }else{
+                        sensorState = false
                     }
 
                     fusedLocationClient?.removeLocationUpdates(locationCallback)
@@ -412,6 +410,8 @@ class BluetoothService : Service() {
 
                 if(distance_array.sum() > 500f){
                     callApi()
+                }else{
+                    sensorState = false
                 }
 
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
