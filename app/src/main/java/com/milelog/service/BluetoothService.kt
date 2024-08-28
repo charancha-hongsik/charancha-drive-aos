@@ -171,8 +171,81 @@ class BluetoothService : Service() {
         TODO("Not yet implemented")
     }
 
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        super.onTaskRemoved(rootIntent)
+
+        if(!sensorState){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                registerReceiver(TransitionsReceiver(), filter, RECEIVER_EXPORTED)
+            } else {
+                registerReceiver(TransitionsReceiver(), filter)
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                // Detecting L1 Receiver
+                registerReceiver(WalkingDetectReceiver(), IntentFilter().apply {
+                    addAction(TRANSITIONS_RECEIVER_ACTION)
+                }, RECEIVER_EXPORTED)
+            } else {
+                // Detecting L1 Receiver
+                registerReceiver(WalkingDetectReceiver(), IntentFilter().apply {
+                    addAction(TRANSITIONS_RECEIVER_ACTION)
+                })
+            }
+
+            carConnectionQueryHandler = CarConnectionQueryHandler(contentResolver)
+
+            (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
+                channel
+            )
+            notification = NotificationCompat.Builder(this, CHANNEL_ID)
+
+            if (Build.VERSION.SDK_INT >= 34) {
+                startForeground(1, notification
+                    .setSmallIcon(R.mipmap.ic_notification)
+                    .setAutoCancel(false)
+                    .setOngoing(true)
+                    .setContentText("주행 관찰중이에요.")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setOnlyAlertOnce(true)
+                    .build(), FOREGROUND_SERVICE_TYPE_HEALTH)
+            }else{
+                startForeground(1, notification
+                    .setSmallIcon(R.mipmap.ic_notification)
+                    .setAutoCancel(false)
+                    .setOngoing(true)
+                    .setContentText("주행 관찰중이에요.")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setOnlyAlertOnce(true)
+                    .build())
+            }
+
+            sensorState = false
+
+            scheduleWalkingDetectWork()
+        }
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if(!sensorState){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                registerReceiver(TransitionsReceiver(), filter, RECEIVER_EXPORTED)
+            } else {
+                registerReceiver(TransitionsReceiver(), filter)
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                // Detecting L1 Receiver
+                registerReceiver(WalkingDetectReceiver(), IntentFilter().apply {
+                    addAction(TRANSITIONS_RECEIVER_ACTION)
+                }, RECEIVER_EXPORTED)
+            } else {
+                // Detecting L1 Receiver
+                registerReceiver(WalkingDetectReceiver(), IntentFilter().apply {
+                    addAction(TRANSITIONS_RECEIVER_ACTION)
+                })
+            }
+
             carConnectionQueryHandler = CarConnectionQueryHandler(contentResolver)
 
             (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
@@ -205,33 +278,11 @@ class BluetoothService : Service() {
             scheduleWalkingDetectWork()
         }
 
-        return START_REDELIVER_INTENT
+        return START_STICKY
     }
 
     override fun onCreate() {
         // Detecting L2/L3 Receiver
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(TransitionsReceiver(), filter, RECEIVER_EXPORTED)
-        } else {
-            registerReceiver(TransitionsReceiver(), filter)
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            // Detecting L1 Receiver
-            registerReceiver(WalkingDetectReceiver(), IntentFilter().apply {
-                addAction(TRANSITIONS_RECEIVER_ACTION)
-            }, RECEIVER_EXPORTED)
-        } else {
-            // Detecting L1 Receiver
-            registerReceiver(WalkingDetectReceiver(), IntentFilter().apply {
-                addAction(TRANSITIONS_RECEIVER_ACTION)
-            })
-        }
-
-        scheduleWalkingDetectWork()
-
-
         super.onCreate()
     }
 
@@ -247,7 +298,6 @@ class BluetoothService : Service() {
 
         override fun onReceive(context: Context, intent: Intent) {
             if (ActivityTransitionResult.hasResult(intent)) {
-                (context as BluetoothService).refreshNotiText()
                 val result = ActivityTransitionResult.extractResult(intent)
                 result?.let {
                     for (event in it.transitionEvents) {
@@ -257,17 +307,14 @@ class BluetoothService : Service() {
                         if(activityType == DetectedActivity.WALKING) {
                             if (transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
                                 // Walking 활동에 들어감
-                                if(context.sensorState){
+                                if((context as BluetoothService).sensorState){
                                     context.stopSensor()
-
                                 }
                             }
                         } else if(activityType == DetectedActivity.IN_VEHICLE){
                             if (transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
                                 // Vehicle 활동에 들어감
-                                if(!context.sensorState){
-                                }
-                                context.startSensor(L1)
+                                (context as BluetoothService).startSensor(L1)
                             }
                         }
                     }
