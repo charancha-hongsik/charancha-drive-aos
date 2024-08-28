@@ -353,13 +353,14 @@ class BluetoothService : Service() {
     fun startSensor(level:String){
         try {
             if (!sensorState) {
+                sensorState = true
+
                 /**
                  * W0D-74 1행 데이터 삭제
                  */
                 firstLineState = true
                 firstLineLocation = null
 
-                sensorState = true
                 PreferenceUtil.putPref(this, PreferenceUtil.RUNNING_LEVEL, level)
                 driveDatabase = DriveDatabase.getDatabase(this)
                 initDriveData(level)
@@ -380,7 +381,6 @@ class BluetoothService : Service() {
         try {
             if (sensorState) {
                 if (level == PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL, "")) {
-                    sensorState = false
                     firstLineState = false
                     firstLineLocation = null
                     firstLocation = null
@@ -404,7 +404,6 @@ class BluetoothService : Service() {
     fun stopSensor(){
         try {
             if (sensorState) {
-                sensorState = false
                 firstLineState = false
                 firstLineLocation = null
                 firstLocation = null
@@ -797,6 +796,7 @@ class BluetoothService : Service() {
     }
 
     private fun callApi(){
+
         driveForApi.endTimestamp = System.currentTimeMillis()
 
         val postDriveDtoForApi = PostDrivingInfoRequest(
@@ -823,17 +823,24 @@ class BluetoothService : Service() {
                         writeToRoomForApi(driveForApi)
                         writeToRoomForApp(driveForApi.tracking_id)
                     }
+
+                    sensorState = false
+
                 }
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     writeToRoomForApi(driveForApi)
                     writeToRoomForApp(driveForApi.tracking_id)
+
+                    sensorState = false
                 }
             })
 
         } else {
             writeToRoomForApi(driveForApi)
             writeToRoomForApp(driveForApi.tracking_id)
+            sensorState = false
+
         }
     }
 

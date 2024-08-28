@@ -1266,6 +1266,14 @@ class MainActivity : BaseRefreshActivity() {
                                         response: Response<ResponseBody>
                                     ) {
                                         try {
+                                            Log.d("testestesest","testsetestse :: " + response.code())
+                                            Log.d("testestesest","testsetestse USER_CARID :: " + PreferenceUtil.getPref(this@MainActivity, PreferenceUtil.USER_CARID, "")!!)
+                                            Log.d("testestesest","testsetestse startTimestamp :: " + drive.startTimestamp)
+                                            Log.d("testestesest","testsetestse endTimestamp :: " + drive.endTimestamp)
+                                            Log.d("testestesest","testsetestse verification :: " + drive.verification)
+                                            Log.d("testestesest","testsetestse size :: " + drive.gpses.size)
+
+
 
                                             if (response.code() == 200 || response.code() == 201) {
                                                 val postDrivingInfoResponse = gson.fromJson(
@@ -1297,6 +1305,7 @@ class MainActivity : BaseRefreshActivity() {
 //                                            stopService(intent)
 //                                        }
                                         }catch (e:Exception){
+                                            Log.d("testestesest","testsetestse Exception:: " + e.toString())
 
                                         }
                                     }
