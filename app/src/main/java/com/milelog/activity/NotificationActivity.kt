@@ -98,7 +98,7 @@ class NotificationActivity: BaseRefreshActivity() {
                 }
             }
 
-        }
+        })
 
         btn_marketing.setOnClickListener(object: OnSingleClickListener() {
             override fun onSingleClick(v: View?) {
@@ -166,6 +166,7 @@ class NotificationActivity: BaseRefreshActivity() {
             }
 
         })
+
 
         btn_back.setOnClickListener {
             finish()
