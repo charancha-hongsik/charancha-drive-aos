@@ -123,6 +123,7 @@
             android:textColor="@color/gray_600"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/btn_edit_nickname"
             android:layout_width="match_parent"
             android:layout_height="54dp"
             android:layout_marginTop="6dp"
@@ -189,8 +190,9 @@
             <TextView
                 android:id="@+id/tv_withdrawal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
                 android:layout_marginLeft="8dp"
                 android:textAppearance="@style/C1SB"
                 android:textColor="@color/gray_900"

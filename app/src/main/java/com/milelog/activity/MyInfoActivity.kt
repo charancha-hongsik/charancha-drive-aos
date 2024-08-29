@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.milelog.CustomDialogForEditText
 import com.milelog.PreferenceUtil
 import com.milelog.R
@@ -21,10 +22,10 @@ class MyInfoActivity: BaseRefreshActivity() {
     lateinit var btn_back:ImageView
     lateinit var tv_nickname:TextView
     lateinit var tv_withdrawal:TextView
-    lateinit var ib_edit_nickname:ImageView
     lateinit var nickName:String
     lateinit var tv_login_oauth:TextView
     lateinit var tv_email:TextView
+    lateinit var btn_edit_nickname:ConstraintLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,9 +39,9 @@ class MyInfoActivity: BaseRefreshActivity() {
         btn_back = findViewById(R.id.btn_back)
         tv_nickname = findViewById(R.id.tv_nickname)
         tv_withdrawal = findViewById(R.id.tv_withdrawal)
-        ib_edit_nickname = findViewById(R.id.ib_edit_nickname)
         tv_login_oauth = findViewById(R.id.tv_login_oauth)
         tv_email = findViewById(R.id.tv_email)
+        btn_edit_nickname = findViewById(R.id.btn_edit_nickname)
 
         nickName = intent.getStringExtra("nickname")!!
         tv_nickname.text = nickName
@@ -61,7 +62,7 @@ class MyInfoActivity: BaseRefreshActivity() {
 
         })
 
-        ib_edit_nickname.setOnClickListener(object: OnSingleClickListener(){
+        btn_edit_nickname.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
                 CustomDialogForEditText(this@MyInfoActivity, "내 정보", "별명", nickName,"저장","취소",  object : CustomDialogForEditText.DialogCallback{
                     override fun onConfirm(contents:String) {
