@@ -57,6 +57,7 @@ class RegisterCarActivity: BaseActivity() {
     lateinit var persistent_bottom_sheet: LinearLayout
     lateinit var behavior: BottomSheetBehavior<LinearLayout>
     lateinit var listview:ListView
+    lateinit var btn_register_car:ConstraintLayout
 
 
 
@@ -117,6 +118,14 @@ class RegisterCarActivity: BaseActivity() {
         et_car_year = findViewById(R.id.et_car_year)
         tv_car_fuel = findViewById(R.id.tv_car_fuel)
         tv_confirm = findViewById(R.id.tv_confirm)
+
+        btn_register_car = findViewById(R.id.btn_register_car)
+        btn_register_car.setOnClickListener(object :OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                et_register_car.performClick()
+            }
+
+        })
 
         et_car_model_name.setOnFocusChangeListener { view, b ->
             if(b){

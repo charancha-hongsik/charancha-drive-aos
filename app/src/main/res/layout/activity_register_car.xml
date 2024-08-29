@@ -353,6 +353,7 @@
             app:layout_constraintLeft_toRightOf="@+id/iv_error" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/btn_register_car"
             android:layout_width="match_parent"
             android:layout_height="58dp"
             android:layout_marginTop="32dp"
