@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.milelog.PreferenceUtil
 import com.milelog.R
@@ -13,7 +14,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class WithdrawalActivity: BaseRefreshActivity() {
-    lateinit var ib_terms1:ImageView
+    lateinit var ib_terms1: LinearLayout
     lateinit var tv_confirm_withdrawal:TextView
     lateinit var tv_cancel_withdrawal:TextView
     lateinit var btn_back:ImageView
