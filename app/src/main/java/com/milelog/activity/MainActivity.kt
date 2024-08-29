@@ -68,11 +68,11 @@ class MainActivity : BaseRefreshActivity() {
     lateinit var btnHistory: ImageView
 
     lateinit var chart: PieChart
-    lateinit var btn_edit:ImageView
+    lateinit var button_edit_overlay:Button
     lateinit var layout_engine: ConstraintLayout
     lateinit var layout_average_distance:ConstraintLayout
     lateinit var layout_average_time:ConstraintLayout
-    lateinit var tv_average_score_info:TextView
+    lateinit var button_average_score_overlay:Button
     lateinit var layout_recent_manage_score:ConstraintLayout
     lateinit var tv_car_name:TextView
     lateinit var tv_car_no:TextView
@@ -340,9 +340,8 @@ class MainActivity : BaseRefreshActivity() {
 
         })
 
-
-        btn_edit = findViewById(R.id.btn_edit)
-        btn_edit.setOnClickListener(object: OnSingleClickListener(){
+        button_edit_overlay = findViewById(R.id.button_edit_overlay)
+        button_edit_overlay.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
                 startActivity(Intent(this@MainActivity, EditCarInfoActivity::class.java))
             }
@@ -378,8 +377,10 @@ class MainActivity : BaseRefreshActivity() {
 
         })
 
-        tv_average_score_info = findViewById(R.id.tv_average_score_info)
-        tv_average_score_info.setOnClickListener(object: OnSingleClickListener(){
+
+
+        button_average_score_overlay = findViewById(R.id.button_average_score_overlay)
+        button_average_score_overlay.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
                 startActivity(Intent(this@MainActivity, DetailManageScoreActivity::class.java).putExtra("title","평균 관리 점수"))
             }

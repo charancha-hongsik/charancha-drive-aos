@@ -180,6 +180,16 @@
                     app:layout_constraintLeft_toRightOf="@+id/tv_car_name"
                     app:layout_constraintTop_toTopOf="parent"/>
 
+                <Button
+                    android:id="@+id/button_edit_overlay"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#00000000"
+                    app:layout_constraintEnd_toEndOf="@id/btn_edit"
+                    app:layout_constraintStart_toStartOf="@id/btn_edit"
+                    app:layout_constraintTop_toTopOf="@id/btn_edit"
+                    app:layout_constraintBottom_toBottomOf="@id/btn_edit"/>
+
                 <TextView
                     android:id="@+id/tv_car_no"
                     android:layout_width="0dp"
@@ -214,15 +224,17 @@
                             android:layout_gravity="center_horizontal" />
                     </FrameLayout>
 
+
+
                     <TextView
-                        android:id="@+id/tv_increase"
+                        android:id="@+id/tv_average_score_info"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="변동 없음"
-                        android:textColor="@color/gray_500"
-                        android:textFontWeight="600"
-                        android:textAppearance="@style/C1SB"
-                        android:layout_marginBottom="32dp"
+                        android:text="평균 점수 > "
+                        android:textColor="@color/gray_600"
+                        android:textFontWeight="400"
+                        android:textAppearance="@style/B2R"
+                        android:layout_marginBottom="99dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"/>
@@ -241,18 +253,17 @@
                         app:layout_constraintRight_toRightOf="parent"/>
 
                     <TextView
-                        android:id="@+id/tv_average_score_info"
+                        android:id="@+id/tv_increase"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="평균 점수 > "
-                        android:textColor="@color/gray_600"
-                        android:textFontWeight="400"
-                        android:textAppearance="@style/B2R"
-                        android:layout_marginBottom="99dp"
+                        android:text="변동 없음"
+                        android:textColor="@color/gray_500"
+                        android:textFontWeight="600"
+                        android:textAppearance="@style/C1SB"
+                        android:layout_marginBottom="32dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"/>
-
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -265,6 +276,16 @@
                         android:textColor="@color/gray_600"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintLeft_toLeftOf="parent"/>
+
+                    <Button
+                        android:id="@+id/button_average_score_overlay"
+                        android:layout_width="88dp"
+                        android:layout_height="88dp"
+                        android:background="#00000000"
+                        app:layout_constraintEnd_toEndOf="@id/tv_average_score"
+                        app:layout_constraintStart_toStartOf="@id/tv_average_score"
+                        app:layout_constraintTop_toTopOf="@id/tv_average_score"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_average_score"/>
 
                     <TextView
                         android:layout_width="wrap_content"
