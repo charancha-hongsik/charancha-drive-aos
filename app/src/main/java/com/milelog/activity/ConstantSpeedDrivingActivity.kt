@@ -3,6 +3,7 @@ package com.milelog.activity
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.milelog.PreferenceUtil
@@ -50,7 +51,7 @@ class ConstantSpeedDrivingActivity: BaseRefreshActivity() {
     lateinit var tv_date1:TextView
     lateinit var tv_date2:TextView
 
-    lateinit var btn_tooltip_const_driving:ConstraintLayout
+    lateinit var btn_tooltip_const_driving: LinearLayout
 
     var recentStartTime = "2024-07-15T00:00:00.000Z"
     var recentEndTime = "2024-07-15T23:59:59.999Z"

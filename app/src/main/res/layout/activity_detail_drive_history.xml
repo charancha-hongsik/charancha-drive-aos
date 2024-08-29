@@ -432,10 +432,10 @@
 
                         <ImageView
                             android:id="@+id/iv_tooltip_verification"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:paddingTop="2dp"
-                            android:paddingBottom="2dp"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:paddingTop="3dp"
+                            android:paddingBottom="3dp"
                             android:src="@drawable/ic_question_filled"
                             android:layout_gravity="center_vertical"/>
 
@@ -489,10 +489,10 @@
 
                         <ImageView
                             android:id="@+id/iv_tooltip_high_speed"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:paddingTop="2dp"
-                            android:paddingBottom="2dp"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:paddingTop="3dp"
+                            android:paddingBottom="3dp"
                             android:src="@drawable/ic_question_filled"
                             android:layout_gravity="center_vertical"/>
 
@@ -536,10 +536,10 @@
 
                         <ImageView
                             android:id="@+id/iv_tooltip_low_speed"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:paddingTop="2dp"
-                            android:paddingBottom="2dp"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:paddingTop="3dp"
+                            android:paddingBottom="3dp"
                             android:src="@drawable/ic_question_filled"
                             android:layout_gravity="center_vertical"/>
 
@@ -625,10 +625,10 @@
 
                         <ImageView
                             android:id="@+id/iv_tooltip_high_speed_average"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:paddingTop="2dp"
-                            android:paddingBottom="2dp"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:paddingTop="3dp"
+                            android:paddingBottom="3dp"
                             android:src="@drawable/ic_question_filled"
                             android:layout_gravity="center_vertical"/>
 
@@ -673,10 +673,10 @@
 
                         <ImageView
                             android:id="@+id/iv_tooltip_low_speed_average"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:paddingTop="2dp"
-                            android:paddingBottom="2dp"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:paddingTop="3dp"
+                            android:paddingBottom="3dp"
                             android:src="@drawable/ic_question_filled"
                             android:layout_gravity="center_vertical"/>
 
@@ -730,10 +730,10 @@
 
                         <ImageView
                             android:id="@+id/iv_tooltip_rapid_start"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:paddingTop="2dp"
-                            android:paddingBottom="2dp"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:paddingTop="3dp"
+                            android:paddingBottom="3dp"
                             android:src="@drawable/ic_question_filled"
                             android:layout_gravity="center_vertical"/>
 
@@ -778,10 +778,10 @@
 
                         <ImageView
                             android:id="@+id/iv_tooltip_rapid_acc"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:paddingTop="2dp"
-                            android:paddingBottom="2dp"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:paddingTop="3dp"
+                            android:paddingBottom="3dp"
                             android:src="@drawable/ic_question_filled"
                             android:layout_gravity="center_vertical"/>
 
@@ -826,10 +826,10 @@
 
                         <ImageView
                             android:id="@+id/iv_tooltip_rapid_stop"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:paddingTop="2dp"
-                            android:paddingBottom="2dp"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:paddingTop="3dp"
+                            android:paddingBottom="3dp"
                             android:src="@drawable/ic_question_filled"
                             android:layout_gravity="center_vertical"/>
 
@@ -873,10 +873,10 @@
 
                         <ImageView
                             android:id="@+id/iv_tooltip_rapid_desc"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:paddingTop="2dp"
-                            android:paddingBottom="2dp"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:paddingTop="3dp"
+                            android:paddingBottom="3dp"
                             android:src="@drawable/ic_question_filled"
                             android:layout_gravity="center_vertical"/>
 
