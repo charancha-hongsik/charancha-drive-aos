@@ -171,6 +171,7 @@
             </LinearLayout>
             
             <LinearLayout
+                android:id="@+id/iv_tooltip_high_low_etc"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginTop="14dp"
@@ -182,7 +183,6 @@
                 android:background="@drawable/radius12_gray100_stroke">
 
                 <ImageView
-                    android:id="@+id/iv_tooltip_high_low_etc"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_question_filled"/>

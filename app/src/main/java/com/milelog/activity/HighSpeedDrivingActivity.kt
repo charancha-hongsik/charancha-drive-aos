@@ -6,6 +6,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.milelog.PreferenceUtil
@@ -62,7 +63,7 @@ class HighSpeedDrivingActivity: BaseRefreshActivity() {
     lateinit var tv_date1:TextView
     lateinit var tv_date2:TextView
 
-    lateinit var iv_tooltip_high_low_etc:ImageView
+    lateinit var iv_tooltip_high_low_etc:LinearLayout
 
 
     lateinit var layout_barchart_highspeed:BarChart
