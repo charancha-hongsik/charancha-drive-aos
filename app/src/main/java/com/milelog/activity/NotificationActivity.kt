@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.milelog.PreferenceUtil
 import com.milelog.R
 import com.milelog.retrofit.request.AgreeTermsRequest
@@ -28,10 +29,10 @@ import retrofit2.Response
 import java.lang.reflect.Type
 
 class NotificationActivity: BaseRefreshActivity() {
-    lateinit var btn_all_noti: ImageView
-    lateinit var btn_drive_history: ImageView
-    lateinit var btn_marketing: ImageView
-    lateinit var btn_announcement:ImageView
+    lateinit var btn_all_noti: ConstraintLayout
+    lateinit var btn_drive_history: ConstraintLayout
+    lateinit var btn_marketing: ConstraintLayout
+    lateinit var btn_announcement:ConstraintLayout
     lateinit var btn_back:ImageView
     lateinit var tv_marketing: TextView
     lateinit var getNotificationLists:GetNotificationListsResponse

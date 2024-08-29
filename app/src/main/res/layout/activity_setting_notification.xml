@@ -38,6 +38,7 @@
         app:layout_constraintRight_toRightOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/btn_all_noti"
             android:layout_width="match_parent"
             android:layout_height="32dp"
             android:orientation="horizontal">
@@ -54,7 +55,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
             <ImageView
-                android:id="@+id/btn_all_noti"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/choose_toggle"
@@ -80,6 +80,7 @@
             android:layout_marginTop="20dp"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/btn_drive_history"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginTop="20dp"
@@ -97,7 +98,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
             <ImageView
-                android:id="@+id/btn_drive_history"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/choose_toggle"
@@ -108,6 +108,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/btn_announcement"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:orientation="horizontal">
@@ -124,7 +125,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
             <ImageView
-                android:id="@+id/btn_announcement"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/choose_toggle"
@@ -135,12 +135,12 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/tv_marketing"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/tv_marketing"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="마케팅 정보 수신 동의"
