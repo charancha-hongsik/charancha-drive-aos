@@ -171,6 +171,7 @@
             </LinearLayout>
             
             <LinearLayout
+                android:id="@+id/btn_tooltip_optimal_driving"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginTop="14dp"
