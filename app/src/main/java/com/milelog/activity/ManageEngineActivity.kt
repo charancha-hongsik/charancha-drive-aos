@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.View.*
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -51,8 +52,8 @@ class ManageEngineActivity: BaseRefreshActivity() {
     lateinit var tv_optimal_driving_contents:TextView
     lateinit var tv_normal_speed_driving_contents:TextView
 
-    lateinit var iv_tooltip_perone_average:ImageView
-    lateinit var iv_tooltip_high_speed:ImageView
+    lateinit var button_tooltip_perone_average_overlay: Button
+    lateinit var button_tooltip_high_speed_overlay:Button
     lateinit var iv_tooltip_optimal_driving:ImageView
     lateinit var iv_tooltip_const_driving:ImageView
     lateinit var tv_distance_unit:TextView
@@ -76,23 +77,20 @@ class ManageEngineActivity: BaseRefreshActivity() {
             finish()
         }
 
-        iv_tooltip_perone_average = findViewById(R.id.iv_tooltip_perone_average)
-        iv_tooltip_perone_average.setOnClickListener(object: OnSingleClickListener(){
+        button_tooltip_perone_average_overlay = findViewById(R.id.button_tooltip_perone_average_overlay)
+        button_tooltip_perone_average_overlay.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
                 showTooltipForEach(this@ManageEngineActivity, "1회 평균 주행거리란?","차량이 한 번 주행할 때마다 이동한 거리의 평균값이에요. 높을수록 좋아요!")
             }
         })
 
 
-
-
-        iv_tooltip_high_speed = findViewById(R.id.iv_tooltip_high_speed)
-        iv_tooltip_high_speed.setOnClickListener(object: OnSingleClickListener(){
+        button_tooltip_high_speed_overlay = findViewById(R.id.button_tooltip_high_speed_overlay)
+        button_tooltip_high_speed_overlay.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
                 showTooltipForHighLowEtc(this@ManageEngineActivity)
             }
         })
-
 
         iv_tooltip_optimal_driving = findViewById(R.id.iv_tooltip_optimal_driving)
         iv_tooltip_optimal_driving.setOnClickListener(object: OnSingleClickListener(){
