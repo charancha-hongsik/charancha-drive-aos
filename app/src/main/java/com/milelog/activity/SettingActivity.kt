@@ -9,6 +9,7 @@ import android.view.View.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.milelog.BuildConfig
 import com.milelog.PreferenceUtil
@@ -28,7 +29,7 @@ class SettingActivity: BaseRefreshActivity(){
     lateinit var btn_set_distance_unit: TextView
     lateinit var btn_km:LinearLayout
     lateinit var btn_mile:LinearLayout
-    lateinit var btn_open_set_distance_unit:LinearLayout
+    lateinit var btn_open_set_distance_unit: ConstraintLayout
     lateinit var tv_unit:TextView
     lateinit var tv_version:TextView
     lateinit var btn_back:ImageView
