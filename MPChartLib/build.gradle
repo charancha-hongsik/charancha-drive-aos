@@ -3,7 +3,7 @@ apply plugin: 'com.android.library'
 group='com.github.philjay'
 
 android {
-    namespace 'com.milelog'
+    namespace 'com.github.philjay.mpandroidchart'
     compileSdkVersion 33
     buildToolsVersion '28.0.3'
     defaultConfig {
