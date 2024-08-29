@@ -75,7 +75,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var persistent_bottom_sheet:LinearLayout
     lateinit var behavior: BottomSheetBehavior<LinearLayout>
 
-    lateinit var btn_choose_mycar: ConstraintLayout
+    lateinit var btn_choose_mycar: LinearLayout
     lateinit var btn_set_mycar:TextView
     lateinit var tv_mycar:LinearLayout
     lateinit var tv_not_mycar:TextView

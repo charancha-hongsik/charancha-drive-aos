@@ -106,6 +106,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/btn_choose_mycar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -124,7 +125,6 @@
                     android:textColor="@color/gray_700"/>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/btn_choose_mycar"
                     android:layout_width="match_parent"
                     android:layout_height="26dp"
                     android:layout_marginTop="4dp"
@@ -432,9 +432,10 @@
 
                         <ImageView
                             android:id="@+id/iv_tooltip_verification"
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:layout_marginLeft="2dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:paddingTop="2dp"
+                            android:paddingBottom="2dp"
                             android:src="@drawable/ic_question_filled"
                             android:layout_gravity="center_vertical"/>
 
@@ -488,9 +489,10 @@
 
                         <ImageView
                             android:id="@+id/iv_tooltip_high_speed"
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:layout_marginLeft="2dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:paddingTop="2dp"
+                            android:paddingBottom="2dp"
                             android:src="@drawable/ic_question_filled"
                             android:layout_gravity="center_vertical"/>
 
@@ -534,9 +536,10 @@
 
                         <ImageView
                             android:id="@+id/iv_tooltip_low_speed"
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:layout_marginLeft="2dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:paddingTop="2dp"
+                            android:paddingBottom="2dp"
                             android:src="@drawable/ic_question_filled"
                             android:layout_gravity="center_vertical"/>
 
@@ -622,9 +625,10 @@
 
                         <ImageView
                             android:id="@+id/iv_tooltip_high_speed_average"
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:layout_marginLeft="2dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:paddingTop="2dp"
+                            android:paddingBottom="2dp"
                             android:src="@drawable/ic_question_filled"
                             android:layout_gravity="center_vertical"/>
 
@@ -669,9 +673,10 @@
 
                         <ImageView
                             android:id="@+id/iv_tooltip_low_speed_average"
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:layout_marginLeft="2dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:paddingTop="2dp"
+                            android:paddingBottom="2dp"
                             android:src="@drawable/ic_question_filled"
                             android:layout_gravity="center_vertical"/>
 
@@ -725,9 +730,10 @@
 
                         <ImageView
                             android:id="@+id/iv_tooltip_rapid_start"
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:layout_marginLeft="2dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:paddingTop="2dp"
+                            android:paddingBottom="2dp"
                             android:src="@drawable/ic_question_filled"
                             android:layout_gravity="center_vertical"/>
 
@@ -772,9 +778,10 @@
 
                         <ImageView
                             android:id="@+id/iv_tooltip_rapid_acc"
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:layout_marginLeft="2dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:paddingTop="2dp"
+                            android:paddingBottom="2dp"
                             android:src="@drawable/ic_question_filled"
                             android:layout_gravity="center_vertical"/>
 
@@ -819,9 +826,10 @@
 
                         <ImageView
                             android:id="@+id/iv_tooltip_rapid_stop"
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:layout_marginLeft="2dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:paddingTop="2dp"
+                            android:paddingBottom="2dp"
                             android:src="@drawable/ic_question_filled"
                             android:layout_gravity="center_vertical"/>
 
@@ -865,9 +873,10 @@
 
                         <ImageView
                             android:id="@+id/iv_tooltip_rapid_desc"
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:layout_marginLeft="2dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:paddingTop="2dp"
+                            android:paddingBottom="2dp"
                             android:src="@drawable/ic_question_filled"
                             android:layout_gravity="center_vertical"/>
 
