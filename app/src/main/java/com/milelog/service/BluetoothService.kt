@@ -172,56 +172,9 @@ class BluetoothService : Service() {
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
+        scheduleForegroundServiceStart(this@BluetoothService)
         super.onTaskRemoved(rootIntent)
 
-        if(!sensorState){
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                registerReceiver(TransitionsReceiver(), filter, RECEIVER_EXPORTED)
-            } else {
-                registerReceiver(TransitionsReceiver(), filter)
-            }
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                // Detecting L1 Receiver
-                registerReceiver(WalkingDetectReceiver(), IntentFilter().apply {
-                    addAction(TRANSITIONS_RECEIVER_ACTION)
-                }, RECEIVER_EXPORTED)
-            } else {
-                // Detecting L1 Receiver
-                registerReceiver(WalkingDetectReceiver(), IntentFilter().apply {
-                    addAction(TRANSITIONS_RECEIVER_ACTION)
-                })
-            }
-
-            carConnectionQueryHandler = CarConnectionQueryHandler(contentResolver)
-
-            (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
-                channel
-            )
-            notification = NotificationCompat.Builder(this, CHANNEL_ID)
-
-            if (Build.VERSION.SDK_INT >= 34) {
-                startForeground(1, notification
-                    .setSmallIcon(R.mipmap.ic_notification)
-                    .setAutoCancel(false)
-                    .setOngoing(true)
-                    .setContentText("주행 관찰중이에요.")
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setOnlyAlertOnce(true)
-                    .build(), FOREGROUND_SERVICE_TYPE_HEALTH)
-            }else{
-                startForeground(1, notification
-                    .setSmallIcon(R.mipmap.ic_notification)
-                    .setAutoCancel(false)
-                    .setOngoing(true)
-                    .setContentText("주행 관찰중이에요.")
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setOnlyAlertOnce(true)
-                    .build())
-            }
-
-            scheduleWalkingDetectWork()
-        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -506,6 +459,73 @@ class BluetoothService : Service() {
             null
         )
     }
+
+    class restartForegroundServiceWorker(val context: Context, params: WorkerParameters) : Worker(context, params) {
+
+        override fun doWork(): Result {
+
+            if(!(context as BluetoothService).sensorState){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    context.registerReceiver(context.TransitionsReceiver(), context.filter, RECEIVER_EXPORTED)
+                } else {
+                    context.registerReceiver(context.TransitionsReceiver(), context.filter)
+                }
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    // Detecting L1 Receiver
+                    context.registerReceiver(WalkingDetectReceiver(), IntentFilter().apply {
+                        addAction(TRANSITIONS_RECEIVER_ACTION)
+                    }, RECEIVER_EXPORTED)
+                } else {
+                    // Detecting L1 Receiver
+                    context.registerReceiver(WalkingDetectReceiver(), IntentFilter().apply {
+                        addAction(TRANSITIONS_RECEIVER_ACTION)
+                    })
+                }
+
+                context.carConnectionQueryHandler = context.CarConnectionQueryHandler(context.contentResolver)
+
+                (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
+                    context.channel
+                )
+                context.notification = NotificationCompat.Builder(context, context.CHANNEL_ID)
+
+                if (Build.VERSION.SDK_INT >= 34) {
+                    context.startForeground(1, context.notification
+                        .setSmallIcon(R.mipmap.ic_notification)
+                        .setAutoCancel(false)
+                        .setOngoing(true)
+                        .setContentText("주행 관찰중이에요.")
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setOnlyAlertOnce(true)
+                        .build(), FOREGROUND_SERVICE_TYPE_HEALTH)
+                }else{
+                    context.startForeground(1, context.notification
+                        .setSmallIcon(R.mipmap.ic_notification)
+                        .setAutoCancel(false)
+                        .setOngoing(true)
+                        .setContentText("주행 관찰중이에요.")
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setOnlyAlertOnce(true)
+                        .build())
+                }
+
+                context.scheduleWalkingDetectWork()
+            }
+
+            return Result.success()
+        }
+    }
+
+
+    fun scheduleForegroundServiceStart(context: Context) {
+        // 백그라운드에서 Foreground Service를 시작하도록 작업을 예약
+        val workRequest = OneTimeWorkRequest.Builder(restartForegroundServiceWorker::class.java)
+            .build()
+
+        WorkManager.getInstance(context).enqueue(workRequest)
+    }
+
 
     class WalkingDetectWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
 
