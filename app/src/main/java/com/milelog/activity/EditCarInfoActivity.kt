@@ -31,7 +31,9 @@ class EditCarInfoActivity: BaseRefreshActivity() {
     lateinit var tv_car_owner:TextView
     lateinit var tv_car_id:TextView
     lateinit var et_car_model_name: EditText
+    lateinit var layout_car_name:ConstraintLayout
     lateinit var et_car_year:EditText
+    lateinit var layout_car_year:ConstraintLayout
     lateinit var tv_car_fuel:TextView
     lateinit var layout_delete:ConstraintLayout
     lateinit var layout_edit:ConstraintLayout
@@ -58,7 +60,9 @@ class EditCarInfoActivity: BaseRefreshActivity() {
         tv_car_owner = findViewById(R.id.tv_car_owner)
         tv_car_id = findViewById(R.id.tv_car_id)
         et_car_model_name = findViewById(R.id.et_car_model_name)
+        layout_car_name = findViewById(R.id.layout_car_name)
         et_car_year = findViewById(R.id.et_car_year)
+        layout_car_year = findViewById(R.id.layout_car_year)
         tv_car_fuel = findViewById(R.id.tv_car_fuel)
         layout_delete = findViewById(R.id.layout_delete)
         layout_edit = findViewById(R.id.layout_edit)
@@ -89,6 +93,13 @@ class EditCarInfoActivity: BaseRefreshActivity() {
             }
         }
 
+        layout_car_name.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                et_car_model_name.performClick()
+            }
+
+        })
+
         et_car_year.setOnFocusChangeListener { view, b ->
             if(b){
                 et_car_year.hint = ""
@@ -97,6 +108,13 @@ class EditCarInfoActivity: BaseRefreshActivity() {
 
             }
         }
+
+        layout_car_year.setOnClickListener(object: OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                et_car_year.performClick()
+            }
+
+        })
 
         layout_edit.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {

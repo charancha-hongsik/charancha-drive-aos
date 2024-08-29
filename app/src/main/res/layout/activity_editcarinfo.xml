@@ -159,6 +159,7 @@
                     android:layout_weight="400"/>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_car_name"
                     android:layout_width="match_parent"
                     android:layout_height="54dp"
                     android:layout_marginTop="6dp"
@@ -196,6 +197,7 @@
                     android:layout_weight="400"/>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_car_year"
                     android:layout_width="match_parent"
                     android:layout_height="54dp"
                     android:layout_marginTop="6dp"
