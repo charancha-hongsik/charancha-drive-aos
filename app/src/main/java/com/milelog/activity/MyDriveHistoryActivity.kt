@@ -47,7 +47,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var lv_history:RecyclerView
     lateinit var btn_back:ImageView
 
-    lateinit var btn_choose_date: ImageView
+    lateinit var button_choose_date_overlay:Button
     lateinit var layout_choose_date: CoordinatorLayout
     lateinit var persistent_bottom_sheet: LinearLayout
     lateinit var btn_close_select_date:ImageView
@@ -106,7 +106,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         lv_history = findViewById(R.id.lv_history)
         btn_back = findViewById(R.id.btn_back)
 
-        btn_choose_date = findViewById(R.id.btn_choose_date)
+        button_choose_date_overlay = findViewById(R.id.button_choose_date_overlay)
         layout_choose_date = findViewById(R.id.layout_choose_date)
         persistent_bottom_sheet = findViewById(R.id.persistent_bottom_sheet)
         btn_close_select_date = findViewById(R.id.btn_close_select_date)
@@ -131,7 +131,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
 
         })
 
-        btn_choose_date.setOnClickListener {
+        button_choose_date_overlay.setOnClickListener {
             layout_choose_date.visibility = VISIBLE
         }
 
