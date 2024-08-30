@@ -1,10 +1,8 @@
 package com.milelog.activity
 
-import android.Manifest
 import android.Manifest.permission.*
 import android.app.*
 import android.content.ActivityNotFoundException
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -14,7 +12,9 @@ import android.location.Geocoder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.PowerManager
 import android.provider.Settings
+import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
 import android.util.Log
 import android.view.View
 import android.view.View.*
@@ -112,7 +112,8 @@ class MainActivity : BaseRefreshActivity() {
     private lateinit var firebaseAnalytics: FirebaseAnalytics
 
 
-    var checkingPermission = false
+    var checkingUserActivityPermission = false
+    var checkingIgnoreBatteryPermission = false
 
 
     override fun onResume() {
@@ -120,21 +121,37 @@ class MainActivity : BaseRefreshActivity() {
 
         setCarInfo()
 
-        if(checkingPermission){
+        /**
+         * 사용자에게 위치권한을 받은 후 앱으로 돌아왔을 때에 대한 동작
+         */
+        if(checkingUserActivityPermission){
             if(ContextCompat.checkSelfPermission(this, ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED){
+                checkingIgnoreBatteryPermission = true
                 checkUserActivity()
+            } else{
+                setIgnoreBattery()
             }
 
-            checkingPermission = false
+            checkingUserActivityPermission = false
         }
+
+        if(checkingIgnoreBatteryPermission){
+            setIgnoreBattery()
+        }
+
+
 
         if(ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 if (ActivityCompat.checkSelfPermission(applicationContext, ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED) {
-                    Log.d("testsetsetset","testsetestset :: " + isMyServiceRunning(BluetoothService::class.java))
                     if(!isMyServiceRunning(BluetoothService::class.java)){
                         val bluetoothIntent = Intent(this, BluetoothService::class.java)
                         startForegroundService(bluetoothIntent)
+                    }
+                }else{
+                    if(isMyServiceRunning(BluetoothService::class.java)){
+                        val bluetoothIntent = Intent(this, BluetoothService::class.java)
+                        stopService(bluetoothIntent)
                     }
                 }
             }else{
@@ -142,6 +159,11 @@ class MainActivity : BaseRefreshActivity() {
                     val bluetoothIntent = Intent(this, BluetoothService::class.java)
                     startForegroundService(bluetoothIntent)
                 }
+            }
+        }else{
+            if(isMyServiceRunning(BluetoothService::class.java)){
+                val bluetoothIntent = Intent(this, BluetoothService::class.java)
+                stopService(bluetoothIntent)
             }
         }
     }
@@ -154,9 +176,8 @@ class MainActivity : BaseRefreshActivity() {
         // FirebaseAnalytics 인스턴스 초기화
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
 
-        setPieChart(0.0f)
 
-        Log.d("testsetsetest","testsetsetse ACCESS_TOKEN:: " + PreferenceUtil.getPref(this@MainActivity, PreferenceUtil.ACCESS_TOKEN, "")!!)
+        setPieChart(0.0f)
 
         setLineChartForBrakes(findViewById(R.id.chart_line_brakes))
         setLineChartForEngine(findViewById(R.id.chart_line_engine))
@@ -177,12 +198,15 @@ class MainActivity : BaseRefreshActivity() {
 
                 }.toTypedArray(),0)
             }
+            setIgnoreBattery()
         }else{
             if(ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 checkLocation()
             } else{
                 if(ContextCompat.checkSelfPermission(this, ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED){
                     checkUserActivity()
+                }else{
+                    setIgnoreBattery()
                 }
             }
         }
@@ -267,7 +291,7 @@ class MainActivity : BaseRefreshActivity() {
                     data = uri
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
-                checkingPermission = true
+                checkingUserActivityPermission = true
                 startActivity(openSettingsIntent)
             }
 
@@ -275,6 +299,8 @@ class MainActivity : BaseRefreshActivity() {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     if(ContextCompat.checkSelfPermission(this@MainActivity, ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED){
                         checkUserActivity()
+                    }else{
+                        setIgnoreBattery()
                     }
                 }
             }
@@ -299,33 +325,31 @@ class MainActivity : BaseRefreshActivity() {
                                     data = uri
                                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                 }
+                            checkingIgnoreBatteryPermission = true
                             startActivity(openSettingsIntent)
                         }
 
                         override fun onCancel() {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                                    checkPermission(mutableListOf(
-                                        BLUETOOTH_CONNECT,
-                                        POST_NOTIFICATIONS
-                                    ).apply {
-
-                                    }.toTypedArray(), 0
-                                    )
-                                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                                    checkPermission(mutableListOf(
-                                        BLUETOOTH_CONNECT
-                                    ).apply {
-
-                                    }.toTypedArray(), 0
-                                    )
-                                }
-                            }
+                            setIgnoreBattery()
                         }
 
                     }).show()
             }
         }
+    }
+
+    private fun setIgnoreBattery(){
+        val i = Intent()
+        val pm = getSystemService(POWER_SERVICE) as PowerManager
+
+        if(!pm.isIgnoringBatteryOptimizations(packageName)) {
+            i.action = ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+            i.data = Uri.parse("package:$packageName")
+
+            startActivity(i)
+        }
+
+        checkingIgnoreBatteryPermission = false
     }
 
 
@@ -1246,7 +1270,6 @@ class MainActivity : BaseRefreshActivity() {
             Executors.newSingleThreadExecutor().execute {
                 val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(this@MainActivity)
                 driveDatabase.driveForApiDao().allDriveLimit5?.let {
-                    Log.d("testestestestset","testestestestsetse postDrivingInfoNotSavedData size :: " + it.size)
                     if (it.isNotEmpty()) {
                         for (drive in it) {
                             val postDrivingInfoRequest = PostDrivingInfoRequest(
@@ -1267,15 +1290,6 @@ class MainActivity : BaseRefreshActivity() {
                                         response: Response<ResponseBody>
                                     ) {
                                         try {
-                                            Log.d("testestesest","testsetestse :: " + response.code())
-                                            Log.d("testestesest","testsetestse USER_CARID :: " + PreferenceUtil.getPref(this@MainActivity, PreferenceUtil.USER_CARID, "")!!)
-                                            Log.d("testestesest","testsetestse startTimestamp :: " + drive.startTimestamp)
-                                            Log.d("testestesest","testsetestse endTimestamp :: " + drive.endTimestamp)
-                                            Log.d("testestesest","testsetestse verification :: " + drive.verification)
-                                            Log.d("testestesest","testsetestse size :: " + drive.gpses.size)
-
-
-
                                             if (response.code() == 200 || response.code() == 201) {
                                                 val postDrivingInfoResponse = gson.fromJson(
                                                     response.body()?.string(),
@@ -1298,15 +1312,7 @@ class MainActivity : BaseRefreshActivity() {
                                                 logout()
                                             }
 
-//                                        if (drive.tracking_id == it.last().tracking_id) {
-//                                            val intent = Intent(
-//                                                this@MainActivity,
-//                                                CallApiService::class.java
-//                                            )
-//                                            stopService(intent)
-//                                        }
                                         }catch (e:Exception){
-                                            Log.d("testestesest","testsetestse Exception:: " + e.toString())
 
                                         }
                                     }
@@ -1327,7 +1333,4 @@ class MainActivity : BaseRefreshActivity() {
 
         }
     }
-
-
-
 }
