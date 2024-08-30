@@ -184,21 +184,13 @@ class MainActivity : BaseRefreshActivity() {
         setLineChartForTire(findViewById(R.id.chart_line_tire))
 
         if(!PreferenceUtil.getBooleanPref(this, HAVE_BEEN_HOME, false)){
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                checkPermission(mutableListOf(
-                    BLUETOOTH_CONNECT,
-                    POST_NOTIFICATIONS
-                ).apply {
-
-                }.toTypedArray(),0)
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 checkPermission(mutableListOf(
                     BLUETOOTH_CONNECT
                 ).apply {
 
                 }.toTypedArray(),0)
             }
-            setIgnoreBattery()
         }else{
             if(ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 checkLocation()
@@ -1333,4 +1325,34 @@ class MainActivity : BaseRefreshActivity() {
 
         }
     }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when(requestCode){
+            0 -> {
+                for(permission in permissions){
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                        checkPermission(mutableListOf(
+                            POST_NOTIFICATIONS
+                        ).apply {
+
+                        }.toTypedArray(),1)
+                    }else{
+                        setIgnoreBattery()
+                    }
+                }
+            }
+
+            1->{
+                setIgnoreBattery()
+            }
+
+
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
 }
