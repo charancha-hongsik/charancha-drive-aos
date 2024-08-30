@@ -137,7 +137,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/terms_selected"
-            android:clickable="true" />
+            android:clickable="false" />
 
         <TextView
             android:layout_width="wrap_content"
