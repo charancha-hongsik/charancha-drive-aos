@@ -845,6 +845,7 @@ class BluetoothService : Service() {
                     }
 
                     sensorState = false
+                    refreshNotiText()
 
                 }
 
@@ -853,6 +854,7 @@ class BluetoothService : Service() {
                     writeToRoomForApp(driveForApi.tracking_id)
 
                     sensorState = false
+                    refreshNotiText()
                 }
             })
 
@@ -860,6 +862,7 @@ class BluetoothService : Service() {
             writeToRoomForApi(driveForApi)
             writeToRoomForApp(driveForApi.tracking_id)
             sensorState = false
+            refreshNotiText()
 
         }
     }
