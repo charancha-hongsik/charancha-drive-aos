@@ -156,7 +156,16 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
         detailDriveHistoryViewModel.setDriveForApp.observe(this@DetailDriveHistoryActivity, DetailDriveHistoryViewModel.EventObserver {
             it?.let{
+                Log.d("testestestestes","testestestestset size :: " + it.gpses.size)
                 for(raw in it.gpses){
+                    Log.d("testestestestes","testestestestset latitude :: " + raw.latitude)
+                    Log.d("testestestestes","testestestestset altitude :: " + raw.altitude)
+                    Log.d("testestestestes","testestestestset longtitude :: " + raw.longtitude)
+                    Log.d("testestestestes","testestestestset timestamp :: " + raw.timestamp)
+
+
+
+
                     polylines.add(LatLng(raw.latitude,raw.longtitude))
                 }
 

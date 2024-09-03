@@ -153,6 +153,7 @@ class BluetoothService : Service() {
     var pastMaxDistance = mutableListOf<Float>()
 
 
+
     var firstLineState = false
 
     /**
@@ -763,11 +764,7 @@ class BluetoothService : Service() {
             firstLocation = location
         }
 
-        if(pastLocation != null){
-            for(i in 1..(location.time-pastLocation!!.time)/1000) {
-                maxDistance.add(location.distanceTo(firstLocation!!))
-            }
-        }
+        maxDistance.add(location.distanceTo(firstLocation!!))
 
         var distance = 0f
         if(pastLocation != null){
@@ -791,8 +788,9 @@ class BluetoothService : Service() {
 
         /**
          * 30분 간격으로 체크
+         * 60초 * 30분 = 1800
          */
-        if(maxDistance.size > 1800){
+        if((timeStamp - firstLocation!!.time) > 1800000L){
             /**
              * 반경 300미터 이하 체크
              */
