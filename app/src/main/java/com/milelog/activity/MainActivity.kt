@@ -173,6 +173,12 @@ class MainActivity : BaseRefreshActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        Log.d("testestsetest","testesestsetse token :: " + PreferenceUtil.getPref(this@MainActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!)
+        Log.d("testestsetest","testesestsetse DEVICE_ID_FOR_FCM :: " + PreferenceUtil.getPref(this@MainActivity,  PreferenceUtil.DEVICE_ID_FOR_FCM, "")!!)
+        Log.d("testestsetest","testesestsetse ID_TOKEN :: " + PreferenceUtil.getPref(this@MainActivity,  PreferenceUtil.ID_TOKEN, "")!!)
+
+
+
         // FirebaseAnalytics 인스턴스 초기화
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
 
@@ -540,17 +546,6 @@ class MainActivity : BaseRefreshActivity() {
         ContextCompat.checkSelfPermission(
             baseContext, it) == PackageManager.PERMISSION_GRANTED
     }
-
-    private fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
-        val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
-            if (serviceClass.name == service.service.className) {
-                return true
-            }
-        }
-        return false
-    }
-
 
     companion object {
         private val REQUIRED_PERMISSIONS =

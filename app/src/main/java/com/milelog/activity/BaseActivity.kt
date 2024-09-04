@@ -1,5 +1,6 @@
 package com.milelog.activity
 
+import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
@@ -30,6 +31,7 @@ import com.milelog.retrofit.request.PostDeviceInfoRequest
 import com.milelog.retrofit.request.PostDrivingInfoRequest
 import com.milelog.retrofit.response.PostConnectDeviceResponse
 import com.milelog.retrofit.response.SignInResponse
+import com.milelog.service.BluetoothService
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
@@ -597,6 +599,13 @@ open class BaseActivity: AppCompatActivity(){
 
             PreferenceUtil.putBooleanPref(this@BaseActivity, PreferenceUtil.HAVE_BEEN_HOME, false)
 
+
+            if(isMyServiceRunning(BluetoothService::class.java)){
+                val bluetoothIntent = Intent(this, BluetoothService::class.java)
+                stopService(bluetoothIntent)
+            }
+
+
             startActivity(
                 Intent(
                     this@BaseActivity,
@@ -604,6 +613,8 @@ open class BaseActivity: AppCompatActivity(){
                 ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             )
             finish()
+
+
 
         }
     }
@@ -627,6 +638,17 @@ open class BaseActivity: AppCompatActivity(){
     fun makeRequestBody(jsonParam:String):RequestBody{
         return jsonParam.toRequestBody("application/json".toMediaTypeOrNull())
     }
+
+    fun isMyServiceRunning(serviceClass: Class<*>): Boolean {
+        val manager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        for (service in manager.getRunningServices(Int.MAX_VALUE)) {
+            if (serviceClass.name == service.service.className) {
+                return true
+            }
+        }
+        return false
+    }
+
 
 
 }
