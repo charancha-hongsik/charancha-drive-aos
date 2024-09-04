@@ -235,8 +235,6 @@ class BluetoothService : Service() {
                     .build())
             }
 
-            startSensor(L1)
-
             scheduleWalkingDetectWork()
         }else{
             if(intent?.action == NotificationDeleteReceiver.ACTION_RESTART_NOTIFICATION){
