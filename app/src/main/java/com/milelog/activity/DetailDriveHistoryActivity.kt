@@ -26,6 +26,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.gms.maps.model.StrokeStyle
+import com.google.android.gms.maps.model.StyleSpan
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.Gson
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -340,7 +342,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         // Get the SupportMapFragment and request notification when the map is ready to be used.
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment?
-        mapFragment?.getMapAsync(OnMapReadyCallback {
+        mapFragment?.getMapAsync {
             // Add polylines to the map.
             // Polylines are useful to show a route or some other connection between points.
 
@@ -348,11 +350,20 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
             it.addPolyline(
                 PolylineOptions()
                     .clickable(true)
-                    .addAll(polylines))
+                    .addAll(polylines)
+                    .addSpan(
+                        StyleSpan(
+                            StrokeStyle.gradientBuilder(
+                                resources.getColor(R.color.map_start),
+                                resources.getColor(R.color.map_end)
+                            ).build()
+                        )
+                    )
+            )
 
             // Position the map's camera near Alice Springs in the center of Australia,
             // and set the zoom factor so most of Australia shows on the screen.
-            it.moveCamera(CameraUpdateFactory.newLatLngZoom(polylines.get(polylines.size/2), 13f))
+            it.moveCamera(CameraUpdateFactory.newLatLngZoom(polylines.get(polylines.size / 2), 13f))
 
 
             // 마커를 추가합니다.
@@ -362,7 +373,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
             // 첫 번째 마커부터 시작하여 나머지 마커를 이동시키는 애니메이션을 시작합니다.
             moveMarkerAlongPolyline(it, 0)
 
-        })
+        }
     }
 
     // Polyline을 따라 마커를 이동시키는 애니메이션을 생성합니다.
