@@ -321,6 +321,8 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".NotificationDeleteReceiver" />
+
 
     </application>
 

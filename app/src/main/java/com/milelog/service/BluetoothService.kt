@@ -34,6 +34,7 @@ import com.milelog.room.entity.DriveForApp
 import com.milelog.room.entity.DriveForApi
 import com.google.android.gms.location.*
 import com.google.gson.Gson
+import com.milelog.NotificationDeleteReceiver
 import com.milelog.room.dto.EachGpsDtoForApi
 import com.milelog.room.dto.EachGpsDtoForApp
 import okhttp3.*
@@ -205,6 +206,14 @@ class BluetoothService : Service() {
             )
             notification = NotificationCompat.Builder(this, CHANNEL_ID)
 
+            val deleteIntent = Intent(this@BluetoothService, NotificationDeleteReceiver::class.java)
+            val pendingDeleteIntent = PendingIntent.getBroadcast(
+                this@BluetoothService,
+                0,
+                deleteIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+
             if (Build.VERSION.SDK_INT >= 34) {
                 startForeground(1, notification
                     .setSmallIcon(R.mipmap.ic_notification)
@@ -213,6 +222,7 @@ class BluetoothService : Service() {
                     .setContentText("주행 관찰중이에요.")
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setOnlyAlertOnce(true)
+                    .setDeleteIntent(pendingDeleteIntent)
                     .build(), FOREGROUND_SERVICE_TYPE_HEALTH)
             }else{
                 startForeground(1, notification
@@ -225,7 +235,45 @@ class BluetoothService : Service() {
                     .build())
             }
 
+            startSensor(L1)
+
             scheduleWalkingDetectWork()
+        }else{
+            if(intent?.action == NotificationDeleteReceiver.ACTION_RESTART_NOTIFICATION){
+                (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
+                    channel
+                )
+                notification = NotificationCompat.Builder(this, CHANNEL_ID)
+
+                val deleteIntent = Intent(this@BluetoothService, NotificationDeleteReceiver::class.java)
+                val pendingDeleteIntent = PendingIntent.getBroadcast(
+                    this@BluetoothService,
+                    0,
+                    deleteIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+
+                if (Build.VERSION.SDK_INT >= 34) {
+                    startForeground(1, notification
+                        .setSmallIcon(R.mipmap.ic_notification)
+                        .setAutoCancel(false)
+                        .setOngoing(true)
+                        .setContentText("주행 중..")
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setOnlyAlertOnce(true)
+                        .setDeleteIntent(pendingDeleteIntent)
+                        .build(), FOREGROUND_SERVICE_TYPE_HEALTH)
+                }else{
+                    startForeground(1, notification
+                        .setSmallIcon(R.mipmap.ic_notification)
+                        .setAutoCancel(false)
+                        .setOngoing(true)
+                        .setContentText("주행 중..")
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setOnlyAlertOnce(true)
+                        .build())
+                }
+            }
         }
 
         return START_STICKY
