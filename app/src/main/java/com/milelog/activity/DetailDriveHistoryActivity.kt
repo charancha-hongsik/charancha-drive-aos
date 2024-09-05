@@ -25,6 +25,7 @@ import com.milelog.retrofit.response.GetDrivingInfoResponse
 import com.milelog.viewmodel.DetailDriveHistoryViewModel
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
@@ -344,12 +345,42 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
 
     private fun setMapData() {
-        val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment?
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync { googleMap ->
+
+            // 폴리라인 추가
+            val polylineOptions = PolylineOptions()
+                .clickable(true)
+                .addAll(polylines)
+                .addSpan(
+                    StyleSpan(
+                        StrokeStyle.gradientBuilder(
+                            resources.getColor(R.color.map_start),
+                            resources.getColor(R.color.map_end)
+                        ).build()
+                    )
+                )
+            googleMap.addPolyline(polylineOptions)
+
+            // 처음에만 줌을 설정하기 위해 LatLngBounds 사용
+            val boundsBuilder = LatLngBounds.Builder()
+            for (point in polylines) {
+                boundsBuilder.include(point)
+            }
+            val bounds = boundsBuilder.build()
+            val padding = 100  // 지도의 가장자리에 여유 공간을 주기 위한 패딩 (px 단위)
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding))
+
+            // 마커 추가
+            val markerPosition = LatLng(polylines[0].latitude, polylines[0].longitude)
+            currentMarker = googleMap.addMarker(MarkerOptions().position(markerPosition).title("marker"))
+
+            // 마커 애니메이션 시작
+            moveMarkerAlongPolyline(googleMap, 0)
+
+            // 줌/팬 제어: 사용자가 줌이나 팬을 하면 애니메이션을 일시 중지하고, 카메라가 멈추면 재개
             googleMap.setOnCameraMoveStartedListener { reason ->
                 if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
-                    // 사용자가 줌을 조정하는 중
                     isCameraMoving = true
                     currentAnimator?.pause() // 애니메이션 일시 중지
                 }
@@ -361,31 +392,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     currentAnimator?.start() // 애니메이션 재개
                 }
             }
-
-            // 폴리라인 추가 및 카메라 설정
-            googleMap.addPolyline(
-                PolylineOptions()
-                    .clickable(true)
-                    .addAll(polylines)
-                    .addSpan(
-                        StyleSpan(
-                            StrokeStyle.gradientBuilder(
-                                resources.getColor(R.color.map_start),
-                                resources.getColor(R.color.map_end)
-                            ).build()
-                        )
-                    )
-            )
-
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(polylines[polylines.size / 2], 11f))
-
-            val markerPosition = LatLng(polylines[0].latitude, polylines[0].longitude)
-            currentMarker = googleMap.addMarker(MarkerOptions().position(markerPosition).title("marker"))
-
-            moveMarkerAlongPolyline(googleMap, 0)
         }
     }
-
     private fun moveMarkerAlongPolyline(googleMap: GoogleMap, index: Int) {
         val startPosition = polylines[index]
         val endPosition = polylines[(index + 1) % polylines.size]
