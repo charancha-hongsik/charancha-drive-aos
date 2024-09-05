@@ -389,7 +389,13 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     private fun moveMarkerAlongPolyline(googleMap: GoogleMap, index: Int) {
         val startPosition = polylines[index]
         val endPosition = polylines[(index + 1) % polylines.size]
-        val duration = 10L // 애니메이션의 지속 시간 (밀리초 단위)
+        val zoomLevel = googleMap.cameraPosition.zoom
+        var duration = 10L
+        if(zoomLevel > 15){
+            duration = 100L
+        } else if(zoomLevel < 15){
+            duration = 10L
+        }
 
         currentAnimator?.cancel() // 이전 애니메이션 취소
 
@@ -428,6 +434,17 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         }, duration)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        // 현재 진행 중인 애니메이터가 있으면 취소
+        currentAnimator?.cancel()
+        currentAnimator = null
+
+        // 현재 마커가 있으면 제거
+        currentMarker?.remove()
+        currentMarker = null
+    }
 
     // 두 지점 사이의 회전 각도를 계산하는 함수
     private fun computeRotation(fraction: Float, start: Float, end: Float): Float {
