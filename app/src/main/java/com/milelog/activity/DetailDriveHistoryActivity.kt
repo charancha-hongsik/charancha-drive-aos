@@ -348,7 +348,9 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync { googleMap ->
 
-            // 폴리라인 추가
+            /**
+             * 폴리라인 추가
+             */
             val polylineOptions = PolylineOptions()
                 .clickable(true)
                 .addAll(polylines)
@@ -362,7 +364,9 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                 )
             googleMap.addPolyline(polylineOptions)
 
-            // 처음에만 줌을 설정하기 위해 LatLngBounds 사용
+            /**
+             * 지도의 Zoom 정도 설정
+             */
             val boundsBuilder = LatLngBounds.Builder()
             for (point in polylines) {
                 boundsBuilder.include(point)
@@ -371,14 +375,19 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
             val padding = 100  // 지도의 가장자리에 여유 공간을 주기 위한 패딩 (px 단위)
             googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding))
 
-            // 마커 추가
+            /**
+             * 마커 추가
+             */
             val markerPosition = LatLng(polylines[0].latitude, polylines[0].longitude)
             currentMarker = googleMap.addMarker(MarkerOptions().position(markerPosition).title("marker"))
 
-            // 마커 애니메이션 시작
+
+            /**
+             * 마커 애니메이션 추가 및 애니메이션
+             */
             moveMarkerAlongPolyline(googleMap, 0)
 
-            // 줌/팬 제어: 사용자가 줌이나 팬을 하면 애니메이션을 일시 중지하고, 카메라가 멈추면 재개
+
             googleMap.setOnCameraMoveStartedListener { reason ->
                 if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
                     isCameraMoving = true
@@ -399,7 +408,9 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         val endPosition = polylines[(index + 1) % polylines.size]
         val zoomLevel = googleMap.cameraPosition.zoom
 
-        // 줌 레벨에 따라 애니메이션 지속 시간 설정
+        /**
+         * 줌 레벨에 따라 애니메이션 지속 시간 설정
+         */
         var duration = 10L
         if (zoomLevel > 15) {
             duration = 120L
@@ -407,9 +418,15 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
             duration = 10L
         }
 
-        currentAnimator?.cancel() // 이전 애니메이션 취소
+        /**
+         * 이전 애니메이션 취소
+         */
+        currentAnimator?.cancel()
 
-        // 마커 애니메이션 설정
+
+        /**
+         * 마커 애니메이션 추가
+         */
         val valueAnimator = ValueAnimator.ofFloat(0f, 1f)
         valueAnimator.duration = duration
         valueAnimator.addUpdateListener { animation ->
@@ -424,7 +441,10 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         valueAnimator.start()
         currentAnimator = valueAnimator
 
-        // 애니메이션 종료 리스너 설정
+
+        /**
+         * 마커 애니메이션 종료 리스너
+         */
         valueAnimator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
@@ -433,7 +453,9 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
             }
         })
 
-        // 다음 지점으로 이동
+        /**
+         * 다음 지점으로 이동
+         */
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed({
             val nextIndex = (index + 1) % polylines.size
