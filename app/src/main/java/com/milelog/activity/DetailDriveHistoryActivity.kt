@@ -1,5 +1,7 @@
 package com.milelog.activity
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.content.Intent
 import android.os.Bundle
@@ -94,6 +96,9 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var iv_tooltip_rapid_acc:ImageView
 
     lateinit var view_map:CardView
+
+    private var isCameraMoving = false
+    private var currentAnimator: ValueAnimator? = null
 
     var isActive = true
 
@@ -338,16 +343,27 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     }
 
 
-    private fun setMapData(){
-        // Get the SupportMapFragment and request notification when the map is ready to be used.
+    private fun setMapData() {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment?
-        mapFragment?.getMapAsync {
-            // Add polylines to the map.
-            // Polylines are useful to show a route or some other connection between points.
+        mapFragment?.getMapAsync { googleMap ->
+            googleMap.setOnCameraMoveStartedListener { reason ->
+                if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
+                    // 사용자가 줌을 조정하는 중
+                    isCameraMoving = true
+                    currentAnimator?.pause() // 애니메이션 일시 중지
+                }
+            }
 
+            googleMap.setOnCameraIdleListener {
+                if (isCameraMoving) {
+                    isCameraMoving = false
+                    currentAnimator?.start() // 애니메이션 재개
+                }
+            }
 
-            it.addPolyline(
+            // 폴리라인 추가 및 카메라 설정
+            googleMap.addPolyline(
                 PolylineOptions()
                     .clickable(true)
                     .addAll(polylines)
@@ -361,27 +377,21 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     )
             )
 
-            // Position the map's camera near Alice Springs in the center of Australia,
-            // and set the zoom factor so most of Australia shows on the screen.
-            it.moveCamera(CameraUpdateFactory.newLatLngZoom(polylines.get(polylines.size / 2), 13f))
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(polylines[polylines.size / 2], 13f))
 
-
-            // 마커를 추가합니다.
             val markerPosition = LatLng(polylines[0].latitude, polylines[0].longitude)
-            currentMarker = it.addMarker(MarkerOptions().position(markerPosition).title("marker"))
+            currentMarker = googleMap.addMarker(MarkerOptions().position(markerPosition).title("marker"))
 
-            // 첫 번째 마커부터 시작하여 나머지 마커를 이동시키는 애니메이션을 시작합니다.
-            moveMarkerAlongPolyline(it, 0)
-
+            moveMarkerAlongPolyline(googleMap, 0)
         }
     }
 
-    // Polyline을 따라 마커를 이동시키는 애니메이션을 생성합니다.
-    private fun moveMarkerAlongPolyline(googleMap: GoogleMap,  index: Int) {
+    private fun moveMarkerAlongPolyline(googleMap: GoogleMap, index: Int) {
         val startPosition = polylines[index]
         val endPosition = polylines[(index + 1) % polylines.size]
-        val duration = 10L // 애니메이션의 지속 시간
-        val handler = Handler(Looper.getMainLooper())
+        val duration = 10L // 애니메이션의 지속 시간 (밀리초 단위)
+
+        currentAnimator?.cancel() // 이전 애니메이션 취소
 
         val valueAnimator = ValueAnimator.ofFloat(0f, 1f)
         valueAnimator.duration = duration
@@ -395,8 +405,19 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
             googleMap.moveCamera(CameraUpdateFactory.newLatLng(newPosition))
         }
         valueAnimator.start()
+        currentAnimator = valueAnimator
+
+        // 애니메이션 종료 리스너 설정
+        valueAnimator.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                super.onAnimationEnd(animation)
+                // 애니메이터 초기화
+                currentAnimator = null
+            }
+        })
 
         // 다음 지점으로 이동합니다.
+        val handler = Handler(Looper.getMainLooper())
         handler.postDelayed({
             val nextIndex = (index + 1) % polylines.size
             if(nextIndex >= polylines.size-1)
@@ -407,22 +428,6 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         }, duration)
     }
 
-    private fun animateMarkerToGB(marker: Marker, finalPosition: LatLng, hideMarker: Boolean) {
-        val startPosition = marker.position
-        val endPosition = finalPosition
-        val startRotation = marker.rotation
-        val latLngInterpolator = LatLngInterpolator.Linear()
-        val valueAnimator = ValueAnimator.ofFloat(0f, 1f)
-        valueAnimator.duration = 10000 // 애니메이션 지속 시간 (10초)
-        valueAnimator.interpolator = LinearInterpolator()
-        valueAnimator.addUpdateListener { animation ->
-            val v = animation.animatedFraction
-            val newPosition = latLngInterpolator.interpolate(v, startPosition, endPosition)
-            marker.position = newPosition
-            marker.rotation = computeRotation(v, startRotation, 0f)
-        }
-        valueAnimator.start()
-    }
 
     // 두 지점 사이의 회전 각도를 계산하는 함수
     private fun computeRotation(fraction: Float, start: Float, end: Float): Float {
