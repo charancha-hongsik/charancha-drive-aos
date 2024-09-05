@@ -377,7 +377,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     )
             )
 
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(polylines[polylines.size / 2], 13f))
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(polylines[polylines.size / 2], 11f))
 
             val markerPosition = LatLng(polylines[0].latitude, polylines[0].longitude)
             currentMarker = googleMap.addMarker(MarkerOptions().position(markerPosition).title("marker"))
@@ -390,15 +390,18 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         val startPosition = polylines[index]
         val endPosition = polylines[(index + 1) % polylines.size]
         val zoomLevel = googleMap.cameraPosition.zoom
+
+        // 줌 레벨에 따라 애니메이션 지속 시간 설정
         var duration = 10L
-        if(zoomLevel > 15){
-            duration = 100L
-        } else if(zoomLevel < 15){
+        if (zoomLevel > 15) {
+            duration = 120L
+        } else if (zoomLevel < 15) {
             duration = 10L
         }
 
         currentAnimator?.cancel() // 이전 애니메이션 취소
 
+        // 마커 애니메이션 설정
         val valueAnimator = ValueAnimator.ofFloat(0f, 1f)
         valueAnimator.duration = duration
         valueAnimator.addUpdateListener { animation ->
@@ -407,8 +410,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                 startPosition.latitude + (endPosition.latitude - startPosition.latitude) * fraction,
                 startPosition.longitude + (endPosition.longitude - startPosition.longitude) * fraction
             )
-            currentMarker?.position = newPosition // 현재 마커의 위치 업데이트
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(newPosition))
+            // 마커의 위치만 업데이트
+            currentMarker?.position = newPosition
         }
         valueAnimator.start()
         currentAnimator = valueAnimator
@@ -422,15 +425,13 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
             }
         })
 
-        // 다음 지점으로 이동합니다.
+        // 다음 지점으로 이동
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed({
             val nextIndex = (index + 1) % polylines.size
-            if(nextIndex >= polylines.size-1)
-
-            else
+            if (nextIndex < polylines.size - 1) {
                 moveMarkerAlongPolyline(googleMap, nextIndex)
-
+            }
         }, duration)
     }
 
