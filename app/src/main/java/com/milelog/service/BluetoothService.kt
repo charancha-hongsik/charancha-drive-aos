@@ -256,7 +256,7 @@ class BluetoothService : Service() {
                         .setSmallIcon(R.mipmap.ic_notification)
                         .setAutoCancel(false)
                         .setOngoing(true)
-                        .setContentText("주행 중..")
+                        .setContentText("주행 관찰중이에요.")
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .setOnlyAlertOnce(true)
                         .setDeleteIntent(pendingDeleteIntent)
@@ -266,7 +266,7 @@ class BluetoothService : Service() {
                         .setSmallIcon(R.mipmap.ic_notification)
                         .setAutoCancel(false)
                         .setOngoing(true)
-                        .setContentText("주행 중..")
+                        .setContentText("주행 관찰중이에요.")
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .setOnlyAlertOnce(true)
                         .build())
@@ -280,14 +280,6 @@ class BluetoothService : Service() {
     override fun onCreate() {
         // Detecting L2/L3 Receiver
         super.onCreate()
-    }
-
-    fun refreshNotiText(){
-        if(sensorState){
-            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 중..").build())
-        }else{
-            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중이에요.").build())
-        }
     }
 
     class WalkingDetectReceiver : BroadcastReceiver() {
@@ -361,8 +353,6 @@ class BluetoothService : Service() {
                 driveDatabase = DriveDatabase.getDatabase(this)
                 initDriveData(level)
                 setLocation()
-
-                refreshNotiText()
             }
         } catch(e:Exception){
 
@@ -391,8 +381,6 @@ class BluetoothService : Service() {
 
                     fusedLocationClient?.removeLocationUpdates(locationCallback)
                     fusedLocationClient = null
-
-                    refreshNotiText()
                 }
             }
         }catch (e:Exception){
@@ -416,8 +404,6 @@ class BluetoothService : Service() {
 
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
-
-                refreshNotiText()
             }
         }catch(e:Exception){
 
@@ -889,7 +875,6 @@ class BluetoothService : Service() {
                     }
 
                     sensorState = false
-                    refreshNotiText()
 
                 }
 
@@ -898,7 +883,6 @@ class BluetoothService : Service() {
                     writeToRoomForApp(driveForApi.tracking_id)
 
                     sensorState = false
-                    refreshNotiText()
                 }
             })
 
@@ -906,8 +890,6 @@ class BluetoothService : Service() {
             writeToRoomForApi(driveForApi)
             writeToRoomForApp(driveForApi.tracking_id)
             sensorState = false
-            refreshNotiText()
-
         }
     }
 
