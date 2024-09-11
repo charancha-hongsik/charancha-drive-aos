@@ -891,7 +891,7 @@ class MainActivity : BaseRefreshActivity() {
 
                                     PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.id)
                                     tv_car_name.setText(getMyCarInfoResponse.carName)
-                                    tv_car_no.setText(getMyCarInfoResponse.vehicleIdentificationNumber)
+                                    tv_car_no.setText(getMyCarInfoResponse.licensePlateNumber)
 
                                     getManageScoreForAMonth()
                                     getDrivingDistanceForAMonth()
