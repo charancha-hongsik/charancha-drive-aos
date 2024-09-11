@@ -353,6 +353,7 @@ class BluetoothService : Service() {
                 driveDatabase = DriveDatabase.getDatabase(this)
                 initDriveData(level)
                 setLocation()
+
             }
         } catch(e:Exception){
 
@@ -367,6 +368,7 @@ class BluetoothService : Service() {
         try {
             if (sensorState) {
                 if (level == PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL, "")) {
+                    sensorState = false
                     firstLineState = false
                     firstLineLocation = null
                     firstLocation = null
@@ -381,6 +383,7 @@ class BluetoothService : Service() {
 
                     fusedLocationClient?.removeLocationUpdates(locationCallback)
                     fusedLocationClient = null
+
                 }
             }
         }catch (e:Exception){
@@ -390,6 +393,7 @@ class BluetoothService : Service() {
     fun stopSensor(){
         try {
             if (sensorState) {
+                sensorState = false
                 firstLineState = false
                 firstLineLocation = null
                 firstLocation = null
@@ -404,6 +408,7 @@ class BluetoothService : Service() {
 
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
+
             }
         }catch(e:Exception){
 
