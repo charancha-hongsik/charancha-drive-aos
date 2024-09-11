@@ -177,9 +177,9 @@ class RegisterCarActivity: BaseActivity() {
                         val jsonParam =
                             gson.toJson(
                                 PostMyCarRequest(
-                                licensePlateNumber=tv_car_id.text.toString(),
+                                licensePlateNumber=tv_car_no.text.toString(),
                                 ownerName=tv_car_owner.text.toString(),
-                                vehicleIdentificationNumber=tv_car_no.text.toString(),
+                                vehicleIdentificationNumber=tv_car_id.text.toString(),
                                 carYear= carYear.toInt(),
                                 carName = carName,
                                 fuel = tv_car_fuel.text.toString()
