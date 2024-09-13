@@ -15,6 +15,7 @@ import com.milelog.retrofit.request.SignInRequest
 import com.milelog.retrofit.request.SignUpRequest
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.milelog.CustomDialogNoCancel
 import com.milelog.retrofit.request.PostConnectDeviceRequest
 import com.milelog.retrofit.response.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -52,26 +53,15 @@ class LoginActivity: BaseActivity() {
             }
         })
 
-//        val builder = CustomTabsIntent.Builder()
-//        val customTabsIntent = builder.build()
-//        customTabsIntent
-//        customTabsIntent.launchUrl(this, Uri.parse("https://accounts.google.com/o/oauth2/v2/auth?client_id=261058280037-q7h5r2r541bnu4g4s29j28buapagukd5.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Fdev.milelog.charancha.com%2Fcallback&response_type=id_token+token&scope=openid+email+profile&nonce=6303802816258351306621586903820938577566340891518799089734464251242280008709&prompt=select_account"))
-
-//        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(loginUrl))
-//        intent.setPackage("com.android.chrome")
-//        startActivity(intent)
-
-
         setWebview()
     }
 
     /**
-     * window.location.href = "intent://login?test1=hongsik1232331&test2=value2#Intent;scheme=milelog;package=com.milelog.dev;end"
+     * window.location.href = "intent://login?keylessAccount=value1&keylessAccountExpire=value2&oauthProvider=value3&idToken=value4&accountAddress=value5#Intent;scheme=milelog;package=com.milelog.dev;end"
+     * window.location.href = “intent://login?errorMsg=value#Intent;scheme=milelog;package=com.milelog.dev;end”
      */
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        Log.d("YourActivity", "testestestsetse onNewIntent")
-
         intent?.let{
             handleIntent(it)
         }
@@ -87,11 +77,33 @@ class LoginActivity: BaseActivity() {
                 // 호스트 확인
                 val host = it.host
                 // 쿼리 파라미터 추출
-                val test1 = it.getQueryParameter("test1")
-                val test2 = it.getQueryParameter("test2")
+                val errorMsg = it.getQueryParameter("errorMsg")
 
-                // test1, test2 값을 사용하여 처리
-                Log.d("YourActivity", "testestestsetse testest test1: $test1, test2: $test2")
+                if(errorMsg == null){
+                    val keylessAccount = it.getQueryParameter("keylessAccount")
+                    val keylessAccountExpire = it.getQueryParameter("keylessAccountExpire")
+                    val oauthProvider = it.getQueryParameter("oauthProvider")
+                    val idToken = it.getQueryParameter("idToken")
+                    val accountAddress = it.getQueryParameter("accountAddress")
+
+
+                    PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.KEYLESS_ACCOUNT, keylessAccount)
+                    PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.KEYLESS_ACCOUNT_EXPIRE, keylessAccountExpire)
+                    PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.OAUTH_PROVIDER, oauthProvider)
+                    PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.ID_TOKEN, idToken)
+                    PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.ACCOUNT_ADDRESS, accountAddress)
+
+                    handleSuccessLogin(idToken!!,oauthProvider!!.uppercase(),accountAddress!!)
+                }else{
+                    CustomDialogNoCancel(this@LoginActivity, "다시 시도해 주세요",errorMsg,"확인" ,object:CustomDialogNoCancel.DialogCallback{
+                        override fun onConfirm() {
+
+                        }
+
+                    }).show()
+                }
+
+
 
             }
         }
@@ -170,28 +182,11 @@ class LoginActivity: BaseActivity() {
 
     class MilelogPublicApi(val activity: LoginActivity) {
         @JavascriptInterface
-        fun successLogin(keylessAccount: String, keylessAccountExpire:String, oauthProvider:String, idToken:String, accountAddress:String) {
-            Log.d("testestestsete","testsetestsetsetse :: " + keylessAccount)
-            PreferenceUtil.putPref(activity, PreferenceUtil.KEYLESS_ACCOUNT, keylessAccount)
-            PreferenceUtil.putPref(activity, PreferenceUtil.KEYLESS_ACCOUNT_EXPIRE, keylessAccountExpire)
-            PreferenceUtil.putPref(activity, PreferenceUtil.OAUTH_PROVIDER, oauthProvider)
-            PreferenceUtil.putPref(activity, PreferenceUtil.ID_TOKEN, idToken)
-            PreferenceUtil.putPref(activity, PreferenceUtil.ACCOUNT_ADDRESS, accountAddress)
-
-            activity.handleSuccessLogin(idToken,oauthProvider.uppercase(),accountAddress)
-        }
-
-        @JavascriptInterface
-        fun failLogin(message: String) {
-            activity.handleFailLogin(message)
-        }
-
-        @JavascriptInterface
-        fun test_login(){
+        fun startLogin(url:String){
             val builder = CustomTabsIntent.Builder()
             val customTabsIntent = builder.build()
-            customTabsIntent.launchUrl(activity, Uri.parse("https://accounts.google.com/o/oauth2/v2/auth?client_id=261058280037-q7h5r2r541bnu4g4s29j28buapagukd5.apps.googleusercontent.com&redirect_uri=https%3A%2F%2Fdev.milelog.charancha.com%2Fcallback&response_type=id_token+token&scope=openid+email+profile&nonce=6303802816258351306621586903820938577566340891518799089734464251242280008709&prompt=select_account"))
-
+//            customTabsIntent.intent.setPackage("com.android.chrome")
+            customTabsIntent.launchUrl(activity, Uri.parse(url))
         }
     }
 
@@ -434,9 +429,6 @@ class LoginActivity: BaseActivity() {
         })
     }
 
-    fun handleFailLogin(message:String){
-
-    }
 
     interface TokenProcessCallback {
         fun completeProcess()
