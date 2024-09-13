@@ -107,6 +107,10 @@ class BluetoothService : Service() {
 
     var distance_array = MutableList(24) { 0f } // 24개 시간대의 distance
 
+    /**
+     * 1. stopSensor 여러번 되지 않게
+     * 2. API 호출되는 동안 startSensor 되지 않게
+     */
     private var sensorState:Boolean = false
     private var driveDatabase: DriveDatabase? = null
 
@@ -124,7 +128,7 @@ class BluetoothService : Service() {
     private var pastTimeStamp = 0L
 
 
-    private var INTERVAL = 1000L
+    private var INTERVAL = 5000L
 
     /**
      *         locationRequest.setInterval(INTERVAL) // 20초마다 업데이트 요청
@@ -406,6 +410,24 @@ class BluetoothService : Service() {
                     sensorState = false
                 }
 
+                fusedLocationClient?.removeLocationUpdates(locationCallback)
+                fusedLocationClient = null
+
+            }
+        }catch(e:Exception){
+
+        }
+    }
+
+    fun stopSensorNotForSaving(){
+        try {
+            if (sensorState) {
+                sensorState = false
+                firstLineState = false
+                firstLineLocation = null
+                firstLocation = null
+                maxDistance = mutableListOf()
+                pastMaxDistance = mutableListOf()
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
 
@@ -832,7 +854,15 @@ class BluetoothService : Service() {
              * 반경 300미터 이하 체크
              */
             if (maxDistance.max() < 300f) {
-                stopSensor()
+                /**
+                 * pastMaxDistance.size가 0이라는건 30분 주행이라는 것. (첫번째 체크)
+                 *
+                 */
+                if(pastMaxDistance.size == 0){
+                    stopSensorNotForSaving()
+                }else{
+                    stopSensor()
+                }
 
                 maxDistance = mutableListOf()
                 pastMaxDistance = mutableListOf()
