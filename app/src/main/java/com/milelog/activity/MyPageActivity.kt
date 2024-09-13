@@ -1,10 +1,14 @@
 package com.milelog.activity
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.milelog.PreferenceUtil
 import com.milelog.R
@@ -137,6 +141,17 @@ class MyPageActivity: BaseRefreshActivity() {
             }
 
         })
+
+        val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+
+        tv_email.setOnClickListener{
+            val clip = ClipData.newPlainText("email", tv_email.text.toString())
+            // ClipData를 ClipboardManager에 설정하여 클립보드에 복사합니다.
+            clipboardManager.setPrimaryClip(clip)
+            // 복사 완료 메시지를 표시할 수 있습니다. (선택 사항)
+            Toast.makeText(this, "복사되었습니다.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onResume() {
