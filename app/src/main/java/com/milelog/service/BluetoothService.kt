@@ -1,6 +1,9 @@
 package com.milelog.service
 
 import android.Manifest
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.Manifest.permission.ACTIVITY_RECOGNITION
 import android.app.*
 import android.app.PendingIntent.*
 import android.bluetooth.*
@@ -35,6 +38,7 @@ import com.milelog.room.entity.DriveForApi
 import com.google.android.gms.location.*
 import com.google.gson.Gson
 import com.milelog.NotificationDeleteReceiver
+import com.milelog.NotificationDeleteReceiver.Companion.ACTION_RESTART_NOTIFICATION
 import com.milelog.room.dto.EachGpsDtoForApi
 import com.milelog.room.dto.EachGpsDtoForApp
 import okhttp3.*
@@ -183,7 +187,25 @@ class BluetoothService : Service() {
 
     }
 
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+
+        if(ContextCompat.checkSelfPermission(this@BluetoothService, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this@BluetoothService, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                if (ActivityCompat.checkSelfPermission(this@BluetoothService, ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED) {
+
+                }else{
+                    stopSelf()
+                    return START_STICKY
+                }
+            }
+        }else {
+            stopSelf()
+            return START_STICKY
+        }
+
+
         if(!sensorState){
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 registerReceiver(TransitionsReceiver(), filter, RECEIVER_EXPORTED)
