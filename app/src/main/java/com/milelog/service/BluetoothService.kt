@@ -395,7 +395,6 @@ class BluetoothService : Service() {
             if (sensorState) {
                 if (level == PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL, "")) {
                     PreferenceUtil.putPref(this, PreferenceUtil.RUNNING_LEVEL, "")
-                    sensorState = false
                     firstLineState = false
                     firstLineLocation = null
                     firstLocation = null
