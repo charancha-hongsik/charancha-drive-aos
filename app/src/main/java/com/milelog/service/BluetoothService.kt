@@ -268,6 +268,8 @@ class BluetoothService : Service() {
             }
 
             scheduleWalkingDetectWork()
+
+            startSensor(L1)
         }else{
             if(intent?.action == ACTION_RESTART_NOTIFICATION){
                 (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
@@ -917,6 +919,8 @@ class BluetoothService : Service() {
                     if(response.code() == 200 || response.code() == 201){
                         val postDrivingInfoResponse = gson.fromJson(response.body()?.string(), PostDrivingInfoResponse::class.java)
                         writeToRoomForApp(postDrivingInfoResponse.id)
+                    }else if(response.code() == 429){
+
                     }else{
                         writeToRoomForApi(driveForApi)
                         writeToRoomForApp(driveForApi.tracking_id)
