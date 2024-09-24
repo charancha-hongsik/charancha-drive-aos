@@ -61,15 +61,10 @@ import java.util.concurrent.TimeUnit
  */
 class BluetoothService : Service() {
     companion object {
-        const val TAG = "AutoConnectionDetector"
-
         // columnName for provider to query on connection status
         const val CAR_CONNECTION_STATE = "CarConnectionState"
 
         const val TRANSITIONS_RECEIVER_ACTION = "TRANSITIONS_RECEIVER_ACTION"
-        const val TRANSITIONS_RECEIVER_ACTION2 = "TRANSITIONS_RECEIVER_ACTION2"
-
-
 
         // auto app on your phone will send broadcast with this action when connection state changes
         const val ACTION_CAR_CONNECTION_UPDATED = "androidx.car.app.connection.action.CAR_CONNECTION_UPDATED"
@@ -189,9 +184,10 @@ class BluetoothService : Service() {
 
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-
+        /**
+         * BootReceive r에서 실행 시킨 경우 필수 권한 확인 후 Service 실행
+         */
         if(ContextCompat.checkSelfPermission(this@BluetoothService, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this@BluetoothService, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 if (ActivityCompat.checkSelfPermission(this@BluetoothService, ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED) {
 
@@ -207,12 +203,18 @@ class BluetoothService : Service() {
 
 
         if(!sensorState){
+            /**
+             * TransitionsReceiver(L2, L3) 등록
+             */
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 registerReceiver(TransitionsReceiver(), filter, RECEIVER_EXPORTED)
             } else {
                 registerReceiver(TransitionsReceiver(), filter)
             }
 
+            /**
+             * WalkingDetectReceiver(L1) 등록
+             */
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 // Detecting L1 Receiver
                 registerReceiver(WalkingDetectReceiver(), IntentFilter().apply {
@@ -225,19 +227,23 @@ class BluetoothService : Service() {
                 })
             }
 
+
             carConnectionQueryHandler = CarConnectionQueryHandler(contentResolver)
 
+            /**
+             * Notification 띄우기
+             */
             (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
                 channel
             )
             notification = NotificationCompat.Builder(this, CHANNEL_ID)
 
             val deleteIntent = Intent(this@BluetoothService, NotificationDeleteReceiver::class.java)
-            val pendingDeleteIntent = PendingIntent.getBroadcast(
+            val pendingDeleteIntent = getBroadcast(
                 this@BluetoothService,
                 0,
                 deleteIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE
             )
 
             if (Build.VERSION.SDK_INT >= 34) {
@@ -263,18 +269,18 @@ class BluetoothService : Service() {
 
             scheduleWalkingDetectWork()
         }else{
-            if(intent?.action == NotificationDeleteReceiver.ACTION_RESTART_NOTIFICATION){
+            if(intent?.action == ACTION_RESTART_NOTIFICATION){
                 (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
                     channel
                 )
                 notification = NotificationCompat.Builder(this, CHANNEL_ID)
 
                 val deleteIntent = Intent(this@BluetoothService, NotificationDeleteReceiver::class.java)
-                val pendingDeleteIntent = PendingIntent.getBroadcast(
+                val pendingDeleteIntent = getBroadcast(
                     this@BluetoothService,
                     0,
                     deleteIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                    FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE
                 )
 
                 if (Build.VERSION.SDK_INT >= 34) {
@@ -301,11 +307,6 @@ class BluetoothService : Service() {
         }
 
         return START_STICKY
-    }
-
-    override fun onCreate() {
-        // Detecting L2/L3 Receiver
-        super.onCreate()
     }
 
     class WalkingDetectReceiver : BroadcastReceiver() {
@@ -483,35 +484,39 @@ class BluetoothService : Service() {
     inner class TransitionsReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if(ContextCompat.checkSelfPermission(this@BluetoothService, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED){
-                if(intent?.action == BluetoothDevice.ACTION_ACL_CONNECTED){
-                    val bluetoothManager: BluetoothManager = getSystemService(BluetoothManager::class.java)
-                    val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
+                when (intent?.action) {
+                    BluetoothDevice.ACTION_ACL_CONNECTED -> {
+                        val bluetoothManager: BluetoothManager = getSystemService(BluetoothManager::class.java)
+                        val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
 
 
-                    val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
+                        val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
 
-                    pairedDevices?.forEach { device ->
-                        if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
-                            if(isConnected(device)){
-                                startSensor(L2)
+                        pairedDevices?.forEach { device ->
+                            if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
+                                if(isConnected(device)){
+                                    startSensor(L2)
+                                }
+                            }
+                        }
+
+                    }
+                    BluetoothDevice.ACTION_ACL_DISCONNECTED -> {
+                        val bluetoothManager: BluetoothManager = getSystemService(BluetoothManager::class.java)
+                        val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
+
+                        val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
+                        pairedDevices?.forEach { device ->
+                            if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
+                                if(!isConnected(device)){
+                                    stopSensor(L2)
+                                }
                             }
                         }
                     }
-
-                } else if(intent?.action == BluetoothDevice.ACTION_ACL_DISCONNECTED){
-                    val bluetoothManager: BluetoothManager = getSystemService(BluetoothManager::class.java)
-                    val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
-
-                    val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
-                    pairedDevices?.forEach { device ->
-                        if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
-                            if(!isConnected(device)){
-                                stopSensor(L2)
-                            }
-                        }
+                    else -> {
+                        queryForState()
                     }
-                } else{
-                    queryForState()
                 }
             }
         }
@@ -643,18 +648,6 @@ class BluetoothService : Service() {
                 ActivityTransition.Builder()
                     .setActivityType(DetectedActivity.STILL)
                     .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.ON_BICYCLE)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.RUNNING)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.ON_FOOT)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
                     .build()
             )
 
@@ -678,7 +671,7 @@ class BluetoothService : Service() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 if (ActivityCompat.checkSelfPermission(
                         applicationContext,
-                        Manifest.permission.ACTIVITY_RECOGNITION
+                        ACTIVITY_RECOGNITION
                     ) != PackageManager.PERMISSION_GRANTED
                 ) {
                     // TODO: Consider calling
