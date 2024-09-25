@@ -17,6 +17,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
@@ -36,6 +37,7 @@ import com.milelog.room.database.DriveDatabase
 import com.milelog.room.entity.DriveForApp
 import com.milelog.room.entity.DriveForApi
 import com.google.android.gms.location.*
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.Gson
 import com.milelog.NotificationDeleteReceiver
 import com.milelog.NotificationDeleteReceiver.Companion.ACTION_RESTART_NOTIFICATION
@@ -68,6 +70,10 @@ class BluetoothService : Service() {
 
         // auto app on your phone will send broadcast with this action when connection state changes
         const val ACTION_CAR_CONNECTION_UPDATED = "androidx.car.app.connection.action.CAR_CONNECTION_UPDATED"
+
+        const val LOG_EVENT_START_SENSOR = "startSensor"
+        const val LOG_EVENT_STOP_SENSOR = "stopSensor"
+
 
         // phone is not connected to car
         const val CONNECTION_TYPE_NOT_CONNECTED = 0
@@ -368,6 +374,9 @@ class BluetoothService : Service() {
     fun startSensor(level:String){
         try {
             if (!sensorState) {
+
+                logEvent(level, LOG_EVENT_START_SENSOR)
+
                 sensorState = true
 
                 /**
@@ -402,6 +411,8 @@ class BluetoothService : Service() {
                     maxDistance = mutableListOf()
                     pastMaxDistance = mutableListOf()
 
+                    logEvent(level, LOG_EVENT_STOP_SENSOR)
+
                     if(distance_array.sum() > 500f){
                         callApi()
                     }else{
@@ -432,6 +443,8 @@ class BluetoothService : Service() {
                     sensorState = false
                 }
 
+                logEvent("walking", LOG_EVENT_STOP_SENSOR)
+
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
 
@@ -444,6 +457,8 @@ class BluetoothService : Service() {
     fun stopSensorNotForSaving(){
         try {
             if (sensorState) {
+                logEvent("notForSaving", LOG_EVENT_STOP_SENSOR)
+
                 sensorState = false
                 firstLineState = false
                 firstLineLocation = null
@@ -457,6 +472,15 @@ class BluetoothService : Service() {
         }catch(e:Exception){
 
         }
+    }
+
+    private fun logEvent(level:String, eventType:String){
+        val params = Bundle().apply {
+            putLong("timestamp", System.currentTimeMillis()) // timestamp 파라미터 추가
+            putString("level", level)         // type 파라미터 추가
+        }
+
+        FirebaseAnalytics.getInstance(this).logEvent(eventType, params)
     }
 
     private fun initDriveData(level:String){
@@ -829,6 +853,7 @@ class BluetoothService : Service() {
     }
 
     private fun processLocationCallback(location:Location, timeStamp:Long){
+        Log.d("testestestest","testsetestest timeStamp :: " + timeStamp)
         /**
          * W0D-48 최후 종료 조건 추가
          * firstLocation은 반경을 계산하기 위한 location 값
@@ -863,7 +888,7 @@ class BluetoothService : Service() {
          * 30분 간격으로 체크
          * 60초 * 30분 = 1800
          */
-        if((timeStamp - firstLocation!!.time) > 1800000L){
+        if((timeStamp - firstLocation!!.time) > 60000L){
             /**
              * 반경 300미터 이하 체크
              */
