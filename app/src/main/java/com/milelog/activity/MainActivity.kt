@@ -103,17 +103,14 @@ class MainActivity : BaseRefreshActivity() {
     var checkingUserActivityPermission = false
     var checkingIgnoreBatteryPermission = false
 
-
     override fun onResume() {
         super.onResume()
 
         mainViewModel.getMyCarInfo()
-
         /**
          * 사용자에게 위치권한을 받은 후 앱으로 돌아왔을 때에 대한 동작
          */
         setNextPermissionProcess()
-
         setBluetoothService()
     }
 
@@ -123,7 +120,6 @@ class MainActivity : BaseRefreshActivity() {
 
         init()
         mainViewModel.init(applicationContext)
-
         setObserver()
 
         mainViewModel.getAccount()
@@ -177,12 +173,13 @@ class MainActivity : BaseRefreshActivity() {
 
                 }
                 is AccountState.Success -> {
-                    tv_app_days2.text = convertUtcToDaysSince(state.data.createdAt)
-                    if(convertUtcToDaysSinceForInt(state.data.createdAt) > 14){
+                    val getAccountResponse = state.data
+                    tv_app_days2.text = convertUtcToDaysSince(getAccountResponse.createdAt)
+                    if(convertUtcToDaysSinceForInt(getAccountResponse.createdAt) > 14){
                         layout_start_app.visibility = GONE
                     }
 
-                    PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.USER_ID, state.data.id)
+                    PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.USER_ID, getAccountResponse.id)
                 }
                 is AccountState.Error -> {
                     if(state.code == 401){
@@ -215,8 +212,9 @@ class MainActivity : BaseRefreshActivity() {
 
                 }
                 is MyCarInfoState.Success -> {
-                    if(state.data.size > 0){
-                        mainViewModel.getCarInfoinquiryByCarId(state.data.get(0).id)
+                    val getMyCarInfoResponses = state.data
+                    if(getMyCarInfoResponses.size > 0){
+                        mainViewModel.getCarInfoinquiryByCarId(getMyCarInfoResponses.get(0).id)
                     }else{
                         startActivity(Intent(this@MainActivity, SplashActivity::class.java))
                         finish()
@@ -239,9 +237,10 @@ class MainActivity : BaseRefreshActivity() {
 
                 }
                 is CarInfoInquiryByCarIdState.Success -> {
-                    PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.USER_CARID, state.data.id)
-                    tv_car_name.setText(state.data.carName)
-                    tv_car_no.setText(state.data.licensePlateNumber)
+                    val getMyCarInfoResponse = state.data
+                    PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.id)
+                    tv_car_name.setText(getMyCarInfoResponse.carName)
+                    tv_car_no.setText(getMyCarInfoResponse.licensePlateNumber)
 
                     mainViewModel.getManageScoreForAMonth()
                     mainViewModel.getDrivingDistanceForAMonth()
@@ -264,23 +263,24 @@ class MainActivity : BaseRefreshActivity() {
 
                 }
                 is GetManageScoreState.Success -> {
+                    val getManageScoreResponse = state.data
                     tv_average_score.text =
-                        transferNumWithRounds(state.data.average.totalEngineScore).toString()
+                        transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
 
-                    if (state.data.diffAverage.totalEngineScore == 0.0) {
+                    if (getManageScoreResponse.diffAverage.totalEngineScore == 0.0) {
                         tv_increase.text = "변동 없음"
                         tv_increase.setTextColor(resources.getColor(R.color.gray_500))
-                    } else if (state.data.diffAverage.totalEngineScore > 0.0) {
+                    } else if (getManageScoreResponse.diffAverage.totalEngineScore > 0.0) {
                         tv_increase.text =
-                            "+" + transferNumWithRounds(state.data.diffAverage.totalEngineScore) + "점 증가"
+                            "+" + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 증가"
                         tv_increase.setTextColor(resources.getColor(R.color.pri_500))
-                    } else if (state.data.diffAverage.totalEngineScore < 0.0) {
+                    } else if (getManageScoreResponse.diffAverage.totalEngineScore < 0.0) {
                         tv_increase.text =
-                            transferNumWithRounds(state.data.diffAverage.totalEngineScore).toString() + "점 하락"
+                            transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore).toString() + "점 하락"
                         tv_increase.setTextColor(resources.getColor(R.color.sec_500))
                     }
 
-                    setPieChart((state.data.average.totalEngineScore / 10).toFloat())
+                    setPieChart((getManageScoreResponse.average.totalEngineScore / 10).toFloat())
                 }
                 is GetManageScoreState.Error -> {
                     if(state.code == 401){
