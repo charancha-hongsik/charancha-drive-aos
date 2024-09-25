@@ -1,35 +1,94 @@
 package com.milelog.viewmodel
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.milelog.room.database.DriveDatabase
-import com.milelog.room.entity.DriveForApp
-import kotlinx.coroutines.launch
+import com.google.gson.Gson
+import com.milelog.PreferenceUtil
+import com.milelog.retrofit.response.DriveItem
+import com.milelog.retrofit.response.GetDriveHistoryResponse
+import com.milelog.retrofit.response.Meta
+import com.milelog.viewmodel.state.GetDriveHistoryMoreState
+import com.milelog.viewmodel.state.GetDriveHistoryState
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class MyDriveHistoryViewModel: BaseViewModel() {
     lateinit var context: Context
 
-    private val _setAllDriveDateForApp = MutableLiveData<Event<MutableList<DriveForApp>>>()
-    val setAllDriveDateForApp: MutableLiveData<Event<MutableList<DriveForApp>>> get() = _setAllDriveDateForApp
+
+    private val _driveHistoryMoreResult = MutableLiveData<Event<GetDriveHistoryMoreState>>()
+    val driveHistoryMoreResult: MutableLiveData<Event<GetDriveHistoryMoreState>> get() = _driveHistoryMoreResult
+
+    private val _driveHistoryResult = MutableLiveData<Event<GetDriveHistoryState>>()
+    val driveHistoryResult: MutableLiveData<Event<GetDriveHistoryState>> get() = _driveHistoryResult
+
 
     fun init(context:Context){
         this.context = context
     }
 
-    // 99b42990-d74f-440c-9cf1-2b3bb1cb6824
-    // 1721339056037
-    fun getAllDrive(){
-        viewModelScope.launch {
-            val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(context)
-            driveDatabase.driveForAppDao().allDriveForApp?.let {
-                for(drive in it){
-                    Log.d("testestests","testestestse ::" + drive.tracking_id)
+    fun getHistoriesMore(startTime:String, endTime:String, meta: Meta, histories: MutableList<DriveItem>){
+        apiService(context).getDrivingHistories(
+            "Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!,
+            30,
+            "DESC",
+            meta.afterCursor,
+            null,
+            "startTime",
+            startTime,
+            endTime).enqueue(object: Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200 || response.code() == 201){
+                    val getDriveHistroyResponse = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDriveHistoryResponse::class.java
+                    )
+                    meta.afterCursor = getDriveHistroyResponse.meta.afterCursor
+                    _driveHistoryMoreResult.value = Event(GetDriveHistoryMoreState.Success(getDriveHistroyResponse))
+                }else{
+                    _driveHistoryMoreResult.value = Event(GetDriveHistoryMoreState.Error(response.code(), response.message()))
                 }
             }
-        }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+            }
+        })
     }
+
+    fun getHistories(startTime:String, endTime:String){
+        apiService(context).getDrivingHistories(
+            "Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!,
+            30,
+            "DESC",
+            null,
+            null,
+            "startTime",
+            startTime,
+            endTime).enqueue(object: Callback<ResponseBody>{
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200 || response.code() == 201){
+                    val getDriveHistroyResponse = Gson().fromJson(
+                        response.body()?.string(),
+                        GetDriveHistoryResponse::class.java
+                    )
+                    _driveHistoryResult.value = Event(GetDriveHistoryState.Success(getDriveHistroyResponse, startTime, endTime))
+
+                } else{
+                    _driveHistoryResult.value = Event(GetDriveHistoryState.Error(response.code(), response.message()))
+
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+            }
+
+        })
+    }
+
+
+
 }

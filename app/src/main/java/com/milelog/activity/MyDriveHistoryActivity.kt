@@ -2,9 +2,6 @@ package com.milelog.activity
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,7 +15,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.content.ContextCompat
 import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,6 +29,9 @@ import com.milelog.DividerItemDecoration
 import com.milelog.retrofit.response.DriveItem
 import com.milelog.retrofit.response.GetDriveHistoryResponse
 import com.milelog.retrofit.response.Meta
+import com.milelog.viewmodel.BaseViewModel
+import com.milelog.viewmodel.state.GetDriveHistoryMoreState
+import com.milelog.viewmodel.state.GetDriveHistoryState
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -76,14 +75,89 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_drive_history)
 
+        historyViewModel.init(applicationContext)
         init()
+        setObserver()
 
         lv_history.layoutManager = LinearLayoutManager(this@MyDriveHistoryActivity)
         val dividerItemDecoration = DividerItemDecoration(this@MyDriveHistoryActivity, R.color.gray_50, 50) // 색상 리소스와 구분선 높이 설정
         lv_history.addItemDecoration(dividerItemDecoration)
 
-        historyViewModel.init(applicationContext)
-        historyViewModel.getAllDrive()
+    }
+
+    private fun setObserver(){
+
+        historyViewModel.driveHistoryMoreResult.observe(this@MyDriveHistoryActivity, BaseViewModel.EventObserver{ state ->
+            when (state) {
+                is GetDriveHistoryMoreState.Loading -> {
+
+                }
+                is GetDriveHistoryMoreState.Success -> {
+                    val getDriveHistroyResponse = state.data
+
+                    histories.addAll(getDriveHistroyResponse.items)
+                    histories.add(DriveItem("","","","","",false,"","",0.0,0.0))
+                    (lv_history.adapter as DriveHistoryAdapter).notifyDataSetChanged()
+                }
+                is GetDriveHistoryMoreState.Error -> {
+                    if(state.code == 401){
+                        logout()
+                    }else{
+                        lv_history.visibility = GONE
+                        layout_no_data.visibility = VISIBLE
+                    }
+                }
+                is GetDriveHistoryMoreState.Empty -> {
+
+                }
+            }
+
+        })
+
+        historyViewModel.driveHistoryResult.observe(this@MyDriveHistoryActivity, BaseViewModel.EventObserver{ state ->
+            when (state) {
+                is GetDriveHistoryState.Loading -> {
+
+                }
+                is GetDriveHistoryState.Success -> {
+                    val getDriveHistroyResponse = state.data
+
+                    if(getDriveHistroyResponse.items.size > 0){
+                        val driveAdapter = DriveHistoryAdapter(
+                            this@MyDriveHistoryActivity,
+                            getDriveHistroyResponse.items, getDriveHistroyResponse.meta, object :
+                                DriveHistoryAdapter.DriveCallback {
+                                override fun clickedMore(meta: Meta, histories: MutableList<DriveItem>) {
+                                    histories.removeLast()
+                                    historyViewModel.getHistoriesMore(state.startTime, state.endTime, meta, histories)
+                                }
+                            })
+
+                        getDriveHistroyResponse.items.add(DriveItem("","","","","",false,"","",0.0,0.0))
+                        histories = getDriveHistroyResponse.items
+
+                        lv_history.adapter = driveAdapter
+
+                        lv_history.visibility = VISIBLE
+                        layout_no_data.visibility = GONE
+                    }else{
+                        lv_history.visibility = GONE
+                        layout_no_data.visibility = VISIBLE
+                    }
+                }
+                is GetDriveHistoryState.Error -> {
+                    if(state.code == 401){
+                        logout()
+                    }else{
+                        lv_history.visibility = GONE
+                        layout_no_data.visibility = VISIBLE
+                    }
+                }
+                is GetDriveHistoryState.Empty -> {
+
+                }
+            }
+        })
     }
 
     fun init(){
@@ -203,26 +277,25 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                 }else{
                     if(btn_a_month.isSelected){
                         setInquireScope(formatDateRangeForAMonth(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first))
-                        getHistories(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+                        historyViewModel.getHistories(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
                     }else if(btn_six_month.isSelected){
                         setInquireScope(formatDateRange(getCurrentAndPastTimeForISO(SIX_MONTH).second,getCurrentAndPastTimeForISO(SIX_MONTH).first))
-                        getHistories(getCurrentAndPastTimeForISO(SIX_MONTH).second,getCurrentAndPastTimeForISO(SIX_MONTH).first)
+                        historyViewModel.getHistories(getCurrentAndPastTimeForISO(SIX_MONTH).second,getCurrentAndPastTimeForISO(SIX_MONTH).first)
 
                     }else if(btn_each_month.isSelected){
-
                         setInquireScope(getDateRangeString(selectedDate))
-                        getHistories(getDateRange(selectedDate).second,getDateRange(selectedDate).first)
+                        historyViewModel.getHistories(getDateRange(selectedDate).second,getDateRange(selectedDate).first)
 
                         lv_history.visibility = VISIBLE
                         layout_no_data.visibility = GONE
                     }
                     layout_choose_date.visibility = GONE
 
-                }            }
+                }}
 
         })
 
-        getHistories(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+        historyViewModel.getHistories(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
         persistentBottomSheetEvent()
         setResources()
     }
@@ -266,98 +339,6 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         // listView에 adapter 연결
         listView_choose_date_own.adapter = dateAdapter
 
-    }
-
-    fun getHistoriesMore(startTime:String, endTime:String, meta: Meta, histories: MutableList<DriveItem>){
-        apiService().getDrivingHistories(
-            "Bearer " + PreferenceUtil.getPref(this@MyDriveHistoryActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,
-            30,
-            "DESC",
-            meta.afterCursor,
-            null,
-            "startTime",
-            startTime,
-            endTime).enqueue(object: Callback<ResponseBody>{
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200 || response.code() == 201){
-                    val getDriveHistroyResponse = Gson().fromJson(
-                        response.body()?.string(),
-                        GetDriveHistoryResponse::class.java
-                    )
-
-                    histories.addAll(getDriveHistroyResponse.items)
-
-                    histories.add(DriveItem("","","","","",false,"","",0.0,0.0))
-                    meta.afterCursor = getDriveHistroyResponse.meta.afterCursor
-                    (lv_history.adapter as DriveHistoryAdapter).notifyDataSetChanged()
-                }else if(response.code() == 401){
-                    logout()
-                }else{
-                    lv_history.visibility = GONE
-                    layout_no_data.visibility = VISIBLE
-                }
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
-            }
-        })
-    }
-    fun getHistories(startTime:String, endTime:String){
-        apiService().getDrivingHistories(
-            "Bearer " + PreferenceUtil.getPref(this@MyDriveHistoryActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,
-            30,
-            "DESC",
-            null,
-            null,
-            "startTime",
-            startTime,
-            endTime).enqueue(object: Callback<ResponseBody>{
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200 || response.code() == 201){
-                    val getDriveHistroyResponse = Gson().fromJson(
-                        response.body()?.string(),
-                        GetDriveHistoryResponse::class.java
-                    )
-
-
-                    if(getDriveHistroyResponse.items.size > 0){
-                        val driveAdapter = DriveHistoryAdapter(
-                            this@MyDriveHistoryActivity,
-                            getDriveHistroyResponse.items, getDriveHistroyResponse.meta, object :
-                                DriveHistoryAdapter.DriveCallback {
-                                override fun clickedMore(meta: Meta, histories: MutableList<DriveItem>) {
-                                    histories.removeLast()
-                                    getHistoriesMore(startTime, endTime, meta, histories)
-
-                                }
-                            })
-
-                        getDriveHistroyResponse.items.add(DriveItem("","","","","",false,"","",0.0,0.0))
-                        histories = getDriveHistroyResponse.items
-
-                        lv_history.adapter = driveAdapter
-
-                        lv_history.visibility = VISIBLE
-                        layout_no_data.visibility = GONE
-                    }else{
-                        lv_history.visibility = GONE
-                        layout_no_data.visibility = VISIBLE
-                    }
-
-                } else if(response.code() == 401){
-                    logout()
-                } else{
-                    lv_history.visibility = GONE
-                    layout_no_data.visibility = VISIBLE
-                }
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
-            }
-
-        })
     }
 
     class DriveHistoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
