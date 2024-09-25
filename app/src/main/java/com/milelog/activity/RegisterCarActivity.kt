@@ -186,7 +186,7 @@ class RegisterCarActivity: BaseActivity() {
                             )
                             )
 
-                        apiService().postMyCar(
+                        apiService(60).postMyCar(
                             "Bearer " + PreferenceUtil.getPref(this@RegisterCarActivity,  PreferenceUtil.ACCESS_TOKEN, ""), jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :
                             Callback<ResponseBody>{
                             override fun onResponse(

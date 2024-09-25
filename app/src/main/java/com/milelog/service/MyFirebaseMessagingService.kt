@@ -284,13 +284,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
     }
 
-    fun apiService(): ApiServiceInterface {
+    fun apiService(readTimeOut:Long = 30): ApiServiceInterface {
 
 
         val client: OkHttpClient = OkHttpClient.Builder()
             .addInterceptor(HeaderInterceptor(this))
             .connectTimeout(60, TimeUnit.SECONDS)
-            .readTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(readTimeOut, TimeUnit.SECONDS)
             .writeTimeout(60, TimeUnit.SECONDS)
             .build()
         return Retrofit.Builder().baseUrl(BuildConfig.BASE_API_URL).client(client)

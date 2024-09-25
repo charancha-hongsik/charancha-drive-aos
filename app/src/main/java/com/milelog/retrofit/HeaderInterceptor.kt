@@ -99,11 +99,11 @@ class HeaderInterceptor(val context: Context) : Interceptor {
         return response
     }
 
-    fun apiService(): ApiServiceInterface {
+    fun apiService(readTimeOut:Long = 30): ApiServiceInterface {
         val client: OkHttpClient = OkHttpClient.Builder()
             .addInterceptor(HeaderInterceptor(context))
             .connectTimeout(60, TimeUnit.SECONDS)
-            .readTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(readTimeOut, TimeUnit.SECONDS)
             .writeTimeout(60, TimeUnit.SECONDS)
             .build()
         return Retrofit.Builder().baseUrl(BuildConfig.BASE_API_URL).client(client)
