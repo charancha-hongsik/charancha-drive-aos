@@ -25,12 +25,10 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.gson.Gson
 import com.milelog.CustomDialog
 import com.milelog.PreferenceUtil
 import com.milelog.PreferenceUtil.HAVE_BEEN_HOME
 import com.milelog.R
-import com.milelog.retrofit.response.*
 import com.milelog.service.BluetoothService
 import com.milelog.viewmodel.BaseViewModel
 import com.milelog.viewmodel.MainViewModel
@@ -40,10 +38,6 @@ import com.milelog.viewmodel.state.GetDrivingStatisticsState
 import com.milelog.viewmodel.state.GetManageScoreState
 import com.milelog.viewmodel.state.MyCarInfoState
 import com.milelog.viewmodel.state.NotSavedDataState
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.util.*
 
 
@@ -460,6 +454,53 @@ class MainActivity : BaseRefreshActivity() {
                 }
             }
         })
+
+        mainViewModel.manageScoreForSummaryResult.observe(this@MainActivity, BaseViewModel.EventObserver{ state ->
+            when (state) {
+                is GetManageScoreState.Loading -> {
+
+                }
+                is GetManageScoreState.Success -> {
+                    val getManageScoreResponse = state.data
+
+                    if (getManageScoreResponse.total.totalEngineScore != 0.0) {
+                        tv_recent_score2.text =
+                            transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
+                        tv_engine_score.text =
+                            transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
+
+                        if (getManageScoreResponse.diffAverage.totalEngineScore == 0.0) {
+                            tv_recent_info_text.text = "점수 변동이 없어요"
+                            iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_good))
+                        } else if (getManageScoreResponse.diffAverage.totalEngineScore > 0.0) {
+                            tv_recent_info_text.text =
+                                "굉장해요. 지난 주행보다 +" + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점을 얻었어요!"
+                            iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
+                        } else if (getManageScoreResponse.diffAverage.totalEngineScore < 0.0) {
+                            tv_recent_info_text.text =
+                                "아쉬워요. 지난 주행보다 " + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 하락했어요"
+                            iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
+                        }
+
+                    } else {
+                        tv_recent_score2.text = "0"
+                        tv_engine_score.text = "0"
+
+
+                        tv_recent_info_text.text = "아직 데이터가 없어요. 함께 달려볼까요?"
+                        iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
+                    }
+                }
+                is GetManageScoreState.Error -> {
+                    if(state.code == 401){
+                        logout()
+                    }
+                }
+                is GetManageScoreState.Empty -> {
+
+                }
+            }
+        })
     }
 
     fun checkLocation(){
@@ -661,7 +702,7 @@ class MainActivity : BaseRefreshActivity() {
 
                 tv_recent_driving_score.text = "1개월 평균"
 
-                setManageSoreForSummary(29)
+                mainViewModel.setManageSoreForSummary(29)
             }
 
         })
@@ -675,7 +716,7 @@ class MainActivity : BaseRefreshActivity() {
 
                 tv_recent_driving_score.text = "6개월 평균"
 
-                setManageSoreForSummary(SIX_MONTH)
+                mainViewModel.setManageSoreForSummary(SIX_MONTH)
             }
 
         })
@@ -689,7 +730,7 @@ class MainActivity : BaseRefreshActivity() {
                 tv_recent_driving_score.text = "1년 평균"
 
 
-                setManageSoreForSummary(YEAR)
+                mainViewModel.setManageSoreForSummary(YEAR)
             }
         })
 
@@ -1008,65 +1049,6 @@ class MainActivity : BaseRefreshActivity() {
         if(checkingIgnoreBatteryPermission){
             setIgnoreBattery()
         }
-    }
-
-
-    fun setManageSoreForSummary(scope:Long){
-        apiService().getManageScoreStatistics(
-            "Bearer " + PreferenceUtil.getPref(this@MainActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this@MainActivity, PreferenceUtil.USER_CARID, "")!!,
-            getCurrentAndPastTimeForISO(scope).second,
-            getCurrentAndPastTimeForISO(scope).first
-        ).enqueue(object :Callback<ResponseBody>{
-            override fun onResponse(
-                call: Call<ResponseBody>,
-                response: Response<ResponseBody>
-            ) {
-                try {
-                    if (response.code() == 200 || response.code() == 201) {
-                        val getManageScoreResponse = Gson().fromJson(
-                            response.body()?.string(),
-                            GetManageScoreResponse::class.java
-                        )
-                        if (getManageScoreResponse.total.totalEngineScore != 0.0) {
-                            tv_recent_score2.text =
-                                transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
-                            tv_engine_score.text =
-                                transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
-
-                            if (getManageScoreResponse.diffAverage.totalEngineScore == 0.0) {
-                                tv_recent_info_text.text = "점수 변동이 없어요"
-                                iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_good))
-                            } else if (getManageScoreResponse.diffAverage.totalEngineScore > 0.0) {
-                                tv_recent_info_text.text =
-                                    "굉장해요. 지난 주행보다 +" + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점을 얻었어요!"
-                                iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
-                            } else if (getManageScoreResponse.diffAverage.totalEngineScore < 0.0) {
-                                tv_recent_info_text.text =
-                                    "아쉬워요. 지난 주행보다 " + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 하락했어요"
-                                iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
-                            }
-
-                        } else {
-                            tv_recent_score2.text = "0"
-                            tv_engine_score.text = "0"
-
-
-                            tv_recent_info_text.text = "아직 데이터가 없어요. 함께 달려볼까요?"
-                            iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
-                        }
-                    }else if(response.code() == 401){
-                        logout()
-                    }
-                }catch (e:Exception){
-
-                }
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
-            }
-        })
     }
 
     private fun setBluetoothService(){

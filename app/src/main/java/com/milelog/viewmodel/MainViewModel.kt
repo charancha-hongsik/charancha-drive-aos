@@ -56,6 +56,9 @@ class MainViewModel: BaseViewModel() {
     private val _recentManageScoreResult = MutableLiveData<Event<GetManageScoreState>>()
     val recentManageScoreResult: MutableLiveData<Event<GetManageScoreState>> get() = _recentManageScoreResult
 
+    private val _manageScoreForSummaryResult = MutableLiveData<Event<GetManageScoreState>>()
+    val manageScoreForSummaryResult: MutableLiveData<Event<GetManageScoreState>> get() = _manageScoreForSummaryResult
+
     fun init(context:Context){
         this.context = context
     }
@@ -305,6 +308,39 @@ class MainViewModel: BaseViewModel() {
 
             }
 
+        })
+    }
+
+    fun setManageSoreForSummary(scope:Long){
+        apiService(context).getManageScoreStatistics(
+            "Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(context, PreferenceUtil.USER_CARID, "")!!,
+            getCurrentAndPastTimeForISO(scope).second,
+            getCurrentAndPastTimeForISO(scope).first
+        ).enqueue(object :Callback<ResponseBody>{
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+                try {
+                    if (response.code() == 200 || response.code() == 201) {
+                        val getManageScoreResponse = Gson().fromJson(
+                            response.body()?.string(),
+                            GetManageScoreResponse::class.java
+                        )
+                        _manageScoreForSummaryResult.value = Event(GetManageScoreState.Success(getManageScoreResponse))
+                    }else{
+                        _manageScoreForSummaryResult.value = Event(GetManageScoreState.Error(response.code(), response.message()))
+
+                    }
+                }catch (e:Exception){
+
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+            }
         })
     }
 }
