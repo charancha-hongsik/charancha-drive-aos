@@ -53,6 +53,9 @@ class MainViewModel: BaseViewModel() {
     private val _drivingStatisticsResult = MutableLiveData<Event<GetDrivingStatisticsState>>()
     val drivingStatisticsResult: MutableLiveData<Event<GetDrivingStatisticsState>> get() = _drivingStatisticsResult
 
+    private val _recentManageScoreResult = MutableLiveData<Event<GetManageScoreState>>()
+    val recentManageScoreResult: MutableLiveData<Event<GetManageScoreState>> get() = _recentManageScoreResult
+
     fun init(context:Context){
         this.context = context
     }
@@ -256,6 +259,41 @@ class MainViewModel: BaseViewModel() {
                         _drivingStatisticsResult.value = Event(GetDrivingStatisticsState.Success(getDrivingStatisticsResponse))
                     } else {
                         _drivingStatisticsResult.value = Event(GetDrivingStatisticsState.Error(response.code(), response.message()))
+
+                    }
+                }catch (e:Exception){
+
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+            }
+
+        })
+    }
+
+    fun setRecentManageScoreForSummary(){
+        apiService(context).getRecentManageScoreStatistics(
+            "Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(context, PreferenceUtil.USER_CARID, "")!!
+        ).enqueue(object: Callback<ResponseBody>{
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+                try {
+                    if (response.code() == 200 || response.code() == 201) {
+                        val getManageScoreResponse = Gson().fromJson(
+                            response.body()?.string(),
+                            GetManageScoreResponse::class.java
+                        )
+
+                        _recentManageScoreResult.value = Event(GetManageScoreState.Success(getManageScoreResponse))
+
+
+                    } else {
+                        _recentManageScoreResult.value = Event(GetManageScoreState.Error(response.code(), response.message()))
 
                     }
                 }catch (e:Exception){

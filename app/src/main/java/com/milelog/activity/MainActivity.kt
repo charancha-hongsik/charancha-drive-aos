@@ -251,7 +251,7 @@ class MainActivity : BaseRefreshActivity() {
 
                     mainViewModel.getManageScoreForAMonth()
                     mainViewModel.getDrivingDistanceForAMonth()
-                    setRecentManageScoreForSummary()
+                    mainViewModel.setRecentManageScoreForSummary()
                 }
                 is CarInfoInquiryByCarIdState.Error -> {
                     if(state.code == 401){
@@ -396,6 +396,66 @@ class MainActivity : BaseRefreshActivity() {
                     }
                 }
                 is GetDrivingStatisticsState.Empty -> {
+
+                }
+            }
+        })
+
+        mainViewModel.recentManageScoreResult.observe(this@MainActivity, BaseViewModel.EventObserver{ state ->
+            when (state) {
+                is GetManageScoreState.Loading -> {
+
+                }
+                is GetManageScoreState.Success -> {
+                    val getManageScoreResponse = state.data
+
+                    if (getManageScoreResponse.isRecent) {
+                        if (getManageScoreResponse.total.totalEngineScore != 0.0) {
+                            tv_recent_score.text =
+                                transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
+                            tv_recent_score2.text =
+                                transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
+                            tv_engine_score.text =
+                                transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
+
+                            if (getManageScoreResponse.diffAverage.totalEngineScore == 0.0) {
+                                tv_recent_info_text.text = "점수 변동이 없어요"
+                                iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_good))
+                            } else if (getManageScoreResponse.diffAverage.totalEngineScore > 0.0) {
+                                tv_recent_info_text.text =
+                                    "굉장해요. 지난 주행보다 +" + transferNumWithRounds(
+                                        getManageScoreResponse.diffAverage.totalEngineScore
+                                    ) + "점을 얻었어요!"
+                                iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
+                            } else if (getManageScoreResponse.diffAverage.totalEngineScore < 0.0) {
+                                tv_recent_info_text.text =
+                                    "아쉬워요. 지난 주행보다 " + transferNumWithRounds(
+                                        getManageScoreResponse.diffAverage.totalEngineScore
+                                    ) + "점 하락했어요"
+                                iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
+                            }
+
+                        } else {
+                            tv_recent_score2.text = "0"
+                            tv_engine_score.text = "0"
+
+                            tv_recent_info_text.text = "아직 데이터가 없어요. 함께 달려볼까요?"
+                            iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
+                        }
+                    } else {
+                        tv_recent_score2.text = "0"
+                        tv_engine_score.text = "0"
+
+                        tv_recent_info_text.text = "아직 데이터가 없어요. 함께 달려볼까요?"
+                        iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
+                    }
+                }
+                is GetManageScoreState.Error -> {
+                    if(state.code == 401){
+                        logout()
+                    }
+                }
+                is GetManageScoreState.Empty -> {
 
                 }
             }
@@ -572,7 +632,6 @@ class MainActivity : BaseRefreshActivity() {
         btn_noti.setOnClickListener(object :OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
                 startActivity(Intent(this@MainActivity, AlarmActivity::class.java))
-
             }
 
         })
@@ -588,7 +647,7 @@ class MainActivity : BaseRefreshActivity() {
 
                 tv_recent_driving_score.text = "최근 주행 총점"
 
-                setRecentManageScoreForSummary()
+                mainViewModel.setRecentManageScoreForSummary()
             }
 
         })
@@ -932,76 +991,6 @@ class MainActivity : BaseRefreshActivity() {
             ActivityCompat.requestPermissions(this, permissions,code)
             return
         }
-    }
-
-    fun setRecentManageScoreForSummary(){
-        apiService().getRecentManageScoreStatistics(
-            "Bearer " + PreferenceUtil.getPref(this@MainActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this@MainActivity, PreferenceUtil.USER_CARID, "")!!
-        ).enqueue(object: Callback<ResponseBody>{
-            override fun onResponse(
-                call: Call<ResponseBody>,
-                response: Response<ResponseBody>
-            ) {
-                try {
-                    if (response.code() == 200 || response.code() == 201) {
-                        val getManageScoreResponse = Gson().fromJson(
-                            response.body()?.string(),
-                            GetManageScoreResponse::class.java
-                        )
-                        if (getManageScoreResponse.isRecent) {
-                            if (getManageScoreResponse.total.totalEngineScore != 0.0) {
-                                tv_recent_score.text =
-                                    transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
-                                tv_recent_score2.text =
-                                    transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
-                                tv_engine_score.text =
-                                    transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
-
-                                if (getManageScoreResponse.diffAverage.totalEngineScore == 0.0) {
-                                    tv_recent_info_text.text = "점수 변동이 없어요"
-                                    iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_good))
-                                } else if (getManageScoreResponse.diffAverage.totalEngineScore > 0.0) {
-                                    tv_recent_info_text.text =
-                                        "굉장해요. 지난 주행보다 +" + transferNumWithRounds(
-                                            getManageScoreResponse.diffAverage.totalEngineScore
-                                        ) + "점을 얻었어요!"
-                                    iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
-                                } else if (getManageScoreResponse.diffAverage.totalEngineScore < 0.0) {
-                                    tv_recent_info_text.text =
-                                        "아쉬워요. 지난 주행보다 " + transferNumWithRounds(
-                                            getManageScoreResponse.diffAverage.totalEngineScore
-                                        ) + "점 하락했어요"
-                                    iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_crying))
-                                }
-
-                            } else {
-                                tv_recent_score2.text = "0"
-                                tv_engine_score.text = "0"
-
-                                tv_recent_info_text.text = "아직 데이터가 없어요. 함께 달려볼까요?"
-                                iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
-                            }
-                        } else {
-                            tv_recent_score2.text = "0"
-                            tv_engine_score.text = "0"
-
-                            tv_recent_info_text.text = "아직 데이터가 없어요. 함께 달려볼까요?"
-                            iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
-                        }
-                    }else if(response.code() == 401){
-                        logout()
-                    }
-                }catch (e:Exception){
-
-                }
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
-            }
-
-        })
     }
 
     private fun setNextPermissionProcess(){
