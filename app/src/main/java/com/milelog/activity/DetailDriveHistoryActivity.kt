@@ -33,6 +33,7 @@ import com.google.android.gms.maps.model.StrokeStyle
 import com.google.android.gms.maps.model.StyleSpan
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.Gson
+import com.milelog.viewmodel.BaseViewModel
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
@@ -162,7 +163,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
         view_map = findViewById(R.id.view_map)
 
-        detailDriveHistoryViewModel.setDriveForApp.observe(this@DetailDriveHistoryActivity, DetailDriveHistoryViewModel.EventObserver {
+        detailDriveHistoryViewModel.setDriveForApp.observe(this@DetailDriveHistoryActivity, BaseViewModel.EventObserver {
             it?.let{
                 Log.d("testestestestes","testestestestset size :: " + it.gpses.size)
                 for(raw in it.gpses){

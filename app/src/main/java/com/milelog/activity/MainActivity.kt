@@ -19,6 +19,7 @@ import android.util.Log
 import android.view.View
 import android.view.View.*
 import android.widget.*
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
@@ -39,6 +40,10 @@ import com.milelog.retrofit.request.PostDrivingInfoRequest
 import com.milelog.retrofit.response.*
 import com.milelog.room.database.DriveDatabase
 import com.milelog.service.BluetoothService
+import com.milelog.viewmodel.BaseViewModel
+import com.milelog.viewmodel.DetailDriveHistoryViewModel
+import com.milelog.viewmodel.MainViewModel
+import com.milelog.viewmodel.state.AccountState
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
@@ -65,6 +70,8 @@ import java.util.concurrent.Executors
  * 6.
  */
 class MainActivity : BaseRefreshActivity() {
+    private val mainViewModel: MainViewModel by viewModels()
+
     lateinit var btnHistory: ImageView
 
     lateinit var chart: PieChart
@@ -173,6 +180,9 @@ class MainActivity : BaseRefreshActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        mainViewModel.init(applicationContext)
+        setObserver()
+
         Log.d("testestsetest","testesestsetse token :: " + PreferenceUtil.getPref(this@MainActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!)
         Log.d("testestsetest","testesestsetse DEVICE_ID_FOR_FCM :: " + PreferenceUtil.getPref(this@MainActivity,  PreferenceUtil.DEVICE_ID_FOR_FCM, "")!!)
         Log.d("testestsetest","testesestsetse ID_TOKEN :: " + PreferenceUtil.getPref(this@MainActivity,  PreferenceUtil.ID_TOKEN, "")!!)
@@ -214,12 +224,43 @@ class MainActivity : BaseRefreshActivity() {
 
         setBtn()
 
-        getAccount()
+        mainViewModel.getAccount()
+
         postDrivingInfoNotSavedData()
 
         if(intent.getBooleanExtra("deeplink",false)){
             startActivity(Intent(this@MainActivity, AlarmActivity::class.java))
         }
+    }
+
+    private fun setObserver(){
+        mainViewModel.accountResult.observe(this@MainActivity, BaseViewModel.EventObserver{ state ->
+            when (state) {
+                is AccountState.Loading -> {
+
+                }
+                is AccountState.Success -> {
+                    tv_app_days2.text = convertUtcToDaysSince(state.data.createdAt)
+                    if(convertUtcToDaysSinceForInt(state.data.createdAt) > 14){
+                        layout_start_app.visibility = GONE
+                    }
+
+                    PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.USER_ID, state.data.id)
+
+                    Log.d("testestestset","testestsetsets createdAt :: " + state.data.createdAt)
+                    Log.d("testestestset","testestsetsets id :: " + state.data.id)
+
+                }
+                is AccountState.Error -> {
+                    if(state.code == 401){
+                        logout()
+                    }
+                }
+                is AccountState.Empty -> {
+
+                }
+            }
+        })
     }
 
     fun getAddressFromLatLng(context: Context, latitude: Double, longitude: Double): String? {
@@ -248,37 +289,6 @@ class MainActivity : BaseRefreshActivity() {
             e.printStackTrace()
             null
         }
-    }
-
-    fun getAccount(){
-
-        apiService().getAccount("Bearer " + PreferenceUtil.getPref(this@MainActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!).enqueue(object:Callback<ResponseBody>{
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                val getAccountResponse = Gson().fromJson(
-                    response.body()?.string(),
-                    GetAccountResponse::class.java
-                )
-
-                if(response.code() == 200 || response.code() == 201){
-                    tv_app_days2.text = convertUtcToDaysSince(getAccountResponse.createdAt)
-                    if(convertUtcToDaysSinceForInt(getAccountResponse.createdAt) > 14){
-                        layout_start_app.visibility = GONE
-                    }
-
-                    Log.d("testsetestest","testsetsetses :: " + getAccountResponse.id)
-
-                    PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.USER_ID, getAccountResponse.id)
-
-                } else if(response.code() == 401){
-                    logout()
-                }
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
-            }
-
-        })
     }
 
     fun checkLocation(){
