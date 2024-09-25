@@ -41,6 +41,7 @@ import com.milelog.service.BluetoothService
 import com.milelog.viewmodel.BaseViewModel
 import com.milelog.viewmodel.MainViewModel
 import com.milelog.viewmodel.state.AccountState
+import com.milelog.viewmodel.state.MyCarInfoState
 import com.milelog.viewmodel.state.NotSavedDataState
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -121,7 +122,7 @@ class MainActivity : BaseRefreshActivity() {
     override fun onResume() {
         super.onResume()
 
-        setCarInfo()
+        mainViewModel.getMyCarInfo()
 
         /**
          * 사용자에게 위치권한을 받은 후 앱으로 돌아왔을 때에 대한 동작
@@ -178,15 +179,8 @@ class MainActivity : BaseRefreshActivity() {
         mainViewModel.init(applicationContext)
         setObserver()
 
-        Log.d("testestsetest","testesestsetse token :: " + PreferenceUtil.getPref(this@MainActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!)
-        Log.d("testestsetest","testesestsetse DEVICE_ID_FOR_FCM :: " + PreferenceUtil.getPref(this@MainActivity,  PreferenceUtil.DEVICE_ID_FOR_FCM, "")!!)
-        Log.d("testestsetest","testesestsetse ID_TOKEN :: " + PreferenceUtil.getPref(this@MainActivity,  PreferenceUtil.ID_TOKEN, "")!!)
-
-
-
         // FirebaseAnalytics 인스턴스 초기화
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
-
 
         setPieChart(0.0f)
 
@@ -263,6 +257,62 @@ class MainActivity : BaseRefreshActivity() {
                     if(state.code == 401){
                         logout()
                     }
+                }
+
+                else -> {
+
+                }
+            }
+        })
+
+        mainViewModel.myCarInfoResult.observe(this@MainActivity, BaseViewModel.EventObserver{ state ->
+            when (state) {
+                is MyCarInfoState.Loading -> {
+
+                }
+                is MyCarInfoState.Success -> {
+                    if(state.data.size > 0){
+                        apiService().getCarInfoinquiryByCarId("Bearer " + PreferenceUtil.getPref(this@MainActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, state.data.get(0).id).enqueue(object :
+                            Callback<ResponseBody> {
+                            override fun onResponse(
+                                call: Call<ResponseBody>,
+                                response: Response<ResponseBody>
+                            ) {
+                                if(response.code() == 200 || response.code() == 201){
+                                    val getMyCarInfoResponse = Gson().fromJson(
+                                        response.body()?.string(),
+                                        GetMyCarInfoResponse::class.java
+                                    )
+
+                                    PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.id)
+                                    tv_car_name.setText(getMyCarInfoResponse.carName)
+                                    tv_car_no.setText(getMyCarInfoResponse.licensePlateNumber)
+
+                                    getManageScoreForAMonth()
+                                    getDrivingDistanceForAMonth()
+                                    setRecentManageScoreForSummary()
+                                }else if(response.code() == 401){
+                                    logout()
+                                }
+                            }
+
+                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+                            }
+
+                        })
+                    }else{
+                        startActivity(Intent(this@MainActivity, SplashActivity::class.java))
+                        finish()
+                    }
+                }
+                is MyCarInfoState.Error -> {
+                    if(state.code == 401){
+                        logout()
+                    }
+                }
+                is MyCarInfoState.Empty -> {
+
                 }
 
                 else -> {
@@ -881,67 +931,6 @@ class MainActivity : BaseRefreshActivity() {
         }
     }
 
-    fun setCarInfo(){
-        apiService().getMyCarInfo("Bearer " + PreferenceUtil.getPref(this@MainActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!).enqueue(object :
-            Callback<ResponseBody> {
-            override fun onResponse(
-                call: Call<ResponseBody>,
-                response: Response<ResponseBody>
-            ) {
-
-                if(response.code() == 200 || response.code() == 201){
-                    val jsonString = response.body()?.string()
-
-                    val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
-                    val getMyCarInfoResponses:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
-
-                    if(getMyCarInfoResponses.size > 0){
-                        apiService().getCarInfoinquiryByCarId("Bearer " + PreferenceUtil.getPref(this@MainActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, getMyCarInfoResponses.get(0).id).enqueue(object :
-                            Callback<ResponseBody> {
-                            override fun onResponse(
-                                call: Call<ResponseBody>,
-                                response: Response<ResponseBody>
-                            ) {
-                                if(response.code() == 200 || response.code() == 201){
-                                    val getMyCarInfoResponse = Gson().fromJson(
-                                        response.body()?.string(),
-                                        GetMyCarInfoResponse::class.java
-                                    )
-
-                                    PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.id)
-                                    tv_car_name.setText(getMyCarInfoResponse.carName)
-                                    tv_car_no.setText(getMyCarInfoResponse.licensePlateNumber)
-
-                                    getManageScoreForAMonth()
-                                    getDrivingDistanceForAMonth()
-                                    setRecentManageScoreForSummary()
-                                }else if(response.code() == 401){
-                                    logout()
-                                }
-                            }
-
-                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
-                            }
-
-                        })
-                    }else{
-                        startActivity(Intent(this@MainActivity, SplashActivity::class.java))
-                        finish()
-                    }
-                }else if(response.code() == 401){
-                    logout()
-                }
-            }
-
-            override fun onFailure(
-                call: Call<ResponseBody>,
-                t: Throwable
-            ) {
-
-            }
-        })
-    }
 
     fun convertUtcToDaysSince(utcTimeStr: String): String {
         // UTC 시간 파싱

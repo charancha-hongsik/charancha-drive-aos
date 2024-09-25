@@ -1,15 +1,21 @@
 package com.milelog.viewmodel
 
 import android.content.Context
+import android.content.Intent
+import android.util.Log
 
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.milelog.PreferenceUtil
+import com.milelog.activity.SplashActivity
 import com.milelog.retrofit.request.PostDrivingInfoRequest
 import com.milelog.retrofit.response.GetAccountResponse
+import com.milelog.retrofit.response.GetMyCarInfoResponse
 import com.milelog.retrofit.response.PostDrivingInfoResponse
 import com.milelog.room.database.DriveDatabase
 import com.milelog.viewmodel.state.AccountState
+import com.milelog.viewmodel.state.MyCarInfoState
 import com.milelog.viewmodel.state.NotSavedDataState
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -17,6 +23,7 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.lang.reflect.Type
 import java.util.concurrent.Executors
 
 class MainViewModel: BaseViewModel() {
@@ -27,6 +34,9 @@ class MainViewModel: BaseViewModel() {
 
     private val _notSavedDataResult = MutableLiveData<Event<NotSavedDataState>>()
     val notSavedDataStateResult: MutableLiveData<Event<NotSavedDataState>> get() = _notSavedDataResult
+
+    private val _myCarInfoResult = MutableLiveData<Event<MyCarInfoState>>()
+    val myCarInfoResult: MutableLiveData<Event<MyCarInfoState>> get() = _myCarInfoResult
 
     fun init(context:Context){
         this.context = context
@@ -124,5 +134,35 @@ class MainViewModel: BaseViewModel() {
         }else{
 
         }
+    }
+
+    fun getMyCarInfo(){
+        apiService(context).getMyCarInfo("Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!).enqueue(object :
+            Callback<ResponseBody> {
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+
+                if(response.code() == 200 || response.code() == 201){
+                    val jsonString = response.body()?.string()
+
+                    val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
+                    val getMyCarInfoResponses:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
+
+                    _myCarInfoResult.value = Event(MyCarInfoState.Success(getMyCarInfoResponses))
+
+                }else{
+                    _myCarInfoResult.value = Event(MyCarInfoState.Error(response.code(), response.message()))
+                }
+            }
+
+            override fun onFailure(
+                call: Call<ResponseBody>,
+                t: Throwable
+            ) {
+
+            }
+        })
     }
 }
