@@ -1,6 +1,8 @@
 package com.milelog.viewmodel
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.milelog.BuildConfig
@@ -25,6 +27,16 @@ open class BaseViewModel:ViewModel() {
             .addConverterFactory(GsonConverterFactory.create()).build().create(
                 ApiServiceInterface::class.java
             )
+    }
+
+    fun isInternetConnected(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        val network = connectivityManager.activeNetwork ?: return false
+        val capabilities =
+            connectivityManager.getNetworkCapabilities(network) ?: return false
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
     }
 
     open class Event<out T>(private val content: T) {

@@ -36,16 +36,12 @@ import com.milelog.CustomDialog
 import com.milelog.PreferenceUtil
 import com.milelog.PreferenceUtil.HAVE_BEEN_HOME
 import com.milelog.R
-import com.milelog.retrofit.request.PostDrivingInfoRequest
 import com.milelog.retrofit.response.*
-import com.milelog.room.database.DriveDatabase
 import com.milelog.service.BluetoothService
 import com.milelog.viewmodel.BaseViewModel
-import com.milelog.viewmodel.DetailDriveHistoryViewModel
 import com.milelog.viewmodel.MainViewModel
 import com.milelog.viewmodel.state.AccountState
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody.Companion.toRequestBody
+import com.milelog.viewmodel.state.NotSavedDataState
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -57,7 +53,6 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.util.*
-import java.util.concurrent.Executors
 
 
 /**
@@ -225,8 +220,7 @@ class MainActivity : BaseRefreshActivity() {
         setBtn()
 
         mainViewModel.getAccount()
-
-        postDrivingInfoNotSavedData()
+        mainViewModel.postDrivingInfoNotSavedData()
 
         if(intent.getBooleanExtra("deeplink",false)){
             startActivity(Intent(this@MainActivity, AlarmActivity::class.java))
@@ -246,10 +240,6 @@ class MainActivity : BaseRefreshActivity() {
                     }
 
                     PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.USER_ID, state.data.id)
-
-                    Log.d("testestestset","testestsetsets createdAt :: " + state.data.createdAt)
-                    Log.d("testestestset","testestsetsets id :: " + state.data.id)
-
                 }
                 is AccountState.Error -> {
                     if(state.code == 401){
@@ -257,6 +247,25 @@ class MainActivity : BaseRefreshActivity() {
                     }
                 }
                 is AccountState.Empty -> {
+
+                }
+
+                else -> {
+
+                }
+            }
+        })
+
+        mainViewModel.notSavedDataStateResult.observe(this@MainActivity, BaseViewModel.EventObserver{ state ->
+            when (state) {
+
+                is NotSavedDataState.Error -> {
+                    if(state.code == 401){
+                        logout()
+                    }
+                }
+
+                else -> {
 
                 }
             }
@@ -1259,75 +1268,6 @@ class MainActivity : BaseRefreshActivity() {
             // Chrome browser presumably not installed so allow user to choose instead
             intent.setPackage(null)
             startActivity(intent)
-        }
-    }
-
-    fun postDrivingInfoNotSavedData(){
-        if(isInternetConnected(this@MainActivity)){
-            Executors.newSingleThreadExecutor().execute {
-                val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(this@MainActivity)
-                driveDatabase.driveForApiDao().allDriveLimit5?.let {
-                    if (it.isNotEmpty()) {
-                        for (drive in it) {
-                            val postDrivingInfoRequest = PostDrivingInfoRequest(
-                                userCarId = PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
-                                startTimestamp = drive.startTimestamp,
-                                endTimestamp = drive.endTimestamp,
-                                verification = drive.verification,
-                                gpses = drive.gpses
-                            )
-
-                            val gson = Gson()
-                            val jsonParam = gson.toJson(postDrivingInfoRequest)
-
-                            apiService().postDrivingInfo("Bearer " + PreferenceUtil.getPref(this@MainActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, jsonParam.toRequestBody("application/json".toMediaTypeOrNull()))
-                                .enqueue(object : Callback<ResponseBody> {
-                                    override fun onResponse(
-                                        call: Call<ResponseBody>,
-                                        response: Response<ResponseBody>
-                                    ) {
-                                        try {
-                                            if (response.code() == 200 || response.code() == 201) {
-                                                val postDrivingInfoResponse = gson.fromJson(
-                                                    response.body()?.string(),
-                                                    PostDrivingInfoResponse::class.java
-                                                )
-                                                // update id drive.
-                                                // tracking_id to postDrivingInfoResponse.id
-
-                                                // 보낸 데이터 삭제
-                                                driveDatabase.driveForApiDao()
-                                                    .deleteByTrackingId(drive.tracking_id)
-
-                                                // DriveForApp tracking_id 저장
-                                                driveDatabase.driveForAppDao()
-                                                    .updateTrackingId(
-                                                        drive.tracking_id,
-                                                        postDrivingInfoResponse.id
-                                                    )
-                                            } else if(response.code() == 401){
-                                                logout()
-                                            }
-
-                                        }catch (e:Exception){
-
-                                        }
-                                    }
-
-                                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
-
-                                    }
-                                })
-                        }
-                    } else {
-
-                    }
-                }
-            }
-
-        }else{
-
         }
     }
 
