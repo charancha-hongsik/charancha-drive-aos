@@ -1,20 +1,22 @@
 package com.milelog.viewmodel
 
 import android.content.Context
-import android.content.Intent
-import android.util.Log
+
 
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.milelog.PreferenceUtil
-import com.milelog.activity.SplashActivity
+import com.milelog.R
 import com.milelog.retrofit.request.PostDrivingInfoRequest
 import com.milelog.retrofit.response.GetAccountResponse
+import com.milelog.retrofit.response.GetManageScoreResponse
 import com.milelog.retrofit.response.GetMyCarInfoResponse
 import com.milelog.retrofit.response.PostDrivingInfoResponse
 import com.milelog.room.database.DriveDatabase
 import com.milelog.viewmodel.state.AccountState
+import com.milelog.viewmodel.state.CarInfoInquiryByCarIdState
+import com.milelog.viewmodel.state.GetManageScoreState
 import com.milelog.viewmodel.state.MyCarInfoState
 import com.milelog.viewmodel.state.NotSavedDataState
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -37,6 +39,12 @@ class MainViewModel: BaseViewModel() {
 
     private val _myCarInfoResult = MutableLiveData<Event<MyCarInfoState>>()
     val myCarInfoResult: MutableLiveData<Event<MyCarInfoState>> get() = _myCarInfoResult
+
+    private val _carInfoInquiryByCarId = MutableLiveData<Event<CarInfoInquiryByCarIdState>>()
+    val carInfoInquiryByCarId: MutableLiveData<Event<CarInfoInquiryByCarIdState>> get() = _carInfoInquiryByCarId
+
+    private val _managerScoreResult = MutableLiveData<Event<GetManageScoreState>>()
+    val managerScoreResult: MutableLiveData<Event<GetManageScoreState>> get() = _managerScoreResult
 
     fun init(context:Context){
         this.context = context
@@ -97,9 +105,6 @@ class MainViewModel: BaseViewModel() {
                                                     response.body()?.string(),
                                                     PostDrivingInfoResponse::class.java
                                                 )
-                                                // update id drive.
-                                                // tracking_id to postDrivingInfoResponse.id
-
                                                 // 보낸 데이터 삭제
                                                 driveDatabase.driveForApiDao()
                                                     .deleteByTrackingId(drive.tracking_id)
@@ -163,6 +168,65 @@ class MainViewModel: BaseViewModel() {
             ) {
 
             }
+        })
+    }
+
+    fun getCarInfoinquiryByCarId(id:String){
+        apiService(context).getCarInfoinquiryByCarId("Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!, id).enqueue(object :
+            Callback<ResponseBody> {
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+                if(response.code() == 200 || response.code() == 201){
+                    val getMyCarInfoResponse = Gson().fromJson(
+                        response.body()?.string(),
+                        GetMyCarInfoResponse::class.java
+                    )
+
+                    _carInfoInquiryByCarId.value = Event(CarInfoInquiryByCarIdState.Success(getMyCarInfoResponse))
+
+                }else if(response.code() == 401){
+                    _carInfoInquiryByCarId.value = Event(CarInfoInquiryByCarIdState.Error(response.code(), response.message()))
+
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+            }
+
+        })
+    }
+
+    fun getManageScoreForAMonth(){
+        apiService(context).getManageScoreStatistics(
+            "Bearer " + PreferenceUtil.getPref(context, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(context, PreferenceUtil.USER_CARID, "")!!,
+            getCurrentAndPastTimeForISO(29).second,
+            getCurrentAndPastTimeForISO(29).first).enqueue(object:
+            Callback<ResponseBody>{
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                try {
+                    if (response.code() == 200 || response.code() == 201) {
+                        val getManageScoreResponse = Gson().fromJson(
+                            response.body()?.string(),
+                            GetManageScoreResponse::class.java
+                        )
+                        _managerScoreResult.value = Event(GetManageScoreState.Success(getManageScoreResponse))
+                    }else{
+                        _managerScoreResult.value = Event(GetManageScoreState.Error(response.code(), response.message()))
+
+                    }
+                }catch (e:Exception){
+
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+            }
+
         })
     }
 }

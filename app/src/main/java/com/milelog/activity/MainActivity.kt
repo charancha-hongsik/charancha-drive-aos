@@ -1,21 +1,16 @@
 package com.milelog.activity
 
 import android.Manifest.permission.*
-import android.app.*
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.location.Address
-import android.location.Geocoder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
 import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-import android.util.Log
 import android.view.View
 import android.view.View.*
 import android.widget.*
@@ -31,7 +26,6 @@ import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.milelog.CustomDialog
 import com.milelog.PreferenceUtil
 import com.milelog.PreferenceUtil.HAVE_BEEN_HOME
@@ -41,18 +35,14 @@ import com.milelog.service.BluetoothService
 import com.milelog.viewmodel.BaseViewModel
 import com.milelog.viewmodel.MainViewModel
 import com.milelog.viewmodel.state.AccountState
+import com.milelog.viewmodel.state.CarInfoInquiryByCarIdState
+import com.milelog.viewmodel.state.GetManageScoreState
 import com.milelog.viewmodel.state.MyCarInfoState
 import com.milelog.viewmodel.state.NotSavedDataState
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.IOException
-import java.lang.reflect.Type
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
 import java.util.*
 
 
@@ -127,58 +117,25 @@ class MainActivity : BaseRefreshActivity() {
         /**
          * 사용자에게 위치권한을 받은 후 앱으로 돌아왔을 때에 대한 동작
          */
-        if(checkingUserActivityPermission){
-            if(ContextCompat.checkSelfPermission(this, ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED){
-                checkingIgnoreBatteryPermission = true
-                checkUserActivity()
-            } else{
-                setIgnoreBattery()
-            }
+        setNextPermissionProcess()
 
-            checkingUserActivityPermission = false
-        }
-
-        if(checkingIgnoreBatteryPermission){
-            setIgnoreBattery()
-        }
-
-
-
-        if(ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                if (ActivityCompat.checkSelfPermission(applicationContext, ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED) {
-                    if(!isMyServiceRunning(BluetoothService::class.java)){
-                        val bluetoothIntent = Intent(this, BluetoothService::class.java)
-                        startForegroundService(bluetoothIntent)
-                    }
-                }else{
-                    if(isMyServiceRunning(BluetoothService::class.java)){
-                        val bluetoothIntent = Intent(this, BluetoothService::class.java)
-                        stopService(bluetoothIntent)
-                    }
-                }
-            }else{
-                if(!isMyServiceRunning(BluetoothService::class.java)){
-                    val bluetoothIntent = Intent(this, BluetoothService::class.java)
-                    startForegroundService(bluetoothIntent)
-                }
-            }
-        }else{
-            if(isMyServiceRunning(BluetoothService::class.java)){
-                val bluetoothIntent = Intent(this, BluetoothService::class.java)
-                stopService(bluetoothIntent)
-            }
-        }
+        setBluetoothService()
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        init()
         mainViewModel.init(applicationContext)
+
         setObserver()
 
+        mainViewModel.getAccount()
+        mainViewModel.postDrivingInfoNotSavedData()
+    }
+
+    private fun init(){
         // FirebaseAnalytics 인스턴스 초기화
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
 
@@ -212,9 +169,6 @@ class MainActivity : BaseRefreshActivity() {
         PreferenceUtil.putBooleanPref(this, HAVE_BEEN_HOME, true)
 
         setBtn()
-
-        mainViewModel.getAccount()
-        mainViewModel.postDrivingInfoNotSavedData()
 
         if(intent.getBooleanExtra("deeplink",false)){
             startActivity(Intent(this@MainActivity, AlarmActivity::class.java))
@@ -252,15 +206,10 @@ class MainActivity : BaseRefreshActivity() {
 
         mainViewModel.notSavedDataStateResult.observe(this@MainActivity, BaseViewModel.EventObserver{ state ->
             when (state) {
-
                 is NotSavedDataState.Error -> {
                     if(state.code == 401){
                         logout()
                     }
-                }
-
-                else -> {
-
                 }
             }
         })
@@ -272,35 +221,7 @@ class MainActivity : BaseRefreshActivity() {
                 }
                 is MyCarInfoState.Success -> {
                     if(state.data.size > 0){
-                        apiService().getCarInfoinquiryByCarId("Bearer " + PreferenceUtil.getPref(this@MainActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, state.data.get(0).id).enqueue(object :
-                            Callback<ResponseBody> {
-                            override fun onResponse(
-                                call: Call<ResponseBody>,
-                                response: Response<ResponseBody>
-                            ) {
-                                if(response.code() == 200 || response.code() == 201){
-                                    val getMyCarInfoResponse = Gson().fromJson(
-                                        response.body()?.string(),
-                                        GetMyCarInfoResponse::class.java
-                                    )
-
-                                    PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.id)
-                                    tv_car_name.setText(getMyCarInfoResponse.carName)
-                                    tv_car_no.setText(getMyCarInfoResponse.licensePlateNumber)
-
-                                    getManageScoreForAMonth()
-                                    getDrivingDistanceForAMonth()
-                                    setRecentManageScoreForSummary()
-                                }else if(response.code() == 401){
-                                    logout()
-                                }
-                            }
-
-                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
-                            }
-
-                        })
+                        mainViewModel.getCarInfoinquiryByCarId(state.data.get(0).id)
                     }else{
                         startActivity(Intent(this@MainActivity, SplashActivity::class.java))
                         finish()
@@ -314,40 +235,68 @@ class MainActivity : BaseRefreshActivity() {
                 is MyCarInfoState.Empty -> {
 
                 }
+            }
+        })
 
-                else -> {
+        mainViewModel.carInfoInquiryByCarId.observe(this@MainActivity, BaseViewModel.EventObserver{ state ->
+            when (state) {
+                is CarInfoInquiryByCarIdState.Loading -> {
+
+                }
+                is CarInfoInquiryByCarIdState.Success -> {
+                    PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.USER_CARID, state.data.id)
+                    tv_car_name.setText(state.data.carName)
+                    tv_car_no.setText(state.data.licensePlateNumber)
+
+                    mainViewModel.getManageScoreForAMonth()
+                    getDrivingDistanceForAMonth()
+                    setRecentManageScoreForSummary()
+                }
+                is CarInfoInquiryByCarIdState.Error -> {
+                    if(state.code == 401){
+                        logout()
+                    }
+                }
+                is CarInfoInquiryByCarIdState.Empty -> {
 
                 }
             }
         })
-    }
 
-    fun getAddressFromLatLng(context: Context, latitude: Double, longitude: Double): String? {
-        val geocoder = Geocoder(context, Locale.getDefault())
-        return try {
-            val addresses: List<Address> = geocoder.getFromLocation(latitude, longitude, 1)!!
-            if (addresses.isNotEmpty()) {
-                val address: Address = addresses[0]
-                // 주소를 구성하는 필드들을 결합하여 완전한 주소를 생성
+        mainViewModel.managerScoreResult.observe(this@MainActivity, BaseViewModel.EventObserver{ state ->
+            when (state) {
+                is GetManageScoreState.Loading -> {
 
-                Log.d("testestsest","testestestesse countryName :: " + address.countryName)
-                Log.d("testestsest","testestestesse adminArea :: " + address.adminArea)
-                Log.d("testestsest","testestestesse subLocality :: " + address.subLocality)
-                Log.d("testestsest","testestestesse thoroughfare :: " + address.thoroughfare)
-                Log.d("testestsest","testestestesse featureName :: " + address.featureName)
-                Log.d("testestsest", "testestestesse address :: $address")
+                }
+                is GetManageScoreState.Success -> {
+                    tv_average_score.text =
+                        transferNumWithRounds(state.data.average.totalEngineScore).toString()
 
+                    if (state.data.diffAverage.totalEngineScore == 0.0) {
+                        tv_increase.text = "변동 없음"
+                        tv_increase.setTextColor(resources.getColor(R.color.gray_500))
+                    } else if (state.data.diffAverage.totalEngineScore > 0.0) {
+                        tv_increase.text =
+                            "+" + transferNumWithRounds(state.data.diffAverage.totalEngineScore) + "점 증가"
+                        tv_increase.setTextColor(resources.getColor(R.color.pri_500))
+                    } else if (state.data.diffAverage.totalEngineScore < 0.0) {
+                        tv_increase.text =
+                            transferNumWithRounds(state.data.diffAverage.totalEngineScore).toString() + "점 하락"
+                        tv_increase.setTextColor(resources.getColor(R.color.sec_500))
+                    }
 
+                    setPieChart((state.data.average.totalEngineScore / 10).toFloat())
+                }
+                is GetManageScoreState.Error -> {
+                    if(state.code == 401){
+                        logout()
+                    }
+                }
+                is GetManageScoreState.Empty -> {
 
-                address.getAddressLine(0)
-
-            } else {
-                null
+                }
             }
-        } catch (e: IOException) {
-            e.printStackTrace()
-            null
-        }
+        })
     }
 
     fun checkLocation(){
@@ -418,7 +367,6 @@ class MainActivity : BaseRefreshActivity() {
 
         checkingIgnoreBatteryPermission = false
     }
-
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setBtn(){
@@ -611,50 +559,6 @@ class MainActivity : BaseRefreshActivity() {
         }
     }
 
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(
-            baseContext, it) == PackageManager.PERMISSION_GRANTED
-    }
-
-    companion object {
-        private val REQUIRED_PERMISSIONS =
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                mutableListOf(
-                    ACCESS_FINE_LOCATION,
-                    ACCESS_BACKGROUND_LOCATION,
-                    BLUETOOTH_CONNECT,
-                    POST_NOTIFICATIONS,
-                    ACTIVITY_RECOGNITION
-                ).apply {
-
-                }.toTypedArray()
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                mutableListOf(
-                    ACCESS_FINE_LOCATION,
-                    ACCESS_BACKGROUND_LOCATION,
-                    BLUETOOTH_CONNECT,
-                    ACTIVITY_RECOGNITION
-                ).apply {
-
-                }.toTypedArray()
-            }else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                mutableListOf (
-                    ACCESS_FINE_LOCATION,
-                    ACCESS_BACKGROUND_LOCATION,
-                    ACTIVITY_RECOGNITION
-                ).apply {
-
-                }.toTypedArray()
-            } else {
-                mutableListOf (
-                    ACCESS_FINE_LOCATION
-                ).apply {
-
-                }.toTypedArray()
-            }
-
-    }
-
     private fun setPieChart(percent:Float) {
         chart = findViewById(R.id.chart1)
 
@@ -684,7 +588,6 @@ class MainActivity : BaseRefreshActivity() {
         chart?.invalidate()
         chart?.requestLayout()
     }
-
 
     private fun setLineChartForEngine(chart:LineChart){
 
@@ -840,9 +743,6 @@ class MainActivity : BaseRefreshActivity() {
     }
 
     private fun setLineChartForBrakes(chart:LineChart){
-
-        // 데이터 설정
-
         // 데이터 설정
         val entries = ArrayList<Entry>()
         entries.add(Entry(0f, 0f))
@@ -929,81 +829,6 @@ class MainActivity : BaseRefreshActivity() {
             ActivityCompat.requestPermissions(this, permissions,code)
             return
         }
-    }
-
-
-    fun convertUtcToDaysSince(utcTimeStr: String): String {
-        // UTC 시간 파싱
-        val utcTime = LocalDateTime.parse(utcTimeStr, DateTimeFormatter.ISO_DATE_TIME)
-
-        // 현재 한국 시간
-        val currentKstTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"))
-
-        // 일수 차이 계산
-        val daysBetween = ChronoUnit.DAYS.between(utcTime, currentKstTime)
-
-        return "${daysBetween + 1}일째"
-    }
-
-    fun convertUtcToDaysSinceForInt(utcTimeStr: String): Int {
-        // UTC 시간 파싱
-        val utcTime = LocalDateTime.parse(utcTimeStr, DateTimeFormatter.ISO_DATE_TIME)
-
-        // 현재 한국 시간
-        val currentKstTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"))
-
-        // 일수 차이 계산
-        val daysBetween = ChronoUnit.DAYS.between(utcTime, currentKstTime)
-
-        return daysBetween.toInt() + 1
-    }
-
-    fun getManageScoreForAMonth(){
-        apiService().getManageScoreStatistics(
-            "Bearer " + PreferenceUtil.getPref(this@MainActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
-            getCurrentAndPastTimeForISO(29).second,
-            getCurrentAndPastTimeForISO(29).first).enqueue(object:
-            Callback<ResponseBody>{
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                try {
-                    if (response.code() == 200 || response.code() == 201) {
-                        val getManageScoreResponse = Gson().fromJson(
-                            response.body()?.string(),
-                            GetManageScoreResponse::class.java
-                        )
-
-                        tv_average_score.text =
-                            transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
-
-                        if (getManageScoreResponse.diffAverage.totalEngineScore == 0.0) {
-                            tv_increase.text = "변동 없음"
-                            tv_increase.setTextColor(resources.getColor(R.color.gray_500))
-                        } else if (getManageScoreResponse.diffAverage.totalEngineScore > 0.0) {
-                            tv_increase.text =
-                                "+" + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 증가"
-                            tv_increase.setTextColor(resources.getColor(R.color.pri_500))
-                        } else if (getManageScoreResponse.diffAverage.totalEngineScore < 0.0) {
-                            tv_increase.text =
-                                transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore).toString() + "점 하락"
-                            tv_increase.setTextColor(resources.getColor(R.color.sec_500))
-                        }
-
-                        setPieChart((getManageScoreResponse.average.totalEngineScore / 10).toFloat())
-
-                    }else if(response.code() == 401){
-                        logout()
-                    }
-                }catch (e:Exception){
-
-                }
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
-            }
-
-        })
     }
 
     fun getDrivingDistanceForAMonth(){
@@ -1189,6 +1014,24 @@ class MainActivity : BaseRefreshActivity() {
         })
     }
 
+    private fun setNextPermissionProcess(){
+        if(checkingUserActivityPermission){
+            if(ContextCompat.checkSelfPermission(this, ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED){
+                checkingIgnoreBatteryPermission = true
+                checkUserActivity()
+            } else{
+                setIgnoreBattery()
+            }
+
+            checkingUserActivityPermission = false
+        }
+
+        if(checkingIgnoreBatteryPermission){
+            setIgnoreBattery()
+        }
+    }
+
+
     fun setManageSoreForSummary(scope:Long){
         apiService().getManageScoreStatistics(
             "Bearer " + PreferenceUtil.getPref(this@MainActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,
@@ -1245,6 +1088,34 @@ class MainActivity : BaseRefreshActivity() {
 
             }
         })
+    }
+
+    private fun setBluetoothService(){
+        if(ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                if (ActivityCompat.checkSelfPermission(applicationContext, ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED) {
+                    if(!isMyServiceRunning(BluetoothService::class.java)){
+                        val bluetoothIntent = Intent(this, BluetoothService::class.java)
+                        startForegroundService(bluetoothIntent)
+                    }
+                }else{
+                    if(isMyServiceRunning(BluetoothService::class.java)){
+                        val bluetoothIntent = Intent(this, BluetoothService::class.java)
+                        stopService(bluetoothIntent)
+                    }
+                }
+            }else{
+                if(!isMyServiceRunning(BluetoothService::class.java)){
+                    val bluetoothIntent = Intent(this, BluetoothService::class.java)
+                    startForegroundService(bluetoothIntent)
+                }
+            }
+        }else{
+            if(isMyServiceRunning(BluetoothService::class.java)){
+                val bluetoothIntent = Intent(this, BluetoothService::class.java)
+                stopService(bluetoothIntent)
+            }
+        }
     }
 
     fun openChromeWithUrl(url:String){

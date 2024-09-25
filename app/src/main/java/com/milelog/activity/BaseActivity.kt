@@ -73,6 +73,32 @@ open class BaseActivity: AppCompatActivity(){
         ).toInt()
     }
 
+    fun convertUtcToDaysSince(utcTimeStr: String): String {
+        // UTC 시간 파싱
+        val utcTime = LocalDateTime.parse(utcTimeStr, DateTimeFormatter.ISO_DATE_TIME)
+
+        // 현재 한국 시간
+        val currentKstTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"))
+
+        // 일수 차이 계산
+        val daysBetween = ChronoUnit.DAYS.between(utcTime, currentKstTime)
+
+        return "${daysBetween + 1}일째"
+    }
+
+    fun convertUtcToDaysSinceForInt(utcTimeStr: String): Int {
+        // UTC 시간 파싱
+        val utcTime = LocalDateTime.parse(utcTimeStr, DateTimeFormatter.ISO_DATE_TIME)
+
+        // 현재 한국 시간
+        val currentKstTime = LocalDateTime.now(ZoneId.of("Asia/Seoul"))
+
+        // 일수 차이 계산
+        val daysBetween = ChronoUnit.DAYS.between(utcTime, currentKstTime)
+
+        return daysBetween.toInt() + 1
+    }
+
     fun setFcmToken(tokenProcessCallback: LoginActivity.TokenProcessCallback) {
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             try {

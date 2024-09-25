@@ -2,7 +2,6 @@ package com.milelog.viewmodel.state
 
 import com.milelog.retrofit.response.GetMyCarInfoResponse
 
-
 sealed class MyCarInfoState {
     object Loading : MyCarInfoState()
     data class Success(val data: List<GetMyCarInfoResponse>) : MyCarInfoState()
