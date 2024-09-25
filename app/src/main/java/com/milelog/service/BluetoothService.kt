@@ -268,8 +268,6 @@ class BluetoothService : Service() {
             }
 
             scheduleWalkingDetectWork()
-
-            startSensor(L1)
         }else{
             if(intent?.action == ACTION_RESTART_NOTIFICATION){
                 (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
