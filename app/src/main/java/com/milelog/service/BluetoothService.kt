@@ -446,6 +446,7 @@ class BluetoothService : Service() {
     fun stopSensorNotForSaving(){
         try {
             if (sensorState) {
+                sensorState = false
                 firstLineState = false
                 firstLineLocation = null
                 firstLocation = null
