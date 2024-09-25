@@ -1,6 +1,8 @@
 package com.milelog.viewmodel
 
 import android.content.Context
+import android.view.View.GONE
+import android.view.View.VISIBLE
 
 
 import androidx.lifecycle.MutableLiveData
@@ -10,12 +12,14 @@ import com.milelog.PreferenceUtil
 import com.milelog.R
 import com.milelog.retrofit.request.PostDrivingInfoRequest
 import com.milelog.retrofit.response.GetAccountResponse
+import com.milelog.retrofit.response.GetDrivingStatisticsResponse
 import com.milelog.retrofit.response.GetManageScoreResponse
 import com.milelog.retrofit.response.GetMyCarInfoResponse
 import com.milelog.retrofit.response.PostDrivingInfoResponse
 import com.milelog.room.database.DriveDatabase
 import com.milelog.viewmodel.state.AccountState
 import com.milelog.viewmodel.state.CarInfoInquiryByCarIdState
+import com.milelog.viewmodel.state.GetDrivingStatisticsState
 import com.milelog.viewmodel.state.GetManageScoreState
 import com.milelog.viewmodel.state.MyCarInfoState
 import com.milelog.viewmodel.state.NotSavedDataState
@@ -45,6 +49,9 @@ class MainViewModel: BaseViewModel() {
 
     private val _managerScoreResult = MutableLiveData<Event<GetManageScoreState>>()
     val managerScoreResult: MutableLiveData<Event<GetManageScoreState>> get() = _managerScoreResult
+
+    private val _drivingStatisticsResult = MutableLiveData<Event<GetDrivingStatisticsState>>()
+    val drivingStatisticsResult: MutableLiveData<Event<GetDrivingStatisticsState>> get() = _drivingStatisticsResult
 
     fun init(context:Context){
         this.context = context
@@ -216,6 +223,39 @@ class MainViewModel: BaseViewModel() {
                         _managerScoreResult.value = Event(GetManageScoreState.Success(getManageScoreResponse))
                     }else{
                         _managerScoreResult.value = Event(GetManageScoreState.Error(response.code(), response.message()))
+
+                    }
+                }catch (e:Exception){
+
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+            }
+
+        })
+    }
+
+    fun getDrivingDistanceForAMonth(){
+        apiService(context).getDrivingStatistics(
+            "Bearer " + PreferenceUtil.getPref(context, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(context, PreferenceUtil.USER_CARID, "")!!,
+            getCurrentAndPastTimeForISO(29).second,
+            getCurrentAndPastTimeForISO(29).first,
+            "startTime",
+            "day").enqueue(object:
+            Callback<ResponseBody>{
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                try {
+                    if (response.code() == 200 || response.code() == 201) {
+                        val getDrivingStatisticsResponse = Gson().fromJson(
+                            response.body()?.string(),
+                            GetDrivingStatisticsResponse::class.java
+                        )
+                        _drivingStatisticsResult.value = Event(GetDrivingStatisticsState.Success(getDrivingStatisticsResponse))
+                    } else {
+                        _drivingStatisticsResult.value = Event(GetDrivingStatisticsState.Error(response.code(), response.message()))
 
                     }
                 }catch (e:Exception){
