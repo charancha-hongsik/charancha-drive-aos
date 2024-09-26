@@ -353,6 +353,11 @@ class BluetoothService : Service() {
             if (!sensorState) {
 
                 logEvent(level, LOG_EVENT_START_SENSOR)
+                if(PreferenceUtil.getPref(this, PreferenceUtil.USER_ID, "")!! == "1daecbb3-c9ab-4222-b6e5-6436af51d542"){
+                    (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText(
+                        "주행 중..$level"
+                    ).build())
+                }
 
                 sensorState = true
 
@@ -389,6 +394,9 @@ class BluetoothService : Service() {
                     pastMaxDistance = mutableListOf()
 
                     logEvent(level, LOG_EVENT_STOP_SENSOR)
+                    if(PreferenceUtil.getPref(this, PreferenceUtil.USER_ID, "")!! == "1daecbb3-c9ab-4222-b6e5-6436af51d542"){
+                        (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중이에요.").build())
+                    }
 
                     if(distance_array.sum() > 500f){
                         callApi()
@@ -421,7 +429,9 @@ class BluetoothService : Service() {
                 }
 
                 logEvent("walking", LOG_EVENT_STOP_SENSOR)
-
+                if(PreferenceUtil.getPref(this, PreferenceUtil.USER_ID, "")!! == "1daecbb3-c9ab-4222-b6e5-6436af51d542"){
+                    (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중이에요.").build())
+                }
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
 
@@ -435,7 +445,9 @@ class BluetoothService : Service() {
         try {
             if (sensorState) {
                 logEvent("notForSaving", LOG_EVENT_STOP_SENSOR)
-
+                if(PreferenceUtil.getPref(this, PreferenceUtil.USER_ID, "")!! == "1daecbb3-c9ab-4222-b6e5-6436af51d542"){
+                    (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중이에요.").build())
+                }
                 sensorState = false
                 firstLineState = false
                 firstLineLocation = null
