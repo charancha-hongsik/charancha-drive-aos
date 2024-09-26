@@ -74,15 +74,8 @@ class BluetoothService : Service() {
         const val LOG_EVENT_START_SENSOR = "startSensor"
         const val LOG_EVENT_STOP_SENSOR = "stopSensor"
 
-
         // phone is not connected to car
         const val CONNECTION_TYPE_NOT_CONNECTED = 0
-
-        // phone is connected to Automotive OS
-        const val CONNECTION_TYPE_NATIVE = 1
-
-        // phone is connected to Android Auto
-        const val CONNECTION_TYPE_PROJECTION = 2
 
         const val L4 = "L4"
         const val L3 = "L3"
@@ -136,7 +129,7 @@ class BluetoothService : Service() {
     private var INTERVAL = 5000L
 
     /**
-     *         locationRequest.setInterval(INTERVAL) // 20초마다 업데이트 요청
+     *         locationRequest.setInterval(INTERVAL) // INTERVAL 초마다 업데이트 요청
      *         locationRequest.setFastestInterval(FASTEST_INTERVAL) 다른 앱에서 연산된 위치를 수신
      *         setinterval() 메서드를 사용하여 앱을 위해 위치를 연산하는 간격을 지정합니다.
      *         setFastestInterval()을 사용하여 다른 앱에서 연산된 위치를 수신하는 간격을 지정합니다.
@@ -150,6 +143,10 @@ class BluetoothService : Service() {
     lateinit var driveForApp: DriveForApp
     lateinit var gpsInfoForApp: MutableList<EachGpsDtoForApp>
 
+    /**
+     * 저장 실패했을 때
+     * 저장 용도의 변수
+     */
     lateinit var driveForApi: DriveForApi
     lateinit var gpsInfoForApi: MutableList<EachGpsDtoForApi>
 
@@ -182,16 +179,9 @@ class BluetoothService : Service() {
         TODO("Not yet implemented")
     }
 
-    override fun onTaskRemoved(rootIntent: Intent?) {
-        scheduleForegroundServiceStart(this@BluetoothService)
-        super.onTaskRemoved(rootIntent)
-
-    }
-
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         /**
-         * BootReceive r에서 실행 시킨 경우 필수 권한 확인 후 Service 실행
+         * BootReceiver 에서 실행 시킨 경우 필수 권한 확인 후 Service 실행하기 위한 로직
          */
         if(ContextCompat.checkSelfPermission(this@BluetoothService, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this@BluetoothService, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -207,31 +197,16 @@ class BluetoothService : Service() {
             return START_STICKY
         }
 
-
         if(!sensorState){
             /**
              * TransitionsReceiver(L2, L3) 등록
              */
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                registerReceiver(TransitionsReceiver(), filter, RECEIVER_EXPORTED)
-            } else {
-                registerReceiver(TransitionsReceiver(), filter)
-            }
+            registerTransitionReceiver()
 
             /**
              * WalkingDetectReceiver(L1) 등록
              */
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                // Detecting L1 Receiver
-                registerReceiver(WalkingDetectReceiver(), IntentFilter().apply {
-                    addAction(TRANSITIONS_RECEIVER_ACTION)
-                }, RECEIVER_EXPORTED)
-            } else {
-                // Detecting L1 Receiver
-                registerReceiver(WalkingDetectReceiver(), IntentFilter().apply {
-                    addAction(TRANSITIONS_RECEIVER_ACTION)
-                })
-            }
+            registerWalkingDetectReceiver()
 
 
             carConnectionQueryHandler = CarConnectionQueryHandler(contentResolver)
@@ -239,81 +214,25 @@ class BluetoothService : Service() {
             /**
              * Notification 띄우기
              */
-            (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
-                channel
-            )
-            notification = NotificationCompat.Builder(this, CHANNEL_ID)
+            showNotification()
 
-            val deleteIntent = Intent(this@BluetoothService, NotificationDeleteReceiver::class.java)
-            val pendingDeleteIntent = getBroadcast(
-                this@BluetoothService,
-                0,
-                deleteIntent,
-                FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE
-            )
-
-            if (Build.VERSION.SDK_INT >= 34) {
-                startForeground(1, notification
-                    .setSmallIcon(R.mipmap.ic_notification)
-                    .setAutoCancel(false)
-                    .setOngoing(true)
-                    .setContentText("주행 관찰중이에요.")
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setOnlyAlertOnce(true)
-                    .setDeleteIntent(pendingDeleteIntent)
-                    .build(), FOREGROUND_SERVICE_TYPE_HEALTH)
-            }else{
-                startForeground(1, notification
-                    .setSmallIcon(R.mipmap.ic_notification)
-                    .setAutoCancel(false)
-                    .setOngoing(true)
-                    .setContentText("주행 관찰중이에요.")
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setOnlyAlertOnce(true)
-                    .build())
-            }
-
+            /**
+             * 15분마다 requestActivityTransitionUpdates 등록
+             * **15분마다 필요한건지 체크 필요**
+             */
             scheduleWalkingDetectWork()
         }else{
+            /**
+             * 주행중인 경우 && 사용자가 임의로 notification을 없앤 경우
+             */
             if(intent?.action == ACTION_RESTART_NOTIFICATION){
-                (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
-                    channel
-                )
-                notification = NotificationCompat.Builder(this, CHANNEL_ID)
-
-                val deleteIntent = Intent(this@BluetoothService, NotificationDeleteReceiver::class.java)
-                val pendingDeleteIntent = getBroadcast(
-                    this@BluetoothService,
-                    0,
-                    deleteIntent,
-                    FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE
-                )
-
-                if (Build.VERSION.SDK_INT >= 34) {
-                    startForeground(1, notification
-                        .setSmallIcon(R.mipmap.ic_notification)
-                        .setAutoCancel(false)
-                        .setOngoing(true)
-                        .setContentText("주행 관찰중이에요.")
-                        .setPriority(NotificationCompat.PRIORITY_HIGH)
-                        .setOnlyAlertOnce(true)
-                        .setDeleteIntent(pendingDeleteIntent)
-                        .build(), FOREGROUND_SERVICE_TYPE_HEALTH)
-                }else{
-                    startForeground(1, notification
-                        .setSmallIcon(R.mipmap.ic_notification)
-                        .setAutoCancel(false)
-                        .setOngoing(true)
-                        .setContentText("주행 관찰중이에요.")
-                        .setPriority(NotificationCompat.PRIORITY_HIGH)
-                        .setOnlyAlertOnce(true)
-                        .build())
-                }
+                showNotification()
             }
         }
 
         return START_STICKY
     }
+
 
     class WalkingDetectReceiver : BroadcastReceiver() {
 
@@ -365,6 +284,64 @@ class BluetoothService : Service() {
             } else {
                 startSensor(L3)
             }
+        }
+    }
+
+    private fun registerTransitionReceiver(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(TransitionsReceiver(), filter, RECEIVER_EXPORTED)
+        } else {
+            registerReceiver(TransitionsReceiver(), filter)
+        }
+    }
+
+    private fun registerWalkingDetectReceiver(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Detecting L1 Receiver
+            registerReceiver(WalkingDetectReceiver(), IntentFilter().apply {
+                addAction(TRANSITIONS_RECEIVER_ACTION)
+            }, RECEIVER_EXPORTED)
+        } else {
+            // Detecting L1 Receiver
+            registerReceiver(WalkingDetectReceiver(), IntentFilter().apply {
+                addAction(TRANSITIONS_RECEIVER_ACTION)
+            })
+        }
+    }
+
+    private fun showNotification(){
+        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
+            channel
+        )
+        notification = NotificationCompat.Builder(this, CHANNEL_ID)
+
+        val deleteIntent = Intent(this@BluetoothService, NotificationDeleteReceiver::class.java)
+        val pendingDeleteIntent = getBroadcast(
+            this@BluetoothService,
+            0,
+            deleteIntent,
+            FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE
+        )
+
+        if (Build.VERSION.SDK_INT >= 34) {
+            startForeground(1, notification
+                .setSmallIcon(R.mipmap.ic_notification)
+                .setAutoCancel(false)
+                .setOngoing(true)
+                .setContentText("주행 관찰중이에요.")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setOnlyAlertOnce(true)
+                .setDeleteIntent(pendingDeleteIntent)
+                .build(), FOREGROUND_SERVICE_TYPE_HEALTH)
+        }else{
+            startForeground(1, notification
+                .setSmallIcon(R.mipmap.ic_notification)
+                .setAutoCancel(false)
+                .setOngoing(true)
+                .setContentText("주행 관찰중이에요.")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setOnlyAlertOnce(true)
+                .build())
         }
     }
 
@@ -547,96 +524,6 @@ class BluetoothService : Service() {
         }
     }
 
-    private fun isConnected(device: BluetoothDevice): Boolean {
-        try {
-            val m: Method = device.javaClass.getMethod("isConnected")
-            m.invoke(device) as Boolean
-
-            return m.invoke(device) as Boolean
-        } catch (e:Exception){
-            return false
-        }
-    }
-
-    private fun queryForState() {
-        carConnectionQueryHandler.startQuery(
-            QUERY_TOKEN,
-            null,
-            PROJECTION_HOST_URI,
-            arrayOf(CAR_CONNECTION_STATE),
-            null,
-            null,
-            null
-        )
-    }
-
-    class restartForegroundServiceWorker(val context: Context, params: WorkerParameters) : Worker(context, params) {
-
-        override fun doWork(): Result {
-
-            if(!(context as BluetoothService).sensorState){
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    context.registerReceiver(context.TransitionsReceiver(), context.filter, RECEIVER_EXPORTED)
-                } else {
-                    context.registerReceiver(context.TransitionsReceiver(), context.filter)
-                }
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    // Detecting L1 Receiver
-                    context.registerReceiver(WalkingDetectReceiver(), IntentFilter().apply {
-                        addAction(TRANSITIONS_RECEIVER_ACTION)
-                    }, RECEIVER_EXPORTED)
-                } else {
-                    // Detecting L1 Receiver
-                    context.registerReceiver(WalkingDetectReceiver(), IntentFilter().apply {
-                        addAction(TRANSITIONS_RECEIVER_ACTION)
-                    })
-                }
-
-                context.carConnectionQueryHandler = context.CarConnectionQueryHandler(context.contentResolver)
-
-                (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
-                    context.channel
-                )
-                context.notification = NotificationCompat.Builder(context, context.CHANNEL_ID)
-
-                if (Build.VERSION.SDK_INT >= 34) {
-                    context.startForeground(1, context.notification
-                        .setSmallIcon(R.mipmap.ic_notification)
-                        .setAutoCancel(false)
-                        .setOngoing(true)
-                        .setContentText("주행 관찰중이에요.")
-                        .setPriority(NotificationCompat.PRIORITY_HIGH)
-                        .setOnlyAlertOnce(true)
-                        .build(), FOREGROUND_SERVICE_TYPE_HEALTH)
-                }else{
-                    context.startForeground(1, context.notification
-                        .setSmallIcon(R.mipmap.ic_notification)
-                        .setAutoCancel(false)
-                        .setOngoing(true)
-                        .setContentText("주행 관찰중이에요.")
-                        .setPriority(NotificationCompat.PRIORITY_HIGH)
-                        .setOnlyAlertOnce(true)
-                        .build())
-                }
-
-                context.scheduleWalkingDetectWork()
-            }
-
-            return Result.success()
-        }
-    }
-
-
-    fun scheduleForegroundServiceStart(context: Context) {
-        // 백그라운드에서 Foreground Service를 시작하도록 작업을 예약
-        val workRequest = OneTimeWorkRequest.Builder(restartForegroundServiceWorker::class.java)
-            .build()
-
-        WorkManager.getInstance(context).enqueue(workRequest)
-    }
-
-
     class WalkingDetectWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
 
         private val activityRecognitionClient: ActivityRecognitionClient =
@@ -720,6 +607,29 @@ class BluetoothService : Service() {
         }
     }
 
+    private fun isConnected(device: BluetoothDevice): Boolean {
+        try {
+            val m: Method = device.javaClass.getMethod("isConnected")
+            m.invoke(device) as Boolean
+
+            return m.invoke(device) as Boolean
+        } catch (e:Exception){
+            return false
+        }
+    }
+
+    private fun queryForState() {
+        carConnectionQueryHandler.startQuery(
+            QUERY_TOKEN,
+            null,
+            PROJECTION_HOST_URI,
+            arrayOf(CAR_CONNECTION_STATE),
+            null,
+            null,
+            null
+        )
+    }
+
 
     private fun scheduleWalkingDetectWork() {
         try {
@@ -768,28 +678,26 @@ class BluetoothService : Service() {
                             val location: Location = it
                             val timeStamp = location.time
 
-                            /**
-                             * WD-46 1행 데이터와 같은 데이터 삭제
-                             */
                             if(firstLineLocation != null){
+                                /**
+                                 * WD-46 1행 데이터와 같은 데이터 삭제
+                                 */
                                 if(firstLineLocation!!.latitude == location.latitude && firstLineLocation!!.longitude == location.longitude){
                                     pastLocation = location
-                                    pastTimeStamp = location.time
+                                    pastTimeStamp = timeStamp
                                 } else{
                                     /**
                                      * W0D-78 중복시간 삭제
                                      */
-
                                     if(getDateFromTimeStampToSS(pastTimeStamp) != getDateFromTimeStampToSS(timeStamp)){
 
                                         /**
-                                         * W0D-75 1초간 이동거리 70m 이상이면 제외
+                                         * W0D-75 1초간 이동거리 70m 이상이면 삭제
                                          */
-
                                         if(pastLocation!=null){
                                             if((pastLocation!!.distanceTo(location) * 1000 / (timeStamp-pastTimeStamp)) > 70){
-                                                pastTimeStamp = timeStamp
                                                 pastLocation = location
+                                                pastTimeStamp = timeStamp
                                             } else {
                                                 processLocationCallback(location, timeStamp)
                                             }
@@ -798,8 +706,7 @@ class BluetoothService : Service() {
                                         }
                                     }else{
                                         pastLocation = location
-                                        pastTimeStamp = location.time
-
+                                        pastTimeStamp = timeStamp
                                     }
                                 }
                             }
@@ -818,7 +725,7 @@ class BluetoothService : Service() {
             }
         }
 
-        // 위치 업데이트 요청 시작
+        // 위치 업데이트 요청 시작 전 퍼미션 체크
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -837,14 +744,9 @@ class BluetoothService : Service() {
             return
         }
 
-        // 마지막 위치 처리
-        fusedLocationClient?.lastLocation!!
-            .addOnSuccessListener { location: Location? ->
-                if (location != null) {
-
-                }
-            }
-
+        /**
+         * 위치 업데이트 요청 시작
+         */
         fusedLocationClient?.requestLocationUpdates(
             locationRequest,
             locationCallback,
@@ -882,7 +784,7 @@ class BluetoothService : Service() {
         var HH = getDateFromTimeStampToHH(timeStamp)
 
         /**
-         * 거리 계산
+         * 각 시간별 거리 계산
          */
         distance_array[HH] = distance_array[HH] + distance
 
@@ -897,7 +799,6 @@ class BluetoothService : Service() {
             if (maxDistance.max() < 300f) {
                 /**
                  * pastMaxDistance.size가 0이라는건 30분 주행이라는 것. (첫번째 체크)
-                 *
                  */
                 if(pastMaxDistance.size == 0){
                     stopSensorNotForSaving()
@@ -921,7 +822,7 @@ class BluetoothService : Service() {
         pastLocation = location
     }
 
-    private fun     callApi(){
+    private fun callApi(){
 
         driveForApi.endTimestamp = System.currentTimeMillis()
 
@@ -948,29 +849,30 @@ class BluetoothService : Service() {
                     }else if(response.code() == 429){
 
                     }else{
-                        writeToRoomForApi(driveForApi)
-                        writeToRoomForApp(driveForApi.tracking_id)
+                        handlePostDrivingInfoError()
                     }
-
                     sensorState = false
-
                 }
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    writeToRoomForApi(driveForApi)
-                    writeToRoomForApp(driveForApi.tracking_id)
-
+                    handlePostDrivingInfoError()
                     sensorState = false
                 }
             })
-
         } else {
-            writeToRoomForApi(driveForApi)
-            writeToRoomForApp(driveForApi.tracking_id)
+            handlePostDrivingInfoError()
             sensorState = false
         }
     }
 
+    private fun handlePostDrivingInfoError(){
+        writeToRoomForApi(driveForApi)
+        writeToRoomForApp(driveForApi.tracking_id)
+    }
+
+    /**
+     * App내 위경도 값 저장
+     */
     fun writeToRoomForApp(trackingId:String){
         Executors.newSingleThreadExecutor().execute{
             try {
@@ -981,6 +883,9 @@ class BluetoothService : Service() {
         }
     }
 
+    /**
+     * API 호출실패 시 저장
+     */
     fun writeToRoomForApi(driveForApi: DriveForApi){
         Executors.newSingleThreadExecutor().execute {
             try {
