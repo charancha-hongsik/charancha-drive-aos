@@ -888,7 +888,7 @@ class BluetoothService : Service() {
          * 30분 간격으로 체크
          * 60초 * 30분 = 1800
          */
-        if((timeStamp - firstLocation!!.time) > 60000L){
+        if((timeStamp - firstLocation!!.time) > 1800000L){
             /**
              * 반경 300미터 이하 체크
              */
