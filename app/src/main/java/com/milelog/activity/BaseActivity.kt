@@ -161,9 +161,9 @@ open class BaseActivity: AppCompatActivity(){
     fun apiService(readTimeOut:Long = 30): ApiServiceInterface {
         val client: OkHttpClient = OkHttpClient.Builder()
             .addInterceptor(HeaderInterceptor(this))
-            .connectTimeout(60, TimeUnit.SECONDS)
+            .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(readTimeOut, TimeUnit.SECONDS)
-            .writeTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
             .build()
         return Retrofit.Builder().baseUrl(BuildConfig.BASE_API_URL).client(client)
             .addConverterFactory(GsonConverterFactory.create()).build().create(

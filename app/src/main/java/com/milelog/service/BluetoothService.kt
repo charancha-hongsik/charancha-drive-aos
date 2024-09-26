@@ -853,7 +853,9 @@ class BluetoothService : Service() {
     }
 
     private fun processLocationCallback(location:Location, timeStamp:Long){
-        Log.d("testestestest","testsetestest timeStamp :: " + timeStamp)
+        Log.d("testestestest","testsetestest maxDistance :: " + maxDistance.max())
+        Log.d("testestestest","testsetestest pastMaxDistance :: " + pastMaxDistance.max())
+
         /**
          * W0D-48 최후 종료 조건 추가
          * firstLocation은 반경을 계산하기 위한 location 값
@@ -919,7 +921,7 @@ class BluetoothService : Service() {
         pastLocation = location
     }
 
-    private fun callApi(){
+    private fun     callApi(){
 
         driveForApi.endTimestamp = System.currentTimeMillis()
 
@@ -1006,9 +1008,9 @@ class BluetoothService : Service() {
     fun apiService(readTimeOut:Long = 30): ApiServiceInterface {
         val client: OkHttpClient = OkHttpClient.Builder()
             .addInterceptor(HeaderInterceptor(this))
-            .connectTimeout(60, TimeUnit.SECONDS)
+            .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(readTimeOut, TimeUnit.SECONDS)
-            .writeTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
             .build()
         return Retrofit.Builder().baseUrl(BuildConfig.BASE_API_URL).client(client)
             .addConverterFactory(GsonConverterFactory.create()).build().create(
