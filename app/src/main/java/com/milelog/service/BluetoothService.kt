@@ -226,7 +226,6 @@ class BluetoothService : Service() {
         return START_STICKY
     }
 
-
     class WalkingDetectReceiver : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {
@@ -255,7 +254,6 @@ class BluetoothService : Service() {
             }
         }
     }
-
 
     inner class CarConnectionQueryHandler(resolver: ContentResolver?) : AsyncQueryHandler(resolver) {
 
@@ -368,7 +366,6 @@ class BluetoothService : Service() {
                     }
                     fusedLocationClient?.removeLocationUpdates(locationCallback)
                     fusedLocationClient = null
-
                 }
             }
         }catch (e:Exception){
@@ -583,7 +580,6 @@ class BluetoothService : Service() {
         )
     }
 
-
     private fun scheduleWalkingDetectWork() {
         try {
             val workRequest = PeriodicWorkRequest.Builder(
@@ -600,7 +596,6 @@ class BluetoothService : Service() {
 
         }
     }
-
 
     /**
      * PRIORITY_BALANCED_POWER_ACCURACY 도시 블록 내의 위치 정밀도 요청. 정확도는 대략 100미터. Wi-Fi 정보와 휴대폰 기지국 위치를 사용할 수 있음. 대략적인 수준의 정확성으로 전력을 비교적 적게 사용함.
@@ -710,28 +705,9 @@ class BluetoothService : Service() {
             firstLocation = location
         }
 
-        maxDistance.add(location.distanceTo(firstLocation!!))
-
-        var distance = 0f
-        if(pastLocation != null){
-            distance = pastLocation!!.distanceTo(location)
-        }
-
-        val speed = location.speed * MS_TO_KH
-        val acceleration = (location.speed * MS_TO_KH) - (pastSpeed * MS_TO_KH)
-
-        gpsInfoForApp.add(EachGpsDtoForApp(timeStamp, location.latitude, location.longitude, String.format("%.0f", location.altitude).toDouble()))
-        gpsInfoForApi.add(EachGpsDtoForApi(timeStamp, String.format("%.0f",speed).toFloat() ,String.format("%.0f",distance).toFloat(),String.format("%.0f", location.altitude).toDouble(), String.format("%.0f",acceleration).toFloat()))
-
-        var HH = getDateFromTimeStampToHH(timeStamp)
-
         /**
-         * 각 시간별 거리 계산
-         */
-        distance_array[HH] = distance_array[HH] + distance
-
-        /**
-         * 30분 간격으로 체크
+         * 30분 간격으로 반경 체크 후 종료
+         * 30분동안 반경 300m 이하 일 경우 종료
          * 60초 * 30분 = 1800
          */
         if((timeStamp - firstLocation!!.time) > 1800000L){
@@ -755,13 +731,32 @@ class BluetoothService : Service() {
             }
         }
 
+        maxDistance.add(location.distanceTo(firstLocation!!))
+
+        var distance = 0f
+        if(pastLocation != null){
+            distance = pastLocation!!.distanceTo(location)
+        }
+
+        val speed = location.speed * MS_TO_KH
+        val acceleration = (location.speed * MS_TO_KH) - (pastSpeed * MS_TO_KH)
+
+        gpsInfoForApp.add(EachGpsDtoForApp(timeStamp, location.latitude, location.longitude, String.format("%.0f", location.altitude).toDouble()))
+        gpsInfoForApi.add(EachGpsDtoForApi(timeStamp, String.format("%.0f",speed).toFloat() ,String.format("%.0f",distance).toFloat(),String.format("%.0f", location.altitude).toDouble(), String.format("%.0f",acceleration).toFloat()))
+
+        var HH = getDateFromTimeStampToHH(timeStamp)
+
+        /**
+         * 각 시간별 거리 계산
+         */
+        distance_array[HH] = distance_array[HH] + distance
+
         pastTimeStamp = timeStamp
         pastSpeed = location.speed
         pastLocation = location
     }
 
     private fun callApi(){
-
         driveForApi.endTimestamp = System.currentTimeMillis()
 
         val postDriveDtoForApi = PostDrivingInfoRequest(
@@ -832,7 +827,6 @@ class BluetoothService : Service() {
             }
         }
     }
-
 
     private fun getDateFromTimeStampToHH(timeStamp:Long) : Int{
         val format = SimpleDateFormat("HH")

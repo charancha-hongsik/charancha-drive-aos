@@ -112,6 +112,7 @@ class MainActivity : BaseRefreshActivity() {
          */
         setNextPermissionProcess()
         setBluetoothService()
+        mainViewModel.postDrivingInfoNotSavedData()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,7 +124,6 @@ class MainActivity : BaseRefreshActivity() {
         setObserver()
 
         mainViewModel.getAccount()
-        mainViewModel.postDrivingInfoNotSavedData()
     }
 
     private fun init(){
