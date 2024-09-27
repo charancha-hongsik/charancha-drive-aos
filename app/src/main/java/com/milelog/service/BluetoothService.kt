@@ -71,9 +71,6 @@ class BluetoothService : Service() {
         // auto app on your phone will send broadcast with this action when connection state changes
         const val ACTION_CAR_CONNECTION_UPDATED = "androidx.car.app.connection.action.CAR_CONNECTION_UPDATED"
 
-        const val LOG_EVENT_START_SENSOR = "startSensor"
-        const val LOG_EVENT_STOP_SENSOR = "stopSensor"
-
         // phone is not connected to car
         const val CONNECTION_TYPE_NOT_CONNECTED = 0
 
@@ -351,14 +348,6 @@ class BluetoothService : Service() {
     fun startSensor(level:String){
         try {
             if (!sensorState) {
-
-                logEvent(level, LOG_EVENT_START_SENSOR)
-                if(PreferenceUtil.getPref(this, PreferenceUtil.USER_ID, "")!! == "1daecbb3-c9ab-4222-b6e5-6436af51d542"){
-                    (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText(
-                        "주행 중..$level"
-                    ).build())
-                }
-
                 sensorState = true
 
                 /**
@@ -393,11 +382,6 @@ class BluetoothService : Service() {
                     maxDistance = mutableListOf()
                     pastMaxDistance = mutableListOf()
 
-                    logEvent(level, LOG_EVENT_STOP_SENSOR)
-                    if(PreferenceUtil.getPref(this, PreferenceUtil.USER_ID, "")!! == "1daecbb3-c9ab-4222-b6e5-6436af51d542"){
-                        (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중이에요.").build())
-                    }
-
                     if(distance_array.sum() > 500f){
                         callApi()
                     }else{
@@ -428,10 +412,6 @@ class BluetoothService : Service() {
                     sensorState = false
                 }
 
-                logEvent("walking", LOG_EVENT_STOP_SENSOR)
-                if(PreferenceUtil.getPref(this, PreferenceUtil.USER_ID, "")!! == "1daecbb3-c9ab-4222-b6e5-6436af51d542"){
-                    (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중이에요.").build())
-                }
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
 
@@ -444,10 +424,6 @@ class BluetoothService : Service() {
     fun stopSensorNotForSaving(){
         try {
             if (sensorState) {
-                logEvent("notForSaving", LOG_EVENT_STOP_SENSOR)
-                if(PreferenceUtil.getPref(this, PreferenceUtil.USER_ID, "")!! == "1daecbb3-c9ab-4222-b6e5-6436af51d542"){
-                    (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).notify(1, notification.setContentText("주행 관찰중이에요.").build())
-                }
                 sensorState = false
                 firstLineState = false
                 firstLineLocation = null
