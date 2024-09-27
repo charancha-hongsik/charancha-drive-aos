@@ -823,9 +823,9 @@ class BluetoothService : Service() {
                 firstLocation = null
 
             }else{
+                pastMaxDistance = maxDistance.toMutableList()
                 maxDistance = mutableListOf()
                 firstLocation = null
-                pastMaxDistance = maxDistance.toMutableList()
             }
         }
 
