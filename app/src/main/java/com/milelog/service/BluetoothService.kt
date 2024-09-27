@@ -17,14 +17,12 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
-import android.os.Bundle
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.work.*
 import com.milelog.BuildConfig
 import com.milelog.PreferenceUtil
@@ -37,7 +35,6 @@ import com.milelog.room.database.DriveDatabase
 import com.milelog.room.entity.DriveForApp
 import com.milelog.room.entity.DriveForApi
 import com.google.android.gms.location.*
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.Gson
 import com.milelog.NotificationDeleteReceiver
 import com.milelog.NotificationDeleteReceiver.Companion.ACTION_RESTART_NOTIFICATION
@@ -118,7 +115,6 @@ class BluetoothService : Service() {
      * 위치 센서
      */
     private var pastLocation: Location? = null
-    private var firstLineLocation: Location? = null
     private var pastSpeed: Float = 0f
     private var pastTimeStamp = 0L
 
@@ -126,16 +122,17 @@ class BluetoothService : Service() {
     private var INTERVAL = 5000L
 
     /**
-     *         locationRequest.setInterval(INTERVAL) // INTERVAL 초마다 업데이트 요청
-     *         locationRequest.setFastestInterval(FASTEST_INTERVAL) 다른 앱에서 연산된 위치를 수신
-     *         setinterval() 메서드를 사용하여 앱을 위해 위치를 연산하는 간격을 지정합니다.
-     *         setFastestInterval()을 사용하여 다른 앱에서 연산된 위치를 수신하는 간격을 지정합니다.
+     * locationRequest.setInterval(INTERVAL) // INTERVAL 초마다 업데이트 요청
+     * locationRequest.setFastestInterval(FASTEST_INTERVAL) 다른 앱에서 연산된 위치를 수신
+     * setinterval() 메서드를 사용하여 앱을 위해 위치를 연산하는 간격을 지정합니다.
+     * setFastestInterval()을 사용하여 다른 앱에서 연산된 위치를 수신하는 간격을 지정합니다.
      */
 
     val MS_TO_KH = 3.6f
 
     /**
      * room 데이터
+     * 초기화 - startSensor 시
      */
     lateinit var driveForApp: DriveForApp
     lateinit var gpsInfoForApp: MutableList<EachGpsDtoForApp>
@@ -143,22 +140,19 @@ class BluetoothService : Service() {
     /**
      * 저장 실패했을 때
      * 저장 용도의 변수
+     * 초기화 - startSensor 시
      */
     lateinit var driveForApi: DriveForApi
     lateinit var gpsInfoForApi: MutableList<EachGpsDtoForApi>
 
-    private var startTimeStamp: Long = 0L
-
     /**
      *  타이머 시간동안 최대 반경을 구하기 위한 변수들
+     *  초기화 - startSensor 시
      */
     var firstLocation: Location? = null
     var maxDistance = mutableListOf<Float>()
     var pastMaxDistance = mutableListOf<Float>()
-
-
-
-    var firstLineState = false
+    private var firstLineLocation: Location? = null
 
     /**
      * notification 관련
@@ -193,6 +187,8 @@ class BluetoothService : Service() {
             stopSelf()
             return START_STICKY
         }
+
+        driveDatabase = DriveDatabase.getDatabase(this)
 
         if(!sensorState){
             /**
@@ -349,18 +345,8 @@ class BluetoothService : Service() {
         try {
             if (!sensorState) {
                 sensorState = true
-
-                /**
-                 * W0D-74 1행 데이터 삭제
-                 */
-                firstLineState = true
-                firstLineLocation = null
-
-                PreferenceUtil.putPref(this, PreferenceUtil.RUNNING_LEVEL, level)
-                driveDatabase = DriveDatabase.getDatabase(this)
                 initDriveData(level)
                 setLocation()
-
             }
         } catch(e:Exception){
 
@@ -376,11 +362,6 @@ class BluetoothService : Service() {
             if (sensorState) {
                 if (level == PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL, "")) {
                     PreferenceUtil.putPref(this, PreferenceUtil.RUNNING_LEVEL, "")
-                    firstLineState = false
-                    firstLineLocation = null
-                    firstLocation = null
-                    maxDistance = mutableListOf()
-                    pastMaxDistance = mutableListOf()
 
                     if(distance_array.sum() > 500f){
                         callApi()
@@ -400,18 +381,11 @@ class BluetoothService : Service() {
     fun stopSensor(){
         try {
             if (sensorState) {
-                firstLineState = false
-                firstLineLocation = null
-                firstLocation = null
-                maxDistance = mutableListOf()
-                pastMaxDistance = mutableListOf()
-
                 if(distance_array.sum() > 500f){
                     callApi()
                 }else{
                     sensorState = false
                 }
-
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
 
@@ -425,41 +399,37 @@ class BluetoothService : Service() {
         try {
             if (sensorState) {
                 sensorState = false
-                firstLineState = false
-                firstLineLocation = null
-                firstLocation = null
-                maxDistance = mutableListOf()
-                pastMaxDistance = mutableListOf()
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
-
             }
         }catch(e:Exception){
 
         }
     }
 
-    private fun logEvent(level:String, eventType:String){
-        val params = Bundle().apply {
-            putLong("timestamp", System.currentTimeMillis()) // timestamp 파라미터 추가
-            putString("level", level)         // type 파라미터 추가
-        }
-
-        FirebaseAnalytics.getInstance(this).logEvent(eventType, params)
-    }
-
     private fun initDriveData(level:String){
+        firstLineLocation = null
+        firstLocation = null
+        maxDistance = mutableListOf()
+        pastMaxDistance = mutableListOf()
+
+        PreferenceUtil.putPref(this, PreferenceUtil.RUNNING_LEVEL, level)
 
         distance_array = MutableList(24) { 0f } // 23개 시간대의 distance
 
-        startTimeStamp = System.currentTimeMillis()
+        var startTimeStamp = System.currentTimeMillis()
+        initDriveForApp(startTimeStamp)
+        initDriveForApi(level,startTimeStamp)
+    }
 
+    private fun initDriveForApp(startTimeStamp:Long){
         gpsInfoForApp = mutableListOf()
         driveForApp = DriveForApp(
             PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!! + startTimeStamp,
             gpsInfoForApp)
+    }
 
-
+    private fun initDriveForApi(level:String, startTimeStamp:Long){
         gpsInfoForApi = mutableListOf()
         driveForApi = DriveForApi(
             tracking_id = PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!! + startTimeStamp,
@@ -661,47 +631,43 @@ class BluetoothService : Service() {
                     /**
                      * W0D-74 1행 데이터 삭제
                      */
-                    if(!firstLineState){
+                    if(firstLineLocation != null){
                         locationResult.lastLocation?.let{
                             val location: Location = it
                             val timeStamp = location.time
-
-                            if(firstLineLocation != null){
+                            /**
+                             * WD-46 1행 데이터와 같은 데이터 삭제
+                             */
+                            if(firstLineLocation!!.latitude == location.latitude && firstLineLocation!!.longitude == location.longitude){
+                                pastLocation = location
+                                pastTimeStamp = timeStamp
+                            } else{
                                 /**
-                                 * WD-46 1행 데이터와 같은 데이터 삭제
+                                 * W0D-78 중복시간 삭제
                                  */
-                                if(firstLineLocation!!.latitude == location.latitude && firstLineLocation!!.longitude == location.longitude){
-                                    pastLocation = location
-                                    pastTimeStamp = timeStamp
-                                } else{
-                                    /**
-                                     * W0D-78 중복시간 삭제
-                                     */
-                                    if(getDateFromTimeStampToSS(pastTimeStamp) != getDateFromTimeStampToSS(timeStamp)){
+                                if(getDateFromTimeStampToSS(pastTimeStamp) != getDateFromTimeStampToSS(timeStamp)){
 
-                                        /**
-                                         * W0D-75 1초간 이동거리 70m 이상이면 삭제
-                                         */
-                                        if(pastLocation!=null){
-                                            if((pastLocation!!.distanceTo(location) * 1000 / (timeStamp-pastTimeStamp)) > 70){
-                                                pastLocation = location
-                                                pastTimeStamp = timeStamp
-                                            } else {
-                                                processLocationCallback(location, timeStamp)
-                                            }
-                                        } else{
+                                    /**
+                                     * W0D-75 1초간 이동거리 70m 이상이면 삭제
+                                     */
+                                    if(pastLocation!=null){
+                                        if((pastLocation!!.distanceTo(location) * 1000 / (timeStamp-pastTimeStamp)) > 70){
+                                            pastLocation = location
+                                            pastTimeStamp = timeStamp
+                                        } else {
                                             processLocationCallback(location, timeStamp)
                                         }
-                                    }else{
-                                        pastLocation = location
-                                        pastTimeStamp = timeStamp
+                                    } else{
+                                        processLocationCallback(location, timeStamp)
                                     }
+                                }else{
+                                    pastLocation = location
+                                    pastTimeStamp = timeStamp
                                 }
                             }
                         }
                     }else{
                         locationResult.lastLocation?.let{
-                            firstLineState = false
                             firstLineLocation = it
                             pastLocation = it
                             pastTimeStamp = it.time
