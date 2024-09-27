@@ -408,18 +408,16 @@ class BluetoothService : Service() {
     }
 
     private fun initDriveData(level:String){
+        var startTimeStamp = System.currentTimeMillis()
+        initDriveForApp(startTimeStamp)
+        initDriveForApi(level,startTimeStamp)
+
         firstLineLocation = null
         firstLocation = null
         maxDistance = mutableListOf()
         pastMaxDistance = mutableListOf()
-
-        PreferenceUtil.putPref(this, PreferenceUtil.RUNNING_LEVEL, level)
-
         distance_array = MutableList(24) { 0f } // 23개 시간대의 distance
-
-        var startTimeStamp = System.currentTimeMillis()
-        initDriveForApp(startTimeStamp)
-        initDriveForApi(level,startTimeStamp)
+        PreferenceUtil.putPref(this, PreferenceUtil.RUNNING_LEVEL, level)
     }
 
     private fun initDriveForApp(startTimeStamp:Long){
@@ -617,12 +615,10 @@ class BluetoothService : Service() {
         // FusedLocationProviderClient 초기화
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-
         // 위치 업데이트 요청 설정
         locationRequest = LocationRequest.create()
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
         locationRequest.setInterval(INTERVAL) // INTERVAL 마다 업데이트 요청
-
 
         // 위치 업데이트 리스너 생성
         locationCallback = object : LocationCallback() {
@@ -709,9 +705,6 @@ class BluetoothService : Service() {
     }
 
     private fun processLocationCallback(location:Location, timeStamp:Long){
-        Log.d("testestestest","testsetestest maxDistance :: " + maxDistance.max())
-        Log.d("testestestest","testsetestest pastMaxDistance :: " + pastMaxDistance.max())
-
         /**
          * W0D-48 최후 종료 조건 추가
          * firstLocation은 반경을 계산하기 위한 location 값
