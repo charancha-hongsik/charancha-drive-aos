@@ -189,6 +189,7 @@ class BluetoothService : Service() {
         }
 
         driveDatabase = DriveDatabase.getDatabase(this)
+        carConnectionQueryHandler = CarConnectionQueryHandler(contentResolver)
 
         if(!sensorState){
             /**
@@ -200,9 +201,6 @@ class BluetoothService : Service() {
              * WalkingDetectReceiver(L1) 등록
              */
             registerWalkingDetectReceiver()
-
-
-            carConnectionQueryHandler = CarConnectionQueryHandler(contentResolver)
 
             /**
              * Notification 띄우기
@@ -276,161 +274,6 @@ class BluetoothService : Service() {
                 startSensor(L3)
             }
         }
-    }
-
-    private fun registerTransitionReceiver(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(TransitionsReceiver(), filter, RECEIVER_EXPORTED)
-        } else {
-            registerReceiver(TransitionsReceiver(), filter)
-        }
-    }
-
-    private fun registerWalkingDetectReceiver(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            // Detecting L1 Receiver
-            registerReceiver(WalkingDetectReceiver(), IntentFilter().apply {
-                addAction(TRANSITIONS_RECEIVER_ACTION)
-            }, RECEIVER_EXPORTED)
-        } else {
-            // Detecting L1 Receiver
-            registerReceiver(WalkingDetectReceiver(), IntentFilter().apply {
-                addAction(TRANSITIONS_RECEIVER_ACTION)
-            })
-        }
-    }
-
-    private fun showNotification(){
-        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
-            channel
-        )
-        notification = NotificationCompat.Builder(this, CHANNEL_ID)
-
-        val deleteIntent = Intent(this@BluetoothService, NotificationDeleteReceiver::class.java)
-        val pendingDeleteIntent = getBroadcast(
-            this@BluetoothService,
-            0,
-            deleteIntent,
-            FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE
-        )
-
-        if (Build.VERSION.SDK_INT >= 34) {
-            startForeground(1, notification
-                .setSmallIcon(R.mipmap.ic_notification)
-                .setAutoCancel(false)
-                .setOngoing(true)
-                .setContentText("주행 관찰중이에요.")
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setOnlyAlertOnce(true)
-                .setDeleteIntent(pendingDeleteIntent)
-                .build(), FOREGROUND_SERVICE_TYPE_HEALTH)
-        }else{
-            startForeground(1, notification
-                .setSmallIcon(R.mipmap.ic_notification)
-                .setAutoCancel(false)
-                .setOngoing(true)
-                .setContentText("주행 관찰중이에요.")
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setOnlyAlertOnce(true)
-                .build())
-        }
-    }
-
-    /**
-     * sensor가 이미 켜져있으면 켜지지않음.
-     */
-    fun startSensor(level:String){
-        try {
-            if (!sensorState) {
-                sensorState = true
-                initDriveData(level)
-                setLocation()
-            }
-        } catch(e:Exception){
-
-        }
-    }
-
-    /**
-     * sensor 상태가 On일 때 끌 수 있음.
-     * level이 같아야 끌 수 있음.
-     */
-    private fun stopSensor(level:String){
-        try {
-            if (sensorState) {
-                if (level == PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL, "")) {
-                    if(distance_array.sum() > 500f){
-                        callApi()
-                    }else{
-                        sensorState = false
-                    }
-                    fusedLocationClient?.removeLocationUpdates(locationCallback)
-                    fusedLocationClient = null
-                }
-            }
-        }catch (e:Exception){
-        }
-    }
-
-    fun stopSensor(){
-        try {
-            if (sensorState) {
-                if(distance_array.sum() > 500f){
-                    callApi()
-                }else{
-                    sensorState = false
-                }
-                fusedLocationClient?.removeLocationUpdates(locationCallback)
-                fusedLocationClient = null
-
-            }
-        }catch(e:Exception){
-
-        }
-    }
-
-    fun stopSensorNotForSaving(){
-        try {
-            if (sensorState) {
-                sensorState = false
-                fusedLocationClient?.removeLocationUpdates(locationCallback)
-                fusedLocationClient = null
-            }
-        }catch(e:Exception){
-
-        }
-    }
-
-    private fun initDriveData(level:String){
-        var startTimeStamp = System.currentTimeMillis()
-        initDriveForApp(startTimeStamp)
-        initDriveForApi(level,startTimeStamp)
-
-        firstLineLocation = null
-        firstLocation = null
-        maxDistance = mutableListOf()
-        pastMaxDistance = mutableListOf()
-        distance_array = MutableList(24) { 0f } // 23개 시간대의 distance
-        PreferenceUtil.putPref(this, PreferenceUtil.RUNNING_LEVEL, level)
-    }
-
-    private fun initDriveForApp(startTimeStamp:Long){
-        gpsInfoForApp = mutableListOf()
-        driveForApp = DriveForApp(
-            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!! + startTimeStamp,
-            gpsInfoForApp)
-    }
-
-    private fun initDriveForApi(level:String, startTimeStamp:Long){
-        gpsInfoForApi = mutableListOf()
-        driveForApi = DriveForApi(
-            tracking_id = PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!! + startTimeStamp,
-            userCarId = PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
-            startTimestamp = startTimeStamp,
-            endTimestamp = 0L,
-            verification = level,
-            gpses = gpsInfoForApi,
-        )
     }
 
     inner class TransitionsReceiver : BroadcastReceiver() {
@@ -557,27 +400,159 @@ class BluetoothService : Service() {
         }
     }
 
-    private fun isConnected(device: BluetoothDevice): Boolean {
-        try {
-            val m: Method = device.javaClass.getMethod("isConnected")
-            m.invoke(device) as Boolean
-
-            return m.invoke(device) as Boolean
-        } catch (e:Exception){
-            return false
+    private fun registerTransitionReceiver(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(TransitionsReceiver(), filter, RECEIVER_EXPORTED)
+        } else {
+            registerReceiver(TransitionsReceiver(), filter)
         }
     }
 
-    private fun queryForState() {
-        carConnectionQueryHandler.startQuery(
-            QUERY_TOKEN,
-            null,
-            PROJECTION_HOST_URI,
-            arrayOf(CAR_CONNECTION_STATE),
-            null,
-            null,
-            null
+    private fun registerWalkingDetectReceiver(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Detecting L1 Receiver
+            registerReceiver(WalkingDetectReceiver(), IntentFilter().apply {
+                addAction(TRANSITIONS_RECEIVER_ACTION)
+            }, RECEIVER_EXPORTED)
+        } else {
+            // Detecting L1 Receiver
+            registerReceiver(WalkingDetectReceiver(), IntentFilter().apply {
+                addAction(TRANSITIONS_RECEIVER_ACTION)
+            })
+        }
+    }
+
+    private fun showNotification(){
+        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
+            channel
         )
+        notification = NotificationCompat.Builder(this, CHANNEL_ID)
+
+        val deleteIntent = Intent(this@BluetoothService, NotificationDeleteReceiver::class.java)
+        val pendingDeleteIntent = getBroadcast(
+            this@BluetoothService,
+            0,
+            deleteIntent,
+            FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE
+        )
+
+        if (Build.VERSION.SDK_INT >= 34) {
+            startForeground(1, notification
+                .setSmallIcon(R.mipmap.ic_notification)
+                .setAutoCancel(false)
+                .setOngoing(true)
+                .setContentText("주행 관찰중이에요.")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setOnlyAlertOnce(true)
+                .setDeleteIntent(pendingDeleteIntent)
+                .build(), FOREGROUND_SERVICE_TYPE_HEALTH)
+        }else{
+            startForeground(1, notification
+                .setSmallIcon(R.mipmap.ic_notification)
+                .setAutoCancel(false)
+                .setOngoing(true)
+                .setContentText("주행 관찰중이에요.")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setOnlyAlertOnce(true)
+                .build())
+        }
+    }
+
+    private fun initDriveData(level:String){
+        var startTimeStamp = System.currentTimeMillis()
+        initDriveForApp(startTimeStamp)
+        initDriveForApi(level,startTimeStamp)
+
+        firstLineLocation = null
+        firstLocation = null
+        maxDistance = mutableListOf()
+        pastMaxDistance = mutableListOf()
+        distance_array = MutableList(24) { 0f } // 23개 시간대의 distance
+        PreferenceUtil.putPref(this, PreferenceUtil.RUNNING_LEVEL, level)
+    }
+
+    private fun initDriveForApp(startTimeStamp:Long){
+        gpsInfoForApp = mutableListOf()
+        driveForApp = DriveForApp(
+            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!! + startTimeStamp,
+            gpsInfoForApp)
+    }
+
+    private fun initDriveForApi(level:String, startTimeStamp:Long){
+        gpsInfoForApi = mutableListOf()
+        driveForApi = DriveForApi(
+            tracking_id = PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!! + startTimeStamp,
+            userCarId = PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            startTimestamp = startTimeStamp,
+            endTimestamp = 0L,
+            verification = level,
+            gpses = gpsInfoForApi,
+        )
+    }
+
+    /**
+     * sensor가 이미 켜져있으면 켜지지않음.
+     */
+    fun startSensor(level:String){
+        try {
+            if (!sensorState) {
+                sensorState = true
+                initDriveData(level)
+                setLocation()
+            }
+        } catch(e:Exception){
+
+        }
+    }
+
+    /**
+     * sensor 상태가 On일 때 끌 수 있음.
+     * level이 같아야 끌 수 있음.
+     */
+    private fun stopSensor(level:String){
+        try {
+            if (sensorState) {
+                if (level == PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL, "")) {
+                    if(distance_array.sum() > 500f){
+                        callApi()
+                    }else{
+                        sensorState = false
+                    }
+                    fusedLocationClient?.removeLocationUpdates(locationCallback)
+                    fusedLocationClient = null
+                }
+            }
+        }catch (e:Exception){
+        }
+    }
+
+    fun stopSensor(){
+        try {
+            if (sensorState) {
+                if(distance_array.sum() > 500f){
+                    callApi()
+                }else{
+                    sensorState = false
+                }
+                fusedLocationClient?.removeLocationUpdates(locationCallback)
+                fusedLocationClient = null
+
+            }
+        }catch(e:Exception){
+
+        }
+    }
+
+    fun stopSensorNotForSaving(){
+        try {
+            if (sensorState) {
+                sensorState = false
+                fusedLocationClient?.removeLocationUpdates(locationCallback)
+                fusedLocationClient = null
+            }
+        }catch(e:Exception){
+
+        }
     }
 
     private fun scheduleWalkingDetectWork() {
@@ -863,6 +838,29 @@ class BluetoothService : Service() {
         val capabilities =
             connectivityManager.getNetworkCapabilities(network) ?: return false
         return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    }
+
+    private fun isConnected(device: BluetoothDevice): Boolean {
+        try {
+            val m: Method = device.javaClass.getMethod("isConnected")
+            m.invoke(device) as Boolean
+
+            return m.invoke(device) as Boolean
+        } catch (e:Exception){
+            return false
+        }
+    }
+
+    private fun queryForState() {
+        carConnectionQueryHandler.startQuery(
+            QUERY_TOKEN,
+            null,
+            PROJECTION_HOST_URI,
+            arrayOf(CAR_CONNECTION_STATE),
+            null,
+            null,
+            null
+        )
     }
 
 }
