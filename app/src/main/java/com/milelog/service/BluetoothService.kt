@@ -720,10 +720,8 @@ class BluetoothService : Service() {
         val speed = location.speed * MS_TO_KH
         val acceleration = (location.speed * MS_TO_KH) - (pastSpeed * MS_TO_KH)
 
-
         gpsInfoForApp.add(EachGpsDtoForApp(timeStamp, location.latitude, location.longitude, String.format("%.0f", location.altitude).toDouble()))
         gpsInfoForApi.add(EachGpsDtoForApi(timeStamp, String.format("%.0f",speed).toFloat() ,String.format("%.0f",distance).toFloat(),String.format("%.0f", location.altitude).toDouble(), String.format("%.0f",acceleration).toFloat()))
-
 
         var HH = getDateFromTimeStampToHH(timeStamp)
 
@@ -749,13 +747,9 @@ class BluetoothService : Service() {
                 }else{
                     stopSensor()
                 }
-
-                maxDistance = mutableListOf()
-                pastMaxDistance = mutableListOf()
-                firstLocation = null
-
             }else{
                 pastMaxDistance = maxDistance.toMutableList()
+
                 maxDistance = mutableListOf()
                 firstLocation = null
             }
