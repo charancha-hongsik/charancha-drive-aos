@@ -119,7 +119,7 @@ class BluetoothService : Service() {
     private var pastTimeStamp = 0L
 
 
-    private var INTERVAL = 5000L
+    private var INTERVAL = 1000L
 
     /**
      * locationRequest.setInterval(INTERVAL) // INTERVAL 초마다 업데이트 요청
@@ -361,14 +361,11 @@ class BluetoothService : Service() {
         try {
             if (sensorState) {
                 if (level == PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL, "")) {
-                    PreferenceUtil.putPref(this, PreferenceUtil.RUNNING_LEVEL, "")
-
                     if(distance_array.sum() > 500f){
                         callApi()
                     }else{
                         sensorState = false
                     }
-
                     fusedLocationClient?.removeLocationUpdates(locationCallback)
                     fusedLocationClient = null
 
