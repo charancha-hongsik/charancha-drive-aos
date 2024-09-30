@@ -293,15 +293,6 @@
             android:exported="true"
             android:foregroundServiceType="location|dataSync|health|connectedDevice" />
 
-        <receiver
-            android:name=".activity.MainActivity$AlarmReceiver"
-            android:enabled="true"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.example.myapp.ALARM_TRIGGERED" />
-            </intent-filter>
-        </receiver>
-
         <service
             android:name=".service.MyFirebaseMessagingService"
             android:exported="false">
