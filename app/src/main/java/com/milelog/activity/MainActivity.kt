@@ -25,6 +25,7 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.milelog.CommonUtil
 import com.milelog.CustomDialog
 import com.milelog.PreferenceUtil
 import com.milelog.PreferenceUtil.HAVE_BEEN_HOME
@@ -1052,24 +1053,10 @@ class MainActivity : BaseRefreshActivity() {
     }
 
     private fun setBluetoothService(){
-        if(ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                if (ActivityCompat.checkSelfPermission(applicationContext, ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED) {
-                    if(!isMyServiceRunning(BluetoothService::class.java)){
-                        val bluetoothIntent = Intent(this, BluetoothService::class.java)
-                        startForegroundService(bluetoothIntent)
-                    }
-                }else{
-                    if(isMyServiceRunning(BluetoothService::class.java)){
-                        val bluetoothIntent = Intent(this, BluetoothService::class.java)
-                        stopService(bluetoothIntent)
-                    }
-                }
-            }else{
-                if(!isMyServiceRunning(BluetoothService::class.java)){
-                    val bluetoothIntent = Intent(this, BluetoothService::class.java)
-                    startForegroundService(bluetoothIntent)
-                }
+        if(CommonUtil.checkRequiredPermissions(this@MainActivity)){
+            if(!isMyServiceRunning(BluetoothService::class.java)){
+                val bluetoothIntent = Intent(this, BluetoothService::class.java)
+                startForegroundService(bluetoothIntent)
             }
         }else{
             if(isMyServiceRunning(BluetoothService::class.java)){

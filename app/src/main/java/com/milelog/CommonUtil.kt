@@ -6,6 +6,8 @@ import android.Manifest.permission.ACTIVITY_RECOGNITION
 import android.app.Service.START_STICKY
 import android.content.Context
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
@@ -13,10 +15,18 @@ import android.text.style.ForegroundColorSpan
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.milelog.retrofit.ApiServiceInterface
+import com.milelog.retrofit.HeaderInterceptor
+import okhttp3.OkHttpClient
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.text.SimpleDateFormat
 import java.time.Duration
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.TimeZone
+import java.util.concurrent.TimeUnit
 
 object CommonUtil {
     fun getSpannableString(context: Context, originalText:String, spanText:String, color:Int):SpannableString{
@@ -73,4 +83,42 @@ object CommonUtil {
             return false
         }
     }
+
+    fun isInternetConnected(context: Context): Boolean {
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        val network = connectivityManager.activeNetwork ?: return false
+        val capabilities =
+            connectivityManager.getNetworkCapabilities(network) ?: return false
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    }
+
+    fun apiService(context:Context, readTimeOut:Long = 30): ApiServiceInterface {
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(HeaderInterceptor(context))
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(readTimeOut, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .build()
+        return Retrofit.Builder().baseUrl(BuildConfig.BASE_API_URL).client(client)
+            .addConverterFactory(GsonConverterFactory.create()).build().create(
+                ApiServiceInterface::class.java
+            )
+    }
+
+    fun getDateFromTimeStampToHH(timeStamp:Long) : Int{
+        val format = SimpleDateFormat("HH")
+        format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
+
+        return format.format(timeStamp).toInt()
+    }
+
+    fun getDateFromTimeStampToSS(timeStamp:Long) : Int{
+        val format = SimpleDateFormat("ss")
+        format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
+
+        return format.format(timeStamp).toInt()
+    }
+
 }

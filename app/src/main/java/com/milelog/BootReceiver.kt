@@ -39,20 +39,10 @@ class BootReceiver : BroadcastReceiver() {
             // This is where you handle the reboot event
             Log.d("testestestest","testestestset :: BootReceiver onReceive")
 
-            // You can start a service, schedule a job, etc. here
-            if(ContextCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(context, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    if (ActivityCompat.checkSelfPermission(context, ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED) {
-                        if(!isMyServiceRunning(context,BluetoothService::class.java)){
-                            val bluetoothIntent = Intent(context, BluetoothService::class.java)
-                            context.startForegroundService(bluetoothIntent)
-                        }
-                    }
-                }else{
-                    if(!isMyServiceRunning(context,BluetoothService::class.java)){
-                        val bluetoothIntent = Intent(context, BluetoothService::class.java)
-                        context.startForegroundService(bluetoothIntent)
-                    }
+            if(CommonUtil.checkRequiredPermissions(context)){
+                if(!isMyServiceRunning(context,BluetoothService::class.java)){
+                    val bluetoothIntent = Intent(context, BluetoothService::class.java)
+                    context.startForegroundService(bluetoothIntent)
                 }
             }
 

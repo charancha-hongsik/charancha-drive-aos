@@ -1,8 +1,6 @@
 package com.milelog.service
 
 import android.Manifest
-import android.Manifest.permission.ACCESS_COARSE_LOCATION
-import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.Manifest.permission.ACTIVITY_RECOGNITION
 import android.app.*
 import android.app.PendingIntent.*
@@ -13,8 +11,6 @@ import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_HEALTH
 import android.database.Cursor
 import android.location.Location
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
 import android.os.IBinder
@@ -23,11 +19,8 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import com.milelog.BuildConfig
 import com.milelog.PreferenceUtil
 import com.milelog.R
-import com.milelog.retrofit.ApiServiceInterface
-import com.milelog.retrofit.HeaderInterceptor
 import com.milelog.retrofit.request.PostDrivingInfoRequest
 import com.milelog.retrofit.response.PostDrivingInfoResponse
 import com.milelog.room.database.DriveDatabase
@@ -36,6 +29,10 @@ import com.milelog.room.entity.DriveForApi
 import com.google.android.gms.location.*
 import com.google.gson.Gson
 import com.milelog.CommonUtil
+import com.milelog.CommonUtil.apiService
+import com.milelog.CommonUtil.getDateFromTimeStampToHH
+import com.milelog.CommonUtil.getDateFromTimeStampToSS
+import com.milelog.CommonUtil.isInternetConnected
 import com.milelog.NotificationDeleteReceiver
 import com.milelog.NotificationDeleteReceiver.Companion.ACTION_RESTART_NOTIFICATION
 import com.milelog.room.dto.EachGpsDtoForApi
@@ -46,13 +43,8 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.reflect.Method
-import java.text.SimpleDateFormat
-import java.util.*
 import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 
 
 /**
@@ -528,7 +520,6 @@ class BluetoothService : Service() {
         }
     }
 
-
     /**
      * PRIORITY_BALANCED_POWER_ACCURACY 도시 블록 내의 위치 정밀도 요청. 정확도는 대략 100미터. Wi-Fi 정보와 휴대폰 기지국 위치를 사용할 수 있음. 대략적인 수준의 정확성으로 전력을 비교적 적게 사용함.
      * PRIORITY_HIGH_ACCURACY 가장 정확한 위치를 요청. 이 설정을 사용하면 위치 서비스가 GPS를 사용하여 위치를 확인할 가능성이 높음.
@@ -566,7 +557,6 @@ class BluetoothService : Service() {
                                  * W0D-78 중복시간 삭제
                                  */
                                 if(getDateFromTimeStampToSS(pastTimeStamp) != getDateFromTimeStampToSS(timeStamp)){
-
                                     /**
                                      * W0D-75 1초간 이동거리 70m 이상이면 삭제
                                      */
@@ -703,7 +693,7 @@ class BluetoothService : Service() {
         val jsonParam = gson.toJson(postDriveDtoForApi)
 
         if (isInternetConnected(this@BluetoothService)) {
-            apiService().postDrivingInfo("Bearer " + PreferenceUtil.getPref(this@BluetoothService,  PreferenceUtil.ACCESS_TOKEN, "")!!, jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object : Callback<ResponseBody> {
+            apiService(this@BluetoothService).postDrivingInfo("Bearer " + PreferenceUtil.getPref(this@BluetoothService,  PreferenceUtil.ACCESS_TOKEN, "")!!, jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object : Callback<ResponseBody> {
                 override fun onResponse(
                     call: Call<ResponseBody>,
                     response: Response<ResponseBody>
@@ -758,43 +748,6 @@ class BluetoothService : Service() {
             } catch (e:Exception){
             }
         }
-    }
-
-    private fun getDateFromTimeStampToHH(timeStamp:Long) : Int{
-        val format = SimpleDateFormat("HH")
-        format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
-
-        return format.format(timeStamp).toInt()
-    }
-
-    private fun getDateFromTimeStampToSS(timeStamp:Long) : Int{
-        val format = SimpleDateFormat("ss")
-        format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
-
-        return format.format(timeStamp).toInt()
-    }
-
-    fun apiService(readTimeOut:Long = 30): ApiServiceInterface {
-        val client: OkHttpClient = OkHttpClient.Builder()
-            .addInterceptor(HeaderInterceptor(this))
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(readTimeOut, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
-            .build()
-        return Retrofit.Builder().baseUrl(BuildConfig.BASE_API_URL).client(client)
-            .addConverterFactory(GsonConverterFactory.create()).build().create(
-                ApiServiceInterface::class.java
-            )
-    }
-
-    fun isInternetConnected(context: Context): Boolean {
-        val connectivityManager =
-            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-
-        val network = connectivityManager.activeNetwork ?: return false
-        val capabilities =
-            connectivityManager.getNetworkCapabilities(network) ?: return false
-        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
     }
 
     private fun isConnected(device: BluetoothDevice): Boolean {
