@@ -119,7 +119,7 @@ class BluetoothService : Service() {
     private var pastTimeStamp = 0L
 
 
-    private var INTERVAL = 5000L
+    private var INTERVAL = 1000L
 
     /**
      * locationRequest.setInterval(INTERVAL) // INTERVAL 초마다 업데이트 요청
