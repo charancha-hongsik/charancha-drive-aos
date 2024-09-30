@@ -23,7 +23,6 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import androidx.work.*
 import com.milelog.BuildConfig
 import com.milelog.PreferenceUtil
 import com.milelog.R
@@ -36,6 +35,7 @@ import com.milelog.room.entity.DriveForApp
 import com.milelog.room.entity.DriveForApi
 import com.google.android.gms.location.*
 import com.google.gson.Gson
+import com.milelog.CommonUtil
 import com.milelog.NotificationDeleteReceiver
 import com.milelog.NotificationDeleteReceiver.Companion.ACTION_RESTART_NOTIFICATION
 import com.milelog.room.dto.EachGpsDtoForApi
@@ -174,16 +174,7 @@ class BluetoothService : Service() {
         /**
          * BootReceiver 에서 실행 시킨 경우 필수 권한 확인 후 Service 실행하기 위한 로직
          */
-        if(ContextCompat.checkSelfPermission(this@BluetoothService, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this@BluetoothService, ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                if (ActivityCompat.checkSelfPermission(this@BluetoothService, ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_GRANTED) {
-
-                }else{
-                    stopSelf()
-                    return START_STICKY
-                }
-            }
-        }else {
+        if(!CommonUtil.checkRequiredPermissions(this@BluetoothService)){
             stopSelf()
             return START_STICKY
         }
@@ -195,12 +186,12 @@ class BluetoothService : Service() {
             /**
              * TransitionsReceiver(L2, L3) 등록
              */
-            registerTransitionReceiver()
+            registerDetectCarConnectedReceiver()
 
             /**
              * WalkingDetectReceiver(L1) 등록
              */
-            registerWalkingDetectReceiver()
+            registerDetectUserActivityReceiver()
 
             /**
              * Notification 띄우기
@@ -223,7 +214,7 @@ class BluetoothService : Service() {
         return START_STICKY
     }
 
-    class WalkingDetectReceiver : BroadcastReceiver() {
+    class DetectUserActivityReceiver : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {
             if (ActivityTransitionResult.hasResult(intent)) {
@@ -252,30 +243,7 @@ class BluetoothService : Service() {
         }
     }
 
-    inner class CarConnectionQueryHandler(resolver: ContentResolver?) : AsyncQueryHandler(resolver) {
-
-        // notify new queryed connection status when query complete
-        override fun onQueryComplete(token: Int, cookie: Any?, response: Cursor?) {
-            if (response == null) {
-                return
-            }
-            val carConnectionTypeColumn = response.getColumnIndex(CAR_CONNECTION_STATE)
-            if (carConnectionTypeColumn < 0) {
-                return
-            }
-            if (!response.moveToNext()) {
-                return
-            }
-            val connectionState = response.getInt(carConnectionTypeColumn)
-            if (connectionState == CONNECTION_TYPE_NOT_CONNECTED) {
-                stopSensor(L3)
-            } else {
-                startSensor(L3)
-            }
-        }
-    }
-
-    inner class TransitionsReceiver : BroadcastReceiver() {
+    inner class DetectCarConnectedReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             if(ContextCompat.checkSelfPermission(this@BluetoothService, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED){
                 when (intent?.action) {
@@ -312,6 +280,29 @@ class BluetoothService : Service() {
                         queryForState()
                     }
                 }
+            }
+        }
+    }
+
+    inner class CarConnectionQueryHandler(resolver: ContentResolver?) : AsyncQueryHandler(resolver) {
+
+        // notify new queryed connection status when query complete
+        override fun onQueryComplete(token: Int, cookie: Any?, response: Cursor?) {
+            if (response == null) {
+                return
+            }
+            val carConnectionTypeColumn = response.getColumnIndex(CAR_CONNECTION_STATE)
+            if (carConnectionTypeColumn < 0) {
+                return
+            }
+            if (!response.moveToNext()) {
+                return
+            }
+            val connectionState = response.getInt(carConnectionTypeColumn)
+            if (connectionState == CONNECTION_TYPE_NOT_CONNECTED) {
+                stopSensor(L3)
+            } else {
+                startSensor(L3)
             }
         }
     }
@@ -382,23 +373,23 @@ class BluetoothService : Service() {
             }
     }
 
-    private fun registerTransitionReceiver(){
+    private fun registerDetectCarConnectedReceiver(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(TransitionsReceiver(), filter, RECEIVER_EXPORTED)
+            registerReceiver(DetectCarConnectedReceiver(), filter, RECEIVER_EXPORTED)
         } else {
-            registerReceiver(TransitionsReceiver(), filter)
+            registerReceiver(DetectCarConnectedReceiver(), filter)
         }
     }
 
-    private fun registerWalkingDetectReceiver(){
+    private fun registerDetectUserActivityReceiver(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             // Detecting L1 Receiver
-            registerReceiver(WalkingDetectReceiver(), IntentFilter().apply {
+            registerReceiver(DetectUserActivityReceiver(), IntentFilter().apply {
                 addAction(TRANSITIONS_RECEIVER_ACTION)
             }, RECEIVER_EXPORTED)
         } else {
             // Detecting L1 Receiver
-            registerReceiver(WalkingDetectReceiver(), IntentFilter().apply {
+            registerReceiver(DetectUserActivityReceiver(), IntentFilter().apply {
                 addAction(TRANSITIONS_RECEIVER_ACTION)
             })
         }
