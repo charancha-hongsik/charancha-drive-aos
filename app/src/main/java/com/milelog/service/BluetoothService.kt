@@ -208,10 +208,9 @@ class BluetoothService : Service() {
             showNotification()
 
             /**
-             * 15분마다 requestActivityTransitionUpdates 등록
-             * **15분마다 필요한건지 체크 필요**
+             * 사용자 활동 탐지 시작
              */
-            scheduleWalkingDetectWork()
+            requestActivityUpdates()
         }else{
             /**
              * 주행중인 경우 && 사용자가 임의로 notification을 없앤 경우
@@ -317,87 +316,70 @@ class BluetoothService : Service() {
         }
     }
 
-    class WalkingDetectWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
+    private fun requestActivityUpdates() {
+        val transitions = listOf(
+            ActivityTransition.Builder()
+                .setActivityType(DetectedActivity.WALKING)
+                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                .build(),
+            ActivityTransition.Builder()
+                .setActivityType(DetectedActivity.WALKING)
+                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
+                .build(),
+            ActivityTransition.Builder()
+                .setActivityType(DetectedActivity.IN_VEHICLE)
+                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                .build(),
+            ActivityTransition.Builder()
+                .setActivityType(DetectedActivity.IN_VEHICLE)
+                .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
+                .build()
+        )
 
-        private val activityRecognitionClient: ActivityRecognitionClient =
-            ActivityRecognition.getClient(context)
+        val request = ActivityTransitionRequest(transitions)
 
-        override fun doWork(): Result {
-            requestActivityUpdates()
+        val intent = Intent(TRANSITIONS_RECEIVER_ACTION)
+        intent.setPackage(applicationContext.packageName)
 
-            return Result.success()
+        var flag = FLAG_UPDATE_CURRENT
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            flag = FLAG_UPDATE_CURRENT or FLAG_MUTABLE
         }
 
-        private fun requestActivityUpdates() {
-            val transitions = listOf(
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.WALKING)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.WALKING)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.IN_VEHICLE)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.IN_VEHICLE)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.STILL)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                    .build(),
-                ActivityTransition.Builder()
-                    .setActivityType(DetectedActivity.STILL)
-                    .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                    .build()
-            )
+        val pendingIntent = getBroadcast(
+            applicationContext,
+            0,
+            intent,
+            flag
+        )
 
-            val request = ActivityTransitionRequest(transitions)
-
-            val intent = Intent(TRANSITIONS_RECEIVER_ACTION)
-            intent.setPackage(applicationContext.packageName)
-
-            var flag = FLAG_UPDATE_CURRENT
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                flag = FLAG_UPDATE_CURRENT or FLAG_MUTABLE
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (ActivityCompat.checkSelfPermission(
+                    applicationContext,
+                    ACTIVITY_RECOGNITION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return
             }
-
-            val pendingIntent = getBroadcast(
-                applicationContext,
-                0,
-                intent,
-                flag
-            )
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                if (ActivityCompat.checkSelfPermission(
-                        applicationContext,
-                        ACTIVITY_RECOGNITION
-                    ) != PackageManager.PERMISSION_GRANTED
-                ) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return
-                }
-            }
-
-            activityRecognitionClient.requestActivityTransitionUpdates(request, pendingIntent)
-                .addOnSuccessListener {
-                    Log.d("testestestest","testestestest activityRecognitionClient addOnSuccessListener")
-                }
-                .addOnFailureListener {
-
-                }
         }
+
+        val activityRecognitionClient: ActivityRecognitionClient =
+            ActivityRecognition.getClient(this@BluetoothService)
+
+        activityRecognitionClient.requestActivityTransitionUpdates(request, pendingIntent)
+            .addOnSuccessListener {
+                Log.d("testestestest","testestestest activityRecognitionClient addOnSuccessListener")
+            }
+            .addOnFailureListener {
+
+            }
     }
 
     private fun registerTransitionReceiver(){
@@ -555,22 +537,6 @@ class BluetoothService : Service() {
         }
     }
 
-    private fun scheduleWalkingDetectWork() {
-        try {
-            val workRequest = PeriodicWorkRequest.Builder(
-                WalkingDetectWorker::class.java,
-                15, TimeUnit.MINUTES
-            ).build()
-
-            WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-                "WalkingDetectWork",
-                ExistingPeriodicWorkPolicy.REPLACE,
-                workRequest
-            )
-        }catch (e:Exception){
-
-        }
-    }
 
     /**
      * PRIORITY_BALANCED_POWER_ACCURACY 도시 블록 내의 위치 정밀도 요청. 정확도는 대략 100미터. Wi-Fi 정보와 휴대폰 기지국 위치를 사용할 수 있음. 대략적인 수준의 정확성으로 전력을 비교적 적게 사용함.
