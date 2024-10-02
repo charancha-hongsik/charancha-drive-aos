@@ -479,7 +479,7 @@ class BluetoothService : Service() {
             if (sensorState) {
                 if (level == PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL, "")) {
                     if(distance_array.sum() > 500f){
-                        callApi()
+                        callApi(driveForApi.copy(gpses = driveForApi.gpses.map{it.copy()}), driveForApp.copy(gpses = driveForApp.gpses.map{it.copy()}))
                     }else{
                         sensorState = false
                     }
@@ -495,7 +495,7 @@ class BluetoothService : Service() {
         try {
             if (sensorState) {
                 if(distance_array.sum() > 500f){
-                    callApi()
+                    callApi(driveForApi.copy(gpses = driveForApi.gpses.map{it.copy()}), driveForApp.copy(gpses = driveForApp.gpses.map{it.copy()}))
                 }else{
                     sensorState = false
                 }
@@ -678,15 +678,15 @@ class BluetoothService : Service() {
         pastLocation = location
     }
 
-    private fun callApi(){
-        driveForApi.endTimestamp = System.currentTimeMillis()
+    private fun callApi(dataForApi:DriveForApi, dataForApp: DriveForApp){
+        dataForApi.endTimestamp = System.currentTimeMillis()
 
         val postDriveDtoForApi = PostDrivingInfoRequest(
             userCarId=PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
-            startTimestamp = driveForApi.startTimestamp,
-            endTimestamp = driveForApi.endTimestamp,
-            verification = driveForApi.verification,
-            gpses = driveForApi.gpses
+            startTimestamp = dataForApi.startTimestamp,
+            endTimestamp = dataForApi.endTimestamp,
+            verification = dataForApi.verification,
+            gpses = dataForApi.gpses
         )
 
         val gson = Gson()
@@ -700,39 +700,39 @@ class BluetoothService : Service() {
                 ) {
                     if(response.code() == 200 || response.code() == 201){
                         val postDrivingInfoResponse = gson.fromJson(response.body()?.string(), PostDrivingInfoResponse::class.java)
-                        writeToRoomForApp(postDrivingInfoResponse.id)
+                        writeToRoomForApp(dataForApp, postDrivingInfoResponse.id)
                     }else if(response.code() == 429){
 
                     }else{
-                        handlePostDrivingInfoError()
+                        handlePostDrivingInfoError(dataForApi, dataForApp)
                     }
                     sensorState = false
                 }
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    handlePostDrivingInfoError()
+                    handlePostDrivingInfoError(dataForApi, dataForApp)
                     sensorState = false
                 }
             })
         } else {
-            handlePostDrivingInfoError()
+            handlePostDrivingInfoError(dataForApi, dataForApp)
             sensorState = false
         }
     }
 
-    private fun handlePostDrivingInfoError(){
-        writeToRoomForApi(driveForApi)
-        writeToRoomForApp(driveForApi.tracking_id)
+    private fun handlePostDrivingInfoError(dataForApi:DriveForApi, dataForApp: DriveForApp){
+        writeToRoomForApi(dataForApi)
+        writeToRoomForApp(dataForApp, dataForApi.tracking_id)
     }
 
     /**
      * App내 위경도 값 저장
      */
-    fun writeToRoomForApp(trackingId:String){
+    fun writeToRoomForApp(dataForApp: DriveForApp, trackingId:String){
         Executors.newSingleThreadExecutor().execute{
             try {
-                driveForApp.tracking_id = trackingId
-                driveDatabase?.driveForAppDao()?.insert(driveForApp)
+                dataForApp.tracking_id = trackingId
+                driveDatabase?.driveForAppDao()?.insert(dataForApp)
             } catch (e:Exception){
             }
         }
