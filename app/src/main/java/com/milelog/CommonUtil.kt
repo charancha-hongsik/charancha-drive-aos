@@ -4,6 +4,7 @@ import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.Manifest.permission.ACTIVITY_RECOGNITION
 import android.app.Service.START_STICKY
+import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
@@ -20,6 +21,7 @@ import com.milelog.retrofit.HeaderInterceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.lang.reflect.Method
 import java.text.SimpleDateFormat
 import java.time.Duration
 import java.time.ZoneId
@@ -92,6 +94,17 @@ object CommonUtil {
         val capabilities =
             connectivityManager.getNetworkCapabilities(network) ?: return false
         return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    }
+
+    fun isBluetoothDeviceConnected(device: BluetoothDevice): Boolean {
+        try {
+            val m: Method = device.javaClass.getMethod("isConnected")
+            m.invoke(device) as Boolean
+
+            return m.invoke(device) as Boolean
+        } catch (e:Exception){
+            return false
+        }
     }
 
     fun apiService(context:Context, readTimeOut:Long = 30): ApiServiceInterface {

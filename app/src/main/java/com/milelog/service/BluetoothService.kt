@@ -32,6 +32,7 @@ import com.milelog.CommonUtil
 import com.milelog.CommonUtil.apiService
 import com.milelog.CommonUtil.getDateFromTimeStampToHH
 import com.milelog.CommonUtil.getDateFromTimeStampToSS
+import com.milelog.CommonUtil.isBluetoothDeviceConnected
 import com.milelog.CommonUtil.isInternetConnected
 import com.milelog.NotificationDeleteReceiver
 import com.milelog.NotificationDeleteReceiver.Companion.ACTION_RESTART_NOTIFICATION
@@ -43,7 +44,6 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.lang.reflect.Method
 import java.util.concurrent.Executors
 
 
@@ -243,17 +243,15 @@ class BluetoothService : Service() {
                         val bluetoothManager: BluetoothManager = getSystemService(BluetoothManager::class.java)
                         val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
 
-
                         val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
 
                         pairedDevices?.forEach { device ->
                             if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
-                                if(isConnected(device)){
+                                if(isBluetoothDeviceConnected(device)){
                                     startSensor(L2)
                                 }
                             }
                         }
-
                     }
                     BluetoothDevice.ACTION_ACL_DISCONNECTED -> {
                         val bluetoothManager: BluetoothManager = getSystemService(BluetoothManager::class.java)
@@ -262,7 +260,7 @@ class BluetoothService : Service() {
                         val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
                         pairedDevices?.forEach { device ->
                             if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
-                                if(!isConnected(device)){
+                                if(!isBluetoothDeviceConnected(device)){
                                     stopSensor(L2)
                                 }
                             }
@@ -747,17 +745,6 @@ class BluetoothService : Service() {
                 driveDatabase?.driveForApiDao()?.insert(driveForApi)
             } catch (e:Exception){
             }
-        }
-    }
-
-    private fun isConnected(device: BluetoothDevice): Boolean {
-        try {
-            val m: Method = device.javaClass.getMethod("isConnected")
-            m.invoke(device) as Boolean
-
-            return m.invoke(device) as Boolean
-        } catch (e:Exception){
-            return false
         }
     }
 
