@@ -486,6 +486,7 @@ class BluetoothService : Service() {
                 }
             }
         }catch (e:Exception){
+            sensorState = false
         }
     }
 
@@ -502,7 +503,7 @@ class BluetoothService : Service() {
 
             }
         }catch(e:Exception){
-
+            sensorState = false
         }
     }
 
@@ -514,7 +515,7 @@ class BluetoothService : Service() {
                 fusedLocationClient = null
             }
         }catch(e:Exception){
-
+            sensorState = false
         }
     }
 
@@ -537,6 +538,7 @@ class BluetoothService : Service() {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 try{
+
                     /**
                      * W0D-74 1행 데이터 삭제
                      */
@@ -696,15 +698,19 @@ class BluetoothService : Service() {
                     call: Call<ResponseBody>,
                     response: Response<ResponseBody>
                 ) {
-                    if(response.code() == 200 || response.code() == 201){
-                        val postDrivingInfoResponse = gson.fromJson(response.body()?.string(), PostDrivingInfoResponse::class.java)
-                        writeToRoomForApp(dataForApp, postDrivingInfoResponse.id)
-                    }else if(response.code() == 429){
+                    try{
+                        if(response.code() == 200 || response.code() == 201){
+                            val postDrivingInfoResponse = gson.fromJson(response.body()?.string(), PostDrivingInfoResponse::class.java)
+                            writeToRoomForApp(dataForApp, postDrivingInfoResponse.id)
+                        }else if(response.code() == 429){
 
-                    }else{
-                        handlePostDrivingInfoError(dataForApi, dataForApp)
+                        }else{
+                            handlePostDrivingInfoError(dataForApi, dataForApp)
+                        }
+                        sensorState = false
+                    }catch (e:Exception){
+                        sensorState = false
                     }
-                    sensorState = false
                 }
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
@@ -732,6 +738,7 @@ class BluetoothService : Service() {
                 dataForApp.tracking_id = trackingId
                 driveDatabase?.driveForAppDao()?.insert(dataForApp)
             } catch (e:Exception){
+                sensorState = false
             }
         }
     }
@@ -744,6 +751,7 @@ class BluetoothService : Service() {
             try {
                 driveDatabase?.driveForApiDao()?.insert(driveForApi)
             } catch (e:Exception){
+                sensorState = false
             }
         }
     }
