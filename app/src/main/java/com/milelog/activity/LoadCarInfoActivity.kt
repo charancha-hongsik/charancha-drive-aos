@@ -113,7 +113,7 @@ class LoadCarInfoActivity: BaseRefreshActivity() {
 
     fun getInfoInquiry(){
         if(carNo != null && carOwner != null){
-            apiService().getCarInfoInquiry("Bearer " + PreferenceUtil.getPref(this@LoadCarInfoActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, carNo!!, carOwner!!).enqueue(object :
+            apiService(60).getCarInfoInquiry("Bearer " + PreferenceUtil.getPref(this@LoadCarInfoActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, carNo!!, carOwner!!).enqueue(object :
                 Callback<ResponseBody>{
                 override fun onResponse(
                     call: Call<ResponseBody>,
