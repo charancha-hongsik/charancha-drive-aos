@@ -478,6 +478,7 @@ class BluetoothService : Service() {
                 if (level == PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL, "")) {
                     if(distance_array.sum() > 500f){
                         callApi(driveForApi.copy(gpses = driveForApi.gpses.map{it.copy()}), driveForApp.copy(gpses = driveForApp.gpses.map{it.copy()}))
+                        sensorState = false
                     }else{
                         sensorState = false
                     }
@@ -707,20 +708,17 @@ class BluetoothService : Service() {
                         }else{
                             handlePostDrivingInfoError(dataForApi, dataForApp)
                         }
-                        sensorState = false
                     }catch (e:Exception){
-                        sensorState = false
+
                     }
                 }
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                     handlePostDrivingInfoError(dataForApi, dataForApp)
-                    sensorState = false
                 }
             })
         } else {
             handlePostDrivingInfoError(dataForApi, dataForApp)
-            sensorState = false
         }
     }
 
