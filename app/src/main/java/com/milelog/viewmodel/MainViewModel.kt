@@ -130,6 +130,10 @@ class MainViewModel: BaseViewModel() {
                                                     )
                                             } else if(response.code() == 401){
                                                 _notSavedDataResult.value = Event(NotSavedDataState.Error(response.code(), response.message()))
+                                            } else if(response.code() == 429){
+                                                // 보낸 데이터 삭제
+                                                driveDatabase.driveForApiDao()
+                                                    .deleteByTrackingId(drive.tracking_id)
                                             }
 
                                         }catch (e:Exception){
