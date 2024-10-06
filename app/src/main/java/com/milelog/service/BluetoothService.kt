@@ -496,6 +496,7 @@ class BluetoothService : Service() {
             if (sensorState) {
                 if(distance_array.sum() > 500f){
                     callApi(driveForApi.copy(gpses = driveForApi.gpses.map{it.copy()}), driveForApp.copy(gpses = driveForApp.gpses.map{it.copy()}))
+                    sensorState = false
                 }else{
                     sensorState = false
                 }
@@ -736,7 +737,7 @@ class BluetoothService : Service() {
                 dataForApp.tracking_id = trackingId
                 driveDatabase?.driveForAppDao()?.insert(dataForApp)
             } catch (e:Exception){
-                sensorState = false
+
             }
         }
     }
@@ -749,7 +750,7 @@ class BluetoothService : Service() {
             try {
                 driveDatabase?.driveForApiDao()?.insert(driveForApi)
             } catch (e:Exception){
-                sensorState = false
+
             }
         }
     }
