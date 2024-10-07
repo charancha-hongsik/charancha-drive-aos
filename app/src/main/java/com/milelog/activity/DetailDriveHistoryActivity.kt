@@ -101,6 +101,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         detailDriveHistoryViewModel.init(applicationContext)
 
         init()
+        setObserver()
         setResources()
     }
 
@@ -149,8 +150,6 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         iv_tooltip_rapid_acc = findViewById(R.id.iv_tooltip_rapid_acc)
 
         view_map = findViewById(R.id.view_map)
-
-        setObserver()
     }
 
     private fun setObserver(){
