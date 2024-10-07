@@ -11,10 +11,12 @@ import com.google.gson.Gson
 import com.milelog.PreferenceUtil
 import com.milelog.retrofit.request.PatchDrivingInfo
 import com.milelog.retrofit.response.GetAccountResponse
+import com.milelog.retrofit.response.GetDrivingInfoResponse
 import com.milelog.retrofit.response.PatchDrivingResponse
 import com.milelog.room.database.DriveDatabase
 import com.milelog.room.entity.DriveForApp
 import com.milelog.viewmodel.state.AccountState
+import com.milelog.viewmodel.state.GetDrivingInfoState
 import com.milelog.viewmodel.state.PatchDrivingInfoState
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -30,11 +32,14 @@ class DetailDriveHistoryViewModel: BaseViewModel() {
     private val _setAllDriveDateForApp = MutableLiveData<Event<MutableList<DriveForApp>>>()
     val setAllDriveDateForApp: MutableLiveData<Event<MutableList<DriveForApp>>> get() = _setAllDriveDateForApp
 
-    private val _setDriveForApp = MutableLiveData<Event<DriveForApp?>>()
-    val setDriveForApp: MutableLiveData<Event<DriveForApp?>> get() = _setDriveForApp
+    private val _setMap = MutableLiveData<Event<DriveForApp?>>()
+    val setMap: MutableLiveData<Event<DriveForApp?>> get() = _setMap
 
     private val _patchDrivingInfo = MutableLiveData<Event<PatchDrivingInfoState>>()
     val patchDrivingInfo: MutableLiveData<Event<PatchDrivingInfoState>> get() = _patchDrivingInfo
+
+    private val _getDrivingInfo = MutableLiveData<Event<GetDrivingInfoState>>()
+    val getDrivingInfo: MutableLiveData<Event<GetDrivingInfoState>> get() = _getDrivingInfo
 
     fun init(context:Context){
         this.context = context
@@ -48,13 +53,13 @@ class DetailDriveHistoryViewModel: BaseViewModel() {
         }
     }
 
-    fun getDrive(trackingId:String){
+    fun setMap(trackingId:String){
         viewModelScope.launch {
             val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(context)
             driveDatabase.driveForAppDao().getDriveByTrackingId(trackingId)?.let {
-                setDriveForApp.value = Event(it)
+                _setMap.value = Event(it)
             } ?: run{
-                setDriveForApp.value = Event(null)
+                _setMap.value = Event(null)
             }
         }
     }
@@ -88,6 +93,24 @@ class DetailDriveHistoryViewModel: BaseViewModel() {
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 _patchDrivingInfo.value = Event(PatchDrivingInfoState.Empty)
+            }
+
+        })
+    }
+
+    fun getDrivingInfo(tracking_id:String){
+        apiService(context).getDrivingInfo("Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!, tracking_id).enqueue(object : Callback<ResponseBody>{
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if(response.code() == 200 || response.code() == 201){
+                    val getDrivingInfoResponse = Gson().fromJson(response.body()?.string(), GetDrivingInfoResponse::class.java)
+                    _getDrivingInfo.value = Event(GetDrivingInfoState.Success(getDrivingInfoResponse))
+                }else if(response.code() == 401){
+                    _getDrivingInfo.value = Event(GetDrivingInfoState.Error(response.code(), response.message()))
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
             }
 
         })

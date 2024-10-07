@@ -17,8 +17,6 @@ import androidx.activity.viewModels
 import androidx.cardview.widget.CardView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.milelog.R
-import com.milelog.PreferenceUtil
-import com.milelog.retrofit.response.GetDrivingInfoResponse
 import com.milelog.viewmodel.DetailDriveHistoryViewModel
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
@@ -29,13 +27,9 @@ import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.gms.maps.model.StrokeStyle
 import com.google.android.gms.maps.model.StyleSpan
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.gson.Gson
 import com.milelog.viewmodel.BaseViewModel
+import com.milelog.viewmodel.state.GetDrivingInfoState
 import com.milelog.viewmodel.state.PatchDrivingInfoState
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.time.*
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -108,14 +102,11 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
         init()
         setResources()
-        getDriveDetail()
     }
 
     private fun init(){
         tracking_id = intent.getStringExtra("trackingId").toString()
         isActive = intent.getBooleanExtra("isActive",true)
-
-        detailDriveHistoryViewModel.getDrive(tracking_id)
 
         tv_date = findViewById(R.id.tv_date)
         tv_distance = findViewById(R.id.tv_distance)
@@ -163,7 +154,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     }
 
     private fun setObserver(){
-        detailDriveHistoryViewModel.setDriveForApp.observe(this@DetailDriveHistoryActivity, BaseViewModel.EventObserver {
+        detailDriveHistoryViewModel.setMap.observe(this@DetailDriveHistoryActivity, BaseViewModel.EventObserver {
             it?.let{
                 for(raw in it.gpses){
                     polylines.add(LatLng(raw.latitude,raw.longtitude))
@@ -201,6 +192,63 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                 }
                 is PatchDrivingInfoState.Empty -> {
                     layout_my_drive.visibility = GONE
+                }
+            }
+        })
+
+        detailDriveHistoryViewModel.getDrivingInfo.observe(this@DetailDriveHistoryActivity, BaseViewModel.EventObserver{ state ->
+            when (state) {
+                is GetDrivingInfoState.Loading -> {
+
+                }
+                is GetDrivingInfoState.Success -> {
+                    val getDrivingInfoResponse = state.data
+                    tv_date.text = transformTimeToDate(getDrivingInfoResponse.createdAt)
+                    tv_distance.text = transferDistanceWithUnit(getDrivingInfoResponse.totalDistance)
+                    tv_start_time.text = transformTimeToHHMM(getDrivingInfoResponse.startTime)
+                    tv_end_time.text = transformTimeToHHMM(getDrivingInfoResponse.endTime)
+                    tv_start_time_info.text = transformTimeToDateWithTime(getDrivingInfoResponse.startTime)
+                    tv_end_time_info.text = transformTimeToDateWithTime(getDrivingInfoResponse.endTime)
+                    tv_drive_time_info.text = transformSecondsToHHMMSS(getDrivingInfoResponse.totalTime)
+                    tv_drive_distance_info.text = transferDistanceWithUnit(getDrivingInfoResponse.totalDistance)
+                    tv_drive_verification_info.text = getDrivingInfoResponse.verification
+                    tv_high_speed_driving_percent_info.text = transferNumWithRounds(getDrivingInfoResponse.highSpeedDrivingDistancePercentage).toString() + "%"
+                    tv_low_speed_driving_percent_info.text = transferNumWithRounds(getDrivingInfoResponse.lowSpeedDrivingDistancePercentage).toString() + "%"
+                    tv_max_speed_info.text = getSpeedWithDistanceUnit(getDrivingInfoResponse.maxSpeed)
+                    tv_high_speed_average_info.text = getSpeedWithDistanceUnit(getDrivingInfoResponse.highSpeedDrivingAverageSpeed)
+                    tv_low_speed_average_info.text = getSpeedWithDistanceUnit(getDrivingInfoResponse.lowSpeedDrivingAverageSpeed)
+                    tv_rapid_start_count.text = getDrivingInfoResponse.rapidStartCount.toInt().toString() + "회"
+                    tv_rapid_acc_count_info.text = getDrivingInfoResponse.rapidAccelerationCount.toInt().toString() + "회"
+                    tv_rapid_stop_count_info.text = getDrivingInfoResponse.rapidStopCount.toInt().toString() + "회"
+                    tv_rapid_desc_count_info.text = getDrivingInfoResponse.rapidDecelerationCount.toInt().toString() + "회"
+
+                    isActive = getDrivingInfoResponse.isActive
+
+                    if(isMyCarScope(getDrivingInfoResponse.endTime)){
+                        tv_scope_date_mycar.text = transformDateTo30Dayslater(getDrivingInfoResponse.endTime)
+                    } else{
+                        tv_scope_date_mycar.text = "변경 가능 기간이 지났어요."
+                    }
+
+                    if(getDrivingInfoResponse.isActive){
+                        tv_mycar.visibility = VISIBLE
+                        tv_not_mycar.visibility = GONE
+                        btn_mycar.isSelected = true
+                        btn_not_mycar.isSelected = false
+                    }else{
+                        tv_mycar.visibility = GONE
+                        tv_not_mycar.visibility = VISIBLE
+                        btn_mycar.isSelected = false
+                        btn_not_mycar.isSelected = true
+                    }
+                }
+                is GetDrivingInfoState.Error -> {
+                    if(state.code == 401){
+                        logout()
+                    }
+                }
+                is GetDrivingInfoState.Empty -> {
+
                 }
             }
         })
@@ -302,6 +350,9 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         btn_mycar.isSelected = true
 
         persistentBottomSheetEvent()
+
+        detailDriveHistoryViewModel.setMap(tracking_id)
+        detailDriveHistoryViewModel.getDrivingInfo(tracking_id)
     }
 
 
@@ -457,63 +508,6 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
             }
         }
     }
-
-    private fun getDriveDetail(){
-        apiService().getDrivingInfo("Bearer " + PreferenceUtil.getPref(this@DetailDriveHistoryActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, tracking_id).enqueue(object : Callback<ResponseBody>{
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200 || response.code() == 201){
-                    val getDrivingInfoResponse = Gson().fromJson(response.body()?.string(), GetDrivingInfoResponse::class.java)
-
-                    tv_date.text = transformTimeToDate(getDrivingInfoResponse.createdAt)
-                    tv_distance.text = transferDistanceWithUnit(getDrivingInfoResponse.totalDistance)
-                    tv_start_time.text = transformTimeToHHMM(getDrivingInfoResponse.startTime)
-                    tv_end_time.text = transformTimeToHHMM(getDrivingInfoResponse.endTime)
-                    tv_start_time_info.text = transformTimeToDateWithTime(getDrivingInfoResponse.startTime)
-                    tv_end_time_info.text = transformTimeToDateWithTime(getDrivingInfoResponse.endTime)
-                    tv_drive_time_info.text = transformSecondsToHHMMSS(getDrivingInfoResponse.totalTime)
-                    tv_drive_distance_info.text = transferDistanceWithUnit(getDrivingInfoResponse.totalDistance)
-                    tv_drive_verification_info.text = getDrivingInfoResponse.verification
-                    tv_high_speed_driving_percent_info.text = transferNumWithRounds(getDrivingInfoResponse.highSpeedDrivingDistancePercentage).toString() + "%"
-                    tv_low_speed_driving_percent_info.text = transferNumWithRounds(getDrivingInfoResponse.lowSpeedDrivingDistancePercentage).toString() + "%"
-                    tv_max_speed_info.text = getSpeedWithDistanceUnit(getDrivingInfoResponse.maxSpeed)
-                    tv_high_speed_average_info.text = getSpeedWithDistanceUnit(getDrivingInfoResponse.highSpeedDrivingAverageSpeed)
-                    tv_low_speed_average_info.text = getSpeedWithDistanceUnit(getDrivingInfoResponse.lowSpeedDrivingAverageSpeed)
-                    tv_rapid_start_count.text = getDrivingInfoResponse.rapidStartCount.toInt().toString() + "회"
-                    tv_rapid_acc_count_info.text = getDrivingInfoResponse.rapidAccelerationCount.toInt().toString() + "회"
-                    tv_rapid_stop_count_info.text = getDrivingInfoResponse.rapidStopCount.toInt().toString() + "회"
-                    tv_rapid_desc_count_info.text = getDrivingInfoResponse.rapidDecelerationCount.toInt().toString() + "회"
-
-                    isActive = getDrivingInfoResponse.isActive
-
-                    if(isMyCarScope(getDrivingInfoResponse.endTime)){
-                        tv_scope_date_mycar.text = transformDateTo30Dayslater(getDrivingInfoResponse.endTime)
-                    } else{
-                        tv_scope_date_mycar.text = "변경 가능 기간이 지났어요."
-                    }
-
-                    if(getDrivingInfoResponse.isActive){
-                        tv_mycar.visibility = VISIBLE
-                        tv_not_mycar.visibility = GONE
-                        btn_mycar.isSelected = true
-                        btn_not_mycar.isSelected = false
-                    }else{
-                        tv_mycar.visibility = GONE
-                        tv_not_mycar.visibility = VISIBLE
-                        btn_mycar.isSelected = false
-                        btn_not_mycar.isSelected = true
-                    }
-                }else if(response.code() == 401){
-                    logout()
-                }
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
-            }
-
-        })
-    }
-
 
     private fun transformSecondsToHHMMSS(seconds:Double):String{
         val hours = seconds.toInt() / 3600
