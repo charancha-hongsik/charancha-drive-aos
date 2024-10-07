@@ -478,10 +478,8 @@ class BluetoothService : Service() {
                 if (level == PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL, "")) {
                     if(distance_array.sum() > 500f){
                         callApi(driveForApi.copy(gpses = driveForApi.gpses.map{it.copy()}), driveForApp.copy(gpses = driveForApp.gpses.map{it.copy()}))
-                        sensorState = false
-                    }else{
-                        sensorState = false
                     }
+                    sensorState = false
                     fusedLocationClient?.removeLocationUpdates(locationCallback)
                     fusedLocationClient = null
                 }
@@ -496,10 +494,8 @@ class BluetoothService : Service() {
             if (sensorState) {
                 if(distance_array.sum() > 500f){
                     callApi(driveForApi.copy(gpses = driveForApi.gpses.map{it.copy()}), driveForApp.copy(gpses = driveForApp.gpses.map{it.copy()}))
-                    sensorState = false
-                }else{
-                    sensorState = false
                 }
+                sensorState = false
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
 
