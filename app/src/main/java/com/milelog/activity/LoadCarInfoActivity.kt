@@ -6,12 +6,19 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import android.view.View.GONE
 import android.view.animation.TranslateAnimation
 import android.widget.ImageButton
 import android.widget.ImageView
+import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.milelog.PreferenceUtil
 import com.milelog.R
+import com.milelog.viewmodel.BaseViewModel
+import com.milelog.viewmodel.LoadCarInfoViewModel
+import com.milelog.viewmodel.MainViewModel
+import com.milelog.viewmodel.state.AccountState
+import com.milelog.viewmodel.state.GetCarInfoInquiryState
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -19,6 +26,8 @@ import retrofit2.Response
 
 
 class LoadCarInfoActivity: BaseRefreshActivity() {
+    private val loadCarInfoViewModel: LoadCarInfoViewModel by viewModels()
+
     lateinit var iv_animation:ImageView
     lateinit var animation_parent: ConstraintLayout
     lateinit var ib_arrow_register_car:ImageButton
@@ -39,13 +48,55 @@ class LoadCarInfoActivity: BaseRefreshActivity() {
     }
 
     private fun init(){
+        loadCarInfoViewModel.init(applicationContext)
+
         carNo = intent.getStringExtra("carNo")
         carOwner = intent.getStringExtra("carOwner")
 
-
         setResources()
-        getInfoInquiry()
+        setObserver()
+        if(carNo != null && carOwner != null)
+            loadCarInfoViewModel.getCarInfoInquiry(carNo!!, carOwner!!)
     }
+
+    private fun setObserver() {
+        loadCarInfoViewModel.setCarInfoInquiry.observe(
+            this@LoadCarInfoActivity,
+            BaseViewModel.EventObserver { state ->
+                when (state) {
+                    is GetCarInfoInquiryState.Loading -> {
+
+                    }
+
+                    is GetCarInfoInquiryState.Success -> {
+                        val intent = Intent(this@LoadCarInfoActivity, RegisterCarActivity::class.java)
+                        intent.putExtra("response", state.data)
+                        setResult(RESULT_OK, intent)
+                        finish()
+                    }
+
+                    is GetCarInfoInquiryState.Error -> {
+                        if (state.code == 401) {
+                            logout()
+                        }else{
+                            showCustomToast(this@LoadCarInfoActivity,state.message)
+
+                            val intent = Intent(this@LoadCarInfoActivity, RegisterCarActivity::class.java)
+                            setResult(RESULT_CANCELED, intent)
+                            finish()
+                        }
+                    }
+
+                    is GetCarInfoInquiryState.Empty -> {
+                        val intent = Intent(this@LoadCarInfoActivity, RegisterCarActivity::class.java)
+                        setResult(RESULT_CANCELED, intent)
+                        finish()
+                    }
+                }
+            })
+    }
+
+
 
     private fun setResources(){
         iv_animation = findViewById(R.id.iv_animation)
@@ -107,45 +158,6 @@ class LoadCarInfoActivity: BaseRefreshActivity() {
                 iv_animation_pot3.startAnimation(animation3)
 
             }, 500)
-
-        }
-    }
-
-    fun getInfoInquiry(){
-        if(carNo != null && carOwner != null){
-            apiService(60).getCarInfoInquiry("Bearer " + PreferenceUtil.getPref(this@LoadCarInfoActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, carNo!!, carOwner!!).enqueue(object :
-                Callback<ResponseBody>{
-                override fun onResponse(
-                    call: Call<ResponseBody>,
-                    response: Response<ResponseBody>
-                ) {
-                    if(response.code() == 200 || response.code() == 201){
-                        response.body()?.let{
-                            val intent = Intent(this@LoadCarInfoActivity, RegisterCarActivity::class.java)
-                            intent.putExtra("response", it.string())
-                            setResult(RESULT_OK, intent)
-                            finish()
-                        }?:{
-                            val intent = Intent(this@LoadCarInfoActivity, RegisterCarActivity::class.java)
-                            setResult(RESULT_CANCELED, intent)
-                            finish()
-                        }
-                    }else if(response.code() == 401){
-                        logout()
-                    } else{
-                        showCustomToast(this@LoadCarInfoActivity,"차량 번호 또는 소유자명이 일치하지 않습니다.")
-
-                        val intent = Intent(this@LoadCarInfoActivity, RegisterCarActivity::class.java)
-                        setResult(RESULT_CANCELED, intent)
-                        finish()
-                    }
-                }
-
-                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
-                }
-
-            })
 
         }
     }

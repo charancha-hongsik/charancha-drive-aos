@@ -23,6 +23,7 @@ import com.milelog.R
 import com.milelog.retrofit.response.Meta
 import com.milelog.room.entity.AlarmEntity
 import com.milelog.viewmodel.AlarmViewModel
+import com.milelog.viewmodel.BaseViewModel
 
 
 class AlarmActivity: BaseRefreshActivity() {
@@ -43,7 +44,7 @@ class AlarmActivity: BaseRefreshActivity() {
         notificationManager.cancel(notificationId)
 
         alarmViewModel.getAlarms(0)
-        alarmViewModel.setAllAlarm.observe(this@AlarmActivity, AlarmViewModel.EventObserver {
+        alarmViewModel.setAllAlarm.observe(this@AlarmActivity, BaseViewModel.EventObserver {
             it?.let{
 
                 if(notifications.size != 0)
@@ -70,7 +71,7 @@ class AlarmActivity: BaseRefreshActivity() {
             }
         })
 
-        alarmViewModel.updateIsRequired.observe(this@AlarmActivity, AlarmViewModel.EventObserver{
+        alarmViewModel.updateIsRequired.observe(this@AlarmActivity, BaseViewModel.EventObserver{
             for(noti in notifications){
                 if(noti.idx == it){
                     noti.isRequired = false
