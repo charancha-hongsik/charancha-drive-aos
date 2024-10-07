@@ -104,7 +104,7 @@ class EditCarInfoActivity: BaseRefreshActivity() {
             if(b){
                 et_car_year.hint = ""
             }else{
-                et_car_year.hint = getMyCarInfoResponse.carYear.toString()
+                et_car_year.hint = getMyCarInfoResponse.modelYear
 
             }
         }
@@ -118,11 +118,11 @@ class EditCarInfoActivity: BaseRefreshActivity() {
 
         layout_edit.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                var carYear = getMyCarInfoResponse.carYear
+                var modelYear = getMyCarInfoResponse.modelYear
                 var carModelName = getMyCarInfoResponse.carName
 
                 if(et_car_year.text.toString().isNotEmpty()){
-                    carYear = et_car_year.text.toString().toInt()
+                    modelYear = et_car_year.text.toString()
                 }
                 if(et_car_model_name.text.toString().isNotEmpty()){
                     carModelName = et_car_model_name.text.toString()
@@ -130,7 +130,7 @@ class EditCarInfoActivity: BaseRefreshActivity() {
 
                 val gson = Gson()
                 val jsonParam =
-                    gson.toJson(EditMyCarRequest(getMyCarInfoResponse.licensePlateNumber, getMyCarInfoResponse.ownerName, carYear, carModelName, tv_car_fuel.text.toString()))
+                    gson.toJson(EditMyCarRequest(getMyCarInfoResponse.licensePlateNumber, getMyCarInfoResponse.ownerName, modelYear, carModelName, tv_car_fuel.text.toString()))
 
                 apiService().patchCarInfoByCarId("Bearer " + PreferenceUtil.getPref(this@EditCarInfoActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, getMyCarInfoResponse.id, jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :Callback<ResponseBody>{
                     override fun onResponse(
@@ -249,7 +249,7 @@ class EditCarInfoActivity: BaseRefreshActivity() {
                                     tv_car_owner.text = getMyCarInfoResponse.ownerName
                                     tv_car_id.text = getMyCarInfoResponse.vehicleIdentificationNumber
                                     et_car_model_name.hint = getMyCarInfoResponse.carName
-                                    et_car_year.hint = getMyCarInfoResponse.carYear.toString()
+                                    et_car_year.hint = getMyCarInfoResponse.modelYear
                                     tv_car_fuel.text = getMyCarInfoResponse.fuel
 
                                 }else if(response.code() == 401){

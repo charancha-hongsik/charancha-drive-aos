@@ -3,6 +3,6 @@ data class EditCarInfoResponse(
     val licensePlateNumber:String,
     val ownerName:String,
     val carName:String,
-    val carYear:Int,
+    val modelYear:String,
     val fuel:String
 )

@@ -6,6 +6,6 @@ data class GetMyCarInfoResponse (
     val ownerName:String,
     val vehicleIdentificationNumber:String,
     val carName:String,
-    val carYear:Int,
+    val modelYear:String,
     val fuel:String
 )

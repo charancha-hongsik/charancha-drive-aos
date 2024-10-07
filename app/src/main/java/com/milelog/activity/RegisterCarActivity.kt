@@ -139,7 +139,7 @@ class RegisterCarActivity: BaseActivity() {
             if(b){
                 et_car_year.hint = ""
             }else{
-                et_car_year.hint = postMyCarResponse.carYear
+                et_car_year.hint = postMyCarResponse.modelYear
             }
         }
 
@@ -161,11 +161,11 @@ class RegisterCarActivity: BaseActivity() {
                     }
 
                     2 -> {
-                        var carYear = postMyCarResponse.carYear
+                        var modelYear = postMyCarResponse.modelYear
                         var carName = postMyCarResponse.carName
 
                         if(et_car_year.text.toString().isNotEmpty()){
-                            carYear = et_car_year.text.toString()
+                            modelYear = et_car_year.text.toString()
                         }
 
                         if(et_car_model_name.text.toString().isNotEmpty()){
@@ -180,7 +180,7 @@ class RegisterCarActivity: BaseActivity() {
                                 licensePlateNumber=tv_car_no.text.toString(),
                                 ownerName=tv_car_owner.text.toString(),
                                 vehicleIdentificationNumber=tv_car_id.text.toString(),
-                                carYear= carYear.toInt(),
+                                    modelYear= modelYear,
                                 carName = carName,
                                 fuel = tv_car_fuel.text.toString()
                             )
@@ -464,7 +464,7 @@ class RegisterCarActivity: BaseActivity() {
         tv_car_owner.text = postMyCarResponse.ownerName
         tv_car_id.text = postMyCarResponse.vehicleIdentificationNumber
         tv_car_no.text = postMyCarResponse.licensePlateNumber
-        et_car_year.hint = postMyCarResponse.carYear
+        et_car_year.hint = postMyCarResponse.modelYear
         et_car_model_name.hint = postMyCarResponse.carName
 
         view_register_percent1.isSelected = true

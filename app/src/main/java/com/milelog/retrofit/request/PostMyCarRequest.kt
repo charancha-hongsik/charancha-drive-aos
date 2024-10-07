@@ -4,7 +4,7 @@ data class PostMyCarRequest (
     val licensePlateNumber:String,
     val ownerName:String,
     val vehicleIdentificationNumber:String,
-    val carYear:Int,
+    val modelYear:String,
     val carName:String,
     val fuel:String,
 ) : java.io.Serializable

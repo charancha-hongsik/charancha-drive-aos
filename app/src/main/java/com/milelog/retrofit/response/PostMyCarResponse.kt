@@ -5,5 +5,5 @@ data class PostMyCarResponse (
     val ownerName:String,
     val vehicleIdentificationNumber:String,
     val carName:String,
-    val carYear:String,
+    val modelYear:String,
 )
