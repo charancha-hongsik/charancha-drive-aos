@@ -297,7 +297,7 @@ class BluetoothService : Service() {
         }
     }
 
-    private fun requestActivityUpdates() {
+    private fun  requestActivityUpdates() {
         val transitions = listOf(
             ActivityTransition.Builder()
                 .setActivityType(DetectedActivity.WALKING)
@@ -464,7 +464,8 @@ class BluetoothService : Service() {
                 setLocation()
             }
         } catch(e:Exception){
-
+            sensorState = false
+            stopSensorNotForSaving()
         }
     }
 
