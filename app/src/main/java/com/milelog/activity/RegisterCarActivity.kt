@@ -461,11 +461,18 @@ class RegisterCarActivity: BaseActivity() {
         layout_after_inquiry.visibility = VISIBLE
 
         tv_car_fuel.text = "선택하세요."
+        if(postMyCarResponse.fuel.isNotEmpty()){
+            tv_car_fuel.text = postMyCarResponse.fuel
+
+            btn_next.isSelected = true
+            btn_next.isClickable = true
+        }
         tv_car_owner.text = postMyCarResponse.ownerName
         tv_car_id.text = postMyCarResponse.vehicleIdentificationNumber
         tv_car_no.text = postMyCarResponse.licensePlateNumber
         et_car_year.hint = postMyCarResponse.modelYear
         et_car_model_name.hint = postMyCarResponse.carName
+
 
         view_register_percent1.isSelected = true
         view_register_percent2.isSelected = true
