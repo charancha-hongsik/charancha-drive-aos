@@ -141,10 +141,10 @@ class BluetoothService : Service() {
      *  타이머 시간동안 최대 반경을 구하기 위한 변수들
      *  초기화 - startSensor 시
      */
-    var firstLocation: Location? = null
+    var thirtyMinCheckpointLocation: Location? = null
     var maxDistance = mutableListOf<Float>()
     var pastMaxDistance = mutableListOf<Float>()
-    private var firstLineLocation: Location? = null
+    private var firstLocation: Location? = null
 
     /**
      * notification 관련
@@ -426,8 +426,8 @@ class BluetoothService : Service() {
         initDriveForApp(startTimeStamp)
         initDriveForApi(level,startTimeStamp)
 
-        firstLineLocation = null
         firstLocation = null
+        thirtyMinCheckpointLocation = null
         maxDistance = mutableListOf()
         pastMaxDistance = mutableListOf()
         distance_array = MutableList(24) { 0f } // 23개 시간대의 distance
@@ -540,14 +540,14 @@ class BluetoothService : Service() {
                     /**
                      * W0D-74 1행 데이터 삭제
                      */
-                    if(firstLineLocation != null){
+                    if(firstLocation != null){
                         locationResult.lastLocation?.let{
                             val location: Location = it
                             val timeStamp = location.time
                             /**
                              * WD-46 1행 데이터와 같은 데이터 삭제
                              */
-                            if(firstLineLocation!!.latitude == location.latitude && firstLineLocation!!.longitude == location.longitude){
+                            if(firstLocation!!.latitude == location.latitude && firstLocation!!.longitude == location.longitude){
                                 pastLocation = location
                                 pastTimeStamp = timeStamp
                             } else{
@@ -576,7 +576,7 @@ class BluetoothService : Service() {
                         }
                     }else{
                         locationResult.lastLocation?.let{
-                            firstLineLocation = it
+                            firstLocation = it
                             pastLocation = it
                             pastTimeStamp = it.time
                         }
@@ -619,10 +619,10 @@ class BluetoothService : Service() {
     private fun processLocationCallback(location:Location, timeStamp:Long){
         /**
          * W0D-48 최후 종료 조건 추가
-         * firstLocation은 반경을 계산하기 위한 location 값
+         * thirtyMinCheckpointLocation은 반경을 계산하기 위한 location 값
          */
-        if(firstLocation == null){
-            firstLocation = location
+        if(thirtyMinCheckpointLocation == null){
+            thirtyMinCheckpointLocation = location
         }
 
         /**
@@ -630,7 +630,7 @@ class BluetoothService : Service() {
          * 30분동안 반경 300m 이하 일 경우 종료
          * 60초 * 30분 = 1800
          */
-        if((timeStamp - firstLocation!!.time) > 1800000L){
+        if((timeStamp - thirtyMinCheckpointLocation!!.time) > 1800000L){
             /**
              * 반경 300미터 이하 체크
              */
@@ -647,11 +647,11 @@ class BluetoothService : Service() {
                 pastMaxDistance = maxDistance.toMutableList()
 
                 maxDistance = mutableListOf()
-                firstLocation = null
+                thirtyMinCheckpointLocation = null
             }
         }
 
-        maxDistance.add(location.distanceTo(firstLocation!!))
+        maxDistance.add(location.distanceTo(thirtyMinCheckpointLocation!!))
 
         var distance = 0f
         if(pastLocation != null){
