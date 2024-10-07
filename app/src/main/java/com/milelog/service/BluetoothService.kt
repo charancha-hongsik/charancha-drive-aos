@@ -464,7 +464,6 @@ class BluetoothService : Service() {
                 setLocation()
             }
         } catch(e:Exception){
-            sensorState = false
             stopSensorNotForSaving()
         }
     }
@@ -583,7 +582,7 @@ class BluetoothService : Service() {
                         }
                     }
                 }catch (e:Exception){
-
+                    stopSensor()
                 }
             }
         }
