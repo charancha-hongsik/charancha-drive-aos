@@ -154,7 +154,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     }
 
     private fun setObserver(){
-        detailDriveHistoryViewModel.setMap.observe(this@DetailDriveHistoryActivity, BaseViewModel.EventObserver {
+        detailDriveHistoryViewModel.getMapData.observe(this@DetailDriveHistoryActivity, BaseViewModel.EventObserver {
             it?.let{
                 for(raw in it.gpses){
                     polylines.add(LatLng(raw.latitude,raw.longtitude))
@@ -351,7 +351,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
         persistentBottomSheetEvent()
 
-        detailDriveHistoryViewModel.setMap(tracking_id)
+        detailDriveHistoryViewModel.getMapData(tracking_id)
         detailDriveHistoryViewModel.getDrivingInfo(tracking_id)
     }
 

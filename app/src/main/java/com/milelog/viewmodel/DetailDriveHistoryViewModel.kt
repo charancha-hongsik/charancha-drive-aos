@@ -1,21 +1,15 @@
 package com.milelog.viewmodel
 
 import android.content.Context
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.milelog.PreferenceUtil
 import com.milelog.retrofit.request.PatchDrivingInfo
-import com.milelog.retrofit.response.GetAccountResponse
 import com.milelog.retrofit.response.GetDrivingInfoResponse
 import com.milelog.retrofit.response.PatchDrivingResponse
 import com.milelog.room.database.DriveDatabase
 import com.milelog.room.entity.DriveForApp
-import com.milelog.viewmodel.state.AccountState
 import com.milelog.viewmodel.state.GetDrivingInfoState
 import com.milelog.viewmodel.state.PatchDrivingInfoState
 import kotlinx.coroutines.launch
@@ -32,8 +26,8 @@ class DetailDriveHistoryViewModel: BaseViewModel() {
     private val _setAllDriveDateForApp = MutableLiveData<Event<MutableList<DriveForApp>>>()
     val setAllDriveDateForApp: MutableLiveData<Event<MutableList<DriveForApp>>> get() = _setAllDriveDateForApp
 
-    private val _setMap = MutableLiveData<Event<DriveForApp?>>()
-    val setMap: MutableLiveData<Event<DriveForApp?>> get() = _setMap
+    private val _getMapData = MutableLiveData<Event<DriveForApp?>>()
+    val getMapData: MutableLiveData<Event<DriveForApp?>> get() = _getMapData
 
     private val _patchDrivingInfo = MutableLiveData<Event<PatchDrivingInfoState>>()
     val patchDrivingInfo: MutableLiveData<Event<PatchDrivingInfoState>> get() = _patchDrivingInfo
@@ -53,13 +47,13 @@ class DetailDriveHistoryViewModel: BaseViewModel() {
         }
     }
 
-    fun setMap(trackingId:String){
+    fun getMapData(trackingId:String){
         viewModelScope.launch {
             val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(context)
             driveDatabase.driveForAppDao().getDriveByTrackingId(trackingId)?.let {
-                _setMap.value = Event(it)
+                _getMapData.value = Event(it)
             } ?: run{
-                _setMap.value = Event(null)
+                _getMapData.value = Event(null)
             }
         }
     }
