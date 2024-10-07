@@ -1,15 +1,10 @@
 package com.milelog.viewmodel
 
 import android.content.Context
-import android.view.View.GONE
-import android.view.View.VISIBLE
-
-
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.milelog.PreferenceUtil
-import com.milelog.R
 import com.milelog.retrofit.request.PostDrivingInfoRequest
 import com.milelog.retrofit.response.GetAccountResponse
 import com.milelog.retrofit.response.GetDrivingStatisticsResponse

@@ -10,17 +10,14 @@ import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.view.View.*
-import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.milelog.R
 import com.milelog.PreferenceUtil
-import com.milelog.retrofit.request.PatchDrivingInfo
 import com.milelog.retrofit.response.GetDrivingInfoResponse
 import com.milelog.viewmodel.DetailDriveHistoryViewModel
 import com.google.android.gms.maps.*
@@ -34,8 +31,7 @@ import com.google.android.gms.maps.model.StyleSpan
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.Gson
 import com.milelog.viewmodel.BaseViewModel
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody.Companion.toRequestBody
+import com.milelog.viewmodel.state.PatchDrivingInfoState
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -163,18 +159,13 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
         view_map = findViewById(R.id.view_map)
 
+        setObserver()
+    }
+
+    private fun setObserver(){
         detailDriveHistoryViewModel.setDriveForApp.observe(this@DetailDriveHistoryActivity, BaseViewModel.EventObserver {
             it?.let{
-                Log.d("testestestestes","testestestestset size :: " + it.gpses.size)
                 for(raw in it.gpses){
-                    Log.d("testestestestes","testestestestset latitude :: " + raw.latitude)
-                    Log.d("testestestestes","testestestestset altitude :: " + raw.altitude)
-                    Log.d("testestestestes","testestestestset longtitude :: " + raw.longtitude)
-                    Log.d("testestestestes","testestestestset timestamp :: " + raw.timestamp)
-
-
-
-
                     polylines.add(LatLng(raw.latitude,raw.longtitude))
                 }
 
@@ -182,6 +173,34 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     view_map.visibility = VISIBLE
                     tv_mycar_scope_info.visibility = GONE
                     setMapData()
+                }
+            }
+        })
+
+        detailDriveHistoryViewModel.patchDrivingInfo.observe(this@DetailDriveHistoryActivity, BaseViewModel.EventObserver{ state ->
+            when (state) {
+                is PatchDrivingInfoState.Loading -> {
+
+                }
+                is PatchDrivingInfoState.Success -> {
+                    if(state.data.isActive){
+                        tv_mycar.visibility = VISIBLE
+                        tv_not_mycar.visibility = GONE
+                    }else{
+                        tv_mycar.visibility = GONE
+                        tv_not_mycar.visibility = VISIBLE
+                    }
+                    isActive = state.data.isActive
+                    layout_my_drive.visibility = GONE
+                }
+                is PatchDrivingInfoState.Error -> {
+                    if(state.code == 401){
+                        logout()
+                        layout_my_drive.visibility = GONE
+                    }
+                }
+                is PatchDrivingInfoState.Empty -> {
+                    layout_my_drive.visibility = GONE
                 }
             }
         })
@@ -266,67 +285,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
         btn_set_mycar.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                if(btn_mycar.isSelected){
-                    val gson = Gson()
-                    val jsonParam =
-                        gson.toJson(PatchDrivingInfo(true))
-                    apiService().patchDrivingInfo("Bearer " + PreferenceUtil.getPref(this@DetailDriveHistoryActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, tracking_id,jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object:Callback<ResponseBody>{
-                        override fun onResponse(
-                            call: Call<ResponseBody>,
-                            response: Response<ResponseBody>
-                        ) {
-                            try {
-                                if (response.code() == 200 || response.code() == 201) {
-                                    tv_mycar.visibility = VISIBLE
-                                    tv_not_mycar.visibility = GONE
-
-                                    isActive = true
-
-                                }else if(response.code() == 401){
-                                    logout()
-                                }
-                                layout_my_drive.visibility = GONE
-                            }catch (e:Exception){
-
-                            }
-
-                        }
-
-                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                            layout_my_drive.visibility = GONE
-                        }
-
-                    })
-                }else{
-                    val gson = Gson()
-                    val jsonParam =
-                        gson.toJson(PatchDrivingInfo(false))
-
-                    apiService().patchDrivingInfo("Bearer " + PreferenceUtil.getPref(this@DetailDriveHistoryActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, tracking_id,jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object:Callback<ResponseBody>{
-                        override fun onResponse(
-                            call: Call<ResponseBody>,
-                            response: Response<ResponseBody>
-                        ) {
-                            if(response.code() == 200 || response.code() == 201){
-                                tv_mycar.visibility = GONE
-                                tv_not_mycar.visibility = VISIBLE
-
-                                isActive = false
-                            }else if(response.code() == 401){
-                                logout()
-                            }
-                            layout_my_drive.visibility = GONE
-
-                        }
-
-                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                            layout_my_drive.visibility = GONE
-                        }
-                    })
-
-                }
+                detailDriveHistoryViewModel.patchDrivingInfo(btn_mycar.isSelected, tracking_id)
             }
-
         })
 
         btn_mycar.setOnClickListener {
