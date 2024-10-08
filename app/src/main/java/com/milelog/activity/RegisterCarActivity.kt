@@ -84,7 +84,6 @@ class RegisterCarActivity: BaseActivity() {
         getPostMyCarResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
             if(it.resultCode == RESULT_OK){
                 val jsonString = it.data?.getStringExtra("response")
-
                 val gson = Gson()
                 postMyCarResponse = gson.fromJson(jsonString, PostMyCarResponse::class.java)
 

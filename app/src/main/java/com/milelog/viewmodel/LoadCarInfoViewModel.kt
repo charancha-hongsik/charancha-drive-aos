@@ -30,7 +30,7 @@ class LoadCarInfoViewModel: BaseViewModel() {
                 if(response.code() == 200 || response.code() == 201){
                     response.body()?.let{
                         _setCarInfoInquiry.value = Event(
-                            GetCarInfoInquiryState.Success(it.toString())
+                            GetCarInfoInquiryState.Success(it.string())
                         )
                     }?:{
                         _setCarInfoInquiry.value = Event(
