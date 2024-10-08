@@ -8,22 +8,19 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.activity.viewModels
 import com.milelog.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.milelog.CustomDialogNoCancel
 import com.milelog.PreferenceUtil
-import com.milelog.retrofit.response.GetLatestResponse
 import com.milelog.retrofit.response.GetMyCarInfoResponse
 import com.milelog.retrofit.response.SignInResponse
 import com.milelog.retrofit.response.TermsAgreeStatusResponse
 import com.milelog.viewmodel.BaseViewModel
-import com.milelog.viewmodel.MainViewModel
 import com.milelog.viewmodel.SplashViewModel
 import com.milelog.viewmodel.state.CheckForceUpdateState
-import com.milelog.viewmodel.state.MyCarInfoState
+import com.milelog.viewmodel.state.GetMyCarInfoState
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -128,41 +125,7 @@ class SplashActivity: BaseActivity() {
                                                         )
                                                         finish()
                                                     } else {
-                                                        apiService().getMyCarInfo("Bearer " + signInResponse.access_token).enqueue(object :Callback<ResponseBody>{
-                                                            override fun onResponse(
-                                                                call: Call<ResponseBody>,
-                                                                response: Response<ResponseBody>
-                                                            ) {
-                                                                if(response.code() == 200 || response.code() == 201){
-                                                                    val jsonString = response.body()?.string()
-
-                                                                    val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
-                                                                    val getMyCarInfoResponse:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
-
-                                                                    if(getMyCarInfoResponse.size > 0){
-                                                                        startActivity(Intent(this@SplashActivity, MainActivity::class.java).addFlags(
-                                                                            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                                                        ).putExtra("deeplink",intent.getBooleanExtra("deeplink",false)))
-
-                                                                        finish()
-                                                                    }else{
-                                                                        startActivity(Intent(this@SplashActivity, OnBoardingActivity::class.java))
-                                                                        finish()
-                                                                    }
-                                                                }else{
-                                                                    startActivity(Intent(this@SplashActivity, OnBoardingActivity::class.java))
-                                                                    finish()
-                                                                }
-                                                            }
-
-                                                            override fun onFailure(
-                                                                call: Call<ResponseBody>,
-                                                                t: Throwable
-                                                            ) {
-                                                                startActivity(Intent(this@SplashActivity, OnBoardingActivity::class.java))
-                                                                finish()
-                                                            }
-                                                        })
+                                                        splashViewModel.getMyCarInfo()
                                                     }
                                                 } else {
                                                     startActivity(Intent(this@SplashActivity, TermsOfUseActivity::class.java))
@@ -227,6 +190,33 @@ class SplashActivity: BaseActivity() {
                 is CheckForceUpdateState.Empty -> {
                     goSplash()
                 }
+            }
+        })
+
+        splashViewModel.getMyCarInfo.observe(this@SplashActivity, BaseViewModel.EventObserver{ state ->
+            when (state) {
+                is GetMyCarInfoState.Loading -> {
+
+                }
+                is GetMyCarInfoState.Success -> {
+                    if(state.data.isNotEmpty()){
+                        startActivity(Intent(this@SplashActivity, MainActivity::class.java).addFlags(
+                            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        ).putExtra("deeplink",intent.getBooleanExtra("deeplink",false)))
+
+                        finish()
+                    }else{
+                        startActivity(Intent(this@SplashActivity, OnBoardingActivity::class.java))
+                        finish()
+                    }
+                }
+                is GetMyCarInfoState.Error -> {
+                    startActivity(Intent(this@SplashActivity, OnBoardingActivity::class.java))
+                    finish()
+                }
+                is GetMyCarInfoState.Empty -> {
+                    startActivity(Intent(this@SplashActivity, OnBoardingActivity::class.java))
+                    finish()                }
             }
         })
     }
