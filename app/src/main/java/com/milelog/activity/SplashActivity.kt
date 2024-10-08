@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.activity.viewModels
 import com.milelog.*
 import com.google.gson.Gson
@@ -149,6 +150,8 @@ class SplashActivity: BaseActivity() {
                                     agree = false
                             }
                         }
+
+                        existRequired = true
 
                         if(existRequired){
                             if (agree) {
