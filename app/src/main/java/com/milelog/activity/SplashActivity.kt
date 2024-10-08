@@ -105,13 +105,11 @@ class SplashActivity: BaseActivity() {
                                             finish()
                                         }else{
                                             for(term in termsAgreeStatusResponses){
-                                                Log.d("tetsetsetestest","testestestset isRequired :: " + term.terms.isRequired)
-                                                Log.d("tetsetsetestest","testestestset isAgreed :: " + term.isAgreed)
-
-                                                if(term.terms.isRequired == 1)
+                                                if(term.terms.isRequired == 1){
                                                     existRequired = true
                                                     if(term.isAgreed == 0)
                                                         agree = false
+                                                }
                                             }
 
                                             if(existRequired){

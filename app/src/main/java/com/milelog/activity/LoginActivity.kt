@@ -337,10 +337,11 @@ class LoginActivity: BaseActivity() {
 
                     }else{
                         for(term in termsAgreeStatusResponses){
-                            if(term.terms.isRequired == 1)
+                            if(term.terms.isRequired == 1){
                                 existRequired = true
                                 if(term.terms.isActive == 0)
                                     agree = false
+                            }
                         }
                         if(existRequired){
                             if (agree) {
