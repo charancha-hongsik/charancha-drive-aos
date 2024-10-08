@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import androidx.activity.viewModels
 import com.milelog.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -18,6 +19,11 @@ import com.milelog.retrofit.response.GetLatestResponse
 import com.milelog.retrofit.response.GetMyCarInfoResponse
 import com.milelog.retrofit.response.SignInResponse
 import com.milelog.retrofit.response.TermsAgreeStatusResponse
+import com.milelog.viewmodel.BaseViewModel
+import com.milelog.viewmodel.MainViewModel
+import com.milelog.viewmodel.SplashViewModel
+import com.milelog.viewmodel.state.CheckForceUpdateState
+import com.milelog.viewmodel.state.MyCarInfoState
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -36,14 +42,20 @@ import java.lang.reflect.Type
  * - 위 사항 모두 완료된 사용자일 경우 -> Main 화면으로 이동
  */
 class SplashActivity: BaseActivity() {
+    private val splashViewModel: SplashViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
+
+        splashViewModel.init(applicationContext)
+        setObserver()
     }
 
     override fun onResume() {
         super.onResume()
-        checkForceUpdate()
+
+        // 구글 스토어에 이동 후 마일로그 앱에 재진입 시 다시 체크하기 위해 onResume에 정의
+        splashViewModel.checkForceUpdate()
     }
 
     private fun unLoginedProcess(){
@@ -187,70 +199,26 @@ class SplashActivity: BaseActivity() {
         }
     }
 
-    private fun checkForceUpdate(){
-        apiService().getLatest("AOS","PHONE").enqueue(object :Callback<ResponseBody>{
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+    private fun setObserver(){
+        splashViewModel.checkForceUpdate.observe(this@SplashActivity, BaseViewModel.EventObserver{ state ->
+            when (state) {
+                is CheckForceUpdateState.Loading -> {
 
-
-                if(response.code() == 200 || response.code() == 201) {
-                    val getLatestResponse = Gson().fromJson(
-                        response.body()?.string(),
-                        GetLatestResponse::class.java
-                    )
-
-                    try {
-                        if(getLatestResponse.forceUpdate){
-                            val currentAppVersion = BuildConfig.VERSION_NAME
-                            val majorFromApi =
-                                getLatestResponse.version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
-                                    .toTypedArray()[0]
-                            val minorFromApi =
-                                getLatestResponse.version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
-                                    .toTypedArray()[1]
-                            val patchFromApi =
-                                getLatestResponse.version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
-                                    .toTypedArray()[2]
-                            val major = currentAppVersion.split("\\.".toRegex())
-                                .dropLastWhile { it.isEmpty() }
-                                .toTypedArray()[0]
-                            val minor = currentAppVersion.split("\\.".toRegex())
-                                .dropLastWhile { it.isEmpty() }
-                                .toTypedArray()[1]
-                            val patch = currentAppVersion.split("\\.".toRegex())
-                                .dropLastWhile { it.isEmpty() }
-                                .toTypedArray()[2]
-
-
-                            if (patchFromApi.toInt() > patch.toInt()) {
-                                goUpdate()
-                                return
-                            }
-                            if (minorFromApi.toInt() > minor.toInt()) {
-                                goUpdate()
-                                return
-                            }
-                            if (majorFromApi.toInt() > major.toInt()) {
-                                goUpdate()
-                                return
-                            }
-
-                            goSplash()
-                        }else{
-                            goSplash()
-                        }
-
-
-                    } catch (e: PackageManager.NameNotFoundException) {
+                }
+                is CheckForceUpdateState.Success -> {
+                    if(state.isRequired){
+                        goUpdate()
+                    }else{
                         goSplash()
                     }
                 }
+                is CheckForceUpdateState.Error -> {
 
+                }
+                is CheckForceUpdateState.Empty -> {
+                    goSplash()
+                }
             }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                goSplash()
-            }
-
         })
     }
 
