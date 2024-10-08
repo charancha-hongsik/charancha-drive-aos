@@ -323,6 +323,7 @@ class LoginActivity: BaseActivity() {
                     val termsAgreeStatusResponses:List<TermsAgreeStatusResponse> = Gson().fromJson(jsonString, type)
 
                     var agree = true
+                    var existRequired = false
 
                     if(termsAgreeStatusResponses.isEmpty()){
                         startActivity(
@@ -337,64 +338,76 @@ class LoginActivity: BaseActivity() {
                     }else{
                         for(term in termsAgreeStatusResponses){
                             if(term.terms.isRequired == 1)
+                                existRequired = true
                                 if(term.terms.isActive == 0)
                                     agree = false
                         }
-                        if (agree) {
-                            if (!PreferenceUtil.getBooleanPref(
-                                    this@LoginActivity,
-                                    PreferenceUtil.PERMISSION_ALL_CHECKED,
-                                    false
-                                )
-                            ) {
-                                startActivity(
-                                    Intent(
+                        if(existRequired){
+                            if (agree) {
+                                if (!PreferenceUtil.getBooleanPref(
                                         this@LoginActivity,
-                                        PermissionInfoActivity::class.java
+                                        PreferenceUtil.PERMISSION_ALL_CHECKED,
+                                        false
                                     )
-                                )
+                                ) {
+                                    startActivity(
+                                        Intent(
+                                            this@LoginActivity,
+                                            PermissionInfoActivity::class.java
+                                        )
+                                    )
 
-                                finish()
-                            } else {
-                                apiService().getMyCarInfo("Bearer " + signInResponse.access_token).enqueue(object :Callback<ResponseBody>{
-                                    override fun onResponse(
-                                        call: Call<ResponseBody>,
-                                        response: Response<ResponseBody>
-                                    ) {
-                                        if(response.code() == 200 || response.code() == 201){
-                                            val jsonString = response.body()?.string()
+                                    finish()
+                                } else {
+                                    apiService().getMyCarInfo("Bearer " + signInResponse.access_token).enqueue(object :Callback<ResponseBody>{
+                                        override fun onResponse(
+                                            call: Call<ResponseBody>,
+                                            response: Response<ResponseBody>
+                                        ) {
+                                            if(response.code() == 200 || response.code() == 201){
+                                                val jsonString = response.body()?.string()
 
-                                            val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
-                                            val getMyCarInfoResponse:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
+                                                val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
+                                                val getMyCarInfoResponse:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
 
-                                            if(getMyCarInfoResponse.size > 0){
-                                                PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.get(0).id)
-                                                startActivity(Intent(this@LoginActivity, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+                                                if(getMyCarInfoResponse.size > 0){
+                                                    PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.get(0).id)
+                                                    startActivity(Intent(this@LoginActivity, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
 
-                                                finish()
+                                                    finish()
+                                                }else{
+                                                    startActivity(Intent(this@LoginActivity, OnBoardingActivity::class.java))
+
+                                                    finish()
+                                                }
                                             }else{
                                                 startActivity(Intent(this@LoginActivity, OnBoardingActivity::class.java))
 
                                                 finish()
                                             }
-                                        }else{
+                                        }
+
+                                        override fun onFailure(
+                                            call: Call<ResponseBody>,
+                                            t: Throwable
+                                        ) {
                                             startActivity(Intent(this@LoginActivity, OnBoardingActivity::class.java))
 
                                             finish()
                                         }
-                                    }
+                                    })
+                                }
+                            } else {
+                                startActivity(
+                                    Intent(
+                                        this@LoginActivity,
+                                        TermsOfUseActivity::class.java
+                                    )
+                                )
 
-                                    override fun onFailure(
-                                        call: Call<ResponseBody>,
-                                        t: Throwable
-                                    ) {
-                                        startActivity(Intent(this@LoginActivity, OnBoardingActivity::class.java))
-
-                                        finish()
-                                    }
-                                })
+                                finish()
                             }
-                        } else {
+                        }else{
                             startActivity(
                                 Intent(
                                     this@LoginActivity,
@@ -403,7 +416,6 @@ class LoginActivity: BaseActivity() {
                             )
 
                             finish()
-
                         }
                     }
                 } else {

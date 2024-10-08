@@ -98,68 +98,79 @@ class SplashActivity: BaseActivity() {
                                         val termsAgreeStatusResponses:List<TermsAgreeStatusResponse> = Gson().fromJson(jsonString, type)
 
                                         var agree = true
+                                        var existRequired = false
 
                                         if(termsAgreeStatusResponses.isEmpty()){
                                             startActivity(Intent(this@SplashActivity, TermsOfUseActivity::class.java))
                                             finish()
                                         }else{
                                             for(term in termsAgreeStatusResponses){
+                                                Log.d("tetsetsetestest","testestestset isRequired :: " + term.terms.isRequired)
+                                                Log.d("tetsetsetestest","testestestset isAgreed :: " + term.isAgreed)
+
                                                 if(term.terms.isRequired == 1)
-                                                    if(term.terms.isActive == 0)
+                                                    existRequired = true
+                                                    if(term.isAgreed == 0)
                                                         agree = false
                                             }
-                                            if (agree) {
-                                                if (!PreferenceUtil.getBooleanPref(
-                                                        this@SplashActivity,
-                                                        PreferenceUtil.PERMISSION_ALL_CHECKED,
-                                                        false
-                                                    )
-                                                ) {
-                                                    startActivity(
-                                                        Intent(
+
+                                            if(existRequired){
+                                                if (agree) {
+                                                    if (!PreferenceUtil.getBooleanPref(
                                                             this@SplashActivity,
-                                                            PermissionInfoActivity::class.java
+                                                            PreferenceUtil.PERMISSION_ALL_CHECKED,
+                                                            false
                                                         )
-                                                    )
-                                                    finish()
-                                                } else {
-                                                    apiService().getMyCarInfo("Bearer " + signInResponse.access_token).enqueue(object :Callback<ResponseBody>{
-                                                        override fun onResponse(
-                                                            call: Call<ResponseBody>,
-                                                            response: Response<ResponseBody>
-                                                        ) {
-                                                            if(response.code() == 200 || response.code() == 201){
-                                                                val jsonString = response.body()?.string()
+                                                    ) {
+                                                        startActivity(
+                                                            Intent(
+                                                                this@SplashActivity,
+                                                                PermissionInfoActivity::class.java
+                                                            )
+                                                        )
+                                                        finish()
+                                                    } else {
+                                                        apiService().getMyCarInfo("Bearer " + signInResponse.access_token).enqueue(object :Callback<ResponseBody>{
+                                                            override fun onResponse(
+                                                                call: Call<ResponseBody>,
+                                                                response: Response<ResponseBody>
+                                                            ) {
+                                                                if(response.code() == 200 || response.code() == 201){
+                                                                    val jsonString = response.body()?.string()
 
-                                                                val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
-                                                                val getMyCarInfoResponse:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
+                                                                    val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
+                                                                    val getMyCarInfoResponse:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
 
-                                                                if(getMyCarInfoResponse.size > 0){
-                                                                    startActivity(Intent(this@SplashActivity, MainActivity::class.java).addFlags(
-                                                                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                                                    ).putExtra("deeplink",intent.getBooleanExtra("deeplink",false)))
+                                                                    if(getMyCarInfoResponse.size > 0){
+                                                                        startActivity(Intent(this@SplashActivity, MainActivity::class.java).addFlags(
+                                                                            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                                                        ).putExtra("deeplink",intent.getBooleanExtra("deeplink",false)))
 
-                                                                    finish()
+                                                                        finish()
+                                                                    }else{
+                                                                        startActivity(Intent(this@SplashActivity, OnBoardingActivity::class.java))
+                                                                        finish()
+                                                                    }
                                                                 }else{
                                                                     startActivity(Intent(this@SplashActivity, OnBoardingActivity::class.java))
                                                                     finish()
                                                                 }
-                                                            }else{
+                                                            }
+
+                                                            override fun onFailure(
+                                                                call: Call<ResponseBody>,
+                                                                t: Throwable
+                                                            ) {
                                                                 startActivity(Intent(this@SplashActivity, OnBoardingActivity::class.java))
                                                                 finish()
                                                             }
-                                                        }
-
-                                                        override fun onFailure(
-                                                            call: Call<ResponseBody>,
-                                                            t: Throwable
-                                                        ) {
-                                                            startActivity(Intent(this@SplashActivity, OnBoardingActivity::class.java))
-                                                            finish()
-                                                        }
-                                                    })
+                                                        })
+                                                    }
+                                                } else {
+                                                    startActivity(Intent(this@SplashActivity, TermsOfUseActivity::class.java))
+                                                    finish()
                                                 }
-                                            } else {
+                                            }else{
                                                 startActivity(Intent(this@SplashActivity, TermsOfUseActivity::class.java))
                                                 finish()
                                             }
