@@ -21,6 +21,8 @@ import com.milelog.viewmodel.BaseViewModel
 import com.milelog.viewmodel.SplashViewModel
 import com.milelog.viewmodel.state.CheckForceUpdateState
 import com.milelog.viewmodel.state.GetMyCarInfoState
+import com.milelog.viewmodel.state.GetTermsAgreeState
+import com.milelog.viewmodel.state.PostReissueState
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -64,107 +66,7 @@ class SplashActivity: BaseActivity() {
     private fun loginedProcess(){
         PreferenceUtil.getPref(this@SplashActivity, PreferenceUtil.REFRESH_TOKEN, "")
             ?.let {
-
-                val gson = Gson()
-
-                apiService().postReissue(it).enqueue(object :
-                    Callback<ResponseBody> {
-                    override fun onResponse(
-                        call: Call<ResponseBody>,
-                        response: Response<ResponseBody>
-                    ) {
-                        if(response.code() == 200 || response.code() == 201){
-                            val signInResponse = gson.fromJson(response.body()?.string(), SignInResponse::class.java)
-
-                            PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.ACCESS_TOKEN, signInResponse.access_token)
-                            PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.REFRESH_TOKEN, signInResponse.refresh_token)
-                            PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.EXPIRES_IN, signInResponse.expires_in)
-                            PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.REFRESH_EXPIRES_IN, signInResponse.refresh_expires_in)
-                            PreferenceUtil.putPref(this@SplashActivity, PreferenceUtil.TOKEN_TYPE, signInResponse.token_type)
-
-
-                            apiService().getTermsAgree("Bearer " + PreferenceUtil.getPref(this@SplashActivity, PreferenceUtil.ACCESS_TOKEN, ""), "MILELOG_USAGE").enqueue(object :Callback<ResponseBody>{
-                                override fun onResponse(
-                                    call: Call<ResponseBody>,
-                                    response: Response<ResponseBody>
-                                ) {
-                                    if(response.code() == 200 || response.code() == 201){
-                                        val jsonString = response.body()?.string()
-
-                                        val type: Type = object : TypeToken<List<TermsAgreeStatusResponse?>?>() {}.type
-                                        val termsAgreeStatusResponses:List<TermsAgreeStatusResponse> = Gson().fromJson(jsonString, type)
-
-                                        var agree = true
-                                        var existRequired = false
-
-                                        if(termsAgreeStatusResponses.isEmpty()){
-                                            startActivity(Intent(this@SplashActivity, TermsOfUseActivity::class.java))
-                                            finish()
-                                        }else{
-                                            for(term in termsAgreeStatusResponses){
-                                                if(term.terms.isRequired == 1){
-                                                    existRequired = true
-                                                    if(term.isAgreed == 0)
-                                                        agree = false
-                                                }
-                                            }
-
-                                            if(existRequired){
-                                                if (agree) {
-                                                    if (!PreferenceUtil.getBooleanPref(
-                                                            this@SplashActivity,
-                                                            PreferenceUtil.PERMISSION_ALL_CHECKED,
-                                                            false
-                                                        )
-                                                    ) {
-                                                        startActivity(
-                                                            Intent(
-                                                                this@SplashActivity,
-                                                                PermissionInfoActivity::class.java
-                                                            )
-                                                        )
-                                                        finish()
-                                                    } else {
-                                                        splashViewModel.getMyCarInfo()
-                                                    }
-                                                } else {
-                                                    startActivity(Intent(this@SplashActivity, TermsOfUseActivity::class.java))
-                                                    finish()
-                                                }
-                                            }else{
-                                                startActivity(Intent(this@SplashActivity, TermsOfUseActivity::class.java))
-                                                finish()
-                                            }
-                                        }
-                                    }else{
-                                        startActivity(Intent(this@SplashActivity, TermsOfUseActivity::class.java))
-                                        finish()
-                                    }
-                                }
-
-                                override fun onFailure(
-                                    call: Call<ResponseBody>,
-                                    t: Throwable
-                                ) {
-                                }
-
-                            })
-                        }else{
-                            logout()
-                        }
-                    }
-
-                    override fun onFailure(
-                        call: Call<ResponseBody>,
-                        t: Throwable
-                    ) {
-                        startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
-                        finish()
-                    }
-
-                })
-
-
+                splashViewModel.postReissue()
             }?: run{
             startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
             finish()
@@ -211,12 +113,103 @@ class SplashActivity: BaseActivity() {
                     }
                 }
                 is GetMyCarInfoState.Error -> {
-                    startActivity(Intent(this@SplashActivity, OnBoardingActivity::class.java))
-                    finish()
+                    if(state.code == 401){
+                        logout()
+                    }else{
+                        startActivity(Intent(this@SplashActivity, OnBoardingActivity::class.java))
+                        finish()
+                    }
                 }
                 is GetMyCarInfoState.Empty -> {
                     startActivity(Intent(this@SplashActivity, OnBoardingActivity::class.java))
-                    finish()                }
+                    finish()
+                }
+            }
+        })
+
+        splashViewModel.getTermsAgree.observe(this@SplashActivity, BaseViewModel.EventObserver{ state ->
+            when (state) {
+                is GetTermsAgreeState.Loading -> {
+
+                }
+                is GetTermsAgreeState.Success -> {
+                    val termsAgreeStatusResponses = state.data
+
+                    var agree = true
+                    var existRequired = false
+
+                    if(termsAgreeStatusResponses.isEmpty()){
+                        startActivity(Intent(this@SplashActivity, TermsOfUseActivity::class.java))
+                        finish()
+                    }else{
+                        for(term in termsAgreeStatusResponses){
+                            if(term.terms.isRequired == 1){
+                                existRequired = true
+                                if(term.isAgreed == 0)
+                                    agree = false
+                            }
+                        }
+
+                        if(existRequired){
+                            if (agree) {
+                                if (!PreferenceUtil.getBooleanPref(
+                                        this@SplashActivity,
+                                        PreferenceUtil.PERMISSION_ALL_CHECKED,
+                                        false
+                                    )
+                                ) {
+                                    startActivity(
+                                        Intent(
+                                            this@SplashActivity,
+                                            PermissionInfoActivity::class.java
+                                        )
+                                    )
+                                    finish()
+                                } else {
+                                    splashViewModel.getMyCarInfo()
+                                }
+                            } else {
+                                startActivity(Intent(this@SplashActivity, TermsOfUseActivity::class.java))
+                                finish()
+                            }
+                        }else{
+                            startActivity(Intent(this@SplashActivity, TermsOfUseActivity::class.java))
+                            finish()
+                        }
+                    }
+                }
+                is GetTermsAgreeState.Error -> {
+                    if(state.code == 401){
+                        logout()
+                    }else{
+                        startActivity(Intent(this@SplashActivity, TermsOfUseActivity::class.java))
+                        finish()
+                    }
+                }
+                is GetTermsAgreeState.Empty -> {
+                    startActivity(Intent(this@SplashActivity, TermsOfUseActivity::class.java))
+                    finish()
+                }
+            }
+        })
+
+        splashViewModel.postReissue.observe(this@SplashActivity, BaseViewModel.EventObserver{ state ->
+            when (state) {
+                is PostReissueState.Loading -> {
+
+                }
+                is PostReissueState.Success -> {
+                    splashViewModel.getTermsAgree()
+                }
+                is PostReissueState.Error -> {
+                    if(state.code == 401){
+                        logout()
+                    }
+                }
+                is PostReissueState.Empty -> {
+                    startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
+                    finish()
+                }
             }
         })
     }
