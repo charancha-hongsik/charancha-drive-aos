@@ -110,9 +110,7 @@ class BluetoothService : Service() {
     private var pastTimeStamp = 0L
 
 
-    private var INTERVAL = 5000L
-    private var MAX_WAIT_TIME = INTERVAL * 6
-
+    private var INTERVAL = 1000L
 
     /**
      * locationRequest.setInterval(INTERVAL) // INTERVAL 초마다 업데이트 요청
@@ -531,7 +529,6 @@ class BluetoothService : Service() {
         locationRequest = LocationRequest.create()
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
         locationRequest.setInterval(INTERVAL) // INTERVAL 마다 업데이트 요청
-        locationRequest.setMaxWaitTime(MAX_WAIT_TIME)
 
         // 위치 업데이트 리스너 생성
         locationCallback = object : LocationCallback() {
