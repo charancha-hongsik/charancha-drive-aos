@@ -693,6 +693,15 @@ class BluetoothService : Service() {
                  * pastMaxDistance.size가 0이라는건 30분 주행이라는 것. (첫번째 체크)
                  */
                 if(pastMaxDistance.size == 0){
+                    driveDatabase?.detectUserDao()?.insert(
+                        DetectUserEntity(
+                            user_id = "",
+                            verification = "thirtyMinCheck",
+                            start_stop = "stopSensorNotForSaving",
+                            timestamp = System.currentTimeMillis().toString(),
+                            sensor_state = fusedLocationClient != null
+                        )
+                    )
                     stopSensorNotForSaving()
                 }else{
                     driveDatabase?.detectUserDao()?.insert(
