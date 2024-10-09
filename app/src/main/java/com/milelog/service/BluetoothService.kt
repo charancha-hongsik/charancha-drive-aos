@@ -95,7 +95,6 @@ class BluetoothService : Service() {
      * 1. stopSensor 여러번 되지 않게
      * 2. API 호출되는 동안 startSensor 되지 않게
      */
-    private var sensorState:Boolean = false
     private var driveDatabase: DriveDatabase? = null
 
     private var fusedLocationClient :FusedLocationProviderClient? = null
@@ -176,7 +175,7 @@ class BluetoothService : Service() {
         driveDatabase = DriveDatabase.getDatabase(this)
         carConnectionQueryHandler = CarConnectionQueryHandler(contentResolver)
 
-        if(!sensorState){
+        if(fusedLocationClient == null){
             /**
              * TransitionsReceiver(L2, L3) 등록
              */
@@ -221,7 +220,7 @@ class BluetoothService : Service() {
                         if(activityType == DetectedActivity.WALKING) {
                             if (transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
                                 // Walking 활동에 들어감
-                                if((context as BluetoothService).sensorState){
+                                if((context as BluetoothService).fusedLocationClient != null){
                                     context.stopSensor()
                                 }
                             }
@@ -460,8 +459,7 @@ class BluetoothService : Service() {
      */
     fun startSensor(level:String){
         try {
-            if (!sensorState) {
-                sensorState = true
+            if (fusedLocationClient == null) {
                 initDriveData(level)
                 setLocation()
             }
@@ -476,46 +474,46 @@ class BluetoothService : Service() {
      */
     private fun stopSensor(level:String){
         try {
-            if (sensorState) {
+            if (fusedLocationClient != null) {
                 if (level == PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL, "")) {
                     if(distance_array.sum() > 500f){
                         callApi(driveForApi.copy(gpses = driveForApi.gpses.map{it.copy()}), driveForApp.copy(gpses = driveForApp.gpses.map{it.copy()}))
                     }
-                    sensorState = false
                     fusedLocationClient?.removeLocationUpdates(locationCallback)
                     fusedLocationClient = null
                 }
             }
         }catch (e:Exception){
-            sensorState = false
+            fusedLocationClient?.removeLocationUpdates(locationCallback)
+            fusedLocationClient = null
         }
     }
 
     fun stopSensor(){
         try {
-            if (sensorState) {
+            if (fusedLocationClient != null) {
                 if(distance_array.sum() > 500f){
                     callApi(driveForApi.copy(gpses = driveForApi.gpses.map{it.copy()}), driveForApp.copy(gpses = driveForApp.gpses.map{it.copy()}))
                 }
-                sensorState = false
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
 
             }
         }catch(e:Exception){
-            sensorState = false
+            fusedLocationClient?.removeLocationUpdates(locationCallback)
+            fusedLocationClient = null
         }
     }
 
     fun stopSensorNotForSaving(){
         try {
-            if (sensorState) {
-                sensorState = false
+            if (fusedLocationClient != null) {
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
             }
         }catch(e:Exception){
-            sensorState = false
+            fusedLocationClient?.removeLocationUpdates(locationCallback)
+            fusedLocationClient = null
         }
     }
 
