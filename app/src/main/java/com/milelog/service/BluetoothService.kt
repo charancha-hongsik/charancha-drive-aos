@@ -38,6 +38,7 @@ import com.milelog.NotificationDeleteReceiver
 import com.milelog.NotificationDeleteReceiver.Companion.ACTION_RESTART_NOTIFICATION
 import com.milelog.room.dto.EachGpsDtoForApi
 import com.milelog.room.dto.EachGpsDtoForApp
+import com.milelog.room.entity.DetectUserEntity
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -218,14 +219,31 @@ class BluetoothService : Service() {
                         if(activityType == DetectedActivity.WALKING) {
                             if (transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
                                 // Walking 활동에 들어감
-                                if((context as BluetoothService).fusedLocationClient != null){
-                                    context.stopSensor()
-                                }
+                                (context as BluetoothService).driveDatabase?.detectUserDao()?.insert(
+                                    DetectUserEntity(
+                                        user_id = "",
+                                        verification = "L1",
+                                        start_stop = "Walking Enter(stop)",
+                                        timestamp = System.currentTimeMillis().toString(),
+                                        sensor_state = context.fusedLocationClient != null
+                                    )
+                                )
+                                context.stopSensor()
+
                             }
                         } else if(activityType == DetectedActivity.IN_VEHICLE){
                             if (transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
-                                // Vehicle 활동에 들어감
-                                (context as BluetoothService).startSensor(L1)
+                                (context as BluetoothService).driveDatabase?.detectUserDao()?.insert(
+                                    DetectUserEntity(
+                                        user_id = "",
+                                        verification = "L1",
+                                        start_stop = "IN VEHICLE Enter(start)",
+                                        timestamp = System.currentTimeMillis().toString(),
+                                        sensor_state = context.fusedLocationClient != null
+                                    )
+                                )
+
+                                context.startSensor(L1)
                             }
                         }
                     }
@@ -247,6 +265,16 @@ class BluetoothService : Service() {
                         pairedDevices?.forEach { device ->
                             if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
                                 if(isBluetoothDeviceConnected(device)){
+                                    driveDatabase?.detectUserDao()?.insert(
+                                        DetectUserEntity(
+                                            user_id = "",
+                                            verification = "L2",
+                                            start_stop = "AUDIO_VIDEO_HANDSFREE(start)",
+                                            timestamp = System.currentTimeMillis().toString(),
+                                            sensor_state = fusedLocationClient != null
+                                        )
+                                    )
+
                                     startSensor(L2)
                                 }
                             }
@@ -260,6 +288,16 @@ class BluetoothService : Service() {
                         pairedDevices?.forEach { device ->
                             if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
                                 if(!isBluetoothDeviceConnected(device)){
+                                    driveDatabase?.detectUserDao()?.insert(
+                                        DetectUserEntity(
+                                            user_id = "",
+                                            verification = "L2",
+                                            start_stop = "AUDIO_VIDEO_HANDSFREE(stop)",
+                                            timestamp = System.currentTimeMillis().toString(),
+                                            sensor_state = fusedLocationClient != null
+                                        )
+                                    )
+
                                     stopSensor(L2)
                                 }
                             }
@@ -289,8 +327,26 @@ class BluetoothService : Service() {
             }
             val connectionState = response.getInt(carConnectionTypeColumn)
             if (connectionState == CONNECTION_TYPE_NOT_CONNECTED) {
+                driveDatabase?.detectUserDao()?.insert(
+                    DetectUserEntity(
+                        user_id = "",
+                        verification = "L3",
+                        start_stop = "CAR_CONNECTION_STATE(stop)",
+                        timestamp = System.currentTimeMillis().toString(),
+                        sensor_state = fusedLocationClient != null
+                    )
+                )
                 stopSensor(L3)
             } else {
+                driveDatabase?.detectUserDao()?.insert(
+                    DetectUserEntity(
+                        user_id = "",
+                        verification = "L3",
+                        start_stop = "CAR_CONNECTION_STATE(start)",
+                        timestamp = System.currentTimeMillis().toString(),
+                        sensor_state = fusedLocationClient != null
+                    )
+                )
                 startSensor(L3)
             }
         }
@@ -639,6 +695,16 @@ class BluetoothService : Service() {
                 if(pastMaxDistance.size == 0){
                     stopSensorNotForSaving()
                 }else{
+                    driveDatabase?.detectUserDao()?.insert(
+                        DetectUserEntity(
+                            user_id = "",
+                            verification = "thirtyMinCheck",
+                            start_stop = "stop",
+                            timestamp = System.currentTimeMillis().toString(),
+                            sensor_state = fusedLocationClient != null
+                        )
+                    )
+
                     stopSensor()
                 }
             }else{

@@ -7,22 +7,25 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import androidx.work.impl.WorkDatabaseMigrations.MIGRATION_1_2
 import com.milelog.room.Converters
 import com.milelog.room.dao.AlarmDao
+import com.milelog.room.dao.DetectUserDao
 import com.milelog.room.dao.DriveForAppDao
 import com.milelog.room.dao.DriveForApiDao
 import com.milelog.room.entity.AlarmEntity
+import com.milelog.room.entity.DetectUserEntity
 import com.milelog.room.entity.DriveForApi
 import com.milelog.room.entity.DriveForApp
 
-@Database(entities = [DriveForApp::class, DriveForApi::class, AlarmEntity::class], version = 2, exportSchema = false)
+@Database(entities = [DriveForApp::class, DriveForApi::class, AlarmEntity::class, DetectUserEntity::class], version = 3, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class DriveDatabase : RoomDatabase() {
 
     abstract fun driveForAppDao(): DriveForAppDao
     abstract fun driveForApiDao(): DriveForApiDao
     abstract fun alarmDao(): AlarmDao
+    abstract fun detectUserDao(): DetectUserDao
+
 
 
     companion object {
@@ -34,6 +37,7 @@ abstract class DriveDatabase : RoomDatabase() {
             return Instance ?: synchronized(this) {
                 Room.databaseBuilder(context, DriveDatabase::class.java, "drive_database")
                     .addMigrations(MIGRATION_1_2)
+                    .addMigrations(MIGRATION_2_3)
                     .allowMainThreadQueries()
                     .build()
                     .also { Instance = it }
@@ -56,6 +60,24 @@ abstract class DriveDatabase : RoomDatabase() {
                 `imageUrl` TEXT NOT NULL, 
                 `type` TEXT NOT NULL, 
                 `isRequired` INTEGER NOT NULL
+            )
+            """.trimIndent()
+                )
+            }
+        }
+
+        val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // 새로운 alarmEntity 테이블 생성
+                database.execSQL(
+                    """
+            CREATE TABLE IF NOT EXISTS `detectUserEntity` (
+                `idx` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
+                `user_id` TEXT NOT NULL, 
+                `verification` TEXT NOT NULL, 
+                `start_stop` TEXT NOT NULL, 
+                `timestamp` TEXT NOT NULL, 
+                `sensor_state` INTEGER NOT NULL
             )
             """.trimIndent()
                 )
