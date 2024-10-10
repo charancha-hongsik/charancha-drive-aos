@@ -151,8 +151,6 @@ class SplashActivity: BaseActivity() {
                             }
                         }
 
-                        existRequired = true
-
                         if(existRequired){
                             if (agree) {
                                 if (!PreferenceUtil.getBooleanPref(

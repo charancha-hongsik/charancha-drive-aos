@@ -344,8 +344,6 @@ class LoginActivity: BaseActivity() {
                             }
                         }
 
-                        existRequired = true
-
                         if(existRequired){
                             if (agree) {
                                 if (!PreferenceUtil.getBooleanPref(
