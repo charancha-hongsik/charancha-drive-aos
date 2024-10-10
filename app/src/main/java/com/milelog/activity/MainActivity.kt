@@ -96,6 +96,8 @@ class MainActivity : BaseRefreshActivity() {
     lateinit var btn_close_gift:ImageView
     lateinit var btn_noti:ImageView
 
+    lateinit var tv_guide_subtitle:TextView
+
     lateinit var layout_start_app:ConstraintLayout
 
     private lateinit var firebaseAnalytics: FirebaseAnalytics
@@ -583,6 +585,11 @@ class MainActivity : BaseRefreshActivity() {
             }
 
         })
+
+        tv_guide_subtitle = findViewById(R.id.tv_guide_subtitle)
+        tv_guide_subtitle.setOnClickListener {
+            startActivity(Intent(this@MainActivity, DetectedStatusActivity::class.java))
+        }
 
         button_edit_overlay = findViewById(R.id.button_edit_overlay)
         button_edit_overlay.setOnClickListener(object: OnSingleClickListener(){

@@ -287,6 +287,11 @@
             android:screenOrientation="portrait"
             android:exported="true"/>
 
+        <activity
+            android:name=".activity.DetectedStatusActivity"
+            android:screenOrientation="portrait"
+            android:exported="true"/>
+
         <service
             android:name=".service.BluetoothService"
             android:enabled="true"

@@ -590,7 +590,6 @@ class BluetoothService : Service() {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 try{
-
                     /**
                      * W0D-74 1행 데이터 삭제
                      */
