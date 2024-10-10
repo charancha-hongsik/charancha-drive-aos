@@ -679,8 +679,6 @@ class BluetoothService : Service() {
             thirtyMinCheckpointLocation = location
         }
 
-        maxDistance.add(location.distanceTo(thirtyMinCheckpointLocation!!))
-
         /**
          * 30분 간격으로 반경 체크 후 종료
          * 30분동안 반경 300m 이하 일 경우 종료
@@ -722,9 +720,11 @@ class BluetoothService : Service() {
                 pastMaxDistance = maxDistance.toMutableList()
 
                 maxDistance = mutableListOf()
-                thirtyMinCheckpointLocation = null
+                thirtyMinCheckpointLocation = location
             }
         }
+
+        maxDistance.add(location.distanceTo(thirtyMinCheckpointLocation!!))
 
         var distance = 0f
         if(pastLocation != null){
