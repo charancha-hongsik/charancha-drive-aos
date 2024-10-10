@@ -144,7 +144,7 @@ class NotificationActivity: BaseRefreshActivity() {
                     for(term in termsAgreeStatusResponses){
 
                         if(term.terms.title.equals(tv_marketing.text)){
-                            if(term.isAgreed == 1){
+                            if(term.isAgreed){
                                 btn_marketing.isSelected = true
                             }else{
                                 btn_marketing.isSelected = false
