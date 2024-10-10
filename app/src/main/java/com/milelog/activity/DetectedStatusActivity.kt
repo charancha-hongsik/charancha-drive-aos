@@ -62,7 +62,7 @@ class DetectedStatusActivity: BaseRefreshActivity() {
             if (holder is DetectedStatusViewHolder) {
                 val userEntity = detectedUserEntity[position]
 
-                holder.tv_detected1.text = convertTimestampToMMddHHmmss(userEntity.timestamp.toLong())
+                holder.tv_detected1.text = convertTimestampToMMddHHmmssSSS(userEntity.timestamp.toLong())
                 holder.tv_detected2.text = userEntity.verification
                 holder.tv_detected3.text = userEntity.start_stop
                 holder.tv_detected4.text = userEntity.sensor_state.toString()
@@ -96,9 +96,9 @@ class DetectedStatusActivity: BaseRefreshActivity() {
             return detectedUserEntity.size
         }
 
-        fun convertTimestampToMMddHHmmss(timestamp: Long): String {
+        fun convertTimestampToMMddHHmmssSSS(timestamp: Long): String {
             val date = Date(timestamp)  // Long 타입의 timestamp를 Date 객체로 변환
-            val format = SimpleDateFormat("MMdd HHmmss", Locale.getDefault())  // 원하는 포맷 설정
+            val format = SimpleDateFormat("MM월dd일 HH시mm분ss초.SSS", Locale.getDefault())  // 밀리초까지 포함한 포맷 설정
             return format.format(date)  // 포맷에 맞게 변환하여 반환
         }
     }
