@@ -86,6 +86,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var iv_tooltip_low_speed_average:ImageView
     lateinit var iv_tooltip_rapid_start:ImageView
     lateinit var iv_tooltip_rapid_acc:ImageView
+    lateinit var iv_map:ImageView
 
     lateinit var view_map:CardView
 
@@ -109,6 +110,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         tracking_id = intent.getStringExtra("trackingId").toString()
         isActive = intent.getBooleanExtra("isActive",true)
 
+        iv_map = findViewById(R.id.iv_map)
         tv_date = findViewById(R.id.tv_date)
         tv_distance = findViewById(R.id.tv_distance)
         tv_start_time = findViewById(R.id.tv_start_time)
@@ -386,30 +388,37 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
             val padding = 100  // 지도의 가장자리에 여유 공간을 주기 위한 패딩 (px 단위)
             googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding))
 
-            /**
-             * 마커 추가
-             */
-            val markerPosition = LatLng(polylines[0].latitude, polylines[0].longitude)
-            currentMarker = googleMap.addMarker(MarkerOptions().position(markerPosition).title("marker"))
 
-
-            /**
-             * 마커 애니메이션 추가 및 애니메이션
-             */
-            moveMarkerAlongPolyline(googleMap, 0)
-
-
-            googleMap.setOnCameraMoveStartedListener { reason ->
-                if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
-                    isCameraMoving = true
-                    currentAnimator?.pause() // 애니메이션 일시 중지
+            googleMap.setOnMapLoadedCallback {
+                googleMap.snapshot { bitmap ->
+                    iv_map.setImageBitmap(bitmap)
+                    iv_map.visibility = GONE
                 }
-            }
 
-            googleMap.setOnCameraIdleListener {
-                if (isCameraMoving) {
-                    isCameraMoving = false
-                    currentAnimator?.start() // 애니메이션 재개
+                /**
+                 * 마커 추가
+                 */
+                val markerPosition = LatLng(polylines[0].latitude, polylines[0].longitude)
+                currentMarker = googleMap.addMarker(MarkerOptions().position(markerPosition).title("marker"))
+
+                /**
+                 * 마커 애니메이션 추가 및 애니메이션
+                 */
+                moveMarkerAlongPolyline(googleMap, 0)
+
+
+                googleMap.setOnCameraMoveStartedListener { reason ->
+                    if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
+                        isCameraMoving = true
+                        currentAnimator?.pause() // 애니메이션 일시 중지
+                    }
+                }
+
+                googleMap.setOnCameraIdleListener {
+                    if (isCameraMoving) {
+                        isCameraMoving = false
+                        currentAnimator?.start() // 애니메이션 재개
+                    }
                 }
             }
         }
