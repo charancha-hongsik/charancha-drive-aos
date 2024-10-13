@@ -24,13 +24,6 @@ import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.milelog.PreferenceUtil
-import com.milelog.R
-import com.milelog.retrofit.request.PostDrivingInfoRequest
-import com.milelog.retrofit.response.PostDrivingInfoResponse
-import com.milelog.room.database.DriveDatabase
-import com.milelog.room.entity.DriveForApp
-import com.milelog.room.entity.DriveForApi
 import com.google.android.gms.location.*
 import com.google.gson.Gson
 import com.milelog.CommonUtil
@@ -41,9 +34,16 @@ import com.milelog.CommonUtil.isBluetoothDeviceConnected
 import com.milelog.CommonUtil.isInternetConnected
 import com.milelog.NotificationDeleteReceiver
 import com.milelog.NotificationDeleteReceiver.Companion.ACTION_RESTART_NOTIFICATION
+import com.milelog.PreferenceUtil
+import com.milelog.R
+import com.milelog.retrofit.request.PostDrivingInfoRequest
+import com.milelog.retrofit.response.PostDrivingInfoResponse
+import com.milelog.room.database.DriveDatabase
 import com.milelog.room.dto.EachGpsDtoForApi
 import com.milelog.room.dto.EachGpsDtoForApp
 import com.milelog.room.entity.DetectUserEntity
+import com.milelog.room.entity.DriveForApi
+import com.milelog.room.entity.DriveForApp
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -864,6 +864,35 @@ class BluetoothService : Service() {
                     return
                 }
             }
+
+            activityRecognitionClient.removeActivityTransitionUpdates(pendingIntent)
+                .addOnSuccessListener { aVoid: Void? ->
+                    Log.d("ActivityTransition", "Successfully removed previous updates")
+                    // 2. 새로운 요청 등록
+                    val request = ActivityTransitionRequest(transitions)
+                    activityRecognitionClient
+                        .requestActivityTransitionUpdates(request, pendingIntent)
+                        .addOnSuccessListener { aVoid1: Void? ->
+                            Log.d(
+                                "ActivityTransition",
+                                "Successfully requested new transitions"
+                            )
+                        }
+                        .addOnFailureListener { e: java.lang.Exception? ->
+                            Log.e(
+                                "ActivityTransition",
+                                "Request failed",
+                                e
+                            )
+                        }
+                }
+                .addOnFailureListener { e: java.lang.Exception? ->
+                    Log.e(
+                        "ActivityTransition",
+                        "Failed to remove previous updates",
+                        e
+                    )
+                }
 
             activityRecognitionClient.requestActivityTransitionUpdates(request, pendingIntent)
                 .addOnSuccessListener {
