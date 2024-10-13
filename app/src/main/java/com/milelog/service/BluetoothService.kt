@@ -893,14 +893,6 @@ class BluetoothService : Service() {
                         e
                     )
                 }
-
-            activityRecognitionClient.requestActivityTransitionUpdates(request, pendingIntent)
-                .addOnSuccessListener {
-                    Log.d("testestestest","testestestest activityRecognitionClient addOnSuccessListener")
-                }
-                .addOnFailureListener {
-
-                }
         }
     }
 
