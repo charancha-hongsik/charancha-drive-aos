@@ -830,9 +830,6 @@ class BluetoothService : Service() {
                     .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
                     .build()
             )
-
-            val request = ActivityTransitionRequest(transitions)
-
             val intent = Intent(TRANSITIONS_RECEIVER_ACTION)
             intent.setPackage(applicationContext.packageName)
 
