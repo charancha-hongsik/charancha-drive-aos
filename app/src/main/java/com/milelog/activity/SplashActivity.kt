@@ -144,14 +144,12 @@ class SplashActivity: BaseActivity() {
                         finish()
                     }else{
                         for(term in termsAgreeStatusResponses){
-                            if(term.terms.isRequired == 1){
+                            if(term.terms.isRequired){
                                 existRequired = true
-                                if(term.isAgreed == 0)
+                                if(!term.isAgreed)
                                     agree = false
                             }
                         }
-
-                        existRequired = true
 
                         if(existRequired){
                             if (agree) {

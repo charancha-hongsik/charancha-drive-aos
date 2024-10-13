@@ -204,23 +204,23 @@ class TermsOfUseActivity: BaseActivity() {
 
                 for(term in termsSummaryResponse){
                     if(tvTermsTitle4.text.contains(term.title)){
-                        if(term.isRequired == 0)
+                        if(!term.isRequired)
                             if(ibTerms4.isSelected){
-                                acceptedTerms.add(Agreements(term.id,1))
+                                acceptedTerms.add(Agreements(term.id,true))
                             }else {
-                                acceptedTerms.add(Agreements(term.id, 0))
+                                acceptedTerms.add(Agreements(term.id, false))
                             }
                         else{
-                            acceptedTerms.add(Agreements(term.id,1))
+                            acceptedTerms.add(Agreements(term.id,true))
                         }
                     } else if(tvTermsTitle5.text.contains(term.title)){
                         if(ibTerms5.isSelected){
-                            acceptedTerms.add(Agreements(term.id,1))
+                            acceptedTerms.add(Agreements(term.id,true))
                         }else {
-                            acceptedTerms.add(Agreements(term.id, 0))
+                            acceptedTerms.add(Agreements(term.id, false))
                         }
                     } else{
-                        acceptedTerms.add(Agreements(term.id,1))
+                        acceptedTerms.add(Agreements(term.id,true))
                     }
                 }
 
@@ -368,7 +368,7 @@ class TermsOfUseActivity: BaseActivity() {
             override fun onSingleClick(v: View?) {
                 for(term in termsSummaryResponse){
                     if(tvTermsTitle3.text.contains(term.title)){
-                        if(term.isRequired == 1)
+                        if(term.isRequired)
                             startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
                     }
                 }
@@ -379,7 +379,7 @@ class TermsOfUseActivity: BaseActivity() {
             override fun onSingleClick(v: View?) {
                 for(term in termsSummaryResponse){
                     if(tvTermsTitle4.text.contains(term.title)){
-                        if(term.isRequired == 0)
+                        if(!term.isRequired)
                             startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
                     }
                 }

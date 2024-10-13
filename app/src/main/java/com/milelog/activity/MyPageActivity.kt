@@ -124,7 +124,7 @@ class MyPageActivity: BaseRefreshActivity() {
             override fun onSingleClick(v: View?) {
                 for(term in termsSummaryResponse){
                     if(term.title.contains("개인정보 수집 및 이용 동의")){
-                        if(term.isRequired == 1)
+                        if(term.isRequired)
                             startActivity(Intent(this@MyPageActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
                     }
                 }

@@ -7,6 +7,6 @@ data class TermsAgreeStatusResponse (
     val id:String,
     val termsId:String,
     val userId:String,
-    val isAgreed:Int,
+    val isAgreed:Boolean,
     val terms: Terms,
 )

@@ -8,6 +8,6 @@ data class TermDetailResponse (
         val title:String,
         val version:Int,
         val content:String,
-        val isActive:Int,
-        val isRequired:Int
+        val isActive:Boolean,
+        val isRequired:Boolean
 )
