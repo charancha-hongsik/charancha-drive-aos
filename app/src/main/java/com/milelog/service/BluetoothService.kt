@@ -275,7 +275,7 @@ class BluetoothService : Service() {
                                         DetectUserEntity(
                                             user_id = "",
                                             verification = "L2",
-                                            start_stop = "AUDIO_VIDEO_HANDSFREE(start)",
+                                            start_stop = "Bluetooth(start)",
                                             timestamp = System.currentTimeMillis().toString(),
                                             sensor_state = fusedLocationClient != null
                                         )
@@ -298,7 +298,7 @@ class BluetoothService : Service() {
                                         DetectUserEntity(
                                             user_id = "",
                                             verification = "L2",
-                                            start_stop = "AUDIO_VIDEO_HANDSFREE(stop)",
+                                            start_stop = "Bluetooth(stop)",
                                             timestamp = System.currentTimeMillis().toString(),
                                             sensor_state = fusedLocationClient != null
                                         )
@@ -337,7 +337,7 @@ class BluetoothService : Service() {
                     DetectUserEntity(
                         user_id = "",
                         verification = "L3",
-                        start_stop = "CAR_CONNECTION_STATE(stop)",
+                        start_stop = "Android Auto(stop)",
                         timestamp = System.currentTimeMillis().toString(),
                         sensor_state = fusedLocationClient != null
                     )
@@ -348,7 +348,7 @@ class BluetoothService : Service() {
                     DetectUserEntity(
                         user_id = "",
                         verification = "L3",
-                        start_stop = "CAR_CONNECTION_STATE(start)",
+                        start_stop = "Android Auto(start)",
                         timestamp = System.currentTimeMillis().toString(),
                         sensor_state = fusedLocationClient != null
                     )
