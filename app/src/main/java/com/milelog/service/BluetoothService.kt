@@ -779,7 +779,7 @@ class BluetoothService : Service() {
         try {
             val workRequest = PeriodicWorkRequest.Builder(
                 WalkingDetectWorker::class.java,
-                1, TimeUnit.HOURS
+                15, TimeUnit.MINUTES
             ).build()
 
             WorkManager.getInstance(this).enqueueUniquePeriodicWork(
