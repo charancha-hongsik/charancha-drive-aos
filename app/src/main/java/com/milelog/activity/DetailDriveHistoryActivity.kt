@@ -390,35 +390,41 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
 
             googleMap.setOnMapLoadedCallback {
-                googleMap.snapshot { bitmap ->
-                    iv_map.setImageBitmap(bitmap)
-                    iv_map.visibility = GONE
-                }
-
-                /**
-                 * 마커 추가
-                 */
-                val markerPosition = LatLng(polylines[0].latitude, polylines[0].longitude)
-                currentMarker = googleMap.addMarker(MarkerOptions().position(markerPosition).title("marker"))
-
-                /**
-                 * 마커 애니메이션 추가 및 애니메이션
-                 */
-                moveMarkerAlongPolyline(googleMap, 0)
-
-
-                googleMap.setOnCameraMoveStartedListener { reason ->
-                    if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
-                        isCameraMoving = true
-                        currentAnimator?.pause() // 애니메이션 일시 중지
+                try {
+                    googleMap.snapshot { bitmap ->
+                        iv_map.setImageBitmap(bitmap)
+                        iv_map.visibility = GONE
                     }
-                }
 
-                googleMap.setOnCameraIdleListener {
-                    if (isCameraMoving) {
-                        isCameraMoving = false
-                        currentAnimator?.start() // 애니메이션 재개
+                    /**
+                     * 마커 추가
+                     */
+                    val markerPosition = LatLng(polylines[0].latitude, polylines[0].longitude)
+                    currentMarker = googleMap.addMarker(
+                        MarkerOptions().position(markerPosition).title("marker")
+                    )
+
+                    /**
+                     * 마커 애니메이션 추가 및 애니메이션
+                     */
+                    moveMarkerAlongPolyline(googleMap, 0)
+
+
+                    googleMap.setOnCameraMoveStartedListener { reason ->
+                        if (reason == GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE) {
+                            isCameraMoving = true
+                            currentAnimator?.pause() // 애니메이션 일시 중지
+                        }
                     }
+
+                    googleMap.setOnCameraIdleListener {
+                        if (isCameraMoving) {
+                            isCameraMoving = false
+                            currentAnimator?.start() // 애니메이션 재개
+                        }
+                    }
+                }catch (e:Exception){
+
                 }
             }
         }

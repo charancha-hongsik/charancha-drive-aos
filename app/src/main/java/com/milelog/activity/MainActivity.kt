@@ -1,6 +1,10 @@
 package com.milelog.activity
 
 import android.Manifest.permission.*
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothClass.Device.AUDIO_VIDEO_HANDSFREE
+import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothManager
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -11,6 +15,7 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
 import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+import android.util.Log
 import android.view.View
 import android.view.View.*
 import android.widget.*
@@ -26,11 +31,15 @@ import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.milelog.CommonUtil
+import com.milelog.CommonUtil.isBluetoothDeviceConnected
 import com.milelog.CustomDialog
+import com.milelog.FindBluetoothEntity
 import com.milelog.PreferenceUtil
 import com.milelog.PreferenceUtil.HAVE_BEEN_HOME
 import com.milelog.R
+import com.milelog.room.entity.DetectUserEntity
 import com.milelog.service.BluetoothService
+import com.milelog.service.BluetoothService.Companion.L2
 import com.milelog.viewmodel.BaseViewModel
 import com.milelog.viewmodel.MainViewModel
 import com.milelog.viewmodel.state.AccountState
@@ -95,6 +104,7 @@ class MainActivity : BaseRefreshActivity() {
     lateinit var tv_recent_driving_score:TextView
     lateinit var btn_close_gift:ImageView
     lateinit var btn_noti:ImageView
+    lateinit var tv_subtitle2:TextView
 
     lateinit var tv_guide_subtitle:TextView
 
@@ -585,6 +595,11 @@ class MainActivity : BaseRefreshActivity() {
             }
 
         })
+
+        tv_subtitle2 = findViewById(R.id.tv_subtitle2)
+        tv_subtitle2.setOnClickListener {
+            startActivity(Intent(this@MainActivity, FindBluetoothActivity::class.java))
+        }
 
         tv_guide_subtitle = findViewById(R.id.tv_guide_subtitle)
         tv_guide_subtitle.setOnClickListener {
