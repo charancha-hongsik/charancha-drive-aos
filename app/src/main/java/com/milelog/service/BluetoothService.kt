@@ -553,8 +553,9 @@ class BluetoothService : Service() {
                                      */
                                     if(pastLocation!=null){
                                         if((pastLocation!!.distanceTo(location) * 1000 / (timeStamp-pastTimeStamp)) > 70){
-                                            pastLocation = location
-                                            pastTimeStamp = timeStamp
+                                            // 튀는 데이터가 여러개인 경우가 있어 주석처리
+//                                            pastLocation = location
+//                                            pastTimeStamp = timeStamp
                                         } else {
                                             processLocationCallback(location, timeStamp)
                                         }
