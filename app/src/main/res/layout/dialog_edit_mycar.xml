@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/persistent_bottom_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_mycars"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:scrollbars="none"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="12dp"
+            android:clipToPadding="false" />
+
+        <TextView
+            android:id="@+id/btn_add_car"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/radius6_gray50"
+            android:gravity="center"
+            android:text="자동차 추가"
+            android:textColor="@color/gray_600"
+            android:layout_weight="600"
+            android:textAppearance="@style/B1SB"/>
+
+
+</LinearLayout>
+
+
