@@ -75,7 +75,18 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toRightOf="@+id/tv_nickname"/>
 
+
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_circle"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@android:color/transparent"
+            android:layout_marginLeft="12dp"
+            app:layout_constraintLeft_toRightOf="@+id/layout_nickname"
+            app:layout_constraintBottom_toBottomOf="@+id/layout_nickname"
+            />
 
         <TextView
             android:id="@+id/tv_email"

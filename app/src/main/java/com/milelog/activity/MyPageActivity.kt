@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -15,6 +16,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageView
 import com.canhub.cropper.options
@@ -24,6 +28,7 @@ import com.milelog.retrofit.response.GetAccountProfilesResponse
 import com.milelog.retrofit.response.TermsSummaryResponse
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import de.hdodenhof.circleimageview.CircleImageView
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -51,6 +56,7 @@ class MyPageActivity: BaseRefreshActivity() {
     lateinit var tv_email:TextView
     lateinit var tv_nickname:TextView
     lateinit var termsSummaryResponse: List<TermsSummaryResponse>
+    lateinit var iv_circle:CircleImageView
     private lateinit var imageMultipart: MultipartBody.Part // 선택한 이미지
 
 
@@ -74,6 +80,24 @@ class MyPageActivity: BaseRefreshActivity() {
         btn_back = findViewById(R.id.btn_back)
         tv_email = findViewById(R.id.tv_email)
         tv_nickname = findViewById(R.id.tv_nickname)
+        iv_circle = findViewById(R.id.iv_circle)
+
+//        Glide.with(this)
+//            .asBitmap()
+//            .load("url")
+//            .into(object : CustomTarget<Bitmap>() {
+//                override fun onLoadCleared(placeholder: Drawable?) {}
+//
+//                override fun onLoadFailed(errorDrawable: Drawable?) {
+//                    super.onLoadFailed(errorDrawable)
+//
+//                    //showAlertDialog("프로필 이미지를 불러오는데 실패했습니다.")
+//                }
+//
+//                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+//                    iv_circle.setImageBitmap(resource)
+//                }
+//            })
 
         apiService().getTerms("MILELOG_USAGE").enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
