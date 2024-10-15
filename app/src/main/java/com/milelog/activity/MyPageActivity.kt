@@ -4,22 +4,38 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.canhub.cropper.CropImageContract
+import com.canhub.cropper.CropImageView
+import com.canhub.cropper.options
 import com.milelog.PreferenceUtil
 import com.milelog.R
 import com.milelog.retrofit.response.GetAccountProfilesResponse
 import com.milelog.retrofit.response.TermsSummaryResponse
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
 import java.lang.reflect.Type
 
 class MyPageActivity: BaseRefreshActivity() {
@@ -35,6 +51,7 @@ class MyPageActivity: BaseRefreshActivity() {
     lateinit var tv_email:TextView
     lateinit var tv_nickname:TextView
     lateinit var termsSummaryResponse: List<TermsSummaryResponse>
+    private lateinit var imageMultipart: MultipartBody.Part // 선택한 이미지
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +60,7 @@ class MyPageActivity: BaseRefreshActivity() {
 
         init()
         setListener()
+//        startCrop()
     }
 
     fun init(){
@@ -78,6 +96,47 @@ class MyPageActivity: BaseRefreshActivity() {
             }
 
         })
+    }
+
+    private fun startCrop() {
+        cropImage.launch(
+            options {
+                setGuidelines(CropImageView.Guidelines.ON)
+                setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
+                setMaxZoom(99999)
+                setAutoZoomEnabled(true)
+                setCropMenuCropButtonTitle("확인")
+                setImageSource(includeGallery = true, includeCamera = false)
+            }
+        )
+    }
+
+    private val cropImage = registerForActivityResult(CropImageContract()) { result ->
+        if (result.isSuccessful) {
+            val uriContent = result.uriContent
+
+            val bitmap: Bitmap
+            val selectedImageUri: Uri = uriContent!!
+
+            selectedImageUri.let {
+                if (Build.VERSION.SDK_INT < 28) {
+                    bitmap = MediaStore.Images.Media.getBitmap(
+                        this.contentResolver,
+                        selectedImageUri
+                    )
+                } else {
+                    val source = ImageDecoder.createSource(
+                        this.contentResolver,
+                        selectedImageUri
+                    )
+                    bitmap = ImageDecoder.decodeBitmap(source)
+                }
+            }
+
+            imageMultipart = buildImageBodyPart(this, "profileImg", bitmap)
+        } else {
+
+        }
     }
 
     fun setListener(){
@@ -183,5 +242,61 @@ class MyPageActivity: BaseRefreshActivity() {
             }
 
         })
+    }
+
+    fun buildImageBodyPart(
+        context: Context,
+        fileName: String,
+        bitmap: Bitmap,
+        randomName: String = "",
+        quality: Int = 40,
+        isBanner: Boolean = false,
+        isEdit: Boolean = false,
+    ): MultipartBody.Part {
+        val leftImageFile: File = when {
+            isBanner -> {
+                convertBitmapToFile(context, randomName, quality, bitmap)
+            }
+            isEdit -> {
+                convertBitmapToFile(context, fileName, quality, bitmap)
+            }
+            else -> {
+                convertBitmapToFile(context, fileName, quality, bitmap)
+            }
+        }
+
+        val reqFile = leftImageFile.asRequestBody("image/*".toMediaTypeOrNull())
+
+        return if (isBanner)
+            MultipartBody.Part.createFormData(fileName, leftImageFile.name, reqFile)
+        else
+            MultipartBody.Part.createFormData(fileName, leftImageFile.name, reqFile)
+    }
+
+    fun convertBitmapToFile(context: Context, fileName: String, quality: Int, bitmap: Bitmap): File {
+        //create a file to write bitmap data
+        val file = File(context.cacheDir, "${fileName}.jpeg")
+        file.createNewFile()
+
+        //Convert bitmap to byte array
+        val bos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, quality /*ignored for PNG*/, bos)
+        val bitMapData = bos.toByteArray()
+
+        //write the bytes in file
+        var fos: FileOutputStream? = null
+        try {
+            fos = FileOutputStream(file)
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        }
+        try {
+            fos?.write(bitMapData)
+            fos?.flush()
+            fos?.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return file
     }
 }
