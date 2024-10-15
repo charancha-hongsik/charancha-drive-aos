@@ -35,6 +35,7 @@ import com.milelog.CommonUtil.isInternetConnected
 import com.milelog.NotificationDeleteReceiver
 import com.milelog.NotificationDeleteReceiver.Companion.ACTION_RESTART_NOTIFICATION
 import com.milelog.PreferenceUtil
+import com.milelog.PreferenceUtil.MYCAR
 import com.milelog.R
 import com.milelog.retrofit.request.PostDrivingInfoRequest
 import com.milelog.retrofit.response.PostDrivingInfoResponse
@@ -269,19 +270,37 @@ class BluetoothService : Service() {
                         val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
 
                         pairedDevices?.forEach { device ->
-                            if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
-                                if(isBluetoothDeviceConnected(device)){
-                                    driveDatabase?.detectUserDao()?.insert(
-                                        DetectUserEntity(
-                                            user_id = "",
-                                            verification = "L2",
-                                            start_stop = "Bluetooth(start)",
-                                            timestamp = System.currentTimeMillis().toString(),
-                                            sensor_state = fusedLocationClient != null
+                            if(PreferenceUtil.getPref(this@BluetoothService, MYCAR, "") == ""){
+                                if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
+                                    if(isBluetoothDeviceConnected(device)){
+                                        driveDatabase?.detectUserDao()?.insert(
+                                            DetectUserEntity(
+                                                user_id = "",
+                                                verification = "L2",
+                                                start_stop = "Bluetooth(start)",
+                                                timestamp = System.currentTimeMillis().toString(),
+                                                sensor_state = fusedLocationClient != null
+                                            )
                                         )
-                                    )
 
-                                    startSensor(L2)
+                                        startSensor(L2)
+                                    }
+                                }
+                            }else{
+                                if(device.address == PreferenceUtil.getPref(this@BluetoothService, MYCAR, "")){
+                                    if(isBluetoothDeviceConnected(device)){
+                                        driveDatabase?.detectUserDao()?.insert(
+                                            DetectUserEntity(
+                                                user_id = "",
+                                                verification = "L2",
+                                                start_stop = "Bluetooth(start)",
+                                                timestamp = System.currentTimeMillis().toString(),
+                                                sensor_state = fusedLocationClient != null
+                                            )
+                                        )
+
+                                        startSensor(L2)
+                                    }
                                 }
                             }
                         }
@@ -292,19 +311,37 @@ class BluetoothService : Service() {
 
                         val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
                         pairedDevices?.forEach { device ->
-                            if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
-                                if(!isBluetoothDeviceConnected(device)){
-                                    driveDatabase?.detectUserDao()?.insert(
-                                        DetectUserEntity(
-                                            user_id = "",
-                                            verification = "L2",
-                                            start_stop = "Bluetooth(stop)",
-                                            timestamp = System.currentTimeMillis().toString(),
-                                            sensor_state = fusedLocationClient != null
+                            if(PreferenceUtil.getPref(this@BluetoothService, MYCAR, "") == ""){
+                                if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
+                                    if (!isBluetoothDeviceConnected(device)) {
+                                        driveDatabase?.detectUserDao()?.insert(
+                                            DetectUserEntity(
+                                                user_id = "",
+                                                verification = "L2",
+                                                start_stop = "Bluetooth(stop)",
+                                                timestamp = System.currentTimeMillis().toString(),
+                                                sensor_state = fusedLocationClient != null
+                                            )
                                         )
-                                    )
 
-                                    stopSensor(L2)
+                                        stopSensor(L2)
+                                    }
+                                }
+                            }else{
+                                if(device.address == PreferenceUtil.getPref(this@BluetoothService, MYCAR, "")) {
+                                    if (!isBluetoothDeviceConnected(device)) {
+                                        driveDatabase?.detectUserDao()?.insert(
+                                            DetectUserEntity(
+                                                user_id = "",
+                                                verification = "L2",
+                                                start_stop = "Bluetooth(stop)",
+                                                timestamp = System.currentTimeMillis().toString(),
+                                                sensor_state = fusedLocationClient != null
+                                            )
+                                        )
+
+                                        stopSensor(L2)
+                                    }
                                 }
                             }
                         }
