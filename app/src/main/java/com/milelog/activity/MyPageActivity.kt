@@ -57,6 +57,7 @@ class MyPageActivity: BaseRefreshActivity() {
     lateinit var tv_nickname:TextView
     lateinit var termsSummaryResponse: List<TermsSummaryResponse>
     lateinit var iv_circle:CircleImageView
+    lateinit var btn_faq:ConstraintLayout
     private lateinit var imageMultipart: MultipartBody.Part // 선택한 이미지
 
 
@@ -81,6 +82,7 @@ class MyPageActivity: BaseRefreshActivity() {
         tv_email = findViewById(R.id.tv_email)
         tv_nickname = findViewById(R.id.tv_nickname)
         iv_circle = findViewById(R.id.iv_circle)
+        btn_faq = findViewById(R.id.btn_faq)
 
 //        Glide.with(this)
 //            .asBitmap()
@@ -234,6 +236,10 @@ class MyPageActivity: BaseRefreshActivity() {
             clipboardManager.setPrimaryClip(clip)
             // 복사 완료 메시지를 표시할 수 있습니다. (선택 사항)
             Toast.makeText(this, "복사되었습니다.", Toast.LENGTH_SHORT).show()
+        }
+
+        btn_faq.setOnClickListener{
+            startActivity(Intent(this@MyPageActivity, CommonWebviewActivity::class.java))
         }
     }
 

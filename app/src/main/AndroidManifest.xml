@@ -288,6 +288,11 @@
             android:exported="true"/>
 
         <activity
+            android:name=".activity.CommonWebviewActivity"
+            android:screenOrientation="portrait"
+            android:exported="true"/>
+
+        <activity
             android:name=".activity.FindBluetoothActivity"
             android:screenOrientation="portrait"
             android:exported="true"/>
