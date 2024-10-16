@@ -29,7 +29,6 @@ class CommonWebviewActivity: BaseActivity() {
 
     private fun init(){
         wv_common = findViewById(R.id.wv_common)
-
     }
 
     fun setWebview(){

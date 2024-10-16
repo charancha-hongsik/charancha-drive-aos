@@ -58,6 +58,7 @@ class MyPageActivity: BaseRefreshActivity() {
     lateinit var termsSummaryResponse: List<TermsSummaryResponse>
     lateinit var iv_circle:CircleImageView
     lateinit var btn_faq:ConstraintLayout
+    lateinit var btn_inquiry:ConstraintLayout
     private lateinit var imageMultipart: MultipartBody.Part // 선택한 이미지
 
 
@@ -83,6 +84,7 @@ class MyPageActivity: BaseRefreshActivity() {
         tv_nickname = findViewById(R.id.tv_nickname)
         iv_circle = findViewById(R.id.iv_circle)
         btn_faq = findViewById(R.id.btn_faq)
+        btn_inquiry = findViewById(R.id.btn_inquiry)
 
 //        Glide.with(this)
 //            .asBitmap()
@@ -239,6 +241,10 @@ class MyPageActivity: BaseRefreshActivity() {
         }
 
         btn_faq.setOnClickListener{
+            startActivity(Intent(this@MyPageActivity, CommonWebviewActivity::class.java))
+        }
+
+        btn_inquiry.setOnClickListener{
             startActivity(Intent(this@MyPageActivity, CommonWebviewActivity::class.java))
         }
     }
