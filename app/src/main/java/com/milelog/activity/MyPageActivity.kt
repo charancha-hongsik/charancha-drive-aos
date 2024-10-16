@@ -28,6 +28,9 @@ import com.milelog.retrofit.response.GetAccountProfilesResponse
 import com.milelog.retrofit.response.TermsSummaryResponse
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.milelog.BuildConfig.BASE_API_URL
+import com.milelog.Endpoints.FAQ
+import com.milelog.Endpoints.INQUIRY
 import de.hdodenhof.circleimageview.CircleImageView
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -241,11 +244,11 @@ class MyPageActivity: BaseRefreshActivity() {
         }
 
         btn_faq.setOnClickListener{
-            startActivity(Intent(this@MyPageActivity, CommonWebviewActivity::class.java))
+            startActivity(Intent(this@MyPageActivity, CommonWebviewActivity::class.java).putExtra("url", BASE_API_URL + FAQ))
         }
 
         btn_inquiry.setOnClickListener{
-            startActivity(Intent(this@MyPageActivity, CommonWebviewActivity::class.java))
+            startActivity(Intent(this@MyPageActivity, CommonWebviewActivity::class.java).putExtra("url", BASE_API_URL + INQUIRY))
         }
     }
 
