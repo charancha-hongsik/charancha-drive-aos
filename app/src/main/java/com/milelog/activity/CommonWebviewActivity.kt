@@ -1,16 +1,20 @@
 package com.milelog.activity
 
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.view.View.VISIBLE
 import android.webkit.CookieManager
+import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.browser.customtabs.CustomTabsIntent
 import com.milelog.BuildConfig.BASE_TERMS_URL
 import com.milelog.R
+import com.milelog.activity.LoginActivity.MilelogPublicApi
 
 class CommonWebviewActivity: BaseActivity() {
     lateinit var wv_common:WebView
@@ -45,6 +49,9 @@ class CommonWebviewActivity: BaseActivity() {
         //chrome inspect 디버깅 모드
         WebView.setWebContentsDebuggingEnabled(true)
 
+        // javascriptInterface 설정
+        wv_common.addJavascriptInterface(MilelogPublicApi(this@CommonWebviewActivity), "MilelogPublicApi")
+
         wv_common.webChromeClient = object: WebChromeClient(){
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
                 super.onProgressChanged(view, newProgress)
@@ -75,6 +82,7 @@ class CommonWebviewActivity: BaseActivity() {
         syncCookie()
     }
 
+
     private fun syncCookie(){
         wv_common.settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW)
 
@@ -82,5 +90,12 @@ class CommonWebviewActivity: BaseActivity() {
         cookieManager.setAcceptCookie(true)
         cookieManager.setAcceptThirdPartyCookies(wv_common, true)
         cookieManager.flush()
+    }
+
+    class MilelogPublicApi(val activity: CommonWebviewActivity) {
+        @JavascriptInterface
+        fun finishWebview(){
+            activity.finish()
+        }
     }
 }
