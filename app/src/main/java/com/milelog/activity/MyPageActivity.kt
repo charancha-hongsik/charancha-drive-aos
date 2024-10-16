@@ -71,7 +71,7 @@ class MyPageActivity: BaseRefreshActivity() {
 
         init()
         setListener()
-//        startCrop()
+        startCrop()
     }
 
     fun init(){
@@ -135,6 +135,7 @@ class MyPageActivity: BaseRefreshActivity() {
                 setGuidelines(CropImageView.Guidelines.ON)
                 setOutputCompressFormat(Bitmap.CompressFormat.JPEG)
                 setMaxZoom(99999)
+                setAspectRatio(1,1)
                 setAutoZoomEnabled(true)
                 setCropMenuCropButtonTitle("확인")
                 setImageSource(includeGallery = true, includeCamera = false)
