@@ -94,7 +94,7 @@ class CommonWebviewActivity: BaseActivity() {
 
     class MilelogPublicApi(val activity: CommonWebviewActivity) {
         @JavascriptInterface
-        fun finishWebview(){
+        fun closeWebview(){
             activity.finish()
         }
     }
