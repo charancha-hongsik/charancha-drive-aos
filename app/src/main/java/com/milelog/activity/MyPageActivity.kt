@@ -71,7 +71,6 @@ class MyPageActivity: BaseRefreshActivity() {
 
         init()
         setListener()
-        startCrop()
     }
 
     fun init(){
@@ -88,6 +87,11 @@ class MyPageActivity: BaseRefreshActivity() {
         iv_circle = findViewById(R.id.iv_circle)
         btn_faq = findViewById(R.id.btn_faq)
         btn_inquiry = findViewById(R.id.btn_inquiry)
+
+
+        iv_circle.setOnClickListener{
+            startCrop()
+        }
 
 //        Glide.with(this)
 //            .asBitmap()
@@ -164,7 +168,6 @@ class MyPageActivity: BaseRefreshActivity() {
                     bitmap = ImageDecoder.decodeBitmap(source)
                 }
             }
-
             imageMultipart = buildImageBodyPart(this, "profileImg", bitmap)
         } else {
 
