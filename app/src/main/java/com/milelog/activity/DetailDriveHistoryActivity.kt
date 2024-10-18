@@ -204,7 +204,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                 }
                 is GetDrivingInfoState.Success -> {
                     val getDrivingInfoResponse = state.data
-                    tv_date.text = transformTimeToDate(getDrivingInfoResponse.createdAt)
+                    tv_date.text = transformTimeToDate(getDrivingInfoResponse.endTime)
                     tv_distance.text = transferDistanceWithUnit(getDrivingInfoResponse.totalDistance)
                     tv_start_time.text = transformTimeToHHMM(getDrivingInfoResponse.startTime)
                     tv_end_time.text = transformTimeToHHMM(getDrivingInfoResponse.endTime)
