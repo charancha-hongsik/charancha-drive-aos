@@ -379,7 +379,7 @@ class BluetoothService : Service() {
                         sensor_state = fusedLocationClient != null
                     )
                 )
-                stopSensor(L3)
+//                stopSensor(L3)
             } else {
                 driveDatabase?.detectUserDao()?.insert(
                     DetectUserEntity(
@@ -390,7 +390,7 @@ class BluetoothService : Service() {
                         sensor_state = fusedLocationClient != null
                     )
                 )
-                startSensor(L3)
+//                startSensor(L3)
             }
         }
     }
