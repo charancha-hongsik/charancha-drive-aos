@@ -2,6 +2,7 @@ package com.milelog.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -12,6 +13,8 @@ import com.milelog.R
 import com.milelog.retrofit.request.PatchProfilesRequest
 import com.google.gson.Gson
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -66,11 +69,10 @@ class MyInfoActivity: BaseRefreshActivity() {
             override fun onSingleClick(v: View?) {
                 CustomDialogForEditText(this@MyInfoActivity, "내 정보", "별명", nickName,"저장","취소",  object : CustomDialogForEditText.DialogCallback{
                     override fun onConfirm(contents:String) {
-                        val gson = Gson()
-                        val jsonParam =
-                            gson.toJson(PatchProfilesRequest(contents))
+                        val nickNameRequestBody = RequestBody.create(MultipartBody.FORM, contents)
+                        val imageUpdateTypeRequestBody = RequestBody.create(MultipartBody.FORM, "NONE")
 
-                        apiService().patchAccountProfiles("Bearer " + PreferenceUtil.getPref(this@MyInfoActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :Callback<ResponseBody>{
+                        apiService().patchAccountProfiles("Bearer " + PreferenceUtil.getPref(this@MyInfoActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,nickNameRequestBody, imageUpdateTypeRequestBody, null).enqueue(object :Callback<ResponseBody>{
                             override fun onResponse(
                                 call: Call<ResponseBody>,
                                 response: Response<ResponseBody>

@@ -12,7 +12,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-class HeaderInterceptor(val context: Context) : Interceptor {
+class HeaderInterceptor(val context: Context, val content_type:String="application/json") : Interceptor {
     override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
 
         val originalRequest = chain.request()
@@ -23,13 +23,9 @@ class HeaderInterceptor(val context: Context) : Interceptor {
         }
 
         val requestBuilder = originalRequest.newBuilder()
-            .header("Content-Type", "application/json")
+            .header("Content-Type", content_type)
         val request = requestBuilder.build()
         val response = chain.proceed(request)
-
-        Log.d("etestestest","testestsesetse url:: " + request.url)
-        Log.d("etestestest","testestsesetse code:: " + response.code)
-
 
         // 401 Unauthorized 처리
         if(!request.url.toString().contains("reissue")){

@@ -2,8 +2,9 @@ package com.milelog.retrofit.response
 
 data class GetAccountProfilesResponse(
     val id:String,
-    val nickName:String,
+    val nickName:String?,
     val createdAt:String,
     val deletedAt:String,
-    val user: GetAccountResponse
+    val user: GetAccountResponse,
+    val imageUrl:String
 )

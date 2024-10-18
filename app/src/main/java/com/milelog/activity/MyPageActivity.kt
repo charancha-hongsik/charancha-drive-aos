@@ -4,6 +4,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.graphics.drawable.Drawable
@@ -11,11 +12,14 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -31,10 +35,13 @@ import com.google.gson.reflect.TypeToken
 import com.milelog.BuildConfig.BASE_API_URL
 import com.milelog.Endpoints.FAQ
 import com.milelog.Endpoints.INQUIRY
+import com.milelog.retrofit.request.PatchProfilesRequest
 import de.hdodenhof.circleimageview.CircleImageView
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -45,6 +52,7 @@ import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 import java.lang.reflect.Type
+import java.util.jar.Manifest
 
 class MyPageActivity: BaseRefreshActivity() {
     lateinit var layout_nickname:ConstraintLayout
@@ -92,23 +100,6 @@ class MyPageActivity: BaseRefreshActivity() {
         iv_circle.setOnClickListener{
             startCrop()
         }
-
-//        Glide.with(this)
-//            .asBitmap()
-//            .load("url")
-//            .into(object : CustomTarget<Bitmap>() {
-//                override fun onLoadCleared(placeholder: Drawable?) {}
-//
-//                override fun onLoadFailed(errorDrawable: Drawable?) {
-//                    super.onLoadFailed(errorDrawable)
-//
-//                    //showAlertDialog("프로필 이미지를 불러오는데 실패했습니다.")
-//                }
-//
-//                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-//                    iv_circle.setImageBitmap(resource)
-//                }
-//            })
 
         apiService().getTerms("MILELOG_USAGE").enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
@@ -169,6 +160,31 @@ class MyPageActivity: BaseRefreshActivity() {
                 }
             }
             imageMultipart = buildImageBodyPart(this, "profileImg", bitmap)
+            val imageUpdateTypeRequestBody = RequestBody.create(MultipartBody.FORM, "UPDATE")
+
+
+            apiService().patchAccountProfiles("Bearer " + PreferenceUtil.getPref(this@MyPageActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,null, imageUpdateTypeRequestBody, imageMultipart) .enqueue(object :Callback<ResponseBody>{
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: Response<ResponseBody>
+                ) {
+                    Log.d("testestestset","testsetsetsetset code :: " + response.code())
+
+                    if(response.code() == 200 || response.code() == 201){
+                        showCustomToast(this@MyPageActivity, "저장 되었습니다.")
+
+                        iv_circle.setImageBitmap(bitmap)
+
+                    }else if(response.code() == 401){
+                        logout()
+                    }
+                }
+
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+                }
+
+            })
         } else {
 
         }
@@ -275,6 +291,23 @@ class MyPageActivity: BaseRefreshActivity() {
                     tv_email.text = getAccountProfilesResponse.user.email
                     tv_nickname.text = getAccountProfilesResponse.nickName + "님"
 
+                    Glide.with(this@MyPageActivity)
+                    .asBitmap()
+                    .load(getAccountProfilesResponse.imageUrl)
+                    .into(object : CustomTarget<Bitmap>() {
+                        override fun onLoadCleared(placeholder: Drawable?) {}
+
+                        override fun onLoadFailed(errorDrawable: Drawable?) {
+                            super.onLoadFailed(errorDrawable)
+
+                            //showAlertDialog("프로필 이미지를 불러오는데 실패했습니다.")
+                        }
+
+                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                            iv_circle.setImageBitmap(resource)
+                        }
+                    })
+
                 }else if(response.code() == 401){
                     logout()
                 }
@@ -308,12 +341,12 @@ class MyPageActivity: BaseRefreshActivity() {
             }
         }
 
-        val reqFile = leftImageFile.asRequestBody("image/*".toMediaTypeOrNull())
+        val reqFile = leftImageFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
 
         return if (isBanner)
-            MultipartBody.Part.createFormData(fileName, leftImageFile.name, reqFile)
+            MultipartBody.Part.createFormData("image", leftImageFile.name, reqFile)
         else
-            MultipartBody.Part.createFormData(fileName, leftImageFile.name, reqFile)
+            MultipartBody.Part.createFormData("image", leftImageFile.name, reqFile)
     }
 
     fun convertBitmapToFile(context: Context, fileName: String, quality: Int, bitmap: Bitmap): File {

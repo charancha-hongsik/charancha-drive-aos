@@ -1,6 +1,7 @@
 package com.milelog.retrofit
 
 import com.google.gson.JsonObject
+import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import org.json.JSONObject
@@ -96,8 +97,9 @@ interface ApiServiceInterface {
     fun getAccountProfiles(@Header("Authorization") token: String): Call<ResponseBody>
 
     // 프로필 업데이트
+    @Multipart
     @PATCH("api/v1/me/profiles")
-    fun patchAccountProfiles(@Header("Authorization") token: String, @Body body: RequestBody): Call<ResponseBody>
+    fun patchAccountProfiles(@Header("Authorization") token: String, @Part("nickName") nickName: RequestBody?, @Part("imageUpdateType")  imageUpdateType: RequestBody, @Part image:MultipartBody.Part?): Call<ResponseBody>
 
     /**
      * 지표 상세
