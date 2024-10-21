@@ -15,6 +15,7 @@ object PreferenceUtil {
     const val PERMISSION_ACCESS_BLUETOOTH_THREE_TIMES = "PERMISSION_ACCESS_FINE_LOCATION_THREE_TIMES"
     const val PERMISSION_ACCESS_ALARM_THREE_TIMES = "PERMISSION_ACCESS_FINE_LOCATION_THREE_TIMES"
     const val PERMISSION_ALL_CHECKED = "PERMISSION_ALL_CHECKED"
+    const val MY_CAR_ENTITIES = "myCarEntities"
 
     // Device ID For FCM
     // /api/v1/me/devices/connect(disconnect) 호출 시 Request로 사용 될 Device Id

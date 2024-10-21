@@ -168,22 +168,7 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                     PreferenceUtil.putPref(context, MYCAR, userEntity.macAdress)
                     Toast.makeText(context,
                         holder.tv_find_bluetooth_text1.text as String + "이 내 차로 등록됐어요." , Toast.LENGTH_SHORT).show()
-
-                    Log.d("testestsetest","testsetseestset :: " + PreferenceUtil.getPref(context, MYCAR, ""))
                 }
-
-//                holder.tv_find_bluetooth_text2.setOnClickListener {
-//                    Toast.makeText(context,holder.tv_find_bluetooth_text2.text , Toast.LENGTH_SHORT).show()
-//                }
-
-                holder.tv_find_bluetooth_text3.setOnClickListener {
-                    Toast.makeText(context,
-                        holder.tv_find_bluetooth_text3.text as String + "이 내 차로 등록됐어요." , Toast.LENGTH_SHORT).show()
-                }
-
-
-
-
             }
         }
 

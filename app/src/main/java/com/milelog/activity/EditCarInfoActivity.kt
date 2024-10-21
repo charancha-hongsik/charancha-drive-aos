@@ -44,6 +44,7 @@ class EditCarInfoActivity: BaseRefreshActivity() {
     lateinit var persistent_bottom_sheet: LinearLayout
     lateinit var behavior: BottomSheetBehavior<LinearLayout>
     lateinit var listview:ListView
+    lateinit var car_id:String
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,6 +57,7 @@ class EditCarInfoActivity: BaseRefreshActivity() {
     }
 
     fun init(){
+        car_id = intent.getStringExtra("car_id")!!
         tv_car_no = findViewById(R.id.tv_car_no)
         tv_car_owner = findViewById(R.id.tv_car_owner)
         tv_car_id = findViewById(R.id.tv_car_id)
@@ -220,62 +222,33 @@ class EditCarInfoActivity: BaseRefreshActivity() {
     }
 
     fun setInfo(){
-        apiService().getMyCarInfo("Bearer " + PreferenceUtil.getPref(this@EditCarInfoActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!).enqueue(object :
-            Callback<ResponseBody> {
+        apiService().getCarInfoinquiryByCarId("Bearer " + PreferenceUtil.getPref(this@EditCarInfoActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, car_id).enqueue(object :Callback<ResponseBody>{
             override fun onResponse(
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
             ) {
-
                 if(response.code() == 200 || response.code() == 201){
-                    val jsonString = response.body()?.string()
+                    getMyCarInfoResponse = Gson().fromJson(
+                        response.body()?.string(),
+                        GetMyCarInfoResponse::class.java
+                    )
 
-                    val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
-                    val getMyCarInfoResponses:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
+                    tv_car_no.text = getMyCarInfoResponse.licensePlateNumber
+                    tv_car_owner.text = getMyCarInfoResponse.ownerName
+                    tv_car_id.text = getMyCarInfoResponse.vehicleIdentificationNumber
+                    et_car_model_name.hint = getMyCarInfoResponse.carName
+                    et_car_year.hint = getMyCarInfoResponse.modelYear
+                    tv_car_fuel.text = getMyCarInfoResponse.fuel
 
-                    if(getMyCarInfoResponses.size > 0){
-                        apiService().getCarInfoinquiryByCarId("Bearer " + PreferenceUtil.getPref(this@EditCarInfoActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, getMyCarInfoResponses.get(0).id).enqueue(object :Callback<ResponseBody>{
-                            override fun onResponse(
-                                call: Call<ResponseBody>,
-                                response: Response<ResponseBody>
-                            ) {
-                                if(response.code() == 200 || response.code() == 201){
-                                    getMyCarInfoResponse = Gson().fromJson(
-                                        response.body()?.string(),
-                                        GetMyCarInfoResponse::class.java
-                                    )
-
-                                    tv_car_no.text = getMyCarInfoResponse.licensePlateNumber
-                                    tv_car_owner.text = getMyCarInfoResponse.ownerName
-                                    tv_car_id.text = getMyCarInfoResponse.vehicleIdentificationNumber
-                                    et_car_model_name.hint = getMyCarInfoResponse.carName
-                                    et_car_year.hint = getMyCarInfoResponse.modelYear
-                                    tv_car_fuel.text = getMyCarInfoResponse.fuel
-
-                                }else if(response.code() == 401){
-                                    logout()
-                                }
-                            }
-
-                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
-                            }
-
-                        })
-                    }else{
-
-                    }
                 }else if(response.code() == 401){
                     logout()
                 }
             }
 
-            override fun onFailure(
-                call: Call<ResponseBody>,
-                t: Throwable
-            ) {
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
 
             }
+
         })
     }
 
