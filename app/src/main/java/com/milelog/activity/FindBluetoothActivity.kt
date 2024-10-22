@@ -17,15 +17,27 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.milelog.DividerItemDecoration
 import com.milelog.R
 import com.milelog.FindBluetoothEntity
 import com.milelog.PreferenceUtil
 import com.milelog.PreferenceUtil.MYCAR
+import com.milelog.retrofit.response.GetMyCarInfoResponse
+import com.milelog.room.entity.MyCarsEntity
+import com.milelog.viewmodel.BaseViewModel.Event
+import com.milelog.viewmodel.state.MyCarInfoState
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.lang.reflect.Type
 
 class FindBluetoothActivity: BaseRefreshActivity() {
     lateinit var rv_find_bluetooth:RecyclerView
     lateinit var btn_hands_free:TextView
+    lateinit var getMyCarInfoResponses:List<GetMyCarInfoResponse>
     var handsfreeStatus:Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -165,7 +177,20 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                 holder.tv_find_bluetooth_text3.text = profileStr
 
                 holder.tv_find_bluetooth_text1.setOnClickListener {
+                    PreferenceUtil.getPref(context, PreferenceUtil.MY_CAR_ENTITIES,"")?.let {
+                        if (it != "") {
+                            val myCarsListOnDevice:MutableList<MyCarsEntity> = mutableListOf()
+                            val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
+                            myCarsListOnDevice.addAll(Gson().fromJson(it, type))
+
+                            myCarsListOnDevice.get(0).bluetooth_mac_address = userEntity.macAdress
+
+                            PreferenceUtil.putPref(context, PreferenceUtil.MY_CAR_ENTITIES, Gson().toJson(myCarsListOnDevice))
+                        }
+                    }
+
                     PreferenceUtil.putPref(context, MYCAR, userEntity.macAdress)
+
                     Toast.makeText(context,
                         holder.tv_find_bluetooth_text1.text as String + "이 내 차로 등록됐어요." , Toast.LENGTH_SHORT).show()
                 }

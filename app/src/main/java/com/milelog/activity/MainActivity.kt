@@ -192,10 +192,16 @@ class MainActivity : BaseRefreshActivity() {
     ): MutableList<MyCarsEntity> {
         // 1. 유지할 리스트: 서버에 있는 차량만 남김
         val retainedCars = myCarsListOnDevice.filter { deviceCar ->
-            myCarsListOnServer.any {
-                serverCar -> serverCar.id == deviceCar.id
-            }
+            myCarsListOnServer.any { serverCar -> serverCar.id == deviceCar.id }
         }.toMutableList()
+
+        // 2. 추가할 차량: 서버에 있는데 장치에 없는 차량 추가
+        val newCarsToAdd = myCarsListOnServer.filterNot { serverCar ->
+            myCarsListOnDevice.any { deviceCar -> deviceCar.id == serverCar.id }
+        }
+
+        // 3. 새 차량을 유지된 차량 리스트에 추가
+        retainedCars.addAll(newCarsToAdd)
 
         // 업데이트된 리스트 반환
         return retainedCars
@@ -253,8 +259,8 @@ class MainActivity : BaseRefreshActivity() {
                     val myCarsListOnDevice:MutableList<MyCarsEntity> = mutableListOf()
 
                     PreferenceUtil.getPref(this@MainActivity, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
-                        Log.d("tetestsetset","testsetestsetse MY_CAR_ENTITIES :: " + it.toString())
                         if(it != "") {
+                            Log.d("testsetestset","testsetsetse MY_CAR_ENTITIES :: " + it)
                             val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
                             myCarsListOnDevice.addAll(Gson().fromJson(it, type))
                         }
