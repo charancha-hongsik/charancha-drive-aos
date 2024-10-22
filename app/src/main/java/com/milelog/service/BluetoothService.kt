@@ -270,37 +270,19 @@ class BluetoothService : Service() {
                         val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
 
                         pairedDevices?.forEach { device ->
-                            if(PreferenceUtil.getPref(this@BluetoothService, MYCAR, "") == ""){
-                                if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
-                                    if(isBluetoothDeviceConnected(device)){
-                                        driveDatabase?.detectUserDao()?.insert(
-                                            DetectUserEntity(
-                                                user_id = "",
-                                                verification = "L2",
-                                                start_stop = "Bluetooth(start)",
-                                                timestamp = System.currentTimeMillis().toString(),
-                                                sensor_state = fusedLocationClient != null
-                                            )
+                            if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
+                                if(isBluetoothDeviceConnected(device)){
+                                    driveDatabase?.detectUserDao()?.insert(
+                                        DetectUserEntity(
+                                            user_id = "",
+                                            verification = "L2",
+                                            start_stop = "Bluetooth(start)",
+                                            timestamp = System.currentTimeMillis().toString(),
+                                            sensor_state = fusedLocationClient != null
                                         )
+                                    )
 
-                                        startSensor(L2)
-                                    }
-                                }
-                            }else{
-                                if(device.address == PreferenceUtil.getPref(this@BluetoothService, MYCAR, "")){
-                                    if(isBluetoothDeviceConnected(device)){
-                                        driveDatabase?.detectUserDao()?.insert(
-                                            DetectUserEntity(
-                                                user_id = "",
-                                                verification = "L2",
-                                                start_stop = "Bluetooth(start)",
-                                                timestamp = System.currentTimeMillis().toString(),
-                                                sensor_state = fusedLocationClient != null
-                                            )
-                                        )
-
-                                        startSensor(L2)
-                                    }
+                                    startSensor(L2)
                                 }
                             }
                         }
@@ -311,37 +293,19 @@ class BluetoothService : Service() {
 
                         val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
                         pairedDevices?.forEach { device ->
-                            if(PreferenceUtil.getPref(this@BluetoothService, MYCAR, "") == ""){
-                                if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
-                                    if (!isBluetoothDeviceConnected(device)) {
-                                        driveDatabase?.detectUserDao()?.insert(
-                                            DetectUserEntity(
-                                                user_id = "",
-                                                verification = "L2",
-                                                start_stop = "Bluetooth(stop)",
-                                                timestamp = System.currentTimeMillis().toString(),
-                                                sensor_state = fusedLocationClient != null
-                                            )
+                            if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
+                                if (!isBluetoothDeviceConnected(device)) {
+                                    driveDatabase?.detectUserDao()?.insert(
+                                        DetectUserEntity(
+                                            user_id = "",
+                                            verification = "L2",
+                                            start_stop = "Bluetooth(stop)",
+                                            timestamp = System.currentTimeMillis().toString(),
+                                            sensor_state = fusedLocationClient != null
                                         )
+                                    )
 
-                                        stopSensor(L2)
-                                    }
-                                }
-                            }else{
-                                if(device.address == PreferenceUtil.getPref(this@BluetoothService, MYCAR, "")) {
-                                    if (!isBluetoothDeviceConnected(device)) {
-                                        driveDatabase?.detectUserDao()?.insert(
-                                            DetectUserEntity(
-                                                user_id = "",
-                                                verification = "L2",
-                                                start_stop = "Bluetooth(stop)",
-                                                timestamp = System.currentTimeMillis().toString(),
-                                                sensor_state = fusedLocationClient != null
-                                            )
-                                        )
-
-                                        stopSensor(L2)
-                                    }
+                                    stopSensor(L2)
                                 }
                             }
                         }
