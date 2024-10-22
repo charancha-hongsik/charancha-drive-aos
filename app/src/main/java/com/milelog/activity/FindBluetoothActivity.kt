@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothClass.Device.AUDIO_VIDEO_HANDSFREE
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -17,6 +18,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.milelog.DividerItemDecoration
@@ -24,10 +26,12 @@ import com.milelog.R
 import com.milelog.FindBluetoothEntity
 import com.milelog.PreferenceUtil
 import com.milelog.PreferenceUtil.MYCAR
+import com.milelog.activity.MainActivity.MyCarEntitiesAdapter
 import com.milelog.retrofit.response.GetMyCarInfoResponse
 import com.milelog.room.entity.MyCarsEntity
 import com.milelog.viewmodel.BaseViewModel.Event
 import com.milelog.viewmodel.state.MyCarInfoState
+import okhttp3.Address
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -90,6 +94,9 @@ class FindBluetoothActivity: BaseRefreshActivity() {
             rv_find_bluetooth.adapter = DetectedStatusAdapter(context = this, findBluetoothEntity = devices)
         }
     }
+
+
+
 
     class DetectedStatusAdapter(
         private val context: Context,
@@ -177,22 +184,35 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                 holder.tv_find_bluetooth_text3.text = profileStr
 
                 holder.tv_find_bluetooth_text1.setOnClickListener {
-                    PreferenceUtil.getPref(context, PreferenceUtil.MY_CAR_ENTITIES,"")?.let {
-                        if (it != "") {
-                            val myCarsListOnDevice:MutableList<MyCarsEntity> = mutableListOf()
-                            val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
-                            myCarsListOnDevice.addAll(Gson().fromJson(it, type))
+                    showBottomSheetForEditCar(userEntity.macAdress, userEntity.name)
+                }
+            }
+        }
 
-                            myCarsListOnDevice.get(0).bluetooth_mac_address = userEntity.macAdress
+        fun showBottomSheetForEditCar(macAddress: String, bluetoothName:String) {
+            PreferenceUtil.getPref(context as FindBluetoothActivity, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
+                if(it != ""){
+                    // Create a BottomSheetDialog
+                    val bottomSheetDialog = BottomSheetDialog(context, R.style.CustomBottomSheetDialog)
 
-                            PreferenceUtil.putPref(context, PreferenceUtil.MY_CAR_ENTITIES, Gson().toJson(myCarsListOnDevice))
-                        }
-                    }
+                    // Inflate the layout
+                    val bottomSheetView = context.layoutInflater.inflate(R.layout.dialog_registered_bluetooth, null)
+                    val rv_registered_car = bottomSheetView.findViewById<RecyclerView>(R.id.rv_registered_car)
 
-                    PreferenceUtil.putPref(context, MYCAR, userEntity.macAdress)
+                    rv_registered_car.layoutManager = LinearLayoutManager(context)
+                    val dividerItemDecoration = DividerItemDecoration(context, R.color.gray_50, context.dpToPx(12f)) // 색상 리소스와 구분선 높이 설정
+                    rv_registered_car.addItemDecoration(dividerItemDecoration)
 
-                    Toast.makeText(context,
-                        holder.tv_find_bluetooth_text1.text as String + "이 내 차로 등록됐어요." , Toast.LENGTH_SHORT).show()
+                    val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
+                    val myCarsList: MutableList<MyCarsEntity> = Gson().fromJson(it, type)
+
+                    rv_registered_car.adapter = MyCarEntitiesAdapter(context = context, mycarEntities = myCarsList, macAddress,bluetoothName )
+
+                    // Set the content view of the dialog
+                    bottomSheetDialog.setContentView(bottomSheetView)
+
+                    // Show the dialog
+                    bottomSheetDialog.show()
                 }
             }
         }
@@ -205,8 +225,64 @@ class FindBluetoothActivity: BaseRefreshActivity() {
 
     class DetectedStatusViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tv_find_bluetooth_text1:TextView  = view.findViewById(R.id.tv_find_bluetooth_text1)
-        val tv_find_bluetooth_text2:TextView  = view.findViewById(R.id.tv_find_bluetooth_text2)
         val tv_find_bluetooth_text3:TextView  = view.findViewById(R.id.tv_find_bluetooth_text3)
 
+    }
+
+    class MyCarEntitiesAdapter(
+        private val context: Context,
+        private val mycarEntities: MutableList<MyCarsEntity>,
+        private val macAddress:String,
+        private val bluetoothName:String
+    ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+        companion object {
+            private const val VIEW_TYPE_ITEM = 0
+        }
+
+        override fun getItemViewType(position: Int): Int {
+            return VIEW_TYPE_ITEM
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+            val view = LayoutInflater.from(context).inflate(R.layout.item_registered_bluetooth, parent, false)
+            return MyCarEntitiesHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+            if (holder is MyCarEntitiesHolder) {
+                val myCarsEntity = mycarEntities[position]
+
+                holder.tv_car_name.text = myCarsEntity.name + " " +myCarsEntity.number
+                holder.tv_car_name.setOnClickListener {
+
+                    PreferenceUtil.getPref(context, PreferenceUtil.MY_CAR_ENTITIES,"")?.let {
+                        if (it != "") {
+                            val myCarsListOnDevice:MutableList<MyCarsEntity> = mutableListOf()
+                            val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
+                            myCarsListOnDevice.addAll(Gson().fromJson(it, type))
+
+                            myCarsListOnDevice.get(position).bluetooth_mac_address = macAddress
+
+                            PreferenceUtil.putPref(context, PreferenceUtil.MY_CAR_ENTITIES, Gson().toJson(myCarsListOnDevice))
+                        }
+                    }
+
+                    PreferenceUtil.putPref(context, MYCAR, macAddress)
+
+                    Toast.makeText(context,
+                        myCarsEntity.name +"차량이 " + bluetoothName + " 블루투스와 연결됐어요." , Toast.LENGTH_SHORT).show()
+                }
+
+            }
+        }
+
+        override fun getItemCount(): Int {
+            return mycarEntities.size
+        }
+    }
+
+    class MyCarEntitiesHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val tv_car_name:TextView  = view.findViewById(R.id.tv_car_name)
     }
 }
