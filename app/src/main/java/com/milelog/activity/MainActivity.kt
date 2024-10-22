@@ -186,6 +186,21 @@ class MainActivity : BaseRefreshActivity() {
         }
     }
 
+    fun updateMyCarList(
+        myCarsListOnServer: MutableList<MyCarsEntity>,
+        myCarsListOnDevice: MutableList<MyCarsEntity>
+    ): MutableList<MyCarsEntity> {
+        // 1. 유지할 리스트: 서버에 있는 차량만 남김
+        val retainedCars = myCarsListOnDevice.filter { deviceCar ->
+            myCarsListOnServer.any {
+                serverCar -> serverCar.id == deviceCar.id
+            }
+        }.toMutableList()
+
+        // 업데이트된 리스트 반환
+        return retainedCars
+    }
+
     private fun setObserver(){
         mainViewModel.accountResult.observe(this@MainActivity, BaseViewModel.EventObserver{ state ->
             when (state) {
@@ -234,16 +249,25 @@ class MainActivity : BaseRefreshActivity() {
                 is MyCarInfoState.Success -> {
                     val getMyCarInfoResponses = state.data
 
-                    var myCarEntities: MutableList<MyCarsEntity> = mutableListOf()
+                    val myCarsListOnServer: MutableList<MyCarsEntity> = mutableListOf()
+                    val myCarsListOnDevice:MutableList<MyCarsEntity> = mutableListOf()
+
+                    PreferenceUtil.getPref(this@MainActivity, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
+                        Log.d("tetestsetset","testsetestsetse MY_CAR_ENTITIES :: " + it.toString())
+                        if(it != "") {
+                            val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
+                            myCarsListOnDevice.addAll(Gson().fromJson(it, type))
+                        }
+                    }
 
                     if(getMyCarInfoResponses.size > 0){
                         mainViewModel.getCarInfoinquiryByCarId(getMyCarInfoResponses.get(0).id)
 
                         for(car in getMyCarInfoResponses){
-                            myCarEntities.add(MyCarsEntity(car.id, car.carName, car.licensePlateNumber, null))
+                            myCarsListOnServer.add(MyCarsEntity(car.id, car.carName, car.licensePlateNumber, null))
                         }
 
-                        PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.MY_CAR_ENTITIES, Gson().toJson(myCarEntities))
+                        PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.MY_CAR_ENTITIES, Gson().toJson(updateMyCarList(myCarsListOnServer, myCarsListOnDevice)))
 
                     }else{
                         startActivity(Intent(this@MainActivity, SplashActivity::class.java))
@@ -1202,7 +1226,7 @@ class MainActivity : BaseRefreshActivity() {
             if (holder is MyCarEntitiesHolder) {
                 val myCarsEntity = mycarEntities[position]
 
-                holder.tv_car_name.text = myCarsEntity.name
+                holder.tv_car_name.text = myCarsEntity.name + " " +myCarsEntity.number
 
                 holder.btn_edit_car.setOnClickListener {
                     context.startActivity(Intent(context, EditCarInfoActivity::class.java).putExtra("car_id",myCarsEntity.id))

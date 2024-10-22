@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_marginLeft="12dp"
-    android:layout_marginRight="12dp">
+    android:layout_margin="24dp">
 
     <TextView
         android:id="@+id/tv_car_name"
