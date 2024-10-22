@@ -76,8 +76,12 @@ interface ApiServiceInterface {
     fun getMyCarInfo(@Header("Authorization") token: String): Call<ResponseBody>
 
     // 내 개인 차량 등록
-    @POST("/api/v1/me/cars/user-cars")
+    @POST("api/v1/me/cars/user-cars")
     fun postMyCar(@Header("Authorization") token: String, @Body body: RequestBody): Call<ResponseBody>
+
+    // 차란차 코드 조회 API
+    @GET("api/v1/cars/-/charancha-codes/{key}")
+    fun getCharanchaCode(@Header("Authorization") token: String, @Query("parentCode") parentCode: String, @Path("key") key: String): Call<ResponseBody>
 
     /**
      * 유저 관련
