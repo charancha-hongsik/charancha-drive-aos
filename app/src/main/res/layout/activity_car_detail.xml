@@ -81,13 +81,36 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <TextView
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="제조사"/>
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tv_title1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/C1R"
+                        android:textFontWeight="400"
+                        android:textColor="@color/gray_600"
+                        android:text="제조사"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                    <View
+                        android:layout_width="3dp"
+                        android:layout_height="3dp"
+                        android:background="@drawable/radius999_pri500"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginLeft="4dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/tv_title1" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/btn_open_set_distance_unit"
+                    android:id="@+id/btn_maker"
                     android:layout_width="match_parent"
                     android:layout_height="62dp"
                     android:background="@drawable/radius8_gray50"
@@ -98,10 +121,24 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="BMW"
+                        android:visibility="gone"
                         android:layout_marginLeft="20dp"
                         android:textFontWeight="600"
                         android:textAppearance="@style/B1SB"
                         android:textColor="@color/gray_950"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/tv_maker_hint"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="제조사를 선택해 주세요"
+                        android:layout_marginLeft="20dp"
+                        android:textFontWeight="500"
+                        android:textAppearance="@style/B1M"
+                        android:textColor="@color/gray_400"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"/>
@@ -113,7 +150,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="16dp"
-                        android:src="@drawable/ic_arrow_down"
+                        android:src="@drawable/ic_arrow_down_gray"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintRight_toRightOf="parent"/>
@@ -123,14 +160,36 @@
 
 
 
-                <TextView
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="26dp"
-                    android:text="모델명"/>
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/tv_title2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/C1R"
+                        android:textFontWeight="400"
+                        android:textColor="@color/gray_600"
+                        android:text="모델명"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                    <View
+                        android:layout_width="3dp"
+                        android:layout_height="3dp"
+                        android:background="@drawable/radius999_pri500"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginLeft="4dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/tv_title2" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/btn_open_set_distance_unit"
+                    android:id="@+id/btn_model"
                     android:layout_width="match_parent"
                     android:layout_height="62dp"
                     android:background="@drawable/radius8_gray50"
@@ -141,10 +200,24 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="530i"
+                        android:visibility="gone"
                         android:layout_marginLeft="20dp"
                         android:textFontWeight="600"
                         android:textAppearance="@style/B1SB"
                         android:textColor="@color/gray_950"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/tv_model_hint"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="모델명을 선택해 주세요"
+                        android:layout_marginLeft="20dp"
+                        android:textFontWeight="500"
+                        android:textAppearance="@style/B1M"
+                        android:textColor="@color/gray_400"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"/>
@@ -156,21 +229,33 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="16dp"
-                        android:src="@drawable/ic_arrow_down"
+                        android:src="@drawable/ic_arrow_down_gray"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintRight_toRightOf="parent"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <TextView
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="26dp"
-                    android:text="세부모델"/>
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/C1R"
+                        android:textFontWeight="400"
+                        android:textColor="@color/gray_600"
+                        android:text="세부모델"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/btn_open_set_distance_unit"
+                    android:id="@+id/btn_model_detail"
                     android:layout_width="match_parent"
                     android:layout_height="62dp"
                     android:background="@drawable/radius8_gray50"
@@ -183,8 +268,22 @@
                         android:text="럭셔리"
                         android:layout_marginLeft="20dp"
                         android:textFontWeight="600"
+                        android:visibility="gone"
                         android:textAppearance="@style/B1SB"
                         android:textColor="@color/gray_950"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/tv_model_detail_hint"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="세부모델을 선택해 주세요"
+                        android:layout_marginLeft="20dp"
+                        android:textFontWeight="500"
+                        android:textAppearance="@style/B1M"
+                        android:textColor="@color/gray_400"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"/>
@@ -196,21 +295,33 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="16dp"
-                        android:src="@drawable/ic_arrow_down"
+                        android:src="@drawable/ic_arrow_down_gray"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintRight_toRightOf="parent"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <TextView
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="26dp"
-                    android:text="등급"/>
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/C1R"
+                        android:textFontWeight="400"
+                        android:textColor="@color/gray_600"
+                        android:text="등급"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/btn_open_set_distance_unit"
+                    android:id="@+id/btn_grade"
                     android:layout_width="match_parent"
                     android:layout_height="62dp"
                     android:background="@drawable/radius8_gray50"
@@ -221,10 +332,24 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="럭셔리"
+                        android:visibility="gone"
                         android:layout_marginLeft="20dp"
                         android:textFontWeight="600"
                         android:textAppearance="@style/B1SB"
                         android:textColor="@color/gray_950"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/tv_grade_hint"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="등급을 선택해 주세요"
+                        android:layout_marginLeft="20dp"
+                        android:textFontWeight="500"
+                        android:textAppearance="@style/B1M"
+                        android:textColor="@color/gray_400"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"/>
@@ -236,24 +361,37 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="16dp"
-                        android:src="@drawable/ic_arrow_down"
+                        android:src="@drawable/ic_arrow_down_gray"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintRight_toRightOf="parent"/>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <TextView
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="26dp"
-                    android:text="세부등급"/>
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/C1R"
+                        android:textFontWeight="400"
+                        android:textColor="@color/gray_600"
+                        android:text="세부등급"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/btn_open_set_distance_unit"
+                    android:id="@+id/btn_grade_detail"
                     android:layout_width="match_parent"
                     android:layout_height="62dp"
                     android:background="@drawable/radius8_gray50"
+                    android:layout_marginBottom="40dp"
                     android:layout_marginTop="6dp">
 
                     <TextView
@@ -262,9 +400,23 @@
                         android:layout_height="wrap_content"
                         android:text="프리미엄"
                         android:layout_marginLeft="20dp"
+                        android:visibility="gone"
                         android:textFontWeight="600"
                         android:textAppearance="@style/B1SB"
                         android:textColor="@color/gray_950"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/tv_grade_detail_hint"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="세부등급을 선택해 주세요"
+                        android:layout_marginLeft="20dp"
+                        android:textFontWeight="500"
+                        android:textAppearance="@style/B1M"
+                        android:textColor="@color/gray_400"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"/>
@@ -276,7 +428,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="16dp"
-                        android:src="@drawable/ic_arrow_down"
+                        android:src="@drawable/ic_arrow_down_gray"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintRight_toRightOf="parent"/>
@@ -326,5 +478,38 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/layout_select"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        android:background="@color/black_op_70"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:context=".activity.BottomSheetActivity">
+
+
+        <LinearLayout
+            android:id="@+id/persistent_bottom_sheet"
+            android:layout_width="match_parent"
+            android:layout_height="472dp"
+            android:background="@drawable/radius24_topleftright_white"
+            android:orientation="vertical"
+            android:padding="24dp"
+            app:behavior_hideable="false"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+            <ListView
+                android:id="@+id/listView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@null"
+                android:layout_marginTop="32dp"/>
+
+        </LinearLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
