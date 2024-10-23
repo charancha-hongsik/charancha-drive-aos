@@ -3,6 +3,7 @@ package com.milelog.viewmodel
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
@@ -131,6 +132,8 @@ class SplashViewModel: BaseViewModel() {
 
                     val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
                     val getMyCarInfoResponse:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
+
+                    Log.d("testsetseset","testsesetst getMyCarInfoResponse :: " + getMyCarInfoResponse.size)
 
                     _getMyCarInfo.value = Event(GetMyCarInfoState.Success(getMyCarInfoResponse))
                 }else{

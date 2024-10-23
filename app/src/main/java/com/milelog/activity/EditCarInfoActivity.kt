@@ -238,7 +238,6 @@ class EditCarInfoActivity: BaseRefreshActivity() {
                     tv_car_id.text = getMyCarInfoResponse.vehicleIdentificationNumber
                     et_car_model_name.hint = getMyCarInfoResponse.carName
                     et_car_year.hint = getMyCarInfoResponse.modelYear
-                    tv_car_fuel.text = getMyCarInfoResponse.fuel
 
                 }else if(response.code() == 401){
                     logout()

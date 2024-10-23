@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.view.View.GONE
 import android.view.animation.TranslateAnimation
@@ -55,6 +56,7 @@ class LoadCarInfoActivity: BaseRefreshActivity() {
 
         setResources()
         setObserver()
+
         if(carNo != null && carOwner != null)
             loadCarInfoViewModel.getCarInfoInquiry(carNo!!, carOwner!!)
     }
@@ -69,9 +71,9 @@ class LoadCarInfoActivity: BaseRefreshActivity() {
                     }
 
                     is GetCarInfoInquiryState.Success -> {
-                        val intent = Intent(this@LoadCarInfoActivity, RegisterCarActivity::class.java)
+                        val intent = Intent(this@LoadCarInfoActivity, LoadCarMoreInfoActivity::class.java)
                         intent.putExtra("response", state.data)
-                        setResult(RESULT_OK, intent)
+                        startActivity(intent)
                         finish()
                     }
 
@@ -80,16 +82,12 @@ class LoadCarInfoActivity: BaseRefreshActivity() {
                             logout()
                         }else{
                             showCustomToast(this@LoadCarInfoActivity,state.message)
-
-                            val intent = Intent(this@LoadCarInfoActivity, RegisterCarActivity::class.java)
-                            setResult(RESULT_CANCELED, intent)
                             finish()
                         }
                     }
 
                     is GetCarInfoInquiryState.Empty -> {
-                        val intent = Intent(this@LoadCarInfoActivity, RegisterCarActivity::class.java)
-                        setResult(RESULT_CANCELED, intent)
+                        showCustomToast(this@LoadCarInfoActivity, "empty")
                         finish()
                     }
                 }
