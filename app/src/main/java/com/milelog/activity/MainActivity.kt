@@ -54,6 +54,10 @@ import com.milelog.viewmodel.state.GetDrivingStatisticsState
 import com.milelog.viewmodel.state.GetManageScoreState
 import com.milelog.viewmodel.state.MyCarInfoState
 import com.milelog.viewmodel.state.NotSavedDataState
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -260,7 +264,6 @@ class MainActivity : BaseRefreshActivity() {
 
                     PreferenceUtil.getPref(this@MainActivity, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
                         if(it != "") {
-                            Log.d("testsetestset","testsetsetse MY_CAR_ENTITIES :: " + it)
                             val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
                             myCarsListOnDevice.addAll(Gson().fromJson(it, type))
                         }
@@ -1232,10 +1235,41 @@ class MainActivity : BaseRefreshActivity() {
             if (holder is MyCarEntitiesHolder) {
                 val myCarsEntity = mycarEntities[position]
 
-                holder.tv_car_name.text = myCarsEntity.name + " " +myCarsEntity.number
+                holder.tv_car_name.text = myCarsEntity.name + " " + myCarsEntity.number
 
                 holder.btn_edit_car.setOnClickListener {
                     context.startActivity(Intent(context, EditCarInfoActivity::class.java).putExtra("car_id",myCarsEntity.id))
+                }
+
+                holder.btn_delete_car.setOnClickListener {
+                    CustomDialog(context, "자동차 정보 삭제", "자동차 정보를 삭제하면 기존 데이터는 삭제됩니다. 삭제 하시겠습니까?", "삭제","취소",  object : CustomDialog.DialogCallback{
+                        override fun onConfirm() {
+                            (context as MainActivity).apiService().deleteMyCarByCarId("Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!, myCarsEntity.id).enqueue(object :
+                                Callback<ResponseBody> {
+                                override fun onResponse(
+                                    call: Call<ResponseBody>,
+                                    response: Response<ResponseBody>
+                                ) {
+                                    if(response.code() == 204){
+                                        context.startActivity(Intent(context, OnBoardingActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+                                        context.finish()
+                                    }else if(response.code() == 401){
+                                        context.logout()
+                                    }
+                                }
+
+                                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                                }
+
+                            })
+                        }
+
+                        override fun onCancel() {
+
+
+                        }
+
+                    }).show()
                 }
             }
         }
