@@ -14,5 +14,5 @@ data class PostMyCarResponse (
     val gradeDetailCd:String,
     val displacement:Int,
     val fuelCd:String,
-    val fuel:String,
-    )
+    val trimHint:String
+)

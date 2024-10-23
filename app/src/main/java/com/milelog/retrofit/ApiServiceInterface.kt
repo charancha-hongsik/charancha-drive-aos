@@ -56,7 +56,7 @@ interface ApiServiceInterface {
      * 자동차 등록 관련
      */
     // 자동차등록원부 조회
-    @GET("api/v1/cars/infoinquiry")
+    @GET("api/v1/cars/-/infoinquiry")
     fun getCarInfoInquiry(@Header("Authorization") token: String, @Query("licensePlateNumber") licensePlateNumber: String, @Query("ownerName") ownerName: String): Call<ResponseBody>
 
     // 내가 등록한 개인 차량 정보 조회
