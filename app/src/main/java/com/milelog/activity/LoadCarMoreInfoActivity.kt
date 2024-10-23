@@ -1,9 +1,10 @@
 package com.milelog.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.gson.Gson
 import com.milelog.R
 import com.milelog.retrofit.response.PostMyCarResponse
@@ -15,6 +16,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
     private lateinit var tv_car_id: TextView
     private lateinit var postMyCarResponse: PostMyCarResponse
     private lateinit var ib_arrow_register_car: ImageButton
+    private lateinit var btn_car_more_info: ConstraintLayout
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,9 +33,17 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
         tv_releaseDt = findViewById(R.id.tv_releaseDt)
         tv_car_id = findViewById(R.id.tv_car_id)
         ib_arrow_register_car = findViewById(R.id.ib_arrow_register_car)
+        btn_car_more_info = findViewById(R.id.btn_car_more_info)
 
         ib_arrow_register_car.setOnClickListener{
             finish()
+        }
+
+        btn_car_more_info.setOnClickListener {
+            startActivity(Intent(Intent(
+                this@LoadCarMoreInfoActivity,
+                CarDetailActivity::class.java
+            ).putExtra("carInfo", intent.getStringExtra("response"))))
         }
 
         val jsonString = intent.getStringExtra("response")
