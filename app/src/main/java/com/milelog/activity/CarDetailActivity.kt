@@ -150,6 +150,32 @@ class CarDetailActivity: BaseRefreshActivity() {
         }
 
         btn_next.setOnClickListener {
+            selectedMaker?.let{
+                postMyCarResponse.makerCd = it.makerCd
+                postMyCarResponse.makerNm = it.makerNm
+            }
+
+            selectedModel?.let{
+                postMyCarResponse.modelCd = it.modelCd
+                postMyCarResponse.modelNm = it.modelNm
+            }
+
+            selectedModelDetail?.let{
+                postMyCarResponse.modelDetailCd = it.modelDetailCd
+                postMyCarResponse.modelDetailNm = it.modelDetailNm
+            }
+
+            selectedGrade?.let{
+                postMyCarResponse.gradeCd = it.gradeCd
+                postMyCarResponse.gradeNm = it.gradeNm
+            }
+
+            selectedGradeDetail?.let{
+                postMyCarResponse.gradeDetailCd = it.gradeDetailCd
+                postMyCarResponse.gradeDetailNm = it.gradeDetailNm
+            }
+
+
             val intent = Intent(this@CarDetailActivity, LoadCarMoreInfoActivity::class.java)
             intent.putExtra("carInfo",Gson().toJson(postMyCarResponse))
             setResult(RESULT_OK, intent)
@@ -270,30 +296,25 @@ class CarDetailActivity: BaseRefreshActivity() {
                 tv_fuel.setOnClickListener {
                     when(key){
                         MAKER -> {
-                            tv_model_title.visibility = VISIBLE
-                            btn_model.visibility = VISIBLE
-
-                            selectedMaker = MakerResponse(carDetail.code, carDetail.name)
-                            postMyCarResponse.makerCd = carDetail.code
-
-
                             tv_maker_hint.visibility = GONE
                             tv_maker.visibility = VISIBLE
                             tv_maker.text = carDetail.name
+
+                            setModelUI()
+
+                            selectedMaker = MakerResponse(carDetail.code, carDetail.name)
 
                             layout_select.visibility = GONE
                         }
 
                         MODEL -> {
-                            tv_model_detail_title.visibility = VISIBLE
-                            btn_model_detail.visibility = VISIBLE
-
-                            selectedModel = ModelResponse(carDetail.code, carDetail.name)
-                            postMyCarResponse.modelCd = carDetail.code
-
                             tv_model_hint.visibility = GONE
                             tv_model.visibility = VISIBLE
                             tv_model.text = carDetail.name
+
+                            setModelDetailUI()
+
+                            selectedModel = ModelResponse(carDetail.code, carDetail.name)
 
                             layout_select.visibility = GONE
 
@@ -302,42 +323,40 @@ class CarDetailActivity: BaseRefreshActivity() {
                         }
 
                         MODEL_DETAIL -> {
-                            tv_grade_title.visibility = VISIBLE
-                            btn_grade.visibility = VISIBLE
-
-                            selectedModelDetail = ModelDetailResponse(carDetail.code, carDetail.name)
-                            postMyCarResponse.modelDetailCd = carDetail.code
-
                             tv_model_detail_hint.visibility = GONE
                             tv_model_detail.visibility = VISIBLE
                             tv_model_detail.text = carDetail.name
+
+                            setGradeUI()
+
+                            selectedModelDetail = ModelDetailResponse(carDetail.code, carDetail.name)
 
                             layout_select.visibility = GONE
 
                         }
 
                         GRADE -> {
+                            tv_grade_hint.visibility = GONE
+                            tv_grade.visibility = VISIBLE
+                            tv_grade.text = carDetail.name
+
+                            setGradeDetailUI()
+
                             tv_grade_detail_title.visibility = VISIBLE
                             btn_grade_detail.visibility = VISIBLE
 
                             selectedGrade = GradeResponse(carDetail.code, carDetail.name)
-                            postMyCarResponse.gradeCd = carDetail.code
-
-                            tv_grade_hint.visibility = GONE
-                            tv_grade.visibility = VISIBLE
-                            tv_grade.text = carDetail.name
 
                             layout_select.visibility = GONE
 
                         }
 
                         GRADE_DETAIL -> {
-                            selectedGradeDetail = GradeDetailResponse(carDetail.code, carDetail.name)
-                            postMyCarResponse.gradeDetailCd = carDetail.code
-
                             tv_grade_detail_hint.visibility = GONE
                             tv_grade_detail.visibility = VISIBLE
                             tv_grade_detail.text = carDetail.name
+
+                            selectedGradeDetail = GradeDetailResponse(carDetail.code, carDetail.name)
 
                             layout_select.visibility = GONE
                         }
@@ -351,5 +370,95 @@ class CarDetailActivity: BaseRefreshActivity() {
 
             return view
         }
+    }
+
+    private fun setMakerUI(){
+        tv_maker_hint.visibility = VISIBLE
+        tv_maker.visibility = GONE
+        btn_maker.visibility = VISIBLE
+
+        tv_model_title.visibility = GONE
+        tv_model_hint.visibility = VISIBLE
+        tv_model.visibility = GONE
+        btn_model.visibility = GONE
+
+        tv_model_detail_title.visibility = GONE
+        tv_model_detail_hint.visibility = VISIBLE
+        tv_model_detail.visibility = GONE
+        btn_model_detail.visibility = GONE
+
+        tv_grade_title.visibility = GONE
+        tv_grade_hint.visibility = VISIBLE
+        tv_grade.visibility = GONE
+        btn_grade.visibility = GONE
+
+        tv_grade_detail_title.visibility = GONE
+        tv_grade_detail_hint.visibility = VISIBLE
+        tv_grade_detail.visibility = GONE
+        btn_grade_detail.visibility = GONE
+
+
+    }
+
+    private fun setModelUI(){
+        tv_model_title.visibility = VISIBLE
+        tv_model_hint.visibility = VISIBLE
+        tv_model.visibility = GONE
+        btn_model.visibility = VISIBLE
+
+        tv_model_detail_title.visibility = GONE
+        tv_model_detail_hint.visibility = VISIBLE
+        tv_model_detail.visibility = GONE
+        btn_model_detail.visibility = GONE
+
+        tv_grade_title.visibility = GONE
+        tv_grade_hint.visibility = VISIBLE
+        tv_grade.visibility = GONE
+        btn_grade.visibility = GONE
+
+        tv_grade_detail_title.visibility = GONE
+        tv_grade_detail_hint.visibility = VISIBLE
+        tv_grade_detail.visibility = GONE
+        btn_grade_detail.visibility = GONE
+
+
+    }
+
+    private fun setModelDetailUI(){
+        tv_model_detail_title.visibility = VISIBLE
+        tv_model_detail_hint.visibility = VISIBLE
+        tv_model_detail.visibility = GONE
+        btn_model_detail.visibility = VISIBLE
+
+        tv_grade_title.visibility = GONE
+        tv_grade_hint.visibility = VISIBLE
+        tv_grade.visibility = GONE
+        btn_grade.visibility = GONE
+
+        tv_grade_detail_title.visibility = GONE
+        tv_grade_detail_hint.visibility = VISIBLE
+        tv_grade_detail.visibility = GONE
+        btn_grade_detail.visibility = GONE
+
+    }
+
+    private fun setGradeUI(){
+        tv_grade_title.visibility = VISIBLE
+        tv_grade_hint.visibility = VISIBLE
+        tv_grade.visibility = GONE
+        btn_grade.visibility = VISIBLE
+
+        tv_grade_detail_title.visibility = GONE
+        tv_grade_detail_hint.visibility = VISIBLE
+        tv_grade_detail.visibility = GONE
+        btn_grade_detail.visibility = GONE
+
+    }
+
+    private fun setGradeDetailUI(){
+        tv_grade_detail_title.visibility = VISIBLE
+        tv_grade_detail_hint.visibility = VISIBLE
+        tv_grade_detail.visibility = GONE
+        btn_grade_detail.visibility = VISIBLE
     }
 }
