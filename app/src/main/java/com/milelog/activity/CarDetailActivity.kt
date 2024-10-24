@@ -1,6 +1,7 @@
 package com.milelog.activity
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,6 +14,8 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.gson.Gson
@@ -20,6 +23,7 @@ import com.google.gson.reflect.TypeToken
 import com.milelog.CarDetail
 import com.milelog.PreferenceUtil
 import com.milelog.R
+import com.milelog.activity.MyDriveHistoryActivity.DriveHistoryAdapter
 import com.milelog.retrofit.response.CarDetailResponse
 import com.milelog.retrofit.response.GetRecentDrivingStatisticsResponse
 import com.milelog.retrofit.response.GradeDetailResponse
@@ -58,6 +62,7 @@ class CarDetailActivity: BaseRefreshActivity() {
     lateinit var btn_model_detail:ConstraintLayout
     lateinit var btn_grade:ConstraintLayout
     lateinit var btn_grade_detail:ConstraintLayout
+
     lateinit var tv_maker_hint:TextView
     lateinit var tv_maker:TextView
     lateinit var tv_model_hint:TextView
@@ -68,11 +73,12 @@ class CarDetailActivity: BaseRefreshActivity() {
     lateinit var tv_grade:TextView
     lateinit var tv_grade_detail_hint:TextView
     lateinit var tv_grade_detail:TextView
-    lateinit var tv_maker_title:TextView
-    lateinit var tv_model_title:TextView
-    lateinit var tv_model_detail_title:TextView
-    lateinit var tv_grade_title:TextView
-    lateinit var tv_grade_detail_title:TextView
+    lateinit var tv_model_title:ConstraintLayout
+    lateinit var tv_model_detail_title:ConstraintLayout
+    lateinit var tv_grade_title:ConstraintLayout
+    lateinit var tv_grade_detail_title:ConstraintLayout
+
+    lateinit var btn_next:ConstraintLayout
 
     var selectedMaker: MakerResponse? = null
     var selectedModel: ModelResponse? = null
@@ -110,6 +116,11 @@ class CarDetailActivity: BaseRefreshActivity() {
         tv_grade = findViewById(R.id.tv_grade)
         tv_grade_detail_hint = findViewById(R.id.tv_grade_detail_hint)
         tv_grade_detail = findViewById(R.id.tv_grade_detail)
+        tv_model_title = findViewById(R.id.tv_model_title)
+        tv_model_detail_title = findViewById(R.id.tv_model_detail_title)
+        tv_grade_title = findViewById(R.id.tv_grade_title)
+        tv_grade_detail_title = findViewById(R.id.tv_grade_detail_title)
+        btn_next = findViewById(R.id.btn_next)
     }
 
     private fun setListener(){
@@ -136,6 +147,13 @@ class CarDetailActivity: BaseRefreshActivity() {
 
         layout_select.setOnClickListener{
             layout_select.visibility = GONE
+        }
+
+        btn_next.setOnClickListener {
+            val intent = Intent(this@CarDetailActivity, LoadCarMoreInfoActivity::class.java)
+            intent.putExtra("carInfo",Gson().toJson(postMyCarResponse))
+            setResult(RESULT_OK, intent)
+            finish()
         }
 
     }
@@ -256,14 +274,31 @@ class CarDetailActivity: BaseRefreshActivity() {
                             btn_model.visibility = VISIBLE
 
                             selectedMaker = MakerResponse(carDetail.code, carDetail.name)
+                            postMyCarResponse.makerCd = carDetail.code
+
+
+                            tv_maker_hint.visibility = GONE
+                            tv_maker.visibility = VISIBLE
+                            tv_maker.text = carDetail.name
+
+                            layout_select.visibility = GONE
                         }
 
                         MODEL -> {
-                            tv_model_detail.visibility = VISIBLE
+                            tv_model_detail_title.visibility = VISIBLE
                             btn_model_detail.visibility = VISIBLE
 
                             selectedModel = ModelResponse(carDetail.code, carDetail.name)
+                            postMyCarResponse.modelCd = carDetail.code
 
+                            tv_model_hint.visibility = GONE
+                            tv_model.visibility = VISIBLE
+                            tv_model.text = carDetail.name
+
+                            layout_select.visibility = GONE
+
+                            btn_next.isSelected = true
+                            btn_next.isClickable = true
                         }
 
                         MODEL_DETAIL -> {
@@ -271,6 +306,13 @@ class CarDetailActivity: BaseRefreshActivity() {
                             btn_grade.visibility = VISIBLE
 
                             selectedModelDetail = ModelDetailResponse(carDetail.code, carDetail.name)
+                            postMyCarResponse.modelDetailCd = carDetail.code
+
+                            tv_model_detail_hint.visibility = GONE
+                            tv_model_detail.visibility = VISIBLE
+                            tv_model_detail.text = carDetail.name
+
+                            layout_select.visibility = GONE
 
                         }
 
@@ -279,11 +321,25 @@ class CarDetailActivity: BaseRefreshActivity() {
                             btn_grade_detail.visibility = VISIBLE
 
                             selectedGrade = GradeResponse(carDetail.code, carDetail.name)
+                            postMyCarResponse.gradeCd = carDetail.code
+
+                            tv_grade_hint.visibility = GONE
+                            tv_grade.visibility = VISIBLE
+                            tv_grade.text = carDetail.name
+
+                            layout_select.visibility = GONE
 
                         }
 
                         GRADE_DETAIL -> {
                             selectedGradeDetail = GradeDetailResponse(carDetail.code, carDetail.name)
+                            postMyCarResponse.gradeDetailCd = carDetail.code
+
+                            tv_grade_detail_hint.visibility = GONE
+                            tv_grade_detail.visibility = VISIBLE
+                            tv_grade_detail.text = carDetail.name
+
+                            layout_select.visibility = GONE
                         }
 
                         FUEL -> {

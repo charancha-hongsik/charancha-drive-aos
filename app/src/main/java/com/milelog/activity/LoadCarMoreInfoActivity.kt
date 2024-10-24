@@ -2,8 +2,11 @@ package com.milelog.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.gson.Gson
 import com.milelog.R
@@ -17,6 +20,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
     private lateinit var postMyCarResponse: PostMyCarResponse
     private lateinit var ib_arrow_register_car: ImageButton
     private lateinit var btn_car_more_info: ConstraintLayout
+    private lateinit var resultLauncher: ActivityResultLauncher<Intent>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,16 +44,29 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
         }
 
         btn_car_more_info.setOnClickListener {
-            startActivity(Intent(Intent(
-                this@LoadCarMoreInfoActivity,
-                CarDetailActivity::class.java
-            ).putExtra("carInfo", intent.getStringExtra("response"))))
+            resultLauncher.launch(
+                Intent(this@LoadCarMoreInfoActivity, CarDetailActivity::class.java)
+                    .putExtra("carInfo", intent.getStringExtra("response"))
+            )
         }
 
         val jsonString = intent.getStringExtra("response")
         val gson = Gson()
         postMyCarResponse = gson.fromJson(jsonString, PostMyCarResponse::class.java)
 
+        resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+            if(it.resultCode == RESULT_OK){
+                postMyCarResponse = gson.fromJson(it.data?.getStringExtra("carInfo"), PostMyCarResponse::class.java)
+                Log.d("testsetset","testestestestse postMyCarResponse makerCd :: " + postMyCarResponse.makerCd)
+                Log.d("testsetset","testestestestse postMyCarResponse modelCd :: " + postMyCarResponse.modelCd)
+                Log.d("testsetset","testestestestse postMyCarResponse modelDetailCd :: " + postMyCarResponse.modelDetailCd)
+                Log.d("testsetset","testestestestse postMyCarResponse gradeCd :: " + postMyCarResponse.gradeCd)
+                Log.d("testsetset","testestestestse postMyCarResponse gradeDetailCd :: " + postMyCarResponse.gradeDetailCd)
+
+
+                setInfo()
+            }
+        }
     }
 
     private fun setInfo(){
