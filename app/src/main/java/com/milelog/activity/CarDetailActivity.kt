@@ -1,8 +1,13 @@
 package com.milelog.activity
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -11,10 +16,39 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.milelog.CarDetail
+import com.milelog.PreferenceUtil
 import com.milelog.R
+import com.milelog.retrofit.response.CarDetailResponse
+import com.milelog.retrofit.response.GetRecentDrivingStatisticsResponse
+import com.milelog.retrofit.response.GradeDetailResponse
+import com.milelog.retrofit.response.GradeResponse
+import com.milelog.retrofit.response.MakerResponse
+import com.milelog.retrofit.response.ModelDetailResponse
+import com.milelog.retrofit.response.ModelResponse
 import com.milelog.retrofit.response.PostMyCarResponse
+import com.milelog.retrofit.response.TermsSummaryResponse
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.lang.reflect.Type
 
+/**
+ * 제조사, 모델명이 필수값
+ * 필수값 선택 시 저장할게요 활성화
+ */
 class CarDetailActivity: BaseRefreshActivity() {
+    companion object{
+        const val FUEL = "fuel"
+        const val MAKER = "maker"
+        const val MODEL = "model"
+        const val MODEL_DETAIL = "modelDetail"
+        const val GRADE = "grade"
+        const val GRADE_DETAIL = "gradeDetail"
+    }
+
     private lateinit var postMyCarResponse: PostMyCarResponse
     lateinit var tv_confirm_mycar_info1:TextView
     lateinit var listView: ListView
@@ -34,6 +68,17 @@ class CarDetailActivity: BaseRefreshActivity() {
     lateinit var tv_grade:TextView
     lateinit var tv_grade_detail_hint:TextView
     lateinit var tv_grade_detail:TextView
+    lateinit var tv_maker_title:TextView
+    lateinit var tv_model_title:TextView
+    lateinit var tv_model_detail_title:TextView
+    lateinit var tv_grade_title:TextView
+    lateinit var tv_grade_detail_title:TextView
+
+    var selectedMaker: MakerResponse? = null
+    var selectedModel: ModelResponse? = null
+    var selectedModelDetail: ModelDetailResponse? = null
+    var selectedGrade: GradeResponse? = null
+    var selectedGradeDetail: GradeDetailResponse? = null
 
 
 
@@ -69,31 +114,23 @@ class CarDetailActivity: BaseRefreshActivity() {
 
     private fun setListener(){
         btn_maker.setOnClickListener {
-            setSelector()
-            layout_select.visibility = VISIBLE
+            setSelector(MAKER)
         }
 
         btn_model.setOnClickListener {
-            setSelector()
-            layout_select.visibility = VISIBLE
-
+            setSelector(MODEL)
         }
 
         btn_model_detail.setOnClickListener {
-            setSelector()
-            layout_select.visibility = VISIBLE
-
+            setSelector(MODEL_DETAIL)
         }
 
         btn_grade.setOnClickListener {
-            setSelector()
-            layout_select.visibility = VISIBLE
-
+            setSelector(GRADE)
         }
 
         btn_grade_detail.setOnClickListener {
-            setSelector()
-            layout_select.visibility = VISIBLE
+            setSelector(GRADE_DETAIL)
 
         }
 
@@ -111,33 +148,152 @@ class CarDetailActivity: BaseRefreshActivity() {
         tv_confirm_mycar_info1.text = postMyCarResponse.carName + "\n차량명이 맞으신가요?"
     }
 
-    private fun setSelector(){
-        val itemList: MutableList<String?> = ArrayList()
+    private fun setSelector(key:String){
+        var parentCode:String? = null
+        when(key){
+            MAKER -> {
+                parentCode = null
+            }
 
-        // 데이터 추가
-        itemList.add("가솔린")
-        itemList.add("디젤")
-        itemList.add("LPG")
-        itemList.add("전기")
-        itemList.add("수소")
-        itemList.add("CNG")
-        itemList.add("가솔린+LPG")
-        itemList.add("가솔린+CNG")
-        itemList.add("가솔린+전기")
-        itemList.add("디젤+전기")
-        itemList.add("LPG+전기")
-        itemList.add("기타")
+            MODEL -> {
+                parentCode = postMyCarResponse.makerCd
+            }
 
+            MODEL_DETAIL -> {
+                parentCode = postMyCarResponse.modelCd
 
-        // adapter 생성
-        val adapter = ArrayAdapter(this, R.layout.edit_fuel_textview, R.id.tv_fuel, itemList)
+            }
 
+            GRADE -> {
+                parentCode = postMyCarResponse.modelDetailCd
 
-        // listView에 adapter 연결
-        listView.adapter = adapter
-        listView.setOnItemClickListener { parent, view, position, l ->
-            val fuel = parent.getItemAtPosition(position) as String
-            layout_select.visibility = GONE
+            }
+
+            GRADE_DETAIL -> {
+                parentCode = postMyCarResponse.gradeCd
+            }
+
+            FUEL -> {
+                parentCode = null
+            }
+        }
+
+        apiService().getCharanchaCode("Bearer " + PreferenceUtil.getPref(this@CarDetailActivity, PreferenceUtil.ACCESS_TOKEN, "")!!, key, parentCode).enqueue(object:Callback<ResponseBody>{
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+
+                val jsonString = response.body()?.string()
+
+                val gson = Gson()
+                val type: Type = object : TypeToken<List<CarDetailResponse>>() {}.type
+                val carDetails:List<CarDetailResponse> = gson.fromJson(jsonString, type)
+
+                val itemList: MutableList<CarDetail> = ArrayList()
+
+                when(key){
+                    MAKER -> {
+                        for(carDetail in carDetails)
+                            itemList.add(CarDetail(carDetail.makerCd, carDetail.makerNm))
+                    }
+
+                    MODEL -> {
+                        for(carDetail in carDetails)
+                            itemList.add(CarDetail(carDetail.modelCd, carDetail.modelNm))
+                    }
+
+                    MODEL_DETAIL -> {
+                        for(carDetail in carDetails)
+                            itemList.add(CarDetail(carDetail.modelDetailCd, carDetail.modelDetailNm))
+
+                    }
+
+                    GRADE -> {
+                        for(carDetail in carDetails)
+                            itemList.add(CarDetail(carDetail.gradeCd, carDetail.gradeNm))
+
+                    }
+
+                    GRADE_DETAIL -> {
+                        for(carDetail in carDetails)
+                            itemList.add(CarDetail(carDetail.gradeDetailCd, carDetail.gradeDetailNm))
+                    }
+
+                    FUEL -> {
+                        for(carDetail in carDetails)
+                            itemList.add(CarDetail(carDetail.code, carDetail.codeNm))
+                    }
+                }
+
+                // adapter 생성
+                val adapter = CarDetailAdapter(this@CarDetailActivity, R.layout.edit_fuel_textview, itemList, key)
+
+                // listView에 adapter 연결
+                listView.adapter = adapter
+
+                layout_select.visibility = VISIBLE
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                Log.d("teestsetestst","testeststestst :: " + t.toString())
+            }
+
+        })
+    }
+
+    inner class CarDetailAdapter(context: Context, resource: Int, items: List<CarDetail>, val key:String) : ArrayAdapter<CarDetail>(context, resource, items) {
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+            val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.edit_fuel_textview, parent, false)
+
+            val carDetail = getItem(position)
+
+            carDetail?.let{
+                val tv_fuel = view.findViewById<TextView>(R.id.tv_fuel)
+                tv_fuel.text = carDetail.name
+
+                tv_fuel.setOnClickListener {
+                    when(key){
+                        MAKER -> {
+                            tv_model_title.visibility = VISIBLE
+                            btn_model.visibility = VISIBLE
+
+                            selectedMaker = MakerResponse(carDetail.code, carDetail.name)
+                        }
+
+                        MODEL -> {
+                            tv_model_detail.visibility = VISIBLE
+                            btn_model_detail.visibility = VISIBLE
+
+                            selectedModel = ModelResponse(carDetail.code, carDetail.name)
+
+                        }
+
+                        MODEL_DETAIL -> {
+                            tv_grade_title.visibility = VISIBLE
+                            btn_grade.visibility = VISIBLE
+
+                            selectedModelDetail = ModelDetailResponse(carDetail.code, carDetail.name)
+
+                        }
+
+                        GRADE -> {
+                            tv_grade_detail_title.visibility = VISIBLE
+                            btn_grade_detail.visibility = VISIBLE
+
+                            selectedGrade = GradeResponse(carDetail.code, carDetail.name)
+
+                        }
+
+                        GRADE_DETAIL -> {
+                            selectedGradeDetail = GradeDetailResponse(carDetail.code, carDetail.name)
+                        }
+
+                        FUEL -> {
+
+                        }
+                    }
+                }
+            }
+
+            return view
         }
     }
 }

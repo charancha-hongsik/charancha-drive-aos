@@ -81,7 +81,7 @@ interface ApiServiceInterface {
 
     // 차란차 코드 조회 API
     @GET("api/v1/cars/-/charancha-codes/{key}")
-    fun getCharanchaCode(@Header("Authorization") token: String, @Query("parentCode") parentCode: String, @Path("key") key: String): Call<ResponseBody>
+    fun getCharanchaCode(@Header("Authorization") token: String, @Path("key") key: String, @Query("parentCode") parentCode: String?): Call<ResponseBody>
 
     /**
      * 유저 관련

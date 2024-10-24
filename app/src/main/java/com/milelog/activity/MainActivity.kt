@@ -40,6 +40,7 @@ import com.milelog.DividerItemDecoration
 import com.milelog.PreferenceUtil
 import com.milelog.PreferenceUtil.HAVE_BEEN_HOME
 import com.milelog.R
+import com.milelog.activity.CarDetailActivity.Companion.MODEL
 import com.milelog.activity.DetectedStatusActivity.DetectedStatusAdapter
 import com.milelog.room.database.DriveDatabase
 import com.milelog.room.entity.AlarmEntity
