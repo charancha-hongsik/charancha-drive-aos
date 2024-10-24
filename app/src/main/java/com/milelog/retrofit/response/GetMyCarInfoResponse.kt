@@ -20,4 +20,5 @@ data class GetMyCarInfoResponse (
     val gradeDetailNm:String,
     val fuelCd:String,
     val fuelNm:String,
+    val modelDetailImageUrl:String
 )
