@@ -200,21 +200,21 @@ class CarDetailActivity: BaseRefreshActivity() {
             }
 
             MODEL -> {
-                parentCode = postMyCarResponse.makerCd
+                parentCode = selectedMaker?.makerCd
             }
 
             MODEL_DETAIL -> {
-                parentCode = postMyCarResponse.modelCd
+                parentCode = selectedModel?.modelCd
 
             }
 
             GRADE -> {
-                parentCode = postMyCarResponse.modelDetailCd
+                parentCode = selectedModelDetail?.modelDetailCd
 
             }
 
             GRADE_DETAIL -> {
-                parentCode = postMyCarResponse.gradeCd
+                parentCode = selectedGrade?.gradeCd
             }
 
             FUEL -> {
@@ -420,6 +420,9 @@ class CarDetailActivity: BaseRefreshActivity() {
         tv_grade_detail_hint.visibility = VISIBLE
         tv_grade_detail.visibility = GONE
         btn_grade_detail.visibility = GONE
+
+        btn_next.isSelected = false
+        btn_next.isClickable = false
 
 
     }
