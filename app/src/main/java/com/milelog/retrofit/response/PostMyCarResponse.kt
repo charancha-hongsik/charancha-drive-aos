@@ -8,11 +8,17 @@ data class PostMyCarResponse (
     val modelYear:String,
     val releaseDt:String,
     var makerCd:String,
+    var makerNm:String,
     var modelCd:String,
+    var modelNm:String,
     var modelDetailCd:String,
+    var modelDetailNm:String,
     var gradeCd:String,
+    var gradeNm:String,
     var gradeDetailCd:String,
+    var gradeDetailNm:String,
     val displacement:Int,
     var fuelCd:String,
+    var fuelNm:String,
     val trimHint:String
 )
