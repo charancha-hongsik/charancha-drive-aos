@@ -303,6 +303,10 @@ class CarDetailActivity: BaseRefreshActivity() {
                             setModelUI()
 
                             selectedMaker = MakerResponse(carDetail.code, carDetail.name)
+                            selectedModel = null
+                            selectedModelDetail = null
+                            selectedGrade = null
+                            selectedGradeDetail = null
 
                             layout_select.visibility = GONE
                         }
@@ -315,6 +319,9 @@ class CarDetailActivity: BaseRefreshActivity() {
                             setModelDetailUI()
 
                             selectedModel = ModelResponse(carDetail.code, carDetail.name)
+                            selectedModelDetail = null
+                            selectedGrade = null
+                            selectedGradeDetail = null
 
                             layout_select.visibility = GONE
 
@@ -330,6 +337,8 @@ class CarDetailActivity: BaseRefreshActivity() {
                             setGradeUI()
 
                             selectedModelDetail = ModelDetailResponse(carDetail.code, carDetail.name)
+                            selectedGrade = null
+                            selectedGradeDetail = null
 
                             layout_select.visibility = GONE
 
@@ -341,6 +350,7 @@ class CarDetailActivity: BaseRefreshActivity() {
                             tv_grade.text = carDetail.name
 
                             setGradeDetailUI()
+                            selectedGradeDetail = null
 
                             tv_grade_detail_title.visibility = VISIBLE
                             btn_grade_detail.visibility = VISIBLE
