@@ -163,16 +163,25 @@ class CarDetailActivity: BaseRefreshActivity() {
             selectedModelDetail?.let{
                 postMyCarResponse.modelDetailCd = it.modelDetailCd
                 postMyCarResponse.modelDetailNm = it.modelDetailNm
+            }?:{
+                postMyCarResponse.modelDetailCd = null
+                postMyCarResponse.modelDetailNm = null
             }
 
             selectedGrade?.let{
                 postMyCarResponse.gradeCd = it.gradeCd
                 postMyCarResponse.gradeNm = it.gradeNm
+            }?:{
+                postMyCarResponse.gradeCd = null
+                postMyCarResponse.gradeNm = null
             }
 
             selectedGradeDetail?.let{
                 postMyCarResponse.gradeDetailCd = it.gradeDetailCd
                 postMyCarResponse.gradeDetailNm = it.gradeDetailNm
+            }?:{
+                postMyCarResponse.gradeDetailCd = null
+                postMyCarResponse.gradeDetailNm = null
             }
 
 
