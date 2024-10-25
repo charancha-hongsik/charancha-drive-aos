@@ -21,6 +21,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
     private lateinit var ib_arrow_register_car: ImageButton
     private lateinit var btn_car_more_info: ConstraintLayout
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
+    private lateinit var tv_car_name:TextView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,6 +39,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
         tv_car_id = findViewById(R.id.tv_car_id)
         ib_arrow_register_car = findViewById(R.id.ib_arrow_register_car)
         btn_car_more_info = findViewById(R.id.btn_car_more_info)
+        tv_car_name = findViewById(R.id.tv_car_name)
 
         ib_arrow_register_car.setOnClickListener{
             finish()
@@ -57,13 +59,6 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
         resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
             if(it.resultCode == RESULT_OK){
                 postMyCarResponse = gson.fromJson(it.data?.getStringExtra("carInfo"), PostMyCarResponse::class.java)
-                Log.d("testsetset","testestestestse postMyCarResponse makerCd :: " + postMyCarResponse.makerCd)
-                Log.d("testsetset","testestestestse postMyCarResponse modelCd :: " + postMyCarResponse.modelCd)
-                Log.d("testsetset","testestestestse postMyCarResponse modelDetailCd :: " + postMyCarResponse.modelDetailCd)
-                Log.d("testsetset","testestestestse postMyCarResponse gradeCd :: " + postMyCarResponse.gradeCd)
-                Log.d("testsetset","testestestestse postMyCarResponse gradeDetailCd :: " + postMyCarResponse.gradeDetailCd)
-
-
                 setInfo()
             }
         }
@@ -75,6 +70,20 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
         tv_releaseDt.text = postMyCarResponse.releaseDt
         tv_car_id.text = postMyCarResponse.vehicleIdentificationNumber
 
+        if(postMyCarResponse.makerCd == null && postMyCarResponse.modelCd == null)
+            tv_car_name.text = "선택해 주세요"
+        else{
+            val carName = listOfNotNull(
+                postMyCarResponse.makerNm,
+                if (postMyCarResponse.modelDetailNm.isNullOrEmpty()) postMyCarResponse.modelNm else null, // modelDetailNm이 없을 때만 modelNm 추가
+                postMyCarResponse.modelDetailNm,
+                postMyCarResponse.gradeNm,
+                postMyCarResponse.gradeDetailNm
+            ).filterNot { it.isNullOrEmpty() } // null이나 빈 문자열을 필터링
+                .joinToString(" ")
+
+            tv_car_name.text = carName
+        }
 
 //        val gson = Gson()
 //        val jsonParam =

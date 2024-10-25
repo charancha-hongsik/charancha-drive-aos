@@ -163,7 +163,7 @@ class CarDetailActivity: BaseRefreshActivity() {
             selectedModelDetail?.let{
                 postMyCarResponse.modelDetailCd = it.modelDetailCd
                 postMyCarResponse.modelDetailNm = it.modelDetailNm
-            }?:{
+            }?: run{
                 postMyCarResponse.modelDetailCd = null
                 postMyCarResponse.modelDetailNm = null
             }
@@ -171,7 +171,7 @@ class CarDetailActivity: BaseRefreshActivity() {
             selectedGrade?.let{
                 postMyCarResponse.gradeCd = it.gradeCd
                 postMyCarResponse.gradeNm = it.gradeNm
-            }?:{
+            }?: run {
                 postMyCarResponse.gradeCd = null
                 postMyCarResponse.gradeNm = null
             }
@@ -179,10 +179,12 @@ class CarDetailActivity: BaseRefreshActivity() {
             selectedGradeDetail?.let{
                 postMyCarResponse.gradeDetailCd = it.gradeDetailCd
                 postMyCarResponse.gradeDetailNm = it.gradeDetailNm
-            }?:{
+            }?: run{
                 postMyCarResponse.gradeDetailCd = null
                 postMyCarResponse.gradeDetailNm = null
             }
+
+            postMyCarResponse.carName = postMyCarResponse.makerNm + " " + postMyCarResponse.modelDetailNm
 
 
             val intent = Intent(this@CarDetailActivity, LoadCarMoreInfoActivity::class.java)
