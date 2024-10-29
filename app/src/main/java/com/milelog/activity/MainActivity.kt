@@ -1156,10 +1156,8 @@ class MainActivity : BaseRefreshActivity() {
 
     private fun setBluetoothService(){
         if(CommonUtil.checkRequiredPermissions(this@MainActivity)){
-            if(!isMyServiceRunning(BluetoothService::class.java)){
-                val bluetoothIntent = Intent(this, BluetoothService::class.java)
-                startForegroundService(bluetoothIntent)
-            }
+            val bluetoothIntent = Intent(this, BluetoothService::class.java)
+            startForegroundService(bluetoothIntent)
         }else{
             if(isMyServiceRunning(BluetoothService::class.java)){
                 val bluetoothIntent = Intent(this, BluetoothService::class.java)
