@@ -9,6 +9,7 @@ import com.milelog.retrofit.request.PostDrivingInfoRequest
 import com.milelog.retrofit.response.GetAccountResponse
 import com.milelog.retrofit.response.GetDrivingStatisticsResponse
 import com.milelog.retrofit.response.GetManageScoreResponse
+import com.milelog.retrofit.response.GetMyCarInfoItem
 import com.milelog.retrofit.response.GetMyCarInfoResponse
 import com.milelog.retrofit.response.PostDrivingInfoResponse
 import com.milelog.room.database.DriveDatabase
@@ -163,9 +164,7 @@ class MainViewModel: BaseViewModel() {
 
                 if(response.code() == 200 || response.code() == 201){
                     val jsonString = response.body()?.string()
-
-                    val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
-                    val getMyCarInfoResponses:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
+                    val getMyCarInfoResponses = Gson().fromJson(jsonString,GetMyCarInfoResponse::class.java)
 
                     _myCarInfoResult.value = Event(MyCarInfoState.Success(getMyCarInfoResponses))
 
@@ -193,7 +192,7 @@ class MainViewModel: BaseViewModel() {
                 if(response.code() == 200 || response.code() == 201){
                     val getMyCarInfoResponse = Gson().fromJson(
                         response.body()?.string(),
-                        GetMyCarInfoResponse::class.java
+                        GetMyCarInfoItem::class.java
                     )
 
                     _carInfoInquiryByCarId.value = Event(CarInfoInquiryByCarIdState.Success(getMyCarInfoResponse))
@@ -290,10 +289,7 @@ class MainViewModel: BaseViewModel() {
                             response.body()?.string(),
                             GetManageScoreResponse::class.java
                         )
-
                         _recentManageScoreResult.value = Event(GetManageScoreState.Success(getManageScoreResponse))
-
-
                     } else {
                         _recentManageScoreResult.value = Event(GetManageScoreState.Error(response.code(), response.message()))
 

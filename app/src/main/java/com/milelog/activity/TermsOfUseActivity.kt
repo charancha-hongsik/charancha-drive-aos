@@ -234,16 +234,13 @@ class TermsOfUseActivity: BaseActivity() {
                     ) {
                         if(response.code() == 200 || response.code() == 201){
                             if(PreferenceUtil.getBooleanPref(this@TermsOfUseActivity, PreferenceUtil.PERMISSION_ALL_CHECKED, false)){
-                                apiService().getMyCarInfo("Bearer " + PreferenceUtil.getPref(this@TermsOfUseActivity, PreferenceUtil.ACCESS_TOKEN, "")).enqueue(object :Callback<ResponseBody>{
+                                apiService().getMyCarCount("Bearer " + PreferenceUtil.getPref(this@TermsOfUseActivity, PreferenceUtil.ACCESS_TOKEN, "")).enqueue(object :Callback<ResponseBody>{
                                     override fun onResponse(
                                         call: Call<ResponseBody>,
                                         response: Response<ResponseBody>
                                     ) {
                                         if(response.code() == 200 || response.code() == 201){
                                             val jsonString = response.body()?.string()
-
-                                            val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
-                                            val getMyCarInfoResponse:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
 
                                             if(ibTerms5.isSelected){
                                                 showCustomToast(this@TermsOfUseActivity,getTodayFormattedDate() + " 마일로그 마케팅 정보 수신 동의되었습니다.")
@@ -253,7 +250,7 @@ class TermsOfUseActivity: BaseActivity() {
                                             }
 
 
-                                            if(getMyCarInfoResponse.size > 0){
+                                            if(jsonString!!.toInt() > 0){
                                                 startActivity(Intent(this@TermsOfUseActivity, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
 
                                                 finish()

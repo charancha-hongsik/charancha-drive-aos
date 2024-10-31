@@ -5,24 +5,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
-import android.view.View.GONE
 import android.view.animation.TranslateAnimation
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.milelog.PreferenceUtil
 import com.milelog.R
 import com.milelog.viewmodel.BaseViewModel
 import com.milelog.viewmodel.LoadCarInfoViewModel
-import com.milelog.viewmodel.MainViewModel
-import com.milelog.viewmodel.state.AccountState
 import com.milelog.viewmodel.state.GetCarInfoInquiryState
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 
 class LoadCarInfoActivity: BaseRefreshActivity() {
@@ -38,6 +31,7 @@ class LoadCarInfoActivity: BaseRefreshActivity() {
 
     var carNo:String? = null
     var carOwner:String? = null
+    var add:Boolean = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,9 +46,11 @@ class LoadCarInfoActivity: BaseRefreshActivity() {
 
         carNo = intent.getStringExtra("carNo")
         carOwner = intent.getStringExtra("carOwner")
+        add = intent.getBooleanExtra("add",false)
 
         setResources()
         setObserver()
+
         if(carNo != null && carOwner != null)
             loadCarInfoViewModel.getCarInfoInquiry(carNo!!, carOwner!!)
     }
@@ -69,9 +65,10 @@ class LoadCarInfoActivity: BaseRefreshActivity() {
                     }
 
                     is GetCarInfoInquiryState.Success -> {
-                        val intent = Intent(this@LoadCarInfoActivity, RegisterCarActivity::class.java)
-                        intent.putExtra("response", state.data)
-                        setResult(RESULT_OK, intent)
+                        val intent = Intent(this@LoadCarInfoActivity, LoadCarMoreInfoActivity::class.java)
+                        intent.putExtra("carInfo", state.data)
+                        intent.putExtra("add",add)
+                        startActivity(intent)
                         finish()
                     }
 
@@ -80,16 +77,12 @@ class LoadCarInfoActivity: BaseRefreshActivity() {
                             logout()
                         }else{
                             showCustomToast(this@LoadCarInfoActivity,state.message)
-
-                            val intent = Intent(this@LoadCarInfoActivity, RegisterCarActivity::class.java)
-                            setResult(RESULT_CANCELED, intent)
                             finish()
                         }
                     }
 
                     is GetCarInfoInquiryState.Empty -> {
-                        val intent = Intent(this@LoadCarInfoActivity, RegisterCarActivity::class.java)
-                        setResult(RESULT_CANCELED, intent)
+                        showCustomToast(this@LoadCarInfoActivity, "empty")
                         finish()
                     }
                 }

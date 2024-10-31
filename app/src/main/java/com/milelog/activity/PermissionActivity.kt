@@ -262,7 +262,7 @@ class PermissionActivity: BaseActivity(){
         /**
          * 차량등록이 되어있는지 체크 후 Main으로 갈지 정해야 함
          */
-        apiService().getMyCarInfo("Bearer " + PreferenceUtil.getPref(this@PermissionActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!).enqueue(object :
+        apiService().getMyCarCount("Bearer " + PreferenceUtil.getPref(this@PermissionActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!).enqueue(object :
             Callback<ResponseBody> {
             override fun onResponse(
                 call: Call<ResponseBody>,
@@ -271,10 +271,7 @@ class PermissionActivity: BaseActivity(){
                 if(response.code() == 200 || response.code() == 201){
                     val jsonString = response.body()?.string()
 
-                    val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
-                    val getMyCarInfoResponse:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
-
-                    if(getMyCarInfoResponse.size > 0){
+                    if(jsonString!!.toInt() > 0){
                         PreferenceUtil.putBooleanPref(this@PermissionActivity, PreferenceUtil.PERMISSION_ALL_CHECKED, true)
 
                         startActivity(Intent(this@PermissionActivity, MainActivity::class.java).addFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK))

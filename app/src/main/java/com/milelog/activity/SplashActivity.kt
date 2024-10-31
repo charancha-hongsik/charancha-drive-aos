@@ -102,7 +102,9 @@ class SplashActivity: BaseActivity() {
 
                 }
                 is GetMyCarInfoState.Success -> {
-                    if(state.data.isNotEmpty()){
+                    Log.d("testestestsetest","testestestset size :: " + state.data)
+
+                    if(state.data > 0){
                         startActivity(Intent(this@SplashActivity, MainActivity::class.java).addFlags(
                             Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         ).putExtra("deeplink",intent.getBooleanExtra("deeplink",false)))

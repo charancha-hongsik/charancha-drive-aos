@@ -6,10 +6,11 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "myCars")
 data class MyCarsEntity(
-    @ColumnInfo(name="id") var id: String,
+    @ColumnInfo(name="id") var id: String?,
     @ColumnInfo(name="name") var name: String,
-    @ColumnInfo(name="number") var number: String,
-    @ColumnInfo(name="bluetooth_mac_address") var bluetooth_mac_address: String?
+    @ColumnInfo(name="number") var number: String?,
+    @ColumnInfo(name="bluetooth_mac_address") var bluetooth_mac_address: String?,
+    @ColumnInfo(name="bluetooth_name") var bluetooth_name: String?
 ){
     @PrimaryKey(autoGenerate = true)
     var idx: Long = 0

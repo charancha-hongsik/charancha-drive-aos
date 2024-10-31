@@ -16,6 +16,7 @@ import android.os.Build
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -26,6 +27,7 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.google.android.gms.location.*
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.milelog.CommonUtil
 import com.milelog.CommonUtil.apiService
 import com.milelog.CommonUtil.getDateFromTimeStampToHH
@@ -37,6 +39,7 @@ import com.milelog.NotificationDeleteReceiver.Companion.ACTION_RESTART_NOTIFICAT
 import com.milelog.PreferenceUtil
 import com.milelog.PreferenceUtil.MYCAR
 import com.milelog.R
+import com.milelog.activity.RegisterCarActivity
 import com.milelog.retrofit.request.PostDrivingInfoRequest
 import com.milelog.retrofit.response.PostDrivingInfoResponse
 import com.milelog.room.database.DriveDatabase
@@ -45,6 +48,7 @@ import com.milelog.room.dto.EachGpsDtoForApp
 import com.milelog.room.entity.DetectUserEntity
 import com.milelog.room.entity.DriveForApi
 import com.milelog.room.entity.DriveForApp
+import com.milelog.room.entity.MyCarsEntity
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -165,6 +169,8 @@ class BluetoothService : Service() {
         NotificationManager.IMPORTANCE_DEFAULT
     )
 
+    var drivingMyCarsEntity: MyCarsEntity? = null
+
     override fun onBind(p0: Intent?): IBinder? {
         TODO("Not yet implemented")
     }
@@ -270,19 +276,34 @@ class BluetoothService : Service() {
                         val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
 
                         pairedDevices?.forEach { device ->
-                            if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
-                                if(isBluetoothDeviceConnected(device)){
-                                    driveDatabase?.detectUserDao()?.insert(
-                                        DetectUserEntity(
-                                            user_id = "",
-                                            verification = "L2",
-                                            start_stop = "Bluetooth(start)",
-                                            timestamp = System.currentTimeMillis().toString(),
-                                            sensor_state = fusedLocationClient != null
-                                        )
-                                    )
+                            if(drivingMyCarsEntity == null){
+                                if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
+                                    val myCarsListOnDevice:MutableList<MyCarsEntity> = mutableListOf()
 
-                                    startSensor(L2)
+                                    PreferenceUtil.getPref(this@BluetoothService, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
+                                        if(it != "") {
+                                            val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
+                                            myCarsListOnDevice.addAll(Gson().fromJson(it, type))
+                                        }
+
+                                        drivingMyCarsEntity = myCarsListOnDevice.find { it.bluetooth_mac_address == device.address } ?: MyCarsEntity(null,device.name,null,null,null)
+
+                                        if(isBluetoothDeviceConnected(device)){
+                                            driveDatabase?.detectUserDao()?.insert(
+                                                DetectUserEntity(
+                                                    user_id = "",
+                                                    verification = "L2",
+                                                    start_stop = "Bluetooth(start)",
+                                                    timestamp = System.currentTimeMillis().toString(),
+                                                    sensor_state = fusedLocationClient != null
+                                                )
+                                            )
+
+                                            startSensor(L2)
+                                        }
+
+
+                                    }
                                 }
                             }
                         }
@@ -293,19 +314,23 @@ class BluetoothService : Service() {
 
                         val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
                         pairedDevices?.forEach { device ->
-                            if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
-                                if (!isBluetoothDeviceConnected(device)) {
-                                    driveDatabase?.detectUserDao()?.insert(
-                                        DetectUserEntity(
-                                            user_id = "",
-                                            verification = "L2",
-                                            start_stop = "Bluetooth(stop)",
-                                            timestamp = System.currentTimeMillis().toString(),
-                                            sensor_state = fusedLocationClient != null
-                                        )
-                                    )
+                            drivingMyCarsEntity?.let{ drivingCar ->
+                                if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
+                                    if (!isBluetoothDeviceConnected(device)) {
+                                        if(drivingCar.name.equals(device.name)){
+                                            driveDatabase?.detectUserDao()?.insert(
+                                                DetectUserEntity(
+                                                    user_id = "",
+                                                    verification = "L2",
+                                                    start_stop = "Bluetooth(stop)",
+                                                    timestamp = System.currentTimeMillis().toString(),
+                                                    sensor_state = fusedLocationClient != null
+                                                )
+                                            )
 
-                                    stopSensor(L2)
+                                            stopSensor(L2)
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -476,11 +501,13 @@ class BluetoothService : Service() {
                     }
                     fusedLocationClient?.removeLocationUpdates(locationCallback)
                     fusedLocationClient = null
+                    drivingMyCarsEntity = null
                 }
             }
         }catch (e:Exception){
             fusedLocationClient?.removeLocationUpdates(locationCallback)
             fusedLocationClient = null
+            drivingMyCarsEntity = null
         }
     }
 
@@ -492,11 +519,13 @@ class BluetoothService : Service() {
                 }
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
+                drivingMyCarsEntity = null
 
             }
         }catch(e:Exception){
             fusedLocationClient?.removeLocationUpdates(locationCallback)
             fusedLocationClient = null
+            drivingMyCarsEntity = null
         }
     }
 
@@ -505,10 +534,12 @@ class BluetoothService : Service() {
             if (fusedLocationClient != null) {
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
+                drivingMyCarsEntity = null
             }
         }catch(e:Exception){
             fusedLocationClient?.removeLocationUpdates(locationCallback)
             fusedLocationClient = null
+            drivingMyCarsEntity = null
         }
     }
 
@@ -693,8 +724,10 @@ class BluetoothService : Service() {
     private fun callApi(dataForApi:DriveForApi, dataForApp: DriveForApp){
         dataForApi.endTimestamp = System.currentTimeMillis()
 
+        val carId = drivingMyCarsEntity?.id ?: PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!
+
         val postDriveDtoForApi = PostDrivingInfoRequest(
-            userCarId=PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            userCarId=carId,
             startTimestamp = dataForApi.startTimestamp,
             endTimestamp = dataForApi.endTimestamp,
             verification = dataForApi.verification,

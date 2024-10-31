@@ -56,7 +56,7 @@ interface ApiServiceInterface {
      * 자동차 등록 관련
      */
     // 자동차등록원부 조회
-    @GET("api/v1/cars/infoinquiry")
+    @GET("api/v1/cars/-/infoinquiry")
     fun getCarInfoInquiry(@Header("Authorization") token: String, @Query("licensePlateNumber") licensePlateNumber: String, @Query("ownerName") ownerName: String): Call<ResponseBody>
 
     // 내가 등록한 개인 차량 정보 조회
@@ -73,7 +73,20 @@ interface ApiServiceInterface {
 
     // 내가 등록한 개인 차량 목록 조회
     @GET("api/v1/me/cars/-/user-cars")
-    fun getMyCarInfo(@Header("Authorization") token: String): Call<ResponseBody>
+    fun getMyCarInfo(
+        @Header("Authorization") token: String,
+        @Query("size") size: Int? = null,
+        @Query("order") order: String? = null,
+        @Query("afterCursor") afterCursor: String? = null,
+        @Query("beforeCursor") beforeCursor: String? = null,
+        @Query("key") key: String? = null,
+        @Query("makerCd") makerCd: String? = null,
+        @Query("modelCd") modelCd: String? = null,
+        @Query("modelDetailCd") modelDetailCd: String? = null,
+        @Query("gradeCd") gradeCd: String? = null,
+        @Query("gradeDetailCd") gradeDetailCd: String? = null,
+        @Query("fuelCd") fuelCd: String? = null,
+    ): Call<ResponseBody>
 
     // 내 개인 차량 등록
     @POST("api/v1/me/cars/user-cars")
@@ -81,7 +94,18 @@ interface ApiServiceInterface {
 
     // 차란차 코드 조회 API
     @GET("api/v1/cars/-/charancha-codes/{key}")
-    fun getCharanchaCode(@Header("Authorization") token: String, @Query("parentCode") parentCode: String, @Path("key") key: String): Call<ResponseBody>
+    fun getCharanchaCode(@Header("Authorization") token: String, @Path("key") key: String, @Query("parentCode") parentCode: String?): Call<ResponseBody>
+
+    // 유저차량 수 조회 API
+    @GET("api/v1/me/cars/-/user-cars/-/count")
+    fun getMyCarCount(
+        @Header("Authorization") token: String,
+        @Query("makerCd") makerCd: String? = null,
+        @Query("modelCd") modelCd: String? = null,
+        @Query("modelDetailCd") modelDetailCd: String? = null,
+        @Query("gradeCd") gradeCd: String? = null,
+        @Query("gradeDetailCd") gradeDetailCd: String? = null,
+        @Query("fuelCd") fuelCd: String? = null): Call<ResponseBody>
 
     /**
      * 유저 관련

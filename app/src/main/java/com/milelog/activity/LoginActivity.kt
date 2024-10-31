@@ -369,11 +369,10 @@ class LoginActivity: BaseActivity() {
                                             if(response.code() == 200 || response.code() == 201){
                                                 val jsonString = response.body()?.string()
 
-                                                val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
-                                                val getMyCarInfoResponse:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
+                                                val getMyCarInfoResponse:GetMyCarInfoResponse = Gson().fromJson(jsonString, GetMyCarInfoResponse::class.java)
 
-                                                if(getMyCarInfoResponse.size > 0){
-                                                    PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.get(0).id)
+                                                if(getMyCarInfoResponse.items.size > 0){
+                                                    PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.items.get(0).id)
                                                     startActivity(Intent(this@LoginActivity, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
 
                                                     finish()

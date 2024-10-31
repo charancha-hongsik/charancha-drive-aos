@@ -26,17 +26,8 @@ import com.milelog.R
 import com.milelog.FindBluetoothEntity
 import com.milelog.PreferenceUtil
 import com.milelog.PreferenceUtil.MYCAR
-import com.milelog.activity.MainActivity.MyCarEntitiesAdapter
 import com.milelog.retrofit.response.GetMyCarInfoResponse
 import com.milelog.room.entity.MyCarsEntity
-import com.milelog.viewmodel.BaseViewModel.Event
-import com.milelog.viewmodel.state.MyCarInfoState
-import okhttp3.Address
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.lang.reflect.Type
 
 class FindBluetoothActivity: BaseRefreshActivity() {
     lateinit var rv_find_bluetooth:RecyclerView
@@ -253,7 +244,7 @@ class FindBluetoothActivity: BaseRefreshActivity() {
             if (holder is MyCarEntitiesHolder) {
                 val myCarsEntity = mycarEntities[position]
 
-                holder.tv_car_name.text = myCarsEntity.name + " " +myCarsEntity.number
+                holder.tv_car_name.text = myCarsEntity.name + " " +myCarsEntity.number + "-> " + myCarsEntity.bluetooth_name
                 holder.tv_car_name.setOnClickListener {
 
                     PreferenceUtil.getPref(context, PreferenceUtil.MY_CAR_ENTITIES,"")?.let {
@@ -262,7 +253,15 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                             val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
                             myCarsListOnDevice.addAll(Gson().fromJson(it, type))
 
+                            myCarsListOnDevice.forEach { car ->
+                                if (car.bluetooth_mac_address == macAddress) {
+                                    car.bluetooth_mac_address = null
+                                    car.bluetooth_name = null
+                                }
+                            }
+
                             myCarsListOnDevice.get(position).bluetooth_mac_address = macAddress
+                            myCarsListOnDevice.get(position).bluetooth_name = bluetoothName
 
                             PreferenceUtil.putPref(context, PreferenceUtil.MY_CAR_ENTITIES, Gson().toJson(myCarsListOnDevice))
                         }

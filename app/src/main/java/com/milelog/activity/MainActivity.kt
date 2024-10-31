@@ -2,7 +2,6 @@ package com.milelog.activity
 
 import android.Manifest.permission.*
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -12,38 +11,27 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
 import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import android.view.View.*
-import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.milelog.CommonUtil
 import com.milelog.CustomDialog
-import com.milelog.DividerItemDecoration
 import com.milelog.PreferenceUtil
 import com.milelog.PreferenceUtil.HAVE_BEEN_HOME
 import com.milelog.R
-import com.milelog.activity.DetectedStatusActivity.DetectedStatusAdapter
-import com.milelog.room.database.DriveDatabase
-import com.milelog.room.entity.AlarmEntity
-import com.milelog.room.entity.DetectUserEntity
 import com.milelog.room.entity.MyCarsEntity
 import com.milelog.service.BluetoothService
 import com.milelog.viewmodel.BaseViewModel
@@ -54,7 +42,6 @@ import com.milelog.viewmodel.state.GetDrivingStatisticsState
 import com.milelog.viewmodel.state.GetManageScoreState
 import com.milelog.viewmodel.state.MyCarInfoState
 import com.milelog.viewmodel.state.NotSavedDataState
-import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -118,6 +105,10 @@ class MainActivity : BaseRefreshActivity() {
     lateinit var layout_start_app:ConstraintLayout
 
     private lateinit var firebaseAnalytics: FirebaseAnalytics
+
+    companion object {
+        private const val VIEW_TYPE_ITEM = 0
+    }
 
 
     var checkingUserActivityPermission = false
@@ -260,17 +251,16 @@ class MainActivity : BaseRefreshActivity() {
 
                     PreferenceUtil.getPref(this@MainActivity, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
                         if(it != "") {
-                            Log.d("testsetestset","testsetsetse MY_CAR_ENTITIES :: " + it)
                             val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
                             myCarsListOnDevice.addAll(Gson().fromJson(it, type))
                         }
                     }
 
-                    if(getMyCarInfoResponses.size > 0){
-                        mainViewModel.getCarInfoinquiryByCarId(getMyCarInfoResponses.get(0).id)
+                    if(getMyCarInfoResponses.items.size > 0){
+                        mainViewModel.getCarInfoinquiryByCarId(getMyCarInfoResponses.items.get(0).id)
 
-                        for(car in getMyCarInfoResponses){
-                            myCarsListOnServer.add(MyCarsEntity(car.id, car.carName, car.licensePlateNumber, null))
+                        for(car in getMyCarInfoResponses.items){
+                            myCarsListOnServer.add(MyCarsEntity(car.id, car.carName, car.licensePlateNumber, null,null))
                         }
 
                         PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.MY_CAR_ENTITIES, Gson().toJson(updateMyCarList(myCarsListOnServer, myCarsListOnDevice)))
@@ -656,7 +646,9 @@ class MainActivity : BaseRefreshActivity() {
         button_edit_overlay = findViewById(R.id.button_edit_overlay)
         button_edit_overlay.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                showBottomSheetForEditCar()
+//                showBottomSheetForEditCar()
+                startActivity(Intent(this@MainActivity, MyGarageActivity::class.java))
+
             }
 
         })
@@ -829,39 +821,6 @@ class MainActivity : BaseRefreshActivity() {
             layout_start_app.visibility = VISIBLE
         }else{
             layout_start_app.visibility = GONE
-        }
-    }
-
-    fun showBottomSheetForEditCar() {
-        PreferenceUtil.getPref(this@MainActivity, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
-            if(it != ""){
-                // Create a BottomSheetDialog
-                val bottomSheetDialog = BottomSheetDialog(this@MainActivity, R.style.CustomBottomSheetDialog)
-
-                // Inflate the layout
-                val bottomSheetView = layoutInflater.inflate(R.layout.dialog_registered_car, null)
-                val rv_registered_car = bottomSheetView.findViewById<RecyclerView>(R.id.rv_registered_car)
-
-                rv_registered_car.layoutManager = LinearLayoutManager(this)
-                val dividerItemDecoration = DividerItemDecoration(this, R.color.gray_50, dpToPx(12f)) // 색상 리소스와 구분선 높이 설정
-                rv_registered_car.addItemDecoration(dividerItemDecoration)
-
-                val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
-                val myCarsList: MutableList<MyCarsEntity> = Gson().fromJson(it, type)
-
-                rv_registered_car.adapter = MyCarEntitiesAdapter(context = this, mycarEntities = myCarsList)
-
-                // Set the content view of the dialog
-                bottomSheetDialog.setContentView(bottomSheetView)
-
-                // Set the close button action
-                bottomSheetView.findViewById<TextView>(R.id.btn_add_car)?.setOnClickListener {
-
-                }
-
-                // Show the dialog
-                bottomSheetDialog.show()
-            }
         }
     }
 
@@ -1207,46 +1166,4 @@ class MainActivity : BaseRefreshActivity() {
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
-
-    class MyCarEntitiesAdapter(
-        private val context: Context,
-        private val mycarEntities: MutableList<MyCarsEntity>,
-    ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-        companion object {
-            private const val VIEW_TYPE_ITEM = 0
-        }
-
-        override fun getItemViewType(position: Int): Int {
-            return VIEW_TYPE_ITEM
-        }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-            val view = LayoutInflater.from(context).inflate(R.layout.item_registered_car, parent, false)
-            return MyCarEntitiesHolder(view)
-        }
-
-        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-            if (holder is MyCarEntitiesHolder) {
-                val myCarsEntity = mycarEntities[position]
-
-                holder.tv_car_name.text = myCarsEntity.name + " " +myCarsEntity.number
-
-                holder.btn_edit_car.setOnClickListener {
-                    context.startActivity(Intent(context, EditCarInfoActivity::class.java).putExtra("car_id",myCarsEntity.id))
-                }
-            }
-        }
-
-        override fun getItemCount(): Int {
-            return mycarEntities.size
-        }
-    }
-
-    class MyCarEntitiesHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tv_car_name:TextView  = view.findViewById(R.id.tv_car_name)
-        val btn_edit_car:TextView  = view.findViewById(R.id.btn_edit_car)
-        val btn_delete_car:TextView  = view.findViewById(R.id.btn_delete_car)
-    }
-
 }

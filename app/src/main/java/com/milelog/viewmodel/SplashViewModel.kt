@@ -9,21 +9,10 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.milelog.BuildConfig
 import com.milelog.PreferenceUtil
-import com.milelog.activity.LoginActivity
-import com.milelog.activity.MainActivity
-import com.milelog.activity.OnBoardingActivity
-import com.milelog.activity.PermissionInfoActivity
-import com.milelog.activity.TermsOfUseActivity
 import com.milelog.retrofit.response.GetLatestResponse
-import com.milelog.retrofit.response.GetMyCarInfoResponse
-import com.milelog.retrofit.response.GetNotificationListsResponse
 import com.milelog.retrofit.response.SignInResponse
 import com.milelog.retrofit.response.TermsAgreeStatusResponse
-import com.milelog.room.database.DriveDatabase
-import com.milelog.room.entity.AlarmEntity
-import com.milelog.viewmodel.state.AccountState
 import com.milelog.viewmodel.state.CheckForceUpdateState
-import com.milelog.viewmodel.state.GetDriveHistoryMoreState
 import com.milelog.viewmodel.state.GetMyCarInfoState
 import com.milelog.viewmodel.state.GetTermsAgreeState
 import com.milelog.viewmodel.state.PostReissueState
@@ -106,7 +95,7 @@ class SplashViewModel: BaseViewModel() {
 
                     _getTermsAgree.value = Event(GetTermsAgreeState.Success(termsAgreeStatusResponses))
                 } else{
-                    _getMyCarInfo.value = Event(GetMyCarInfoState.Error(response.code(), response.message()))
+                    _getTermsAgree.value = Event(GetTermsAgreeState.Error(response.code(), response.message()))
                 }
             }
 
@@ -114,14 +103,14 @@ class SplashViewModel: BaseViewModel() {
                 call: Call<ResponseBody>,
                 t: Throwable
             ) {
-                _getMyCarInfo.value = Event(GetMyCarInfoState.Empty)
+                _getTermsAgree.value = Event(GetTermsAgreeState.Empty)
             }
 
         })
     }
 
     fun getMyCarInfo(){
-        apiService(context).getMyCarInfo("Bearer " + PreferenceUtil.getPref(context, PreferenceUtil.ACCESS_TOKEN, "")!!).enqueue(object :Callback<ResponseBody>{
+        apiService(context).getMyCarCount("Bearer " + PreferenceUtil.getPref(context, PreferenceUtil.ACCESS_TOKEN, "")!!).enqueue(object :Callback<ResponseBody>{
             override fun onResponse(
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
@@ -129,10 +118,7 @@ class SplashViewModel: BaseViewModel() {
                 if(response.code() == 200 || response.code() == 201){
                     val jsonString = response.body()?.string()
 
-                    val type: Type = object : TypeToken<List<GetMyCarInfoResponse?>?>() {}.type
-                    val getMyCarInfoResponse:List<GetMyCarInfoResponse> = Gson().fromJson(jsonString, type)
-
-                    _getMyCarInfo.value = Event(GetMyCarInfoState.Success(getMyCarInfoResponse))
+                    _getMyCarInfo.value = Event(GetMyCarInfoState.Success(jsonString!!.toInt()))
                 }else{
                     _getMyCarInfo.value = Event(GetMyCarInfoState.Error(response.code(), response.message()))
                 }

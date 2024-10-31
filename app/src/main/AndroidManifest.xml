@@ -117,6 +117,12 @@
             android:screenOrientation="portrait"
             android:exported="true"/>
 
+        <activity
+            android:name=".activity.MyGarageActivity"
+            android:theme="@style/Theme.Charanchadrivewhite100"
+            android:screenOrientation="portrait"
+            android:exported="true"/>
+
 
         <activity
             android:name=".activity.HighSpeedDrivingActivity"
@@ -305,6 +311,16 @@
 
         <activity
             android:name=".activity.DetectedStatusActivity"
+            android:screenOrientation="portrait"
+            android:exported="true"/>
+
+        <activity
+            android:name=".activity.LoadCarMoreInfoActivity"
+            android:screenOrientation="portrait"
+            android:exported="true"/>
+
+        <activity
+            android:name=".activity.CarDetailActivity"
             android:screenOrientation="portrait"
             android:exported="true"/>
 

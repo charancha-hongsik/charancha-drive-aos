@@ -1,6 +1,7 @@
 package com.milelog.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.milelog.PreferenceUtil
 import com.milelog.viewmodel.state.GetCarInfoInquiryState
