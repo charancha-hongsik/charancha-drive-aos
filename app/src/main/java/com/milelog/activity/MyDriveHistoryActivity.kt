@@ -295,7 +295,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
 
         })
 
-        historyViewModel.getHistories(getMonthStartEndInUTC().first, getMonthStartEndInUTC().second)
+        historyViewModel.getHistories(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
 
         persistentBottomSheetEvent()
         setResources()
@@ -309,7 +309,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         selectedDate = itemList.get(0).date
         tv_selected_date.text = selectedDate
 
-        setInquireScope(formatDateRangeForAMonth(getMonthStartEndInUTC().first,getMonthStartEndInUTC().second))
+        setInquireScope(formatDateRangeForAMonth(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first))
 
 
         // adapter 생성

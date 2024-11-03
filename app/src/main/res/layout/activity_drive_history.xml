@@ -71,24 +71,14 @@
             app:layout_constraintBottom_toBottomOf="@id/btn_choose_date"/>
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="내 활동"
-            android:textAppearance="@style/ST2B"
-            android:textFontWeight="700"
-            android:textColor="@color/gray_950"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <TextView
             android:id="@+id/tv_inquire_scope"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="2024년 6월 16일 ~ 2024년 6월 17일"
-            android:textFontWeight="400"
-            android:textAppearance="@style/C1R"
-            android:textColor="@color/gray_600"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:textFontWeight="600"
+            android:textAppearance="@style/B1SB"
+            android:textColor="@color/gray_950"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"/>
 
 
