@@ -481,8 +481,13 @@ open class BaseActivity: AppCompatActivity(){
             val startOfMonthUTC = startOfMonth.atOffset(ZoneOffset.UTC).minusHours(9).format(DateTimeFormatter.ISO_INSTANT)
 
             // 월의 마지막 날
-            val endOfMonth = startOfMonth.plusMonths(1)
+            val endOfMonth = startOfMonth.plusMonths(1).minusSeconds(1)
             val endOfMonthUTC = endOfMonth.atOffset(ZoneOffset.UTC).minusHours(9).format(DateTimeFormatter.ISO_INSTANT)
+
+            Log.d("testsetsetset","testsetsetsetset dateStr :: " + dateStr)
+            Log.d("testsetsetset","testsetsetsetset startOfMonthUTC :: " + startOfMonthUTC)
+            Log.d("testsetsetset","testsetsetsetset endOfMonthUTC :: " + endOfMonthUTC)
+
 
 
             return Pair(endOfMonthUTC,startOfMonthUTC)
@@ -674,6 +679,21 @@ open class BaseActivity: AppCompatActivity(){
         }
         return false
     }
+
+    fun getMonthStartEndInUTC(): Pair<String, String> {
+        // 현재 달의 첫 번째 날
+        val startOfMonth = LocalDate.now().withDayOfMonth(1).atStartOfDay()
+        val startOfMonthUTC = startOfMonth.atOffset(ZoneOffset.UTC).minusHours(9)
+            .format(DateTimeFormatter.ISO_INSTANT)
+
+        // 현재 달의 마지막 날
+        val endOfMonth = startOfMonth.plusMonths(1).minusSeconds(1)
+        val endOfMonthUTC = endOfMonth.atOffset(ZoneOffset.UTC).minusHours(9)
+            .format(DateTimeFormatter.ISO_INSTANT)
+
+        return Pair(startOfMonthUTC, endOfMonthUTC)
+    }
+
 
 
 
