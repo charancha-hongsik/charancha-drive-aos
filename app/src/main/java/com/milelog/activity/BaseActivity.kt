@@ -171,6 +171,20 @@ open class BaseActivity: AppCompatActivity(){
             )
     }
 
+    fun apiService(url:String = BuildConfig.BASE_API_URL, readTimeOut:Long = 30): ApiServiceInterface {
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(HeaderInterceptor(this))
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(readTimeOut, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .build()
+        return Retrofit.Builder().baseUrl(url).client(client)
+            .addConverterFactory(GsonConverterFactory.create()).build().create(
+                ApiServiceInterface::class.java
+            )
+    }
+
+
     fun isInternetConnected(context: Context): Boolean {
         val connectivityManager =
             context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

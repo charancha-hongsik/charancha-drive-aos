@@ -264,4 +264,37 @@ interface ApiServiceInterface {
     fun putMyNotificationAgreed(@Header("Authorization") token: String,
                                 @Body body: RequestBody): Call<ResponseBody>
 
+
+    /**
+     * VWorld 역지오
+     */
+
+
+
+    @GET("req/address")
+    fun getAddress(@Query("service") service: String = "address",
+                   @Query("request") request: String = "getAddress",
+                   @Query("version") version: String = "2.0",
+                   @Query("crs") crs: String = "epsg:4326",
+                   @Query("point") point: String,
+                   @Query("format") format: String = "json",
+                   @Query("type") type: String = "both",
+                   @Query("zipcode") zipcode: Boolean = true,
+                   @Query("simple") simple: Boolean = false,
+                   @Query("key") key: String = "FA9E1CC5-49CC-345E-A27E-18266F94C2A7"):Call<ResponseBody>
+
+    @GET("req/search")
+    fun getAddressDetail(@Query("service") service: String = "search",
+                   @Query("request") request: String = "search",
+                   @Query("version") version: String = "2.0",
+                   @Query("size") size: Int = 10,
+                   @Query("page") page: Int = 1,
+                   @Query("query") query: String,
+                   @Query("type") type: String = "place",
+                   @Query("format") format: String = "json",
+                   @Query("errorformat") errorformat: String = "json",
+                   @Query("key") key: String = "FA9E1CC5-49CC-345E-A27E-18266F94C2A7"):Call<ResponseBody>
+
+
+
 }

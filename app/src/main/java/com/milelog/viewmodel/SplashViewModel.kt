@@ -3,6 +3,7 @@ package com.milelog.viewmodel
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
@@ -134,8 +135,12 @@ class SplashViewModel: BaseViewModel() {
     }
 
     fun checkForceUpdate(){
-        apiService(context).getLatest("AOS","PHONE").enqueue(object : Callback<ResponseBody> {
+        Log.d("testestestsetest","testestestset start checkForceUpdate:: ")
+
+        apiService(context, 10).getLatest("AOS","PHONE").enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                Log.d("testestestsetest","testestestset checkForceUpdate:: " + response.code())
+
                 if(response.code() == 200 || response.code() == 201) {
                     val getLatestResponse = Gson().fromJson(
                         response.body()?.string(),
@@ -184,6 +189,8 @@ class SplashViewModel: BaseViewModel() {
 
 
                     } catch (e: PackageManager.NameNotFoundException) {
+                        Log.d("testestestsetest","testestestset checkForceUpdate NameNotFoundException:: ")
+
                         _checkForceUpdate.value = Event(CheckForceUpdateState.Empty)
                     }
                 }

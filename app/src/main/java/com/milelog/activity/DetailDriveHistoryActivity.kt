@@ -27,9 +27,17 @@ import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.gms.maps.model.StrokeStyle
 import com.google.android.gms.maps.model.StyleSpan
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.gson.Gson
+import com.milelog.retrofit.response.GetDriveHistoryResponse
+import com.milelog.retrofit.response.VWorldDetailResponse
+import com.milelog.retrofit.response.VWorldResponse
 import com.milelog.viewmodel.BaseViewModel
 import com.milelog.viewmodel.state.GetDrivingInfoState
 import com.milelog.viewmodel.state.PatchDrivingInfoState
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.time.*
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -37,6 +45,8 @@ import java.util.*
 
 class DetailDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var tracking_id:String
+    val keywords = listOf("주유소", "정비소", "세차장", "폐차장", "중고차", "매매단지", "도이치오토월드")
+
 
     val polylines:MutableList<LatLng> = mutableListOf()
 
@@ -161,6 +171,122 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     polylines.add(LatLng(raw.latitude,raw.longtitude))
                 }
 
+                val startPoint  = it.gpses.first().longtitude.toString() + "," + it.gpses.first().latitude.toString()
+                val endPoint  = it.gpses.last().longtitude.toString() + "," + it.gpses.last().latitude.toString()
+
+                Log.d("testsetestetset","testsetestestsetset startPoint :: " + startPoint)
+                Log.d("testsetestetset","testsetestestsetset endPoint :: " + endPoint)
+
+
+                apiService(" https://api.vworld.kr/").getAddress(point = startPoint).enqueue(object:
+                    Callback<ResponseBody>{
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+                        val vWorldResponse = Gson().fromJson(
+                            response.body()?.string(),
+                            VWorldResponse::class.java
+                        )
+
+                        apiService(" https://api.vworld.kr/").getAddressDetail(query = vWorldResponse.response.result.first().text).enqueue(object:
+                            Callback<ResponseBody>{
+                            override fun onResponse(
+                                call: Call<ResponseBody>,
+                                response: Response<ResponseBody>
+                            ) {
+
+                                val jsonString = response.body()?.string()
+                                val vWorldDetailResponse = Gson().fromJson(
+                                    jsonString,
+                                    VWorldDetailResponse::class.java
+                                )
+
+
+                                if(vWorldDetailResponse.response.status != "NOT_FOUND"){
+                                    val containsKeyword = keywords.any{
+                                        vWorldDetailResponse.response.result.items.first().title.contains(it)
+                                    }
+
+                                    if(containsKeyword){
+                                        tv_start_time.text = vWorldDetailResponse.response.result.items.first().title
+                                    }else{
+                                        tv_start_time.text = vWorldResponse.response.result.first().text
+                                    }
+
+                                }else{
+                                    tv_start_time.text = vWorldResponse.response.result.first().text
+                                }
+
+                            }
+
+                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+                            }
+                        })
+                    }
+
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+                    }
+                })
+
+                apiService(" https://api.vworld.kr/").getAddress(point = endPoint).enqueue(object:
+                    Callback<ResponseBody>{
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+                        val vWorldResponse = Gson().fromJson(
+                            response.body()?.string(),
+                            VWorldResponse::class.java
+                        )
+
+                        apiService(" https://api.vworld.kr/").getAddressDetail(query = vWorldResponse.response.result.first().text).enqueue(object:
+                            Callback<ResponseBody>{
+                            override fun onResponse(
+                                call: Call<ResponseBody>,
+                                response: Response<ResponseBody>
+                            ) {
+                                val vWorldDetailResponse = Gson().fromJson(
+                                    response.body()?.string(),
+                                    VWorldDetailResponse::class.java
+                                )
+
+                                if(vWorldDetailResponse.response.status != "NOT_FOUND"){
+                                    val containsKeyword = keywords.any{
+                                        vWorldDetailResponse.response.result.items.last().title.contains(it)
+                                    }
+
+                                    if(containsKeyword){
+                                        tv_end_time.text = vWorldDetailResponse.response.result.items.last().title
+                                    }else{
+                                        tv_end_time.text = vWorldResponse.response.result.last().text
+                                    }
+
+                                }else{
+                                    tv_end_time.text = vWorldResponse.response.result.last().text
+                                }
+
+                            }
+
+                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+                            }
+                        })
+
+
+                    }
+
+
+
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+                    }
+                })
+
+
+
                 if(polylines.size != 0){
                     view_map.visibility = VISIBLE
                     tv_mycar_scope_info.visibility = GONE
@@ -206,8 +332,6 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     val getDrivingInfoResponse = state.data
                     tv_date.text = transformTimeToDate(getDrivingInfoResponse.endTime)
                     tv_distance.text = transferDistanceWithUnit(getDrivingInfoResponse.totalDistance)
-                    tv_start_time.text = transformTimeToHHMM(getDrivingInfoResponse.startTime)
-                    tv_end_time.text = transformTimeToHHMM(getDrivingInfoResponse.endTime)
                     tv_start_time_info.text = transformTimeToDateWithTime(getDrivingInfoResponse.startTime)
                     tv_end_time_info.text = transformTimeToDateWithTime(getDrivingInfoResponse.endTime)
                     tv_drive_time_info.text = transformSecondsToHHMMSS(getDrivingInfoResponse.totalTime)
