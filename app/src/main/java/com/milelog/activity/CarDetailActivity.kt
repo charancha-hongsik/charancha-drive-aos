@@ -2,6 +2,7 @@ package com.milelog.activity
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.ColorSpace.Model
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -234,7 +235,9 @@ class CarDetailActivity: BaseRefreshActivity() {
         }
 
         if(postMyCarResponse.modelCd.isNullOrEmpty()){
-            setModelUI()
+            if(!postMyCarResponse.makerCd.isNullOrEmpty()){
+                setNext(MODEL)
+            }
         }else{
             setModelUI()
             tv_model_hint.visibility = GONE
@@ -249,7 +252,9 @@ class CarDetailActivity: BaseRefreshActivity() {
 
         if(postMyCarResponse.modelDetailCd.isNullOrEmpty()){
 //            setModelDetailUI()
-            setNext(MODEL_DETAIL)
+            if(!postMyCarResponse.modelCd.isNullOrEmpty()){
+                setNext(MODEL_DETAIL)
+            }
         }else{
             setModelDetailUI()
             tv_model_detail_hint.visibility = GONE
@@ -604,6 +609,10 @@ class CarDetailActivity: BaseRefreshActivity() {
                 parentCode = null
             }
         }
+
+        Log.d("testestestsetest","testestestest :: key" + key)
+        Log.d("testestestsetest","testestestest :: parentCode" + parentCode)
+
 
         apiService().getCharanchaCode("Bearer " + PreferenceUtil.getPref(this@CarDetailActivity, PreferenceUtil.ACCESS_TOKEN, "")!!, key, parentCode).enqueue(object:Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {

@@ -7,6 +7,7 @@ import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -110,6 +111,8 @@ class MyGarageActivity:BaseRefreshActivity() {
                 if(response.code() == 200 || response.code() == 201){
                     val jsonString = response.body()?.string()
 
+                    Log.d("testestsetset","testsetsetes t:: " + jsonString)
+
                     val getMyCarInfoResponses = Gson().fromJson(jsonString, GetMyCarInfoResponse::class.java)
 
                     val myCarsListOnServer: MutableList<MyCarsEntity> = mutableListOf()
@@ -206,6 +209,8 @@ class MyGarageActivity:BaseRefreshActivity() {
             }else{
                 holder.linear_default.visibility = GONE
                 holder.iv_car.visibility = VISIBLE
+
+                Log.d("testsetestset","testsetsetsetset :: " + car.modelDetailImageUrl)
 
                 Glide.with(context)
                     .asBitmap()
