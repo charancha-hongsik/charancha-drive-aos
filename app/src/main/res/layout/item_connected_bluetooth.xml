@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/radius7_with_gray100border"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:id="@+id/layout_corp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@drawable/ic_corp"
+            android:layout_gravity="bottom"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="18dp"
+            android:layout_marginLeft="3dp"
+            android:textColor="#3DCC7C"
+            android:textFontWeight="600"
+            android:textAppearance="@style/C1SB"
+            android:text="법인차"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_car_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/gray_950"
+        android:textAppearance="@style/B1M"
+        android:textFontWeight="600"
+        android:layout_marginTop="8dp"
+        android:text="소나타 디 엣지 123가 4567"/>
+    
+    <TextView
+        android:id="@+id/tv_car_no"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/C1R"
+        android:textFontWeight="400"
+        android:textColor="@color/gray_600"
+        android:text="123가 1234"
+        android:layout_marginTop="1dp"/>
+
+</LinearLayout>

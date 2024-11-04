@@ -3,19 +3,23 @@ package com.milelog.activity
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.View.*
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.cardview.widget.CardView
-import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.milelog.R
 import com.milelog.viewmodel.DetailDriveHistoryViewModel
 import com.google.android.gms.maps.*
@@ -26,11 +30,14 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.gms.maps.model.StrokeStyle
 import com.google.android.gms.maps.model.StyleSpan
-import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
-import com.milelog.retrofit.response.GetDriveHistoryResponse
+import com.google.gson.reflect.TypeToken
+import com.milelog.DividerItemDecoration
+import com.milelog.PreferenceUtil
 import com.milelog.retrofit.response.VWorldDetailResponse
 import com.milelog.retrofit.response.VWorldResponse
+import com.milelog.room.entity.MyCarsEntity
 import com.milelog.viewmodel.BaseViewModel
 import com.milelog.viewmodel.state.GetDrivingInfoState
 import com.milelog.viewmodel.state.PatchDrivingInfoState
@@ -45,7 +52,7 @@ import java.util.*
 
 class DetailDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var tracking_id:String
-    val keywords = listOf("주유소", "정비소", "세차장", "폐차장", "중고차", "매매단지", "도이치오토월드")
+    val keywords = listOf("주유소", "정비소", "세차장", "폐차장", "중고차", "매매단지", "도이치오토월드", "캠핑","글램핑")
 
 
     val polylines:MutableList<LatLng> = mutableListOf()
@@ -73,18 +80,9 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var tv_rapid_stop_count_info:TextView
     lateinit var tv_rapid_desc_count_info:TextView
     lateinit var btn_back: ImageView
-    lateinit var btn_mycar: LinearLayout
-    lateinit var btn_not_mycar:LinearLayout
     lateinit var tv_scope_date_mycar:TextView
 
-    lateinit var layout_my_drive:CoordinatorLayout
-    lateinit var persistent_bottom_sheet:LinearLayout
-    lateinit var behavior: BottomSheetBehavior<LinearLayout>
-
     lateinit var btn_choose_mycar: LinearLayout
-    lateinit var btn_set_mycar:TextView
-    lateinit var tv_mycar:LinearLayout
-    lateinit var tv_not_mycar:TextView
     lateinit var tv_mycar_scope_info:LinearLayout
 
     lateinit var iv_tooltip_verification:ImageView
@@ -140,14 +138,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         tv_rapid_stop_count_info = findViewById(R.id.tv_rapid_stop_count_info)
         tv_rapid_desc_count_info = findViewById(R.id.tv_rapid_desc_count_info)
         btn_back = findViewById(R.id.btn_back)
-        btn_mycar = findViewById(R.id.btn_mycar)
-        btn_not_mycar = findViewById(R.id.btn_not_mycar)
-        layout_my_drive = findViewById(R.id.layout_my_drive)
-        persistent_bottom_sheet = findViewById(R.id.persistent_bottom_sheet)
         btn_choose_mycar = findViewById(R.id.btn_choose_mycar)
-        btn_set_mycar = findViewById(R.id.btn_set_mycar)
-        tv_mycar = findViewById(R.id.tv_mycar)
-        tv_not_mycar = findViewById(R.id.tv_not_mycar)
         tv_scope_date_mycar = findViewById(R.id.tv_scope_date_mycar)
         tv_mycar_scope_info = findViewById(R.id.tv_mycar_scope_info)
 
@@ -173,10 +164,6 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
                 val startPoint  = it.gpses.first().longtitude.toString() + "," + it.gpses.first().latitude.toString()
                 val endPoint  = it.gpses.last().longtitude.toString() + "," + it.gpses.last().latitude.toString()
-
-                Log.d("testsetestetset","testsetestestsetset startPoint :: " + startPoint)
-                Log.d("testsetestetset","testsetestestsetset endPoint :: " + endPoint)
-
 
                 apiService(" https://api.vworld.kr/").getAddress(point = startPoint).enqueue(object:
                     Callback<ResponseBody>{
@@ -301,24 +288,16 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
                 }
                 is PatchDrivingInfoState.Success -> {
-                    if(state.data.isActive){
-                        tv_mycar.visibility = VISIBLE
-                        tv_not_mycar.visibility = GONE
-                    }else{
-                        tv_mycar.visibility = GONE
-                        tv_not_mycar.visibility = VISIBLE
-                    }
-                    isActive = state.data.isActive
-                    layout_my_drive.visibility = GONE
+
                 }
                 is PatchDrivingInfoState.Error -> {
                     if(state.code == 401){
                         logout()
-                        layout_my_drive.visibility = GONE
+
                     }
                 }
                 is PatchDrivingInfoState.Empty -> {
-                    layout_my_drive.visibility = GONE
+
                 }
             }
         })
@@ -330,6 +309,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                 }
                 is GetDrivingInfoState.Success -> {
                     val getDrivingInfoResponse = state.data
+
                     tv_date.text = transformTimeToDate(getDrivingInfoResponse.endTime)
                     tv_distance.text = transferDistanceWithUnit(getDrivingInfoResponse.totalDistance)
                     tv_start_time_info.text = transformTimeToDateWithTime(getDrivingInfoResponse.startTime)
@@ -356,15 +336,9 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     }
 
                     if(getDrivingInfoResponse.isActive){
-                        tv_mycar.visibility = VISIBLE
-                        tv_not_mycar.visibility = GONE
-                        btn_mycar.isSelected = true
-                        btn_not_mycar.isSelected = false
+
                     }else{
-                        tv_mycar.visibility = GONE
-                        tv_not_mycar.visibility = VISIBLE
-                        btn_mycar.isSelected = false
-                        btn_not_mycar.isSelected = true
+
                     }
                 }
                 is GetDrivingInfoState.Error -> {
@@ -449,32 +423,10 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         })
 
         btn_choose_mycar.setOnClickListener {
-            layout_my_drive.visibility = VISIBLE
+            showBottomSheetForEditCar()
         }
 
-        layout_my_drive.setOnClickListener {
-            layout_my_drive.visibility = GONE
-        }
 
-        btn_set_mycar.setOnClickListener(object: OnSingleClickListener(){
-            override fun onSingleClick(v: View?) {
-                detailDriveHistoryViewModel.patchDrivingInfo(btn_mycar.isSelected, tracking_id)
-            }
-        })
-
-        btn_mycar.setOnClickListener {
-            btn_mycar.isSelected = true
-            btn_not_mycar.isSelected = false
-        }
-
-        btn_not_mycar.setOnClickListener {
-            btn_mycar.isSelected = false
-            btn_not_mycar.isSelected = true
-        }
-
-        btn_mycar.isSelected = true
-
-        persistentBottomSheetEvent()
 
         detailDriveHistoryViewModel.getMapData(tracking_id)
         detailDriveHistoryViewModel.getDrivingInfo(tracking_id)
@@ -686,38 +638,6 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     }
 
 
-    private fun persistentBottomSheetEvent() {
-        behavior = BottomSheetBehavior.from(persistent_bottom_sheet)
-        behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                // 슬라이드 되는 도중 계속 호출
-                // called continuously while dragging
-                Log.d("testset", "onStateChanged: 드래그 중")
-            }
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                when(newState) {
-                    BottomSheetBehavior.STATE_COLLAPSED-> {
-                        Log.d("testset", "onStateChanged: 접음")
-//                        layout_choose_date.visibility = GONE
-                    }
-                    BottomSheetBehavior.STATE_DRAGGING-> {
-                        Log.d("testset", "onStateChanged: 드래그")
-                    }
-                    BottomSheetBehavior.STATE_EXPANDED-> {
-                        Log.d("testset", "onStateChanged: 펼침")
-                    }
-                    BottomSheetBehavior.STATE_HIDDEN-> {
-                        Log.d("testset", "onStateChanged: 숨기기")
-
-                    }
-                    BottomSheetBehavior.STATE_SETTLING-> {
-                        Log.d("testset", "onStateChanged: 고정됨")
-                    }
-                }
-            }
-        })
-    }
-
     override fun onBackPressed() {
         val intent = Intent(this@DetailDriveHistoryActivity, MyDriveHistoryActivity::class.java)
         intent.putExtra("isActive",isActive)
@@ -725,5 +645,90 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         setResult(RESULT_OK, intent)
         finish()
     }
+
+    fun showBottomSheetForEditCar() {
+        PreferenceUtil.getPref(this, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
+            if(it != ""){
+                // Create a BottomSheetDialog
+                val bottomSheetDialog = BottomSheetDialog(this, R.style.CustomBottomSheetDialog)
+
+                // Inflate the layout
+                val bottomSheetView = this.layoutInflater.inflate(R.layout.dialog_connected_bluetooth, null)
+                val rv_registered_car = bottomSheetView.findViewById<RecyclerView>(R.id.rv_registered_car)
+
+                rv_registered_car.layoutManager = LinearLayoutManager(this)
+                val dividerItemDecoration = DividerItemDecoration(this, R.color.white_op_100, this.dpToPx(8f)) // 색상 리소스와 구분선 높이 설정
+                rv_registered_car.addItemDecoration(dividerItemDecoration)
+
+                val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
+                val myCarsList: MutableList<MyCarsEntity> = Gson().fromJson(it, type)
+
+                rv_registered_car.adapter = MyCarEntitiesAdapter(context = this, mycarEntities = myCarsList )
+
+                // Set the content view of the dialog
+                bottomSheetDialog.setContentView(bottomSheetView)
+
+                // Show the dialog
+                bottomSheetDialog.show()
+            }
+        }
+    }
+
+    class MyCarEntitiesAdapter(
+        private val context: Context,
+        private val mycarEntities: MutableList<MyCarsEntity>
+    ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+        companion object {
+            private const val VIEW_TYPE_ITEM = 0
+        }
+
+        override fun getItemViewType(position: Int): Int {
+            return VIEW_TYPE_ITEM
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+            val view = LayoutInflater.from(context).inflate(R.layout.item_connected_bluetooth, parent, false)
+            return MyCarEntitiesHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+            if (holder is MyCarEntitiesHolder) {
+                val myCarsEntity = mycarEntities[position]
+
+                holder.tv_car_name.text = myCarsEntity.name
+                holder.tv_car_name.setOnClickListener {
+
+                    PreferenceUtil.getPref(context, PreferenceUtil.MY_CAR_ENTITIES,"")?.let {
+                        if (it != "") {
+                            val myCarsListOnDevice:MutableList<MyCarsEntity> = mutableListOf()
+                            val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
+                            myCarsListOnDevice.addAll(Gson().fromJson(it, type))
+
+                            myCarsListOnDevice.forEach { car ->
+
+                            }
+
+
+                            PreferenceUtil.putPref(context, PreferenceUtil.MY_CAR_ENTITIES, Gson().toJson(myCarsListOnDevice))
+                        }
+                    }
+                }
+
+                holder.tv_car_no.text = myCarsEntity.number
+
+            }
+        }
+
+        override fun getItemCount(): Int {
+            return mycarEntities.size
+        }
+    }
+
+    class MyCarEntitiesHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val tv_car_name:TextView = view.findViewById(R.id.tv_car_name)
+        val tv_car_no:TextView = view.findViewById(R.id.tv_car_no)
+    }
+
 
 }
