@@ -222,19 +222,9 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
 
                                     if(vWorldDetailResponse.response.status != "NOT_FOUND"){
-                                        val containsKeyword = keywords.any{
-                                            vWorldDetailResponse.response.result.items.first().title.contains(it)
-                                        }
-
-                                        if(containsKeyword){
-                                            tv_start_time.text = vWorldDetailResponse.response.result.items.first().title
-                                            tv_start_address.text = vWorldDetailResponse.response.result.items.first().title
-                                            detailDriveHistoryViewModel.updateStartAddress(it.tracking_id, vWorldDetailResponse.response.result.items.first().title)
-                                        }else{
-                                            tv_start_time.text = vWorldResponse.response.result.first().text
-                                            tv_start_address.text = vWorldResponse.response.result.first().text
-                                            detailDriveHistoryViewModel.updateStartAddress(it.tracking_id, vWorldResponse.response.result.first().text)
-                                        }
+                                        tv_start_time.text = getMatchingTitle(vWorldResponse, vWorldDetailResponse)
+                                        tv_start_address.text = getMatchingTitle(vWorldResponse, vWorldDetailResponse)
+                                        detailDriveHistoryViewModel.updateStartAddress(it.tracking_id, getMatchingTitle(vWorldResponse, vWorldDetailResponse))
 
                                     }else{
                                         tv_start_time.text = vWorldResponse.response.result.first().text
@@ -288,19 +278,9 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                                     )
 
                                     if(vWorldDetailResponse.response.status != "NOT_FOUND"){
-                                        val containsKeyword = keywords.any{
-                                            vWorldDetailResponse.response.result.items.first().title.contains(it)
-                                        }
-
-                                        if(containsKeyword){
-                                            tv_end_time.text = vWorldDetailResponse.response.result.items.first().title
-                                            tv_end_address.text = vWorldDetailResponse.response.result.items.first().title
-                                            detailDriveHistoryViewModel.updateEndAddress(it.tracking_id, vWorldDetailResponse.response.result.items.first().title)
-                                        }else{
-                                            tv_end_time.text = vWorldResponse.response.result.first().text
-                                            tv_end_address.text = vWorldResponse.response.result.first().text
-                                            detailDriveHistoryViewModel.updateEndAddress(it.tracking_id, vWorldResponse.response.result.first().text)
-                                        }
+                                        tv_end_time.text = getMatchingTitle(vWorldResponse, vWorldDetailResponse)
+                                        tv_end_address.text = getMatchingTitle(vWorldResponse, vWorldDetailResponse)
+                                        detailDriveHistoryViewModel.updateEndAddress(it.tracking_id, getMatchingTitle(vWorldResponse, vWorldDetailResponse))
 
                                     }else{
                                         tv_end_time.text = vWorldResponse.response.result.first().text
@@ -898,6 +878,17 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         val layout_name:LinearLayout = view.findViewById(R.id.layout_name)
         val tv_no_mycar:TextView = view.findViewById(R.id.tv_no_mycar)
         val layout_car:LinearLayout = view.findViewById(R.id.layout_car)
+    }
+
+    fun getMatchingTitle(vWorldResponse: VWorldResponse, vWorldDetailResponse: VWorldDetailResponse): String {
+        for (item in vWorldDetailResponse.response.result.items) {
+            val title = item.title
+            if (keywords.any { keyword -> title.contains(keyword) }) {
+                return title // 매칭되는 title을 찾으면 바로 반환
+            }
+        }
+
+        return vWorldResponse.response.result.first().text // 매칭되는 title이 없으면 null 반환
     }
 
 
