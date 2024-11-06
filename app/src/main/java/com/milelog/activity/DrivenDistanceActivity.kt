@@ -18,6 +18,7 @@ import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.milelog.retrofit.response.GetDrivingGraphDataResponse
 import com.milelog.retrofit.response.GetDrivingStatisticsResponse
 import com.milelog.retrofit.response.GetRecentDrivingStatisticsResponse
@@ -613,7 +614,7 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
             ) {
                 try {
                     if (response.code() == 200 || response.code() == 201) {
-                        val getDrivingGraphDataResponse = Gson().fromJson(
+                        val getDrivingGraphDataResponse = GsonBuilder().serializeNulls().create().fromJson(
                             response.body()?.string(),
                             GetDrivingGraphDataResponse::class.java
                         )
@@ -661,7 +662,7 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
 
 
                     if (response.code() == 200 || response.code() == 201) {
-                        val getDrivingGraphDataResponse = Gson().fromJson(
+                        val getDrivingGraphDataResponse = GsonBuilder().serializeNulls().create().fromJson(
                             response.body()?.string(),
                             GetDrivingGraphDataResponse::class.java
                         )
@@ -707,7 +708,7 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
             ) {
                 try {
                     if (response.code() == 200 || response.code() == 201) {
-                        val getDrivingGraphDataResponse = Gson().fromJson(
+                        val getDrivingGraphDataResponse = GsonBuilder().serializeNulls().create().fromJson(
                             response.body()?.string(),
                             GetDrivingGraphDataResponse::class.java
                         )

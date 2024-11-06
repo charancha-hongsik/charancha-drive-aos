@@ -26,6 +26,7 @@ import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.milelog.CommonUtil
 import com.milelog.CustomDialog
@@ -252,7 +253,7 @@ class MainActivity : BaseRefreshActivity() {
                     PreferenceUtil.getPref(this@MainActivity, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
                         if(it != "") {
                             val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
-                            myCarsListOnDevice.addAll(Gson().fromJson(it, type))
+                            myCarsListOnDevice.addAll(GsonBuilder().serializeNulls().create().fromJson(it, type))
                         }
                     }
 
@@ -263,7 +264,7 @@ class MainActivity : BaseRefreshActivity() {
                             myCarsListOnServer.add(MyCarsEntity(car.id, car.carName, car.licensePlateNumber, null,null))
                         }
 
-                        PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.MY_CAR_ENTITIES, Gson().toJson(updateMyCarList(myCarsListOnServer, myCarsListOnDevice)))
+                        PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.MY_CAR_ENTITIES, GsonBuilder().serializeNulls().create().toJson(updateMyCarList(myCarsListOnServer, myCarsListOnDevice)))
 
                     }else{
                         startActivity(Intent(this@MainActivity, SplashActivity::class.java))

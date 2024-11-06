@@ -16,6 +16,7 @@ import com.milelog.retrofit.response.GetManageScoreResponse
 import com.milelog.retrofit.response.GetRecentDrivingStatisticsResponse
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.milelog.ChosenDate
 import com.milelog.PreferenceUtil
 import okhttp3.ResponseBody
@@ -213,7 +214,7 @@ class DetailManageScoreActivity: BaseRefreshActivity(){
                     response: Response<ResponseBody>
                 ) {
                     if(response.code() == 200 || response.code() == 201){
-                        val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
+                        val getManageScoreResponse = GsonBuilder().serializeNulls().create().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
 
                         if(getManageScoreResponse.isRecent){
                             if(getManageScoreResponse.total.totalEngineScore != 0.0){
@@ -242,7 +243,7 @@ class DetailManageScoreActivity: BaseRefreshActivity(){
             ).enqueue(object: Callback<ResponseBody>{
                 override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                     if(response.code() == 200 || response.code() == 201){
-                        val recentDrivingDistance = Gson().fromJson(
+                        val recentDrivingDistance = GsonBuilder().serializeNulls().create().fromJson(
                             response.body()?.string(),
                             GetRecentDrivingStatisticsResponse::class.java
                         )
@@ -285,7 +286,7 @@ class DetailManageScoreActivity: BaseRefreshActivity(){
                     response: Response<ResponseBody>
                 ) {
                     if(response.code() == 200 || response.code() == 201){
-                        val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
+                        val getManageScoreResponse = GsonBuilder().serializeNulls().create().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
                         if(getManageScoreResponse.total.totalEngineScore != 0.0){
                             setThereIsDatas(getManageScoreResponse)
                         }else{
@@ -317,7 +318,7 @@ class DetailManageScoreActivity: BaseRefreshActivity(){
                 response: Response<ResponseBody>
             ) {
                 if(response.code() == 200){
-                    val getManageScoreResponse = Gson().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
+                    val getManageScoreResponse = GsonBuilder().serializeNulls().create().fromJson(response.body()?.string(), GetManageScoreResponse::class.java)
                     if(getManageScoreResponse.total.totalEngineScore != 0.0){
                         setThereIsDatas(getManageScoreResponse)
                     }else{
@@ -344,7 +345,7 @@ class DetailManageScoreActivity: BaseRefreshActivity(){
         ).enqueue(object: Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200 || response.code() == 201){
-                    val recentDrivingDistance = Gson().fromJson(
+                    val recentDrivingDistance = GsonBuilder().serializeNulls().create().fromJson(
                         response.body()?.string(),
                         GetRecentDrivingStatisticsResponse::class.java
                     )

@@ -16,7 +16,6 @@ import android.os.Build
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -27,6 +26,7 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.google.android.gms.location.*
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.milelog.CommonUtil
 import com.milelog.CommonUtil.apiService
@@ -37,9 +37,7 @@ import com.milelog.CommonUtil.isInternetConnected
 import com.milelog.NotificationDeleteReceiver
 import com.milelog.NotificationDeleteReceiver.Companion.ACTION_RESTART_NOTIFICATION
 import com.milelog.PreferenceUtil
-import com.milelog.PreferenceUtil.MYCAR
 import com.milelog.R
-import com.milelog.activity.RegisterCarActivity
 import com.milelog.retrofit.request.PostDrivingInfoRequest
 import com.milelog.retrofit.response.PostDrivingInfoResponse
 import com.milelog.room.database.DriveDatabase
@@ -283,17 +281,17 @@ class BluetoothService : Service() {
                                     PreferenceUtil.getPref(this@BluetoothService, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
                                         if(it != "") {
                                             val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
-                                            myCarsListOnDevice.addAll(Gson().fromJson(it, type))
+                                            myCarsListOnDevice.addAll(GsonBuilder().serializeNulls().create().fromJson(it, type))
                                         }
 
-                                        drivingMyCarsEntity = myCarsListOnDevice.find { it.bluetooth_mac_address == device.address } ?: MyCarsEntity(null,device.name,null,null,null)
+                                        drivingMyCarsEntity = myCarsListOnDevice.find { it.bluetooth_mac_address == device.address } ?: MyCarsEntity(null,null,null,null,device.name)
 
                                         if(isBluetoothDeviceConnected(device)){
                                             driveDatabase?.detectUserDao()?.insert(
                                                 DetectUserEntity(
                                                     user_id = "",
                                                     verification = "L2",
-                                                    start_stop = "Bluetooth(start)",
+                                                    start_stop = "Bluetooth(start)" + drivingMyCarsEntity?.bluetooth_name,
                                                     timestamp = System.currentTimeMillis().toString(),
                                                     sensor_state = fusedLocationClient != null
                                                 )
@@ -458,19 +456,20 @@ class BluetoothService : Service() {
     private fun initDriveForApp(startTimeStamp:Long){
         gpsInfoForApp = mutableListOf()
         driveForApp = DriveForApp(
-            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!! + startTimeStamp,
+            startTimeStamp.toString(),null,null,null,
             gpsInfoForApp)
     }
 
     private fun initDriveForApi(level:String, startTimeStamp:Long){
         gpsInfoForApi = mutableListOf()
         driveForApi = DriveForApi(
-            tracking_id = PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!! + startTimeStamp,
-            userCarId = PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            tracking_id = startTimeStamp.toString(),
+            userCarId = null,
             startTimestamp = startTimeStamp,
             endTimestamp = 0L,
             verification = level,
             gpses = gpsInfoForApi,
+            null
         )
     }
 
@@ -520,7 +519,6 @@ class BluetoothService : Service() {
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
                 drivingMyCarsEntity = null
-
             }
         }catch(e:Exception){
             fusedLocationClient?.removeLocationUpdates(locationCallback)
@@ -724,21 +722,25 @@ class BluetoothService : Service() {
     private fun callApi(dataForApi:DriveForApi, dataForApp: DriveForApp){
         dataForApi.endTimestamp = System.currentTimeMillis()
 
-        val carId = drivingMyCarsEntity?.id ?: PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!
+        val carId = drivingMyCarsEntity?.id
+        val bluetoothName = drivingMyCarsEntity?.bluetooth_name
+
+        dataForApi.userCarId = carId
+        dataForApp.bluetooth_name = bluetoothName
 
         val postDriveDtoForApi = PostDrivingInfoRequest(
-            userCarId=carId,
+            userCarId= dataForApi.userCarId,
             startTimestamp = dataForApi.startTimestamp,
             endTimestamp = dataForApi.endTimestamp,
             verification = dataForApi.verification,
             gpses = dataForApi.gpses
         )
 
-        val gson = Gson()
+        val gson = GsonBuilder().serializeNulls().create()
         val jsonParam = gson.toJson(postDriveDtoForApi)
 
         if (isInternetConnected(this@BluetoothService)) {
-            apiService(this@BluetoothService).postDrivingInfo("Bearer " + PreferenceUtil.getPref(this@BluetoothService,  PreferenceUtil.ACCESS_TOKEN, "")!!, jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object : Callback<ResponseBody> {
+            apiService(this@BluetoothService).postMyDrivingInfo("Bearer " + PreferenceUtil.getPref(this@BluetoothService,  PreferenceUtil.ACCESS_TOKEN, "")!!, jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object : Callback<ResponseBody> {
                 override fun onResponse(
                     call: Call<ResponseBody>,
                     response: Response<ResponseBody>

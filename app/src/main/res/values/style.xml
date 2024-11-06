@@ -245,6 +245,39 @@
         <item name="android:letterSpacing">0</item>
     </style>
 
+    <style name="car_selected" android:font="@font/pretendardmedium">
+        <item name="android:textSize">16dp</item>
+        <item name="lineHeight">22dp</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="fontWeight">500</item>
+        <item name="android:textColor">#0740E4</item>
+    </style>
+
+    <style name="car_unselected" android:font="@font/pretendardregular">
+        <item name="android:textSize">13dp</item>
+        <item name="lineHeight">18dp</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="fontWeight">400</item>
+        <item name="android:textColor">#AAB2BB</item>
+    </style>
+
+    <style name="car_no_selected" android:font="@font/pretendardregular">
+        <item name="android:textSize">13dp</item>
+        <item name="lineHeight">18dp</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="fontWeight">400</item>
+        <item name="android:textColor">#919BA7</item>
+    </style>
+
+    <style name="car_no_unselected" android:font="@font/pretendardregular">
+        <item name="android:textSize">13dp</item>
+        <item name="lineHeight">18dp</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="fontWeight">400</item>
+        <item name="android:textColor">#C3C8CD</item>
+    </style>
+
+
 
 
 </resources>

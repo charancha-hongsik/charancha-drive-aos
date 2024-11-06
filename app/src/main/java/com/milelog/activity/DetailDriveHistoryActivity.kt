@@ -18,6 +18,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.cardview.widget.CardView
+import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.milelog.R
@@ -32,6 +33,7 @@ import com.google.android.gms.maps.model.StrokeStyle
 import com.google.android.gms.maps.model.StyleSpan
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.milelog.DividerItemDecoration
 import com.milelog.PreferenceUtil
@@ -81,6 +83,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var tv_rapid_desc_count_info:TextView
     lateinit var btn_back: ImageView
     lateinit var tv_scope_date_mycar:TextView
+    lateinit var tv_mycar:TextView
 
     lateinit var btn_choose_mycar: LinearLayout
     lateinit var tv_mycar_scope_info:LinearLayout
@@ -96,12 +99,18 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var iv_tooltip_rapid_acc:ImageView
     lateinit var iv_map:ImageView
 
+    lateinit var tv_start_address:TextView
+    lateinit var tv_end_address:TextView
+    lateinit var tv_end_address_detail:TextView
+
     lateinit var view_map:CardView
 
     private var isCameraMoving = false
     private var currentAnimator: ValueAnimator? = null
+    private var bluetoothNameExpected:String? = null
 
     var isActive = true
+    var userCarId:String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -151,6 +160,11 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         iv_tooltip_low_speed_average = findViewById(R.id.iv_tooltip_low_speed_average)
         iv_tooltip_rapid_start = findViewById(R.id.iv_tooltip_rapid_start)
         iv_tooltip_rapid_acc = findViewById(R.id.iv_tooltip_rapid_acc)
+        tv_mycar = findViewById(R.id.tv_mycar)
+
+        tv_start_address = findViewById(R.id.tv_start_address)
+        tv_end_address = findViewById(R.id.tv_end_address)
+        tv_end_address_detail = findViewById(R.id.tv_end_address_detail)
 
         view_map = findViewById(R.id.view_map)
     }
@@ -162,116 +176,140 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     polylines.add(LatLng(raw.latitude,raw.longtitude))
                 }
 
+                bluetoothNameExpected = it.bluetooth_name
+
                 val startPoint  = it.gpses.first().longtitude.toString() + "," + it.gpses.first().latitude.toString()
                 val endPoint  = it.gpses.last().longtitude.toString() + "," + it.gpses.last().latitude.toString()
 
-                apiService(" https://api.vworld.kr/").getAddress(point = startPoint).enqueue(object:
-                    Callback<ResponseBody>{
-                    override fun onResponse(
-                        call: Call<ResponseBody>,
-                        response: Response<ResponseBody>
-                    ) {
-                        val vWorldResponse = Gson().fromJson(
-                            response.body()?.string(),
-                            VWorldResponse::class.java
-                        )
+                if(it.start_address.isNullOrEmpty()){
+                    apiService(" https://api.vworld.kr/").getAddress(point = startPoint).enqueue(object:
+                        Callback<ResponseBody>{
+                        override fun onResponse(
+                            call: Call<ResponseBody>,
+                            response: Response<ResponseBody>
+                        ) {
+                            val vWorldResponse = GsonBuilder().serializeNulls().create().fromJson(
+                                response.body()?.string(),
+                                VWorldResponse::class.java
+                            )
 
-                        apiService(" https://api.vworld.kr/").getAddressDetail(query = vWorldResponse.response.result.first().text).enqueue(object:
-                            Callback<ResponseBody>{
-                            override fun onResponse(
-                                call: Call<ResponseBody>,
-                                response: Response<ResponseBody>
-                            ) {
+                            apiService(" https://api.vworld.kr/").getAddressDetail(query = vWorldResponse.response.result.first().text).enqueue(object:
+                                Callback<ResponseBody>{
+                                override fun onResponse(
+                                    call: Call<ResponseBody>,
+                                    response: Response<ResponseBody>
+                                ) {
 
-                                val jsonString = response.body()?.string()
-                                val vWorldDetailResponse = Gson().fromJson(
-                                    jsonString,
-                                    VWorldDetailResponse::class.java
-                                )
+                                    val jsonString = response.body()?.string()
+                                    val vWorldDetailResponse = GsonBuilder().serializeNulls().create().fromJson(
+                                        jsonString,
+                                        VWorldDetailResponse::class.java
+                                    )
 
 
-                                if(vWorldDetailResponse.response.status != "NOT_FOUND"){
-                                    val containsKeyword = keywords.any{
-                                        vWorldDetailResponse.response.result.items.first().title.contains(it)
-                                    }
+                                    if(vWorldDetailResponse.response.status != "NOT_FOUND"){
+                                        val containsKeyword = keywords.any{
+                                            vWorldDetailResponse.response.result.items.first().title.contains(it)
+                                        }
 
-                                    if(containsKeyword){
-                                        tv_start_time.text = vWorldDetailResponse.response.result.items.first().title
+                                        if(containsKeyword){
+                                            tv_start_time.text = vWorldDetailResponse.response.result.items.first().title
+                                            tv_start_address.text = vWorldDetailResponse.response.result.items.first().title
+                                            detailDriveHistoryViewModel.updateStartAddress(it.tracking_id, vWorldDetailResponse.response.result.items.first().title)
+                                        }else{
+                                            tv_start_time.text = vWorldResponse.response.result.first().text
+                                            tv_start_address.text = vWorldResponse.response.result.first().text
+                                            detailDriveHistoryViewModel.updateStartAddress(it.tracking_id, vWorldResponse.response.result.first().text)
+                                        }
+
                                     }else{
                                         tv_start_time.text = vWorldResponse.response.result.first().text
+                                        tv_start_address.text = vWorldResponse.response.result.first().text
+                                        detailDriveHistoryViewModel.updateStartAddress(it.tracking_id, vWorldResponse.response.result.first().text)
                                     }
 
-                                }else{
-                                    tv_start_time.text = vWorldResponse.response.result.first().text
                                 }
 
-                            }
+                                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
 
-                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                                }
+                            })
+                        }
 
-                            }
-                        })
-                    }
+                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
 
-                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        }
+                    })
+                }else{
+                    tv_start_address.text = it.start_address
+                    tv_start_time.text = it.start_address
+                }
 
-                    }
-                })
+                if(it.end_address.isNullOrEmpty()){
+                    apiService(" https://api.vworld.kr/").getAddress(point = endPoint).enqueue(object:
+                        Callback<ResponseBody>{
+                        override fun onResponse(
+                            call: Call<ResponseBody>,
+                            response: Response<ResponseBody>
+                        ) {
+                            val vWorldResponse = GsonBuilder().serializeNulls().create().fromJson(
+                                response.body()?.string(),
+                                VWorldResponse::class.java
+                            )
 
-                apiService(" https://api.vworld.kr/").getAddress(point = endPoint).enqueue(object:
-                    Callback<ResponseBody>{
-                    override fun onResponse(
-                        call: Call<ResponseBody>,
-                        response: Response<ResponseBody>
-                    ) {
-                        val vWorldResponse = Gson().fromJson(
-                            response.body()?.string(),
-                            VWorldResponse::class.java
-                        )
+                            apiService(" https://api.vworld.kr/").getAddressDetail(query = vWorldResponse.response.result.first().text).enqueue(object:
+                                Callback<ResponseBody>{
+                                override fun onResponse(
+                                    call: Call<ResponseBody>,
+                                    response: Response<ResponseBody>
+                                ) {
+                                    val vWorldDetailResponse = GsonBuilder().serializeNulls().create().fromJson(
+                                        response.body()?.string(),
+                                        VWorldDetailResponse::class.java
+                                    )
 
-                        apiService(" https://api.vworld.kr/").getAddressDetail(query = vWorldResponse.response.result.first().text).enqueue(object:
-                            Callback<ResponseBody>{
-                            override fun onResponse(
-                                call: Call<ResponseBody>,
-                                response: Response<ResponseBody>
-                            ) {
-                                val vWorldDetailResponse = Gson().fromJson(
-                                    response.body()?.string(),
-                                    VWorldDetailResponse::class.java
-                                )
+                                    if(vWorldDetailResponse.response.status != "NOT_FOUND"){
+                                        val containsKeyword = keywords.any{
+                                            vWorldDetailResponse.response.result.items.first().title.contains(it)
+                                        }
 
-                                if(vWorldDetailResponse.response.status != "NOT_FOUND"){
-                                    val containsKeyword = keywords.any{
-                                        vWorldDetailResponse.response.result.items.last().title.contains(it)
-                                    }
+                                        if(containsKeyword){
+                                            tv_end_time.text = vWorldDetailResponse.response.result.items.first().title
+                                            tv_end_address.text = vWorldDetailResponse.response.result.items.first().title
+                                            detailDriveHistoryViewModel.updateEndAddress(it.tracking_id, vWorldDetailResponse.response.result.items.first().title)
+                                        }else{
+                                            tv_end_time.text = vWorldResponse.response.result.first().text
+                                            tv_end_address.text = vWorldResponse.response.result.first().text
+                                            detailDriveHistoryViewModel.updateEndAddress(it.tracking_id, vWorldResponse.response.result.first().text)
+                                        }
 
-                                    if(containsKeyword){
-                                        tv_end_time.text = vWorldDetailResponse.response.result.items.last().title
                                     }else{
-                                        tv_end_time.text = vWorldResponse.response.result.last().text
+                                        tv_end_time.text = vWorldResponse.response.result.first().text
+                                        tv_end_address.text = vWorldResponse.response.result.first().text
+                                        detailDriveHistoryViewModel.updateEndAddress(it.tracking_id, vWorldResponse.response.result.first().text)
                                     }
 
-                                }else{
-                                    tv_end_time.text = vWorldResponse.response.result.last().text
                                 }
 
-                            }
+                                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
 
-                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
-                            }
-                        })
+                                }
+                            })
 
 
-                    }
+                        }
 
 
 
-                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
 
-                    }
-                })
+                        }
+                    })
 
+                }else{
+                    tv_end_address.text = it.end_address
+                    tv_end_time.text = it.end_address
+                }
 
 
                 if(polylines.size != 0){
@@ -288,9 +326,35 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
                 }
                 is PatchDrivingInfoState.Success -> {
+                    isActive = state.data.isActive
+                    userCarId = state.data.userCarId
 
+                    if(state.data.isActive){
+                        if(!state.data.userCarId.isNullOrEmpty()){
+                            // CarID
+                            PreferenceUtil.getPref(this, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
+                                if(it != ""){
+                                    val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
+                                    val myCarsList: MutableList<MyCarsEntity> = GsonBuilder().serializeNulls().create().fromJson(it, type)
+
+                                    val myCar = myCarsList.find { state.data.userCarId == it.id }
+                                    tv_mycar.text = myCar?.name
+                                }
+                            }
+
+                        }else{
+                            // 미확정
+                            tv_mycar.text ="미확정"
+                        }
+                    }else{
+                        // 내 차가 아니에요
+                        tv_mycar.text = "내 차가 아니에요"
+
+                    }
                 }
                 is PatchDrivingInfoState.Error -> {
+
+
                     if(state.code == 401){
                         logout()
 
@@ -328,6 +392,33 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     tv_rapid_desc_count_info.text = getDrivingInfoResponse.rapidDecelerationCount.toInt().toString() + "회"
 
                     isActive = getDrivingInfoResponse.isActive
+                    userCarId = getDrivingInfoResponse.userCarId
+
+                    if(isActive){
+                        if(!getDrivingInfoResponse.userCarId.isNullOrEmpty()){
+                            // CarID
+
+                            PreferenceUtil.getPref(this, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
+                                if(it != ""){
+
+
+                                    val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
+                                    val myCarsList: MutableList<MyCarsEntity> = GsonBuilder().serializeNulls().create().fromJson(it, type)
+
+                                    val myCar = myCarsList.find { getDrivingInfoResponse.userCarId == it.id }
+                                    tv_mycar.text = myCar?.name
+                                }
+                            }
+
+                        }else{
+                            // 미확정
+                            tv_mycar.text ="미확정"
+                        }
+                    }else{
+                        // 내 차가 아니에요
+                        tv_mycar.text = "내 차가 아니에요"
+
+                    }
 
                     if(isMyCarScope(getDrivingInfoResponse.endTime)){
                         tv_scope_date_mycar.text = transformDateTo30Dayslater(getDrivingInfoResponse.endTime)
@@ -335,11 +426,6 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                         tv_scope_date_mycar.text = "변경 가능 기간이 지났어요."
                     }
 
-                    if(getDrivingInfoResponse.isActive){
-
-                    }else{
-
-                    }
                 }
                 is GetDrivingInfoState.Error -> {
                     if(state.code == 401){
@@ -416,6 +502,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
             override fun onSingleClick(v: View?) {
                 val intent = Intent(this@DetailDriveHistoryActivity, MyDriveHistoryActivity::class.java)
                 intent.putExtra("isActive",isActive)
+                intent.putExtra("userCarId",userCarId)
                 intent.putExtra("trackingId",tracking_id)
                 setResult(RESULT_OK, intent)
                 finish()
@@ -641,6 +728,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     override fun onBackPressed() {
         val intent = Intent(this@DetailDriveHistoryActivity, MyDriveHistoryActivity::class.java)
         intent.putExtra("isActive",isActive)
+        intent.putExtra("userCarId",userCarId)
         intent.putExtra("trackingId",tracking_id)
         setResult(RESULT_OK, intent)
         finish()
@@ -654,6 +742,16 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
                 // Inflate the layout
                 val bottomSheetView = this.layoutInflater.inflate(R.layout.dialog_connected_bluetooth, null)
+                val tv_connected_bluetooth:TextView = bottomSheetView.findViewById(R.id.tv_connected_bluetooth)
+
+                if(bluetoothNameExpected.isNullOrEmpty()){
+                    tv_connected_bluetooth.visibility = GONE
+                }else{
+                    tv_connected_bluetooth.visibility = VISIBLE
+                    tv_connected_bluetooth.text = "연결했던 블루투스: " + bluetoothNameExpected
+
+                }
+
                 val rv_registered_car = bottomSheetView.findViewById<RecyclerView>(R.id.rv_registered_car)
 
                 rv_registered_car.layoutManager = LinearLayoutManager(this)
@@ -661,9 +759,17 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                 rv_registered_car.addItemDecoration(dividerItemDecoration)
 
                 val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
-                val myCarsList: MutableList<MyCarsEntity> = Gson().fromJson(it, type)
+                val myCarsList: MutableList<MyCarsEntity> = GsonBuilder().serializeNulls().create().fromJson(it, type)
 
-                rv_registered_car.adapter = MyCarEntitiesAdapter(context = this, mycarEntities = myCarsList )
+                for(car in myCarsList){
+                    car.isActive = true
+                }
+
+                myCarsList.add(MyCarsEntity(null,null,null,null,null,false))
+                myCarsList.add(MyCarsEntity(null,null,null,null,null,true))
+
+
+                rv_registered_car.adapter = MyCarEntitiesAdapter(context = this, mycarEntities = myCarsList, tracking_id = tracking_id, viewModel = detailDriveHistoryViewModel, bottomSheetDialog, isActive, userCarId )
 
                 // Set the content view of the dialog
                 bottomSheetDialog.setContentView(bottomSheetView)
@@ -676,7 +782,12 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
     class MyCarEntitiesAdapter(
         private val context: Context,
-        private val mycarEntities: MutableList<MyCarsEntity>
+        private val mycarEntities: MutableList<MyCarsEntity>,
+        private val tracking_id:String,
+        private val viewModel: DetailDriveHistoryViewModel,
+        private val bottomSheetDialog:BottomSheetDialog,
+        private val isActive:Boolean,
+        private val userCarId:String?
     ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         companion object {
@@ -696,27 +807,62 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
             if (holder is MyCarEntitiesHolder) {
                 val myCarsEntity = mycarEntities[position]
 
-                holder.tv_car_name.text = myCarsEntity.name
-                holder.tv_car_name.setOnClickListener {
-
-                    PreferenceUtil.getPref(context, PreferenceUtil.MY_CAR_ENTITIES,"")?.let {
-                        if (it != "") {
-                            val myCarsListOnDevice:MutableList<MyCarsEntity> = mutableListOf()
-                            val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
-                            myCarsListOnDevice.addAll(Gson().fromJson(it, type))
-
-                            myCarsListOnDevice.forEach { car ->
-
+                if(myCarsEntity.isActive!!){
+                    if(!myCarsEntity.name.isNullOrEmpty()){
+                        if(isActive){
+                            if(!userCarId.isNullOrEmpty()) {
+                                holder.layout_car.isSelected = true
+                                TextViewCompat.setTextAppearance(holder.tv_car_name, R.style.car_selected)
+                                TextViewCompat.setTextAppearance(holder.tv_car_no, R.style.car_no_selected)
                             }
+                        }
+                        holder.layout_name.visibility = VISIBLE
+                        holder.tv_car_no.visibility = VISIBLE
+                        holder.tv_no_mycar.visibility = GONE
 
+                        holder.tv_car_name.text = myCarsEntity.name
 
-                            PreferenceUtil.putPref(context, PreferenceUtil.MY_CAR_ENTITIES, Gson().toJson(myCarsListOnDevice))
+                        holder.layout_car.setOnClickListener {
+                            viewModel.patchDrivingInfo(true, myCarsEntity.id, tracking_id)
+                            bottomSheetDialog.dismiss()
+                        }
+
+                        holder.tv_car_no.text = myCarsEntity.number
+                    }else{
+                        if(isActive) {
+                            if (userCarId.isNullOrEmpty()) {
+                                holder.layout_car.isSelected = true
+                                TextViewCompat.setTextAppearance(holder.tv_no_mycar, R.style.car_selected)
+                            }
+                        }
+                        // 미확정
+                        holder.layout_name.visibility = GONE
+                        holder.tv_car_no.visibility = GONE
+                        holder.tv_no_mycar.visibility = VISIBLE
+
+                        holder.tv_no_mycar.text = "미확정"
+                        holder.layout_car.setOnClickListener {
+                            viewModel.patchDrivingInfo(true, null, tracking_id)
+                            bottomSheetDialog.dismiss()
                         }
                     }
+                }else{
+                    // 내 차가 아니에요
+                    holder.layout_name.visibility = GONE
+                    holder.tv_car_no.visibility = GONE
+                    holder.tv_no_mycar.visibility = VISIBLE
+
+                    holder.tv_no_mycar.text = "내 차가 아니에요"
+                    holder.layout_car.setOnClickListener {
+                        viewModel.patchDrivingInfo(false, null, tracking_id)
+                        bottomSheetDialog.dismiss()
+                    }
+
+                    if(!isActive){
+                        holder.layout_car.isSelected = true
+                        TextViewCompat.setTextAppearance(holder.tv_no_mycar, R.style.car_selected)
+                    }
                 }
-
-                holder.tv_car_no.text = myCarsEntity.number
-
             }
         }
 
@@ -728,6 +874,9 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     class MyCarEntitiesHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tv_car_name:TextView = view.findViewById(R.id.tv_car_name)
         val tv_car_no:TextView = view.findViewById(R.id.tv_car_no)
+        val layout_name:LinearLayout = view.findViewById(R.id.layout_name)
+        val tv_no_mycar:TextView = view.findViewById(R.id.tv_no_mycar)
+        val layout_car:LinearLayout = view.findViewById(R.id.layout_car)
     }
 
 

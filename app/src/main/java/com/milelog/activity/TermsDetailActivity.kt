@@ -6,6 +6,7 @@ import android.widget.TextView
 import com.milelog.R
 import com.milelog.retrofit.response.TermDetailResponse
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -46,7 +47,7 @@ class TermsDetailActivity: BaseRefreshActivity() {
                     response: Response<ResponseBody>
                 ) {
                     if(response.code() == 200 || response.code() == 201){
-                        val gson = Gson()
+                        val gson = GsonBuilder().serializeNulls().create()
                         val termsDetailResponse = gson.fromJson(response.body()?.string(), TermDetailResponse::class.java)
                         tvTermsContents.setText(termsDetailResponse.content)
                     }else if(response.code() == 401){

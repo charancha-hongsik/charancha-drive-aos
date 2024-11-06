@@ -13,6 +13,7 @@ import com.milelog.retrofit.request.Agreements
 import com.milelog.retrofit.response.TermsAgreeStatusResponse
 import com.milelog.retrofit.response.TermsSummaryResponse
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.milelog.retrofit.request.PostConnectDeviceRequest
 import com.milelog.retrofit.request.PutNotificationAgreements
@@ -139,7 +140,7 @@ class NotificationActivity: BaseRefreshActivity() {
                     val jsonString = response.body()?.string()
 
                     val type: Type = object : TypeToken<List<TermsAgreeStatusResponse?>?>() {}.type
-                    val termsAgreeStatusResponses:List<TermsAgreeStatusResponse> = Gson().fromJson(jsonString, type)
+                    val termsAgreeStatusResponses:List<TermsAgreeStatusResponse> = GsonBuilder().serializeNulls().create().fromJson(jsonString, type)
 
                     for(term in termsAgreeStatusResponses){
 
@@ -182,7 +183,7 @@ class NotificationActivity: BaseRefreshActivity() {
                 response: Response<ResponseBody>
             ) {
                 if(response.code() == 200 || response.code() == 201){
-                    getNotificationLists = Gson().fromJson(
+                    getNotificationLists = GsonBuilder().serializeNulls().create().fromJson(
                         response.body()?.string(),
                         GetNotificationListsResponse::class.java
                     )
@@ -225,7 +226,7 @@ class NotificationActivity: BaseRefreshActivity() {
                 response: Response<ResponseBody>
             ) {
                 if(response.code() == 200 || response.code() == 201){
-                    getMyNotificationAgreedResponse = Gson().fromJson(
+                    getMyNotificationAgreedResponse = GsonBuilder().serializeNulls().create().fromJson(
                         response.body()?.string(),
                         GetMyNotificationAgreedResponse::class.java
                     )
@@ -259,7 +260,7 @@ class NotificationActivity: BaseRefreshActivity() {
     }
 
     fun putMyNotificationAgreed(id:String?, agreed:Boolean){
-        val gson = Gson()
+        val gson = GsonBuilder().serializeNulls().create()
         val jsonParam =
             gson.toJson(PutNotificationAgreements(id!!,agreed))
 
@@ -269,7 +270,7 @@ class NotificationActivity: BaseRefreshActivity() {
         ).enqueue(object: Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200 || response.code() == 201){
-                    val getMyNotificationAgreedItem = Gson().fromJson(response.body()?.string(), GetMyNotificationAgreedItem::class.java)
+                    val getMyNotificationAgreedItem = GsonBuilder().serializeNulls().create().fromJson(response.body()?.string(), GetMyNotificationAgreedItem::class.java)
 
                     if(id.equals(driveHistoryId)){
                         if(!getMyNotificationAgreedItem.isAgreed){

@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.milelog.DividerItemDecoration
 import com.milelog.R
@@ -195,7 +196,7 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                     rv_registered_car.addItemDecoration(dividerItemDecoration)
 
                     val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
-                    val myCarsList: MutableList<MyCarsEntity> = Gson().fromJson(it, type)
+                    val myCarsList: MutableList<MyCarsEntity> = GsonBuilder().serializeNulls().create().fromJson(it, type)
 
                     rv_registered_car.adapter = MyCarEntitiesAdapter(context = context, mycarEntities = myCarsList, macAddress,bluetoothName )
 
@@ -251,7 +252,7 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                         if (it != "") {
                             val myCarsListOnDevice:MutableList<MyCarsEntity> = mutableListOf()
                             val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
-                            myCarsListOnDevice.addAll(Gson().fromJson(it, type))
+                            myCarsListOnDevice.addAll(GsonBuilder().serializeNulls().create().fromJson(it, type))
 
                             myCarsListOnDevice.forEach { car ->
                                 if (car.bluetooth_mac_address == macAddress) {
@@ -263,7 +264,7 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                             myCarsListOnDevice.get(position).bluetooth_mac_address = macAddress
                             myCarsListOnDevice.get(position).bluetooth_name = bluetoothName
 
-                            PreferenceUtil.putPref(context, PreferenceUtil.MY_CAR_ENTITIES, Gson().toJson(myCarsListOnDevice))
+                            PreferenceUtil.putPref(context, PreferenceUtil.MY_CAR_ENTITIES, GsonBuilder().serializeNulls().create().toJson(myCarsListOnDevice))
                         }
                     }
 

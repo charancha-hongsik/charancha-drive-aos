@@ -104,7 +104,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
         btn_edit_car = findViewById(R.id.btn_edit_car)
 
         val jsonString = intent.getStringExtra("carInfo")
-        val gson = Gson()
+        val gson = GsonBuilder().serializeNulls().create()
         postMyCarResponse = gson.fromJson(jsonString, PostMyCarResponse::class.java)
 
         resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){

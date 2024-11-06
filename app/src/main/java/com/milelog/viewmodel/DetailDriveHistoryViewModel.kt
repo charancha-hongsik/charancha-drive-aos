@@ -1,9 +1,11 @@
 package com.milelog.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.milelog.PreferenceUtil
 import com.milelog.retrofit.request.PatchDrivingInfo
 import com.milelog.retrofit.response.GetDrivingInfoResponse
@@ -58,10 +60,10 @@ class DetailDriveHistoryViewModel: BaseViewModel() {
         }
     }
 
-    fun patchDrivingInfo(isActive:Boolean, tracking_id:String){
-        val gson = Gson()
+    fun patchDrivingInfo(isActive:Boolean,userCarId:String?,tracking_id:String){
+        val gson = GsonBuilder().serializeNulls().create()
         val jsonParam =
-            gson.toJson(PatchDrivingInfo(isActive))
+            gson.toJson(PatchDrivingInfo(userCarId, isActive))
         apiService(context).patchDrivingInfo("Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!, tracking_id,jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object:
             Callback<ResponseBody> {
             override fun onResponse(
@@ -70,10 +72,16 @@ class DetailDriveHistoryViewModel: BaseViewModel() {
             ) {
                 try {
                     if (response.code() == 200 || response.code() == 201) {
-                        val patchDrivingResponse = Gson().fromJson(
+                        val patchDrivingResponse = GsonBuilder().serializeNulls().create().fromJson(
                             response.body()?.string(),
                             PatchDrivingResponse::class.java
                         )
+                        Log.d("testsetestset","testestestse jsonParam :: " + jsonParam.toString())
+                        Log.d("testsetestset","testestestse tracking_id :: " + tracking_id)
+                        Log.d("testsetestset","testestestse ACCESS_TOKEN :: " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!)
+
+
+
                         _patchDrivingInfo.value = Event(PatchDrivingInfoState.Success(patchDrivingResponse))
                     }else if(response.code() == 401){
                         _patchDrivingInfo.value = Event(PatchDrivingInfoState.Error(response.code(), response.message()))
@@ -92,11 +100,31 @@ class DetailDriveHistoryViewModel: BaseViewModel() {
         })
     }
 
+    fun updateStartAddress(id:String, address:String){
+        viewModelScope.launch {
+            val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(context)
+            driveDatabase.driveForAppDao().updateStartAddress(id,address)?.let {
+
+            }
+        }
+    }
+
+    fun updateEndAddress(id:String, address:String){
+        viewModelScope.launch {
+            val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(context)
+            driveDatabase.driveForAppDao().updateEndAddress(id,address)?.let {
+
+            }
+        }
+    }
+
     fun getDrivingInfo(tracking_id:String){
         apiService(context).getDrivingInfo("Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!, tracking_id).enqueue(object : Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200 || response.code() == 201){
-                    val getDrivingInfoResponse = Gson().fromJson(response.body()?.string(), GetDrivingInfoResponse::class.java)
+                    val jsonString = response.body()?.string()
+                    Log.d("testsetestset","testestestse :: " + jsonString)
+                    val getDrivingInfoResponse = GsonBuilder().serializeNulls().create().fromJson(jsonString, GetDrivingInfoResponse::class.java)
                     _getDrivingInfo.value = Event(GetDrivingInfoState.Success(getDrivingInfoResponse))
                 }else if(response.code() == 401){
                     _getDrivingInfo.value = Event(GetDrivingInfoState.Error(response.code(), response.message()))

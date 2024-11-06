@@ -31,6 +31,7 @@ import com.milelog.R
 import com.milelog.retrofit.response.GetAccountProfilesResponse
 import com.milelog.retrofit.response.TermsSummaryResponse
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.milelog.BuildConfig.BASE_API_URL
 import com.milelog.Endpoints.FAQ
@@ -106,7 +107,7 @@ class MyPageActivity: BaseRefreshActivity() {
                 if(response.code() == 200 || response.code() == 201){
                     val jsonString = response.body()?.string()
 
-                    val gson = Gson()
+                    val gson = GsonBuilder().serializeNulls().create()
                     val type: Type = object : TypeToken<List<TermsSummaryResponse?>?>() {}.type
                     termsSummaryResponse = gson.fromJson(jsonString, type)
 
@@ -283,7 +284,7 @@ class MyPageActivity: BaseRefreshActivity() {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
 
                 if(response.code() == 200 || response.code() == 201){
-                    getAccountProfilesResponse = Gson().fromJson(
+                    getAccountProfilesResponse = GsonBuilder().serializeNulls().create().fromJson(
                         response.body()?.string(),
                         GetAccountProfilesResponse::class.java
                     )

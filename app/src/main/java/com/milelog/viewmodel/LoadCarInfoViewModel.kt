@@ -44,7 +44,7 @@ class LoadCarInfoViewModel: BaseViewModel() {
                     )
                 } else{
                     _setCarInfoInquiry.value = Event(
-                        GetCarInfoInquiryState.Error(response.code(), "차량 번호 또는 소유자명이 일치하지 않습니다.")
+                        GetCarInfoInquiryState.Error(response.code(), response.message())
                     )
                 }
             }

@@ -2,9 +2,11 @@ package com.milelog.retrofit.response
 
 data class GetDrivingInfoResponse (
     val id:String,
+    val userId:String,
+    val carId:String,
+    val userCarId:String,
     val createdAt:String,
     val updatedAt:String,
-    val userCarId:String,
     val startTime:String,
     val endTime:String,
     val totalTime:Double,

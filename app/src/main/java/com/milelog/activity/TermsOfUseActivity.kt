@@ -16,6 +16,7 @@ import com.milelog.retrofit.request.Agreements
 import com.milelog.retrofit.response.GetMyCarInfoResponse
 import com.milelog.retrofit.response.TermsSummaryResponse
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -71,7 +72,7 @@ class TermsOfUseActivity: BaseActivity() {
                 if(response.code() == 200 || response.code() == 201){
                     val jsonString = response.body()?.string()
 
-                    val gson = Gson()
+                    val gson = GsonBuilder().serializeNulls().create()
                     val type: Type = object : TypeToken<List<TermsSummaryResponse?>?>() {}.type
                     termsSummaryResponse = gson.fromJson(jsonString, type)
 
@@ -224,7 +225,7 @@ class TermsOfUseActivity: BaseActivity() {
                     }
                 }
 
-                val gson = Gson()
+                val gson = GsonBuilder().serializeNulls().create()
                 val jsonParam = gson.toJson(AgreeTermsRequest(acceptedTerms.toList()))
 
                 apiService().postTermsAgree("Bearer " + PreferenceUtil.getPref(this@TermsOfUseActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :Callback<ResponseBody>{

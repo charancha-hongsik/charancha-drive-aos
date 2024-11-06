@@ -17,6 +17,7 @@ import com.milelog.R
 import com.milelog.retrofit.response.GetLatestResponse
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -115,7 +116,7 @@ class SettingActivity: BaseRefreshActivity(){
         apiService().getLatest("AOS","PHONE").enqueue(object:Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200 || response.code() == 201) {
-                    val getLatestResponse = Gson().fromJson(
+                    val getLatestResponse = GsonBuilder().serializeNulls().create().fromJson(
                         response.body()?.string(),
                         GetLatestResponse::class.java
                     )

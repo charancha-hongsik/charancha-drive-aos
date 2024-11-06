@@ -23,6 +23,7 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -291,7 +292,7 @@ class HighSpeedDrivingActivity: BaseRefreshActivity() {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 try {
                     if (response.code() == 200 || response.code() == 201) {
-                        val recentDrivingDistance = Gson().fromJson(
+                        val recentDrivingDistance = GsonBuilder().serializeNulls().create().fromJson(
                             response.body()?.string(),
                             GetRecentDrivingStatisticsResponse::class.java
                         )
@@ -381,7 +382,7 @@ class HighSpeedDrivingActivity: BaseRefreshActivity() {
                                 ) {
                                     try {
                                         if (response.code() == 200 || response.code() == 201) {
-                                            val getDrivingGraphDataResponse = Gson().fromJson(
+                                            val getDrivingGraphDataResponse = GsonBuilder().serializeNulls().create().fromJson(
                                                 response.body()?.string(),
                                                 GetDrivingGraphDataResponse::class.java
                                             )

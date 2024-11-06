@@ -155,7 +155,6 @@
                     android:layout_marginRight="20dp">
 
                     <LinearLayout
-                        android:id="@+id/tv_mycar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:visibility="visible"
@@ -164,41 +163,20 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent">
 
-                        <ImageView
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:src="@drawable/check"
-                            android:layout_gravity="center_vertical"/>
 
                         <TextView
+                            android:id="@+id/tv_mycar"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="내 차에요!"
                             android:textColor="@color/gray_950"
                             android:textAppearance="@style/ST2SB"
                             android:textFontWeight="600"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginLeft="8dp" />
+                            android:layout_gravity="center_vertical" />
 
 
 
                     </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/tv_not_mycar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="내 차가 아니에요"
-                        android:visibility="gone"
-                        android:textColor="@color/gray_950"
-                        android:textAppearance="@style/ST2SB"
-                        android:textFontWeight="600"
-                        android:layout_gravity="center_vertical"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
-
-
 
                     <ImageView
                         android:layout_width="16dp"
@@ -303,6 +281,129 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
+                    android:text="방문지"
+                    android:textColor="@color/gray_950"
+                    android:textAppearance="@style/ST2B"
+                    android:textFontWeight="700" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_start_address_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="출발지"
+                        android:layout_gravity="left|top"
+                        android:textColor="@color/gray_700"
+                        android:textAppearance="@style/B1R"
+                        android:textFontWeight="400"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/tv_start_address"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="서울 동대문구 답십리동"
+                        android:textColor="@color/gray_950"
+                        android:gravity="right"
+                        android:textFontWeight="600"
+                        android:textAppearance="@style/B1SB"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:layout_marginLeft="12dp"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/tv_start_address_title"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_end_address_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="도착지"
+                        android:layout_gravity="left|top"
+                        android:textColor="@color/gray_700"
+                        android:textAppearance="@style/B1R"
+                        android:textFontWeight="400"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/tv_end_address"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="강원 속초시 교동"
+                        android:textColor="@color/gray_950"
+                        android:gravity="right"
+                        android:textFontWeight="600"
+                        android:textAppearance="@style/B1SB"
+                        android:maxLines="1"
+                        android:layout_marginLeft="12dp"
+                        android:ellipsize="end"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/tv_end_address_title"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_end_address_detail_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="방문지"
+                        android:layout_gravity="left|top"
+                        android:textColor="@color/gray_700"
+                        android:textAppearance="@style/B1R"
+                        android:textFontWeight="400"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/tv_end_address_detail"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="배꽃나라 주유소"
+                        android:textColor="@color/gray_950"
+                        android:gravity="right"
+                        android:textFontWeight="600"
+                        android:textAppearance="@style/B1SB"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:layout_marginLeft="12dp"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/tv_end_address_detail_title"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="36dp"
                     android:text="주행"
                     android:textColor="@color/gray_950"
                     android:textAppearance="@style/ST2B"

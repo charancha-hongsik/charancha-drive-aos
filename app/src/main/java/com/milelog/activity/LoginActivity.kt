@@ -14,6 +14,7 @@ import com.milelog.R
 import com.milelog.retrofit.request.SignInRequest
 import com.milelog.retrofit.request.SignUpRequest
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.milelog.CustomDialogNoCancel
 import com.milelog.retrofit.request.PostConnectDeviceRequest
@@ -193,9 +194,14 @@ class LoginActivity: BaseActivity() {
 
     fun handleSuccessLogin(idToken:String, oauthProvider:String, accountAddress:String) {
         try {
-            val gson = Gson()
+            val gson = GsonBuilder().serializeNulls().create()
             val jsonParam =
                 gson.toJson(SignUpRequest(idToken, "string", oauthProvider, "string", accountAddress))
+
+            Log.d("testsetsetse","testestsetseset idToken :: " + idToken)
+            Log.d("testsetsetse","testestsetseset oauthProvider :: " + oauthProvider)
+            Log.d("testsetsetse","testestsetseset accountAddress :: " + accountAddress)
+
 
 
             apiService().postSignUp(jsonParam.toRequestBody("application/json".toMediaTypeOrNull()))
@@ -206,7 +212,7 @@ class LoginActivity: BaseActivity() {
                         response: Response<ResponseBody>
                     ) {
                         if (response.code() == 201 || response.code() == 409) {
-                            val gson = Gson()
+                            val gson = GsonBuilder().serializeNulls().create()
                             val jsonParam =
                                 gson.toJson(SignInRequest(idToken, "string", oauthProvider))
 
@@ -251,7 +257,7 @@ class LoginActivity: BaseActivity() {
 
                                             PreferenceUtil.getPref(this@LoginActivity, PreferenceUtil.DEVICE_ID_FOR_FCM, "")?.let{
 
-                                                val gson = Gson()
+                                                val gson = GsonBuilder().serializeNulls().create()
                                                 val jsonParam =
                                                     gson.toJson(PostConnectDeviceRequest(it))
 
@@ -320,7 +326,7 @@ class LoginActivity: BaseActivity() {
                     val jsonString = response.body()?.string()
 
                     val type: Type = object : TypeToken<List<TermsAgreeStatusResponse?>?>() {}.type
-                    val termsAgreeStatusResponses:List<TermsAgreeStatusResponse> = Gson().fromJson(jsonString, type)
+                    val termsAgreeStatusResponses:List<TermsAgreeStatusResponse> = GsonBuilder().serializeNulls().create().fromJson(jsonString, type)
 
                     var agree = true
                     var existRequired = false
@@ -369,7 +375,7 @@ class LoginActivity: BaseActivity() {
                                             if(response.code() == 200 || response.code() == 201){
                                                 val jsonString = response.body()?.string()
 
-                                                val getMyCarInfoResponse:GetMyCarInfoResponse = Gson().fromJson(jsonString, GetMyCarInfoResponse::class.java)
+                                                val getMyCarInfoResponse:GetMyCarInfoResponse = GsonBuilder().serializeNulls().create().fromJson(jsonString, GetMyCarInfoResponse::class.java)
 
                                                 if(getMyCarInfoResponse.items.size > 0){
                                                     PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.items.get(0).id)

@@ -16,6 +16,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.milelog.retrofit.ApiServiceInterface
 import com.milelog.retrofit.HeaderInterceptor
 import com.milelog.retrofit.request.PatchDeviceInfoRequest
@@ -80,7 +81,7 @@ class BootReceiver : BroadcastReceiver() {
                                     fcmDeviceToken = token
                                 )
 
-                                val gson = Gson()
+                                val gson = GsonBuilder().serializeNulls().create()
                                 val jsonParam = gson.toJson(postDeviceInfoRequest)
 
                                 apiService(context).postDeviceInfo(jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :
@@ -123,7 +124,7 @@ class BootReceiver : BroadcastReceiver() {
                 userId = userId
             )
 
-            val gson = Gson()
+            val gson = GsonBuilder().serializeNulls().create()
             val jsonParam = gson.toJson(patchDeviceInfoRequest)
 
             PreferenceUtil.getPref(context, PreferenceUtil.DEVICE_ID_FOR_FCM, "")?.let{ deviceId->

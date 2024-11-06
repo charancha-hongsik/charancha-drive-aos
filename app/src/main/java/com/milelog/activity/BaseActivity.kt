@@ -21,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.milelog.BuildConfig
 import com.milelog.PreferenceUtil
 import com.milelog.R
@@ -119,7 +120,7 @@ open class BaseActivity: AppCompatActivity(){
                                     fcmDeviceToken = token
                                 )
 
-                                val gson = Gson()
+                                val gson = GsonBuilder().serializeNulls().create()
                                 val jsonParam = gson.toJson(postDeviceInfoRequest)
 
                                 apiService().postDeviceInfo(jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object : Callback<ResponseBody> {
@@ -598,7 +599,7 @@ open class BaseActivity: AppCompatActivity(){
         if(PreferenceUtil.getPref(this@BaseActivity,PreferenceUtil.REFRESH_TOKEN,"") != "") {
             PreferenceUtil.getPref(this@BaseActivity, PreferenceUtil.DEVICE_ID_FOR_FCM, "")?.let {
 
-                val gson = Gson()
+                val gson = GsonBuilder().serializeNulls().create()
                 val jsonParam =
                     gson.toJson(PostConnectDeviceRequest(it))
 

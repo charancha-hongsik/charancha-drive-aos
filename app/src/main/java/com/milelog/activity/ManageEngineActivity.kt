@@ -13,6 +13,7 @@ import com.milelog.R
 import com.milelog.retrofit.response.GetDrivingStatisticsResponse
 import com.milelog.retrofit.response.GetManageScoreResponse
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -342,7 +343,7 @@ class ManageEngineActivity: BaseRefreshActivity() {
             ) {
                 try {
                     if (response.code() == 200 || response.code() == 201) {
-                        val getManageScoreResponse = Gson().fromJson(
+                        val getManageScoreResponse = GsonBuilder().serializeNulls().create().fromJson(
                             response.body()?.string(),
                             GetManageScoreResponse::class.java
                         )
@@ -412,7 +413,7 @@ class ManageEngineActivity: BaseRefreshActivity() {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 try {
                     if (response.code() == 200 || response.code() == 201) {
-                        val getDrivingStatisticsResponse = Gson().fromJson(
+                        val getDrivingStatisticsResponse = GsonBuilder().serializeNulls().create().fromJson(
                             response.body()?.string(),
                             GetDrivingStatisticsResponse::class.java
                         )
@@ -529,7 +530,7 @@ class ManageEngineActivity: BaseRefreshActivity() {
             ) {
                 try {
                     if (response.code() == 200 || response.code() == 201) {
-                        val getManageScoreResponse = Gson().fromJson(
+                        val getManageScoreResponse = GsonBuilder().serializeNulls().create().fromJson(
                             response.body()?.string(),
                             GetManageScoreResponse::class.java
                         )
@@ -601,7 +602,7 @@ class ManageEngineActivity: BaseRefreshActivity() {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 try {
                     if (response.code() == 200) {
-                        val getDrivingStatisticsResponse = Gson().fromJson(
+                        val getDrivingStatisticsResponse = GsonBuilder().serializeNulls().create().fromJson(
                             response.body()?.string(),
                             GetDrivingStatisticsResponse::class.java
                         )
@@ -718,7 +719,7 @@ class ManageEngineActivity: BaseRefreshActivity() {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 try {
                     if (response.code() == 200) {
-                        val getDrivingStatisticsResponse = Gson().fromJson(
+                        val getDrivingStatisticsResponse = GsonBuilder().serializeNulls().create().fromJson(
                             response.body()?.string(),
                             GetDrivingStatisticsResponse::class.java
                         )

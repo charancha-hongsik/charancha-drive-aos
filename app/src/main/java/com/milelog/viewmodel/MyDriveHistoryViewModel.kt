@@ -3,6 +3,7 @@ package com.milelog.viewmodel
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.milelog.PreferenceUtil
 import com.milelog.retrofit.response.DriveItem
 import com.milelog.retrofit.response.GetDriveHistoryResponse
@@ -31,17 +32,19 @@ class MyDriveHistoryViewModel: BaseViewModel() {
 
     fun getHistoriesMore(startTime:String, endTime:String, meta: Meta, histories: MutableList<DriveItem>){
         apiService(context).getDrivingHistories(
-            "Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!,
-            30,
-            "DESC",
-            meta.afterCursor,
-            null,
-            "startTime",
-            startTime,
-            endTime).enqueue(object: Callback<ResponseBody> {
+            token = "Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!,
+            size = 30,
+            order = "DESC",
+            afterCursor =  null,
+            beforeCursor = null,
+            key = "startTime",
+            startTime = startTime,
+            endTime = endTime,
+            isActive = null,
+            userCarId = null).enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200 || response.code() == 201){
-                    val getDriveHistroyResponse = Gson().fromJson(
+                    val getDriveHistroyResponse = GsonBuilder().serializeNulls().create().fromJson(
                         response.body()?.string(),
                         GetDriveHistoryResponse::class.java
                     )
@@ -60,17 +63,19 @@ class MyDriveHistoryViewModel: BaseViewModel() {
 
     fun getHistories(startTime:String, endTime:String){
         apiService(context).getDrivingHistories(
-            "Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!,
-            30,
-            "DESC",
-            null,
-            null,
-            "startTime",
-            startTime,
-            endTime).enqueue(object: Callback<ResponseBody>{
+            token = "Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!,
+            size = 30,
+            order = "DESC",
+            afterCursor =  null,
+            beforeCursor = null,
+            key = "startTime",
+            startTime = startTime,
+            endTime = endTime,
+            isActive = null,
+            userCarId = null).enqueue(object: Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200 || response.code() == 201){
-                    val getDriveHistroyResponse = Gson().fromJson(
+                    val getDriveHistroyResponse = GsonBuilder().serializeNulls().create().fromJson(
                         response.body()?.string(),
                         GetDriveHistoryResponse::class.java
                     )

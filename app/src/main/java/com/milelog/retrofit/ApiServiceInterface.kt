@@ -9,13 +9,20 @@ import retrofit2.Call
 import retrofit2.http.*
 
 interface ApiServiceInterface {
-    @POST("api/v1/cars/user-cars/drivings")
-    fun postDrivingInfo(@Header("Authorization") token: String, @Body body: RequestBody): Call<ResponseBody>
 
-    @GET("api/v1/cars/-/user-cars/-/drivings/{drivingId}")
-    fun getDrivingInfo(@Header("Authorization") token: String, @Path("drivingId") drivingId: String): Call<ResponseBody>
+    // 내 주행 생성
+    @POST("api/v1/me/cars/user-cars/drivings")
+    fun postMyDrivingInfo(@Header("Authorization") token: String, @Body body: RequestBody): Call<ResponseBody>
 
 
+    /**
+     * 전체 조회: 필터 사용 X
+     * 미확인 : isActive = true
+     * 특정유저차량: isActive = true, userCarId = 특정유저차량ID
+     * 내 차가 아니에요: isActive = false
+     */
+
+    // 내 주행 목록 조회
     @GET("api/v1/me/cars/-/user-cars/-/drivings")
     fun getDrivingHistories(@Header("Authorization") token: String,
                             @Query("size") size: Int,
@@ -23,8 +30,20 @@ interface ApiServiceInterface {
                             @Query("afterCursor") afterCursor: String?,
                             @Query("beforeCursor") beforeCursor: String?,
                             @Query("key") key: String,
+                            @Query("isActive") isActive: Boolean?,
                             @Query("startTime") startTime: String,
-                            @Query("endTime") endTime: String): Call<ResponseBody>
+                            @Query("endTime") endTime: String,
+                            @Query("userCarId") userCarId: String?): Call<ResponseBody>
+
+    // 특정 유저차량의 주행목록 조회
+    @GET("api/v1/cars/-/user-cars/{userCarId}/drivings")
+    fun getDrivingInfoByUserCarId(@Header("Authorization") token: String, @Path("userCarId") userCarId: String): Call<ResponseBody>
+
+    // 주행 상세 조회
+    @GET("api/v1/cars/-/user-cars/-/drivings/{drivingId}")
+    fun getDrivingInfo(@Header("Authorization") token: String, @Path("drivingId") drivingId: String): Call<ResponseBody>
+
+
 
     // 주행 기록 수정
     @PATCH("api/v1/cars/user-cars/drivings/{drivingId}")

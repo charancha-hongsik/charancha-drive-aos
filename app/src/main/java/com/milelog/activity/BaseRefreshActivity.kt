@@ -7,6 +7,7 @@ import android.util.Log
 import com.milelog.PreferenceUtil
 import com.milelog.retrofit.response.SignInResponse
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.milelog.retrofit.ApiServiceInterface
 import okhttp3.Interceptor
 import okhttp3.ResponseBody
@@ -29,7 +30,7 @@ open class BaseRefreshActivity: BaseActivity(){
                     try {
                         if (response.code() == 200 || response.code() == 201) {
                             val signInResponse =
-                                Gson().fromJson(
+                                GsonBuilder().serializeNulls().create().fromJson(
                                     response.body()?.string(),
                                     SignInResponse::class.java
                                 )

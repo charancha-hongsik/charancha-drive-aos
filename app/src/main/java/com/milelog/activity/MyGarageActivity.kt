@@ -24,6 +24,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.milelog.DividerItemDecoration
 import com.milelog.PreferenceUtil
@@ -113,7 +114,7 @@ class MyGarageActivity:BaseRefreshActivity() {
 
                     Log.d("testestsetset","testsetsetes t:: " + jsonString)
 
-                    val getMyCarInfoResponses = Gson().fromJson(jsonString, GetMyCarInfoResponse::class.java)
+                    val getMyCarInfoResponses = GsonBuilder().serializeNulls().create().fromJson(jsonString, GetMyCarInfoResponse::class.java)
 
                     val myCarsListOnServer: MutableList<MyCarsEntity> = mutableListOf()
                     val myCarsListOnDevice:MutableList<MyCarsEntity> = mutableListOf()
@@ -121,7 +122,7 @@ class MyGarageActivity:BaseRefreshActivity() {
                     PreferenceUtil.getPref(this@MyGarageActivity, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
                         if(it != "") {
                             val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
-                            myCarsListOnDevice.addAll(Gson().fromJson(it, type))
+                            myCarsListOnDevice.addAll(GsonBuilder().serializeNulls().create().fromJson(it, type))
                         }
                     }
 
@@ -133,7 +134,7 @@ class MyGarageActivity:BaseRefreshActivity() {
                             myCarsListOnServer.add(MyCarsEntity(car.id, car.carName, car.licensePlateNumber, null,null))
                         }
 
-                        PreferenceUtil.putPref(this@MyGarageActivity, PreferenceUtil.MY_CAR_ENTITIES, Gson().toJson(updateMyCarList(myCarsListOnServer, myCarsListOnDevice)))
+                        PreferenceUtil.putPref(this@MyGarageActivity, PreferenceUtil.MY_CAR_ENTITIES, GsonBuilder().serializeNulls().create().toJson(updateMyCarList(myCarsListOnServer, myCarsListOnDevice)))
 
                     }else{
                         startActivity(Intent(this@MyGarageActivity, SplashActivity::class.java))

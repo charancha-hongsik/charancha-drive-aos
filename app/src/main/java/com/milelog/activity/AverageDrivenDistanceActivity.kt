@@ -16,6 +16,7 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -1359,7 +1360,7 @@ class AverageDrivenDistanceActivity: BaseRefreshActivity() {
                 try {
                     if (response.code() == 200 || response.code() == 201) {
 
-                        val drivingDistance = Gson().fromJson(
+                        val drivingDistance = GsonBuilder().serializeNulls().create().fromJson(
                             response.body()?.string(),
                             GetDrivingStatisticsResponse::class.java
                         )
@@ -1464,7 +1465,7 @@ class AverageDrivenDistanceActivity: BaseRefreshActivity() {
                 try {
                     if (response.code() == 200 || response.code() == 201) {
 
-                        val drivingDistance = Gson().fromJson(
+                        val drivingDistance = GsonBuilder().serializeNulls().create().fromJson(
                             response.body()?.string(),
                             GetDrivingStatisticsResponse::class.java
                         )

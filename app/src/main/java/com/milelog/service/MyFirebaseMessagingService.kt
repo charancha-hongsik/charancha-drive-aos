@@ -25,6 +25,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.milelog.BuildConfig
 import com.milelog.MyApplication
 import com.milelog.PreferenceUtil
@@ -151,7 +152,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 userId = userId
             )
 
-            val gson = Gson()
+            val gson = GsonBuilder().serializeNulls().create()
             val jsonParam = gson.toJson(patchDeviceInfoRequest)
 
             PreferenceUtil.getPref(applicationContext, PreferenceUtil.DEVICE_ID_FOR_FCM, "")?.let{ deviceId->

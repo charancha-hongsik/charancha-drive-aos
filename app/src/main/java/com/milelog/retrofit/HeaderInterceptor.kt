@@ -3,6 +3,7 @@ package com.milelog.retrofit
 import android.content.Context
 import android.util.Log
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.milelog.BuildConfig
 import com.milelog.PreferenceUtil
 import com.milelog.retrofit.response.SignInResponse
@@ -39,7 +40,7 @@ class HeaderInterceptor(val context: Context, val content_type:String="applicati
                         response.close()
 
                         val signInResponse =
-                            Gson().fromJson(
+                            GsonBuilder().serializeNulls().create().fromJson(
                                 newTokenResponse.body()?.string(),
                                 SignInResponse::class.java
                             )

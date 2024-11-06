@@ -3,6 +3,7 @@ package com.milelog.viewmodel
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.milelog.PreferenceUtil
 import com.milelog.retrofit.request.PostDrivingInfoRequest
@@ -65,7 +66,7 @@ class MainViewModel: BaseViewModel() {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 when {
                     response.code() == 200 || response.code() == 201 -> {
-                        val getAccountResponse = Gson().fromJson(
+                        val getAccountResponse = GsonBuilder().serializeNulls().create().fromJson(
                             response.body()?.string(),
                             GetAccountResponse::class.java
                         )
@@ -92,17 +93,17 @@ class MainViewModel: BaseViewModel() {
                     if (it.isNotEmpty()) {
                         for (drive in it) {
                             val postDrivingInfoRequest = PostDrivingInfoRequest(
-                                userCarId = PreferenceUtil.getPref(context, PreferenceUtil.USER_CARID, "")!!,
+                                userCarId = drive.userCarId,
                                 startTimestamp = drive.startTimestamp,
                                 endTimestamp = drive.endTimestamp,
                                 verification = drive.verification,
                                 gpses = drive.gpses
                             )
 
-                            val gson = Gson()
+                            val gson = GsonBuilder().serializeNulls().create()
                             val jsonParam = gson.toJson(postDrivingInfoRequest)
 
-                            apiService(context).postDrivingInfo("Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!, jsonParam.toRequestBody("application/json".toMediaTypeOrNull()))
+                            apiService(context).postMyDrivingInfo("Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!, jsonParam.toRequestBody("application/json".toMediaTypeOrNull()))
                                 .enqueue(object : Callback<ResponseBody> {
                                     override fun onResponse(
                                         call: Call<ResponseBody>,
@@ -164,7 +165,7 @@ class MainViewModel: BaseViewModel() {
 
                 if(response.code() == 200 || response.code() == 201){
                     val jsonString = response.body()?.string()
-                    val getMyCarInfoResponses = Gson().fromJson(jsonString,GetMyCarInfoResponse::class.java)
+                    val getMyCarInfoResponses = GsonBuilder().serializeNulls().create().fromJson(jsonString,GetMyCarInfoResponse::class.java)
 
                     _myCarInfoResult.value = Event(MyCarInfoState.Success(getMyCarInfoResponses))
 
@@ -190,7 +191,7 @@ class MainViewModel: BaseViewModel() {
                 response: Response<ResponseBody>
             ) {
                 if(response.code() == 200 || response.code() == 201){
-                    val getMyCarInfoResponse = Gson().fromJson(
+                    val getMyCarInfoResponse = GsonBuilder().serializeNulls().create().fromJson(
                         response.body()?.string(),
                         GetMyCarInfoItem::class.java
                     )
@@ -220,7 +221,7 @@ class MainViewModel: BaseViewModel() {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 try {
                     if (response.code() == 200 || response.code() == 201) {
-                        val getManageScoreResponse = Gson().fromJson(
+                        val getManageScoreResponse = GsonBuilder().serializeNulls().create().fromJson(
                             response.body()?.string(),
                             GetManageScoreResponse::class.java
                         )
@@ -253,7 +254,7 @@ class MainViewModel: BaseViewModel() {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 try {
                     if (response.code() == 200 || response.code() == 201) {
-                        val getDrivingStatisticsResponse = Gson().fromJson(
+                        val getDrivingStatisticsResponse = GsonBuilder().serializeNulls().create().fromJson(
                             response.body()?.string(),
                             GetDrivingStatisticsResponse::class.java
                         )
@@ -285,7 +286,7 @@ class MainViewModel: BaseViewModel() {
             ) {
                 try {
                     if (response.code() == 200 || response.code() == 201) {
-                        val getManageScoreResponse = Gson().fromJson(
+                        val getManageScoreResponse = GsonBuilder().serializeNulls().create().fromJson(
                             response.body()?.string(),
                             GetManageScoreResponse::class.java
                         )
@@ -319,7 +320,7 @@ class MainViewModel: BaseViewModel() {
             ) {
                 try {
                     if (response.code() == 200 || response.code() == 201) {
-                        val getManageScoreResponse = Gson().fromJson(
+                        val getManageScoreResponse = GsonBuilder().serializeNulls().create().fromJson(
                             response.body()?.string(),
                             GetManageScoreResponse::class.java
                         )

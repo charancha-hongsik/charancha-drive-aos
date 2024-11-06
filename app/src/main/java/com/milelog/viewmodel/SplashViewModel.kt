@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.milelog.BuildConfig
 import com.milelog.PreferenceUtil
@@ -57,7 +58,7 @@ class SplashViewModel: BaseViewModel() {
                 response: Response<ResponseBody>
             ) {
                 if(response.code() == 200 || response.code() == 201){
-                    val signInResponse = Gson().fromJson(response.body()?.string(), SignInResponse::class.java)
+                    val signInResponse = GsonBuilder().serializeNulls().create().fromJson(response.body()?.string(), SignInResponse::class.java)
 
                     PreferenceUtil.putPref(context, PreferenceUtil.ACCESS_TOKEN, signInResponse.access_token)
                     PreferenceUtil.putPref(context, PreferenceUtil.REFRESH_TOKEN, signInResponse.refresh_token)
@@ -92,7 +93,7 @@ class SplashViewModel: BaseViewModel() {
                     val jsonString = response.body()?.string()
 
                     val type: Type = object : TypeToken<List<TermsAgreeStatusResponse?>?>() {}.type
-                    val termsAgreeStatusResponses:List<TermsAgreeStatusResponse> = Gson().fromJson(jsonString, type)
+                    val termsAgreeStatusResponses:List<TermsAgreeStatusResponse> = GsonBuilder().serializeNulls().create().fromJson(jsonString, type)
 
                     _getTermsAgree.value = Event(GetTermsAgreeState.Success(termsAgreeStatusResponses))
                 } else{
@@ -142,7 +143,7 @@ class SplashViewModel: BaseViewModel() {
                 Log.d("testestestsetest","testestestset checkForceUpdate:: " + response.code())
 
                 if(response.code() == 200 || response.code() == 201) {
-                    val getLatestResponse = Gson().fromJson(
+                    val getLatestResponse = GsonBuilder().serializeNulls().create().fromJson(
                         response.body()?.string(),
                         GetLatestResponse::class.java
                     )
