@@ -811,9 +811,11 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     if(!myCarsEntity.name.isNullOrEmpty()){
                         if(isActive){
                             if(!userCarId.isNullOrEmpty()) {
-                                holder.layout_car.isSelected = true
-                                TextViewCompat.setTextAppearance(holder.tv_car_name, R.style.car_selected)
-                                TextViewCompat.setTextAppearance(holder.tv_car_no, R.style.car_no_selected)
+                                if(myCarsEntity.id.equals(userCarId)){
+                                    holder.layout_car.isSelected = true
+                                    TextViewCompat.setTextAppearance(holder.tv_car_name, R.style.car_selected)
+                                    TextViewCompat.setTextAppearance(holder.tv_car_no, R.style.car_no_selected)
+                                }
                             }
                         }
                         holder.layout_name.visibility = VISIBLE

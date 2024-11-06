@@ -29,6 +29,7 @@
             android:layout_height="16dp"
             android:src="@drawable/ic_corp"
             android:layout_marginLeft="3dp"
+            android:visibility="invisible"
             android:layout_gravity="center_vertical"/>
 
     </LinearLayout>
