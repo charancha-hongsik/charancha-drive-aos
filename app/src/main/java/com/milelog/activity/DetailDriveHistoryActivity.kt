@@ -35,6 +35,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import com.milelog.BoundingBoxCalculator
 import com.milelog.DividerItemDecoration
 import com.milelog.PreferenceUtil
 import com.milelog.retrofit.response.VWorldDetailResponse
@@ -181,6 +182,13 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                 val startPoint  = it.gpses.first().longtitude.toString() + "," + it.gpses.first().latitude.toString()
                 val endPoint  = it.gpses.last().longtitude.toString() + "," + it.gpses.last().latitude.toString()
 
+                val startBbox = BoundingBoxCalculator.getBoundingBox(BoundingBoxCalculator.MapPoint(it.gpses.first().longtitude, it.gpses.first().latitude),0.02)
+                val endBbox = BoundingBoxCalculator.getBoundingBox(BoundingBoxCalculator.MapPoint(it.gpses.last().longtitude, it.gpses.last().latitude),0.02)
+
+                val startBboxPoint = startBbox.minPoint.longitude.toString() + "," + startBbox.minPoint.latitude.toString() + "," + startBbox.maxPoint.longitude.toString() + "," + startBbox.maxPoint.latitude.toString()
+                val endBboxPoint = endBbox.minPoint.longitude.toString() + "," + endBbox.minPoint.latitude.toString() + "," + endBbox.maxPoint.longitude.toString() + "," + endBbox.maxPoint.latitude.toString()
+
+
                 if(it.start_address.isNullOrEmpty()){
                     apiService(" https://api.vworld.kr/").getAddress(point = startPoint).enqueue(object:
                         Callback<ResponseBody>{
@@ -193,7 +201,13 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                                 VWorldResponse::class.java
                             )
 
-                            apiService(" https://api.vworld.kr/").getAddressDetail(query = vWorldResponse.response.result.first().text).enqueue(object:
+                            val level4 = vWorldResponse.response.result.first().structure.level4L
+                                ?: vWorldResponse.response.result.first().structure.level4LC
+                                ?: vWorldResponse.response.result.first().structure.level4A
+                                ?: vWorldResponse.response.result.first().structure.level4AC
+
+
+                            apiService(" https://api.vworld.kr/").getAddressDetail(query = level4, bbox = startBboxPoint).enqueue(object:
                                 Callback<ResponseBody>{
                                 override fun onResponse(
                                     call: Call<ResponseBody>,
@@ -257,7 +271,12 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                                 VWorldResponse::class.java
                             )
 
-                            apiService(" https://api.vworld.kr/").getAddressDetail(query = vWorldResponse.response.result.first().text).enqueue(object:
+                            val level4 = vWorldResponse.response.result.first().structure.level4L
+                                ?: vWorldResponse.response.result.first().structure.level4LC
+                                ?: vWorldResponse.response.result.first().structure.level4A
+                                ?: vWorldResponse.response.result.first().structure.level4AC
+
+                            apiService(" https://api.vworld.kr/").getAddressDetail(query = level4, bbox = endBboxPoint).enqueue(object:
                                 Callback<ResponseBody>{
                                 override fun onResponse(
                                     call: Call<ResponseBody>,

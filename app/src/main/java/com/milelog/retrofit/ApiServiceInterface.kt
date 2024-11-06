@@ -309,6 +309,7 @@ interface ApiServiceInterface {
                    @Query("size") size: Int = 10,
                    @Query("page") page: Int = 1,
                    @Query("query") query: String,
+                   @Query("bbox") bbox: String,
                    @Query("type") type: String = "place",
                    @Query("format") format: String = "json",
                    @Query("errorformat") errorformat: String = "json",
