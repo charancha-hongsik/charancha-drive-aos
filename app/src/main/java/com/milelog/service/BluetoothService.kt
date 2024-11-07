@@ -456,7 +456,7 @@ class BluetoothService : Service() {
     private fun initDriveForApp(startTimeStamp:Long){
         gpsInfoForApp = mutableListOf()
         driveForApp = DriveForApp(
-            startTimeStamp.toString(),null,null,null,
+            startTimeStamp.toString(),null,null,null,null,
             gpsInfoForApp)
     }
 

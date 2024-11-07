@@ -14,6 +14,7 @@ data class DriveForApp(
     @ColumnInfo(name="bluetooth_name") var bluetooth_name: String?,
     @ColumnInfo(name="start_address") var start_address: String?,
     @ColumnInfo(name="end_address") var end_address: String?,
+    @ColumnInfo(name="end_address_detail") var end_address_detail: String?,
     @ColumnInfo(name="gpses") var gpses: List<EachGpsDtoForApp>
 ){
     @PrimaryKey(autoGenerate = true)

@@ -17,7 +17,7 @@ import com.milelog.room.entity.DetectUserEntity
 import com.milelog.room.entity.DriveForApi
 import com.milelog.room.entity.DriveForApp
 
-@Database(entities = [DriveForApp::class, DriveForApi::class, AlarmEntity::class, DetectUserEntity::class], version = 5, exportSchema = false)
+@Database(entities = [DriveForApp::class, DriveForApi::class, AlarmEntity::class, DetectUserEntity::class], version = 6, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class DriveDatabase : RoomDatabase() {
 
@@ -40,7 +40,7 @@ abstract class DriveDatabase : RoomDatabase() {
                     .addMigrations(MIGRATION_2_3)
                     .addMigrations(MIGRATION_3_4)
                     .addMigrations(MIGRATION_4_5)
-
+                    .addMigrations(MIGRATION_5_6)
                     .allowMainThreadQueries()
                     .build()
                     .also { Instance = it }
@@ -163,6 +163,13 @@ abstract class DriveDatabase : RoomDatabase() {
 
                 // 임시 테이블 이름을 원래 테이블 이름으로 변경
                 database.execSQL("ALTER TABLE drive_temp RENAME TO drive")
+            }
+        }
+
+        val MIGRATION_5_6 = object : Migration(5, 6) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // 새로운 컬럼을 추가합니다.
+                database.execSQL("ALTER TABLE drive ADD COLUMN end_address_detail TEXT")
             }
         }
     }

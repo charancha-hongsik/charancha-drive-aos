@@ -55,7 +55,7 @@ import java.util.*
 
 class DetailDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var tracking_id:String
-    val keywords = listOf("주유소", "정비소", "세차장", "폐차장", "중고차", "매매단지", "도이치오토월드", "캠핑","글램핑")
+    val keywords = listOf("주유소", "정비소", "세차장", "폐차장", "중고차", "매매단지", "도이치오토월드", "캠핑","글램핑","길음동부센트레빌")
 
 
     val polylines:MutableList<LatLng> = mutableListOf()
@@ -280,11 +280,14 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                                     if(vWorldDetailResponse.response.status != "NOT_FOUND"){
                                         tv_end_time.text = getMatchingTitle(vWorldResponse, vWorldDetailResponse)
                                         tv_end_address.text = getMatchingTitle(vWorldResponse, vWorldDetailResponse)
+                                        tv_end_address_detail.text = getMatchingTitle(vWorldResponse, vWorldDetailResponse)
+                                        tv_end_address_detail.visibility = VISIBLE
                                         detailDriveHistoryViewModel.updateEndAddress(it.tracking_id, getMatchingTitle(vWorldResponse, vWorldDetailResponse))
 
                                     }else{
                                         tv_end_time.text = vWorldResponse.response.result.first().text
                                         tv_end_address.text = vWorldResponse.response.result.first().text
+                                        tv_end_address_detail.visibility = GONE
                                         detailDriveHistoryViewModel.updateEndAddress(it.tracking_id, vWorldResponse.response.result.first().text)
                                     }
 
