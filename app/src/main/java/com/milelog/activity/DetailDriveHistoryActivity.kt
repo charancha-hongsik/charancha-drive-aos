@@ -178,6 +178,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     polylines.add(LatLng(raw.latitude,raw.longtitude))
                 }
 
+                Log.d("testestestsetset","testestestestse end_address_detail :: " + it.end_address_detail)
+
                 bluetoothNameExpected = it.bluetooth_name
 
                 val startPoint  = it.gpses.first().longtitude.toString() + "," + it.gpses.first().latitude.toString()
@@ -280,6 +282,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                                     tv_end_address_detail.visibility = VISIBLE
                                     detailDriveHistoryViewModel.updateEndAddress(it.tracking_id, vWorldResponse.response.result.first().text)
                                     detailDriveHistoryViewModel.updateEndAddressDetail(it.tracking_id, Gson().toJson(vWorldDetailResponse.response.result.items))
+                                    Log.d("testesteestestset","testestestestse Gson().toJson(vWorldDetailResponse.response.result.items) :: " + Gson().toJson(vWorldDetailResponse.response.result.items))
                                 }else{
                                     tv_end_time.text = vWorldResponse.response.result.first().text
                                     tv_end_address.text = vWorldResponse.response.result.first().text
@@ -303,69 +306,6 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
                     }
                 })
-
-
-                apiService(" https://api.vworld.kr/").getAddress(point = endPoint).enqueue(object:
-                    Callback<ResponseBody>{
-                    override fun onResponse(
-                        call: Call<ResponseBody>,
-                        response: Response<ResponseBody>
-                    ) {
-                        val vWorldResponse = GsonBuilder().serializeNulls().create().fromJson(
-                            response.body()?.string(),
-                            VWorldResponse::class.java
-                        )
-
-                        val level4 = vWorldResponse.response.result.first().structure.level4L
-                            ?: vWorldResponse.response.result.first().structure.level4LC
-                            ?: vWorldResponse.response.result.first().structure.level4A
-                            ?: vWorldResponse.response.result.first().structure.level4AC
-
-                        apiService(" https://api.vworld.kr/").getAddressDetail(query = level4, bbox = endBboxPoint).enqueue(object:
-                            Callback<ResponseBody>{
-                            override fun onResponse(
-                                call: Call<ResponseBody>,
-                                response: Response<ResponseBody>
-                            ) {
-                                val vWorldDetailResponse = GsonBuilder().serializeNulls().create().fromJson(
-                                    response.body()?.string(),
-                                    VWorldDetailResponse::class.java
-                                )
-
-                                if(vWorldDetailResponse.response.status != "NOT_FOUND"){
-                                    tv_end_time.text = getMatchingTitle(vWorldResponse, vWorldDetailResponse)
-                                    tv_end_address.text = getMatchingTitle(vWorldResponse, vWorldDetailResponse)
-                                    tv_end_address_detail.text = getMatchingTitle(vWorldResponse, vWorldDetailResponse)
-                                    tv_end_address_detail.visibility = VISIBLE
-                                    detailDriveHistoryViewModel.updateEndAddress(it.tracking_id, getMatchingTitle(vWorldResponse, vWorldDetailResponse))
-                                    detailDriveHistoryViewModel.updateEndAddressDetail(it.tracking_id, Gson().toJson(vWorldDetailResponse.response.result.items))
-
-                                }else{
-                                    tv_end_time.text = vWorldResponse.response.result.first().text
-                                    tv_end_address.text = vWorldResponse.response.result.first().text
-                                    tv_end_address_detail.visibility = GONE
-                                    detailDriveHistoryViewModel.updateEndAddress(it.tracking_id, vWorldResponse.response.result.first().text)
-                                }
-
-                            }
-
-                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
-                            }
-                        })
-
-
-                    }
-
-
-
-                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
-                    }
-                })
-
-
-
 
                 if(polylines.size != 0){
                     view_map.visibility = VISIBLE
