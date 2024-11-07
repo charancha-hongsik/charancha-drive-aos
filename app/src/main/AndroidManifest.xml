@@ -180,7 +180,7 @@
 
         <activity
             android:name=".activity.MyPageActivity"
-            android:theme="@style/Theme.MyPageTheme"
+            android:theme="@style/Theme.Charanchadrivewhite100"
             android:screenOrientation="portrait"
             android:exported="true"/>
 
