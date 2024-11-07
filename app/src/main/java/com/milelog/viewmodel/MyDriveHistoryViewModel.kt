@@ -35,7 +35,7 @@ class MyDriveHistoryViewModel: BaseViewModel() {
             token = "Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!,
             size = 30,
             order = "DESC",
-            afterCursor =  null,
+            afterCursor =  meta.afterCursor,
             beforeCursor = null,
             key = "startTime",
             startTime = startTime,
