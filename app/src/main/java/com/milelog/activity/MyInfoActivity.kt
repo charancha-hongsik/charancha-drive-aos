@@ -1,7 +1,9 @@
 package com.milelog.activity
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.graphics.drawable.Drawable
@@ -14,6 +16,8 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -51,6 +55,10 @@ class MyInfoActivity: BaseRefreshActivity() {
     lateinit var btn_edit_nickname:ConstraintLayout
     lateinit var iv_circle: CircleImageView
     private lateinit var imageMultipart: MultipartBody.Part // 선택한 이미지
+
+    companion object {
+        private const val REQUEST_READ_EXTERNAL_STORAGE = 100 // 권한 요청 코드
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -141,8 +149,20 @@ class MyInfoActivity: BaseRefreshActivity() {
 
         })
 
+// iv_circle 클릭 리스너에 분기 처리 추가
         iv_circle.setOnClickListener {
-            startCrop()
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) { // API 29 이하
+                // 권한 체크
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                    startCrop() // 권한이 있으면 크롭 시작
+                } else {
+                    // 권한이 없으면 요청
+                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_READ_EXTERNAL_STORAGE)
+                }
+            } else {
+                // API 30 이상은 권한 체크 없이 바로 크롭 시작
+                startCrop()
+            }
         }
     }
 
@@ -269,5 +289,20 @@ class MyInfoActivity: BaseRefreshActivity() {
         }
         return file
     }
+
+    // 권한 요청 결과 처리
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_READ_EXTERNAL_STORAGE) {
+            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                // 권한이 허용된 경우 크롭 시작
+                startCrop()
+            } else {
+                // 권한이 거부된 경우 사용자에게 알림
+                showCustomToast(this, "권한이 필요합니다.")
+            }
+        }
+    }
+
 
 }
