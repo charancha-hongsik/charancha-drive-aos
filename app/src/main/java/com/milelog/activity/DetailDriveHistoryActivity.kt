@@ -311,6 +311,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                 }else{
                     tv_end_address.text = it.end_address
                     tv_end_time.text = it.end_address
+                    tv_end_address_detail.text = it.end_address_detail
                 }
 
 
@@ -751,7 +752,12 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                 }else{
                     tv_connected_bluetooth.visibility = VISIBLE
                     tv_connected_bluetooth.text = "연결했던 블루투스: " + bluetoothNameExpected
+                }
 
+                if(tv_mycar.text.equals("미확정")){
+                    tv_connected_bluetooth.visibility = VISIBLE
+                }else{
+                    tv_connected_bluetooth.visibility = GONE
                 }
 
                 val rv_registered_car = bottomSheetView.findViewById<RecyclerView>(R.id.rv_registered_car)
@@ -837,6 +843,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                             if (userCarId.isNullOrEmpty()) {
                                 holder.layout_car.isSelected = true
                                 TextViewCompat.setTextAppearance(holder.tv_no_mycar, R.style.car_selected)
+
                             }
                         }
                         // 미확정
