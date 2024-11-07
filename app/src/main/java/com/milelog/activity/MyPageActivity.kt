@@ -15,6 +15,7 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -57,19 +58,18 @@ import java.util.jar.Manifest
 
 class MyPageActivity: BaseRefreshActivity() {
     lateinit var layout_nickname:ConstraintLayout
-    lateinit var btn_drive_history:ConstraintLayout
-    lateinit var btn_alarm_setting:ConstraintLayout
+    lateinit var btn_drive_history: LinearLayout
+    lateinit var btn_alarm_setting:LinearLayout
     lateinit var btn_setting:ConstraintLayout
-    lateinit var btn_terms:ConstraintLayout
-    lateinit var btn_personal_info:ConstraintLayout
     lateinit var btn_logout: TextView
     lateinit var btn_back: ImageView
     lateinit var getAccountProfilesResponse: GetAccountProfilesResponse
     lateinit var tv_nickname:TextView
     lateinit var termsSummaryResponse: List<TermsSummaryResponse>
     lateinit var iv_circle:CircleImageView
-    lateinit var btn_faq:ConstraintLayout
-    lateinit var btn_inquiry:ConstraintLayout
+    lateinit var btn_faq:LinearLayout
+    lateinit var btn_inquiry:LinearLayout
+    lateinit var btn_my_garage:LinearLayout
     private lateinit var imageMultipart: MultipartBody.Part // 선택한 이미지
 
 
@@ -86,14 +86,13 @@ class MyPageActivity: BaseRefreshActivity() {
         btn_drive_history = findViewById(R.id.btn_drive_history)
         btn_alarm_setting = findViewById(R.id.btn_alarm_setting)
         btn_setting = findViewById(R.id.btn_setting)
-        btn_terms = findViewById(R.id.btn_terms)
-        btn_personal_info = findViewById(R.id.btn_personal_info)
         btn_logout = findViewById(R.id.btn_logout)
         btn_back = findViewById(R.id.btn_back)
         tv_nickname = findViewById(R.id.tv_nickname)
         iv_circle = findViewById(R.id.iv_circle)
         btn_faq = findViewById(R.id.btn_faq)
         btn_inquiry = findViewById(R.id.btn_inquiry)
+        btn_my_garage = findViewById(R.id.btn_my_garage)
 
 
         iv_circle.setOnClickListener{
@@ -218,30 +217,6 @@ class MyPageActivity: BaseRefreshActivity() {
         })
 
 
-        btn_terms.setOnClickListener(object: OnSingleClickListener(){
-            override fun onSingleClick(v: View?) {
-                for(term in termsSummaryResponse){
-                    if(term.title.contains("이용약관")){
-                        startActivity(Intent(this@MyPageActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
-                    }
-                }
-            }
-
-        })
-
-        btn_personal_info.setOnClickListener(object: OnSingleClickListener(){
-            override fun onSingleClick(v: View?) {
-                for(term in termsSummaryResponse){
-                    if(term.title.contains("개인정보 수집 및 이용 동의")){
-                        if(term.isRequired)
-                            startActivity(Intent(this@MyPageActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
-                    }
-                }
-            }
-
-        })
-
-
         btn_back.setOnClickListener { finish() }
 
         btn_logout.setOnClickListener(object: OnSingleClickListener(){
@@ -257,6 +232,10 @@ class MyPageActivity: BaseRefreshActivity() {
 
         btn_inquiry.setOnClickListener{
             startActivity(Intent(this@MyPageActivity, CommonWebviewActivity::class.java).putExtra("url", BASE_API_URL + INQUIRY))
+        }
+
+        btn_my_garage.setOnClickListener {
+            startActivity(Intent(this@MyPageActivity, MyGarageActivity::class.java))
         }
     }
 
