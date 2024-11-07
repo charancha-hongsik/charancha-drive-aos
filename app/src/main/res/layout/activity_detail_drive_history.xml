@@ -274,8 +274,7 @@
                 android:layout_marginTop="16dp"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
-                android:paddingBottom="24dp"
-                android:layout_marginBottom="42dp">
+                android:paddingBottom="24dp">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -1034,11 +1033,11 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@drawable/radius8_white950"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="14dp"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:paddingBottom="24dp"
-                android:layout_marginBottom="42dp">
+                android:layout_marginBottom="106dp">
 
                 <TextView
                     android:layout_width="wrap_content"
