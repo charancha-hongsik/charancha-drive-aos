@@ -383,7 +383,6 @@
                         android:id="@+id/tv_end_address_detail"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="배꽃나라 주유소"
                         android:textColor="@color/gray_950"
                         android:gravity="right"
                         android:textFontWeight="600"

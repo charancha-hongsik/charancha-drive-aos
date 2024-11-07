@@ -76,12 +76,6 @@ class DetailDriveHistoryViewModel: BaseViewModel() {
                             response.body()?.string(),
                             PatchDrivingResponse::class.java
                         )
-                        Log.d("testsetestset","testestestse jsonParam :: " + jsonParam.toString())
-                        Log.d("testsetestset","testestestse tracking_id :: " + tracking_id)
-                        Log.d("testsetestset","testestestse ACCESS_TOKEN :: " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!)
-
-
-
                         _patchDrivingInfo.value = Event(PatchDrivingInfoState.Success(patchDrivingResponse))
                     }else if(response.code() == 401){
                         _patchDrivingInfo.value = Event(PatchDrivingInfoState.Error(response.code(), response.message()))
@@ -113,6 +107,15 @@ class DetailDriveHistoryViewModel: BaseViewModel() {
         viewModelScope.launch {
             val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(context)
             driveDatabase.driveForAppDao().updateEndAddress(id,address)?.let {
+
+            }
+        }
+    }
+
+    fun updateEndAddressDetail(id:String, address:String){
+        viewModelScope.launch {
+            val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(context)
+            driveDatabase.driveForAppDao().updateEndAddressDetail(id,address)?.let {
 
             }
         }

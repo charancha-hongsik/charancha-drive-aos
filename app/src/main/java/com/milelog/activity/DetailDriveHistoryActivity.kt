@@ -38,6 +38,7 @@ import com.google.gson.reflect.TypeToken
 import com.milelog.BoundingBoxCalculator
 import com.milelog.DividerItemDecoration
 import com.milelog.PreferenceUtil
+import com.milelog.retrofit.response.Item
 import com.milelog.retrofit.response.VWorldDetailResponse
 import com.milelog.retrofit.response.VWorldResponse
 import com.milelog.room.entity.MyCarsEntity
@@ -55,7 +56,7 @@ import java.util.*
 
 class DetailDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var tracking_id:String
-    val keywords = listOf("주유소", "정비소", "세차장", "폐차장", "중고차", "매매단지", "도이치오토월드", "캠핑","글램핑","길음뉴타운동부센트레빌아파트")
+    val keywords = listOf("주유소", "정비소", "세차장", "폐차장", "중고차", "매매단지", "도이치오토월드", "캠핑","글램핑")
 
 
     val polylines:MutableList<LatLng> = mutableListOf()
@@ -188,183 +189,182 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                 val startBboxPoint = startBbox.minPoint.longitude.toString() + "," + startBbox.minPoint.latitude.toString() + "," + startBbox.maxPoint.longitude.toString() + "," + startBbox.maxPoint.latitude.toString()
                 val endBboxPoint = endBbox.minPoint.longitude.toString() + "," + endBbox.minPoint.latitude.toString() + "," + endBbox.maxPoint.longitude.toString() + "," + endBbox.maxPoint.latitude.toString()
 
-//                apiService(" https://api.vworld.kr/").getAddress(point = startPoint).enqueue(object:
-//                    Callback<ResponseBody>{
-//                    override fun onResponse(
-//                        call: Call<ResponseBody>,
-//                        response: Response<ResponseBody>
-//                    ) {
-//                        val vWorldResponse = GsonBuilder().serializeNulls().create().fromJson(
-//                            response.body()?.string(),
-//                            VWorldResponse::class.java
-//                        )
-//
-//                        val level4 = vWorldResponse.response.result.first().structure.level4L
-//                            ?: vWorldResponse.response.result.first().structure.level4LC
-//                            ?: vWorldResponse.response.result.first().structure.level4A
-//                            ?: vWorldResponse.response.result.first().structure.level4AC
-//
-//
-//                        apiService(" https://api.vworld.kr/").getAddressDetail(query = level4, bbox = startBboxPoint).enqueue(object:
-//                            Callback<ResponseBody>{
-//                            override fun onResponse(
-//                                call: Call<ResponseBody>,
-//                                response: Response<ResponseBody>
-//                            ) {
-//
-//                                val jsonString = response.body()?.string()
-//                                val vWorldDetailResponse = GsonBuilder().serializeNulls().create().fromJson(
-//                                    jsonString,
-//                                    VWorldDetailResponse::class.java
-//                                )
-//
-//
-//                                if(vWorldDetailResponse.response.status != "NOT_FOUND"){
-//                                    Log.d("testsetsetest","testestsetest :: " + jsonString)
-//                                }else{
-//                                    tv_start_time.text = vWorldResponse.response.result.first().text
-//                                    tv_start_address.text = vWorldResponse.response.result.first().text
-//                                    detailDriveHistoryViewModel.updateStartAddress(it.tracking_id, vWorldResponse.response.result.first().text)
-//                                }
-//
-//                            }
-//
-//                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-//
-//                            }
-//                        })
-//                    }
-//
-//                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-//
-//                    }
-//                })
+
+                apiService(" https://api.vworld.kr/").getAddress(point = startPoint).enqueue(object:
+                    Callback<ResponseBody>{
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+                        val vWorldResponse = GsonBuilder().serializeNulls().create().fromJson(
+                            response.body()?.string(),
+                            VWorldResponse::class.java
+                        )
+
+                        val level4 = vWorldResponse.response.result.first().structure.level4L
+                            ?: vWorldResponse.response.result.first().structure.level4LC
+                            ?: vWorldResponse.response.result.first().structure.level4A
+                            ?: vWorldResponse.response.result.first().structure.level4AC
 
 
-                if(it.start_address.isNullOrEmpty()){
-                    apiService(" https://api.vworld.kr/").getAddress(point = startPoint).enqueue(object:
-                        Callback<ResponseBody>{
-                        override fun onResponse(
-                            call: Call<ResponseBody>,
-                            response: Response<ResponseBody>
-                        ) {
-                            val vWorldResponse = GsonBuilder().serializeNulls().create().fromJson(
-                                response.body()?.string(),
-                                VWorldResponse::class.java
-                            )
+                        apiService(" https://api.vworld.kr/").getAddressDetail(query = level4, bbox = startBboxPoint).enqueue(object:
+                            Callback<ResponseBody>{
+                            override fun onResponse(
+                                call: Call<ResponseBody>,
+                                response: Response<ResponseBody>
+                            ) {
 
-                            val level4 = vWorldResponse.response.result.first().structure.level4L
-                                ?: vWorldResponse.response.result.first().structure.level4LC
-                                ?: vWorldResponse.response.result.first().structure.level4A
-                                ?: vWorldResponse.response.result.first().structure.level4AC
+                                val jsonString = response.body()?.string()
+                                val vWorldDetailResponse = GsonBuilder().serializeNulls().create().fromJson(
+                                    jsonString,
+                                    VWorldDetailResponse::class.java
+                                )
 
 
-                            apiService(" https://api.vworld.kr/").getAddressDetail(query = level4, bbox = startBboxPoint).enqueue(object:
-                                Callback<ResponseBody>{
-                                override fun onResponse(
-                                    call: Call<ResponseBody>,
-                                    response: Response<ResponseBody>
-                                ) {
+                                if(vWorldDetailResponse.response.status != "NOT_FOUND"){
+                                    tv_start_time.text = vWorldResponse.response.result.first().text
+                                    tv_start_address.text = vWorldResponse.response.result.first().text
+                                    detailDriveHistoryViewModel.updateStartAddress(it.tracking_id, vWorldResponse.response.result.first().text)
 
-                                    val jsonString = response.body()?.string()
-                                    val vWorldDetailResponse = GsonBuilder().serializeNulls().create().fromJson(
-                                        jsonString,
-                                        VWorldDetailResponse::class.java
-                                    )
-
-
-                                    if(vWorldDetailResponse.response.status != "NOT_FOUND"){
-                                        tv_start_time.text = getMatchingTitle(vWorldResponse, vWorldDetailResponse)
-                                        tv_start_address.text = getMatchingTitle(vWorldResponse, vWorldDetailResponse)
-                                        detailDriveHistoryViewModel.updateStartAddress(it.tracking_id, getMatchingTitle(vWorldResponse, vWorldDetailResponse))
-
-                                    }else{
-                                        tv_start_time.text = vWorldResponse.response.result.first().text
-                                        tv_start_address.text = vWorldResponse.response.result.first().text
-                                        detailDriveHistoryViewModel.updateStartAddress(it.tracking_id, vWorldResponse.response.result.first().text)
-                                    }
-
+                                }else{
+                                    tv_start_time.text = vWorldResponse.response.result.first().text
+                                    tv_start_address.text = vWorldResponse.response.result.first().text
+                                    detailDriveHistoryViewModel.updateStartAddress(it.tracking_id, vWorldResponse.response.result.first().text)
                                 }
 
-                                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                            }
 
-                                }
-                            })
-                        }
+                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
 
-                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                            }
+                        })
+                    }
 
-                        }
-                    })
-                }else{
-                    tv_start_address.text = it.start_address
-                    tv_start_time.text = it.start_address
-                }
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
 
-                if(it.end_address.isNullOrEmpty()){
-                    apiService(" https://api.vworld.kr/").getAddress(point = endPoint).enqueue(object:
-                        Callback<ResponseBody>{
-                        override fun onResponse(
-                            call: Call<ResponseBody>,
-                            response: Response<ResponseBody>
-                        ) {
-                            val vWorldResponse = GsonBuilder().serializeNulls().create().fromJson(
-                                response.body()?.string(),
-                                VWorldResponse::class.java
-                            )
+                    }
+                })
 
-                            val level4 = vWorldResponse.response.result.first().structure.level4L
-                                ?: vWorldResponse.response.result.first().structure.level4LC
-                                ?: vWorldResponse.response.result.first().structure.level4A
-                                ?: vWorldResponse.response.result.first().structure.level4AC
 
-                            apiService(" https://api.vworld.kr/").getAddressDetail(query = level4, bbox = endBboxPoint).enqueue(object:
-                                Callback<ResponseBody>{
-                                override fun onResponse(
-                                    call: Call<ResponseBody>,
-                                    response: Response<ResponseBody>
-                                ) {
-                                    val vWorldDetailResponse = GsonBuilder().serializeNulls().create().fromJson(
-                                        response.body()?.string(),
-                                        VWorldDetailResponse::class.java
-                                    )
+                apiService(" https://api.vworld.kr/").getAddress(point = endPoint).enqueue(object:
+                    Callback<ResponseBody>{
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+                        val vWorldResponse = GsonBuilder().serializeNulls().create().fromJson(
+                            response.body()?.string(),
+                            VWorldResponse::class.java
+                        )
 
-                                    if(vWorldDetailResponse.response.status != "NOT_FOUND"){
-                                        tv_end_time.text = getMatchingTitle(vWorldResponse, vWorldDetailResponse)
-                                        tv_end_address.text = getMatchingTitle(vWorldResponse, vWorldDetailResponse)
-                                        tv_end_address_detail.text = getMatchingTitle(vWorldResponse, vWorldDetailResponse)
-                                        tv_end_address_detail.visibility = VISIBLE
-                                        detailDriveHistoryViewModel.updateEndAddress(it.tracking_id, getMatchingTitle(vWorldResponse, vWorldDetailResponse))
+                        val level4 = vWorldResponse.response.result.first().structure.level4L
+                            ?: vWorldResponse.response.result.first().structure.level4LC
+                            ?: vWorldResponse.response.result.first().structure.level4A
+                            ?: vWorldResponse.response.result.first().structure.level4AC
 
-                                    }else{
-                                        tv_end_time.text = vWorldResponse.response.result.first().text
-                                        tv_end_address.text = vWorldResponse.response.result.first().text
-                                        tv_end_address_detail.visibility = GONE
-                                        detailDriveHistoryViewModel.updateEndAddress(it.tracking_id, vWorldResponse.response.result.first().text)
-                                    }
+                        apiService(" https://api.vworld.kr/").getAddressDetail(query = level4, bbox = endBboxPoint).enqueue(object:
+                            Callback<ResponseBody>{
+                            override fun onResponse(
+                                call: Call<ResponseBody>,
+                                response: Response<ResponseBody>
+                            ) {
+                                val vWorldDetailResponse = GsonBuilder().serializeNulls().create().fromJson(
+                                    response.body()?.string(),
+                                    VWorldDetailResponse::class.java
+                                )
 
+                                if(vWorldDetailResponse.response.status != "NOT_FOUND"){
+                                    tv_end_time.text = vWorldResponse.response.result.first().text
+                                    tv_end_address.text = vWorldResponse.response.result.first().text
+                                    tv_end_address_detail.text = vWorldDetailResponse.response.result.items.first().title
+                                    tv_end_address_detail.visibility = VISIBLE
+                                    detailDriveHistoryViewModel.updateEndAddress(it.tracking_id, vWorldResponse.response.result.first().text)
+                                    detailDriveHistoryViewModel.updateEndAddressDetail(it.tracking_id, Gson().toJson(vWorldDetailResponse.response.result.items))
+                                }else{
+                                    tv_end_time.text = vWorldResponse.response.result.first().text
+                                    tv_end_address.text = vWorldResponse.response.result.first().text
+                                    tv_end_address_detail.visibility = GONE
+                                    detailDriveHistoryViewModel.updateEndAddress(it.tracking_id, vWorldResponse.response.result.first().text)
                                 }
 
-                                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                            }
 
+                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+                            }
+                        })
+
+
+                    }
+
+
+
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+                    }
+                })
+
+
+                apiService(" https://api.vworld.kr/").getAddress(point = endPoint).enqueue(object:
+                    Callback<ResponseBody>{
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+                        val vWorldResponse = GsonBuilder().serializeNulls().create().fromJson(
+                            response.body()?.string(),
+                            VWorldResponse::class.java
+                        )
+
+                        val level4 = vWorldResponse.response.result.first().structure.level4L
+                            ?: vWorldResponse.response.result.first().structure.level4LC
+                            ?: vWorldResponse.response.result.first().structure.level4A
+                            ?: vWorldResponse.response.result.first().structure.level4AC
+
+                        apiService(" https://api.vworld.kr/").getAddressDetail(query = level4, bbox = endBboxPoint).enqueue(object:
+                            Callback<ResponseBody>{
+                            override fun onResponse(
+                                call: Call<ResponseBody>,
+                                response: Response<ResponseBody>
+                            ) {
+                                val vWorldDetailResponse = GsonBuilder().serializeNulls().create().fromJson(
+                                    response.body()?.string(),
+                                    VWorldDetailResponse::class.java
+                                )
+
+                                if(vWorldDetailResponse.response.status != "NOT_FOUND"){
+                                    tv_end_time.text = getMatchingTitle(vWorldResponse, vWorldDetailResponse)
+                                    tv_end_address.text = getMatchingTitle(vWorldResponse, vWorldDetailResponse)
+                                    tv_end_address_detail.text = getMatchingTitle(vWorldResponse, vWorldDetailResponse)
+                                    tv_end_address_detail.visibility = VISIBLE
+                                    detailDriveHistoryViewModel.updateEndAddress(it.tracking_id, getMatchingTitle(vWorldResponse, vWorldDetailResponse))
+                                    detailDriveHistoryViewModel.updateEndAddressDetail(it.tracking_id, Gson().toJson(vWorldDetailResponse.response.result.items))
+
+                                }else{
+                                    tv_end_time.text = vWorldResponse.response.result.first().text
+                                    tv_end_address.text = vWorldResponse.response.result.first().text
+                                    tv_end_address_detail.visibility = GONE
+                                    detailDriveHistoryViewModel.updateEndAddress(it.tracking_id, vWorldResponse.response.result.first().text)
                                 }
-                            })
+
+                            }
+
+                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+                            }
+                        })
 
 
-                        }
+                    }
 
 
 
-                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
 
-                        }
-                    })
+                    }
+                })
 
-                }else{
-                    tv_end_address.text = it.end_address
-                    tv_end_time.text = it.end_address
-                    tv_end_address_detail.text = it.end_address_detail
-                }
+
 
 
                 if(polylines.size != 0){
