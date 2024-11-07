@@ -1029,10 +1029,123 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/radius8_white950"
+                android:layout_marginTop="16dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="24dp"
+                android:layout_marginBottom="42dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="메모"
+                    android:textColor="@color/gray_950"
+                    android:textAppearance="@style/ST2B"
+                    android:textFontWeight="700" />
+                
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/radius5_gray50"
+                    android:gravity="top">
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:gravity="top"
+                        android:hint="메모를 입력해주세요"
+                        android:theme="@style/EditCarText"
+                        android:background="@null"
+                        android:textCursorDrawable="@drawable/register_car_cursor"
+                        android:textColor="@color/gray_400"
+                        android:textColorHint="@color/gray_400"
+                        android:textFontWeight="500"
+                        android:textAppearance="@style/B1M"
+                        android:inputType="text"
+                        android:maxLength="3000"
+                        android:padding="16dp"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="18dp"
+                    android:layout_marginTop="6dp"
+                    android:text="10/3000"
+                    android:textAppearance="@style/C1R"
+                    android:textFontWeight="400"
+                    android:gravity="right"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="사진"
+                    android:textColor="@color/gray_950"
+                    android:textAppearance="@style/ST2B"
+                    android:textFontWeight="700" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="72dp"
+                        android:layout_height="72dp"
+                        android:padding="0dp"
+                        android:background="@drawable/add_car_border">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_add_car" />
+
+                            <TextView
+                                android:id="@+id/tv_tv_add_image"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/C1R"
+                                android:textFontWeight="400"
+                                android:layout_marginTop="4dp"
+                                android:textColor="@color/gray_400"
+                                android:text="1/5"
+                                android:gravity="center_horizontal"
+                                android:padding="0dp" />
+
+                        </LinearLayout>
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
         </LinearLayout>
-
-
-
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

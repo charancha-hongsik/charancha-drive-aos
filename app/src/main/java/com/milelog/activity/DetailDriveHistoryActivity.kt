@@ -403,7 +403,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                         }
                     }else{
                         // 내 차가 아니에요
-                        tv_mycar.text = "내 차가 아니에요"
+                        tv_mycar.text = getString(R.string.not_my_car)
 
                     }
                 }
@@ -471,7 +471,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                         }
                     }else{
                         // 내 차가 아니에요
-                        tv_mycar.text = "내 차가 아니에요"
+                        tv_mycar.text = getString(R.string.not_my_car)
 
                     }
 
@@ -915,7 +915,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     holder.tv_car_no.visibility = GONE
                     holder.tv_no_mycar.visibility = VISIBLE
 
-                    holder.tv_no_mycar.text = "내 차가 아니에요"
+                    holder.tv_no_mycar.text = context.getString(R.string.not_my_car)
                     holder.layout_car.setOnClickListener {
                         viewModel.patchDrivingInfo(false, null, tracking_id)
                         bottomSheetDialog.dismiss()

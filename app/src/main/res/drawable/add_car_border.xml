@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#FFFFFF" /> <!-- 배경색 (옵션) -->
+    <stroke
+        android:color="#E7E6EC"
+        android:width="1dp"
+        android:dashWidth="4dp"
+        android:dashGap="4dp" />
+    <corners android:radius="5dp" />
+</shape>
