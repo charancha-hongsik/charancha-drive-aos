@@ -65,7 +65,6 @@ class MyPageActivity: BaseRefreshActivity() {
     lateinit var btn_logout: TextView
     lateinit var btn_back: ImageView
     lateinit var getAccountProfilesResponse: GetAccountProfilesResponse
-    lateinit var tv_email:TextView
     lateinit var tv_nickname:TextView
     lateinit var termsSummaryResponse: List<TermsSummaryResponse>
     lateinit var iv_circle:CircleImageView
@@ -91,7 +90,6 @@ class MyPageActivity: BaseRefreshActivity() {
         btn_personal_info = findViewById(R.id.btn_personal_info)
         btn_logout = findViewById(R.id.btn_logout)
         btn_back = findViewById(R.id.btn_back)
-        tv_email = findViewById(R.id.tv_email)
         tv_nickname = findViewById(R.id.tv_nickname)
         iv_circle = findViewById(R.id.iv_circle)
         btn_faq = findViewById(R.id.btn_faq)
@@ -253,17 +251,6 @@ class MyPageActivity: BaseRefreshActivity() {
 
         })
 
-        val clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-
-
-        tv_email.setOnClickListener{
-            val clip = ClipData.newPlainText("email", tv_email.text.toString())
-            // ClipData를 ClipboardManager에 설정하여 클립보드에 복사합니다.
-            clipboardManager.setPrimaryClip(clip)
-            // 복사 완료 메시지를 표시할 수 있습니다. (선택 사항)
-            Toast.makeText(this, "복사되었습니다.", Toast.LENGTH_SHORT).show()
-        }
-
         btn_faq.setOnClickListener{
             startActivity(Intent(this@MyPageActivity, CommonWebviewActivity::class.java).putExtra("url", BASE_API_URL + FAQ))
         }
@@ -289,7 +276,7 @@ class MyPageActivity: BaseRefreshActivity() {
                         GetAccountProfilesResponse::class.java
                     )
 
-                    tv_email.text = getAccountProfilesResponse.user.email
+
                     tv_nickname.text = getAccountProfilesResponse.nickName + "님"
 
                     Glide.with(this@MyPageActivity)

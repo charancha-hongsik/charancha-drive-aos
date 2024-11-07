@@ -11,7 +11,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_mypage_top"
         android:layout_width="match_parent"
-        android:layout_height="176dp"
+        android:layout_height="180dp"
         android:background="@color/gray_950"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -87,20 +87,6 @@
             app:layout_constraintLeft_toRightOf="@+id/layout_nickname"
             app:layout_constraintBottom_toBottomOf="@+id/layout_nickname"
             />
-
-        <TextView
-            android:id="@+id/tv_email"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="4dp"
-            android:text="abcd123@gmail.com"
-            android:textAppearance="@style/C1R"
-            android:textFontWeight="400"
-            android:textColor="@color/gray_600"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/layout_nickname"/>
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
     
