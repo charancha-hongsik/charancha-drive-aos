@@ -55,7 +55,7 @@ import java.util.*
 
 class DetailDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var tracking_id:String
-    val keywords = listOf("주유소", "정비소", "세차장", "폐차장", "중고차", "매매단지", "도이치오토월드", "캠핑","글램핑","길음동부센트레빌")
+    val keywords = listOf("주유소", "정비소", "세차장", "폐차장", "중고차", "매매단지", "도이치오토월드", "캠핑","글램핑","길음뉴타운동부센트레빌아파트")
 
 
     val polylines:MutableList<LatLng> = mutableListOf()
@@ -187,6 +187,58 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
                 val startBboxPoint = startBbox.minPoint.longitude.toString() + "," + startBbox.minPoint.latitude.toString() + "," + startBbox.maxPoint.longitude.toString() + "," + startBbox.maxPoint.latitude.toString()
                 val endBboxPoint = endBbox.minPoint.longitude.toString() + "," + endBbox.minPoint.latitude.toString() + "," + endBbox.maxPoint.longitude.toString() + "," + endBbox.maxPoint.latitude.toString()
+
+//                apiService(" https://api.vworld.kr/").getAddress(point = startPoint).enqueue(object:
+//                    Callback<ResponseBody>{
+//                    override fun onResponse(
+//                        call: Call<ResponseBody>,
+//                        response: Response<ResponseBody>
+//                    ) {
+//                        val vWorldResponse = GsonBuilder().serializeNulls().create().fromJson(
+//                            response.body()?.string(),
+//                            VWorldResponse::class.java
+//                        )
+//
+//                        val level4 = vWorldResponse.response.result.first().structure.level4L
+//                            ?: vWorldResponse.response.result.first().structure.level4LC
+//                            ?: vWorldResponse.response.result.first().structure.level4A
+//                            ?: vWorldResponse.response.result.first().structure.level4AC
+//
+//
+//                        apiService(" https://api.vworld.kr/").getAddressDetail(query = level4, bbox = startBboxPoint).enqueue(object:
+//                            Callback<ResponseBody>{
+//                            override fun onResponse(
+//                                call: Call<ResponseBody>,
+//                                response: Response<ResponseBody>
+//                            ) {
+//
+//                                val jsonString = response.body()?.string()
+//                                val vWorldDetailResponse = GsonBuilder().serializeNulls().create().fromJson(
+//                                    jsonString,
+//                                    VWorldDetailResponse::class.java
+//                                )
+//
+//
+//                                if(vWorldDetailResponse.response.status != "NOT_FOUND"){
+//                                    Log.d("testsetsetest","testestsetest :: " + jsonString)
+//                                }else{
+//                                    tv_start_time.text = vWorldResponse.response.result.first().text
+//                                    tv_start_address.text = vWorldResponse.response.result.first().text
+//                                    detailDriveHistoryViewModel.updateStartAddress(it.tracking_id, vWorldResponse.response.result.first().text)
+//                                }
+//
+//                            }
+//
+//                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+//
+//                            }
+//                        })
+//                    }
+//
+//                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+//
+//                    }
+//                })
 
 
                 if(it.start_address.isNullOrEmpty()){
@@ -347,7 +399,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
                         }else{
                             // 미확정
-                            tv_mycar.text ="미확정"
+                            tv_mycar.text = getString(R.string.pending)
                         }
                     }else{
                         // 내 차가 아니에요
@@ -415,7 +467,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
                         }else{
                             // 미확정
-                            tv_mycar.text ="미확정"
+                            tv_mycar.text = getString(R.string.pending)
                         }
                     }else{
                         // 내 차가 아니에요
@@ -753,7 +805,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     tv_connected_bluetooth.visibility = VISIBLE
                     tv_connected_bluetooth.text = "연결했던 블루투스: " + bluetoothNameExpected
 
-                    if(tv_mycar.text.equals("미확정")){
+                    if(tv_mycar.text.equals(getString(R.string.pending))){
                         tv_connected_bluetooth.visibility = VISIBLE
                     }else{
                         tv_connected_bluetooth.visibility = GONE
@@ -851,7 +903,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                         holder.tv_car_no.visibility = GONE
                         holder.tv_no_mycar.visibility = VISIBLE
 
-                        holder.tv_no_mycar.text = "미확정"
+                        holder.tv_no_mycar.text = context.getString(R.string.pending)
                         holder.layout_car.setOnClickListener {
                             viewModel.patchDrivingInfo(true, null, tracking_id)
                             bottomSheetDialog.dismiss()
