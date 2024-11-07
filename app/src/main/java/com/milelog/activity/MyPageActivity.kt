@@ -60,7 +60,7 @@ class MyPageActivity: BaseRefreshActivity() {
     lateinit var layout_nickname:ConstraintLayout
     lateinit var btn_drive_history: LinearLayout
     lateinit var btn_alarm_setting:LinearLayout
-    lateinit var btn_setting:ConstraintLayout
+    lateinit var btn_setting:LinearLayout
     lateinit var btn_logout: TextView
     lateinit var btn_back: ImageView
     lateinit var getAccountProfilesResponse: GetAccountProfilesResponse
@@ -70,6 +70,7 @@ class MyPageActivity: BaseRefreshActivity() {
     lateinit var btn_faq:LinearLayout
     lateinit var btn_inquiry:LinearLayout
     lateinit var btn_my_garage:LinearLayout
+    lateinit var iv_edit:ImageView
     private lateinit var imageMultipart: MultipartBody.Part // 선택한 이미지
 
 
@@ -93,10 +94,11 @@ class MyPageActivity: BaseRefreshActivity() {
         btn_faq = findViewById(R.id.btn_faq)
         btn_inquiry = findViewById(R.id.btn_inquiry)
         btn_my_garage = findViewById(R.id.btn_my_garage)
+        iv_edit = findViewById(R.id.iv_edit)
 
 
         iv_circle.setOnClickListener{
-            startCrop()
+            startActivity(Intent(this@MyPageActivity, MyInfoActivity::class.java).putExtra("nickname",getAccountProfilesResponse.nickName).putExtra("email", getAccountProfilesResponse.user.email).putExtra("provider",getAccountProfilesResponse.user.provider.text.en))
         }
 
         apiService().getTerms("MILELOG_USAGE").enqueue(object : Callback<ResponseBody> {
@@ -236,6 +238,10 @@ class MyPageActivity: BaseRefreshActivity() {
 
         btn_my_garage.setOnClickListener {
             startActivity(Intent(this@MyPageActivity, MyGarageActivity::class.java))
+        }
+
+        iv_edit.setOnClickListener {
+            startActivity(Intent(this@MyPageActivity, MyInfoActivity::class.java).putExtra("nickname",getAccountProfilesResponse.nickName).putExtra("email", getAccountProfilesResponse.user.email).putExtra("provider",getAccountProfilesResponse.user.provider.text.en))
         }
     }
 

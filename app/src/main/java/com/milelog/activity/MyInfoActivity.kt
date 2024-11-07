@@ -45,7 +45,6 @@ class MyInfoActivity: BaseRefreshActivity() {
         tv_login_oauth = findViewById(R.id.tv_login_oauth)
         tv_email = findViewById(R.id.tv_email)
         btn_edit_nickname = findViewById(R.id.btn_edit_nickname)
-
         nickName = intent.getStringExtra("nickname")!!
         tv_nickname.text = nickName
         tv_login_oauth.text = intent.getStringExtra("provider")!!
