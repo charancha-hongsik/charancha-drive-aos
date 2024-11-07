@@ -752,12 +752,12 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                 }else{
                     tv_connected_bluetooth.visibility = VISIBLE
                     tv_connected_bluetooth.text = "연결했던 블루투스: " + bluetoothNameExpected
-                }
 
-                if(tv_mycar.text.equals("미확정")){
-                    tv_connected_bluetooth.visibility = VISIBLE
-                }else{
-                    tv_connected_bluetooth.visibility = GONE
+                    if(tv_mycar.text.equals("미확정")){
+                        tv_connected_bluetooth.visibility = VISIBLE
+                    }else{
+                        tv_connected_bluetooth.visibility = GONE
+                    }
                 }
 
                 val rv_registered_car = bottomSheetView.findViewById<RecyclerView>(R.id.rv_registered_car)
