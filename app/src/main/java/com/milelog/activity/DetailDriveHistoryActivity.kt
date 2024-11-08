@@ -5,6 +5,8 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -21,6 +23,9 @@ import androidx.cardview.widget.CardView
 import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.milelog.R
 import com.milelog.viewmodel.DetailDriveHistoryViewModel
 import com.google.android.gms.maps.*
@@ -45,6 +50,7 @@ import com.milelog.room.entity.MyCarsEntity
 import com.milelog.viewmodel.BaseViewModel
 import com.milelog.viewmodel.state.GetDrivingInfoState
 import com.milelog.viewmodel.state.PatchDrivingInfoState
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -106,6 +112,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var tv_end_address_detail:TextView
 
     lateinit var view_map:CardView
+    lateinit var layout_drive_image:LinearLayout
 
     private var isCameraMoving = false
     private var currentAnimator: ValueAnimator? = null
@@ -163,12 +170,33 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         iv_tooltip_rapid_start = findViewById(R.id.iv_tooltip_rapid_start)
         iv_tooltip_rapid_acc = findViewById(R.id.iv_tooltip_rapid_acc)
         tv_mycar = findViewById(R.id.tv_mycar)
+        layout_drive_image = findViewById(R.id.layout_drive_image)
 
         tv_start_address = findViewById(R.id.tv_start_address)
         tv_end_address = findViewById(R.id.tv_end_address)
         tv_end_address_detail = findViewById(R.id.tv_end_address_detail)
 
         view_map = findViewById(R.id.view_map)
+
+
+        repeat(5) {
+            // Inflate the ConstraintLayout view
+            val constraintLayoutView = layoutInflater.inflate(R.layout.item_drive_image, layout_drive_image, false)
+
+            // Find the ImageView within the newly inflated ConstraintLayout
+            val iv_drive_image = constraintLayoutView.findViewById<ImageView>(R.id.iv_drive_image)
+
+            // Load the image into the ImageView with Glide
+            Glide.with(this)
+                .asBitmap()
+                .load("https://charancha.com/uploads/carimg/xxlarge/2024/86410fad-5eaa-4467-88b0-758f5a8691a8.jpg?w=1200&h=675&f=webp")
+                .transform(RoundedCornersTransformation(5, 0))  // 5dp의 반경
+                .into(iv_drive_image)
+
+            // Add the inflated ConstraintLayout to the parent LinearLayout
+            layout_drive_image.addView(constraintLayoutView)
+        }
+
     }
 
     private fun setObserver(){
@@ -177,8 +205,6 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                 for(raw in it.gpses){
                     polylines.add(LatLng(raw.latitude,raw.longtitude))
                 }
-
-                Log.d("testestestsetset","testestestestse end_address_detail :: " + it.end_address_detail)
 
                 bluetoothNameExpected = it.bluetooth_name
 
@@ -282,14 +308,12 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                                     tv_end_address_detail.visibility = VISIBLE
                                     detailDriveHistoryViewModel.updateEndAddress(it.tracking_id, vWorldResponse.response.result.first().text)
                                     detailDriveHistoryViewModel.updateEndAddressDetail(it.tracking_id, Gson().toJson(vWorldDetailResponse.response.result.items))
-                                    Log.d("testesteestestset","testestestestse Gson().toJson(vWorldDetailResponse.response.result.items) :: " + Gson().toJson(vWorldDetailResponse.response.result.items))
                                 }else{
                                     tv_end_time.text = vWorldResponse.response.result.first().text
                                     tv_end_address.text = vWorldResponse.response.result.first().text
                                     tv_end_address_detail.visibility = GONE
                                     detailDriveHistoryViewModel.updateEndAddress(it.tracking_id, vWorldResponse.response.result.first().text)
                                 }
-
                             }
 
                             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {

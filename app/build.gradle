@@ -180,5 +180,8 @@ dependencies {
 
     implementation 'de.hdodenhof:circleimageview:3.1.0' //Circle ImageView
 
+    // 추가 라이브러리가 필요할 경우:
+    implementation 'jp.wasabeef:glide-transformations:4.3.0'
+
 
 }

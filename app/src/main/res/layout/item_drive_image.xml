@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="82dp"
+    android:layout_height="81dp"
+    android:layout_marginLeft="12dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:background="@drawable/radius5"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_drive_image"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:background="@drawable/radius5"
+            android:scaleType="centerCrop" />
+
+    </androidx.cardview.widget.CardView>
+
+    <ImageView
+        android:id="@+id/btn_delete_image"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:background="@null"
+        android:src="@drawable/ic_close_filled"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:elevation="10dp"/> <!-- elevation 추가 -->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

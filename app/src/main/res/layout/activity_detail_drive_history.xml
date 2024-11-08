@@ -1097,52 +1097,59 @@
                     android:textAppearance="@style/ST2B"
                     android:textFontWeight="700" />
 
-                <LinearLayout
+                <HorizontalScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="72dp"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
+                    android:layout_height="81dp"
+                    android:layout_marginTop="10dp">
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="72dp"
-                        android:layout_height="72dp"
-                        android:padding="0dp"
-                        android:background="@drawable/add_car_border">
+                    <LinearLayout
+                        android:id="@+id/layout_drive_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="81dp"
+                        android:orientation="horizontal">
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            app:layout_constraintRight_toRightOf="parent"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent">
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="72dp"
+                            android:layout_height="72dp"
+                            android:padding="0dp"
+                            android:layout_gravity="bottom"
+                            android:background="@drawable/add_car_border">
 
-                            <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:src="@drawable/ic_add_car" />
-
-                            <TextView
-                                android:id="@+id/tv_tv_add_image"
+                            <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textAppearance="@style/C1R"
-                                android:textFontWeight="400"
-                                android:layout_marginTop="4dp"
-                                android:textColor="@color/gray_400"
-                                android:text="1/5"
-                                android:gravity="center_horizontal"
-                                android:padding="0dp" />
+                                android:orientation="vertical"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent">
 
-                        </LinearLayout>
+                                <ImageView
+                                    android:layout_width="20dp"
+                                    android:layout_height="20dp"
+                                    android:src="@drawable/ic_add_car" />
+
+                                <TextView
+                                    android:id="@+id/tv_tv_add_image"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textAppearance="@style/C1R"
+                                    android:textFontWeight="400"
+                                    android:layout_marginTop="4dp"
+                                    android:textColor="@color/gray_400"
+                                    android:text="1/5"
+                                    android:gravity="center_horizontal"
+                                    android:padding="0dp" />
+
+                            </LinearLayout>
 
 
-                    </androidx.constraintlayout.widget.ConstraintLayout>
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-                </LinearLayout>
 
+                    </LinearLayout>
+                </HorizontalScrollView>
 
             </LinearLayout>
         </LinearLayout>

@@ -120,6 +120,19 @@ object CommonUtil {
             )
     }
 
+    fun apiService(context:Context, readTimeOut:Long = 30, url:String = BuildConfig.BASE_API_URL): ApiServiceInterface {
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(HeaderInterceptor(context))
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(readTimeOut, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .build()
+        return Retrofit.Builder().baseUrl(url).client(client)
+            .addConverterFactory(GsonConverterFactory.create()).build().create(
+                ApiServiceInterface::class.java
+            )
+    }
+
     fun getDateFromTimeStampToHH(timeStamp:Long) : Int{
         val format = SimpleDateFormat("HH")
         format.timeZone = TimeZone.getTimeZone("Asia/Seoul")
