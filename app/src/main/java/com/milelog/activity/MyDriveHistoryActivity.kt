@@ -18,6 +18,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.milelog.ChosenDate
 import com.milelog.PreferenceUtil
 import com.milelog.R
@@ -25,13 +26,19 @@ import com.milelog.retrofit.response.*
 import com.milelog.viewmodel.MyDriveHistoryViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
+import com.milelog.CarListFilter
 import com.milelog.DividerItemDecoration
 import com.milelog.retrofit.response.DriveItem
 import com.milelog.retrofit.response.GetDriveHistoryResponse
 import com.milelog.retrofit.response.Meta
+import com.milelog.room.entity.MyCarsEntity
 import com.milelog.viewmodel.BaseViewModel
 import com.milelog.viewmodel.state.GetDriveHistoryMoreState
 import com.milelog.viewmodel.state.GetDriveHistoryState
+import com.nex3z.flowlayout.FlowLayout
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -61,11 +68,13 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var btn_select_date_from_list:ConstraintLayout
     lateinit var layout_date_own:ConstraintLayout
     lateinit var layout_no_data:ConstraintLayout
+    lateinit var layout_flow:FlowLayout
 
     lateinit var behavior: BottomSheetBehavior<LinearLayout>
     lateinit var selectedDate:String
 
     lateinit var resultLauncher: ActivityResultLauncher<Intent>
+    val filterList:MutableList<CarListFilter> = mutableListOf()
     var histories: MutableList<DriveItem> = mutableListOf()
 
 
@@ -196,6 +205,39 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         listView_choose_date_own = findViewById(R.id.listView_choose_date_own)
         btn_select_date_from_list = findViewById(R.id.btn_select_date_from_list)
         layout_date_own = findViewById(R.id.layout_date_own)
+        layout_flow = findViewById(R.id.layout_flow)
+
+        PreferenceUtil.getPref(this, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
+            if(it != "") {
+                val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
+                val myCarsListOnDevice:MutableList<MyCarsEntity> = mutableListOf()
+                myCarsListOnDevice.addAll(GsonBuilder().serializeNulls().create().fromJson(it, type))
+
+                filterList.add(CarListFilter(null,"전체", null))
+                filterList.add(CarListFilter(null,"미확정", true))
+                filterList.add(CarListFilter(null,"내 차가 아니에요", false))
+
+                for(car in myCarsListOnDevice){
+                    filterList.add(CarListFilter(car.id, car.name, car.isActive))
+                }
+
+
+                for(filter in filterList) {
+                    // Inflate the ConstraintLayout view
+                    val constraintLayoutView = layoutInflater.inflate(R.layout.item_drive_history_car, layout_flow, false)
+
+                    // Find the ImageView within the newly inflated ConstraintLayout
+                    val tv_car_name = constraintLayoutView.findViewById<TextView>(R.id.tv_car_name)
+                    tv_car_name.text = filter.name
+
+
+                    // Add the inflated ConstraintLayout to the parent LinearLayout
+                    layout_flow.addView(constraintLayoutView)
+                }
+            }
+        }
+
+
 
 
         btn_back.setOnClickListener(object: OnSingleClickListener(){
