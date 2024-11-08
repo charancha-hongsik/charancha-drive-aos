@@ -30,7 +30,7 @@ class MyDriveHistoryViewModel: BaseViewModel() {
         this.context = context
     }
 
-    fun getHistoriesMore(startTime:String, endTime:String, meta: Meta, histories: MutableList<DriveItem>){
+    fun getHistoriesMore(startTime:String, endTime:String, meta: Meta, histories: MutableList<DriveItem>, isActive:Boolean? = null, userCarId:String? = null){
         apiService(context).getDrivingHistories(
             token = "Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!,
             size = 30,
@@ -40,8 +40,8 @@ class MyDriveHistoryViewModel: BaseViewModel() {
             key = "startTime",
             startTime = startTime,
             endTime = endTime,
-            isActive = null,
-            userCarId = null).enqueue(object: Callback<ResponseBody> {
+            isActive = isActive,
+            userCarId = userCarId).enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200 || response.code() == 201){
                     val getDriveHistroyResponse = GsonBuilder().serializeNulls().create().fromJson(
@@ -61,7 +61,7 @@ class MyDriveHistoryViewModel: BaseViewModel() {
         })
     }
 
-    fun getHistories(startTime:String, endTime:String){
+    fun getHistories(startTime:String, endTime:String,isActive:Boolean? = null, userCarId:String? = null){
         apiService(context).getDrivingHistories(
             token = "Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!,
             size = 30,
@@ -71,8 +71,8 @@ class MyDriveHistoryViewModel: BaseViewModel() {
             key = "startTime",
             startTime = startTime,
             endTime = endTime,
-            isActive = null,
-            userCarId = null).enqueue(object: Callback<ResponseBody>{
+            isActive = isActive,
+            userCarId = userCarId).enqueue(object: Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200 || response.code() == 201){
                     val getDriveHistroyResponse = GsonBuilder().serializeNulls().create().fromJson(

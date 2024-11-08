@@ -15,6 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -222,16 +223,45 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                 }
 
 
-                for(filter in filterList) {
+                val carNameTextViews = mutableListOf<TextView>()
+
+                for (filter in filterList) {
                     // Inflate the ConstraintLayout view
                     val constraintLayoutView = layoutInflater.inflate(R.layout.item_drive_history_car, layout_flow, false)
 
-                    // Find the ImageView within the newly inflated ConstraintLayout
+                    // Find the TextView within the newly inflated ConstraintLayout
                     val tv_car_name = constraintLayoutView.findViewById<TextView>(R.id.tv_car_name)
                     tv_car_name.text = filter.name
 
+                    if(filter.name.equals("전체")){
+                        (tv_car_name.parent as ConstraintLayout).isSelected = true
+                        TextViewCompat.setTextAppearance(tv_car_name, R.style.car_filter_selected)
+                    }
 
-                    // Add the inflated ConstraintLayout to the parent LinearLayout
+                    // Add the TextView reference to the list
+                    carNameTextViews.add(tv_car_name)
+
+                    // Set click listener for the first TextView (or any condition)
+                    tv_car_name.setOnClickListener {
+                        // Iterate over the list and update the background of all TextViews
+                        for (textView in carNameTextViews) {
+                            if (textView == tv_car_name) {
+                                // Change background of the clicked TextView
+                                (textView.parent as ConstraintLayout).isSelected = true
+                                TextViewCompat.setTextAppearance(textView, R.style.car_filter_selected)
+
+                            } else {
+                                // Reset the background of other TextViews
+                                (textView.parent as ConstraintLayout).isSelected = false
+                                TextViewCompat.setTextAppearance(textView, R.style.car_filter_unselected)
+
+                            }
+                        }
+
+
+                    }
+
+                    // Add the inflated view to the parent layout
                     layout_flow.addView(constraintLayoutView)
                 }
             }

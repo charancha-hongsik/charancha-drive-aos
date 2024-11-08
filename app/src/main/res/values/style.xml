@@ -277,6 +277,22 @@
         <item name="android:textColor">#C3C8CD</item>
     </style>
 
+    <style name="car_filter_selected" android:font="@font/pretendardsemibold">
+        <item name="android:textSize">14dp</item>
+        <item name="lineHeight">18dp</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="fontWeight">600</item>
+        <item name="android:textColor">@color/white_op_95</item>
+    </style>
+
+    <style name="car_filter_unselected" android:font="@font/pretendardregular">
+        <item name="android:textSize">14dp</item>
+        <item name="lineHeight">18dp</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="fontWeight">400</item>
+        <item name="android:textColor">@color/gray_600</item>
+    </style>
+
 
 
 
