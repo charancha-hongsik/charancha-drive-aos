@@ -1,6 +1,7 @@
 package com.milelog.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -75,8 +76,9 @@ class MyDriveHistoryViewModel: BaseViewModel() {
             userCarId = userCarId).enqueue(object: Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200 || response.code() == 201){
+                    val jsonString = response.body()?.string()
                     val getDriveHistroyResponse = GsonBuilder().serializeNulls().create().fromJson(
-                        response.body()?.string(),
+                        jsonString,
                         GetDriveHistoryResponse::class.java
                     )
                     _driveHistoryResult.value = Event(GetDriveHistoryState.Success(getDriveHistroyResponse, startTime, endTime))

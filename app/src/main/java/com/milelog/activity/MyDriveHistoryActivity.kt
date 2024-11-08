@@ -79,6 +79,17 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
     var histories: MutableList<DriveItem> = mutableListOf()
 
 
+    /**
+     * 전체 -> carId null / isActive null
+     * 미확정 -> carId null / isActive true
+     * 내 차가 아니에요 -> carId null / isActive false
+     * 내 차 -> carId not null / isActive true
+     */
+    var carIdForFilter:String? = null
+    var isActiveForFilter:Boolean? = null
+    var startTimeForFilter:String = getCurrentAndPastTimeForISO(29).second
+    var endTimeForFilter:String = getCurrentAndPastTimeForISO(29).first
+
     private val historyViewModel: MyDriveHistoryViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -139,7 +150,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                                 DriveHistoryAdapter.DriveCallback {
                                 override fun clickedMore(meta: Meta, histories: MutableList<DriveItem>) {
                                     histories.removeLast()
-                                    historyViewModel.getHistoriesMore(state.startTime, state.endTime, meta, histories)
+                                    historyViewModel.getHistoriesMore(state.startTime, state.endTime, meta, histories, userCarId = carIdForFilter, isActive = isActiveForFilter)
                                 }
                             })
 
@@ -220,6 +231,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
 
                 for(car in myCarsListOnDevice){
                     filterList.add(CarListFilter(car.id, car.name, car.isActive))
+                    Log.d("testestesest","testsetsetsetsese :: " + car.id)
                 }
 
 
@@ -232,6 +244,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                     // Find the TextView within the newly inflated ConstraintLayout
                     val tv_car_name = constraintLayoutView.findViewById<TextView>(R.id.tv_car_name)
                     tv_car_name.text = filter.name
+
 
                     if(filter.name.equals("전체")){
                         (tv_car_name.parent as ConstraintLayout).isSelected = true
@@ -249,17 +262,32 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                                 // Change background of the clicked TextView
                                 (textView.parent as ConstraintLayout).isSelected = true
                                 TextViewCompat.setTextAppearance(textView, R.style.car_filter_selected)
+                                val matchingFilter = filterList.find { it.name == tv_car_name.text }
+                                carIdForFilter = matchingFilter?.id
 
                             } else {
                                 // Reset the background of other TextViews
                                 (textView.parent as ConstraintLayout).isSelected = false
                                 TextViewCompat.setTextAppearance(textView, R.style.car_filter_unselected)
-
                             }
                         }
 
+                        if(tv_car_name.text.equals("전체")){
+                            isActiveForFilter = null
+                        }else if(tv_car_name.text.equals("미확정")){
+                            isActiveForFilter = true
 
+                        }else if(tv_car_name.text.equals("내 차가 아니에요")){
+                            isActiveForFilter = false
+
+                        }else{
+                            isActiveForFilter = true
+                        }
+
+                        historyViewModel.getHistories(startTimeForFilter, endTimeForFilter, userCarId = carIdForFilter, isActive = isActiveForFilter)
                     }
+
+
 
                     // Add the inflated view to the parent layout
                     layout_flow.addView(constraintLayoutView)
@@ -348,15 +376,21 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                     tv_selected_date.text = selectedDate
                 }else{
                     if(btn_a_month.isSelected){
-                        setInquireScope(formatDateRangeForAMonth(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first))
-                        historyViewModel.getHistories(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+                        startTimeForFilter = getCurrentAndPastTimeForISO(29).second
+                        endTimeForFilter = getCurrentAndPastTimeForISO(29).first
+                        setInquireScope(formatDateRangeForAMonth(startTimeForFilter,endTimeForFilter))
+                        historyViewModel.getHistories(startTimeForFilter,endTimeForFilter, userCarId = carIdForFilter, isActive = isActiveForFilter)
                     }else if(btn_six_month.isSelected){
-                        setInquireScope(formatDateRange(getCurrentAndPastTimeForISO(SIX_MONTH).second,getCurrentAndPastTimeForISO(SIX_MONTH).first))
-                        historyViewModel.getHistories(getCurrentAndPastTimeForISO(SIX_MONTH).second,getCurrentAndPastTimeForISO(SIX_MONTH).first)
+                        startTimeForFilter = getCurrentAndPastTimeForISO(SIX_MONTH).second
+                        endTimeForFilter = getCurrentAndPastTimeForISO(SIX_MONTH).first
+                        setInquireScope(formatDateRange(startTimeForFilter,endTimeForFilter))
+                        historyViewModel.getHistories(startTimeForFilter,endTimeForFilter, userCarId = carIdForFilter, isActive = isActiveForFilter)
 
                     }else if(btn_each_month.isSelected){
+                        startTimeForFilter = getDateRange(selectedDate).second
+                        endTimeForFilter = getDateRange(selectedDate).first
                         setInquireScope(getDateRangeString(selectedDate))
-                        historyViewModel.getHistories(getDateRange(selectedDate).second,getDateRange(selectedDate).first)
+                        historyViewModel.getHistories(startTimeForFilter,endTimeForFilter, userCarId = carIdForFilter, isActive = isActiveForFilter)
 
                         lv_history.visibility = VISIBLE
                         layout_no_data.visibility = GONE
@@ -364,10 +398,9 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                     layout_choose_date.visibility = GONE
 
                 }}
-
         })
 
-        historyViewModel.getHistories(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
+        historyViewModel.getHistories(startTimeForFilter,endTimeForFilter, userCarId = carIdForFilter, isActive = isActiveForFilter)
 
         persistentBottomSheetEvent()
         setResources()
