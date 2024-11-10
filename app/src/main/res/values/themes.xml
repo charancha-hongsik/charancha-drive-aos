@@ -90,6 +90,13 @@
         <item name="android:textColorHint">@color/gray_200</item>   <!-- hint color -->
     </style>
 
+    <style name="CorpEditText" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorControlNormal">@color/gray_950</item> <!-- non focused line color -->
+        <item name="colorControlActivated">@color/gray_950</item> <!-- focused line color -->
+        <item name="android:editTextColor">@color/gray_950</item>  <!-- text color -->
+        <item name="android:textColorHint">@color/gray_200</item>   <!-- hint color -->
+    </style>
+
 
 
     <style name="EditCarText" parent="Theme.AppCompat.Light.NoActionBar">
@@ -99,6 +106,15 @@
         <item name="android:textAppearance">@style/B1SB</item> <!-- textAppearance -->
         <item name="android:textColorHint">@color/gray_950</item>   <!-- hint color -->
         <item name="hintTextAppearance">@style/B1SB</item> <!-- hint textAppearance -->
+    </style>
+
+    <style name="CorpEditCarText" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorControlNormal">@color/gray_950</item> <!-- non focused line color -->
+        <item name="colorControlActivated">@color/gray_950</item> <!-- focused line color -->
+        <item name="android:editTextColor">@color/gray_950</item>  <!-- text color -->
+        <item name="android:textAppearance">@style/B1SB</item> <!-- textAppearance -->
+        <item name="android:textColorHint">@color/gray_400</item>   <!-- hint color -->
+        <item name="hintTextAppearance">@style/B1M</item> <!-- hint textAppearance -->
     </style>
 
     <style name="Theme.MyPageTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
