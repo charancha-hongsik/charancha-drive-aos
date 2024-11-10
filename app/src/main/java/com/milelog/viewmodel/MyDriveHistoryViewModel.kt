@@ -31,7 +31,8 @@ class MyDriveHistoryViewModel: BaseViewModel() {
         this.context = context
     }
 
-    fun getHistoriesMore(startTime:String, endTime:String, meta: Meta, histories: MutableList<DriveItem>, isActive:Boolean? = null, userCarId:String? = null){
+    fun getHistoriesMore(startTime:String, endTime:String, meta: Meta, isActive:Boolean? = null, userCarId:String? = null){
+
         apiService(context).getDrivingHistories(
             token = "Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!,
             size = 30,
@@ -62,7 +63,7 @@ class MyDriveHistoryViewModel: BaseViewModel() {
         })
     }
 
-    fun getHistories(startTime:String, endTime:String,isActive:Boolean? = null, userCarId:String? = null){
+    fun getHistories(startTime:String, endTime:String,isActive:Boolean? = null, userCarId:String?){
         apiService(context).getDrivingHistories(
             token = "Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!,
             size = 30,
@@ -75,12 +76,20 @@ class MyDriveHistoryViewModel: BaseViewModel() {
             isActive = isActive,
             userCarId = userCarId).enqueue(object: Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                Log.d("testestestest","testsetsetset call.request().url :: " + call.request().url)
+                Log.d("testestestest","testsetsetset response code :: " + response.code())
+                Log.d("testestestest","testsetsetset ACCESS_TOKEN :: " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!)
+                Log.d("testestestest","testsetsetset isActive :: " + isActive)
+                Log.d("testestestest","testsetsetset userCarIdForString :: " + userCarId)
+
                 if(response.code() == 200 || response.code() == 201){
                     val jsonString = response.body()?.string()
                     val getDriveHistroyResponse = GsonBuilder().serializeNulls().create().fromJson(
                         jsonString,
                         GetDriveHistoryResponse::class.java
                     )
+
+
                     _driveHistoryResult.value = Event(GetDriveHistoryState.Success(getDriveHistroyResponse, startTime, endTime))
 
                 } else{

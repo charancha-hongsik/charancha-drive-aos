@@ -44,6 +44,7 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
 import java.time.*
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAdjusters
@@ -150,9 +151,30 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                                 DriveHistoryAdapter.DriveCallback {
                                 override fun clickedMore(meta: Meta, histories: MutableList<DriveItem>) {
                                     histories.removeLast()
-                                    historyViewModel.getHistoriesMore(state.startTime, state.endTime, meta, histories, userCarId = carIdForFilter, isActive = isActiveForFilter)
+                                    historyViewModel.getHistoriesMore(state.startTime, state.endTime, meta, userCarId = carIdForFilter, isActive = isActiveForFilter)
                                 }
                             })
+
+
+                        val dateFormatter = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
+                        val inputFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+                        inputFormatter.timeZone = TimeZone.getTimeZone("UTC")
+
+                        // 날짜 기준으로 그룹화하기
+                        val groupedDriveList = getDriveHistroyResponse.items.groupBy { item ->
+                            dateFormatter.format(inputFormatter.parse(item.createdAt))
+                        }
+
+                        // 예시: 그룹화된 리스트 출력
+                        groupedDriveList.forEach { (date, items) ->
+                            println("날짜: $date")
+                            Log.d("testestsetest", "testsetseestse date :: $date")
+
+                            items.forEach { driveItem ->
+                                println(driveItem)
+                                Log.d("testestsetest", "testsetseestse endTime :: ${driveItem.endTime}")
+                            }
+                        }
 
                         getDriveHistroyResponse.items.add(DriveItem("","","","","",false,"","",0.0,0.0))
                         histories = getDriveHistroyResponse.items
@@ -276,10 +298,10 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                             isActiveForFilter = null
                         }else if(tv_car_name.text.equals("미확정")){
                             isActiveForFilter = true
-
+                            carIdForFilter = "null"
                         }else if(tv_car_name.text.equals("내 차가 아니에요")){
                             isActiveForFilter = false
-
+                            carIdForFilter = "null"
                         }else{
                             isActiveForFilter = true
                         }
