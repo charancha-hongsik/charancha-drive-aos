@@ -272,7 +272,7 @@ class MyGarageActivity:BaseRefreshActivity() {
         val tv_car_no: TextView = view.findViewById(R.id.tv_car_no)
         val tv_car_name: TextView = view.findViewById(R.id.tv_car_name)
         val tv_car_info: TextView = view.findViewById(R.id.tv_car_info)
-        val btn_edit_car:ImageView = view.findViewById(R.id.btn_edit_car)
+        val btn_edit_car:View = view.findViewById(R.id.btn_edit_car)
         val btn_car_more_info: TextView = view.findViewById(R.id.btn_car_more_info)
         val linear_default:LinearLayout = view.findViewById(R.id.linear_default)
         val iv_corp:ImageView = view.findViewById(R.id.iv_corp)

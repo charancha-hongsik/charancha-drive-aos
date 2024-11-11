@@ -307,72 +307,80 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
 
 
         btn_next.setOnClickListener {
-            var type:String = PERSONAL
-            var data:Data? = null
-            if(iv_corp.isSelected){
-                type = CORPORATE
-                data = Data(et_corp_name.text.toString(), et_corp_department.text.toString())
-            }
-
-            val gson = Gson()
-            val jsonParam =
-                gson.toJson(
-                    PostMyCarRequest(
-                        licensePlateNumber = postMyCarResponse.licensePlateNumber,
-                        ownerName = postMyCarResponse.ownerName,
-                        vehicleIdentificationNumber = postMyCarResponse.vehicleIdentificationNumber,
-                        carName = postMyCarResponse.carName,
-                        makerCd = postMyCarResponse.makerCd!!,
-                        modelCd = postMyCarResponse.modelCd!!,
-                        modelDetailCd = postMyCarResponse.modelDetailCd,
-                        gradeCd = postMyCarResponse.gradeCd,
-                        gradeDetailCd = postMyCarResponse.gradeDetailCd,
-                        fuelCd = postMyCarResponse.fuelCd!!,
-                        typeInput = TypeInput(type = type, data)
-                    )
-                )
-
-            apiService(60).postMyCar(
-                "Bearer " + PreferenceUtil.getPref(this,  PreferenceUtil.ACCESS_TOKEN, ""), jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :
-                Callback<ResponseBody> {
-                override fun onResponse(
-                    call: Call<ResponseBody>,
-                    response: Response<ResponseBody>
-                ) {
-                    if(response.code() == 201 || response.code() == 200){
-                        if(intent.getBooleanExtra("add",false)){
-                            startActivity(
-                                Intent(this@LoadCarMoreInfoActivity, MyGarageActivity::class.java).addFlags(
-                                    FLAG_ACTIVITY_CLEAR_TOP or FLAG_ACTIVITY_SINGLE_TOP
-                                ))
-                            finish()
-                        }else{
-                            val getMyCarInfoItem = Gson().fromJson(
-                                response.body()?.string(),
-                                GetMyCarInfoItem::class.java
-                            )
-                            PreferenceUtil.putPref(this@LoadCarMoreInfoActivity, PreferenceUtil.USER_CARID, getMyCarInfoItem.id)
-                            PreferenceUtil.putPref(this@LoadCarMoreInfoActivity,  PreferenceUtil.KM_MILE, "km")
-                            startActivity(
-                                Intent(this@LoadCarMoreInfoActivity, MainActivity::class.java).addFlags(
-                                    FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK
-                                ))
-                            finish()
-                        }
-                    }else if(response.code() == 401){
-                        logout()
-                    } else{
-                        showCustomToast(this@LoadCarMoreInfoActivity,"차량 등록에 실패했습니다.")
-
+            CustomDialog(this, "차량 등록", "법인 또는 개인은 차량 등록 이후에 변경할 수 없어요.", "등록","취소",  object : CustomDialog.DialogCallback{
+                override fun onConfirm() {
+                    var type:String = PERSONAL
+                    var data:Data? = null
+                    if(iv_corp.isSelected){
+                        type = CORPORATE
+                        data = Data(et_corp_name.text.toString(), et_corp_department.text.toString())
                     }
+                    val gson = Gson()
+                    val jsonParam =
+                        gson.toJson(
+                            PostMyCarRequest(
+                                licensePlateNumber = postMyCarResponse.licensePlateNumber,
+                                ownerName = postMyCarResponse.ownerName,
+                                vehicleIdentificationNumber = postMyCarResponse.vehicleIdentificationNumber,
+                                carName = postMyCarResponse.carName,
+                                makerCd = postMyCarResponse.makerCd!!,
+                                modelCd = postMyCarResponse.modelCd!!,
+                                modelDetailCd = postMyCarResponse.modelDetailCd,
+                                gradeCd = postMyCarResponse.gradeCd,
+                                gradeDetailCd = postMyCarResponse.gradeDetailCd,
+                                fuelCd = postMyCarResponse.fuelCd!!,
+                                typeInput = TypeInput(type = type, data)
+                            )
+                        )
+
+                    apiService(60).postMyCar(
+                        "Bearer " + PreferenceUtil.getPref(this@LoadCarMoreInfoActivity,  PreferenceUtil.ACCESS_TOKEN, ""), jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :
+                        Callback<ResponseBody> {
+                        override fun onResponse(
+                            call: Call<ResponseBody>,
+                            response: Response<ResponseBody>
+                        ) {
+                            if(response.code() == 201 || response.code() == 200){
+                                if(intent.getBooleanExtra("add",false)){
+                                    startActivity(
+                                        Intent(this@LoadCarMoreInfoActivity, MyGarageActivity::class.java).addFlags(
+                                            FLAG_ACTIVITY_CLEAR_TOP or FLAG_ACTIVITY_SINGLE_TOP
+                                        ))
+                                    finish()
+                                }else{
+                                    val getMyCarInfoItem = Gson().fromJson(
+                                        response.body()?.string(),
+                                        GetMyCarInfoItem::class.java
+                                    )
+                                    PreferenceUtil.putPref(this@LoadCarMoreInfoActivity, PreferenceUtil.USER_CARID, getMyCarInfoItem.id)
+                                    PreferenceUtil.putPref(this@LoadCarMoreInfoActivity,  PreferenceUtil.KM_MILE, "km")
+                                    startActivity(
+                                        Intent(this@LoadCarMoreInfoActivity, MainActivity::class.java).addFlags(
+                                            FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK
+                                        ))
+                                    finish()
+                                }
+                            }else if(response.code() == 401){
+                                logout()
+                            } else{
+                                showCustomToast(this@LoadCarMoreInfoActivity,"차량 등록에 실패했습니다.")
+
+                            }
+                        }
+
+                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                            showCustomToast(this@LoadCarMoreInfoActivity,"차량 등록에 실패했습니다.")
+
+                        }
+
+                    })
                 }
 
-                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    showCustomToast(this@LoadCarMoreInfoActivity,"차량 등록에 실패했습니다.")
+                override fun onCancel() {
 
                 }
 
-            })
+            }).show()
         }
 
         btn_delete.setOnClickListener {
