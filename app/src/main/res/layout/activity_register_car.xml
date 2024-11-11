@@ -33,7 +33,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:paddingBottom="10dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view_register_percent1"
@@ -331,12 +331,14 @@
                             android:layout_height="wrap_content">
 
                             <ImageView
-                                android:layout_width="16dp"
-                                android:layout_height="16dp"
+                                android:id="@+id/iv_corp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:src="@drawable/ic_unchecked"/>
+                                android:src="@drawable/corp_selector" />
 
                             <TextView
+                                android:id="@+id/tv_corp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textAppearance="@style/B1SB"
@@ -349,16 +351,18 @@
                         <LinearLayout
                             android:id="@+id/btn_personal"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp">
 
                             <ImageView
+                                android:id="@+id/iv_personal"
                                 android:layout_width="16dp"
                                 android:layout_height="16dp"
                                 android:layout_gravity="center"
-                                android:layout_marginLeft="16dp"
-                                android:src="@drawable/ic_unchecked"/>
+                                android:src="@drawable/corp_selector"/>
 
                             <TextView
+                                android:id="@+id/tv_personal"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textAppearance="@style/B1SB"
@@ -375,6 +379,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="24dp"
+                        android:visibility="gone"
                         android:orientation="vertical">
 
                         <View
@@ -400,6 +405,7 @@
                                 android:layout_width="3dp"
                                 android:layout_height="3dp"
                                 android:background="@drawable/radius999_pri500"
+                                android:layout_marginTop="3dp"
                                 android:layout_marginLeft="4dp" />
 
                         </LinearLayout>
@@ -451,6 +457,7 @@
                                 android:layout_width="3dp"
                                 android:layout_height="3dp"
                                 android:background="@drawable/radius999_pri500"
+                                android:layout_marginTop="3dp"
                                 android:layout_marginLeft="4dp" />
 
                         </LinearLayout>
@@ -508,7 +515,7 @@
         android:id="@+id/layout_before_inquiry"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view_register_percent1"

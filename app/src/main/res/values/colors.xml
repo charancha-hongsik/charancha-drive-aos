@@ -74,6 +74,9 @@
 
     <color name="line_inner_start_color">#4D505050</color>
 
+    <color name="corp_selected">#222222</color>
+
+
 
 
 </resources>
