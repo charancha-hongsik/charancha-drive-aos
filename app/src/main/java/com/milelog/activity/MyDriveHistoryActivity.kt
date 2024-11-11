@@ -168,11 +168,8 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                         // 예시: 그룹화된 리스트 출력
                         groupedDriveList.forEach { (date, items) ->
                             println("날짜: $date")
-                            Log.d("testestsetest", "testsetseestse date :: $date")
-
                             items.forEach { driveItem ->
                                 println(driveItem)
-                                Log.d("testestsetest", "testsetseestse endTime :: ${driveItem.endTime}")
                             }
                         }
 

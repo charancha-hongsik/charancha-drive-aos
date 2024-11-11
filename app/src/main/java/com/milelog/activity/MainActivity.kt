@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
 import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+import android.util.Log
 import android.view.View
 import android.view.View.*
 import android.widget.*
@@ -261,7 +262,7 @@ class MainActivity : BaseRefreshActivity() {
                         mainViewModel.getCarInfoinquiryByCarId(getMyCarInfoResponses.items.get(0).id)
 
                         for(car in getMyCarInfoResponses.items){
-                            myCarsListOnServer.add(MyCarsEntity(car.id, car.carName, car.licensePlateNumber, null,null))
+                            myCarsListOnServer.add(MyCarsEntity(car.id, car.carName, car.licensePlateNumber, null,null, type = car.type))
                         }
 
                         PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.MY_CAR_ENTITIES, GsonBuilder().serializeNulls().create().toJson(updateMyCarList(myCarsListOnServer, myCarsListOnDevice)))

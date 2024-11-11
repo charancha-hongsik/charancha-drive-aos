@@ -20,6 +20,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -43,6 +44,7 @@ import com.google.gson.reflect.TypeToken
 import com.milelog.BoundingBoxCalculator
 import com.milelog.DividerItemDecoration
 import com.milelog.PreferenceUtil
+import com.milelog.activity.LoadCarMoreInfoActivity.Companion.PERSONAL
 import com.milelog.retrofit.response.Item
 import com.milelog.retrofit.response.VWorldDetailResponse
 import com.milelog.retrofit.response.VWorldResponse
@@ -114,6 +116,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var view_map:CardView
     lateinit var layout_drive_image:LinearLayout
 
+    lateinit var iv_corp:ImageView
+
     private var isCameraMoving = false
     private var currentAnimator: ValueAnimator? = null
     private var bluetoothNameExpected:String? = null
@@ -175,6 +179,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         tv_start_address = findViewById(R.id.tv_start_address)
         tv_end_address = findViewById(R.id.tv_end_address)
         tv_end_address_detail = findViewById(R.id.tv_end_address_detail)
+
+        iv_corp = findViewById(R.id.iv_corp)
 
         view_map = findViewById(R.id.view_map)
 
@@ -426,6 +432,15 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
                                     val myCar = myCarsList.find { getDrivingInfoResponse.userCarId == it.id }
                                     tv_mycar.text = myCar?.name
+
+                                    if(myCar?.type == PERSONAL){
+                                        iv_corp.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_star2))
+                                    }else{
+                                        iv_corp.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_star1))
+
+                                    }
+
+
                                 }
                             }
 
@@ -531,8 +546,6 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         btn_choose_mycar.setOnClickListener {
             showBottomSheetForEditCar()
         }
-
-
 
         detailDriveHistoryViewModel.getMapData(tracking_id)
         detailDriveHistoryViewModel.getDrivingInfo(tracking_id)

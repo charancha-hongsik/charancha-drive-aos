@@ -126,7 +126,6 @@ class DetailDriveHistoryViewModel: BaseViewModel() {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200 || response.code() == 201){
                     val jsonString = response.body()?.string()
-                    Log.d("testsetestset","testestestse :: " + jsonString)
                     val getDrivingInfoResponse = GsonBuilder().serializeNulls().create().fromJson(jsonString, GetDrivingInfoResponse::class.java)
                     _getDrivingInfo.value = Event(GetDrivingInfoState.Success(getDrivingInfoResponse))
                 }else if(response.code() == 401){
