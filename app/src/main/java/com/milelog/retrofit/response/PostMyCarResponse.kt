@@ -1,5 +1,7 @@
 package com.milelog.retrofit.response
 
+import com.milelog.retrofit.request.Data
+
 data class PostMyCarResponse (
     val licensePlateNumber:String,
     val ownerName:String,
@@ -20,5 +22,7 @@ data class PostMyCarResponse (
     val displacement:Int?,
     var fuelCd:String?,
     var fuelNm:String?,
-    val trimHint:String?
+    val trimHint:String?,
+    val type:String,
+    val data:Data
 )

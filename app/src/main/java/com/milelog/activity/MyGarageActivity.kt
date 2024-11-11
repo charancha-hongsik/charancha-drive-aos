@@ -240,10 +240,6 @@ class MyGarageActivity:BaseRefreshActivity() {
                             intent.putExtra("carInfo",response.body()?.string())
                             intent.putExtra("edit",true)
                             intent.putExtra("carId",car.id)
-                            intent.putExtra("type",car.type)
-                            intent.putExtra("name",car.data.name)
-                            intent.putExtra("department",car.data.department)
-
                             context.startActivity(intent)
                         }
                     }

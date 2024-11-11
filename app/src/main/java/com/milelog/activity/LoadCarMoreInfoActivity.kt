@@ -205,7 +205,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
             tv_corp.setTextColor(resources.getColor(R.color.corp_selected))
             tv_personal.setTextColor(resources.getColor(R.color.gray_300))
 
-            if(intent.getStringExtra("type").equals(PERSONAL)){
+            if(intent.getStringExtra(postMyCarResponse.type).equals(PERSONAL)){
                 layout_corp_parent.visibility = GONE
                 layout_type.visibility = GONE
                 tv_type_title.visibility = GONE
@@ -218,16 +218,17 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                 layout_type.visibility = VISIBLE
                 tv_type_title.visibility = VISIBLE
 
-                et_corp_name.setText(intent.getStringExtra("name"))
-                et_corp_department.setText(intent.getStringExtra("department"))
+                et_corp_name.setText(postMyCarResponse.data.name)
+                et_corp_department.setText(postMyCarResponse.data.department)
 
             }
         }else{
             btn_edit.visibility = GONE
             btn_next.visibility = VISIBLE
-            layout_corp_parent.visibility = GONE
-            layout_type.visibility = GONE
-            tv_type_title.visibility = GONE
+            layout_corp_parent.visibility = VISIBLE
+            layout_type.visibility = VISIBLE
+            tv_type_title.visibility = VISIBLE
+            layout_corp.visibility = GONE
 
             iv_corp.isSelected = false
             iv_personal.isSelected = true
