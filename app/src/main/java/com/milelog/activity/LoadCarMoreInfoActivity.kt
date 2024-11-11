@@ -225,16 +225,21 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
         }else{
             btn_edit.visibility = GONE
             btn_next.visibility = VISIBLE
-            layout_corp_parent.visibility = VISIBLE
             tv_type_title.visibility = GONE
             layout_type.visibility = GONE
-            layout_corp.visibility = GONE
 
-            iv_corp.isSelected = false
-            iv_personal.isSelected = true
+            iv_corp.isSelected = true
+            iv_personal.isSelected = false
 
-            tv_corp.setTextColor(resources.getColor(R.color.gray_300))
-            tv_personal.setTextColor(resources.getColor(R.color.corp_selected))
+            tv_corp.setTextColor(resources.getColor(R.color.corp_selected))
+            tv_personal.setTextColor(resources.getColor(R.color.gray_300))
+
+            layout_corp_parent.visibility = VISIBLE
+            layout_corp.visibility = VISIBLE
+
+            btn_next.isSelected = false
+            btn_next.isClickable = false
+
         }
     }
 
