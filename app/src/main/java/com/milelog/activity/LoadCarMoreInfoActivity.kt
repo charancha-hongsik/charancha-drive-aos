@@ -7,6 +7,8 @@ import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,10 +16,12 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ListView
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -31,8 +35,10 @@ import com.milelog.CustomDialog
 import com.milelog.PreferenceUtil
 import com.milelog.R
 import com.milelog.activity.CarDetailActivity.Companion.FUEL
+import com.milelog.retrofit.request.Data
 import com.milelog.retrofit.request.EditMyCarRequest
 import com.milelog.retrofit.request.PostMyCarRequest
+import com.milelog.retrofit.request.TypeInput
 import com.milelog.retrofit.response.CarDetailResponse
 import com.milelog.retrofit.response.GetMyCarInfoItem
 import com.milelog.retrofit.response.GetMyCarInfoResponse
@@ -65,6 +71,23 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
     private lateinit var btn_save:TextView
     private lateinit var btn_edit: LinearLayout
     private lateinit var btn_edit_car:ConstraintLayout
+    lateinit var layout_corp:LinearLayout
+    lateinit var btn_corp:LinearLayout
+    lateinit var iv_corp:ImageView
+    lateinit var tv_corp:TextView
+    lateinit var btn_personal:LinearLayout
+    lateinit var iv_personal:ImageView
+    lateinit var tv_personal:TextView
+    lateinit var et_corp_name: EditText
+    lateinit var et_corp_department:EditText
+    lateinit var layout_corp_parent:LinearLayout
+    lateinit var view_scrollview:ScrollView
+
+    companion object {
+        const val PERSONAL = "PERSONAL"
+        const val CORPORATE = "CORPORATE"
+
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -102,6 +125,18 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
         btn_save = findViewById(R.id.btn_save)
         btn_edit = findViewById(R.id.btn_edit)
         btn_edit_car = findViewById(R.id.btn_edit_car)
+        et_corp_name = findViewById(R.id.et_corp_name)
+        et_corp_department = findViewById(R.id.et_corp_department)
+        layout_corp_parent = findViewById(R.id.layout_corp_parent)
+        view_scrollview = findViewById(R.id.view_scrollview)
+
+        layout_corp = findViewById(R.id.layout_corp)
+        btn_corp = findViewById(R.id.btn_corp)
+        iv_corp = findViewById(R.id.iv_corp)
+        tv_corp = findViewById(R.id.tv_corp)
+        btn_personal = findViewById(R.id.btn_personal)
+        iv_personal = findViewById(R.id.iv_personal)
+        tv_personal = findViewById(R.id.tv_personal)
 
         val jsonString = intent.getStringExtra("carInfo")
         val gson = GsonBuilder().serializeNulls().create()
@@ -113,6 +148,12 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                 setInfo()
             }
         }
+
+        iv_corp.isSelected = false
+        iv_personal.isSelected = true
+
+        tv_corp.setTextColor(resources.getColor(R.color.gray_300))
+        tv_personal.setTextColor(resources.getColor(R.color.corp_selected))
     }
 
     private fun setInfo(){
@@ -152,9 +193,11 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
         if(intent.getBooleanExtra("edit",false)){
             btn_edit.visibility = VISIBLE
             btn_next.visibility = GONE
+            layout_corp_parent.visibility = GONE
         }else{
             btn_edit.visibility = GONE
             btn_next.visibility = VISIBLE
+            layout_corp_parent.visibility = VISIBLE
         }
     }
 
@@ -222,65 +265,73 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
 
 
         btn_next.setOnClickListener {
-                val gson = Gson()
-                val jsonParam =
-                    gson.toJson(
-                        PostMyCarRequest(
-                            licensePlateNumber = postMyCarResponse.licensePlateNumber,
-                            ownerName = postMyCarResponse.ownerName,
-                            vehicleIdentificationNumber = postMyCarResponse.vehicleIdentificationNumber,
-                            carName = postMyCarResponse.carName,
-                            makerCd = postMyCarResponse.makerCd!!,
-                            modelCd = postMyCarResponse.modelCd!!,
-                            modelDetailCd = postMyCarResponse.modelDetailCd,
-                            gradeCd = postMyCarResponse.gradeCd,
-                            gradeDetailCd = postMyCarResponse.gradeDetailCd,
-                            fuelCd = postMyCarResponse.fuelCd!!
-                        )
+            var type:String = PERSONAL
+            var data:Data? = null
+            if(btn_corp.isSelected){
+                type = CORPORATE
+                data = Data(et_corp_name.text.toString(), et_corp_department.toString())
+            }
+
+            val gson = Gson()
+            val jsonParam =
+                gson.toJson(
+                    PostMyCarRequest(
+                        licensePlateNumber = postMyCarResponse.licensePlateNumber,
+                        ownerName = postMyCarResponse.ownerName,
+                        vehicleIdentificationNumber = postMyCarResponse.vehicleIdentificationNumber,
+                        carName = postMyCarResponse.carName,
+                        makerCd = postMyCarResponse.makerCd!!,
+                        modelCd = postMyCarResponse.modelCd!!,
+                        modelDetailCd = postMyCarResponse.modelDetailCd,
+                        gradeCd = postMyCarResponse.gradeCd,
+                        gradeDetailCd = postMyCarResponse.gradeDetailCd,
+                        fuelCd = postMyCarResponse.fuelCd!!,
+                        typeInput = TypeInput(type = type, data)
                     )
+                )
 
-                apiService(60).postMyCar(
-                    "Bearer " + PreferenceUtil.getPref(this,  PreferenceUtil.ACCESS_TOKEN, ""), jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :
-                    Callback<ResponseBody> {
-                    override fun onResponse(
-                        call: Call<ResponseBody>,
-                        response: Response<ResponseBody>
-                    ) {
-                        if(response.code() == 201 || response.code() == 200){
-                            if(intent.getBooleanExtra("add",false)){
-                                startActivity(
-                                    Intent(this@LoadCarMoreInfoActivity, MyGarageActivity::class.java).addFlags(
-                                        FLAG_ACTIVITY_CLEAR_TOP or FLAG_ACTIVITY_SINGLE_TOP
-                                    ))
-                                finish()
-                            }else{
-                                val getMyCarInfoItem = Gson().fromJson(
-                                    response.body()?.string(),
-                                    GetMyCarInfoItem::class.java
-                                )
-                                PreferenceUtil.putPref(this@LoadCarMoreInfoActivity, PreferenceUtil.USER_CARID, getMyCarInfoItem.id)
-                                PreferenceUtil.putPref(this@LoadCarMoreInfoActivity,  PreferenceUtil.KM_MILE, "km")
-                                startActivity(
-                                    Intent(this@LoadCarMoreInfoActivity, MainActivity::class.java).addFlags(
-                                        FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK
-                                    ))
-                                finish()
-                            }
-                        }else if(response.code() == 401){
-                            logout()
-                        } else{
-                            showCustomToast(this@LoadCarMoreInfoActivity,"차량 등록에 실패했습니다.")
-
+            apiService(60).postMyCar(
+                "Bearer " + PreferenceUtil.getPref(this,  PreferenceUtil.ACCESS_TOKEN, ""), jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :
+                Callback<ResponseBody> {
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: Response<ResponseBody>
+                ) {
+                    if(response.code() == 201 || response.code() == 200){
+                        if(intent.getBooleanExtra("add",false)){
+                            startActivity(
+                                Intent(this@LoadCarMoreInfoActivity, MyGarageActivity::class.java).addFlags(
+                                    FLAG_ACTIVITY_CLEAR_TOP or FLAG_ACTIVITY_SINGLE_TOP
+                                ))
+                            finish()
+                        }else{
+                            val getMyCarInfoItem = Gson().fromJson(
+                                response.body()?.string(),
+                                GetMyCarInfoItem::class.java
+                            )
+                            PreferenceUtil.putPref(this@LoadCarMoreInfoActivity, PreferenceUtil.USER_CARID, getMyCarInfoItem.id)
+                            PreferenceUtil.putPref(this@LoadCarMoreInfoActivity,  PreferenceUtil.KM_MILE, "km")
+                            startActivity(
+                                Intent(this@LoadCarMoreInfoActivity, MainActivity::class.java).addFlags(
+                                    FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK
+                                ))
+                            finish()
                         }
-                    }
-
-                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    }else if(response.code() == 401){
+                        logout()
+                    } else{
                         showCustomToast(this@LoadCarMoreInfoActivity,"차량 등록에 실패했습니다.")
 
                     }
+                }
 
-                })
-            }
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    showCustomToast(this@LoadCarMoreInfoActivity,"차량 등록에 실패했습니다.")
+
+                }
+
+            })
+        }
 
         btn_delete.setOnClickListener {
             CustomDialog(this, "자동차 정보 삭제", "자동차 정보를 삭제하면 기존 데이터는 삭제됩니다. 삭제 하시겠습니까?", "삭제","취소",  object : CustomDialog.DialogCallback{
@@ -369,6 +420,100 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
 
             })
         }
+
+        btn_corp.setOnClickListener {
+            layout_corp.visibility = VISIBLE
+            iv_corp.isSelected = true
+            iv_personal.isSelected = false
+
+            tv_corp.setTextColor(resources.getColor(R.color.corp_selected))
+            tv_personal.setTextColor(resources.getColor(R.color.gray_300))
+
+            view_scrollview.post {
+                view_scrollview.smoothScrollTo(0, view_scrollview.getChildAt(0).height)
+            }
+
+            if(!tv_fuel.text.toString().isNullOrEmpty() && !et_corp_department.text.toString().isNullOrEmpty() && !et_corp_name.text.toString().isNullOrEmpty()){
+                btn_next.isSelected = true
+                btn_next.isSelected = true
+            }else{
+                btn_next.isSelected = false
+                btn_next.isSelected = false
+            }
+        }
+
+        btn_personal.setOnClickListener {
+            layout_corp.visibility = GONE
+
+            iv_corp.isSelected = false
+            iv_personal.isSelected = true
+
+            tv_corp.setTextColor(resources.getColor(R.color.gray_300))
+            tv_personal.setTextColor(resources.getColor(R.color.corp_selected))
+
+            if(tv_fuel.text.toString().isNullOrEmpty()){
+                btn_next.isSelected = false
+                btn_next.isSelected = false
+            }else{
+                btn_next.isSelected = true
+                btn_next.isSelected = true
+            }
+        }
+
+        et_corp_name.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                p0?.let{
+                    if(p0.length>=1){
+                        if(!et_corp_department.text.toString().isNullOrEmpty() && !tv_fuel.text.toString().isNullOrEmpty()){
+                            btn_next.isSelected = true
+                            btn_next.isClickable = true
+                        }else{
+                            btn_next.isSelected = false
+                            btn_next.isClickable = false
+                        }
+                    }else{
+                        btn_next.isSelected = false
+                        btn_next.isClickable = false
+                    }
+                }
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+        })
+
+        et_corp_department.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                p0?.let{
+                    if(p0.length>=1){
+                        if(!et_corp_name.text.toString().isNullOrEmpty() && !tv_fuel.text.toString().isNullOrEmpty()){
+                            btn_next.isSelected = true
+                            btn_next.isClickable = true
+                        }else{
+                            btn_next.isSelected = false
+                            btn_next.isClickable = false
+                        }
+                    }else{
+                        btn_next.isSelected = false
+                        btn_next.isClickable = false
+                    }
+                }
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+        })
+
     }
 
     inner class CarDetailAdapter(context: Context, resource: Int, items: List<CarDetail>) : ArrayAdapter<CarDetail>(context, resource, items) {
@@ -387,6 +532,14 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                     postMyCarResponse.fuelNm = carDetail.name
 
                     layout_select.visibility = GONE
+
+                    if(!et_corp_name.text.toString().isNullOrEmpty() && !et_corp_department.text.toString().isNullOrEmpty()){
+                        btn_next.isSelected = true
+                        btn_next.isClickable = true
+                    }else{
+                        btn_next.isSelected = false
+                        btn_next.isClickable = false
+                    }
                 }
             }
 

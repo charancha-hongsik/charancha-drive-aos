@@ -32,14 +32,6 @@ class RegisterCarActivity: BaseActivity() {
     lateinit var tv_confirm:TextView
     lateinit var et_register_car:EditText
     lateinit var btn_register_car:ConstraintLayout
-    lateinit var layout_corp:LinearLayout
-    lateinit var btn_corp:LinearLayout
-    lateinit var iv_corp:ImageView
-    lateinit var tv_corp:TextView
-    lateinit var btn_personal:LinearLayout
-    lateinit var iv_personal:ImageView
-    lateinit var tv_personal:TextView
-
 
     var no = 0
 
@@ -69,15 +61,6 @@ class RegisterCarActivity: BaseActivity() {
         tv_register_car_caution = findViewById(R.id.tv_register_car_caution)
 
         et_register_car = findViewById(R.id.et_register_car)
-
-        layout_corp = findViewById(R.id.layout_corp)
-        btn_corp = findViewById(R.id.btn_corp)
-        iv_corp = findViewById(R.id.iv_corp)
-        tv_corp = findViewById(R.id.tv_corp)
-        btn_personal = findViewById(R.id.btn_personal)
-        iv_personal = findViewById(R.id.iv_personal)
-        tv_personal = findViewById(R.id.tv_personal)
-
 
         btn_register_car = findViewById(R.id.btn_register_car)
         btn_register_car.setOnClickListener(object :OnSingleClickListener(){
@@ -160,27 +143,6 @@ class RegisterCarActivity: BaseActivity() {
             }
 
         })
-
-        btn_corp.setOnClickListener {
-            layout_corp.visibility = VISIBLE
-            iv_corp.isSelected = true
-            iv_personal.isSelected = false
-
-            tv_corp.setTextColor(resources.getColor(R.color.corp_selected))
-            tv_personal.setTextColor(resources.getColor(R.color.gray_300))
-        }
-
-        btn_personal.setOnClickListener {
-            layout_corp.visibility = GONE
-
-            iv_corp.isSelected = false
-            iv_personal.isSelected = true
-
-            tv_corp.setTextColor(resources.getColor(R.color.gray_300))
-            tv_personal.setTextColor(resources.getColor(R.color.corp_selected))
-
-        }
-
     }
 
     /**

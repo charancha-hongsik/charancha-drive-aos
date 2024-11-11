@@ -211,6 +211,9 @@ class LoginActivity: BaseActivity() {
                         call: Call<ResponseBody>,
                         response: Response<ResponseBody>
                     ) {
+                        Log.d("testsetsetse","testestsetseset call url :: " + call.request().url)
+                        Log.d("testsetsetse","testestsetseset response code :: " + response.code())
+
                         if (response.code() == 201 || response.code() == 409) {
                             val gson = GsonBuilder().serializeNulls().create()
                             val jsonParam =
@@ -291,6 +294,8 @@ class LoginActivity: BaseActivity() {
                                         call: Call<ResponseBody>,
                                         t: Throwable
                                     ) {
+                                        Log.d("testsetsetse","testestsetseset fail :: " + call.request().url)
+                                        Log.d("testsetsetse","testestsetseset t :: " + t.toString())
 
                                     }
 
@@ -303,8 +308,8 @@ class LoginActivity: BaseActivity() {
                     }
 
                     override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
-
+                        Log.d("testsetsetse","testestsetseset fail :: " + call.request().url)
+                        Log.d("testsetsetse","testestsetseset t :: " + t.toString())
                     }
                 })
         } catch (e: Exception) {

@@ -54,7 +54,8 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ScrollView
-            android:layout_width="0dp"
+            android:id="@+id/view_scrollview"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
@@ -67,9 +68,9 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
-                
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="156dp"
@@ -110,8 +111,8 @@
                             android:layout_gravity="center_vertical"
                             android:layout_marginRight="8dp"
                             android:background="@color/gray_900"/>
-                        
-                        
+
+
                     </LinearLayout>
 
                     <LinearLayout
@@ -322,15 +323,204 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
+                <LinearLayout
+                    android:id="@+id/layout_corp_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="vertical"
+                    android:padding="20dp"
+                    android:background="@drawable/radius8_white_gray100_border">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="18dp"
+                        android:textAppearance="@style/B2B"
+                        android:textFontWeight="700"
+                        android:textColor="@color/gray_950"
+                        android:text="사용자 구분" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp">
+
+                        <LinearLayout
+                            android:id="@+id/btn_corp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:id="@+id/iv_corp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:src="@drawable/corp_selector" />
+
+                            <TextView
+                                android:id="@+id/tv_corp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/B1SB"
+                                android:textFontWeight="600"
+                                android:layout_marginLeft="4dp"
+                                android:text="법인"
+                                android:textColor="@color/gray_300"/>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/btn_personal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="16dp">
+
+                            <ImageView
+                                android:id="@+id/iv_personal"
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:layout_gravity="center"
+                                android:src="@drawable/corp_selector"/>
+
+                            <TextView
+                                android:id="@+id/tv_personal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/B1SB"
+                                android:textFontWeight="600"
+                                android:layout_marginLeft="4dp"
+                                android:text="개인"
+                                android:textColor="@color/gray_300"/>
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layout_corp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:visibility="gone"
+                        android:orientation="vertical">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/gray_100"/>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="24dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="이름"
+                                android:textAppearance="@style/C1R"
+                                android:textFontWeight="400"
+                                android:textColor="@color/gray_600"/>
+
+                            <View
+                                android:layout_width="3dp"
+                                android:layout_height="3dp"
+                                android:background="@drawable/radius999_pri500"
+                                android:layout_marginTop="3dp"
+                                android:layout_marginLeft="4dp" />
+
+                        </LinearLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/layout_et_corp_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="54dp"
+                            android:layout_marginTop="6dp"
+                            android:background="@drawable/radius8_gray50"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_dialog_subtitle">
+
+                            <EditText
+                                android:id="@+id/et_corp_name"
+                                android:layout_width="0dp"
+                                android:layout_height="0dp"
+                                android:hint="이름을 입력해 주세요 (예시 홍길동)"
+                                android:theme="@style/CorpEditCarText"
+                                android:background="@null"
+                                android:textCursorDrawable="@drawable/register_car_cursor"
+                                android:textColor="@color/gray_950"
+                                android:textFontWeight="500"
+                                android:textAppearance="@style/B1M"
+                                android:inputType="text"
+                                android:maxLength="16"
+                                android:layout_margin="16dp"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginTop="24dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="부서"
+                                android:textAppearance="@style/C1R"
+                                android:textFontWeight="400"
+                                android:textColor="@color/gray_600"/>
+
+                            <View
+                                android:layout_width="3dp"
+                                android:layout_height="3dp"
+                                android:background="@drawable/radius999_pri500"
+                                android:layout_marginTop="3dp"
+                                android:layout_marginLeft="4dp" />
+
+                        </LinearLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/layout_et_corp_department"
+                            android:layout_width="match_parent"
+                            android:layout_height="54dp"
+                            android:layout_marginTop="6dp"
+                            android:background="@drawable/radius8_gray50"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_dialog_subtitle">
+
+                            <EditText
+                                android:id="@+id/et_corp_department"
+                                android:layout_width="0dp"
+                                android:layout_height="0dp"
+                                android:hint="부서명을 입력해주세요"
+                                android:theme="@style/CorpEditCarText"
+                                android:background="@null"
+                                android:textCursorDrawable="@drawable/register_car_cursor"
+                                android:textColor="@color/gray_950"
+                                android:textFontWeight="500"
+                                android:textAppearance="@style/B1M"
+                                android:inputType="text"
+                                android:maxLength="16"
+                                android:layout_margin="16dp"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </LinearLayout>
+
+
+
+                </LinearLayout>
+
             </LinearLayout>
 
 
-
-
         </ScrollView>
-
-
-
 
 
 
