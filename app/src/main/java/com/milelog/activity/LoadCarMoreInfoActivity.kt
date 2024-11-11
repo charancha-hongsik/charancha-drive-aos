@@ -196,7 +196,6 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
             btn_edit.visibility = VISIBLE
             btn_next.visibility = INVISIBLE
             layout_type.visibility = VISIBLE
-            tv_type_title.visibility = VISIBLE
 
             iv_corp.isSelected = true
             iv_personal.isSelected = false
@@ -205,14 +204,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
             tv_corp.setTextColor(resources.getColor(R.color.corp_selected))
             tv_personal.setTextColor(resources.getColor(R.color.gray_300))
 
-            if(intent.getStringExtra(postMyCarResponse.type).equals(PERSONAL)){
-                layout_corp_parent.visibility = GONE
-                layout_type.visibility = GONE
-                tv_type_title.visibility = GONE
-
-                btn_save.isSelected = true
-                btn_save.isClickable = true
-            }else{
+            if(intent.getStringExtra(postMyCarResponse.type).equals(CORPORATE)){
                 layout_corp_parent.visibility = VISIBLE
                 layout_corp.visibility = VISIBLE
                 layout_type.visibility = VISIBLE
@@ -221,13 +213,21 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                 et_corp_name.setText(postMyCarResponse.data.name)
                 et_corp_department.setText(postMyCarResponse.data.department)
 
+            }else{
+                layout_corp_parent.visibility = GONE
+                layout_type.visibility = GONE
+                tv_type_title.visibility = GONE
+
+                btn_save.isSelected = true
+                btn_save.isClickable = true
+
             }
         }else{
             btn_edit.visibility = GONE
             btn_next.visibility = VISIBLE
             layout_corp_parent.visibility = VISIBLE
-            layout_type.visibility = VISIBLE
-            tv_type_title.visibility = VISIBLE
+            tv_type_title.visibility = GONE
+            layout_type.visibility = GONE
             layout_corp.visibility = GONE
 
             iv_corp.isSelected = false
