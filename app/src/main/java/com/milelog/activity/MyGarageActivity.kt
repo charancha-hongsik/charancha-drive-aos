@@ -240,6 +240,10 @@ class MyGarageActivity:BaseRefreshActivity() {
                             intent.putExtra("carInfo",response.body()?.string())
                             intent.putExtra("edit",true)
                             intent.putExtra("carId",car.id)
+                            intent.putExtra("type",car.type)
+                            intent.putExtra("name",car.data.name)
+                            intent.putExtra("department",car.data.department)
+
                             context.startActivity(intent)
                         }
                     }
@@ -253,8 +257,11 @@ class MyGarageActivity:BaseRefreshActivity() {
 
             if(car.type == PERSONAL){
                 holder.iv_corp.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_star2))
+                holder.tv_corp.text = "개인"
+
             }else{
                 holder.iv_corp.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_star1))
+                holder.tv_corp.text = "법인"
 
             }
         }
@@ -273,5 +280,6 @@ class MyGarageActivity:BaseRefreshActivity() {
         val btn_car_more_info: TextView = view.findViewById(R.id.btn_car_more_info)
         val linear_default:LinearLayout = view.findViewById(R.id.linear_default)
         val iv_corp:ImageView = view.findViewById(R.id.iv_corp)
+        val tv_corp:TextView = view.findViewById(R.id.tv_corp)
     }
 }

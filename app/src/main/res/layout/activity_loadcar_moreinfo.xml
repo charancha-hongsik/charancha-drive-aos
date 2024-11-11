@@ -73,7 +73,7 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="156dp"
+                    android:layout_height="wrap_content"
                     android:padding="20dp"
                     android:background="@drawable/radius8_gray50">
 
@@ -117,7 +117,7 @@
 
                     <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="0dp"
+                        android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:layout_marginTop="20dp"
                         app:layout_constraintTop_toBottomOf="@+id/layout_car_num"
@@ -125,16 +125,26 @@
                         app:layout_constraintLeft_toLeftOf="parent">
 
                         <TextView
+                            android:id="@+id/tv_type_title"
                             android:layout_width="wrap_content"
-                            android:layout_height="18dp"
+                            android:layout_height="22dp"
                             android:textFontWeight="400"
+                            android:visibility="visible"
+                            android:textColor="@color/gray_600"
+                            android:text="사용자 구분"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="22dp"
+                            android:textFontWeight="400"
+                            android:layout_marginTop="6dp"
+                            android:layout_marginBottom="6dp"
                             android:textColor="@color/gray_600"
                             android:text="소유자명"/>
 
                         <TextView
                             android:layout_width="wrap_content"
-                            android:layout_height="18dp"
-                            android:layout_marginTop="6dp"
+                            android:layout_height="22dp"
                             android:layout_marginBottom="6dp"
                             android:textFontWeight="400"
                             android:textColor="@color/gray_600"
@@ -142,7 +152,7 @@
 
                         <TextView
                             android:layout_width="wrap_content"
-                            android:layout_height="18dp"
+                            android:layout_height="22dp"
                             android:textFontWeight="400"
                             android:textColor="@color/gray_600"
                             android:text="차대번호"/>
@@ -160,18 +170,42 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintRight_toRightOf="parent">
 
+                        <LinearLayout
+                            android:id="@+id/layout_type"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:src="@drawable/ic_star1"
+                                android:layout_gravity="center_vertical"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="4dp"
+                                android:textFontWeight="500"
+                                android:textColor="#38C576"
+                                android:visibility="visible"
+                                android:textAppearance="@style/B1M"
+                                android:text="법인"/>
+
+                        </LinearLayout>
+
                         <TextView
                             android:id="@+id/tv_owner"
                             android:layout_width="wrap_content"
-                            android:layout_height="18dp"
+                            android:layout_height="22dp"
                             android:textFontWeight="400"
+                            android:layout_marginTop="6dp"
                             android:textColor="@color/gray_600"
                             android:text="김마일"/>
 
                         <TextView
                             android:id="@+id/tv_releaseDt"
                             android:layout_width="wrap_content"
-                            android:layout_height="18dp"
+                            android:layout_height="22dp"
                             android:layout_marginTop="6dp"
                             android:layout_marginBottom="6dp"
                             android:textFontWeight="400"
@@ -181,7 +215,7 @@
                         <TextView
                             android:id="@+id/tv_car_id"
                             android:layout_width="wrap_content"
-                            android:layout_height="18dp"
+                            android:layout_height="22dp"
                             android:textFontWeight="400"
                             android:textColor="@color/gray_600"
                             android:text="1HGCM82633A123456"/>
@@ -587,7 +621,7 @@
             android:id="@+id/btn_save"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:background="@drawable/radius8_blue800"
+            android:background="@drawable/terms_next"
             android:textColor="@color/white_op_95"
             android:text="저장"
             android:textFontWeight="600"

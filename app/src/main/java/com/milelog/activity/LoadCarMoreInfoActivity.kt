@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
+import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -82,6 +83,8 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
     lateinit var et_corp_department:EditText
     lateinit var layout_corp_parent:LinearLayout
     lateinit var view_scrollview:ScrollView
+    lateinit var layout_type:LinearLayout
+    lateinit var tv_type_title:TextView
 
     companion object {
         const val PERSONAL = "PERSONAL"
@@ -95,8 +98,8 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
         setContentView(R.layout.activity_loadcar_moreinfo)
 
         init()
-        setInfo()
         setListener()
+        setInfo()
     }
 
     override fun onBackPressed() {
@@ -129,6 +132,8 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
         et_corp_department = findViewById(R.id.et_corp_department)
         layout_corp_parent = findViewById(R.id.layout_corp_parent)
         view_scrollview = findViewById(R.id.view_scrollview)
+        layout_type = findViewById(R.id.layout_type)
+        tv_type_title = findViewById(R.id.tv_type_title)
 
         layout_corp = findViewById(R.id.layout_corp)
         btn_corp = findViewById(R.id.btn_corp)
@@ -148,9 +153,6 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                 setInfo()
             }
         }
-
-        iv_corp.isSelected = false
-        iv_personal.isSelected = true
 
         tv_corp.setTextColor(resources.getColor(R.color.gray_300))
         tv_personal.setTextColor(resources.getColor(R.color.corp_selected))
@@ -192,12 +194,46 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
 
         if(intent.getBooleanExtra("edit",false)){
             btn_edit.visibility = VISIBLE
-            btn_next.visibility = GONE
-            layout_corp_parent.visibility = GONE
+            btn_next.visibility = INVISIBLE
+            layout_type.visibility = VISIBLE
+            tv_type_title.visibility = VISIBLE
+
+            iv_corp.isSelected = true
+            iv_personal.isSelected = false
+            btn_corp.setOnClickListener { }
+            btn_personal.setOnClickListener{ }
+            tv_corp.setTextColor(resources.getColor(R.color.corp_selected))
+            tv_personal.setTextColor(resources.getColor(R.color.gray_300))
+
+            if(intent.getStringExtra("type").equals(PERSONAL)){
+                layout_corp_parent.visibility = GONE
+                layout_type.visibility = GONE
+                tv_type_title.visibility = GONE
+
+                btn_save.isSelected = true
+                btn_save.isClickable = true
+            }else{
+                layout_corp_parent.visibility = VISIBLE
+                layout_corp.visibility = VISIBLE
+                layout_type.visibility = VISIBLE
+                tv_type_title.visibility = VISIBLE
+
+                et_corp_name.setText(intent.getStringExtra("name"))
+                et_corp_department.setText(intent.getStringExtra("department"))
+
+            }
         }else{
             btn_edit.visibility = GONE
             btn_next.visibility = VISIBLE
-            layout_corp_parent.visibility = VISIBLE
+            layout_corp_parent.visibility = GONE
+            layout_type.visibility = GONE
+            tv_type_title.visibility = GONE
+
+            iv_corp.isSelected = false
+            iv_personal.isSelected = true
+
+            tv_corp.setTextColor(resources.getColor(R.color.gray_300))
+            tv_personal.setTextColor(resources.getColor(R.color.corp_selected))
         }
     }
 
@@ -289,10 +325,6 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                         typeInput = TypeInput(type = type, data)
                     )
                 )
-            Log.d("testsetestest","testsetsetestse type :: " + type)
-            Log.d("testsetestest","testsetsetestse data name :: " + data?.name)
-            Log.d("testsetestest","testsetsetestse data department :: " + data?.department)
-
 
             apiService(60).postMyCar(
                 "Bearer " + PreferenceUtil.getPref(this,  PreferenceUtil.ACCESS_TOKEN, ""), jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :
@@ -381,7 +413,8 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                         modelDetailCd = postMyCarResponse.modelDetailCd,
                         gradeCd = postMyCarResponse.gradeCd,
                         gradeDetailCd = postMyCarResponse.gradeDetailCd,
-                        fuelCd = postMyCarResponse.fuelCd
+                        fuelCd = postMyCarResponse.fuelCd,
+                        typeInput = TypeInput(CORPORATE,Data(et_corp_name.text.toString(), et_corp_department.text.toString()))
                     )
                 )
 
@@ -439,10 +472,16 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
 
             if(!tv_fuel.text.toString().isNullOrEmpty() && !et_corp_department.text.toString().isNullOrEmpty() && !et_corp_name.text.toString().isNullOrEmpty()){
                 btn_next.isSelected = true
-                btn_next.isSelected = true
+                btn_next.isClickable = true
+
+                btn_save.isSelected = true
+                btn_save.isClickable = true
             }else{
                 btn_next.isSelected = false
-                btn_next.isSelected = false
+                btn_next.isClickable = false
+
+                btn_save.isSelected = false
+                btn_save.isClickable = false
             }
         }
 
@@ -475,13 +514,22 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                         if(!et_corp_department.text.toString().isNullOrEmpty() && !tv_fuel.text.toString().isNullOrEmpty()){
                             btn_next.isSelected = true
                             btn_next.isClickable = true
+
+                            btn_save.isSelected = true
+                            btn_save.isClickable = true
                         }else{
                             btn_next.isSelected = false
                             btn_next.isClickable = false
+
+                            btn_save.isSelected = false
+                            btn_save.isClickable = false
                         }
                     }else{
                         btn_next.isSelected = false
                         btn_next.isClickable = false
+
+                        btn_save.isSelected = false
+                        btn_save.isClickable = false
                     }
                 }
             }
@@ -502,13 +550,22 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                         if(!et_corp_name.text.toString().isNullOrEmpty() && !tv_fuel.text.toString().isNullOrEmpty()){
                             btn_next.isSelected = true
                             btn_next.isClickable = true
+
+                            btn_save.isSelected = true
+                            btn_save.isClickable = true
                         }else{
                             btn_next.isSelected = false
                             btn_next.isClickable = false
+
+                            btn_save.isSelected = false
+                            btn_save.isClickable = false
                         }
                     }else{
                         btn_next.isSelected = false
                         btn_next.isClickable = false
+
+                        btn_save.isSelected = false
+                        btn_save.isClickable = false
                     }
                 }
             }
@@ -540,9 +597,15 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                     if(!et_corp_name.text.toString().isNullOrEmpty() && !et_corp_department.text.toString().isNullOrEmpty()){
                         btn_next.isSelected = true
                         btn_next.isClickable = true
+
+                        btn_save.isSelected = true
+                        btn_save.isClickable = true
                     }else{
                         btn_next.isSelected = false
                         btn_next.isClickable = false
+
+                        btn_save.isSelected = false
+                        btn_save.isClickable = false
                     }
                 }
             }

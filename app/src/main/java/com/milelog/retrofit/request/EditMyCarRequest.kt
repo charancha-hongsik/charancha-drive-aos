@@ -10,4 +10,5 @@ data class EditMyCarRequest (
     val gradeCd:String?,
     val gradeDetailCd:String?,
     val fuelCd:String?,
+    val typeInput:TypeInput
     ) : java.io.Serializable
