@@ -183,9 +183,11 @@ class MainActivity : BaseRefreshActivity() {
         myCarsListOnServer: MutableList<MyCarsEntity>,
         myCarsListOnDevice: MutableList<MyCarsEntity>
     ): MutableList<MyCarsEntity> {
-        // 1. 유지할 리스트: 서버에 있는 차량만 남김
-        val retainedCars = myCarsListOnDevice.filter { deviceCar ->
-            myCarsListOnServer.any { serverCar -> serverCar.id == deviceCar.id }
+        // 1. 유지할 리스트: 서버에 있는 차량만 남기고 type 동기화
+        val retainedCars = myCarsListOnDevice.mapNotNull { deviceCar ->
+            myCarsListOnServer.find { serverCar -> serverCar.id == deviceCar.id }?.let { serverCar ->
+                deviceCar.copy(type = serverCar.type) // type을 서버의 값으로 동기화
+            }
         }.toMutableList()
 
         // 2. 추가할 차량: 서버에 있는데 장치에 없는 차량 추가
@@ -263,6 +265,7 @@ class MainActivity : BaseRefreshActivity() {
 
                         for(car in getMyCarInfoResponses.items){
                             myCarsListOnServer.add(MyCarsEntity(car.id, car.carName, car.licensePlateNumber, null,null, type = car.type))
+                            Log.d("testsetsetset","testestestsetse type:: " + car.type)
                         }
 
                         PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.MY_CAR_ENTITIES, GsonBuilder().serializeNulls().create().toJson(updateMyCarList(myCarsListOnServer, myCarsListOnDevice)))

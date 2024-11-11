@@ -176,7 +176,9 @@
                         <ImageView
                             android:id="@+id/iv_corp"
                             android:layout_width="16dp"
-                            android:layout_height="16dp"/>
+                            android:layout_height="16dp"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="4dp"/>
 
 
 
