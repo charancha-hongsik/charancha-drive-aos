@@ -204,7 +204,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
             tv_corp.setTextColor(resources.getColor(R.color.corp_selected))
             tv_personal.setTextColor(resources.getColor(R.color.gray_300))
 
-            if(intent.getStringExtra(postMyCarResponse.type).equals(CORPORATE)){
+            if(postMyCarResponse.type.equals(CORPORATE)){
                 layout_corp_parent.visibility = VISIBLE
                 layout_corp.visibility = VISIBLE
                 layout_type.visibility = VISIBLE
