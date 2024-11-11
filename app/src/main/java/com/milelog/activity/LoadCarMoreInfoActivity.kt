@@ -267,9 +267,9 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
         btn_next.setOnClickListener {
             var type:String = PERSONAL
             var data:Data? = null
-            if(btn_corp.isSelected){
+            if(iv_corp.isSelected){
                 type = CORPORATE
-                data = Data(et_corp_name.text.toString(), et_corp_department.toString())
+                data = Data(et_corp_name.text.toString(), et_corp_department.text.toString())
             }
 
             val gson = Gson()
@@ -289,6 +289,10 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                         typeInput = TypeInput(type = type, data)
                     )
                 )
+            Log.d("testsetestest","testsetsetestse type :: " + type)
+            Log.d("testsetestest","testsetsetestse data name :: " + data?.name)
+            Log.d("testsetestest","testsetsetestse data department :: " + data?.department)
+
 
             apiService(60).postMyCar(
                 "Bearer " + PreferenceUtil.getPref(this,  PreferenceUtil.ACCESS_TOKEN, ""), jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :
