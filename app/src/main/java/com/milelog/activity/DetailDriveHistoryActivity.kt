@@ -364,6 +364,13 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
                                     val myCar = myCarsList.find { state.data.userCarId == it.id }
                                     tv_mycar.text = myCar?.name
+
+                                    if(myCar?.type == PERSONAL){
+                                        iv_corp.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_star2))
+                                    }else{
+                                        iv_corp.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_star1))
+
+                                    }
                                 }
                             }
 
@@ -432,9 +439,6 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
                                     val myCar = myCarsList.find { getDrivingInfoResponse.userCarId == it.id }
                                     tv_mycar.text = myCar?.name
-
-                                    Log.d("testestestestest","testestestestset name :: " + myCar?.name)
-                                    Log.d("testestestestest","testestestestset type :: " + myCar?.type)
 
                                     if(myCar?.type == PERSONAL){
                                         iv_corp.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_star2))
