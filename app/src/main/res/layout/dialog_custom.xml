@@ -77,7 +77,7 @@
             android:id="@+id/layout_confirm"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@drawable/radius6_gray950"
+            android:background="@drawable/radius5_blue800"
             android:layout_marginBottom="24dp"
             android:layout_marginRight="24dp"
             android:layout_marginTop="24dp"
