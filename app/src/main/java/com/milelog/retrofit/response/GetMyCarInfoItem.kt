@@ -1,5 +1,7 @@
 package com.milelog.retrofit.response
 
+import com.milelog.retrofit.request.Data
+
 data class GetMyCarInfoItem(
     val id:String,
     val createdAt:String,
@@ -25,5 +27,7 @@ data class GetMyCarInfoItem(
     val fuelCd:String,
     val fuelNm:String,
     val modelDetailImageUrl:String?,
-    val userId:String?
+    val userId:String?,
+    val type:String,
+    val data:Data
 )

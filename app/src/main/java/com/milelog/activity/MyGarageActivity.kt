@@ -18,6 +18,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -29,6 +30,7 @@ import com.google.gson.reflect.TypeToken
 import com.milelog.DividerItemDecoration
 import com.milelog.PreferenceUtil
 import com.milelog.R
+import com.milelog.activity.LoadCarMoreInfoActivity.Companion.PERSONAL
 import com.milelog.retrofit.response.GetMyCarInfoItem
 import com.milelog.retrofit.response.GetMyCarInfoResponse
 import com.milelog.room.entity.MyCarsEntity
@@ -111,8 +113,6 @@ class MyGarageActivity:BaseRefreshActivity() {
 
                 if(response.code() == 200 || response.code() == 201){
                     val jsonString = response.body()?.string()
-
-                    Log.d("testestsetset","testsetsetes t:: " + jsonString)
 
                     val getMyCarInfoResponses = GsonBuilder().serializeNulls().create().fromJson(jsonString, GetMyCarInfoResponse::class.java)
 
@@ -211,8 +211,6 @@ class MyGarageActivity:BaseRefreshActivity() {
                 holder.linear_default.visibility = GONE
                 holder.iv_car.visibility = VISIBLE
 
-                Log.d("testsetestset","testsetsetsetset :: " + car.modelDetailImageUrl)
-
                 Glide.with(context)
                     .asBitmap()
                     .load(car.modelDetailImageUrl)
@@ -252,6 +250,13 @@ class MyGarageActivity:BaseRefreshActivity() {
 
                 })
             }
+
+            if(car.type == PERSONAL){
+                holder.iv_corp.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_star2))
+            }else{
+                holder.iv_corp.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_star1))
+
+            }
         }
 
         override fun getItemCount(): Int {
@@ -267,5 +272,6 @@ class MyGarageActivity:BaseRefreshActivity() {
         val btn_edit_car:ImageView = view.findViewById(R.id.btn_edit_car)
         val btn_car_more_info: TextView = view.findViewById(R.id.btn_car_more_info)
         val linear_default:LinearLayout = view.findViewById(R.id.linear_default)
+        val iv_corp:ImageView = view.findViewById(R.id.iv_corp)
     }
 }
