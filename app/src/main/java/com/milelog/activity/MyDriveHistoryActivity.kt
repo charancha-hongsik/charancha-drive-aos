@@ -518,7 +518,6 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         val tvDistance: TextView = view.findViewById(R.id.tv_distance)
         val tvStartTime: TextView = view.findViewById(R.id.tv_start_time)
         val tvEndTime: TextView = view.findViewById(R.id.tv_end_time)
-        val tvDate2: TextView = view.findViewById(R.id.tv_date2)
         val tvDistance2: TextView = view.findViewById(R.id.tv_distance2)
         val tvStartTime2: TextView = view.findViewById(R.id.tv_start_time2)
         val tvEndTime2: TextView = view.findViewById(R.id.tv_end_time2)
@@ -555,7 +554,6 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                 holder.tvStartTime.text = transformTimeToHHMM(driveItem.startTime)
                 holder.tvEndTime.text = transformTimeToHHMM(driveItem.endTime)
 
-                holder.tvDate2.text = transformTimeToDate(driveItem.startTime)
                 holder.tvDistance2.text = transferDistanceWithUnit(
                     driveItem.totalDistance,
                     PreferenceUtil.getPref(context, PreferenceUtil.KM_MILE, "km")!!

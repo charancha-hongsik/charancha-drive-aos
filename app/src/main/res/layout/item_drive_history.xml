@@ -11,9 +11,9 @@
     <LinearLayout
         android:id="@+id/layout_active"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
@@ -23,49 +23,60 @@
             android:layout_height="wrap_content">
 
             <LinearLayout
-                android:id="@+id/layout_corp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
-                android:visibility="gone"
-                android:background="@drawable/radius3_ebfaf1"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp">
+                app:layout_constraintBottom_toBottomOf="parent">
 
-                <ImageView
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
-                    android:src="@drawable/ic_star1"
-                    android:layout_gravity="center_vertical"/>
-
-                <TextView
+                <LinearLayout
+                    android:id="@+id/layout_corp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="법인"
-                    android:textAppearance="@style/C2M"
-                    android:textFontWeight="500"
-                    android:layout_marginLeft="3dp"
-                    android:includeFontPadding="true"
-                    android:textColor="#38C576"/>
+                    android:background="@drawable/radius3_ebfaf1"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:visibility="gone"
+                    android:layout_marginBottom="9dp">
+
+                    <ImageView
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:src="@drawable/ic_star1"
+                        android:layout_gravity="center_vertical"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="법인"
+                        android:textAppearance="@style/C2M"
+                        android:textFontWeight="500"
+                        android:layout_marginLeft="3dp"
+                        android:includeFontPadding="true"
+                        android:textColor="#38C576"/>
 
 
+
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="73.2km"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/gray_950"
+                    android:includeFontPadding="false"
+                    android:textFontWeight="600"
+                    android:textAppearance="@style/T1SB" />
 
 
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/tv_distance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="73.2km"
-                android:textColor="@color/gray_950"
-                android:textFontWeight="600"
-                android:textAppearance="@style/T1SB"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"/>
 
             <ImageView
                 android:layout_width="16dp"
@@ -79,40 +90,175 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/radius5_gray50"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/tv_start_time"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:text="17시 36분"
-                android:textAppearance="@style/C1R"
-                android:textFontWeight="400"
-                android:textColor="@color/gray_900"/>
+            <LinearLayout
+                android:layout_width="20dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginTop="2dp">
+
+                <ImageView
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="4dp"
+                    android:src="@drawable/ic_start"/>
+
+                <View
+                    android:layout_width="3dp"
+                    android:layout_height="3dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/radius999_blue300"
+                    android:layout_marginTop="10dp"/>
+
+                <View
+                    android:layout_width="3dp"
+                    android:layout_height="3dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/radius999_blue300"
+                    android:layout_marginTop="4dp"/>
 
 
-            <ImageView
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:src="@drawable/arrow_right"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp"
-                android:layout_gravity="center"/>
+                <View
+                    android:layout_width="3dp"
+                    android:layout_height="3dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/radius999_blue300"
+                    android:layout_marginTop="4dp"/>
 
-            <TextView
-                android:id="@+id/tv_end_time"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:text="17시 36분"
-                android:textAppearance="@style/C1R"
-                android:textFontWeight="400"
-                android:textColor="@color/gray_900"/>
+                <View
+                    android:layout_width="3dp"
+                    android:layout_height="3dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/radius999_blue300"
+                    android:layout_marginTop="4dp"/>
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_depart"
+                    android:layout_marginTop="10dp"/>
+
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:textAppearance="@style/B2M"
+                    android:textFontWeight="500"
+                    android:includeFontPadding="false"
+                    android:textColor="@color/gray_900"
+                    android:text="서울 동대문구 답십리동"/>
+
+                <TextView
+                    android:id="@+id/tv_start_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:layout_marginTop="2dp"
+                    android:textAppearance="@style/C1R"
+                    android:textFontWeight="400"
+                    android:textColor="@color/gray_600"
+                    android:text="18:26"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:layout_marginTop="17dp"
+                    android:textAppearance="@style/B2M"
+                    android:includeFontPadding="false"
+                    android:textFontWeight="500"
+                    android:textColor="@color/gray_900"
+                    android:text="서울 동대문구 답십리동"/>
+
+                <TextView
+                    android:id="@+id/tv_end_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:layout_marginTop="2dp"
+                    android:textAppearance="@style/C1R"
+                    android:textFontWeight="400"
+                    android:textColor="@color/gray_600"
+                    android:text="18:26"/>
+
+
+
+
+            </LinearLayout>
+
+
+
 
         </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="26dp"
+            android:layout_marginTop="12dp">
+
+            <TextView
+                android:id="@+id/tv_car_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="이동 수단"
+                android:textAppearance="@style/C1R"
+                android:textFontWeight="400"
+                android:textColor="@color/gray_600"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="right"
+                android:layout_marginLeft="12dp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@+id/tv_car_title">
+
+                <TextView
+                    android:id="@+id/tv_car"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/C1R"
+                    android:textFontWeight="400"
+                    android:textColor="@color/gray_600"
+                    android:text="BMW 7시리즈"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:src="@drawable/ic_star1"/>
+
+
+
+            </LinearLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 
 
@@ -120,82 +266,239 @@
 
     <LinearLayout
         android:id="@+id/layout_not_active"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
-        <TextView
-            android:layout_width="55dp"
-            android:layout_height="22dp"
-            android:text="기록제외"
-            android:gravity="center"
-            android:textColor="@color/sec_500"
-            android:textAppearance="@style/C2M"
-            android:textFontWeight="500"
-            android:background="@drawable/radius999_sec50"
-            />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tv_date2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="2024년 6월 16일"
-            android:layout_marginTop="6dp"
-            android:textAppearance="@style/C1R"
-            android:textFontWeight="400"
-            android:textColor="@color/gray_300"/>
-
-        <TextView
-            android:id="@+id/tv_distance2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="73.2km"
-            android:textColor="@color/gray_300"
-            android:textFontWeight="600"
-            android:textAppearance="@style/T1SB"/>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/tv_start_time2"
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:text="17시 36분"
-                android:textAppearance="@style/C1R"
-                android:textFontWeight="400"
-                android:textColor="@color/gray_300"/>
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
 
+
+                <TextView
+                    android:layout_width="55dp"
+                    android:layout_height="22dp"
+                    android:text="기록제외"
+                    android:gravity="center"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="@color/sec_500"
+                    android:textAppearance="@style/C2M"
+                    android:textFontWeight="500"
+                    android:background="@drawable/radius3_sec50"
+                    />
+
+
+                <TextView
+                    android:id="@+id/tv_distance2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="73.2km"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/gray_400"
+                    android:includeFontPadding="false"
+                    android:textFontWeight="600"
+                    android:textAppearance="@style/T1SB" />
+
+
+            </LinearLayout>
 
             <ImageView
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:src="@drawable/arrow_right"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp"
-                android:layout_gravity="center"/>
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/arrow"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
-            <TextView
-                android:id="@+id/tv_end_time2"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:text="17시 36분"
-                android:textAppearance="@style/C1R"
-                android:textFontWeight="400"
-                android:textColor="@color/gray_300"/>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/radius5_gray50"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="20dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginTop="2dp">
+
+                <ImageView
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="4dp"
+                    android:src="@drawable/ic_start2"/>
+
+                <View
+                    android:layout_width="3dp"
+                    android:layout_height="3dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/radius999_blue300"
+                    android:layout_marginTop="10dp"/>
+
+                <View
+                    android:layout_width="3dp"
+                    android:layout_height="3dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/radius999_blue300"
+                    android:layout_marginTop="4dp"/>
+
+
+                <View
+                    android:layout_width="3dp"
+                    android:layout_height="3dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/radius999_blue300"
+                    android:layout_marginTop="4dp"/>
+
+                <View
+                    android:layout_width="3dp"
+                    android:layout_height="3dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/radius999_blue300"
+                    android:layout_marginTop="4dp"/>
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_depart"
+                    android:layout_marginTop="10dp"/>
+
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:textAppearance="@style/B2M"
+                    android:textFontWeight="500"
+                    android:includeFontPadding="false"
+                    android:textColor="@color/gray_400"
+                    android:text="서울 동대문구 답십리동"/>
+
+                <TextView
+                    android:id="@+id/tv_start_time2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:layout_marginTop="2dp"
+                    android:textAppearance="@style/C1R"
+                    android:textFontWeight="400"
+                    android:textColor="@color/gray_400"
+                    android:text="18:26"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:layout_marginTop="17dp"
+                    android:textAppearance="@style/B2M"
+                    android:includeFontPadding="false"
+                    android:textFontWeight="500"
+                    android:textColor="@color/gray_400"
+                    android:text="서울 동대문구 답십리동"/>
+
+                <TextView
+                    android:id="@+id/tv_end_time2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="18dp"
+                    android:layout_marginTop="2dp"
+                    android:textAppearance="@style/C1R"
+                    android:textFontWeight="400"
+                    android:textColor="@color/gray_400"
+                    android:text="18:26"/>
+
+
+
+
+            </LinearLayout>
+
+
+
 
         </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="26dp"
+            android:layout_marginTop="12dp">
+
+            <TextView
+                android:id="@+id/tv_car_title2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="이동 수단"
+                android:textAppearance="@style/C1R"
+                android:textFontWeight="400"
+                android:textColor="@color/gray_600"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="right"
+                android:layout_marginLeft="12dp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@+id/tv_car_title2">
+
+                <TextView
+                    android:id="@+id/tv_car2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/C1R"
+                    android:textFontWeight="400"
+                    android:textColor="@color/gray_600"
+                    android:text="BMW 7시리즈"/>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:src="@drawable/ic_star1"/>
+
+
+
+            </LinearLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 
 
     </LinearLayout>
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
