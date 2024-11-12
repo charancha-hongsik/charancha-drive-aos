@@ -76,12 +76,6 @@ class MyDriveHistoryViewModel: BaseViewModel() {
             isActive = isActive,
             userCarId = userCarId).enqueue(object: Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                Log.d("testestestest","testsetsetset call.request().url :: " + call.request().url)
-                Log.d("testestestest","testsetsetset response code :: " + response.code())
-                Log.d("testestestest","testsetsetset ACCESS_TOKEN :: " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!)
-                Log.d("testestestest","testsetsetset isActive :: " + isActive)
-                Log.d("testestestest","testsetsetset userCarIdForString :: " + userCarId)
-
                 if(response.code() == 200 || response.code() == 201){
                     val jsonString = response.body()?.string()
                     val getDriveHistroyResponse = GsonBuilder().serializeNulls().create().fromJson(

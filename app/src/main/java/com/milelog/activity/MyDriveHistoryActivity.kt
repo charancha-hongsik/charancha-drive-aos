@@ -206,10 +206,12 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                 if (it.resultCode == RESULT_OK) {
                     val trackingId = it.data?.getStringExtra("trackingId")
                     val isActive = it.data?.getBooleanExtra("isActive", true)
+                    val userCarId = it.data?.getStringExtra("userCarId")
 
                     for (history in histories) {
                         if (history.id.equals(trackingId)) {
                             history.isActive = isActive!!
+                            history.userCarId = userCarId
                         }
                     }
 
@@ -561,7 +563,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                 holder.tvStartTime2.text = transformTimeToHHMM(driveItem.startTime)
                 holder.tvEndTime2.text = transformTimeToHHMM(driveItem.endTime)
 
-                if (driveItem.isActive) {
+                if (driveItem.isActive && !driveItem.userCarId.isNullOrEmpty()) {
                     holder.layoutNotActive.visibility = View.GONE
                     holder.layoutActive.visibility = View.VISIBLE
                     holder.btnDriveHistory.isClickable = false
