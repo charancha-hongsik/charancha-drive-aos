@@ -351,6 +351,61 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                         )
                     }
 
+                    tv_car_number.setOnClickListener {
+                        // Iterate over the list and update the background of all TextViews
+                        for (view in carViews) {
+                            if (view.tv_car_num == tv_car_number) {
+                                // Change background of the clicked TextView
+                                view.view_parent.isSelected = true
+
+                                TextViewCompat.setTextAppearance(
+                                    view.tv_car_name,
+                                    R.style.car_filter_selected
+                                )
+
+                                TextViewCompat.setTextAppearance(
+                                    view.tv_car_num,
+                                    R.style.car_filter_selected
+                                )
+
+                                val matchingFilter = filterList.find { it.carNum == tv_car_number.text }
+                                carIdForFilter = matchingFilter?.id
+
+                            } else {
+                                // Reset the background of other TextViews
+                                view.view_parent.isSelected = false
+                                TextViewCompat.setTextAppearance(
+                                    view.tv_car_name,
+                                    R.style.car_filter_unselected
+                                )
+
+                                TextViewCompat.setTextAppearance(
+                                    view.tv_car_num,
+                                    R.style.car_filter_unselected
+                                )
+                            }
+                        }
+
+                        if (tv_car_name.text.equals("전체")) {
+                            isActiveForFilter = null
+                        } else if (tv_car_name.text.equals("미확정")) {
+                            isActiveForFilter = true
+                            carIdForFilter = "null"
+                        } else if (tv_car_name.text.equals("내 차가 아니에요")) {
+                            isActiveForFilter = false
+                            carIdForFilter = "null"
+                        } else {
+                            isActiveForFilter = true
+                        }
+
+                        historyViewModel.getHistories(
+                            startTimeForFilter,
+                            endTimeForFilter,
+                            userCarId = carIdForFilter,
+                            isActive = isActiveForFilter
+                        )
+                    }
+
 
                     // Add the inflated view to the parent layout
                     layout_flow.addView(constraintLayoutView)
