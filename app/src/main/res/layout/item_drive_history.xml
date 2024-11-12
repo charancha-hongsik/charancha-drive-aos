@@ -355,14 +355,14 @@
                     android:layout_width="3dp"
                     android:layout_height="3dp"
                     android:layout_gravity="center_horizontal"
-                    android:background="@drawable/radius999_blue300"
+                    android:background="@drawable/radius999_gray200"
                     android:layout_marginTop="10dp"/>
 
                 <View
                     android:layout_width="3dp"
                     android:layout_height="3dp"
                     android:layout_gravity="center_horizontal"
-                    android:background="@drawable/radius999_blue300"
+                    android:background="@drawable/radius999_gray200"
                     android:layout_marginTop="4dp"/>
 
 
@@ -370,20 +370,20 @@
                     android:layout_width="3dp"
                     android:layout_height="3dp"
                     android:layout_gravity="center_horizontal"
-                    android:background="@drawable/radius999_blue300"
+                    android:background="@drawable/radius999_gray200"
                     android:layout_marginTop="4dp"/>
 
                 <View
                     android:layout_width="3dp"
                     android:layout_height="3dp"
                     android:layout_gravity="center_horizontal"
-                    android:background="@drawable/radius999_blue300"
+                    android:background="@drawable/radius999_gray200"
                     android:layout_marginTop="4dp"/>
 
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@drawable/ic_depart"
+                    android:src="@drawable/ic_depart2"
                     android:layout_marginTop="10dp"/>
 
 
@@ -458,7 +458,7 @@
                 android:text="이동 수단"
                 android:textAppearance="@style/C1R"
                 android:textFontWeight="400"
-                android:textColor="@color/gray_600"
+                android:textColor="@color/gray_300"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
@@ -480,14 +480,9 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/C1R"
                     android:textFontWeight="400"
-                    android:textColor="@color/gray_600"
-                    android:text="BMW 7시리즈"/>
+                    android:textColor="@color/gray_300"
+                    android:text="내 차가 아니에요"/>
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="3dp"
-                    android:src="@drawable/ic_star1"/>
 
 
 
