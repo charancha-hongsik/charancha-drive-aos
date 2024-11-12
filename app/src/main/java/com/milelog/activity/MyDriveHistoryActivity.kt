@@ -98,7 +98,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         val dividerItemDecoration = DividerItemDecoration(
             this@MyDriveHistoryActivity,
             R.color.gray_50,
-            50
+            32
         ) // 색상 리소스와 구분선 높이 설정
         lv_date.addItemDecoration(dividerItemDecoration)
 
@@ -749,7 +749,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                     dateItem.items)
 
                 if (holder.driveItemsRecyclerView.itemDecorationCount == 0) {
-                    val dividerItemDecoration = DividerItemDecoration(context, R.color.gray_50, 50)
+                    val dividerItemDecoration = DividerItemDecoration(context, R.color.gray_50, 12)
                     holder.driveItemsRecyclerView.addItemDecoration(dividerItemDecoration)
                 }
                 holder.driveItemsRecyclerView.adapter = driveItemAdapter
