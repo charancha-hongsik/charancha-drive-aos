@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -98,7 +99,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         val dividerItemDecoration = DividerItemDecoration(
             this@MyDriveHistoryActivity,
             R.color.gray_50,
-            32
+            dpToPx(this@MyDriveHistoryActivity, 32)
         ) // 색상 리소스와 구분선 높이 설정
         lv_date.addItemDecoration(dividerItemDecoration)
 
@@ -747,7 +748,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                     dateItem.items)
 
                 if (holder.driveItemsRecyclerView.itemDecorationCount == 0) {
-                    val dividerItemDecoration = DividerItemDecoration(context, R.color.gray_50, 12)
+                    val dividerItemDecoration = DividerItemDecoration(context, R.color.gray_50, dpToPx(context, 12f))
                     holder.driveItemsRecyclerView.addItemDecoration(dividerItemDecoration)
                 }
                 holder.driveItemsRecyclerView.adapter = driveItemAdapter
@@ -769,6 +770,12 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         }
 
         override fun getItemCount(): Int = dateList.size
+
+        fun dpToPx(context:Context, dp: Float): Int {
+            return TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, dp, context.resources.displayMetrics
+            ).toInt()
+        }
     }
 
     fun groupDriveItemsByLocalDate(driveItems: MutableList<DriveItem>): MutableList<NewDriveHistoryResponse> {
