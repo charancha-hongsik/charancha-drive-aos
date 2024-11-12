@@ -27,6 +27,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.milelog.CarListFilter
+import com.milelog.CarViews
 import com.milelog.DividerItemDecoration
 import com.milelog.activity.MyDriveHistoryActivity.DriveHistoryAdapter.LastItemViewHolder
 import com.milelog.retrofit.response.DriveItem
@@ -250,17 +251,17 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                     GsonBuilder().serializeNulls().create().fromJson(it, type)
                 )
 
-                filterList.add(CarListFilter(null, "전체", null))
-                filterList.add(CarListFilter(null, "미확정", true))
-                filterList.add(CarListFilter(null, "내 차가 아니에요", false))
+                filterList.add(CarListFilter(null,null, "전체", null))
+                filterList.add(CarListFilter(null, null, "미확정", true))
+                filterList.add(CarListFilter(null, null, "내 차가 아니에요", false))
 
                 for (car in myCarsListOnDevice) {
-                    filterList.add(CarListFilter(car.id, car.name, car.isActive))
-                    Log.d("testestesest", "testsetsetsetsese :: " + car.id)
+                    filterList.add(CarListFilter(car.id, car.number?.takeLast(4), car.name, car.isActive))
                 }
 
 
-                val carNameTextViews = mutableListOf<TextView>()
+                val carViews = mutableListOf<CarViews>()
+
 
                 for (filter in filterList) {
                     // Inflate the ConstraintLayout view
@@ -270,35 +271,67 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                     // Find the TextView within the newly inflated ConstraintLayout
                     val tv_car_name = constraintLayoutView.findViewById<TextView>(R.id.tv_car_name)
                     tv_car_name.text = filter.name
+                    val tv_car_number = constraintLayoutView.findViewById<TextView>(R.id.tv_car_number)
+                    val divider = constraintLayoutView.findViewById<View>(R.id.divider)
+                    val view_parent = constraintLayoutView.findViewById<ConstraintLayout>(R.id.view_parent)
 
+                    // Add the TextView reference to the list
+                    carViews.add(CarViews(view_parent, tv_car_name, tv_car_number, divider))
+
+                    if(filter.carNum.isNullOrEmpty()){
+                        tv_car_number.visibility = GONE
+                        divider.visibility = GONE
+                    }else{
+                        tv_car_number.visibility = VISIBLE
+                        tv_car_number.text = filter.carNum
+
+                        divider.visibility = VISIBLE
+                    }
 
                     if (filter.name.equals("전체")) {
-                        (tv_car_name.parent as ConstraintLayout).isSelected = true
+                        ((tv_car_name.parent as LinearLayout).parent as ConstraintLayout).isSelected = true
                         TextViewCompat.setTextAppearance(tv_car_name, R.style.car_filter_selected)
                     }
 
-                    // Add the TextView reference to the list
-                    carNameTextViews.add(tv_car_name)
+
 
                     // Set click listener for the first TextView (or any condition)
                     tv_car_name.setOnClickListener {
                         // Iterate over the list and update the background of all TextViews
-                        for (textView in carNameTextViews) {
-                            if (textView == tv_car_name) {
+                        for (view in carViews) {
+                            if (view.tv_car_name == tv_car_name) {
+                                Log.d("testestestset","testestsetsetest tv_car_num1 :: " + view.tv_car_num.text)
+                                Log.d("testestestset","testestsetsetest tv_car_name1 :: " + view.tv_car_name.text)
+
+                                Log.d("testestestset","testestsetsetest tv_car_num2 :: " + tv_car_number.text)
+                                Log.d("testestestset","testestsetsetest tv_car_name2 :: " + tv_car_name.text)
+
                                 // Change background of the clicked TextView
-                                (textView.parent as ConstraintLayout).isSelected = true
+                                view.view_parent.isSelected = true
+
                                 TextViewCompat.setTextAppearance(
-                                    textView,
+                                    view.tv_car_name,
                                     R.style.car_filter_selected
                                 )
+
+                                TextViewCompat.setTextAppearance(
+                                    view.tv_car_num,
+                                    R.style.car_filter_selected
+                                )
+
                                 val matchingFilter = filterList.find { it.name == tv_car_name.text }
                                 carIdForFilter = matchingFilter?.id
 
                             } else {
                                 // Reset the background of other TextViews
-                                (textView.parent as ConstraintLayout).isSelected = false
+                                view.view_parent.isSelected = false
                                 TextViewCompat.setTextAppearance(
-                                    textView,
+                                    view.tv_car_name,
+                                    R.style.car_filter_unselected
+                                )
+
+                                TextViewCompat.setTextAppearance(
+                                    view.tv_car_num,
                                     R.style.car_filter_unselected
                                 )
                             }
