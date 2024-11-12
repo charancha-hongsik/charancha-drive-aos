@@ -15,35 +15,27 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.content.ContextCompat
 import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.milelog.ChosenDate
 import com.milelog.PreferenceUtil
 import com.milelog.R
-import com.milelog.retrofit.response.*
 import com.milelog.viewmodel.MyDriveHistoryViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.milelog.CarListFilter
 import com.milelog.DividerItemDecoration
+import com.milelog.activity.MyDriveHistoryActivity.DriveHistoryAdapter.LastItemViewHolder
 import com.milelog.retrofit.response.DriveItem
-import com.milelog.retrofit.response.GetDriveHistoryResponse
 import com.milelog.retrofit.response.Meta
+import com.milelog.retrofit.response.NewDriveHistoryResponse
 import com.milelog.room.entity.MyCarsEntity
 import com.milelog.viewmodel.BaseViewModel
 import com.milelog.viewmodel.state.GetDriveHistoryMoreState
 import com.milelog.viewmodel.state.GetDriveHistoryState
 import com.nex3z.flowlayout.FlowLayout
-import jp.wasabeef.glide.transformations.RoundedCornersTransformation
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.time.*
 import java.time.format.DateTimeFormatter
@@ -52,32 +44,33 @@ import java.util.*
 
 
 class MyDriveHistoryActivity: BaseRefreshActivity() {
-    lateinit var lv_history:RecyclerView
-    lateinit var btn_back:ImageView
+    lateinit var lv_date: RecyclerView
+    lateinit var btn_back: ImageView
 
-    lateinit var button_choose_date_overlay:Button
+    lateinit var button_choose_date_overlay: Button
     lateinit var layout_choose_date: CoordinatorLayout
     lateinit var persistent_bottom_sheet: LinearLayout
-    lateinit var btn_close_select_date:ImageView
-    lateinit var btn_a_month:TextView
-    lateinit var btn_six_month:TextView
-    lateinit var btn_each_month:TextView
-    lateinit var btn_inquire_date:TextView
-    lateinit var tv_selected_date:TextView
-    lateinit var tv_inquire_scope:TextView
-    lateinit var listView_choose_date_own:ListView
-    lateinit var layout_select_main:LinearLayout
-    lateinit var btn_select_date_from_list:ConstraintLayout
-    lateinit var layout_date_own:ConstraintLayout
-    lateinit var layout_no_data:ConstraintLayout
-    lateinit var layout_flow:FlowLayout
+    lateinit var btn_close_select_date: ImageView
+    lateinit var btn_a_month: TextView
+    lateinit var btn_six_month: TextView
+    lateinit var btn_each_month: TextView
+    lateinit var btn_inquire_date: TextView
+    lateinit var tv_selected_date: TextView
+    lateinit var tv_inquire_scope: TextView
+    lateinit var listView_choose_date_own: ListView
+    lateinit var layout_select_main: LinearLayout
+    lateinit var btn_select_date_from_list: ConstraintLayout
+    lateinit var layout_date_own: ConstraintLayout
+    lateinit var layout_no_data: ConstraintLayout
+    lateinit var layout_flow: FlowLayout
 
     lateinit var behavior: BottomSheetBehavior<LinearLayout>
-    lateinit var selectedDate:String
+    lateinit var selectedDate: String
 
     lateinit var resultLauncher: ActivityResultLauncher<Intent>
-    val filterList:MutableList<CarListFilter> = mutableListOf()
+    val filterList: MutableList<CarListFilter> = mutableListOf()
     var histories: MutableList<DriveItem> = mutableListOf()
+    var newHistories: MutableList<NewDriveHistoryResponse> = mutableListOf()
 
 
     /**
@@ -86,10 +79,10 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
      * 내 차가 아니에요 -> carId null / isActive false
      * 내 차 -> carId not null / isActive true
      */
-    var carIdForFilter:String? = null
-    var isActiveForFilter:Boolean? = null
-    var startTimeForFilter:String = getCurrentAndPastTimeForISO(29).second
-    var endTimeForFilter:String = getCurrentAndPastTimeForISO(29).first
+    var carIdForFilter: String? = null
+    var isActiveForFilter: Boolean? = null
+    var startTimeForFilter: String = getCurrentAndPastTimeForISO(29).second
+    var endTimeForFilter: String = getCurrentAndPastTimeForISO(29).first
 
     private val historyViewModel: MyDriveHistoryViewModel by viewModels()
 
@@ -101,123 +94,131 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         init()
         setObserver()
 
-        lv_history.layoutManager = LinearLayoutManager(this@MyDriveHistoryActivity)
-        val dividerItemDecoration = DividerItemDecoration(this@MyDriveHistoryActivity, R.color.gray_50, 50) // 색상 리소스와 구분선 높이 설정
-        lv_history.addItemDecoration(dividerItemDecoration)
+        lv_date.layoutManager = LinearLayoutManager(this@MyDriveHistoryActivity)
+        val dividerItemDecoration = DividerItemDecoration(
+            this@MyDriveHistoryActivity,
+            R.color.gray_50,
+            50
+        ) // 색상 리소스와 구분선 높이 설정
+        lv_date.addItemDecoration(dividerItemDecoration)
 
     }
 
-    private fun setObserver(){
+    private fun setObserver() {
 
-        historyViewModel.driveHistoryMoreResult.observe(this@MyDriveHistoryActivity, BaseViewModel.EventObserver{ state ->
-            when (state) {
-                is GetDriveHistoryMoreState.Loading -> {
+        historyViewModel.driveHistoryMoreResult.observe(
+            this@MyDriveHistoryActivity,
+            BaseViewModel.EventObserver { state ->
+                when (state) {
+                    is GetDriveHistoryMoreState.Loading -> {
 
-                }
-                is GetDriveHistoryMoreState.Success -> {
-                    val getDriveHistroyResponse = state.data
-
-                    histories.addAll(getDriveHistroyResponse.items)
-                    histories.add(DriveItem("","","","","",false,"","",0.0,0.0))
-                    (lv_history.adapter as DriveHistoryAdapter).notifyDataSetChanged()
-                }
-                is GetDriveHistoryMoreState.Error -> {
-                    if(state.code == 401){
-                        logout()
-                    }else{
-                        lv_history.visibility = GONE
-                        layout_no_data.visibility = VISIBLE
                     }
-                }
-                is GetDriveHistoryMoreState.Empty -> {
 
-                }
-            }
+                    is GetDriveHistoryMoreState.Success -> {
+                        updateHistories(state.data.items, newHistories)
 
-        })
+                        newHistories.add(NewDriveHistoryResponse("", mutableListOf()))
+                        (lv_date.adapter as DateHistoriesAdapter).notifyDataSetChanged()
+                    }
 
-        historyViewModel.driveHistoryResult.observe(this@MyDriveHistoryActivity, BaseViewModel.EventObserver{ state ->
-            when (state) {
-                is GetDriveHistoryState.Loading -> {
-
-                }
-                is GetDriveHistoryState.Success -> {
-                    val getDriveHistroyResponse = state.data
-
-                    if(getDriveHistroyResponse.items.size > 0){
-                        val driveAdapter = DriveHistoryAdapter(
-                            this@MyDriveHistoryActivity,
-                            getDriveHistroyResponse.items, getDriveHistroyResponse.meta, object :
-                                DriveHistoryAdapter.DriveCallback {
-                                override fun clickedMore(meta: Meta, histories: MutableList<DriveItem>) {
-                                    histories.removeLast()
-                                    historyViewModel.getHistoriesMore(state.startTime, state.endTime, meta, userCarId = carIdForFilter, isActive = isActiveForFilter)
-                                }
-                            })
-
-
-                        val dateFormatter = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
-                        val inputFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-                        inputFormatter.timeZone = TimeZone.getTimeZone("UTC")
-
-                        // 날짜 기준으로 그룹화하기
-                        val groupedDriveList = getDriveHistroyResponse.items.groupBy { item ->
-                            dateFormatter.format(inputFormatter.parse(item.createdAt))
+                    is GetDriveHistoryMoreState.Error -> {
+                        if (state.code == 401) {
+                            logout()
+                        } else {
+                            lv_date.visibility = GONE
+                            layout_no_data.visibility = VISIBLE
                         }
+                    }
 
-                        // 예시: 그룹화된 리스트 출력
-                        groupedDriveList.forEach { (date, items) ->
-                            println("날짜: $date")
-                            items.forEach { driveItem ->
-                                println(driveItem)
-                            }
+                    is GetDriveHistoryMoreState.Empty -> {
+
+                    }
+                }
+
+            })
+
+        historyViewModel.driveHistoryResult.observe(
+            this@MyDriveHistoryActivity,
+            BaseViewModel.EventObserver { state ->
+                when (state) {
+                    is GetDriveHistoryState.Loading -> {
+
+                    }
+
+                    is GetDriveHistoryState.Success -> {
+                        val getDriveHistroyResponse = state.data
+
+                        if (getDriveHistroyResponse.items.size > 0) {
+                            histories.addAll(getDriveHistroyResponse.items)
+                            newHistories = groupDriveItemsByLocalDate(getDriveHistroyResponse.items)
+
+                            newHistories.add(NewDriveHistoryResponse("", mutableListOf()))
+                            val dateAdapter = DateHistoriesAdapter(
+                                this@MyDriveHistoryActivity,
+                                state.data.meta,
+                                newHistories,
+                                object :
+                                    DriveHistoryAdapter.DriveCallback {
+                                    override fun clickedMore(
+                                        meta: Meta,
+                                        histories: MutableList<NewDriveHistoryResponse>
+                                    ) {
+                                        newHistories.removeLast()
+                                        historyViewModel.getHistoriesMore(
+                                            state.startTime,
+                                            state.endTime,
+                                            meta,
+                                            userCarId = carIdForFilter,
+                                            isActive = isActiveForFilter
+                                        )
+                                    }
+                                })
+
+                            lv_date.adapter = dateAdapter
+
+                            lv_date.visibility = VISIBLE
+                            layout_no_data.visibility = GONE
+                        } else {
+                            lv_date.visibility = GONE
+                            layout_no_data.visibility = VISIBLE
                         }
+                    }
 
-                        getDriveHistroyResponse.items.add(DriveItem("","","","","",false,"","",0.0,0.0))
-                        histories = getDriveHistroyResponse.items
+                    is GetDriveHistoryState.Error -> {
+                        if (state.code == 401) {
+                            logout()
+                        } else {
+                            lv_date.visibility = GONE
+                            layout_no_data.visibility = VISIBLE
+                        }
+                    }
 
-                        lv_history.adapter = driveAdapter
+                    is GetDriveHistoryState.Empty -> {
 
-                        lv_history.visibility = VISIBLE
-                        layout_no_data.visibility = GONE
-                    }else{
-                        lv_history.visibility = GONE
-                        layout_no_data.visibility = VISIBLE
                     }
                 }
-                is GetDriveHistoryState.Error -> {
-                    if(state.code == 401){
-                        logout()
-                    }else{
-                        lv_history.visibility = GONE
-                        layout_no_data.visibility = VISIBLE
-                    }
-                }
-                is GetDriveHistoryState.Empty -> {
-
-                }
-            }
-        })
+            })
     }
 
-    fun init(){
-        resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
-            if(it.resultCode == RESULT_OK){
-                val trackingId = it.data?.getStringExtra("trackingId")
-                val isActive = it.data?.getBooleanExtra("isActive",true)
+    fun init() {
+        resultLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                if (it.resultCode == RESULT_OK) {
+                    val trackingId = it.data?.getStringExtra("trackingId")
+                    val isActive = it.data?.getBooleanExtra("isActive", true)
 
-                for(history in histories){
-                    if(history.id.equals(trackingId)){
-                        history.isActive = isActive!!
+                    for (history in histories) {
+                        if (history.id.equals(trackingId)) {
+                            history.isActive = isActive!!
+                        }
                     }
+
+
+                    (lv_date.adapter as DateHistoriesAdapter).notifyDataSetChanged()
                 }
-
-
-                (lv_history.adapter as DriveHistoryAdapter).notifyDataSetChanged()
             }
-        }
 
-        lv_history = findViewById(R.id.lv_history)
+        lv_date = findViewById(R.id.lv_history)
         btn_back = findViewById(R.id.btn_back)
 
         button_choose_date_overlay = findViewById(R.id.button_choose_date_overlay)
@@ -238,19 +239,21 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         layout_date_own = findViewById(R.id.layout_date_own)
         layout_flow = findViewById(R.id.layout_flow)
 
-        PreferenceUtil.getPref(this, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
-            if(it != "") {
+        PreferenceUtil.getPref(this, PreferenceUtil.MY_CAR_ENTITIES, "")?.let {
+            if (it != "") {
                 val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
-                val myCarsListOnDevice:MutableList<MyCarsEntity> = mutableListOf()
-                myCarsListOnDevice.addAll(GsonBuilder().serializeNulls().create().fromJson(it, type))
+                val myCarsListOnDevice: MutableList<MyCarsEntity> = mutableListOf()
+                myCarsListOnDevice.addAll(
+                    GsonBuilder().serializeNulls().create().fromJson(it, type)
+                )
 
-                filterList.add(CarListFilter(null,"전체", null))
-                filterList.add(CarListFilter(null,"미확정", true))
-                filterList.add(CarListFilter(null,"내 차가 아니에요", false))
+                filterList.add(CarListFilter(null, "전체", null))
+                filterList.add(CarListFilter(null, "미확정", true))
+                filterList.add(CarListFilter(null, "내 차가 아니에요", false))
 
-                for(car in myCarsListOnDevice){
+                for (car in myCarsListOnDevice) {
                     filterList.add(CarListFilter(car.id, car.name, car.isActive))
-                    Log.d("testestesest","testsetsetsetsese :: " + car.id)
+                    Log.d("testestesest", "testsetsetsetsese :: " + car.id)
                 }
 
 
@@ -258,14 +261,15 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
 
                 for (filter in filterList) {
                     // Inflate the ConstraintLayout view
-                    val constraintLayoutView = layoutInflater.inflate(R.layout.item_drive_history_car, layout_flow, false)
+                    val constraintLayoutView =
+                        layoutInflater.inflate(R.layout.item_drive_history_car, layout_flow, false)
 
                     // Find the TextView within the newly inflated ConstraintLayout
                     val tv_car_name = constraintLayoutView.findViewById<TextView>(R.id.tv_car_name)
                     tv_car_name.text = filter.name
 
 
-                    if(filter.name.equals("전체")){
+                    if (filter.name.equals("전체")) {
                         (tv_car_name.parent as ConstraintLayout).isSelected = true
                         TextViewCompat.setTextAppearance(tv_car_name, R.style.car_filter_selected)
                     }
@@ -280,32 +284,42 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                             if (textView == tv_car_name) {
                                 // Change background of the clicked TextView
                                 (textView.parent as ConstraintLayout).isSelected = true
-                                TextViewCompat.setTextAppearance(textView, R.style.car_filter_selected)
+                                TextViewCompat.setTextAppearance(
+                                    textView,
+                                    R.style.car_filter_selected
+                                )
                                 val matchingFilter = filterList.find { it.name == tv_car_name.text }
                                 carIdForFilter = matchingFilter?.id
 
                             } else {
                                 // Reset the background of other TextViews
                                 (textView.parent as ConstraintLayout).isSelected = false
-                                TextViewCompat.setTextAppearance(textView, R.style.car_filter_unselected)
+                                TextViewCompat.setTextAppearance(
+                                    textView,
+                                    R.style.car_filter_unselected
+                                )
                             }
                         }
 
-                        if(tv_car_name.text.equals("전체")){
+                        if (tv_car_name.text.equals("전체")) {
                             isActiveForFilter = null
-                        }else if(tv_car_name.text.equals("미확정")){
+                        } else if (tv_car_name.text.equals("미확정")) {
                             isActiveForFilter = true
                             carIdForFilter = "null"
-                        }else if(tv_car_name.text.equals("내 차가 아니에요")){
+                        } else if (tv_car_name.text.equals("내 차가 아니에요")) {
                             isActiveForFilter = false
                             carIdForFilter = "null"
-                        }else{
+                        } else {
                             isActiveForFilter = true
                         }
 
-                        historyViewModel.getHistories(startTimeForFilter, endTimeForFilter, userCarId = carIdForFilter, isActive = isActiveForFilter)
+                        historyViewModel.getHistories(
+                            startTimeForFilter,
+                            endTimeForFilter,
+                            userCarId = carIdForFilter,
+                            isActive = isActiveForFilter
+                        )
                     }
-
 
 
                     // Add the inflated view to the parent layout
@@ -317,7 +331,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
 
 
 
-        btn_back.setOnClickListener(object: OnSingleClickListener(){
+        btn_back.setOnClickListener(object : OnSingleClickListener() {
             override fun onSingleClick(v: View?) {
                 finish()
             }
@@ -385,47 +399,73 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
             btn_select_date_from_list.visibility = VISIBLE
         }
 
-        btn_inquire_date.setOnClickListener(object: OnSingleClickListener(){
+        btn_inquire_date.setOnClickListener(object : OnSingleClickListener() {
             override fun onSingleClick(v: View?) {
-                if(layout_select_main.visibility == GONE){
+                if (layout_select_main.visibility == GONE) {
 
                     listView_choose_date_own.visibility = GONE
                     layout_select_main.visibility = VISIBLE
 
                     tv_selected_date.text = selectedDate
-                }else{
-                    if(btn_a_month.isSelected){
+                } else {
+                    if (btn_a_month.isSelected) {
                         startTimeForFilter = getCurrentAndPastTimeForISO(29).second
                         endTimeForFilter = getCurrentAndPastTimeForISO(29).first
-                        setInquireScope(formatDateRangeForAMonth(startTimeForFilter,endTimeForFilter))
-                        historyViewModel.getHistories(startTimeForFilter,endTimeForFilter, userCarId = carIdForFilter, isActive = isActiveForFilter)
-                    }else if(btn_six_month.isSelected){
+                        setInquireScope(
+                            formatDateRangeForAMonth(
+                                startTimeForFilter,
+                                endTimeForFilter
+                            )
+                        )
+                        historyViewModel.getHistories(
+                            startTimeForFilter,
+                            endTimeForFilter,
+                            userCarId = carIdForFilter,
+                            isActive = isActiveForFilter
+                        )
+                    } else if (btn_six_month.isSelected) {
                         startTimeForFilter = getCurrentAndPastTimeForISO(SIX_MONTH).second
                         endTimeForFilter = getCurrentAndPastTimeForISO(SIX_MONTH).first
-                        setInquireScope(formatDateRange(startTimeForFilter,endTimeForFilter))
-                        historyViewModel.getHistories(startTimeForFilter,endTimeForFilter, userCarId = carIdForFilter, isActive = isActiveForFilter)
+                        setInquireScope(formatDateRange(startTimeForFilter, endTimeForFilter))
+                        historyViewModel.getHistories(
+                            startTimeForFilter,
+                            endTimeForFilter,
+                            userCarId = carIdForFilter,
+                            isActive = isActiveForFilter
+                        )
 
-                    }else if(btn_each_month.isSelected){
+                    } else if (btn_each_month.isSelected) {
                         startTimeForFilter = getDateRange(selectedDate).second
                         endTimeForFilter = getDateRange(selectedDate).first
                         setInquireScope(getDateRangeString(selectedDate))
-                        historyViewModel.getHistories(startTimeForFilter,endTimeForFilter, userCarId = carIdForFilter, isActive = isActiveForFilter)
+                        historyViewModel.getHistories(
+                            startTimeForFilter,
+                            endTimeForFilter,
+                            userCarId = carIdForFilter,
+                            isActive = isActiveForFilter
+                        )
 
-                        lv_history.visibility = VISIBLE
+                        lv_date.visibility = VISIBLE
                         layout_no_data.visibility = GONE
                     }
                     layout_choose_date.visibility = GONE
 
-                }}
+                }
+            }
         })
 
-        historyViewModel.getHistories(startTimeForFilter,endTimeForFilter, userCarId = carIdForFilter, isActive = isActiveForFilter)
+        historyViewModel.getHistories(
+            startTimeForFilter,
+            endTimeForFilter,
+            userCarId = carIdForFilter,
+            isActive = isActiveForFilter
+        )
 
         persistentBottomSheetEvent()
         setResources()
     }
 
-    fun setResources(){
+    fun setResources() {
         btn_a_month.isSelected = true
 
         val itemList = getDateList()
@@ -433,7 +473,12 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         selectedDate = itemList.get(0).date
         tv_selected_date.text = selectedDate
 
-        setInquireScope(formatDateRangeForAMonth(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first))
+        setInquireScope(
+            formatDateRangeForAMonth(
+                getCurrentAndPastTimeForISO(29).second,
+                getCurrentAndPastTimeForISO(29).first
+            )
+        )
 
 
         // adapter 생성
@@ -482,28 +527,22 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
 
     class DriveHistoryAdapter(
         private val context: Context,
-        private val histories: MutableList<DriveItem>,
-        private val meta: Meta,
-        private val callback: DriveCallback
+        private val histories: MutableList<DriveItem>
     ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         companion object {
             private const val VIEW_TYPE_ITEM = 0
-            private const val VIEW_TYPE_LAST_ITEM = 1
         }
 
         override fun getItemViewType(position: Int): Int {
-            return if (position == histories.size - 1) VIEW_TYPE_LAST_ITEM else VIEW_TYPE_ITEM
+            return VIEW_TYPE_ITEM
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-            return if (viewType == VIEW_TYPE_ITEM) {
-                val view = LayoutInflater.from(context).inflate(R.layout.item_drive_history, parent, false)
-                DriveHistoryViewHolder(view)
-            } else {
-                val view = LayoutInflater.from(context).inflate(R.layout.item_drive_history_last, parent, false)
-                LastItemViewHolder(view)
-            }
+            val view =
+                LayoutInflater.from(context).inflate(R.layout.item_drive_history, parent, false)
+            return DriveHistoryViewHolder(view)
+
         }
 
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -511,12 +550,18 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                 val driveItem = histories[position]
 
                 holder.tvDate.text = transformTimeToDate(driveItem.startTime)
-                holder.tvDistance.text = transferDistanceWithUnit(driveItem.totalDistance, PreferenceUtil.getPref(context, PreferenceUtil.KM_MILE, "km")!!)
+                holder.tvDistance.text = transferDistanceWithUnit(
+                    driveItem.totalDistance,
+                    PreferenceUtil.getPref(context, PreferenceUtil.KM_MILE, "km")!!
+                )
                 holder.tvStartTime.text = transformTimeToHHMM(driveItem.startTime)
                 holder.tvEndTime.text = transformTimeToHHMM(driveItem.endTime)
 
                 holder.tvDate2.text = transformTimeToDate(driveItem.startTime)
-                holder.tvDistance2.text = transferDistanceWithUnit(driveItem.totalDistance, PreferenceUtil.getPref(context, PreferenceUtil.KM_MILE, "km")!!)
+                holder.tvDistance2.text = transferDistanceWithUnit(
+                    driveItem.totalDistance,
+                    PreferenceUtil.getPref(context, PreferenceUtil.KM_MILE, "km")!!
+                )
                 holder.tvStartTime2.text = transformTimeToHHMM(driveItem.startTime)
                 holder.tvEndTime2.text = transformTimeToHHMM(driveItem.endTime)
 
@@ -536,18 +581,6 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                             .putExtra("isActive", driveItem.isActive)
                     )
                 }
-            } else if (holder is LastItemViewHolder) {
-                if (meta.afterCursor.isNullOrBlank()) {
-                    holder.tvMore.visibility = View.GONE
-                    holder.tvLast.visibility = View.VISIBLE
-                } else {
-                    holder.tvMore.visibility = View.VISIBLE
-                    holder.tvLast.visibility = View.GONE
-                }
-
-                holder.tvMore.setOnClickListener {
-                    callback.clickedMore(meta, histories)
-                }
             }
         }
 
@@ -561,7 +594,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         }
 
         interface DriveCallback {
-            fun clickedMore(meta: Meta, histories: MutableList<DriveItem>)
+            fun clickedMore(meta: Meta, histories: MutableList<NewDriveHistoryResponse>)
         }
 
         private fun transferDistanceWithUnit(meters: Double, distance_unit: String): String {
@@ -587,6 +620,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
             return kstTime.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일"))
         }
     }
+
     private fun persistentBottomSheetEvent() {
         behavior = BottomSheetBehavior.from(persistent_bottom_sheet)
         behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
@@ -595,23 +629,28 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                 // called continuously while dragging
                 Log.d("testset", "onStateChanged: 드래그 중")
             }
+
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                when(newState) {
-                    BottomSheetBehavior.STATE_COLLAPSED-> {
+                when (newState) {
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
                         Log.d("testset", "onStateChanged: 접음")
 //                        layout_choose_date.visibility = GONE
                     }
-                    BottomSheetBehavior.STATE_DRAGGING-> {
+
+                    BottomSheetBehavior.STATE_DRAGGING -> {
                         Log.d("testset", "onStateChanged: 드래그")
                     }
-                    BottomSheetBehavior.STATE_EXPANDED-> {
+
+                    BottomSheetBehavior.STATE_EXPANDED -> {
                         Log.d("testset", "onStateChanged: 펼침")
                     }
-                    BottomSheetBehavior.STATE_HIDDEN-> {
+
+                    BottomSheetBehavior.STATE_HIDDEN -> {
                         Log.d("testset", "onStateChanged: 숨기기")
 
                     }
-                    BottomSheetBehavior.STATE_SETTLING-> {
+
+                    BottomSheetBehavior.STATE_SETTLING -> {
                         Log.d("testset", "onStateChanged: 고정됨")
                     }
                 }
@@ -619,7 +658,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         })
     }
 
-    fun getDateList():MutableList<ChosenDate>{
+    fun getDateList(): MutableList<ChosenDate> {
         val currentDate = LocalDate.now()
 
         // 날짜 형식을 지정합니다. 예: "2024년 6월"
@@ -638,10 +677,10 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         val choseDateList = mutableListOf<ChosenDate>()
 
         for (i in 0 until 36) {
-            if( i == 0){
-                choseDateList.add(ChosenDate(dateList.get(i),true))
-            }else{
-                choseDateList.add(ChosenDate(dateList.get(i),false))
+            if (i == 0) {
+                choseDateList.add(ChosenDate(dateList.get(i), true))
+            } else {
+                choseDateList.add(ChosenDate(dateList.get(i), false))
             }
         }
 
@@ -661,7 +700,121 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         return "${startDate.year}년 ${startDate.monthValue}월 1일 ~ ${endDate.dayOfMonth}일"
     }
 
-    private fun setInquireScope(scope:String){
+    private fun setInquireScope(scope: String) {
         tv_inquire_scope.text = scope
+    }
+
+    class DateHistoriesAdapter(
+        private val context: Context,
+        private val meta: Meta,
+        private val dateList: List<NewDriveHistoryResponse>,
+        private val callback: DriveHistoryAdapter.DriveCallback
+    ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+        class DateViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+            val dateTextView: TextView = view.findViewById(R.id.tv_date)
+            val driveItemsRecyclerView: RecyclerView =
+                view.findViewById(R.id.driveItemsRecyclerView)
+        }
+
+        companion object {
+            private const val VIEW_TYPE_ITEM = 0
+            private const val VIEW_TYPE_LAST_ITEM = 1
+        }
+
+        override fun getItemViewType(position: Int): Int {
+            return if (position == dateList.size - 1) VIEW_TYPE_LAST_ITEM else VIEW_TYPE_ITEM
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+            return if (viewType == VIEW_TYPE_ITEM) {
+                val view =
+                    LayoutInflater.from(parent.context).inflate(R.layout.item_date, parent, false)
+                DateViewHolder(view)
+            } else {
+                val view = LayoutInflater.from(context)
+                    .inflate(R.layout.item_drive_history_last, parent, false)
+                LastItemViewHolder(view)
+            }
+        }
+
+        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+            if (holder is DateViewHolder) {
+                val dateItem = dateList[position]
+                holder.dateTextView.text = dateItem.date
+
+                // 하위 RecyclerView 어댑터 설정
+                val driveItemAdapter = DriveHistoryAdapter(
+                    context,
+                    dateItem.items)
+
+                if (holder.driveItemsRecyclerView.itemDecorationCount == 0) {
+                    val dividerItemDecoration = DividerItemDecoration(context, R.color.gray_50, 50)
+                    holder.driveItemsRecyclerView.addItemDecoration(dividerItemDecoration)
+                }
+                holder.driveItemsRecyclerView.adapter = driveItemAdapter
+                holder.driveItemsRecyclerView.layoutManager =
+                    LinearLayoutManager(holder.itemView.context)
+            } else if (holder is LastItemViewHolder) {
+                if (meta.afterCursor.isNullOrBlank()) {
+                    holder.tvMore.visibility = View.GONE
+                    holder.tvLast.visibility = View.VISIBLE
+                } else {
+                    holder.tvMore.visibility = View.VISIBLE
+                    holder.tvLast.visibility = View.GONE
+                }
+
+                holder.tvMore.setOnClickListener {
+                    callback.clickedMore(meta, dateList.toMutableList())
+                }
+            }
+        }
+
+        override fun getItemCount(): Int = dateList.size
+    }
+
+    fun groupDriveItemsByLocalDate(driveItems: MutableList<DriveItem>): MutableList<NewDriveHistoryResponse> {
+        val utcFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+        utcFormatter.timeZone = TimeZone.getTimeZone("UTC")
+
+        // 한국어 또는 원하는 로케일에 맞춘 날짜 형식
+        val localDateFormatter = SimpleDateFormat("M월 d일 E요일", Locale.getDefault())
+        localDateFormatter.timeZone = TimeZone.getDefault()
+
+        val groupedDriveItems = driveItems.groupBy { item ->
+            val date = utcFormatter.parse(item.createdAt)
+            localDateFormatter.format(date)
+        }
+
+        return groupedDriveItems.map { (date, items) ->
+            NewDriveHistoryResponse(date = date, items = items.toMutableList())
+        }.toMutableList()
+    }
+
+    fun updateHistories(histories: MutableList<DriveItem>, newHistories: MutableList<NewDriveHistoryResponse>) {
+        histories.forEach { driveItem ->
+            // 현지 시간대로 변환하여 날짜 형식을 "6월 13일 화요일" 형식으로 변환
+            val localDate = convertToLocalDate(driveItem.createdAt)
+
+            // 같은 날짜가 있는지 확인
+            val existingHistoryGroup = newHistories.find { it.date == localDate }
+
+            if (existingHistoryGroup != null) {
+                // 기존 날짜 그룹이 있으면 해당 그룹에 아이템 추가
+                existingHistoryGroup.items.add(driveItem)
+            } else {
+                // 기존 날짜 그룹이 없으면 새로 추가
+                newHistories.add(NewDriveHistoryResponse(date = localDate, items = mutableListOf(driveItem)))
+            }
+        }
+    }
+
+    fun convertToLocalDate(createdAt: String): String {
+        // ISO 형식의 UTC 날짜 문자열을 ZonedDateTime으로 변환
+        val zonedDateTime = ZonedDateTime.parse(createdAt)
+
+        // 로컬 시간대로 변환 후 원하는 형식으로 변환
+        val formatter = DateTimeFormatter.ofPattern("M월 d일 E요일", Locale.KOREAN)
+        return zonedDateTime.format(formatter)
     }
 }
