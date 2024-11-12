@@ -551,6 +551,8 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         val tvDistance2: TextView = view.findViewById(R.id.tv_distance2)
         val tvStartTime2: TextView = view.findViewById(R.id.tv_start_time2)
         val tvEndTime2: TextView = view.findViewById(R.id.tv_end_time2)
+        val tv_car:TextView = view.findViewById(R.id.tv_car)
+        val tv_car2:TextView = view.findViewById(R.id.tv_car2)
     }
 
     class DriveHistoryAdapter(
@@ -592,12 +594,19 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                 holder.tvEndTime2.text = transformTimeToHHMM(driveItem.endTime)
 
                 if (driveItem.isActive && !driveItem.userCarId.isNullOrEmpty()) {
-                    holder.layoutNotActive.visibility = View.GONE
-                    holder.layoutActive.visibility = View.VISIBLE
+                    holder.layoutNotActive.visibility = GONE
+                    holder.layoutActive.visibility = VISIBLE
                     holder.btnDriveHistory.isClickable = false
                 } else {
-                    holder.layoutNotActive.visibility = View.VISIBLE
-                    holder.layoutActive.visibility = View.GONE
+                    holder.layoutNotActive.visibility = VISIBLE
+                    holder.layoutActive.visibility = GONE
+
+                    if(driveItem.isActive){
+                        holder.tv_car2.text = context.getString(R.string.pending)
+                    }else{
+                        holder.tv_car2.text = context.getString(R.string.not_my_car)
+                    }
+
                 }
 
                 holder.btnDriveHistory.setOnClickListener {
@@ -783,11 +792,11 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                     LinearLayoutManager(holder.itemView.context)
             } else if (holder is LastItemViewHolder) {
                 if (meta.afterCursor.isNullOrBlank()) {
-                    holder.tvMore.visibility = View.GONE
-                    holder.tvLast.visibility = View.VISIBLE
+                    holder.tvMore.visibility = GONE
+                    holder.tvLast.visibility = VISIBLE
                 } else {
-                    holder.tvMore.visibility = View.VISIBLE
-                    holder.tvLast.visibility = View.GONE
+                    holder.tvMore.visibility = VISIBLE
+                    holder.tvLast.visibility = GONE
                 }
 
                 holder.tvMore.setOnClickListener {
