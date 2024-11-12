@@ -414,6 +414,10 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
         }
 
         btn_save.setOnClickListener {
+            var typeInput: TypeInput? = null
+            if(postMyCarResponse.type.equals(CORPORATE)){
+                typeInput = TypeInput(CORPORATE,Data(et_corp_name.text.toString(), et_corp_department.text.toString()))
+            }
 
             val gson = GsonBuilder().serializeNulls().create()
             val jsonParam =
@@ -428,7 +432,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                         gradeCd = postMyCarResponse.gradeCd,
                         gradeDetailCd = postMyCarResponse.gradeDetailCd,
                         fuelCd = postMyCarResponse.fuelCd,
-                        typeInput = TypeInput(CORPORATE,Data(et_corp_name.text.toString(), et_corp_department.text.toString()))
+                        typeInput = typeInput
                     )
                 )
 
