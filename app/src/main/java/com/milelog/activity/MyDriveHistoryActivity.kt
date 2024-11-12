@@ -515,7 +515,6 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         val layoutNotActive: LinearLayout = view.findViewById(R.id.layout_not_active)
         val layoutActive: LinearLayout = view.findViewById(R.id.layout_active)
         val btnDriveHistory: ConstraintLayout = view.findViewById(R.id.btn_drive_history)
-        val tvDate: TextView = view.findViewById(R.id.tv_date)
         val tvDistance: TextView = view.findViewById(R.id.tv_distance)
         val tvStartTime: TextView = view.findViewById(R.id.tv_start_time)
         val tvEndTime: TextView = view.findViewById(R.id.tv_end_time)
@@ -549,7 +548,6 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
             if (holder is DriveHistoryViewHolder) {
                 val driveItem = histories[position]
 
-                holder.tvDate.text = transformTimeToDate(driveItem.startTime)
                 holder.tvDistance.text = transferDistanceWithUnit(
                     driveItem.totalDistance,
                     PreferenceUtil.getPref(context, PreferenceUtil.KM_MILE, "km")!!
