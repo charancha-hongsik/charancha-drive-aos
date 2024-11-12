@@ -300,12 +300,6 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                         // Iterate over the list and update the background of all TextViews
                         for (view in carViews) {
                             if (view.tv_car_name == tv_car_name) {
-                                Log.d("testestestset","testestsetsetest tv_car_num1 :: " + view.tv_car_num.text)
-                                Log.d("testestestset","testestsetsetest tv_car_name1 :: " + view.tv_car_name.text)
-
-                                Log.d("testestestset","testestsetsetest tv_car_num2 :: " + tv_car_number.text)
-                                Log.d("testestestset","testestsetsetest tv_car_name2 :: " + tv_car_name.text)
-
                                 // Change background of the clicked TextView
                                 view.view_parent.isSelected = true
 
