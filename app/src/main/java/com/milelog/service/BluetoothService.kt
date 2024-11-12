@@ -310,12 +310,13 @@ class BluetoothService : Service() {
                         val bluetoothManager: BluetoothManager = getSystemService(BluetoothManager::class.java)
                         val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
 
+
                         val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
                         pairedDevices?.forEach { device ->
                             drivingMyCarsEntity?.let{ drivingCar ->
                                 if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
                                     if (!isBluetoothDeviceConnected(device)) {
-                                        if(drivingCar.name.equals(device.name)){
+                                        if(drivingCar.bluetooth_mac_address.equals(device.address)){
                                             driveDatabase?.detectUserDao()?.insert(
                                                 DetectUserEntity(
                                                     user_id = "",
