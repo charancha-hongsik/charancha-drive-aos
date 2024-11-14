@@ -273,11 +273,20 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                     val trackingId = it.data?.getStringExtra("trackingId")
                     val isActive = it.data?.getBooleanExtra("isActive", true)
                     val userCarId = it.data?.getStringExtra("userCarId")
+                    val type = it.data?.getStringExtra("type")
+                    val carName = it.data?.getStringExtra("carName")
 
                     for (history in histories) {
                         if (history.id.equals(trackingId)) {
                             history.isActive = isActive!!
                             history.userCarId = userCarId
+                            if(!type.isNullOrEmpty()){
+                                history.userCar.type = type
+                            }
+
+                            if(!carName.isNullOrEmpty()){
+                                history.userCar.carName = carName
+                            }
                         }
                     }
 

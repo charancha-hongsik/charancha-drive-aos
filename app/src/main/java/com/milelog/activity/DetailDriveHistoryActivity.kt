@@ -53,7 +53,6 @@ import java.util.*
 
 
 class DetailDriveHistoryActivity: BaseRefreshActivity() {
-    lateinit var tracking_id:String
     val keywords = listOf("주유소", "정비소", "세차장", "폐차장", "중고차", "매매단지", "도이치오토월드", "캠핑","글램핑")
 
 
@@ -114,6 +113,10 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
     var isActive = true
     var userCarId:String? = null
+    var carName:String? = null
+    var type:String? = null
+    lateinit var tracking_id:String
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -221,7 +224,6 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     isActive = state.data.isActive
                     userCarId = state.data.userCarId
 
-
                     if(state.data.isActive){
                         if(!state.data.userCarId.isNullOrEmpty()){
                             // CarID
@@ -232,6 +234,9 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
                                     val myCar = myCarsList.find { state.data.userCarId == it.id }
                                     tv_mycar.text = myCar?.name
+
+                                    carName = myCar?.name
+                                    this.type = myCar?.type
 
                                     if(myCar?.type == PERSONAL){
                                         iv_corp.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_star2))
@@ -434,6 +439,10 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                 intent.putExtra("isActive",isActive)
                 intent.putExtra("userCarId",userCarId)
                 intent.putExtra("trackingId",tracking_id)
+                intent.putExtra("carName",carName)
+                intent.putExtra("type",type)
+
+
                 setResult(RESULT_OK, intent)
                 finish()
             }
@@ -658,6 +667,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         intent.putExtra("isActive",isActive)
         intent.putExtra("userCarId",userCarId)
         intent.putExtra("trackingId",tracking_id)
+        intent.putExtra("carName",carName)
+        intent.putExtra("type",type)
         setResult(RESULT_OK, intent)
         finish()
     }
