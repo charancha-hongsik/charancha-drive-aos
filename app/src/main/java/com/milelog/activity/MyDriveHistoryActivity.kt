@@ -107,6 +107,10 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         ) // 색상 리소스와 구분선 높이 설정
         lv_date.addItemDecoration(dividerItemDecoration)
 
+        setTopBarAnimation()
+    }
+
+    private fun setTopBarAnimation(){
         var lastVisibilityState = false // false = layout_flow, true = layout_flow2
 
         val scrollThreshold = 500
