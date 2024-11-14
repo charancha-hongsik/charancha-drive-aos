@@ -55,7 +55,7 @@ class AllAddressActivity:BaseRefreshActivity() {
             if (holder is MyCarEntitiesHolder) {
                 val place = allPlaces[position]
 
-                holder.tv_car_name.text = place.name + "\n" + place.address.parcel.name
+                holder.tv_car_name.text = place.name + "\n" + place.address.parcel.name + "\n" + place.category
 
             }
         }
