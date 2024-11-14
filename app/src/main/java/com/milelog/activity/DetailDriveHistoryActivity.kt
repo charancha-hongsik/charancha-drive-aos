@@ -376,12 +376,6 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                                     val myCar = myCarsList.find { getDrivingInfoResponse.userCarId == it.id }
                                     tv_mycar.text = myCar?.name
 
-                                    Log.d("testsetestestest","testestestestset isActive :: " + isActive)
-                                    Log.d("testsetestestest","testestestestset userCarId :: " + userCarId)
-                                    Log.d("testsetestestest","testestestestset type :: " + myCar?.type)
-
-
-
                                     if(myCar?.type == PERSONAL){
                                         iv_corp.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_star2))
                                     }else{

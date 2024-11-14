@@ -981,23 +981,19 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                 val dateItem = dateList[position]
                 holder.dateTextView.text = dateItem.date
 
-                // RecyclerView 초기 설정을 한번만 수행
-                if (!holder.isInitialized) {
-                    val driveItemAdapter = DriveHistoryAdapter(context, dateItem.items)
-                    holder.driveItemsRecyclerView.apply {
-                        adapter = driveItemAdapter
-                        layoutManager = LinearLayoutManager(context)
-
-                        if (itemDecorationCount == 0) {
-                            addItemDecoration(
-                                DividerItemDecoration(context, R.color.gray_50, dpToPx(context, 12f))
-                            )
-                        }
+                // 중첩 RecyclerView 설정
+                val driveItemAdapter = DriveHistoryAdapter(context, dateItem.items)
+                holder.driveItemsRecyclerView.apply {
+                    adapter = driveItemAdapter
+                    layoutManager = LinearLayoutManager(context)
+                    // 중복 추가 방지
+                    if (itemDecorationCount == 0) {
+                        addItemDecoration(
+                            DividerItemDecoration(context, R.color.gray_50, dpToPx(context, 12f))
+                        )
                     }
-                    holder.isInitialized = true
                 }
             } else if (holder is LastItemViewHolder) {
-                // 더보기/마지막 항목 설정
                 if (meta.afterCursor.isNullOrBlank()) {
                     holder.tvMore.visibility = View.GONE
                     holder.tvLast.visibility = View.VISIBLE
@@ -1005,7 +1001,6 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                     holder.tvMore.visibility = View.VISIBLE
                     holder.tvLast.visibility = View.GONE
                 }
-
                 holder.tvMore.setOnClickListener {
                     callback.clickedMore(meta, dateList.toMutableList())
                 }
