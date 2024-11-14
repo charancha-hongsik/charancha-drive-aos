@@ -444,6 +444,11 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                                 val tv_car_name2 = constraintLayoutView2.findViewById<TextView>(R.id.tv_car_name)
                                 tv_car_name2.text = car.tv_car_name.text
 
+                                if(car.tv_car_name.equals(rearCarList.last().tv_car_name)){
+                                    tv_car_name2.text = car.tv_car_name.text.toString() + ")"
+                                }
+
+
                                 val tv_car_number2 = constraintLayoutView2.findViewById<TextView>(R.id.tv_car_number)
                                 val divider2 = constraintLayoutView2.findViewById<View>(R.id.divider)
 
@@ -500,6 +505,10 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                     // Find the TextView within the newly inflated ConstraintLayout
                     val tv_car_name2 = constraintLayoutView2.findViewById<TextView>(R.id.tv_car_name)
                     tv_car_name2.text = car.tv_car_name.text
+
+                    if(car.tv_car_name.equals(rearCarList.last().tv_car_name)){
+                        tv_car_name2.text = car.tv_car_name.text.toString() + ")"
+                    }
 
                     val tv_car_number2 = constraintLayoutView2.findViewById<TextView>(R.id.tv_car_number)
                     val divider2 = constraintLayoutView2.findViewById<View>(R.id.divider)
