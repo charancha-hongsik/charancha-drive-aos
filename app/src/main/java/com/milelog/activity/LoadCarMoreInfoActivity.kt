@@ -514,10 +514,10 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
 
             if(tv_fuel.text.toString().isNullOrEmpty()){
                 btn_next.isSelected = false
-                btn_next.isSelected = false
+                btn_next.isClickable = false
             }else{
                 btn_next.isSelected = true
-                btn_next.isSelected = true
+                btn_next.isClickable = true
             }
         }
 

@@ -6,6 +6,8 @@ import com.milelog.room.dto.EachGpsDtoForApp
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import com.milelog.retrofit.request.Address
+import com.milelog.retrofit.request.Point
 
 class Converters {
     @TypeConverter
@@ -58,6 +60,29 @@ class Converters {
     @TypeConverter
     fun fromList(list: List<List<Float>>): String {
         return GsonBuilder().serializeNulls().create().toJson(list)
+    }
+
+    @TypeConverter
+    fun fromPoint(point: Point): String {
+        return "${point.x},${point.y}"
+    }
+
+    @TypeConverter
+    fun toPoint(value: String): Point {
+        val parts = value.split(",")
+        return Point(parts[0], parts[1])
+    }
+
+    @TypeConverter
+    fun fromAddress(address: Address?): String? {
+        return address?.let { Gson().toJson(it) }
+    }
+
+    @TypeConverter
+    fun toAddress(addressJson: String?): Address? {
+        return addressJson?.let {
+            Gson().fromJson(it, object : TypeToken<Address>() {}.type)
+        }
     }
 
 }

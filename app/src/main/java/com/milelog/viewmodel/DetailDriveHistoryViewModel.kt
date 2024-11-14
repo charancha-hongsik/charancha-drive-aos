@@ -94,33 +94,6 @@ class DetailDriveHistoryViewModel: BaseViewModel() {
         })
     }
 
-    fun updateStartAddress(id:String, address:String){
-        viewModelScope.launch {
-            val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(context)
-            driveDatabase.driveForAppDao().updateStartAddress(id,address)?.let {
-
-            }
-        }
-    }
-
-    fun updateEndAddress(id:String, address:String){
-        viewModelScope.launch {
-            val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(context)
-            driveDatabase.driveForAppDao().updateEndAddress(id,address)?.let {
-
-            }
-        }
-    }
-
-    fun updateEndAddressDetail(id:String, address:String){
-        viewModelScope.launch {
-            val driveDatabase: DriveDatabase = DriveDatabase.getDatabase(context)
-            driveDatabase.driveForAppDao().updateEndAddressDetail(id,address)?.let {
-
-            }
-        }
-    }
-
     fun getDrivingInfo(tracking_id:String){
         apiService(context).getDrivingInfo("Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!, tracking_id).enqueue(object : Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {

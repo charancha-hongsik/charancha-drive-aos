@@ -17,7 +17,7 @@ import com.milelog.room.entity.DetectUserEntity
 import com.milelog.room.entity.DriveForApi
 import com.milelog.room.entity.DriveForApp
 
-@Database(entities = [DriveForApp::class, DriveForApi::class, AlarmEntity::class, DetectUserEntity::class], version = 6, exportSchema = false)
+@Database(entities = [DriveForApp::class, DriveForApi::class, AlarmEntity::class, DetectUserEntity::class], version = 8, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class DriveDatabase : RoomDatabase() {
 
@@ -41,6 +41,8 @@ abstract class DriveDatabase : RoomDatabase() {
                     .addMigrations(MIGRATION_3_4)
                     .addMigrations(MIGRATION_4_5)
                     .addMigrations(MIGRATION_5_6)
+                    .addMigrations(MIGRATION_6_7)
+                    .addMigrations(MIGRATION_7_8)
                     .allowMainThreadQueries()
                     .build()
                     .also { Instance = it }
@@ -170,6 +172,43 @@ abstract class DriveDatabase : RoomDatabase() {
             override fun migrate(database: SupportSQLiteDatabase) {
                 // 새로운 컬럼을 추가합니다.
                 database.execSQL("ALTER TABLE drive ADD COLUMN end_address_detail TEXT")
+            }
+        }
+
+        val MIGRATION_6_7 = object : Migration(6, 7) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // startPoint와 endPoint 컬럼을 TEXT 타입으로 추가하고 기본값 설정
+                database.execSQL("ALTER TABLE driveForApi ADD COLUMN startPoint TEXT NOT NULL DEFAULT '0,0'")
+                database.execSQL("ALTER TABLE driveForApi ADD COLUMN endPoint TEXT NOT NULL DEFAULT '0,0'")
+            }
+        }
+
+        val MIGRATION_7_8 = object : Migration(7, 8) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // 1. 새로운 테이블 생성 (`end_address_detail` 제외)
+                database.execSQL("""
+            CREATE TABLE IF NOT EXISTS drive_new (
+                idx INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                tracking_Id TEXT NOT NULL,
+                bluetooth_name TEXT,
+                start_address TEXT,
+                end_address TEXT,
+                gpses TEXT NOT NULL
+            )
+        """)
+
+                // 2. 기존 데이터를 새 테이블로 복사
+                database.execSQL("""
+            INSERT INTO drive_new (idx, tracking_Id, bluetooth_name, start_address, end_address, gpses)
+            SELECT idx, tracking_Id, bluetooth_name, start_address, end_address, gpses
+            FROM drive
+        """)
+
+                // 3. 기존 테이블 삭제
+                database.execSQL("DROP TABLE drive")
+
+                // 4. 새로운 테이블 이름 변경
+                database.execSQL("ALTER TABLE drive_new RENAME TO drive")
             }
         }
     }

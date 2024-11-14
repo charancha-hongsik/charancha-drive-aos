@@ -10,5 +10,8 @@ data class DriveItem (
     val startTime:String,
     val endTime:String,
     val totalTime:Double,
-    val totalDistance:Double
+    val totalDistance:Double,
+    val userCar:UserCar,
+    val startAddress:com.milelog.retrofit.request.Address,
+    val endAddress:com.milelog.retrofit.request.Address
     )

@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -29,6 +28,7 @@ import com.google.gson.reflect.TypeToken
 import com.milelog.CarListFilter
 import com.milelog.CarViews
 import com.milelog.DividerItemDecoration
+import com.milelog.activity.LoadCarMoreInfoActivity.Companion.CORPORATE
 import com.milelog.activity.MyDriveHistoryActivity.DriveHistoryAdapter.LastItemViewHolder
 import com.milelog.retrofit.response.DriveItem
 import com.milelog.retrofit.response.Meta
@@ -49,7 +49,6 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var lv_date: RecyclerView
     lateinit var btn_back: ImageView
 
-    lateinit var button_choose_date_overlay: Button
     lateinit var layout_choose_date: CoordinatorLayout
     lateinit var persistent_bottom_sheet: LinearLayout
     lateinit var btn_close_select_date: ImageView
@@ -65,11 +64,15 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var layout_date_own: ConstraintLayout
     lateinit var layout_no_data: ConstraintLayout
     lateinit var layout_flow: FlowLayout
+    lateinit var layout_flow2:LinearLayout
+    lateinit var tv_inquire_size:TextView
+    lateinit var layout_filter:ConstraintLayout
 
     lateinit var behavior: BottomSheetBehavior<LinearLayout>
     lateinit var selectedDate: String
 
     lateinit var resultLauncher: ActivityResultLauncher<Intent>
+    lateinit var btn_download:ImageView
     val filterList: MutableList<CarListFilter> = mutableListOf()
     var histories: MutableList<DriveItem> = mutableListOf()
     var newHistories: MutableList<NewDriveHistoryResponse> = mutableListOf()
@@ -103,6 +106,67 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
             dpToPx(this@MyDriveHistoryActivity, 32)
         ) // 색상 리소스와 구분선 높이 설정
         lv_date.addItemDecoration(dividerItemDecoration)
+
+        var lastVisibilityState = false // false = layout_flow, true = layout_flow2
+
+        val scrollThreshold = 500
+
+        val flowHeight = layout_flow.height.toFloat()  // layout_flow의 실제 높이를 가져옴
+        val flow2Height = layout_flow2.height.toFloat()  // layout_flow2의 실제 높이를 가져옴
+
+        lv_date.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                // 현재 스크롤된 양을 가져옵니다.
+                val totalScroll = recyclerView.computeVerticalScrollOffset()
+
+                val shouldShowFlow2 = totalScroll > scrollThreshold
+
+                // 이전 상태와 비교하여 visibility 변경을 최소화합니다.
+                if (shouldShowFlow2 != lastVisibilityState) {
+                    // 애니메이션을 추가하여 전환 효과를 부드럽게 합니다.
+                    if (shouldShowFlow2) {
+                        // layout_flow를 GONE으로, layout_flow2를 VISIBLE로 설정하며 애니메이션을 추가
+                        layout_flow.animate()
+                            .alpha(0f)
+                            .translationY(-flowHeight)  // layout_flow 높이만큼 위로 이동
+                            .setDuration(250)
+                            .withEndAction {
+                                layout_flow.visibility = View.GONE
+                            }
+
+                        layout_flow2.animate()
+                            .alpha(1f)
+                            .translationY(0f)  // layout_flow2는 원래 위치로 나타남
+                            .setDuration(250)
+                            .withEndAction {
+                                layout_flow2.visibility = View.VISIBLE
+                            }
+                    } else {
+                        // layout_flow를 VISIBLE로, layout_flow2를 GONE으로 설정하며 애니메이션을 추가
+                        layout_flow.animate()
+                            .alpha(1f)
+                            .translationY(0f)  // layout_flow는 원래 위치로 나타남
+                            .setDuration(250)
+                            .withEndAction {
+                                layout_flow.visibility = View.VISIBLE
+                            }
+
+                        layout_flow2.animate()
+                            .alpha(0f)
+                            .translationY(flow2Height)  // layout_flow2 높이만큼 아래로 이동
+                            .setDuration(250)
+                            .withEndAction {
+                                layout_flow2.visibility = View.GONE
+                            }
+                    }
+
+                    // 상태 갱신
+                    lastVisibilityState = shouldShowFlow2
+                }
+            }
+        })
 
     }
 
@@ -224,8 +288,8 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
 
         lv_date = findViewById(R.id.lv_history)
         btn_back = findViewById(R.id.btn_back)
+        tv_inquire_size = findViewById(R.id.tv_inquire_size)
 
-        button_choose_date_overlay = findViewById(R.id.button_choose_date_overlay)
         layout_choose_date = findViewById(R.id.layout_choose_date)
         persistent_bottom_sheet = findViewById(R.id.persistent_bottom_sheet)
         btn_close_select_date = findViewById(R.id.btn_close_select_date)
@@ -242,6 +306,9 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         btn_select_date_from_list = findViewById(R.id.btn_select_date_from_list)
         layout_date_own = findViewById(R.id.layout_date_own)
         layout_flow = findViewById(R.id.layout_flow)
+        layout_flow2 = findViewById(R.id.layout_flow2)
+        layout_filter = findViewById(R.id.layout_filter)
+        btn_download = findViewById(R.id.btn_download)
 
         PreferenceUtil.getPref(this, PreferenceUtil.MY_CAR_ENTITIES, "")?.let {
             if (it != "") {
@@ -268,6 +335,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                     val constraintLayoutView =
                         layoutInflater.inflate(R.layout.item_drive_history_car, layout_flow, false)
 
+
                     // Find the TextView within the newly inflated ConstraintLayout
                     val tv_car_name = constraintLayoutView.findViewById<TextView>(R.id.tv_car_name)
                     tv_car_name.text = filter.name
@@ -293,10 +361,12 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                         TextViewCompat.setTextAppearance(tv_car_name, R.style.car_filter_selected)
                     }
 
+                    (tv_car_name.parent as LinearLayout).setOnClickListener {
+                        val childCount = layout_flow2.childCount
+                        if (childCount > 1) {
+                            layout_flow2.removeViews(1, childCount - 1)
+                        }
 
-
-                    // Set click listener for the first TextView (or any condition)
-                    tv_car_name.setOnClickListener {
                         // Iterate over the list and update the background of all TextViews
                         for (view in carViews) {
                             if (view.tv_car_name == tv_car_name) {
@@ -331,63 +401,59 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                             }
                         }
 
-                        if (tv_car_name.text.equals("전체")) {
-                            isActiveForFilter = null
-                        } else if (tv_car_name.text.equals("미확정")) {
-                            isActiveForFilter = true
-                            carIdForFilter = "null"
-                        } else if (tv_car_name.text.equals("내 차가 아니에요")) {
-                            isActiveForFilter = false
-                            carIdForFilter = "null"
-                        } else {
-                            isActiveForFilter = true
+                        tv_inquire_size.text = "1개 선택"
+
+                        if(!tv_car_name.text.equals("전체")){
+                            val constraintLayoutView2 =
+                                layoutInflater.inflate(R.layout.item_drive_history_car2, layout_flow, false)
+
+                            // Find the TextView within the newly inflated ConstraintLayout
+                            val tv_car_name2 = constraintLayoutView2.findViewById<TextView>(R.id.tv_car_name)
+                            tv_car_name2.text = tv_car_name.text
+
+                            val tv_car_number2 = constraintLayoutView2.findViewById<TextView>(R.id.tv_car_number)
+                            val divider2 = constraintLayoutView2.findViewById<View>(R.id.divider)
+
+                            tv_car_number2.visibility = GONE
+                            divider2.visibility = GONE
+
+                            layout_flow2.addView(constraintLayoutView2)
                         }
 
-                        historyViewModel.getHistories(
-                            startTimeForFilter,
-                            endTimeForFilter,
-                            userCarId = carIdForFilter,
-                            isActive = isActiveForFilter
-                        )
-                    }
+                        if (tv_car_name.text.equals("전체")) {
+                            tv_inquire_size.text = carViews.size.toString() + "개 선택"
+                            isActiveForFilter = null
 
-                    tv_car_number.setOnClickListener {
-                        // Iterate over the list and update the background of all TextViews
-                        for (view in carViews) {
-                            if (view.tv_car_num == tv_car_number) {
-                                // Change background of the clicked TextView
-                                view.view_parent.isSelected = true
 
-                                TextViewCompat.setTextAppearance(
-                                    view.tv_car_name,
-                                    R.style.car_filter_selected
-                                )
+                            val rearCarList = carViews.filter { it.tv_car_num.visibility == VISIBLE }
 
-                                TextViewCompat.setTextAppearance(
-                                    view.tv_car_num,
-                                    R.style.car_filter_selected
-                                )
+                            for(car in rearCarList){
+                                val constraintLayoutView2 =
+                                    layoutInflater.inflate(R.layout.item_drive_history_car2, layout_flow, false)
 
-                                val matchingFilter = filterList.find { it.carNum == tv_car_number.text }
-                                carIdForFilter = matchingFilter?.id
+                                // Find the TextView within the newly inflated ConstraintLayout
+                                val tv_car_name2 = constraintLayoutView2.findViewById<TextView>(R.id.tv_car_name)
+                                tv_car_name2.text = car.tv_car_name.text
 
-                            } else {
-                                // Reset the background of other TextViews
-                                view.view_parent.isSelected = false
-                                TextViewCompat.setTextAppearance(
-                                    view.tv_car_name,
-                                    R.style.car_filter_unselected
-                                )
+                                val tv_car_number2 = constraintLayoutView2.findViewById<TextView>(R.id.tv_car_number)
+                                val divider2 = constraintLayoutView2.findViewById<View>(R.id.divider)
 
-                                TextViewCompat.setTextAppearance(
-                                    view.tv_car_num,
-                                    R.style.car_filter_unselected
-                                )
+                                tv_car_number2.visibility = VISIBLE
+                                divider2.visibility = VISIBLE
+
+                                tv_car_number2.text = car.tv_car_num.text
+
+                                if(car.tv_car_num.equals(rearCarList.first().tv_car_num)){
+                                    tv_car_number2.text = "(" + tv_car_number2.text
+                                } else if(car.tv_car_num.equals(rearCarList.last().tv_car_num)){
+                                    tv_car_number2.text = tv_car_number2.text.toString() + ")"
+                                } else{
+                                    tv_car_number2.text = "," + tv_car_number2.text
+                                }
+
+
+                                layout_flow2.addView(constraintLayoutView2)
                             }
-                        }
-
-                        if (tv_car_name.text.equals("전체")) {
-                            isActiveForFilter = null
                         } else if (tv_car_name.text.equals("미확정")) {
                             isActiveForFilter = true
                             carIdForFilter = "null"
@@ -405,10 +471,45 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                             isActive = isActiveForFilter
                         )
                     }
+
 
 
                     // Add the inflated view to the parent layout
                     layout_flow.addView(constraintLayoutView)
+                }
+
+                tv_inquire_size.text = carViews.size.toString() + "개 선택"
+                isActiveForFilter = null
+
+
+                val rearCarList = carViews.filter { it.tv_car_num.visibility == VISIBLE }
+
+                for(car in rearCarList){
+                    val constraintLayoutView2 =
+                        layoutInflater.inflate(R.layout.item_drive_history_car2, layout_flow, false)
+
+                    // Find the TextView within the newly inflated ConstraintLayout
+                    val tv_car_name2 = constraintLayoutView2.findViewById<TextView>(R.id.tv_car_name)
+                    tv_car_name2.text = car.tv_car_name.text
+
+                    val tv_car_number2 = constraintLayoutView2.findViewById<TextView>(R.id.tv_car_number)
+                    val divider2 = constraintLayoutView2.findViewById<View>(R.id.divider)
+
+                    tv_car_number2.visibility = VISIBLE
+                    divider2.visibility = VISIBLE
+
+                    tv_car_number2.text = car.tv_car_num.text
+
+                    if(car.tv_car_num.equals(rearCarList.first().tv_car_num)){
+                        tv_car_number2.text = "(" + tv_car_number2.text
+                    } else if(car.tv_car_num.equals(rearCarList.last().tv_car_num)){
+                        tv_car_number2.text = tv_car_number2.text.toString() + ")"
+                    } else{
+                        tv_car_number2.text = "," + tv_car_number2.text
+                    }
+
+
+                    layout_flow2.addView(constraintLayoutView2)
                 }
             }
         }
@@ -423,7 +524,11 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
 
         })
 
-        button_choose_date_overlay.setOnClickListener {
+        btn_download.setOnClickListener {
+
+        }
+
+        layout_filter.setOnClickListener {
             layout_choose_date.visibility = VISIBLE
         }
 
@@ -606,8 +711,15 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         val tvDistance2: TextView = view.findViewById(R.id.tv_distance2)
         val tvStartTime2: TextView = view.findViewById(R.id.tv_start_time2)
         val tvEndTime2: TextView = view.findViewById(R.id.tv_end_time2)
-        val tv_car:TextView = view.findViewById(R.id.tv_car)
         val tv_car2:TextView = view.findViewById(R.id.tv_car2)
+        val tv_start_address:TextView = view.findViewById(R.id.tv_start_address)
+        val tv_end_address:TextView = view.findViewById(R.id.tv_end_address)
+        val tv_start_address2:TextView = view.findViewById(R.id.tv_start_address2)
+        val tv_end_address2:TextView = view.findViewById(R.id.tv_end_address2)
+        val tv_car:TextView = view.findViewById(R.id.tv_car)
+        val layout_corp:LinearLayout = view.findViewById(R.id.layout_corp)
+        val iv_corp:ImageView = view.findViewById(R.id.iv_corp)
+
     }
 
     class DriveHistoryAdapter(
@@ -633,6 +745,18 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
             if (holder is DriveHistoryViewHolder) {
                 val driveItem = histories[position]
+
+                if(driveItem.userCar != null){
+                    if(driveItem.userCar.type.equals(CORPORATE)){
+                        holder.layout_corp.visibility = VISIBLE
+                        holder.iv_corp.visibility = VISIBLE
+                    }else{
+                        holder.layout_corp.visibility = GONE
+                        holder.iv_corp.visibility = GONE
+                    }
+
+                    holder.tv_car.text = driveItem.userCar.carName
+                }
 
                 holder.tvDistance.text = transferDistanceWithUnit(
                     driveItem.totalDistance,
@@ -671,6 +795,25 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                             .putExtra("isActive", driveItem.isActive)
                     )
                 }
+
+                if(driveItem.startAddress != null){
+                    val startAddress = driveItem.startAddress.road?.name ?:driveItem.startAddress.parcel?.name
+
+                    holder.tv_start_address.text = startAddress
+                    holder.tv_start_address2.text = startAddress
+
+                }
+
+                if(driveItem.endAddress != null){
+                    val endAddress = driveItem.endAddress.road?.name?:driveItem.endAddress.parcel?.name
+
+                    holder.tv_end_address.text = endAddress
+                    holder.tv_end_address2.text = endAddress
+
+                }
+
+
+
             }
         }
 
@@ -836,15 +979,20 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                 // 하위 RecyclerView 어댑터 설정
                 val driveItemAdapter = DriveHistoryAdapter(
                     context,
-                    dateItem.items)
+                    dateItem.items
+                )
 
+                // DividerItemDecoration을 한 번만 설정하도록 최적화
                 if (holder.driveItemsRecyclerView.itemDecorationCount == 0) {
                     val dividerItemDecoration = DividerItemDecoration(context, R.color.gray_50, dpToPx(context, 12f))
                     holder.driveItemsRecyclerView.addItemDecoration(dividerItemDecoration)
                 }
-                holder.driveItemsRecyclerView.adapter = driveItemAdapter
-                holder.driveItemsRecyclerView.layoutManager =
-                    LinearLayoutManager(holder.itemView.context)
+
+                // RecyclerView의 어댑터와 레이아웃 매니저를 한 번만 설정
+                holder.driveItemsRecyclerView.apply {
+                    adapter = driveItemAdapter
+                    layoutManager = LinearLayoutManager(context)
+                }
             } else if (holder is LastItemViewHolder) {
                 if (meta.afterCursor.isNullOrBlank()) {
                     holder.tvMore.visibility = GONE
@@ -862,10 +1010,9 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
 
         override fun getItemCount(): Int = dateList.size
 
-        fun dpToPx(context:Context, dp: Float): Int {
-            return TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, dp, context.resources.displayMetrics
-            ).toInt()
+        // dpToPx 메서드 최적화
+        private fun dpToPx(context: Context, dp: Float): Int {
+            return (dp * context.resources.displayMetrics.density).toInt()
         }
     }
 
@@ -878,7 +1025,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         localDateFormatter.timeZone = TimeZone.getDefault()
 
         val groupedDriveItems = driveItems.groupBy { item ->
-            val date = utcFormatter.parse(item.createdAt)
+            val date = utcFormatter.parse(item.endTime)
             localDateFormatter.format(date)
         }
 
@@ -890,7 +1037,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
     fun updateHistories(histories: MutableList<DriveItem>, newHistories: MutableList<NewDriveHistoryResponse>) {
         histories.forEach { driveItem ->
             // 현지 시간대로 변환하여 날짜 형식을 "6월 13일 화요일" 형식으로 변환
-            val localDate = convertToLocalDate(driveItem.createdAt)
+            val localDate = convertToLocalDate(driveItem.endTime)
 
             // 같은 날짜가 있는지 확인
             val existingHistoryGroup = newHistories.find { it.date == localDate }
@@ -912,5 +1059,13 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         // 로컬 시간대로 변환 후 원하는 형식으로 변환
         val formatter = DateTimeFormatter.ofPattern("M월 d일 E요일", Locale.KOREAN)
         return zonedDateTime.format(formatter)
+    }
+
+    override fun onBackPressed() {
+        if(layout_choose_date.visibility == VISIBLE){
+            layout_choose_date.visibility = GONE
+        }else{
+            finish()
+        }
     }
 }

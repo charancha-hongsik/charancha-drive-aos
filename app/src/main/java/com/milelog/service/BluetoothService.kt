@@ -28,6 +28,7 @@ import com.google.android.gms.location.*
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import com.milelog.BoundingBoxCalculator
 import com.milelog.CommonUtil
 import com.milelog.CommonUtil.apiService
 import com.milelog.CommonUtil.getDateFromTimeStampToHH
@@ -38,8 +39,16 @@ import com.milelog.NotificationDeleteReceiver
 import com.milelog.NotificationDeleteReceiver.Companion.ACTION_RESTART_NOTIFICATION
 import com.milelog.PreferenceUtil
 import com.milelog.R
+import com.milelog.retrofit.request.Address
+import com.milelog.retrofit.request.Parcel
+import com.milelog.retrofit.request.Place
+import com.milelog.retrofit.request.PlaceAddress
+import com.milelog.retrofit.request.Point
 import com.milelog.retrofit.request.PostDrivingInfoRequest
+import com.milelog.retrofit.request.Road
 import com.milelog.retrofit.response.PostDrivingInfoResponse
+import com.milelog.retrofit.response.VWorldDetailResponse
+import com.milelog.retrofit.response.VWorldResponse
 import com.milelog.room.database.DriveDatabase
 import com.milelog.room.dto.EachGpsDtoForApi
 import com.milelog.room.dto.EachGpsDtoForApp
@@ -457,7 +466,7 @@ class BluetoothService : Service() {
     private fun initDriveForApp(startTimeStamp:Long){
         gpsInfoForApp = mutableListOf()
         driveForApp = DriveForApp(
-            startTimeStamp.toString(),null,null,null,null,
+            startTimeStamp.toString(),null,null,null,
             gpsInfoForApp)
     }
 
@@ -470,7 +479,8 @@ class BluetoothService : Service() {
             endTimestamp = 0L,
             verification = level,
             gpses = gpsInfoForApi,
-            null
+            null,
+            Point("0","0"),Point("0","0")
         )
     }
 
@@ -727,43 +737,97 @@ class BluetoothService : Service() {
         val bluetoothName = drivingMyCarsEntity?.bluetooth_name
 
         dataForApi.userCarId = carId
+        dataForApi.startPoint = Point(dataForApp.gpses.first().longtitude.toString(), dataForApp.gpses.first().latitude.toString())
+        dataForApi.endPoint = Point(dataForApp.gpses.last().longtitude.toString(), dataForApp.gpses.last().latitude.toString())
+
         dataForApp.bluetooth_name = bluetoothName
 
-        val postDriveDtoForApi = PostDrivingInfoRequest(
-            userCarId= dataForApi.userCarId,
-            startTimestamp = dataForApi.startTimestamp,
-            endTimestamp = dataForApi.endTimestamp,
-            verification = dataForApi.verification,
-            gpses = dataForApi.gpses
-        )
-
-        val gson = GsonBuilder().serializeNulls().create()
-        val jsonParam = gson.toJson(postDriveDtoForApi)
-
         if (isInternetConnected(this@BluetoothService)) {
-            apiService(this@BluetoothService).postMyDrivingInfo("Bearer " + PreferenceUtil.getPref(this@BluetoothService,  PreferenceUtil.ACCESS_TOKEN, "")!!, jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object : Callback<ResponseBody> {
+
+            val startPoint  = dataForApp.gpses.first().longtitude.toString() + "," + dataForApp.gpses.first().latitude.toString()
+            val endPoint  = dataForApp.gpses.last().longtitude.toString() + "," + dataForApp.gpses.last().latitude.toString()
+
+            val startBbox = BoundingBoxCalculator.getBoundingBox(BoundingBoxCalculator.MapPoint(dataForApp.gpses.first().longtitude, dataForApp.gpses.first().latitude),0.02)
+            val endBbox = BoundingBoxCalculator.getBoundingBox(BoundingBoxCalculator.MapPoint(dataForApp.gpses.last().longtitude, dataForApp.gpses.last().latitude),0.02)
+
+            val startBboxPoint = startBbox.minPoint.longitude.toString() + "," + startBbox.minPoint.latitude.toString() + "," + startBbox.maxPoint.longitude.toString() + "," + startBbox.maxPoint.latitude.toString()
+            val endBboxPoint = endBbox.minPoint.longitude.toString() + "," + endBbox.minPoint.latitude.toString() + "," + endBbox.maxPoint.longitude.toString() + "," + endBbox.maxPoint.latitude.toString()
+
+            var startAddress = Address(Point(dataForApp.gpses.first().longtitude.toString(), dataForApp.gpses.first().latitude.toString()),null,null,null)
+            var endAddress = Address(Point(dataForApp.gpses.last().longtitude.toString(), dataForApp.gpses.last().latitude.toString()),null,null,null)
+
+            /**
+             * startAddress
+             */
+            apiService(this@BluetoothService, 30, "https://api.vworld.kr/").getAddress(point = startPoint).enqueue(object:
+                Callback<ResponseBody>{
                 override fun onResponse(
                     call: Call<ResponseBody>,
                     response: Response<ResponseBody>
                 ) {
-                    try{
-                        if(response.code() == 200 || response.code() == 201){
-                            val postDrivingInfoResponse = gson.fromJson(response.body()?.string(), PostDrivingInfoResponse::class.java)
-                            writeToRoomForApp(dataForApp, postDrivingInfoResponse.id)
-                        }else if(response.code() == 429){
+                    val vWorldResponse = GsonBuilder().serializeNulls().create().fromJson(
+                        response.body()?.string(),
+                        VWorldResponse::class.java
+                    )
 
-                        }else{
-                            handlePostDrivingInfoError(dataForApi, dataForApp)
+                    val level4 = vWorldResponse.response.result.first().structure.level4L
+                        ?: vWorldResponse.response.result.first().structure.level4LC
+                        ?: vWorldResponse.response.result.first().structure.level4A
+                        ?: vWorldResponse.response.result.first().structure.level4AC
+
+                    startAddress.parcel = vWorldResponse.response.result.find { it.type == "parcel" }?.text?.let { Parcel(it) }
+                    startAddress.road = vWorldResponse.response.result.find { it.type == "road" }?.text?.let { Road(it) }
+
+
+                    apiService(this@BluetoothService, 30, "https://api.vworld.kr/").getAddressDetail(query = level4, bbox = startBboxPoint).enqueue(object:
+                        Callback<ResponseBody>{
+                        override fun onResponse(
+                            call: Call<ResponseBody>,
+                            response: Response<ResponseBody>
+                        ) {
+                            val jsonString = response.body()?.string()
+                            val vWorldDetailResponse = GsonBuilder().serializeNulls().create().fromJson(
+                                jsonString,
+                                VWorldDetailResponse::class.java
+                            )
+
+                            if(vWorldDetailResponse.response.status != "NOT_FOUND"){
+
+                                var places:MutableList<Place> = mutableListOf()
+                                for(detail in vWorldDetailResponse.response.result.items){
+                                    places.add(
+                                        Place(detail.category, detail.title, Point(detail.point.x, detail.point.y), PlaceAddress(
+                                            Road(detail.address.road), Parcel(detail.address.road)
+                                        )
+                                        )
+                                    )
+                                }
+
+                                startAddress.places = places
+                            }
+
+                            // endAddress api 시작
+                            /**
+                             * endAddress
+                             */
+                            callGetEndAddress(startAddress, endAddress, dataForApi, dataForApp, endPoint, endBboxPoint)
                         }
-                    }catch (e:Exception){
 
-                    }
+                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                            // endAddress api 시작
+                            /**
+                             * endAddress
+                             */
+                            callGetEndAddress(startAddress, endAddress, dataForApi, dataForApp, endPoint, endBboxPoint)
+                        }
+                    })
                 }
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    handlePostDrivingInfoError(dataForApi, dataForApp)
+                    callSaveDriving(startAddress, endAddress, dataForApi, dataForApp)
                 }
             })
+
         } else {
             handlePostDrivingInfoError(dataForApi, dataForApp)
         }
@@ -929,6 +993,118 @@ class BluetoothService : Service() {
                     )
                 }
         }
+    }
+
+    private fun callSaveDriving(startAddress:Address, endAddress: Address,dataForApi: DriveForApi, dataForApp: DriveForApp ){
+        val postDriveDtoForApi = PostDrivingInfoRequest(
+            userCarId= dataForApi.userCarId,
+            startTimestamp = dataForApi.startTimestamp,
+            endTimestamp = dataForApi.endTimestamp,
+            verification = dataForApi.verification,
+            gpses = dataForApi.gpses,
+            startAddress,
+            endAddress
+        )
+
+        val gson = GsonBuilder().serializeNulls().create()
+        val jsonParam = gson.toJson(postDriveDtoForApi)
+
+        dataForApp.start_address = startAddress
+        dataForApp.end_address = endAddress
+
+
+
+        apiService(this@BluetoothService).postMyDrivingInfo("Bearer " + PreferenceUtil.getPref(this@BluetoothService,  PreferenceUtil.ACCESS_TOKEN, "")!!, jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+                try{
+                    if(response.code() == 200 || response.code() == 201){
+                        val postDrivingInfoResponse = gson.fromJson(response.body()?.string(), PostDrivingInfoResponse::class.java)
+                        writeToRoomForApp(dataForApp, postDrivingInfoResponse.id)
+                    }else if(response.code() == 429){
+
+                    }else{
+                        handlePostDrivingInfoError(dataForApi, dataForApp)
+                    }
+                }catch (e:Exception){
+
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                handlePostDrivingInfoError(dataForApi, dataForApp)
+            }
+        })
+    }
+
+    private fun callGetEndAddress(startAddress:Address, endAddress: Address,dataForApi: DriveForApi, dataForApp: DriveForApp, endPoint:String,endBboxPoint:String ){
+        // endAddress api 시작
+        /**
+         * endAddress
+         */
+        apiService(this@BluetoothService, 30,"https://api.vworld.kr/").getAddress(point = endPoint).enqueue(object:
+            Callback<ResponseBody>{
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+                val vWorldResponse = GsonBuilder().serializeNulls().create().fromJson(
+                    response.body()?.string(),
+                    VWorldResponse::class.java
+                )
+
+
+                endAddress.parcel = vWorldResponse.response.result.find { it.type == "parcel" }?.text?.let { Parcel(it) }
+                endAddress.road = vWorldResponse.response.result.find { it.type == "road" }?.text?.let { Road(it) }
+
+                val level4 = vWorldResponse.response.result.first().structure.level4L
+                    ?: vWorldResponse.response.result.first().structure.level4LC
+                    ?: vWorldResponse.response.result.first().structure.level4A
+                    ?: vWorldResponse.response.result.first().structure.level4AC
+
+                apiService(this@BluetoothService, 30,"https://api.vworld.kr/").getAddressDetail(query = level4, bbox = endBboxPoint).enqueue(object:
+                    Callback<ResponseBody>{
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+                        val vWorldDetailResponse = GsonBuilder().serializeNulls().create().fromJson(
+                            response.body()?.string(),
+                            VWorldDetailResponse::class.java
+                        )
+
+                        if(vWorldDetailResponse.response.status != "NOT_FOUND"){
+                            var places:MutableList<Place> = mutableListOf()
+                            for(detail in vWorldDetailResponse.response.result.items){
+                                places.add(
+                                    Place(detail.category, detail.title, Point(detail.point.x, detail.point.y), PlaceAddress(
+                                        Road(detail.address.road), Parcel(detail.address.road)
+                                    )
+                                    )
+                                )
+                            }
+
+                            endAddress.places = places
+
+                            // 내 주행 저장 API 호출
+                            callSaveDriving(startAddress, endAddress, dataForApi, dataForApp)
+                        }else{
+                            callSaveDriving(startAddress, endAddress, dataForApi, dataForApp)
+                        }
+                    }
+
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        callSaveDriving(startAddress, endAddress, dataForApi, dataForApp)
+                    }
+                })
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                callSaveDriving(startAddress, endAddress, dataForApi, dataForApp)
+            }
+        })
     }
 
 }

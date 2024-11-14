@@ -1,5 +1,7 @@
 package com.milelog.retrofit.response
 
+import com.milelog.retrofit.request.Address
+
 data class GetDrivingInfoResponse (
     val id:String,
     val userId:String,
@@ -54,5 +56,7 @@ data class GetDrivingInfoResponse (
     val harshDrivingDistance:Double,
     val harshDrivingPercentage:Double,
     val verification:String,
-    val isActive:Boolean
+    val isActive:Boolean,
+    val startAddress: Address,
+    val endAddress: Address
     ) : java.io.Serializable

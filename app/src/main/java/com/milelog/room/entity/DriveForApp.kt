@@ -3,6 +3,7 @@ package com.milelog.room.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.milelog.retrofit.request.Address
 import com.milelog.room.dto.EachGpsDtoForApp
 
 /**
@@ -12,9 +13,8 @@ import com.milelog.room.dto.EachGpsDtoForApp
 data class DriveForApp(
     @ColumnInfo(name="tracking_Id") var tracking_id: String, // APP쪽에서의 임의 tracking_id
     @ColumnInfo(name="bluetooth_name") var bluetooth_name: String?,
-    @ColumnInfo(name="start_address") var start_address: String?,
-    @ColumnInfo(name="end_address") var end_address: String?,
-    @ColumnInfo(name="end_address_detail") var end_address_detail: String?,
+    @ColumnInfo(name="start_address") var start_address: Address?,
+    @ColumnInfo(name="end_address") var end_address: Address?,
     @ColumnInfo(name="gpses") var gpses: List<EachGpsDtoForApp>
 ){
     @PrimaryKey(autoGenerate = true)

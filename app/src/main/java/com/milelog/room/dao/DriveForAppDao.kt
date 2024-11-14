@@ -44,9 +44,5 @@ interface DriveForAppDao {
     @Query("UPDATE drive SET end_address = :endAddress WHERE tracking_id = :id")
     fun updateEndAddress(id: String, endAddress: String)
 
-    // endAddressDetail를 업데이트하는 메서드
-    @Query("UPDATE drive SET end_address_detail = :endAddressDetail WHERE tracking_id = :id")
-    fun updateEndAddressDetail(id: String, endAddressDetail: String)
-
 
 }

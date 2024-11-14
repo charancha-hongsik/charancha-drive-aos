@@ -5,8 +5,6 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -25,8 +23,6 @@ import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.milelog.R
 import com.milelog.viewmodel.DetailDriveHistoryViewModel
 import com.google.android.gms.maps.*
@@ -41,11 +37,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import com.milelog.BoundingBoxCalculator
 import com.milelog.DividerItemDecoration
 import com.milelog.PreferenceUtil
 import com.milelog.activity.LoadCarMoreInfoActivity.Companion.PERSONAL
-import com.milelog.retrofit.response.Item
 import com.milelog.retrofit.response.VWorldDetailResponse
 import com.milelog.retrofit.response.VWorldResponse
 import com.milelog.room.entity.MyCarsEntity
@@ -53,10 +47,6 @@ import com.milelog.viewmodel.BaseViewModel
 import com.milelog.viewmodel.state.GetDrivingInfoState
 import com.milelog.viewmodel.state.PatchDrivingInfoState
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.time.*
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -214,129 +204,6 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
                 bluetoothNameExpected = it.bluetooth_name
 
-                val startPoint  = it.gpses.first().longtitude.toString() + "," + it.gpses.first().latitude.toString()
-                val endPoint  = it.gpses.last().longtitude.toString() + "," + it.gpses.last().latitude.toString()
-
-                val startBbox = BoundingBoxCalculator.getBoundingBox(BoundingBoxCalculator.MapPoint(it.gpses.first().longtitude, it.gpses.first().latitude),0.02)
-                val endBbox = BoundingBoxCalculator.getBoundingBox(BoundingBoxCalculator.MapPoint(it.gpses.last().longtitude, it.gpses.last().latitude),0.02)
-
-                val startBboxPoint = startBbox.minPoint.longitude.toString() + "," + startBbox.minPoint.latitude.toString() + "," + startBbox.maxPoint.longitude.toString() + "," + startBbox.maxPoint.latitude.toString()
-                val endBboxPoint = endBbox.minPoint.longitude.toString() + "," + endBbox.minPoint.latitude.toString() + "," + endBbox.maxPoint.longitude.toString() + "," + endBbox.maxPoint.latitude.toString()
-
-
-                apiService(" https://api.vworld.kr/").getAddress(point = startPoint).enqueue(object:
-                    Callback<ResponseBody>{
-                    override fun onResponse(
-                        call: Call<ResponseBody>,
-                        response: Response<ResponseBody>
-                    ) {
-                        val vWorldResponse = GsonBuilder().serializeNulls().create().fromJson(
-                            response.body()?.string(),
-                            VWorldResponse::class.java
-                        )
-
-                        val level4 = vWorldResponse.response.result.first().structure.level4L
-                            ?: vWorldResponse.response.result.first().structure.level4LC
-                            ?: vWorldResponse.response.result.first().structure.level4A
-                            ?: vWorldResponse.response.result.first().structure.level4AC
-
-
-                        apiService(" https://api.vworld.kr/").getAddressDetail(query = level4, bbox = startBboxPoint).enqueue(object:
-                            Callback<ResponseBody>{
-                            override fun onResponse(
-                                call: Call<ResponseBody>,
-                                response: Response<ResponseBody>
-                            ) {
-
-                                val jsonString = response.body()?.string()
-                                val vWorldDetailResponse = GsonBuilder().serializeNulls().create().fromJson(
-                                    jsonString,
-                                    VWorldDetailResponse::class.java
-                                )
-
-
-                                if(vWorldDetailResponse.response.status != "NOT_FOUND"){
-                                    tv_start_time.text = vWorldResponse.response.result.first().text
-                                    tv_start_address.text = vWorldResponse.response.result.first().text
-                                    detailDriveHistoryViewModel.updateStartAddress(it.tracking_id, vWorldResponse.response.result.first().text)
-
-                                }else{
-                                    tv_start_time.text = vWorldResponse.response.result.first().text
-                                    tv_start_address.text = vWorldResponse.response.result.first().text
-                                    detailDriveHistoryViewModel.updateStartAddress(it.tracking_id, vWorldResponse.response.result.first().text)
-                                }
-
-                            }
-
-                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
-                            }
-                        })
-                    }
-
-                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
-                    }
-                })
-
-
-                apiService(" https://api.vworld.kr/").getAddress(point = endPoint).enqueue(object:
-                    Callback<ResponseBody>{
-                    override fun onResponse(
-                        call: Call<ResponseBody>,
-                        response: Response<ResponseBody>
-                    ) {
-                        val vWorldResponse = GsonBuilder().serializeNulls().create().fromJson(
-                            response.body()?.string(),
-                            VWorldResponse::class.java
-                        )
-
-                        val level4 = vWorldResponse.response.result.first().structure.level4L
-                            ?: vWorldResponse.response.result.first().structure.level4LC
-                            ?: vWorldResponse.response.result.first().structure.level4A
-                            ?: vWorldResponse.response.result.first().structure.level4AC
-
-                        apiService(" https://api.vworld.kr/").getAddressDetail(query = level4, bbox = endBboxPoint).enqueue(object:
-                            Callback<ResponseBody>{
-                            override fun onResponse(
-                                call: Call<ResponseBody>,
-                                response: Response<ResponseBody>
-                            ) {
-                                val vWorldDetailResponse = GsonBuilder().serializeNulls().create().fromJson(
-                                    response.body()?.string(),
-                                    VWorldDetailResponse::class.java
-                                )
-
-                                if(vWorldDetailResponse.response.status != "NOT_FOUND"){
-                                    tv_end_time.text = vWorldResponse.response.result.first().text
-                                    tv_end_address.text = vWorldResponse.response.result.first().text
-                                    tv_end_address_detail.text = vWorldDetailResponse.response.result.items.first().title
-                                    tv_end_address_detail.visibility = VISIBLE
-                                    detailDriveHistoryViewModel.updateEndAddress(it.tracking_id, vWorldResponse.response.result.first().text)
-                                    detailDriveHistoryViewModel.updateEndAddressDetail(it.tracking_id, Gson().toJson(vWorldDetailResponse.response.result.items))
-                                }else{
-                                    tv_end_time.text = vWorldResponse.response.result.first().text
-                                    tv_end_address.text = vWorldResponse.response.result.first().text
-                                    tv_end_address_detail.visibility = GONE
-                                    detailDriveHistoryViewModel.updateEndAddress(it.tracking_id, vWorldResponse.response.result.first().text)
-                                }
-                            }
-
-                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
-                            }
-                        })
-
-
-                    }
-
-
-
-                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
-                    }
-                })
-
                 if(polylines.size != 0){
                     view_map.visibility = VISIBLE
                     tv_mycar_scope_info.visibility = GONE
@@ -353,6 +220,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                 is PatchDrivingInfoState.Success -> {
                     isActive = state.data.isActive
                     userCarId = state.data.userCarId
+
 
                     if(state.data.isActive){
                         if(!state.data.userCarId.isNullOrEmpty()){
@@ -423,6 +291,23 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     tv_rapid_stop_count_info.text = getDrivingInfoResponse.rapidStopCount.toInt().toString() + "회"
                     tv_rapid_desc_count_info.text = getDrivingInfoResponse.rapidDecelerationCount.toInt().toString() + "회"
 
+                    if(getDrivingInfoResponse.startAddress != null){
+                        tv_start_time.text = getDrivingInfoResponse.startAddress.road?.name?:getDrivingInfoResponse.startAddress.parcel?.name
+                        tv_start_address.text = getDrivingInfoResponse.startAddress.road?.name?:getDrivingInfoResponse.startAddress.parcel?.name
+                    }
+                    if(getDrivingInfoResponse.endAddress != null){
+                        tv_end_time.text = getDrivingInfoResponse.endAddress.road?.name?:getDrivingInfoResponse.endAddress.parcel?.name
+                        tv_end_address.text = getDrivingInfoResponse.endAddress.road?.name?:getDrivingInfoResponse.endAddress.parcel?.name
+
+                        if(!getDrivingInfoResponse.endAddress.places.isNullOrEmpty()){
+                            tv_end_address_detail.text = getDrivingInfoResponse.endAddress.places?.get(0)?.name
+
+                            tv_end_address_detail.setOnClickListener {
+                                startActivity(Intent(this@DetailDriveHistoryActivity, AllAddressActivity::class.java).putExtra("places",Gson().toJson(getDrivingInfoResponse.endAddress.places)))
+                            }
+                        }
+                    }
+
                     isActive = getDrivingInfoResponse.isActive
                     userCarId = getDrivingInfoResponse.userCarId
 
@@ -439,6 +324,12 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
                                     val myCar = myCarsList.find { getDrivingInfoResponse.userCarId == it.id }
                                     tv_mycar.text = myCar?.name
+
+                                    Log.d("testsetestestest","testestestestset isActive :: " + isActive)
+                                    Log.d("testsetestestest","testestestestset userCarId :: " + userCarId)
+                                    Log.d("testsetestestest","testestestestset type :: " + myCar?.type)
+
+
 
                                     if(myCar?.type == PERSONAL){
                                         iv_corp.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_star2))

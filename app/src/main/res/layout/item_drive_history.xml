@@ -39,7 +39,7 @@
                     android:paddingRight="8dp"
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     android:layout_marginBottom="9dp">
 
                     <ImageView
@@ -161,6 +161,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_start_address2"
                     android:layout_width="wrap_content"
                     android:layout_height="18dp"
                     android:textAppearance="@style/B2M"
@@ -180,6 +181,7 @@
                     android:text="18:26"/>
 
                 <TextView
+                    android:id="@+id/tv_end_address2"
                     android:layout_width="wrap_content"
                     android:layout_height="18dp"
                     android:layout_marginTop="17dp"
@@ -247,6 +249,7 @@
                     android:text="BMW 7시리즈"/>
 
                 <ImageView
+                    android:id="@+id/iv_corp"
                     android:layout_width="14dp"
                     android:layout_height="14dp"
                     android:layout_marginLeft="3dp"
@@ -399,6 +402,7 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_start_address"
                     android:layout_width="wrap_content"
                     android:layout_height="18dp"
                     android:textAppearance="@style/B2M"
@@ -418,6 +422,7 @@
                     android:text="18:26"/>
 
                 <TextView
+                    android:id="@+id/tv_end_address"
                     android:layout_width="wrap_content"
                     android:layout_height="18dp"
                     android:layout_marginTop="17dp"

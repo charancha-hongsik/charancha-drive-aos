@@ -3,6 +3,7 @@ package com.milelog.room.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.milelog.retrofit.request.Point
 import com.milelog.room.dto.EachGpsDtoForApi
 
 // API 호출 실패한 데이터 저장 용
@@ -14,7 +15,9 @@ data class DriveForApi(
     @ColumnInfo(name="endTimestamp") var endTimestamp: Long,
     @ColumnInfo(name="verification") var verification:String,
     @ColumnInfo(name="gpses") var gpses: List<EachGpsDtoForApi>,
-    @ColumnInfo(name="bluetooth_name") var bluetooth_name: String?
+    @ColumnInfo(name="bluetooth_name") var bluetooth_name: String?,
+    @ColumnInfo(name="startPoint") var startPoint: Point,
+    @ColumnInfo(name="endPoint") var endPoint: Point
 
 ){
     @PrimaryKey(autoGenerate = true)
