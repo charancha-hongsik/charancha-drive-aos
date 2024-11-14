@@ -1,5 +1,6 @@
 package com.milelog.retrofit.response
 data class PatchDrivingResponse(
     val isActive:Boolean,
-    val userCarId:String
+    val userCarId:String,
+    val userCar:UserCar?
 )

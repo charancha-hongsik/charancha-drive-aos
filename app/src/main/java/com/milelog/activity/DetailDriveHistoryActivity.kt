@@ -41,6 +41,7 @@ import com.google.gson.reflect.TypeToken
 import com.milelog.DividerItemDecoration
 import com.milelog.PreferenceUtil
 import com.milelog.activity.LoadCarMoreInfoActivity.Companion.PERSONAL
+import com.milelog.retrofit.response.UserCar
 import com.milelog.retrofit.response.VWorldDetailResponse
 import com.milelog.retrofit.response.VWorldResponse
 import com.milelog.room.entity.MyCarsEntity
@@ -117,8 +118,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
     var isActive = true
     var userCarId:String? = null
-    var carName:String? = null
-    var type:String? = null
+    var userCar: UserCar? = null
     lateinit var tracking_id:String
 
 
@@ -136,6 +136,9 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     private fun init(){
         tracking_id = intent.getStringExtra("trackingId").toString()
         isActive = intent.getBooleanExtra("isActive",true)
+        intent.getStringExtra("userCar")?.let{
+            userCar = Gson().fromJson(it, UserCar::class.java)
+        }
 
         iv_map = findViewById(R.id.iv_map)
         tv_date = findViewById(R.id.tv_date)
@@ -215,8 +218,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     intent.putExtra("isActive",isActive)
                     intent.putExtra("userCarId",userCarId)
                     intent.putExtra("trackingId",tracking_id)
-                    intent.putExtra("carName",carName)
-                    intent.putExtra("type",type)
+                    intent.putExtra("userCar",Gson().toJson(userCar))
                     setResult(RESULT_OK, intent)
                     finish()
                 }
@@ -225,8 +227,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     intent.putExtra("isActive",isActive)
                     intent.putExtra("userCarId",userCarId)
                     intent.putExtra("trackingId",tracking_id)
-                    intent.putExtra("carName",carName)
-                    intent.putExtra("type",type)
+                    intent.putExtra("userCar",Gson().toJson(userCar))
                     setResult(RESULT_OK, intent)
                     finish()
                 }
@@ -235,8 +236,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     intent.putExtra("isActive",isActive)
                     intent.putExtra("userCarId",userCarId)
                     intent.putExtra("trackingId",tracking_id)
-                    intent.putExtra("carName",carName)
-                    intent.putExtra("type",type)
+                    intent.putExtra("userCar",Gson().toJson(userCar))
                     setResult(RESULT_OK, intent)
                     finish()
                 }
@@ -268,38 +268,30 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                 is PatchDrivingInfoState.Success -> {
                     isActive = state.data.isActive
                     userCarId = state.data.userCarId
+                    userCar = state.data.userCar
 
                     if(state.data.isActive){
                         if(!state.data.userCarId.isNullOrEmpty()){
-                            // CarID
-                            PreferenceUtil.getPref(this, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
-                                if(it != ""){
-                                    val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
-                                    val myCarsList: MutableList<MyCarsEntity> = GsonBuilder().serializeNulls().create().fromJson(it, type)
+                            tv_mycar.text = userCar?.carName
+                            iv_corp.visibility = VISIBLE
 
-                                    val myCar = myCarsList.find { state.data.userCarId == it.id }
-                                    tv_mycar.text = myCar?.name
-
-                                    carName = myCar?.name
-                                    this.type = myCar?.type
-
-                                    if(myCar?.type == PERSONAL){
-                                        iv_corp.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_star2))
-                                    }else{
-                                        iv_corp.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_star1))
-
-                                    }
-                                }
+                            if(userCar?.type == PERSONAL){
+                                iv_corp.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_star2))
+                            }else{
+                                iv_corp.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_star1))
                             }
 
                         }else{
                             // 미확정
                             tv_mycar.text = getString(R.string.pending)
+                            userCar = null
+                            iv_corp.visibility = GONE
                         }
                     }else{
                         // 내 차가 아니에요
+                        userCar = null
                         tv_mycar.text = getString(R.string.not_my_car)
-
+                        iv_corp.visibility = GONE
                     }
                 }
                 is PatchDrivingInfoState.Error -> {
@@ -479,8 +471,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                 intent.putExtra("isActive",isActive)
                 intent.putExtra("userCarId",userCarId)
                 intent.putExtra("trackingId",tracking_id)
-                intent.putExtra("carName",carName)
-                intent.putExtra("type",type)
+                intent.putExtra("userCar",Gson().toJson(userCar))
                 setResult(RESULT_OK, intent)
                 finish()
             }
@@ -705,8 +696,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         intent.putExtra("isActive",isActive)
         intent.putExtra("userCarId",userCarId)
         intent.putExtra("trackingId",tracking_id)
-        intent.putExtra("carName",carName)
-        intent.putExtra("type",type)
+        intent.putExtra("userCar",Gson().toJson(userCar))
         setResult(RESULT_OK, intent)
         finish()
     }

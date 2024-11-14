@@ -1,5 +1,6 @@
 package com.milelog.activity
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -23,6 +24,7 @@ import com.milelog.PreferenceUtil
 import com.milelog.R
 import com.milelog.viewmodel.MyDriveHistoryViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.milelog.CarListFilter
@@ -33,6 +35,7 @@ import com.milelog.activity.MyDriveHistoryActivity.DriveHistoryAdapter.LastItemV
 import com.milelog.retrofit.response.DriveItem
 import com.milelog.retrofit.response.Meta
 import com.milelog.retrofit.response.NewDriveHistoryResponse
+import com.milelog.retrofit.response.UserCar
 import com.milelog.room.entity.MyCarsEntity
 import com.milelog.viewmodel.BaseViewModel
 import com.milelog.viewmodel.state.GetDriveHistoryMoreState
@@ -110,13 +113,14 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         setTopBarAnimation()
     }
 
-    private fun setTopBarAnimation(){
+    private fun setTopBarAnimation() {
         var lastVisibilityState = false // false = layout_flow, true = layout_flow2
 
         val scrollThreshold = 500
 
-        val flowHeight = layout_flow.height.toFloat()  // layout_flow의 실제 높이를 가져옴
-        val flow2Height = layout_flow2.height.toFloat()  // layout_flow2의 실제 높이를 가져옴
+        // 초기 높이 설정
+        val initialFlowHeight = layout_flow.height
+        val initialRecyclerViewHeight = lv_date.height
 
         lv_date.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -124,46 +128,50 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
 
                 // 현재 스크롤된 양을 가져옵니다.
                 val totalScroll = recyclerView.computeVerticalScrollOffset()
-
                 val shouldShowFlow2 = totalScroll > scrollThreshold
 
                 // 이전 상태와 비교하여 visibility 변경을 최소화합니다.
                 if (shouldShowFlow2 != lastVisibilityState) {
-                    // 애니메이션을 추가하여 전환 효과를 부드럽게 합니다.
                     if (shouldShowFlow2) {
                         // layout_flow를 GONE으로, layout_flow2를 VISIBLE로 설정하며 애니메이션을 추가
                         layout_flow.animate()
                             .alpha(0f)
-                            .translationY(-flowHeight)  // layout_flow 높이만큼 위로 이동
-                            .setDuration(350)
+                            .translationY(-initialFlowHeight.toFloat())
+                            .setDuration(200)
                             .withEndAction {
                                 layout_flow.visibility = View.GONE
                             }
 
                         layout_flow2.animate()
                             .alpha(1f)
-                            .translationY(0f)  // layout_flow2는 원래 위치로 나타남
-                            .setDuration(350)
+                            .translationY(0f)
+                            .setDuration(200)
                             .withEndAction {
                                 layout_flow2.visibility = View.VISIBLE
                             }
+
+                        // RecyclerView 높이 애니메이션
+                        changeRecyclerViewHeight(initialRecyclerViewHeight + initialFlowHeight, initialRecyclerViewHeight)
                     } else {
                         // layout_flow를 VISIBLE로, layout_flow2를 GONE으로 설정하며 애니메이션을 추가
                         layout_flow.animate()
                             .alpha(1f)
-                            .translationY(0f)  // layout_flow는 원래 위치로 나타남
-                            .setDuration(350)
+                            .translationY(0f)
+                            .setDuration(200)
                             .withEndAction {
                                 layout_flow.visibility = View.VISIBLE
                             }
 
                         layout_flow2.animate()
                             .alpha(0f)
-                            .translationY(flow2Height)  // layout_flow2 높이만큼 아래로 이동
-                            .setDuration(350)
+                            .translationY(initialFlowHeight.toFloat())
+                            .setDuration(200)
                             .withEndAction {
                                 layout_flow2.visibility = View.GONE
                             }
+
+                        // RecyclerView 높이 애니메이션
+                        changeRecyclerViewHeight(initialRecyclerViewHeight, initialRecyclerViewHeight + initialFlowHeight)
                     }
 
                     // 상태 갱신
@@ -171,7 +179,19 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                 }
             }
         })
+    }
 
+    // RecyclerView 높이를 애니메이션으로 조정하는 함수
+    private fun changeRecyclerViewHeight(fromHeight: Int, toHeight: Int) {
+        val animator = ValueAnimator.ofInt(fromHeight, toHeight)
+        animator.addUpdateListener { animation ->
+            val value = animation.animatedValue as Int
+            val layoutParams = lv_date.layoutParams
+            layoutParams.height = value
+            lv_date.layoutParams = layoutParams
+        }
+        animator.duration = 200
+        animator.start()
     }
 
     private fun setObserver() {
@@ -277,20 +297,16 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                     val trackingId = it.data?.getStringExtra("trackingId")
                     val isActive = it.data?.getBooleanExtra("isActive", true)
                     val userCarId = it.data?.getStringExtra("userCarId")
-                    val type = it.data?.getStringExtra("type")
-                    val carName = it.data?.getStringExtra("carName")
+                    var userCar:UserCar? = null
+                    it.data?.getStringExtra("userCar")?.let{
+                        userCar = Gson().fromJson(it, UserCar::class.java)
+                    }
 
                     for (history in histories) {
                         if (history.id.equals(trackingId)) {
                             history.isActive = isActive!!
                             history.userCarId = userCarId
-//                            if(!type.isNullOrBlank()){
-//                                history.userCar.type = type
-//                            }
-//
-//                            if(!carName.isNullOrBlank()){
-//                                history.userCar.carName = carName
-//                            }
+                            history.userCar = userCar
                         }
                     }
 
@@ -806,6 +822,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                         Intent(context, DetailDriveHistoryActivity::class.java).apply {
                             putExtra("trackingId", driveItem.id)
                             putExtra("isActive", driveItem.isActive)
+                            putExtra("userCar", Gson().toJson(driveItem.userCar))
                         }
                     )
                 }
