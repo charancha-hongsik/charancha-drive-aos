@@ -284,13 +284,13 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                         if (history.id.equals(trackingId)) {
                             history.isActive = isActive!!
                             history.userCarId = userCarId
-                            if(!type.isNullOrBlank()){
-                                history.userCar.type = type
-                            }
-
-                            if(!carName.isNullOrBlank()){
-                                history.userCar.carName = carName
-                            }
+//                            if(!type.isNullOrBlank()){
+//                                history.userCar.type = type
+//                            }
+//
+//                            if(!carName.isNullOrBlank()){
+//                                history.userCar.carName = carName
+//                            }
                         }
                     }
 
