@@ -293,7 +293,7 @@ class BluetoothService : Service() {
                                             myCarsListOnDevice.addAll(GsonBuilder().serializeNulls().create().fromJson(it, type))
                                         }
 
-                                        drivingMyCarsEntity = myCarsListOnDevice.find { it.bluetooth_mac_address == device.address } ?: MyCarsEntity(id = null,name =null, number = null,bluetooth_mac_address = null, bluetooth_name = device.name)
+                                        drivingMyCarsEntity = myCarsListOnDevice.find { it.bluetooth_mac_address == device.address } ?: MyCarsEntity(id = null,name =null, number = null,bluetooth_mac_address = device.address, bluetooth_name = device.name)
 
                                         if(isBluetoothDeviceConnected(device)){
                                             driveDatabase?.detectUserDao()?.insert(

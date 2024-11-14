@@ -44,6 +44,7 @@ class MyPageActivity: BaseRefreshActivity() {
     lateinit var btn_inquiry:LinearLayout
     lateinit var btn_my_garage:LinearLayout
     lateinit var iv_edit:ImageView
+    lateinit var btn_setting_bluetooth:LinearLayout
     private lateinit var imageMultipart: MultipartBody.Part // 선택한 이미지
 
 
@@ -68,6 +69,7 @@ class MyPageActivity: BaseRefreshActivity() {
         btn_inquiry = findViewById(R.id.btn_inquiry)
         btn_my_garage = findViewById(R.id.btn_my_garage)
         iv_edit = findViewById(R.id.iv_edit)
+        btn_setting_bluetooth = findViewById(R.id.btn_setting_bluetooth)
 
 
         iv_circle.setOnClickListener{
@@ -149,6 +151,11 @@ class MyPageActivity: BaseRefreshActivity() {
 
         iv_edit.setOnClickListener {
             startActivity(Intent(this@MyPageActivity, MyInfoActivity::class.java).putExtra("nickname",getAccountProfilesResponse.nickName).putExtra("email", getAccountProfilesResponse.user.email).putExtra("provider",getAccountProfilesResponse.user.provider.text.en))
+        }
+
+        btn_setting_bluetooth.setOnClickListener {
+            startActivity(Intent(this@MyPageActivity, FindBluetoothActivity::class.java))
+
         }
     }
 

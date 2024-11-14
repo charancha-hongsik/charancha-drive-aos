@@ -641,7 +641,6 @@ class MainActivity : BaseRefreshActivity() {
 
         tv_subtitle2 = findViewById(R.id.tv_subtitle2)
         tv_subtitle2.setOnClickListener {
-            startActivity(Intent(this@MainActivity, FindBluetoothActivity::class.java))
         }
 
         tv_guide_subtitle = findViewById(R.id.tv_guide_subtitle)
