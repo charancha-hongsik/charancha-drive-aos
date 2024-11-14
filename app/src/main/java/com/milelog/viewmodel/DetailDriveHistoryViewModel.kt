@@ -8,12 +8,15 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.milelog.PreferenceUtil
 import com.milelog.retrofit.request.PatchDrivingInfo
+import com.milelog.retrofit.request.PatchMemo
 import com.milelog.retrofit.response.GetDrivingInfoResponse
 import com.milelog.retrofit.response.PatchDrivingResponse
+import com.milelog.retrofit.response.PatchMemoResponse
 import com.milelog.room.database.DriveDatabase
 import com.milelog.room.entity.DriveForApp
 import com.milelog.viewmodel.state.GetDrivingInfoState
 import com.milelog.viewmodel.state.PatchDrivingInfoState
+import com.milelog.viewmodel.state.PatchMemoState
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -33,6 +36,9 @@ class DetailDriveHistoryViewModel: BaseViewModel() {
 
     private val _patchDrivingInfo = MutableLiveData<Event<PatchDrivingInfoState>>()
     val patchDrivingInfo: MutableLiveData<Event<PatchDrivingInfoState>> get() = _patchDrivingInfo
+
+    private val _patchMemo = MutableLiveData<Event<PatchMemoState>>()
+    val patchMemo: MutableLiveData<Event<PatchMemoState>> get() = _patchMemo
 
     private val _getDrivingInfo = MutableLiveData<Event<GetDrivingInfoState>>()
     val getDrivingInfo: MutableLiveData<Event<GetDrivingInfoState>> get() = _getDrivingInfo
@@ -85,6 +91,38 @@ class DetailDriveHistoryViewModel: BaseViewModel() {
 
                 }
 
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                _patchDrivingInfo.value = Event(PatchDrivingInfoState.Empty)
+            }
+
+        })
+    }
+
+    fun patchMemo(memo:String, tracking_id:String){
+        val gson = GsonBuilder().serializeNulls().create()
+        val jsonParam =
+            gson.toJson(PatchMemo(memo))
+        apiService(context).patchDrivingInfo("Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!, tracking_id,jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object:
+            Callback<ResponseBody> {
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+                try {
+                    if (response.code() == 200 || response.code() == 201) {
+                        val patchMemoResponse = GsonBuilder().serializeNulls().create().fromJson(
+                            response.body()?.string(),
+                            PatchMemoResponse::class.java
+                        )
+                        _patchMemo.value = Event(PatchMemoState.Success(patchMemoResponse))
+                    }else if(response.code() == 401){
+                        _patchMemo.value = Event(PatchMemoState.Error(response.code(), response.message()))
+                    }
+                }catch (e:Exception){
+                    _patchMemo.value = Event(PatchMemoState.Empty)
+                }
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {

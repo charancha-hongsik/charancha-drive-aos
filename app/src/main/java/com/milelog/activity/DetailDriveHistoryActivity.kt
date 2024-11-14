@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -46,6 +47,7 @@ import com.milelog.room.entity.MyCarsEntity
 import com.milelog.viewmodel.BaseViewModel
 import com.milelog.viewmodel.state.GetDrivingInfoState
 import com.milelog.viewmodel.state.PatchDrivingInfoState
+import com.milelog.viewmodel.state.PatchMemoState
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation
 import java.time.*
 import java.time.format.DateTimeFormatter
@@ -111,6 +113,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     private var currentAnimator: ValueAnimator? = null
     private var bluetoothNameExpected:String? = null
 
+    lateinit var et_memo: EditText
+
     var isActive = true
     var userCarId:String? = null
     var carName:String? = null
@@ -173,6 +177,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         tv_end_address = findViewById(R.id.tv_end_address)
         tv_end_address_detail = findViewById(R.id.tv_end_address_detail)
 
+        et_memo = findViewById(R.id.et_memo)
+
         iv_corp = findViewById(R.id.iv_corp)
 
         view_map = findViewById(R.id.view_map)
@@ -199,6 +205,45 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     }
 
     private fun setObserver(){
+        detailDriveHistoryViewModel.patchMemo.observe(this@DetailDriveHistoryActivity, BaseViewModel.EventObserver { state ->
+            when (state) {
+                is PatchMemoState.Loading -> {
+
+                }
+                is PatchMemoState.Success -> {
+                    val intent = Intent(this@DetailDriveHistoryActivity, MyDriveHistoryActivity::class.java)
+                    intent.putExtra("isActive",isActive)
+                    intent.putExtra("userCarId",userCarId)
+                    intent.putExtra("trackingId",tracking_id)
+                    intent.putExtra("carName",carName)
+                    intent.putExtra("type",type)
+                    setResult(RESULT_OK, intent)
+                    finish()
+                }
+                is PatchMemoState.Error -> {
+                    val intent = Intent(this@DetailDriveHistoryActivity, MyDriveHistoryActivity::class.java)
+                    intent.putExtra("isActive",isActive)
+                    intent.putExtra("userCarId",userCarId)
+                    intent.putExtra("trackingId",tracking_id)
+                    intent.putExtra("carName",carName)
+                    intent.putExtra("type",type)
+                    setResult(RESULT_OK, intent)
+                    finish()
+                }
+                is PatchMemoState.Empty -> {
+                    val intent = Intent(this@DetailDriveHistoryActivity, MyDriveHistoryActivity::class.java)
+                    intent.putExtra("isActive",isActive)
+                    intent.putExtra("userCarId",userCarId)
+                    intent.putExtra("trackingId",tracking_id)
+                    intent.putExtra("carName",carName)
+                    intent.putExtra("type",type)
+                    setResult(RESULT_OK, intent)
+                    finish()
+                }
+            }
+        })
+
+
         detailDriveHistoryViewModel.getMapData.observe(this@DetailDriveHistoryActivity, BaseViewModel.EventObserver {
             it?.let{
                 for(raw in it.gpses){
@@ -295,6 +340,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     tv_rapid_acc_count_info.text = getDrivingInfoResponse.rapidAccelerationCount.toInt().toString() + "회"
                     tv_rapid_stop_count_info.text = getDrivingInfoResponse.rapidStopCount.toInt().toString() + "회"
                     tv_rapid_desc_count_info.text = getDrivingInfoResponse.rapidDecelerationCount.toInt().toString() + "회"
+                    et_memo.setText(getDrivingInfoResponse.memo)
 
                     if(getDrivingInfoResponse.startAddress != null){
                         tv_start_time.text = getDrivingInfoResponse.startAddress.road?.name?:getDrivingInfoResponse.startAddress.parcel?.name
@@ -435,16 +481,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
         btn_back.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                val intent = Intent(this@DetailDriveHistoryActivity, MyDriveHistoryActivity::class.java)
-                intent.putExtra("isActive",isActive)
-                intent.putExtra("userCarId",userCarId)
-                intent.putExtra("trackingId",tracking_id)
-                intent.putExtra("carName",carName)
-                intent.putExtra("type",type)
-
-
-                setResult(RESULT_OK, intent)
-                finish()
+                detailDriveHistoryViewModel.patchMemo(et_memo.text.toString(), tracking_id)
             }
         })
 
@@ -663,14 +700,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
 
     override fun onBackPressed() {
-        val intent = Intent(this@DetailDriveHistoryActivity, MyDriveHistoryActivity::class.java)
-        intent.putExtra("isActive",isActive)
-        intent.putExtra("userCarId",userCarId)
-        intent.putExtra("trackingId",tracking_id)
-        intent.putExtra("carName",carName)
-        intent.putExtra("type",type)
-        setResult(RESULT_OK, intent)
-        finish()
+        detailDriveHistoryViewModel.patchMemo(et_memo.text.toString(), tracking_id)
     }
 
     fun showBottomSheetForEditCar() {

@@ -58,5 +58,6 @@ data class GetDrivingInfoResponse (
     val verification:String,
     val isActive:Boolean,
     val startAddress: Address,
-    val endAddress: Address
+    val endAddress: Address,
+    val memo:String
     ) : java.io.Serializable

@@ -280,11 +280,11 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                         if (history.id.equals(trackingId)) {
                             history.isActive = isActive!!
                             history.userCarId = userCarId
-                            if(!type.isNullOrEmpty()){
+                            if(!type.isNullOrBlank()){
                                 history.userCar.type = type
                             }
 
-                            if(!carName.isNullOrEmpty()){
+                            if(!carName.isNullOrBlank()){
                                 history.userCar.carName = carName
                             }
                         }
@@ -520,8 +520,6 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
 
                     if(car.tv_car_num.equals(rearCarList.first().tv_car_num)){
                         tv_car_number2.text = "(" + tv_car_number2.text
-                    } else if(car.tv_car_num.equals(rearCarList.last().tv_car_num)){
-                        tv_car_number2.text = tv_car_number2.text.toString() + ")"
                     } else{
                         tv_car_number2.text = "," + tv_car_number2.text
                     }
