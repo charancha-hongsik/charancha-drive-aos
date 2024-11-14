@@ -135,7 +135,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                         layout_flow.animate()
                             .alpha(0f)
                             .translationY(-flowHeight)  // layout_flow 높이만큼 위로 이동
-                            .setDuration(250)
+                            .setDuration(350)
                             .withEndAction {
                                 layout_flow.visibility = View.GONE
                             }
@@ -143,7 +143,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                         layout_flow2.animate()
                             .alpha(1f)
                             .translationY(0f)  // layout_flow2는 원래 위치로 나타남
-                            .setDuration(250)
+                            .setDuration(350)
                             .withEndAction {
                                 layout_flow2.visibility = View.VISIBLE
                             }
@@ -152,7 +152,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                         layout_flow.animate()
                             .alpha(1f)
                             .translationY(0f)  // layout_flow는 원래 위치로 나타남
-                            .setDuration(250)
+                            .setDuration(350)
                             .withEndAction {
                                 layout_flow.visibility = View.VISIBLE
                             }
@@ -160,7 +160,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                         layout_flow2.animate()
                             .alpha(0f)
                             .translationY(flow2Height)  // layout_flow2 높이만큼 아래로 이동
-                            .setDuration(250)
+                            .setDuration(350)
                             .withEndAction {
                                 layout_flow2.visibility = View.GONE
                             }
