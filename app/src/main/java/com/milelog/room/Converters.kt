@@ -5,6 +5,7 @@ import com.milelog.room.dto.EachGpsDtoForApi
 import com.milelog.room.dto.EachGpsDtoForApp
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import com.milelog.retrofit.request.Address
 import com.milelog.retrofit.request.Point
@@ -79,9 +80,11 @@ class Converters {
     }
 
     @TypeConverter
-    fun toAddress(addressJson: String?): Address? {
-        return addressJson?.let {
-            Gson().fromJson(it, object : TypeToken<Address>() {}.type)
+    fun toAddress(json: String): Address? {
+        return try {
+            Gson().fromJson(json, Address::class.java)
+        } catch (e: JsonSyntaxException) {
+            null // 혹은 기본 Address 객체를 반환
         }
     }
 
