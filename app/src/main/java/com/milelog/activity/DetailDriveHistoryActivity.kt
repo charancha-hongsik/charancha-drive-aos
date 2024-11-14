@@ -481,7 +481,14 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
         btn_back.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                detailDriveHistoryViewModel.patchMemo(et_memo.text.toString(), tracking_id)
+                val intent = Intent(this@DetailDriveHistoryActivity, MyDriveHistoryActivity::class.java)
+                intent.putExtra("isActive",isActive)
+                intent.putExtra("userCarId",userCarId)
+                intent.putExtra("trackingId",tracking_id)
+                intent.putExtra("carName",carName)
+                intent.putExtra("type",type)
+                setResult(RESULT_OK, intent)
+                finish()
             }
         })
 
@@ -700,7 +707,14 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
 
     override fun onBackPressed() {
-        detailDriveHistoryViewModel.patchMemo(et_memo.text.toString(), tracking_id)
+        val intent = Intent(this@DetailDriveHistoryActivity, MyDriveHistoryActivity::class.java)
+        intent.putExtra("isActive",isActive)
+        intent.putExtra("userCarId",userCarId)
+        intent.putExtra("trackingId",tracking_id)
+        intent.putExtra("carName",carName)
+        intent.putExtra("type",type)
+        setResult(RESULT_OK, intent)
+        finish()
     }
 
     fun showBottomSheetForEditCar() {
