@@ -766,32 +766,29 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
             if (holder is DriveHistoryViewHolder) {
                 val driveItem = histories[position]
 
-                if(driveItem.userCar != null){
-                    if(driveItem.userCar.type.equals(CORPORATE)){
-                        holder.layout_corp.visibility = VISIBLE
-                        holder.iv_corp.visibility = VISIBLE
-                    }else{
-                        holder.layout_corp.visibility = GONE
-                        holder.iv_corp.visibility = GONE
-                    }
-
-                    holder.tv_car.text = driveItem.userCar.carName
+                driveItem.userCar?.let { userCar ->
+                    val isCorporate = userCar.type.equals(CORPORATE)
+                    holder.layout_corp.visibility = if (isCorporate) VISIBLE else GONE
+                    holder.iv_corp.visibility = if (isCorporate) VISIBLE else GONE
+                    holder.tv_car.text = userCar.carName
                 }
 
-                holder.tvDistance.text = transferDistanceWithUnit(
+                // Distance and Time 설정 최적화
+                val distanceWithUnit = transferDistanceWithUnit(
                     driveItem.totalDistance,
                     PreferenceUtil.getPref(context, PreferenceUtil.KM_MILE, "km")!!
                 )
-                holder.tvStartTime.text = transformTimeToHHMM(driveItem.startTime)
-                holder.tvEndTime.text = transformTimeToHHMM(driveItem.endTime)
+                val startTime = transformTimeToHHMM(driveItem.startTime)
+                val endTime = transformTimeToHHMM(driveItem.endTime)
 
-                holder.tvDistance2.text = transferDistanceWithUnit(
-                    driveItem.totalDistance,
-                    PreferenceUtil.getPref(context, PreferenceUtil.KM_MILE, "km")!!
-                )
-                holder.tvStartTime2.text = transformTimeToHHMM(driveItem.startTime)
-                holder.tvEndTime2.text = transformTimeToHHMM(driveItem.endTime)
+                holder.tvDistance.text = distanceWithUnit
+                holder.tvStartTime.text = startTime
+                holder.tvEndTime.text = endTime
+                holder.tvDistance2.text = distanceWithUnit
+                holder.tvStartTime2.text = startTime
+                holder.tvEndTime2.text = endTime
 
+                // 활성화 여부에 따른 레이아웃 설정
                 if (driveItem.isActive && !driveItem.userCarId.isNullOrEmpty()) {
                     holder.layoutNotActive.visibility = GONE
                     holder.layoutActive.visibility = VISIBLE
@@ -799,44 +796,35 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                 } else {
                     holder.layoutNotActive.visibility = VISIBLE
                     holder.layoutActive.visibility = GONE
-
-                    if(driveItem.isActive){
-                        holder.tv_car2.text = context.getString(R.string.pending)
-                    }else{
-                        holder.tv_car2.text = context.getString(R.string.not_my_car)
-                    }
-
+                    holder.tv_car2.text = context.getString(
+                        if (driveItem.isActive) R.string.pending else R.string.not_my_car
+                    )
                 }
 
                 holder.btnDriveHistory.setOnClickListener {
                     (context as MyDriveHistoryActivity).resultLauncher.launch(
-                        Intent(context, DetailDriveHistoryActivity::class.java)
-                            .putExtra("trackingId", driveItem.id)
-                            .putExtra("isActive", driveItem.isActive)
+                        Intent(context, DetailDriveHistoryActivity::class.java).apply {
+                            putExtra("trackingId", driveItem.id)
+                            putExtra("isActive", driveItem.isActive)
+                        }
                     )
                 }
 
-                if(driveItem.startAddress != null){
-                    val startAddress = driveItem.startAddress.road?.name ?:driveItem.startAddress.parcel?.name
-
-                    holder.tv_start_address.text = startAddress
-                    holder.tv_start_address2.text = startAddress
-
+                // Start Address 설정
+                driveItem.startAddress?.let { startAddress ->
+                    val addressName = startAddress.road?.name ?: startAddress.parcel?.name
+                    holder.tv_start_address.text = addressName
+                    holder.tv_start_address2.text = addressName
                 }
 
-                if(driveItem.endAddress != null){
-                    val endAddress = driveItem.endAddress.road?.name?:driveItem.endAddress.parcel?.name
-
-                    holder.tv_end_address.text = endAddress
-                    holder.tv_end_address2.text = endAddress
-
+                // End Address 설정
+                driveItem.endAddress?.let { endAddress ->
+                    val addressName = endAddress.road?.name ?: endAddress.parcel?.name
+                    holder.tv_end_address.text = addressName
+                    holder.tv_end_address2.text = addressName
                 }
-
-
-
             }
         }
-
         override fun getItemCount(): Int {
             return histories.size
         }
@@ -864,13 +852,6 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
             val zonedUtcTime = utcTime.atZone(ZoneId.of("UTC"))
             val kstTime = zonedUtcTime.withZoneSameInstant(ZoneId.of("Asia/Seoul"))
             return kstTime.format(DateTimeFormatter.ofPattern("HH:mm"))
-        }
-
-        private fun transformTimeToDate(isoDate: String): String {
-            val utcTime = LocalDateTime.parse(isoDate, DateTimeFormatter.ISO_DATE_TIME)
-            val zonedUtcTime = utcTime.atZone(ZoneId.of("UTC"))
-            val kstTime = zonedUtcTime.withZoneSameInstant(ZoneId.of("Asia/Seoul"))
-            return kstTime.format(DateTimeFormatter.ofPattern("yyyy년 MM월 dd일"))
         }
     }
 
@@ -966,8 +947,13 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
 
         class DateViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val dateTextView: TextView = view.findViewById(R.id.tv_date)
-            val driveItemsRecyclerView: RecyclerView =
-                view.findViewById(R.id.driveItemsRecyclerView)
+            val driveItemsRecyclerView: RecyclerView = view.findViewById(R.id.driveItemsRecyclerView)
+            var isInitialized = false
+        }
+
+        class LastItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+            val tvMore: TextView = view.findViewById(R.id.tv_more)
+            val tvLast: TextView = view.findViewById(R.id.tv_last)
         }
 
         companion object {
@@ -980,13 +966,12 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+            val inflater = LayoutInflater.from(context)
             return if (viewType == VIEW_TYPE_ITEM) {
-                val view =
-                    LayoutInflater.from(parent.context).inflate(R.layout.item_date, parent, false)
+                val view = inflater.inflate(R.layout.item_date, parent, false)
                 DateViewHolder(view)
             } else {
-                val view = LayoutInflater.from(context)
-                    .inflate(R.layout.item_drive_history_last, parent, false)
+                val view = inflater.inflate(R.layout.item_drive_history_last, parent, false)
                 LastItemViewHolder(view)
             }
         }
@@ -996,30 +981,29 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                 val dateItem = dateList[position]
                 holder.dateTextView.text = dateItem.date
 
-                // 하위 RecyclerView 어댑터 설정
-                val driveItemAdapter = DriveHistoryAdapter(
-                    context,
-                    dateItem.items
-                )
+                // RecyclerView 초기 설정을 한번만 수행
+                if (!holder.isInitialized) {
+                    val driveItemAdapter = DriveHistoryAdapter(context, dateItem.items)
+                    holder.driveItemsRecyclerView.apply {
+                        adapter = driveItemAdapter
+                        layoutManager = LinearLayoutManager(context)
 
-                // DividerItemDecoration을 한 번만 설정하도록 최적화
-                if (holder.driveItemsRecyclerView.itemDecorationCount == 0) {
-                    val dividerItemDecoration = DividerItemDecoration(context, R.color.gray_50, dpToPx(context, 12f))
-                    holder.driveItemsRecyclerView.addItemDecoration(dividerItemDecoration)
-                }
-
-                // RecyclerView의 어댑터와 레이아웃 매니저를 한 번만 설정
-                holder.driveItemsRecyclerView.apply {
-                    adapter = driveItemAdapter
-                    layoutManager = LinearLayoutManager(context)
+                        if (itemDecorationCount == 0) {
+                            addItemDecoration(
+                                DividerItemDecoration(context, R.color.gray_50, dpToPx(context, 12f))
+                            )
+                        }
+                    }
+                    holder.isInitialized = true
                 }
             } else if (holder is LastItemViewHolder) {
+                // 더보기/마지막 항목 설정
                 if (meta.afterCursor.isNullOrBlank()) {
-                    holder.tvMore.visibility = GONE
-                    holder.tvLast.visibility = VISIBLE
+                    holder.tvMore.visibility = View.GONE
+                    holder.tvLast.visibility = View.VISIBLE
                 } else {
-                    holder.tvMore.visibility = VISIBLE
-                    holder.tvLast.visibility = GONE
+                    holder.tvMore.visibility = View.VISIBLE
+                    holder.tvLast.visibility = View.GONE
                 }
 
                 holder.tvMore.setOnClickListener {
