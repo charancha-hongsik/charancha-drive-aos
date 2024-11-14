@@ -80,11 +80,15 @@ class Converters {
     }
 
     @TypeConverter
-    fun toAddress(json: String): Address? {
+    fun toAddress(json: String?): Address? {
         return try {
-            Gson().fromJson(json, Address::class.java)
+            if (json.isNullOrEmpty()) {
+                null // 또는 기본 Address 객체를 반환하도록 설정
+            } else {
+                Gson().fromJson(json, Address::class.java)
+            }
         } catch (e: JsonSyntaxException) {
-            null // 혹은 기본 Address 객체를 반환
+            null // 또는 기본 Address 객체를 반환하도록 설정
         }
     }
 
