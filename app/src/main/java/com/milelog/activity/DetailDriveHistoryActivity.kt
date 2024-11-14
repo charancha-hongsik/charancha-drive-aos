@@ -120,6 +120,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     var userCarId:String? = null
     var userCar: UserCar? = null
     lateinit var tracking_id:String
+    var pastMemo:String? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -270,6 +271,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     userCarId = state.data.userCarId
                     userCar = state.data.userCar
 
+
                     if(state.data.isActive){
                         if(!state.data.userCarId.isNullOrEmpty()){
                             tv_mycar.text = userCar?.carName
@@ -333,6 +335,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     tv_rapid_stop_count_info.text = getDrivingInfoResponse.rapidStopCount.toInt().toString() + "회"
                     tv_rapid_desc_count_info.text = getDrivingInfoResponse.rapidDecelerationCount.toInt().toString() + "회"
                     et_memo.setText(getDrivingInfoResponse.memo)
+                    pastMemo = getDrivingInfoResponse.memo
 
                     if(getDrivingInfoResponse.startAddress != null){
                         tv_start_time.text = getDrivingInfoResponse.startAddress.road?.name?:getDrivingInfoResponse.startAddress.parcel?.name
@@ -467,13 +470,17 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
         btn_back.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                val intent = Intent(this@DetailDriveHistoryActivity, MyDriveHistoryActivity::class.java)
-                intent.putExtra("isActive",isActive)
-                intent.putExtra("userCarId",userCarId)
-                intent.putExtra("trackingId",tracking_id)
-                intent.putExtra("userCar",Gson().toJson(userCar))
-                setResult(RESULT_OK, intent)
-                finish()
+                if(pastMemo != et_memo.text.toString())
+                    detailDriveHistoryViewModel.patchMemo(et_memo.text.toString(), tracking_id)
+                else{
+                    val intent = Intent(this@DetailDriveHistoryActivity, MyDriveHistoryActivity::class.java)
+                    intent.putExtra("isActive",isActive)
+                    intent.putExtra("userCarId",userCarId)
+                    intent.putExtra("trackingId",tracking_id)
+                    intent.putExtra("userCar",Gson().toJson(userCar))
+                    setResult(RESULT_OK, intent)
+                    finish()
+                }
             }
         })
 
@@ -692,13 +699,17 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
 
     override fun onBackPressed() {
-        val intent = Intent(this@DetailDriveHistoryActivity, MyDriveHistoryActivity::class.java)
-        intent.putExtra("isActive",isActive)
-        intent.putExtra("userCarId",userCarId)
-        intent.putExtra("trackingId",tracking_id)
-        intent.putExtra("userCar",Gson().toJson(userCar))
-        setResult(RESULT_OK, intent)
-        finish()
+        if(pastMemo != et_memo.text.toString())
+            detailDriveHistoryViewModel.patchMemo(et_memo.text.toString(), tracking_id)
+        else{
+            val intent = Intent(this@DetailDriveHistoryActivity, MyDriveHistoryActivity::class.java)
+            intent.putExtra("isActive",isActive)
+            intent.putExtra("userCarId",userCarId)
+            intent.putExtra("trackingId",tracking_id)
+            intent.putExtra("userCar",Gson().toJson(userCar))
+            setResult(RESULT_OK, intent)
+            finish()
+        }
     }
 
     fun showBottomSheetForEditCar() {

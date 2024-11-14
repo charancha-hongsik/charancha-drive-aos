@@ -116,7 +116,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
     private fun setTopBarAnimation() {
         var lastVisibilityState = false // false = layout_flow, true = layout_flow2
 
-        val scrollThreshold = 500
+        val scrollThreshold = 1000
 
         // 초기 높이 설정
         val initialFlowHeight = layout_flow.height
