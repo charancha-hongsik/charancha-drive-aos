@@ -185,6 +185,9 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         tv_end_address_detail = findViewById(R.id.tv_end_address_detail)
 
         btn_choose_corp = findViewById(R.id.btn_choose_corp)
+        btn_choose_corp.setOnClickListener {
+            showBottomSheetForChooseCorp()
+        }
 
         et_memo = findViewById(R.id.et_memo)
 
@@ -284,8 +287,10 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
                             if(userCar?.type == PERSONAL){
                                 iv_corp.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_star2))
+                                btn_choose_corp.visibility = GONE
                             }else{
                                 iv_corp.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_star1))
+                                btn_choose_corp.visibility = VISIBLE
                             }
 
                         }else{
@@ -293,12 +298,16 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                             tv_mycar.text = getString(R.string.pending)
                             userCar = null
                             iv_corp.visibility = GONE
+                            btn_choose_corp.visibility = GONE
+
                         }
                     }else{
                         // 내 차가 아니에요
                         userCar = null
                         tv_mycar.text = getString(R.string.not_my_car)
                         iv_corp.visibility = GONE
+                        btn_choose_corp.visibility = GONE
+
                     }
                 }
                 is PatchDrivingInfoState.Error -> {
@@ -378,8 +387,11 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
                                     if(myCar?.type == PERSONAL){
                                         iv_corp.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_star2))
+                                        btn_choose_corp.visibility = GONE
                                     }else{
                                         iv_corp.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_star1))
+                                        btn_choose_corp.visibility = VISIBLE
+
 
                                     }
                                 }
@@ -388,10 +400,16 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                         }else{
                             // 미확정
                             tv_mycar.text = getString(R.string.pending)
+                            iv_corp.visibility = GONE
+                            btn_choose_corp.visibility = GONE
+
                         }
                     }else{
                         // 내 차가 아니에요
                         tv_mycar.text = getString(R.string.not_my_car)
+                        iv_corp.visibility = GONE
+                        btn_choose_corp.visibility = GONE
+
 
                     }
 
@@ -768,6 +786,28 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         }
     }
 
+
+    fun showBottomSheetForChooseCorp() {
+        val bottomSheetDialog = BottomSheetDialog(this, R.style.CustomBottomSheetDialog)
+
+        // Inflate the layout
+        val bottomSheetView = this.layoutInflater.inflate(R.layout.dialog_choose_corp, null)
+
+        val rv_choose_corp = bottomSheetView.findViewById<RecyclerView>(R.id.rv_choose_corp)
+
+        rv_choose_corp.layoutManager = LinearLayoutManager(this)
+        val dividerItemDecoration = DividerItemDecoration(this, R.color.white_op_100, this.dpToPx(8f)) // 색상 리소스와 구분선 높이 설정
+        rv_choose_corp.addItemDecoration(dividerItemDecoration)
+
+        rv_choose_corp.adapter = ChooseCorpAdapter(context = this, corpList = mutableListOf("출/퇴근", "비업무","일반업무"), bottomSheetDialog)
+
+        // Set the content view of the dialog
+        bottomSheetDialog.setContentView(bottomSheetView)
+
+        // Show the dialog
+        bottomSheetDialog.show()
+    }
+
     class MyCarEntitiesAdapter(
         private val context: Context,
         private val mycarEntities: MutableList<MyCarsEntity>,
@@ -869,6 +909,46 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         val tv_no_mycar:TextView = view.findViewById(R.id.tv_no_mycar)
         val layout_car:LinearLayout = view.findViewById(R.id.layout_car)
     }
+
+    class ChooseCorpAdapter(
+        private val context: Context,
+        private val corpList: MutableList<String>,
+        private val bottomSheetDialog: BottomSheetDialog
+    ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+        companion object {
+            private const val VIEW_TYPE_ITEM = 0
+        }
+
+        override fun getItemViewType(position: Int): Int {
+            return VIEW_TYPE_ITEM
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+            val view = LayoutInflater.from(context).inflate(R.layout.item_choose_corp, parent, false)
+            return ChooseCorpHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+            if (holder is ChooseCorpHolder) {
+                holder.tv_corp.text = corpList.get(position)
+
+                holder.layout_car.setOnClickListener {
+                    bottomSheetDialog.dismiss()
+                }
+            }
+        }
+
+        override fun getItemCount(): Int {
+            return corpList.size
+        }
+    }
+
+    class ChooseCorpHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val layout_car:LinearLayout = view.findViewById(R.id.layout_car)
+        val tv_corp:TextView = view.findViewById(R.id.tv_corp)
+    }
+
 
     fun getMatchingTitle(vWorldResponse: VWorldResponse, vWorldDetailResponse: VWorldDetailResponse): String {
         for (item in vWorldDetailResponse.response.result.items) {
