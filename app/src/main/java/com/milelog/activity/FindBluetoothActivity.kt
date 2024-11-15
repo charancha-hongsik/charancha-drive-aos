@@ -34,6 +34,7 @@ import com.milelog.PreferenceUtil.MYCAR
 import com.milelog.activity.LoadCarMoreInfoActivity.Companion.CORPORATE
 import com.milelog.retrofit.response.GetMyCarInfoResponse
 import com.milelog.room.entity.MyCarsEntity
+import okhttp3.internal.notify
 
 class FindBluetoothActivity: BaseRefreshActivity() {
     lateinit var rv_find_bluetooth:RecyclerView
@@ -339,6 +340,22 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                 holder.tv_car_number.text = myCarsEntity.number
                 holder.tv_car_bluetooth_name.text = myCarsEntity.bluetooth_name
 
+                holder.btn_delete.setOnClickListener {
+                    PreferenceUtil.getPref(context, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
+                        if(it != ""){
+                            val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
+                            var myCarsList: MutableList<MyCarsEntity> = GsonBuilder().serializeNulls().create().fromJson(it, type)
+                            val myCarsListForDelete = myCarsList.find { myCarsEntity.bluetooth_mac_address.equals(it.bluetooth_mac_address) }
+
+                            mycarEntities.remove(myCarsListForDelete)
+
+                            PreferenceUtil.putPref(context, PreferenceUtil.MY_CAR_ENTITIES, GsonBuilder().serializeNulls().create().toJson(mycarEntities))
+
+                            notifyDataSetChanged()
+                        }
+                    }
+                }
+
                 myCarsEntity.type?.let{
                     if(it.equals(CORPORATE)){
                         holder.layout_corp.visibility = VISIBLE
@@ -360,6 +377,6 @@ class FindBluetoothActivity: BaseRefreshActivity() {
         val tv_car_bluetooth_name:TextView = view.findViewById(R.id.tv_car_bluetooth_name)
 
         val layout_corp: LinearLayout = view.findViewById(R.id.layout_corp)
-
+        val btn_delete:ImageView = view.findViewById(R.id.btn_delete)
     }
 }
