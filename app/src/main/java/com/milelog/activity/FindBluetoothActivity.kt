@@ -338,7 +338,7 @@ class FindBluetoothActivity: BaseRefreshActivity() {
 
     class ConnectedCarAdapter(
         private val context: Context,
-        private val mycarEntities: MutableList<MyCarsEntity>
+        private var mycarEntities: MutableList<MyCarsEntity>
     ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         companion object {
@@ -365,19 +365,14 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                 holder.btn_delete.setOnClickListener {
                     CustomDialog(context, "블루투스 삭제", "등록된 블루투스 기기를 \n삭제하시겠습니까?", "삭제","취소",  object : CustomDialog.DialogCallback{
                         override fun onConfirm() {
-                            PreferenceUtil.getPref(context, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
-                                if(it != ""){
-                                    val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
-                                    var myCarsList: MutableList<MyCarsEntity> = GsonBuilder().serializeNulls().create().fromJson(it, type)
-                                    val myCarsListForDelete = myCarsList.find { myCarsEntity.bluetooth_mac_address.equals(it.bluetooth_mac_address) }
+                            val myCarListForEdit = mycarEntities.find { myCarsEntity.bluetooth_mac_address.equals(it.bluetooth_mac_address) }
 
-                                    mycarEntities.remove(myCarsListForDelete)
+                            myCarListForEdit?.bluetooth_name = null
+                            myCarListForEdit?.bluetooth_mac_address = null
 
-                                    PreferenceUtil.putPref(context, PreferenceUtil.MY_CAR_ENTITIES, GsonBuilder().serializeNulls().create().toJson(mycarEntities))
+                            PreferenceUtil.putPref(context, PreferenceUtil.MY_CAR_ENTITIES, GsonBuilder().serializeNulls().create().toJson(mycarEntities))
 
-                                    notifyDataSetChanged()
-                                }
-                            }
+                            (context as FindBluetoothActivity).setConnectedCarList()
                         }
 
                         override fun onCancel() {
