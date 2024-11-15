@@ -1,18 +1,13 @@
 package com.milelog.activity
 
-import android.Manifest.permission.ACTIVITY_RECOGNITION
 import android.Manifest.permission.BLUETOOTH_CONNECT
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothClass.Device.AUDIO_VIDEO_HANDSFREE
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -24,11 +19,9 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.milelog.CustomDialog
@@ -36,11 +29,9 @@ import com.milelog.DividerItemDecoration
 import com.milelog.R
 import com.milelog.FindBluetoothEntity
 import com.milelog.PreferenceUtil
-import com.milelog.PreferenceUtil.MYCAR
 import com.milelog.activity.LoadCarMoreInfoActivity.Companion.CORPORATE
 import com.milelog.retrofit.response.GetMyCarInfoResponse
 import com.milelog.room.entity.MyCarsEntity
-import okhttp3.internal.notify
 
 class FindBluetoothActivity: BaseRefreshActivity() {
     lateinit var rv_find_bluetooth:RecyclerView
@@ -311,8 +302,6 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                                     PreferenceUtil.putPref(context, PreferenceUtil.MY_CAR_ENTITIES, GsonBuilder().serializeNulls().create().toJson(myCarsListOnDevice))
 
                                     (context as FindBluetoothActivity).setConnectedCarList()
-
-                                    PreferenceUtil.putPref(context, MYCAR, macAddress)
 
                                     Toast.makeText(context,
                                         myCarsEntity.name +"블루투스가 연결됐어요", Toast.LENGTH_SHORT).show()
