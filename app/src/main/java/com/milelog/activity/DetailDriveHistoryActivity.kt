@@ -19,6 +19,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -110,6 +111,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
     lateinit var iv_corp:ImageView
 
+    lateinit var btn_choose_corp: ConstraintLayout
+
     private var isCameraMoving = false
     private var currentAnimator: ValueAnimator? = null
     private var bluetoothNameExpected:String? = null
@@ -180,6 +183,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         tv_start_address = findViewById(R.id.tv_start_address)
         tv_end_address = findViewById(R.id.tv_end_address)
         tv_end_address_detail = findViewById(R.id.tv_end_address_detail)
+
+        btn_choose_corp = findViewById(R.id.btn_choose_corp)
 
         et_memo = findViewById(R.id.et_memo)
 
