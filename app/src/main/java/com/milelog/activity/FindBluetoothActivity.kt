@@ -48,6 +48,7 @@ class FindBluetoothActivity: BaseRefreshActivity() {
     lateinit var btn_hands_free:TextView
     lateinit var getMyCarInfoResponses:List<GetMyCarInfoResponse>
     var handsfreeStatus:Boolean = false
+    lateinit var btn_back:ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +60,10 @@ class FindBluetoothActivity: BaseRefreshActivity() {
         btn_hands_free.setOnClickListener {
             setBluetoothList()
             handsfreeStatus = !handsfreeStatus
+        }
+        btn_back = findViewById(R.id.btn_back)
+        btn_back.setOnClickListener {
+            finish()
         }
         val dividerItemDecoration = DividerItemDecoration(this, R.color.white_op_100, dpToPx(12f)) // 색상 리소스와 구분선 높이 설정
 
@@ -219,6 +224,8 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                     val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
                     val myCarsList: MutableList<MyCarsEntity> = GsonBuilder().serializeNulls().create().fromJson(it, type)
 
+                    Log.d("testestestest","testestestsetset :: " + myCarsList.size)
+
                     rv_registered_car.adapter = MyCarEntitiesAdapter(context = context, mycarEntities = myCarsList, macAddress,bluetoothName, bottomSheetDialog)
 
                     // Set the content view of the dialog
@@ -299,6 +306,8 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                                     myCarsListOnDevice.get(position).bluetooth_mac_address = macAddress
                                     myCarsListOnDevice.get(position).bluetooth_name = bluetoothName
 
+                                    Log.d("testsetse","testesest size1 :: " + myCarsListOnDevice.size)
+
                                     PreferenceUtil.putPref(context, PreferenceUtil.MY_CAR_ENTITIES, GsonBuilder().serializeNulls().create().toJson(myCarsListOnDevice))
 
                                     (context as FindBluetoothActivity).setConnectedCarList()
@@ -365,14 +374,22 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                 holder.btn_delete.setOnClickListener {
                     CustomDialog(context, "블루투스 삭제", "등록된 블루투스 기기를 \n삭제하시겠습니까?", "삭제","취소",  object : CustomDialog.DialogCallback{
                         override fun onConfirm() {
-                            val myCarListForEdit = mycarEntities.find { myCarsEntity.bluetooth_mac_address.equals(it.bluetooth_mac_address) }
+                            PreferenceUtil.getPref(context, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
+                                if(it != ""){
 
-                            myCarListForEdit?.bluetooth_name = null
-                            myCarListForEdit?.bluetooth_mac_address = null
+                                    val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
+                                    var myCarsList: List<MyCarsEntity> = GsonBuilder().serializeNulls().create().fromJson(it, type)
 
-                            PreferenceUtil.putPref(context, PreferenceUtil.MY_CAR_ENTITIES, GsonBuilder().serializeNulls().create().toJson(mycarEntities))
+                                    val myCarListForEdit = myCarsList.find { myCarsEntity.bluetooth_mac_address.equals(it.bluetooth_mac_address) }
 
-                            (context as FindBluetoothActivity).setConnectedCarList()
+                                    myCarListForEdit?.bluetooth_name = null
+                                    myCarListForEdit?.bluetooth_mac_address = null
+
+                                    PreferenceUtil.putPref(context, PreferenceUtil.MY_CAR_ENTITIES, GsonBuilder().serializeNulls().create().toJson(myCarsList))
+
+                                    (context as FindBluetoothActivity).setConnectedCarList()
+                                }
+                            }
                         }
 
                         override fun onCancel() {
