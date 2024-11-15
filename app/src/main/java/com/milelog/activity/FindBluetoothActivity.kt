@@ -60,8 +60,12 @@ class FindBluetoothActivity: BaseRefreshActivity() {
         rv_find_bluetooth.addItemDecoration(dividerItemDecoration)
 
         setBluetoothList()
+        setConnectedCarList()
         handsfreeStatus = !handsfreeStatus
 
+    }
+
+    private fun setConnectedCarList(){
         PreferenceUtil.getPref(this, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
             if(it != ""){
                 rv_connected_car.layoutManager = LinearLayoutManager(this)
@@ -76,7 +80,6 @@ class FindBluetoothActivity: BaseRefreshActivity() {
 
             }
         }
-
     }
 
     private fun setBluetoothList(){
@@ -290,6 +293,8 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                             myCarsListOnDevice.get(position).bluetooth_name = bluetoothName
 
                             PreferenceUtil.putPref(context, PreferenceUtil.MY_CAR_ENTITIES, GsonBuilder().serializeNulls().create().toJson(myCarsListOnDevice))
+
+                            (context as FindBluetoothActivity).setConnectedCarList()
 
                             bottomSheetDialog.dismiss()
                         }
