@@ -60,10 +60,13 @@ class FindBluetoothActivity: BaseRefreshActivity() {
             setBluetoothList()
             handsfreeStatus = !handsfreeStatus
         }
+        val dividerItemDecoration = DividerItemDecoration(this, R.color.white_op_100, dpToPx(12f)) // 색상 리소스와 구분선 높이 설정
 
         rv_find_bluetooth.layoutManager = LinearLayoutManager(this)
-        val dividerItemDecoration = DividerItemDecoration(this, R.color.white_op_100, dpToPx(12f)) // 색상 리소스와 구분선 높이 설정
         rv_find_bluetooth.addItemDecoration(dividerItemDecoration)
+
+        rv_connected_car.layoutManager = LinearLayoutManager(this)
+        rv_connected_car.addItemDecoration(dividerItemDecoration)
 
         setBluetoothList()
         setConnectedCarList()
@@ -74,10 +77,6 @@ class FindBluetoothActivity: BaseRefreshActivity() {
     private fun setConnectedCarList(){
         PreferenceUtil.getPref(this, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
             if(it != ""){
-                rv_connected_car.layoutManager = LinearLayoutManager(this)
-                val dividerItemDecoration = DividerItemDecoration(this, R.color.white_op_100, this.dpToPx(12f)) // 색상 리소스와 구분선 높이 설정
-                rv_connected_car.addItemDecoration(dividerItemDecoration)
-
                 val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
                 var myCarsList: List<MyCarsEntity> = GsonBuilder().serializeNulls().create().fromJson(it, type)
                 myCarsList = myCarsList.filterNot { it.bluetooth_mac_address.isNullOrEmpty() }
@@ -307,7 +306,7 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                                     PreferenceUtil.putPref(context, MYCAR, macAddress)
 
                                     Toast.makeText(context,
-                                        myCarsEntity.name +"차량이 " + bluetoothName + " 블루투스와 연결됐어요." , Toast.LENGTH_SHORT).show()
+                                        myCarsEntity.name +"블루투스가 연결됐어요", Toast.LENGTH_SHORT).show()
 
                                     bottomSheetDialog.dismiss()
                                 }
@@ -364,19 +363,28 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                 holder.tv_car_bluetooth_name.text = myCarsEntity.bluetooth_name
 
                 holder.btn_delete.setOnClickListener {
-                    PreferenceUtil.getPref(context, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
-                        if(it != ""){
-                            val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
-                            var myCarsList: MutableList<MyCarsEntity> = GsonBuilder().serializeNulls().create().fromJson(it, type)
-                            val myCarsListForDelete = myCarsList.find { myCarsEntity.bluetooth_mac_address.equals(it.bluetooth_mac_address) }
+                    CustomDialog(context, "블루투스 삭제", "등록된 블루투스 기기를 \n삭제하시겠습니까?", "삭제","취소",  object : CustomDialog.DialogCallback{
+                        override fun onConfirm() {
+                            PreferenceUtil.getPref(context, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
+                                if(it != ""){
+                                    val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
+                                    var myCarsList: MutableList<MyCarsEntity> = GsonBuilder().serializeNulls().create().fromJson(it, type)
+                                    val myCarsListForDelete = myCarsList.find { myCarsEntity.bluetooth_mac_address.equals(it.bluetooth_mac_address) }
 
-                            mycarEntities.remove(myCarsListForDelete)
+                                    mycarEntities.remove(myCarsListForDelete)
 
-                            PreferenceUtil.putPref(context, PreferenceUtil.MY_CAR_ENTITIES, GsonBuilder().serializeNulls().create().toJson(mycarEntities))
+                                    PreferenceUtil.putPref(context, PreferenceUtil.MY_CAR_ENTITIES, GsonBuilder().serializeNulls().create().toJson(mycarEntities))
 
-                            notifyDataSetChanged()
+                                    notifyDataSetChanged()
+                                }
+                            }
                         }
-                    }
+
+                        override fun onCancel() {
+
+                        }
+
+                    }).show()
                 }
 
                 myCarsEntity.type?.let{
