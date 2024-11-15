@@ -67,9 +67,10 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                 rv_connected_car.addItemDecoration(dividerItemDecoration)
 
                 val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
-                val myCarsList: MutableList<MyCarsEntity> = GsonBuilder().serializeNulls().create().fromJson(it, type)
+                var myCarsList: List<MyCarsEntity> = GsonBuilder().serializeNulls().create().fromJson(it, type)
+                myCarsList = myCarsList.filterNot { it.bluetooth_mac_address.isNullOrEmpty() }
 
-                rv_connected_car.adapter = ConnectedCarAdapter(context = this, mycarEntities = myCarsList)
+                rv_connected_car.adapter = ConnectedCarAdapter(context = this, mycarEntities = myCarsList.toMutableList())
 
             }
         }
