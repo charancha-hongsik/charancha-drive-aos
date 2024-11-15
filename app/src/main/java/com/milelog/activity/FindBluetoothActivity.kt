@@ -48,7 +48,7 @@ class FindBluetoothActivity: BaseRefreshActivity() {
         }
 
         rv_find_bluetooth.layoutManager = LinearLayoutManager(this)
-        val dividerItemDecoration = DividerItemDecoration(this, R.color.gray_50, dpToPx(12f)) // 색상 리소스와 구분선 높이 설정
+        val dividerItemDecoration = DividerItemDecoration(this, R.color.white_op_100, dpToPx(12f)) // 색상 리소스와 구분선 높이 설정
         rv_find_bluetooth.addItemDecoration(dividerItemDecoration)
 
         setBluetoothList()
@@ -70,10 +70,6 @@ class FindBluetoothActivity: BaseRefreshActivity() {
             val devices:MutableList<FindBluetoothEntity> = mutableListOf()
 
             pairedDevices?.forEach { device ->
-                Log.d("testestsetset","testsetsetestse deviceClass " + device.bluetoothClass.deviceClass)
-                Log.d("testestsetset","testsetsetestse majorDeviceClass " + device.bluetoothClass.majorDeviceClass)
-                Log.d("testestsetset","testsetsetestse type " + device.type)
-
                 if(handsfreeStatus){
                     if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE)
                         devices.add(FindBluetoothEntity(device.name, device.address, device.bluetoothClass.deviceClass))
@@ -113,7 +109,6 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                 val userEntity = findBluetoothEntity[position]
 
                 holder.tv_find_bluetooth_text1.text = userEntity.name
-//                holder.tv_find_bluetooth_text2.text = userEntity.macAdress
 
                 val profileStr = when (userEntity.major) {
                     1076 -> "Audio/Video: Camcorder"
@@ -173,8 +168,6 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                     else -> "Unknown"
                 }
 
-                holder.tv_find_bluetooth_text3.text = profileStr
-
                 holder.tv_find_bluetooth_text1.setOnClickListener {
                     showBottomSheetForEditCar(userEntity.macAdress, userEntity.name)
                 }
@@ -217,7 +210,6 @@ class FindBluetoothActivity: BaseRefreshActivity() {
 
     class DetectedStatusViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tv_find_bluetooth_text1:TextView  = view.findViewById(R.id.tv_find_bluetooth_text1)
-        val tv_find_bluetooth_text3:TextView  = view.findViewById(R.id.tv_find_bluetooth_text3)
 
     }
 

@@ -6,9 +6,10 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="54dp"
         android:orientation="horizontal"
         android:weightSum="4"
+        android:background="@drawable/radius7_gray50"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent">
@@ -17,24 +18,11 @@
             android:id="@+id/tv_find_bluetooth_text1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-
-        <TextView
-            android:id="@+id/tv_find_bluetooth_text2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-
-        <TextView
-            android:id="@+id/tv_find_bluetooth_text3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
-
-        <TextView
-            android:id="@+id/tv_find_bluetooth_text4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:textAppearance="@style/B1M"
+            android:gravity="left"
+            android:padding="16dp"
+            android:textFontWeight="500"
+            android:textColor="@color/gray_950"
             android:layout_weight="1"/>
 
 
