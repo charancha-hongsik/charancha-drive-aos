@@ -211,7 +211,7 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                     val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
                     val myCarsList: MutableList<MyCarsEntity> = GsonBuilder().serializeNulls().create().fromJson(it, type)
 
-                    rv_registered_car.adapter = MyCarEntitiesAdapter(context = context, mycarEntities = myCarsList, macAddress,bluetoothName )
+                    rv_registered_car.adapter = MyCarEntitiesAdapter(context = context, mycarEntities = myCarsList, macAddress,bluetoothName, bottomSheetDialog)
 
                     // Set the content view of the dialog
                     bottomSheetDialog.setContentView(bottomSheetView)
@@ -237,7 +237,8 @@ class FindBluetoothActivity: BaseRefreshActivity() {
         private val context: Context,
         private val mycarEntities: MutableList<MyCarsEntity>,
         private val macAddress:String,
-        private val bluetoothName:String
+        private val bluetoothName:String,
+        private val bottomSheetDialog: BottomSheetDialog
     ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         companion object {
@@ -289,6 +290,8 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                             myCarsListOnDevice.get(position).bluetooth_name = bluetoothName
 
                             PreferenceUtil.putPref(context, PreferenceUtil.MY_CAR_ENTITIES, GsonBuilder().serializeNulls().create().toJson(myCarsListOnDevice))
+
+                            bottomSheetDialog.dismiss()
                         }
                     }
 
