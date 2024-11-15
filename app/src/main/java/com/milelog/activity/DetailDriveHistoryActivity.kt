@@ -41,6 +41,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.milelog.DividerItemDecoration
 import com.milelog.PreferenceUtil
+import com.milelog.activity.LoadCarMoreInfoActivity.Companion.CORPORATE
 import com.milelog.activity.LoadCarMoreInfoActivity.Companion.PERSONAL
 import com.milelog.retrofit.response.UserCar
 import com.milelog.retrofit.response.VWorldDetailResponse
@@ -846,6 +847,16 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                                 }
                             }
                         }
+
+                        myCarsEntity.type?.let{
+                            if(it.equals(CORPORATE)){
+                                holder.iv_corp.visibility = VISIBLE
+                            }else{
+                                holder.iv_corp.visibility = GONE
+
+                            }
+                        }
+
                         holder.layout_name.visibility = VISIBLE
                         holder.tv_car_no.visibility = VISIBLE
                         holder.tv_no_mycar.visibility = GONE
@@ -876,6 +887,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                             viewModel.patchDrivingInfo(true, null, tracking_id)
                             bottomSheetDialog.dismiss()
                         }
+                        holder.iv_corp.visibility = GONE
+
                     }
                 }else{
                     // 내 차가 아니에요
@@ -893,6 +906,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                         holder.layout_car.isSelected = true
                         TextViewCompat.setTextAppearance(holder.tv_no_mycar, R.style.car_selected)
                     }
+                    holder.iv_corp.visibility = GONE
+
                 }
             }
         }
@@ -908,6 +923,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         val layout_name:LinearLayout = view.findViewById(R.id.layout_name)
         val tv_no_mycar:TextView = view.findViewById(R.id.tv_no_mycar)
         val layout_car:LinearLayout = view.findViewById(R.id.layout_car)
+        val iv_corp:ImageView = view.findViewById(R.id.iv_corp)
     }
 
     class ChooseCorpAdapter(
