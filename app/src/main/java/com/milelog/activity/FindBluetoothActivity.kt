@@ -1,5 +1,6 @@
 package com.milelog.activity
 
+import android.Manifest.permission.ACTIVITY_RECOGNITION
 import android.Manifest.permission.BLUETOOTH_CONNECT
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothClass.Device.AUDIO_VIDEO_HANDSFREE
@@ -8,7 +9,10 @@ import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -20,12 +24,14 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import com.milelog.CustomDialog
 import com.milelog.DividerItemDecoration
 import com.milelog.R
 import com.milelog.FindBluetoothEntity
@@ -276,34 +282,43 @@ class FindBluetoothActivity: BaseRefreshActivity() {
 
                 holder.layout_car.setOnClickListener {
 
-                    PreferenceUtil.getPref(context, PreferenceUtil.MY_CAR_ENTITIES,"")?.let {
-                        if (it != "") {
-                            val myCarsListOnDevice:MutableList<MyCarsEntity> = mutableListOf()
-                            val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
-                            myCarsListOnDevice.addAll(GsonBuilder().serializeNulls().create().fromJson(it, type))
+                    CustomDialog(context, "블루투스 변경", "등록된 블루투스 기기를 \n변경하시겠습니까?", "변경","취소",  object : CustomDialog.DialogCallback{
+                        override fun onConfirm() {
+                            PreferenceUtil.getPref(context, PreferenceUtil.MY_CAR_ENTITIES,"")?.let {
+                                if (it != "") {
+                                    val myCarsListOnDevice:MutableList<MyCarsEntity> = mutableListOf()
+                                    val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
+                                    myCarsListOnDevice.addAll(GsonBuilder().serializeNulls().create().fromJson(it, type))
 
-                            myCarsListOnDevice.forEach { car ->
-                                if (car.bluetooth_mac_address == macAddress) {
-                                    car.bluetooth_mac_address = null
-                                    car.bluetooth_name = null
+                                    myCarsListOnDevice.forEach { car ->
+                                        if (car.bluetooth_mac_address == macAddress) {
+                                            car.bluetooth_mac_address = null
+                                            car.bluetooth_name = null
+                                        }
+                                    }
+
+                                    myCarsListOnDevice.get(position).bluetooth_mac_address = macAddress
+                                    myCarsListOnDevice.get(position).bluetooth_name = bluetoothName
+
+                                    PreferenceUtil.putPref(context, PreferenceUtil.MY_CAR_ENTITIES, GsonBuilder().serializeNulls().create().toJson(myCarsListOnDevice))
+
+                                    (context as FindBluetoothActivity).setConnectedCarList()
+
+                                    PreferenceUtil.putPref(context, MYCAR, macAddress)
+
+                                    Toast.makeText(context,
+                                        myCarsEntity.name +"차량이 " + bluetoothName + " 블루투스와 연결됐어요." , Toast.LENGTH_SHORT).show()
+
+                                    bottomSheetDialog.dismiss()
                                 }
                             }
-
-                            myCarsListOnDevice.get(position).bluetooth_mac_address = macAddress
-                            myCarsListOnDevice.get(position).bluetooth_name = bluetoothName
-
-                            PreferenceUtil.putPref(context, PreferenceUtil.MY_CAR_ENTITIES, GsonBuilder().serializeNulls().create().toJson(myCarsListOnDevice))
-
-                            (context as FindBluetoothActivity).setConnectedCarList()
-
-                            bottomSheetDialog.dismiss()
                         }
-                    }
 
-                    PreferenceUtil.putPref(context, MYCAR, macAddress)
+                        override fun onCancel() {
 
-                    Toast.makeText(context,
-                        myCarsEntity.name +"차량이 " + bluetoothName + " 블루투스와 연결됐어요." , Toast.LENGTH_SHORT).show()
+                        }
+
+                    }).show()
                 }
 
             }
