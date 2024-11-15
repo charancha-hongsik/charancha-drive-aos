@@ -15,6 +15,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -203,7 +204,7 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                     val rv_registered_car = bottomSheetView.findViewById<RecyclerView>(R.id.rv_registered_car)
 
                     rv_registered_car.layoutManager = LinearLayoutManager(context)
-                    val dividerItemDecoration = DividerItemDecoration(context, R.color.gray_50, context.dpToPx(12f)) // 색상 리소스와 구분선 높이 설정
+                    val dividerItemDecoration = DividerItemDecoration(context, R.color.white_op_100, context.dpToPx(8f)) // 색상 리소스와 구분선 높이 설정
                     rv_registered_car.addItemDecoration(dividerItemDecoration)
 
                     val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
@@ -247,7 +248,7 @@ class FindBluetoothActivity: BaseRefreshActivity() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-            val view = LayoutInflater.from(context).inflate(R.layout.item_registered_bluetooth, parent, false)
+            val view = LayoutInflater.from(context).inflate(R.layout.item_connected_bluetooth, parent, false)
             return MyCarEntitiesHolder(view)
         }
 
@@ -255,8 +256,20 @@ class FindBluetoothActivity: BaseRefreshActivity() {
             if (holder is MyCarEntitiesHolder) {
                 val myCarsEntity = mycarEntities[position]
 
-                holder.tv_car_name.text = myCarsEntity.name + " " +myCarsEntity.number + "-> " + myCarsEntity.bluetooth_name
-                holder.tv_car_name.setOnClickListener {
+                holder.tv_no_mycar.visibility = GONE
+                holder.tv_car_name.text = myCarsEntity.name
+                holder.tv_car_no.text = myCarsEntity.number
+
+                myCarsEntity.type?.let{
+                    if(it.equals(CORPORATE)){
+                        holder.iv_corp.visibility = VISIBLE
+                    }else{
+                        holder.iv_corp.visibility = GONE
+
+                    }
+                }
+
+                holder.layout_car.setOnClickListener {
 
                     PreferenceUtil.getPref(context, PreferenceUtil.MY_CAR_ENTITIES,"")?.let {
                         if (it != "") {
@@ -294,6 +307,10 @@ class FindBluetoothActivity: BaseRefreshActivity() {
 
     class MyCarEntitiesHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tv_car_name:TextView  = view.findViewById(R.id.tv_car_name)
+        val iv_corp: ImageView = view.findViewById(R.id.iv_corp)
+        val tv_car_no:TextView = view.findViewById(R.id.tv_car_no)
+        val tv_no_mycar:TextView = view.findViewById(R.id.tv_no_mycar)
+        val layout_car:LinearLayout = view.findViewById(R.id.layout_car)
     }
 
     class ConnectedCarAdapter(

@@ -25,6 +25,7 @@
             android:text="소나타 디 엣지 123가 4567"/>
 
         <ImageView
+            android:id="@+id/iv_corp"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:src="@drawable/ic_corp"
