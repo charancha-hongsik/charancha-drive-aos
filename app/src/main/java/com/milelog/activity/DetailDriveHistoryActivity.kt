@@ -1,13 +1,18 @@
 package com.milelog.activity
 
+import android.Manifest.permission.ACTIVITY_RECOGNITION
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -39,6 +44,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import com.milelog.CustomDialog
 import com.milelog.DividerItemDecoration
 import com.milelog.PreferenceUtil
 import com.milelog.activity.LoadCarMoreInfoActivity.Companion.CORPORATE
@@ -49,6 +55,7 @@ import com.milelog.retrofit.response.VWorldResponse
 import com.milelog.room.entity.MyCarsEntity
 import com.milelog.viewmodel.BaseViewModel
 import com.milelog.viewmodel.state.GetDrivingInfoState
+import com.milelog.viewmodel.state.PatchCorpTypeState
 import com.milelog.viewmodel.state.PatchDrivingInfoState
 import com.milelog.viewmodel.state.PatchMemoState
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation
@@ -88,6 +95,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var btn_back: ImageView
     lateinit var tv_scope_date_mycar:TextView
     lateinit var tv_mycar:TextView
+    lateinit var tv_type:TextView
 
     lateinit var btn_choose_mycar: LinearLayout
     lateinit var tv_mycar_scope_info:LinearLayout
@@ -126,6 +134,15 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var tracking_id:String
     var pastMemo:String? = null
 
+    enum class CorpType(val description: String) {
+        WORK("출/퇴근"),
+        NON_WORK("비업무"),
+        COMMUTE("일반업무");
+
+        override fun toString(): String {
+            return description
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -168,6 +185,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         btn_choose_mycar = findViewById(R.id.btn_choose_mycar)
         tv_scope_date_mycar = findViewById(R.id.tv_scope_date_mycar)
         tv_mycar_scope_info = findViewById(R.id.tv_mycar_scope_info)
+        tv_type = findViewById(R.id.tv_type)
 
         iv_tooltip_verification = findViewById(R.id.iv_tooltip_verification)
         iv_tooltip_low_speed = findViewById(R.id.iv_tooltip_low_speed)
@@ -249,6 +267,24 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     intent.putExtra("userCar",Gson().toJson(userCar))
                     setResult(RESULT_OK, intent)
                     finish()
+                }
+            }
+        })
+
+        detailDriveHistoryViewModel.patchCorpType.observe(this@DetailDriveHistoryActivity, BaseViewModel.EventObserver { state ->
+            when (state) {
+                is PatchCorpTypeState.Loading -> {
+
+                }
+                is PatchCorpTypeState.Success -> {
+                    tv_type.text = state.data.type
+
+                }
+                is PatchCorpTypeState.Error -> {
+
+                }
+                is PatchCorpTypeState.Empty -> {
+
                 }
             }
         })
@@ -351,6 +387,16 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     tv_rapid_desc_count_info.text = getDrivingInfoResponse.rapidDecelerationCount.toInt().toString() + "회"
                     et_memo.setText(getDrivingInfoResponse.memo)
                     pastMemo = getDrivingInfoResponse.memo
+                    tv_type.text = state.data.type
+
+                    getDrivingInfoResponse.userCar?.let{
+                        if(it.type.equals(CORPORATE)){
+                            btn_choose_mycar.isClickable = false
+                        }else{
+                            btn_choose_mycar.isClickable = true
+                        }
+                    }
+
 
                     if(getDrivingInfoResponse.startAddress != null){
                         tv_start_time.text = getDrivingInfoResponse.startAddress.road?.name?:getDrivingInfoResponse.startAddress.parcel?.name
@@ -787,8 +833,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         }
     }
 
-
-    fun showBottomSheetForChooseCorp() {
+    fun showBottomSheetForChooseCorp(isChanged:Boolean= false) {
         val bottomSheetDialog = BottomSheetDialog(this, R.style.CustomBottomSheetDialog)
 
         // Inflate the layout
@@ -800,7 +845,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         val dividerItemDecoration = DividerItemDecoration(this, R.color.white_op_100, this.dpToPx(8f)) // 색상 리소스와 구분선 높이 설정
         rv_choose_corp.addItemDecoration(dividerItemDecoration)
 
-        rv_choose_corp.adapter = ChooseCorpAdapter(context = this, corpList = mutableListOf("출/퇴근", "비업무","일반업무"), bottomSheetDialog)
+        rv_choose_corp.adapter = ChooseCorpAdapter(context = this, corpList = mutableListOf(CorpType.WORK.description, CorpType.NON_WORK.description,CorpType.COMMUTE.description), bottomSheetDialog, detailDriveHistoryViewModel, tracking_id, isChanged)
 
         // Set the content view of the dialog
         bottomSheetDialog.setContentView(bottomSheetView)
@@ -853,7 +898,6 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                                 holder.iv_corp.visibility = VISIBLE
                             }else{
                                 holder.iv_corp.visibility = GONE
-
                             }
                         }
 
@@ -883,10 +927,20 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                         holder.tv_no_mycar.visibility = VISIBLE
 
                         holder.tv_no_mycar.text = context.getString(R.string.pending)
-                        holder.layout_car.setOnClickListener {
+
+                        if (myCarsEntity.type == null) {
                             viewModel.patchDrivingInfo(true, null, tracking_id)
                             bottomSheetDialog.dismiss()
+                        } else {
+                            if (myCarsEntity.type.equals(CORPORATE)) {
+                                (context as DetailDriveHistoryActivity).showBottomSheetForChooseCorp(true)
+                            } else {
+                                viewModel.patchDrivingInfo(false, null, tracking_id)
+                            }
+                            bottomSheetDialog.dismiss()
                         }
+
+
                         holder.iv_corp.visibility = GONE
 
                     }
@@ -929,7 +983,10 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     class ChooseCorpAdapter(
         private val context: Context,
         private val corpList: MutableList<String>,
-        private val bottomSheetDialog: BottomSheetDialog
+        private val bottomSheetDialog: BottomSheetDialog,
+        private val viewModel: DetailDriveHistoryViewModel,
+        private val tracking_id: String,
+        private val isChanged: Boolean
     ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         companion object {
@@ -947,10 +1004,32 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
             if (holder is ChooseCorpHolder) {
-                holder.tv_corp.text = corpList.get(position)
+                val corp = corpList.get(position)
+                holder.tv_corp.text = corp
+
+                if(holder.tv_corp.text.equals(corp)){
+                    holder.layout_car.isSelected = true
+                    TextViewCompat.setTextAppearance(holder.tv_corp, R.style.type_selected)
+                }
 
                 holder.layout_car.setOnClickListener {
-                    bottomSheetDialog.dismiss()
+
+                    if(isChanged){
+                        CustomDialog(context, "이동수단 변경", "이동 수단을 법인차로 저장하면 더이상\n변경할 수 없습니다. 변경핫겠습니까?", "변경","취소",  object : CustomDialog.DialogCallback{
+                            override fun onConfirm() {
+                                viewModel.patchDrivingInfo(true, null, tracking_id)
+                                viewModel.patchCorpType(getNameFromDescription(corp), tracking_id = tracking_id)
+                                bottomSheetDialog.dismiss()
+                            }
+
+                            override fun onCancel() {
+                                bottomSheetDialog.dismiss()
+                            }
+
+                        }).show()
+                    }else{
+                        viewModel.patchCorpType(getNameFromDescription(corp), tracking_id = tracking_id)
+                    }
                 }
             }
         }
@@ -958,6 +1037,12 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         override fun getItemCount(): Int {
             return corpList.size
         }
+
+
+        fun getNameFromDescription(description: String): String {
+            return CorpType.values().find { it.description == description }?.name!!
+        }
+
     }
 
     class ChooseCorpHolder(view: View) : RecyclerView.ViewHolder(view) {

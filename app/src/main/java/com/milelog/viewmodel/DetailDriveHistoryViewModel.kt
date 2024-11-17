@@ -7,14 +7,17 @@ import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.milelog.PreferenceUtil
+import com.milelog.retrofit.request.PatchCorpType
 import com.milelog.retrofit.request.PatchDrivingInfo
 import com.milelog.retrofit.request.PatchMemo
 import com.milelog.retrofit.response.GetDrivingInfoResponse
+import com.milelog.retrofit.response.PatchCorpTypeResponse
 import com.milelog.retrofit.response.PatchDrivingResponse
 import com.milelog.retrofit.response.PatchMemoResponse
 import com.milelog.room.database.DriveDatabase
 import com.milelog.room.entity.DriveForApp
 import com.milelog.viewmodel.state.GetDrivingInfoState
+import com.milelog.viewmodel.state.PatchCorpTypeState
 import com.milelog.viewmodel.state.PatchDrivingInfoState
 import com.milelog.viewmodel.state.PatchMemoState
 import kotlinx.coroutines.launch
@@ -39,6 +42,9 @@ class DetailDriveHistoryViewModel: BaseViewModel() {
 
     private val _patchMemo = MutableLiveData<Event<PatchMemoState>>()
     val patchMemo: MutableLiveData<Event<PatchMemoState>> get() = _patchMemo
+
+    private val _patchCorpType = MutableLiveData<Event<PatchCorpTypeState>>()
+    val patchCorpType: MutableLiveData<Event<PatchCorpTypeState>> get() = _patchCorpType
 
     private val _getDrivingInfo = MutableLiveData<Event<GetDrivingInfoState>>()
     val getDrivingInfo: MutableLiveData<Event<GetDrivingInfoState>> get() = _getDrivingInfo
@@ -126,11 +132,44 @@ class DetailDriveHistoryViewModel: BaseViewModel() {
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                _patchDrivingInfo.value = Event(PatchDrivingInfoState.Empty)
+                _patchMemo.value = Event(PatchMemoState.Empty)
             }
 
         })
     }
+
+    fun patchCorpType(type:String, tracking_id:String){
+        val gson = GsonBuilder().serializeNulls().create()
+        val jsonParam =
+            gson.toJson(PatchCorpType(type))
+        apiService(context).patchDrivingInfo("Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!, tracking_id,jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object:
+            Callback<ResponseBody> {
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+                try {
+                    if (response.code() == 200 || response.code() == 201) {
+                        val patchCorpTypeResponse = GsonBuilder().serializeNulls().create().fromJson(
+                            response.body()?.string(),
+                            PatchCorpTypeResponse::class.java
+                        )
+                        _patchCorpType.value = Event(PatchCorpTypeState.Success(patchCorpTypeResponse))
+                    }else if(response.code() == 401){
+                        _patchCorpType.value = Event(PatchCorpTypeState.Error(response.code(), response.message()))
+                    }
+                }catch (e:Exception){
+                    _patchCorpType.value = Event(PatchCorpTypeState.Empty)
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                _patchCorpType.value = Event(PatchCorpTypeState.Empty)
+            }
+
+        })
+    }
+
 
     fun getDrivingInfo(tracking_id:String){
         apiService(context).getDrivingInfo("Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!, tracking_id).enqueue(object : Callback<ResponseBody>{

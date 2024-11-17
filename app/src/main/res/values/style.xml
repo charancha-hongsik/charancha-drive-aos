@@ -293,5 +293,13 @@
         <item name="android:textColor">@color/gray_600</item>
     </style>
 
+    <style name="type_selected" android:font="@font/pretendardmedium">
+        <item name="android:textSize">16dp</item>
+        <item name="lineHeight">22dp</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="fontWeight">500</item>
+        <item name="android:textColor">#0740E4</item>
+    </style>
+
 
 </resources>
