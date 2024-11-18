@@ -142,6 +142,7 @@
             android:text="1번이라도 연결했던 블루투스 목록을 불러와요.\n블루투스 연결 후 다시 검색해 주세요."/>
 
         <TextView
+            android:id="@+id/btn_find_bluetooth"
             android:layout_width="125dp"
             android:layout_height="46dp"
             android:gravity="center"

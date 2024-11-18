@@ -1,5 +1,6 @@
 package com.milelog.activity
 
+import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.Manifest.permission.ACTIVITY_RECOGNITION
 import android.Manifest.permission.BLUETOOTH_CONNECT
 import android.Manifest.permission.POST_NOTIFICATIONS
@@ -8,9 +9,12 @@ import android.bluetooth.BluetoothClass.Device.AUDIO_VIDEO_HANDSFREE
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -43,9 +47,11 @@ class FindBluetoothActivity: BaseRefreshActivity() {
     lateinit var btn_hands_free:TextView
     lateinit var layout_bluetooth:LinearLayout
     lateinit var layout_no_bluetooth:LinearLayout
+    lateinit var btn_find_bluetooth:TextView
     lateinit var getMyCarInfoResponses:List<GetMyCarInfoResponse>
     var handsfreeStatus:Boolean = false
     lateinit var btn_back:ImageView
+    var permissionState = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +61,7 @@ class FindBluetoothActivity: BaseRefreshActivity() {
         layout_bluetooth = findViewById(R.id.layout_bluetooth)
         layout_no_bluetooth = findViewById(R.id.layout_no_bluetooth)
         rv_connected_car = findViewById(R.id.rv_connected_car)
+        btn_find_bluetooth = findViewById(R.id.btn_find_bluetooth)
         btn_back = findViewById(R.id.btn_back)
         btn_back.setOnClickListener {
             finish()
@@ -67,27 +74,47 @@ class FindBluetoothActivity: BaseRefreshActivity() {
         rv_connected_car.layoutManager = LinearLayoutManager(this)
         rv_connected_car.addItemDecoration(dividerItemDecoration)
 
+        btn_find_bluetooth.setOnClickListener {
+            setList()
+        }
         setList()
-
     }
+
+    override fun onResume() {
+        super.onResume()
+        if(permissionState){
+            if(ContextCompat.checkSelfPermission(this, BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED){
+                setList()
+                permissionState = false
+            }else{
+                layout_no_bluetooth.visibility = VISIBLE
+                layout_bluetooth.visibility = GONE
+            }
+        }
+    }
+
 
     private fun setList(){
         if(ContextCompat.checkSelfPermission(this, BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED){
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    checkPermission(mutableListOf(
-                        BLUETOOTH_CONNECT
-                    ).apply {
+                checkPermission(mutableListOf(
+                    BLUETOOTH_CONNECT
+                ).apply {
 
-                    }.toTypedArray(),0)
-                }
+                }.toTypedArray(),0)
             }else{
                 setBluetoothList()
                 setConnectedCarList()
+
+                layout_no_bluetooth.visibility = GONE
+                layout_bluetooth.visibility = VISIBLE
             }
         }else{
             setBluetoothList()
             setConnectedCarList()
+
+            layout_no_bluetooth.visibility = GONE
+            layout_bluetooth.visibility = VISIBLE
         }
     }
 
@@ -448,8 +475,33 @@ class FindBluetoothActivity: BaseRefreshActivity() {
         if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
             setBluetoothList()
             setConnectedCarList()
+
+            layout_no_bluetooth.visibility = GONE
+            layout_bluetooth.visibility = VISIBLE
         } else {
-            showCustomToast(this, "권한이 필요합니다.")
+            CustomDialog(
+                this,
+                "블루투스",
+                "동작 및 피트니스 서비스를 사용할 수 없습니다. 기기의 ‘설정 > 개인정보 보호'에서 동작 및 피트니스 서비스를 켜주세요 (필수 권한)",
+                "설정으로 이동",
+                "취소",
+                object : CustomDialog.DialogCallback {
+                    override fun onConfirm() {
+                        val openSettingsIntent =
+                            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                val uri: Uri = Uri.fromParts("package", packageName, null)
+                                data = uri
+                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            }
+                        permissionState = true
+                        startActivity(openSettingsIntent)
+                    }
+
+                    override fun onCancel() {
+                        finish()
+                    }
+
+                }).show()
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
