@@ -1129,7 +1129,7 @@
                         android:textFontWeight="500"
                         android:textAppearance="@style/B1M"
                         android:inputType="textMultiLine"
-                        android:maxLength="3000"
+                        android:maxLength="100"
                         android:padding="16dp"
                         android:lines="4"
                         android:maxLines="5"
@@ -1142,10 +1142,11 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
+                    android:id="@+id/tv_text_length"
                     android:layout_width="match_parent"
                     android:layout_height="18dp"
                     android:layout_marginTop="6dp"
-                    android:text="10/3000"
+                    android:text="10/100"
                     android:textAppearance="@style/C1R"
                     android:textFontWeight="400"
                     android:gravity="right"/>

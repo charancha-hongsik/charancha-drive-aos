@@ -303,6 +303,11 @@
             android:exported="true"/>
 
         <activity
+            android:name=".activity.ExcelActivity"
+            android:screenOrientation="portrait"
+            android:exported="true"/>
+
+        <activity
             android:name=".activity.InputNameActivity"
             android:screenOrientation="portrait"
             android:exported="true"/>
