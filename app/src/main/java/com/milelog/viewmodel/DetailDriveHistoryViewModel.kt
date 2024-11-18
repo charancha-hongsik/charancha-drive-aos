@@ -138,10 +138,10 @@ class DetailDriveHistoryViewModel: BaseViewModel() {
         })
     }
 
-    fun patchCorpType(type:String, tracking_id:String){
+    fun patchCorpType(userCarId: String, isActive:Boolean , type:String, tracking_id:String){
         val gson = GsonBuilder().serializeNulls().create()
         val jsonParam =
-            gson.toJson(PatchCorpType(type))
+            gson.toJson(PatchCorpType(userCarId, isActive, type))
         apiService(context).patchDrivingInfo("Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!, tracking_id,jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object:
             Callback<ResponseBody> {
             override fun onResponse(
@@ -149,6 +149,7 @@ class DetailDriveHistoryViewModel: BaseViewModel() {
                 response: Response<ResponseBody>
             ) {
                 try {
+                    Log.d("testestestset","testestestest :: " + response.code())
                     if (response.code() == 200 || response.code() == 201) {
                         val patchCorpTypeResponse = GsonBuilder().serializeNulls().create().fromJson(
                             response.body()?.string(),
