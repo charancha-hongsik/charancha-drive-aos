@@ -393,7 +393,9 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     tv_rapid_desc_count_info.text = getDrivingInfoResponse.rapidDecelerationCount.toInt().toString() + "회"
                     et_memo.setText(getDrivingInfoResponse.memo)
                     pastMemo = getDrivingInfoResponse.memo
-                    tv_type.text = state.data.type
+                    state.data.type?.let{
+                        tv_type.text = CorpType.valueOf(it).description
+                    }
 
                     getDrivingInfoResponse.userCar?.let{
                         if(it.type.equals(CORPORATE)){

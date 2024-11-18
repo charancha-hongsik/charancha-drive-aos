@@ -255,7 +255,7 @@
                     android:id="@+id/tv_type"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="비업무용"
+                    android:text="-"
                     android:textFontWeight="600"
                     android:textAppearance="@style/B2SB"
                     android:textColor="@color/gray_950"
