@@ -64,9 +64,153 @@
 
         </LinearLayout>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="주행 이력을 저장할 차를\n선택해 주세요"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="16dp"
+            android:textAppearance="@style/T2SB"
+            android:textFontWeight="600"
+            android:textColor="@color/gray_950" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/gray_600"
+            android:textAppearance="@style/C1R"
+            android:textFontWeight="400"
+            android:layout_marginLeft="20dp"
+            android:text="*복수 선택 가능"
+            android:layout_marginTop="8dp"/>
+
+        <com.nex3z.flowlayout.FlowLayout
+            android:id="@+id/layout_flow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            app:flChildSpacing="6dp"
+            app:flRowSpacing="8dp">
 
 
+        </com.nex3z.flowlayout.FlowLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginTop="32dp"
+            android:background="@color/gray_50"
+            android:paddingTop="32dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="안내"
+                android:textAppearance="@style/B2B"
+                android:textColor="@color/gray_800"
+                android:textFontWeight="700"
+                android:paddingLeft="8dp"/>
+            
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+                
+                <View
+                    android:layout_width="3dp"
+                    android:layout_height="3dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_gravity="top"
+                    android:background="@drawable/radius999_gray700" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/C1R"
+                    android:textFontWeight="400"
+                    android:textColor="@color/gray_700"
+                    android:layout_marginLeft="4dp"
+                    android:text="1개월 단위로 이력을 저장할 수 있어요."/>
+                
+                
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="3dp"
+                    android:layout_height="3dp"
+                    android:background="@drawable/radius999_gray700"
+                    android:layout_marginTop="8dp"
+                    android:layout_gravity="top"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/C1R"
+                    android:textFontWeight="400"
+                    android:textColor="@color/gray_700"
+                    android:layout_marginLeft="4dp"
+                    android:text="주행 이력은 엑셀(.xlxs) 파일로 제공돼요. "/>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="3dp"
+                    android:layout_height="3dp"
+                    android:background="@drawable/radius999_gray700"
+                    android:layout_marginTop="8dp"
+                    android:layout_gravity="top"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/C1R"
+                    android:textFontWeight="400"
+                    android:textColor="@color/gray_700"
+                    android:layout_marginLeft="4dp"
+                    android:text="마일로그에서 제공하는 주행 이력은 이용 환경에 따라
+실제와 다를 수 있어요."/>
+
+
+            </LinearLayout>
+
+            
+        </LinearLayout>
+
+
+        
     </LinearLayout>
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginBottom="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/radius5_blue800"
+        android:textColor="@color/white_op_95"
+        android:text="주행 이력 저장하기"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
