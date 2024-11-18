@@ -1,12 +1,15 @@
 package com.milelog.activity
 
+import android.Manifest.permission.ACTIVITY_RECOGNITION
 import android.Manifest.permission.BLUETOOTH_CONNECT
+import android.Manifest.permission.POST_NOTIFICATIONS
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothClass.Device.AUDIO_VIDEO_HANDSFREE
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,6 +22,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -37,6 +41,8 @@ class FindBluetoothActivity: BaseRefreshActivity() {
     lateinit var rv_find_bluetooth:RecyclerView
     lateinit var rv_connected_car:RecyclerView
     lateinit var btn_hands_free:TextView
+    lateinit var layout_bluetooth:LinearLayout
+    lateinit var layout_no_bluetooth:LinearLayout
     lateinit var getMyCarInfoResponses:List<GetMyCarInfoResponse>
     var handsfreeStatus:Boolean = false
     lateinit var btn_back:ImageView
@@ -46,12 +52,9 @@ class FindBluetoothActivity: BaseRefreshActivity() {
         setContentView(R.layout.activity_find_bluetooth)
 
         rv_find_bluetooth = findViewById(R.id.rv_find_bluetooth)
+        layout_bluetooth = findViewById(R.id.layout_bluetooth)
+        layout_no_bluetooth = findViewById(R.id.layout_no_bluetooth)
         rv_connected_car = findViewById(R.id.rv_connected_car)
-        btn_hands_free = findViewById(R.id.btn_hands_free)
-        btn_hands_free.setOnClickListener {
-            setBluetoothList()
-            handsfreeStatus = !handsfreeStatus
-        }
         btn_back = findViewById(R.id.btn_back)
         btn_back.setOnClickListener {
             finish()
@@ -64,10 +67,28 @@ class FindBluetoothActivity: BaseRefreshActivity() {
         rv_connected_car.layoutManager = LinearLayoutManager(this)
         rv_connected_car.addItemDecoration(dividerItemDecoration)
 
-        setBluetoothList()
-        setConnectedCarList()
-        handsfreeStatus = !handsfreeStatus
+        setList()
 
+    }
+
+    private fun setList(){
+        if(ContextCompat.checkSelfPermission(this, BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    checkPermission(mutableListOf(
+                        BLUETOOTH_CONNECT
+                    ).apply {
+
+                    }.toTypedArray(),0)
+                }
+            }else{
+                setBluetoothList()
+                setConnectedCarList()
+            }
+        }else{
+            setBluetoothList()
+            setConnectedCarList()
+        }
     }
 
     private fun setConnectedCarList(){
@@ -411,4 +432,26 @@ class FindBluetoothActivity: BaseRefreshActivity() {
         val layout_corp: LinearLayout = view.findViewById(R.id.layout_corp)
         val btn_delete:ImageView = view.findViewById(R.id.btn_delete)
     }
+
+    private fun checkPermission(permissions: Array<String>, code: Int) {
+        if(ContextCompat.checkSelfPermission(this, permissions[0]) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, permissions,code)
+            return
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+            setBluetoothList()
+            setConnectedCarList()
+        } else {
+            showCustomToast(this, "권한이 필요합니다.")
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
 }
