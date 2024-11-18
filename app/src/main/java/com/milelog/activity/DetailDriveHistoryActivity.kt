@@ -206,7 +206,6 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
         btn_choose_corp = findViewById(R.id.btn_choose_corp)
         btn_choose_corp.setOnClickListener {
-//            Log.d("testestestest","testestestest userCar!!.id :: " + userCar!!.id)
 //            showBottomSheetForChooseCorp(userCar!!.id)
         }
 
