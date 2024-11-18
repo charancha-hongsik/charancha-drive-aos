@@ -1016,10 +1016,10 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                 val corp = corpList.get(position)
                 holder.tv_corp.text = corp
 
-                if(holder.tv_corp.text.equals(type)){
-                    holder.layout_car.isSelected = true
-                    TextViewCompat.setTextAppearance(holder.tv_corp, R.style.type_selected)
-                }
+//                if(holder.tv_corp.text.equals(type)){
+//                    holder.layout_car.isSelected = true
+//                    TextViewCompat.setTextAppearance(holder.tv_corp, R.style.type_selected)
+//                }
 
                 holder.layout_car.setOnClickListener {
                     if(userCarId != null){
