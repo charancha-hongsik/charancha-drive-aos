@@ -205,9 +205,10 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         tv_end_address_detail = findViewById(R.id.tv_end_address_detail)
 
         btn_choose_corp = findViewById(R.id.btn_choose_corp)
-//        btn_choose_corp.setOnClickListener {
-//            showBottomSheetForChooseCorp(null)
-//        }
+        btn_choose_corp.setOnClickListener {
+//            Log.d("testestestest","testestestest userCar!!.id :: " + userCar!!.id)
+//            showBottomSheetForChooseCorp(userCar!!.id)
+        }
 
         et_memo = findViewById(R.id.et_memo)
 

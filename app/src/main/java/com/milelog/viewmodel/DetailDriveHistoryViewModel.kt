@@ -139,6 +139,13 @@ class DetailDriveHistoryViewModel: BaseViewModel() {
     }
 
     fun patchCorpType(userCarId: String, isActive:Boolean , type:String, tracking_id:String){
+        Log.d("testestestset","testestestest userCarId :: " + userCarId)
+        Log.d("testestestset","testestestest isActive :: " + isActive)
+        Log.d("testestestset","testestestest type :: " + type)
+        Log.d("testestestset","testestestest tracking_id :: " + tracking_id)
+        Log.d("testestestset","testestestest token :: " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!)
+
+
         val gson = GsonBuilder().serializeNulls().create()
         val jsonParam =
             gson.toJson(PatchCorpType(userCarId, isActive, type))
