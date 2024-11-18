@@ -103,6 +103,21 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/btn_find_bluetooth2"
+            android:layout_width="match_parent"
+            android:text="블루투스 검색"
+            android:textAppearance="@style/B1SB"
+            android:textFontWeight="600"
+            android:textColor="@color/white_op_95"
+            android:layout_height="52dp"
+            android:gravity="center"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/radius5_blue800"
+            android:layout_marginBottom="40dp"
+            android:layout_marginTop="12dp"/>
+
     </LinearLayout>
 
     <LinearLayout

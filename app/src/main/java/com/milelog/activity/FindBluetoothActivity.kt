@@ -52,6 +52,7 @@ class FindBluetoothActivity: BaseRefreshActivity() {
     var handsfreeStatus:Boolean = false
     lateinit var btn_back:ImageView
     var permissionState = false
+    lateinit var btn_find_bluetooth2:TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +63,7 @@ class FindBluetoothActivity: BaseRefreshActivity() {
         layout_no_bluetooth = findViewById(R.id.layout_no_bluetooth)
         rv_connected_car = findViewById(R.id.rv_connected_car)
         btn_find_bluetooth = findViewById(R.id.btn_find_bluetooth)
+        btn_find_bluetooth2 = findViewById(R.id.btn_find_bluetooth2)
         btn_back = findViewById(R.id.btn_back)
         btn_back.setOnClickListener {
             finish()
@@ -75,6 +77,10 @@ class FindBluetoothActivity: BaseRefreshActivity() {
         rv_connected_car.addItemDecoration(dividerItemDecoration)
 
         btn_find_bluetooth.setOnClickListener {
+            setList()
+        }
+
+        btn_find_bluetooth2.setOnClickListener{
             setList()
         }
         setList()
