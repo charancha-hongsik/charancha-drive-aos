@@ -287,7 +287,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
                     tv_mycar.text = state.data.userCar.carName
                     iv_corp.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_star1))
-                    btn_choose_corp.visibility = VISIBLE
+                    iv_corp.visibility = VISIBLE
                 }
                 is PatchCorpTypeState.Error -> {
 
