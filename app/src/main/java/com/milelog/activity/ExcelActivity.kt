@@ -10,6 +10,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -56,6 +57,7 @@ class ExcelActivity:BaseRefreshActivity() {
     lateinit var btn_save_excel:TextView
     lateinit var btn_choose_date:LinearLayout
     lateinit var tv_chosen_date:TextView
+    lateinit var btn_back: ImageView
     var selectedDate:String = "2024년 10월"
 
     val filterList: MutableList<CarListFilter> = mutableListOf()
@@ -75,6 +77,7 @@ class ExcelActivity:BaseRefreshActivity() {
         btn_save_excel = findViewById(R.id.btn_save_excel)
         btn_choose_date = findViewById(R.id.btn_choose_date)
         tv_chosen_date = findViewById(R.id.tv_chosen_date)
+        btn_back = findViewById(R.id.btn_back)
 
         selectedDate = getNowMonth()
         tv_chosen_date.text = selectedDate
@@ -230,10 +233,6 @@ class ExcelActivity:BaseRefreshActivity() {
 
     fun setClickListener(){
         btn_save_excel.setOnClickListener {
-            Log.d("testsetsetest","testsetsetset isActiveForFilter :: " + isActiveForFilter)
-            Log.d("testsetsetest","testsetsetset carIdForFilter :: " + carIdForFilter)
-
-
             apiService().getDrivingHistories(
                 token = "Bearer " + PreferenceUtil.getPref(this,  PreferenceUtil.ACCESS_TOKEN, "")!!,
                 size = 30,
@@ -273,6 +272,10 @@ class ExcelActivity:BaseRefreshActivity() {
 
         btn_choose_date.setOnClickListener {
             showBottomSheetForChooseDate()
+        }
+
+        btn_back.setOnClickListener {
+            finish()
         }
     }
 
