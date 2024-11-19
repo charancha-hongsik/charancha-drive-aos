@@ -59,6 +59,8 @@ class ExcelActivity:BaseRefreshActivity() {
     var selectedDate:String = "2024년 10월"
 
     val filterList: MutableList<CarListFilter> = mutableListOf()
+    var carIdForFilter: String? = null
+    var isActiveForFilter: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -129,6 +131,20 @@ class ExcelActivity:BaseRefreshActivity() {
                     }
 
                     (tv_car_name.parent as LinearLayout).setOnClickListener {
+
+                        val matchingFilter = filterList.find { it.name == tv_car_name.text }
+                        carIdForFilter = matchingFilter?.id
+
+                        if(tv_car_name.text.toString().equals(getString(R.string.pending))){
+                            isActiveForFilter = false
+                            carIdForFilter = null
+                        }else if(tv_car_name.text.toString().equals(getString(R.string.not_my_car))){
+                            isActiveForFilter = false
+                            carIdForFilter = null
+                        }else{
+                            isActiveForFilter = true
+                        }
+
                         // Iterate over the list and update the background of all TextViews
                         for (view in carViews) {
                             if (view.tv_car_name == tv_car_name) {
@@ -214,6 +230,9 @@ class ExcelActivity:BaseRefreshActivity() {
 
     fun setClickListener(){
         btn_save_excel.setOnClickListener {
+            Log.d("testsetsetest","testsetsetset isActiveForFilter :: " + isActiveForFilter)
+            Log.d("testsetsetest","testsetsetset carIdForFilter :: " + carIdForFilter)
+
 
             apiService().getDrivingHistories(
                 token = "Bearer " + PreferenceUtil.getPref(this,  PreferenceUtil.ACCESS_TOKEN, "")!!,
@@ -224,8 +243,8 @@ class ExcelActivity:BaseRefreshActivity() {
                 key = "startTime",
                 startTime = getDateRange(selectedDate).second,
                 endTime = getDateRange(selectedDate).first,
-                isActive = true,
-                userCarId = "f3f889a1-a154-4173-9c89-1414731f61bc").enqueue(object: Callback<ResponseBody> {
+                isActive = isActiveForFilter,
+                userCarId = carIdForFilter).enqueue(object: Callback<ResponseBody> {
                 override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                     if(response.code() == 200 || response.code() == 201){
                         val jsonString = response.body()?.string()
