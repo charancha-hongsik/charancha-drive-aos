@@ -4,7 +4,6 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +14,6 @@ import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.car.app.model.Row
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.widget.TextViewCompat
@@ -33,7 +31,6 @@ import com.milelog.CarListFilter
 import com.milelog.CarViews
 import com.milelog.DividerItemDecoration
 import com.milelog.activity.LoadCarMoreInfoActivity.Companion.CORPORATE
-import com.milelog.activity.MyDriveHistoryActivity.DriveHistoryAdapter.LastItemViewHolder
 import com.milelog.retrofit.response.DriveItem
 import com.milelog.retrofit.response.Meta
 import com.milelog.retrofit.response.NewDriveHistoryResponse
@@ -43,12 +40,6 @@ import com.milelog.viewmodel.BaseViewModel
 import com.milelog.viewmodel.state.GetDriveHistoryMoreState
 import com.milelog.viewmodel.state.GetDriveHistoryState
 import com.nex3z.flowlayout.FlowLayout
-import org.apache.poi.ss.usermodel.Cell
-import org.apache.poi.xssf.usermodel.XSSFRow
-import org.apache.poi.xssf.usermodel.XSSFWorkbook
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 import java.text.SimpleDateFormat
 import java.time.*
 import java.time.format.DateTimeFormatter
@@ -569,15 +560,6 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         })
 
         btn_download.setOnClickListener {
-//            Log.d("testsetseset","testsetesetsset 엑셀 파일 저장 완료::: " )
-//
-//            val data: List<List<String>> = listOf(
-//                listOf("A1", "B1", "C1"), // 첫 번째 행
-//                listOf("A2", "B2", "C2"), // 두 번째 행
-//                listOf("A3", "B3", "C3")  // 세 번째 행
-//            )
-//
-//            createAndSaveExcelFile(this, "test",data)
             startActivity(Intent(this, ExcelActivity::class.java))
         }
 
@@ -1099,40 +1081,6 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
             layout_choose_date.visibility = GONE
         }else{
             finish()
-        }
-    }
-
-    fun createAndSaveExcelFile(context: Context, fileName: String, data: List<List<String>>) {
-        // 1. 엑셀 파일 생성
-        val workbook = XSSFWorkbook()
-        val sheet = workbook.createSheet("Sheet1") // 시트 이름 지정
-
-        // 2. 데이터를 엑셀에 작성
-        for ((rowIndex, rowData) in data.withIndex()) {
-            val row = sheet.createRow(rowIndex) // null 가능성을 처리하지 않아도 됨
-            if (row != null) { // 혹시라도 createRow가 null을 반환할 가능성 대비
-                for ((colIndex, cellData) in rowData.withIndex()) {
-                    val cell = row.createCell(colIndex) // row가 null이 아님을 보장
-                    cell.setCellValue(cellData) // 셀 값 설정
-                }
-            }
-        }
-
-        // 3. 저장할 파일 경로 설정
-        val directory = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS) // Documents 디렉토리
-        val file = File(directory, "$fileName.xlsx")
-
-        try {
-            // 4. 파일에 쓰기
-            FileOutputStream(file).use { outputStream ->
-                workbook.write(outputStream)
-                workbook.close()
-                Log.d("testsetseset","testsetesetsset 엑셀 파일 저장 완료::: " + file.absolutePath)
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
-            Log.d("testsetseset","testsetesetsset 엑셀 파일 저장 실패::: " + e.message)
-
         }
     }
 }

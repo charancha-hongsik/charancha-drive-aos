@@ -35,6 +35,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
+            android:id="@+id/btn_choose_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -43,12 +44,13 @@
             android:background="@drawable/radius5_blue100">
 
             <TextView
+                android:id="@+id/tv_chosen_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/B1SB"
                 android:textFontWeight="600"
                 android:textColor="#0740E4"
-                android:text="2025년 6월"
+                android:text="2024년 6월"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="6dp"
                 android:layout_marginBottom="6dp"/>
@@ -200,6 +202,7 @@
     </LinearLayout>
     
     <TextView
+        android:id="@+id/btn_save_excel"
         android:layout_width="match_parent"
         android:layout_height="52dp"
         android:layout_marginBottom="40dp"
