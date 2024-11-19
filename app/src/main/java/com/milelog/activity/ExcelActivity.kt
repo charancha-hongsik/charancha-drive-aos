@@ -62,7 +62,7 @@ class ExcelActivity:BaseRefreshActivity() {
 
     val filterList: MutableList<CarListFilter> = mutableListOf()
     var carIdForFilter: String? = null
-    var isActiveForFilter: Boolean = true
+    var isActiveForFilter: Boolean? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -137,8 +137,11 @@ class ExcelActivity:BaseRefreshActivity() {
 
                         val matchingFilter = filterList.find { it.name == tv_car_name.text }
                         carIdForFilter = matchingFilter?.id
-
-                        if(tv_car_name.text.toString().equals(getString(R.string.pending))){
+                        if(tv_car_name.text.toString().equals("전체")){
+                            isActiveForFilter = null
+                            carIdForFilter = null
+                        }
+                        else if(tv_car_name.text.toString().equals(getString(R.string.pending))){
                             isActiveForFilter = false
                             carIdForFilter = null
                         }else if(tv_car_name.text.toString().equals(getString(R.string.not_my_car))){
