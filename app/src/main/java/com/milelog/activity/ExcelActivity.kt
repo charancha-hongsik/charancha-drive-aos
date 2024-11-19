@@ -1,6 +1,7 @@
 package com.milelog.activity
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import android.os.Environment.getExternalStoragePublicDirectory
@@ -15,6 +16,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.FileProvider
 import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -51,6 +53,7 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 
 class ExcelActivity:BaseRefreshActivity() {
     lateinit var layout_flow: FlowLayout
@@ -61,7 +64,7 @@ class ExcelActivity:BaseRefreshActivity() {
     var selectedDate:String = "2024년 10월"
 
     val filterList: MutableList<CarListFilter> = mutableListOf()
-    var carIdForFilter: String? = "null"
+    var carIdForFilter: String? = null
     var isActiveForFilter: Boolean? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -139,7 +142,7 @@ class ExcelActivity:BaseRefreshActivity() {
                         carIdForFilter = matchingFilter?.id
                         if(tv_car_name.text.toString().equals("전체")){
                             isActiveForFilter = null
-                            carIdForFilter = "null"
+                            carIdForFilter = null
                         }
                         else if(tv_car_name.text.toString().equals(getString(R.string.pending))){
                             isActiveForFilter = true
@@ -200,8 +203,8 @@ class ExcelActivity:BaseRefreshActivity() {
 
         for(history in getDriveHistroyResponse.items){
             drivingData.add(mapOf(
-                "주행 시작 일시" to history.startTime,
-                "주행 종료 일시" to history.endTime,
+                "주행 시작 일시" to formatToLocalTime(history.startTime),
+                "주행 종료 일시" to formatToLocalTime(history.endTime),
                 "주행 시간" to history.totalTime.toString(),
                 "주행 거리 (km)" to history.totalDistance.toString(),
                 "데이터 인증" to history.verification,
@@ -256,6 +259,11 @@ class ExcelActivity:BaseRefreshActivity() {
                             jsonString,
                             GetDriveHistoryResponse::class.java
                         )
+                        Log.d("testestsetest","testestestsetes size :: " + getDriveHistroyResponse.items.size)
+                        Log.d("testestsetest","testestestsetes isActiveForFilter :: " + isActiveForFilter)
+                        Log.d("testestsetest","testestestsetes carIdForFilter :: " + carIdForFilter)
+
+
                         // 함수 호출
                          createDrivingDataWithHeaders(getDrivingData(getDriveHistroyResponse))
                         // 업무용 승용차 운행기록부 생성
@@ -466,25 +474,35 @@ class ExcelActivity:BaseRefreshActivity() {
         // 현재 날짜와 시간 구하기
         val currentDate = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
 
-        // 파일 이름에 날짜/시간 추가
-        val fileName = "DrivingData_$currentDate.xlsx"
-
-        // 파일 경로 설정 (앱의 외부 저장소에 저장)
-        val file = File(getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), fileName)
-
+        // 파일 공유 기능 추가
         try {
-            // Fill data rows (생략)
+            // Write the workbook to a temporary file
+            val fileName = "DrivingData_$currentDate.xlsx"
+            val file = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName)
 
-            // 수동으로 열 너비 설정 (생략)
-
-            // Write to file
             FileOutputStream(file).use { output ->
                 workbook.write(output)
             }
 
-            Toast.makeText(this, "다운로드 폴더에 저장됐습니다.", Toast.LENGTH_SHORT).show()
+            // 공유를 위한 FileProvider URI 생성
+            val fileUri = FileProvider.getUriForFile(
+                this,
+                "$packageName.fileprovider", // FileProvider의 authority는 AndroidManifest에서 설정
+                file
+            )
+
+            // 공유 Intent 생성
+            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" // XLSX MIME 타입
+                putExtra(Intent.EXTRA_STREAM, fileUri)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION) // URI 읽기 권한 부여
+            }
+
+            // OS 공유 Bottom Sheet 호출
+            startActivity(Intent.createChooser(shareIntent, "주행 데이터 공유하기"))
         } catch (e: Exception) {
-            e.printStackTrace()  // 에러를 출력
+            e.printStackTrace()
+            Toast.makeText(this, "파일 공유에 실패했습니다.", Toast.LENGTH_SHORT).show()
         } finally {
             workbook.close()
         }
@@ -525,5 +543,20 @@ class ExcelActivity:BaseRefreshActivity() {
             e.printStackTrace()
         }
     }
+
+    fun formatToLocalTime(isoDate: String): String {
+        // ISO 8601 형식의 날짜 문자열을 Date 객체로 변환
+        val isoFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+        isoFormat.timeZone = TimeZone.getTimeZone("UTC") // 입력 날짜가 UTC 기준임을 명시
+
+        val date = isoFormat.parse(isoDate) ?: return "" // 날짜 파싱
+
+        // 로컬 시간대 기준으로 포맷 변경
+        val localFormat = SimpleDateFormat("yyyy.MM.dd(E) HH:mm:ss", Locale.getDefault())
+        localFormat.timeZone = TimeZone.getDefault() // 현재 로컬 시간대
+
+        return localFormat.format(date) // 변환된 날짜 반환
+    }
+
 
 }
