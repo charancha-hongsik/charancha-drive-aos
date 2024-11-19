@@ -238,9 +238,6 @@ class ExcelActivity:BaseRefreshActivity() {
 
     fun setClickListener(){
         btn_save_excel.setOnClickListener {
-            Log.d("testestsetest","testestsetest isActiveForFilter :: " + isActiveForFilter)
-            Log.d("testestsetest","testestsetest carIdForFilter :: " + carIdForFilter)
-
             apiService().getDrivingHistories(
                 token = "Bearer " + PreferenceUtil.getPref(this,  PreferenceUtil.ACCESS_TOKEN, "")!!,
                 size = 30,
@@ -403,7 +400,7 @@ class ExcelActivity:BaseRefreshActivity() {
 
         val headers = listOf(
             "주행 시작 일시", "주행 종료 일시", "주행 시간", "주행 거리 (km)", "데이터 인증", "이동 수단", "주행 목적",
-            "개인/법인", "법인 사용자 이름", "법인 부서명",
+            "개인/법인", "법인 사용자 이름", "법인 부서명","운전자 메모",
             "출발지", "도착지", "방문지",
             "고속 주행 거리 (km)", "저속 주행 거리 (km)", "고속 주행 거리 비율 (%)", "저속 주행 거리 비율 (%)",
             "최고 속력 (km/h)", "평균 속력 (km/h)", "고속 주행 최고 속력 (km/h)", "저속 주행 최고 속력 (km/h)",
