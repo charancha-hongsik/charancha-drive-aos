@@ -142,7 +142,7 @@ class ExcelActivity:BaseRefreshActivity() {
                             carIdForFilter = null
                         }
                         else if(tv_car_name.text.toString().equals(getString(R.string.pending))){
-                            isActiveForFilter = false
+                            isActiveForFilter = true
                             carIdForFilter = null
                         }else if(tv_car_name.text.toString().equals(getString(R.string.not_my_car))){
                             isActiveForFilter = false
