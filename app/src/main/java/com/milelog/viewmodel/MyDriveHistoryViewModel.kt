@@ -64,6 +64,9 @@ class MyDriveHistoryViewModel: BaseViewModel() {
     }
 
     fun getHistories(startTime:String, endTime:String,isActive:Boolean? = null, userCarId:String?){
+        Log.d("testestestest","testestestset isActive :: " + isActive)
+        Log.d("testestestest","testestestset userCarId :: " + userCarId)
+
         apiService(context).getDrivingHistories(
             token = "Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!,
             size = 30,
@@ -83,6 +86,7 @@ class MyDriveHistoryViewModel: BaseViewModel() {
                         GetDriveHistoryResponse::class.java
                     )
 
+                    Log.d("testsetsetseset","testestsetest call 1:: " + call.request().url)
 
                     _driveHistoryResult.value = Event(GetDriveHistoryState.Success(getDriveHistroyResponse, startTime, endTime))
 

@@ -61,7 +61,7 @@ class ExcelActivity:BaseRefreshActivity() {
     var selectedDate:String = "2024년 10월"
 
     val filterList: MutableList<CarListFilter> = mutableListOf()
-    var carIdForFilter: String? = null
+    var carIdForFilter: String? = "null"
     var isActiveForFilter: Boolean? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -139,17 +139,18 @@ class ExcelActivity:BaseRefreshActivity() {
                         carIdForFilter = matchingFilter?.id
                         if(tv_car_name.text.toString().equals("전체")){
                             isActiveForFilter = null
-                            carIdForFilter = null
+                            carIdForFilter = "null"
                         }
                         else if(tv_car_name.text.toString().equals(getString(R.string.pending))){
                             isActiveForFilter = true
-                            carIdForFilter = null
+                            carIdForFilter = "null"
                         }else if(tv_car_name.text.toString().equals(getString(R.string.not_my_car))){
                             isActiveForFilter = false
-                            carIdForFilter = null
+                            carIdForFilter = "null"
                         }else{
                             isActiveForFilter = true
                         }
+
 
                         // Iterate over the list and update the background of all TextViews
                         for (view in carViews) {
@@ -236,6 +237,9 @@ class ExcelActivity:BaseRefreshActivity() {
 
     fun setClickListener(){
         btn_save_excel.setOnClickListener {
+            Log.d("testestsetest","testestsetest isActiveForFilter :: " + isActiveForFilter)
+            Log.d("testestsetest","testestsetest carIdForFilter :: " + carIdForFilter)
+
             apiService().getDrivingHistories(
                 token = "Bearer " + PreferenceUtil.getPref(this,  PreferenceUtil.ACCESS_TOKEN, "")!!,
                 size = 30,
@@ -254,6 +258,10 @@ class ExcelActivity:BaseRefreshActivity() {
                             jsonString,
                             GetDriveHistoryResponse::class.java
                         )
+
+                        Log.d("testsetsetseset","testestsetest call :: " + call.request().url)
+
+                        Log.d("testsetsetseset","testestsetest size :: " + getDriveHistroyResponse.items.size)
 
                         // 함수 호출
                          createDrivingDataWithHeaders(getDrivingData(getDriveHistroyResponse))
