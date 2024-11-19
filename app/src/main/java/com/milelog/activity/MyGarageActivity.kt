@@ -137,7 +137,9 @@ class MyGarageActivity:BaseRefreshActivity() {
                         PreferenceUtil.putPref(this@MyGarageActivity, PreferenceUtil.MY_CAR_ENTITIES, GsonBuilder().serializeNulls().create().toJson(updateMyCarList(myCarsListOnServer, myCarsListOnDevice)))
 
                     }else{
-                        startActivity(Intent(this@MyGarageActivity, SplashActivity::class.java))
+                        val intent = Intent(this@MyGarageActivity, SplashActivity::class.java)
+                        intent.addFlags(FLAG_ACTIVITY_CLEAR_TASK or FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)
                         finish()
                     }
 
