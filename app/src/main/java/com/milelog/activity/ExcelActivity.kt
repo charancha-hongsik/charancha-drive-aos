@@ -26,7 +26,10 @@ import com.milelog.PreferenceUtil
 import com.milelog.R
 import com.milelog.room.entity.MyCarsEntity
 import com.nex3z.flowlayout.FlowLayout
+import org.apache.poi.ss.usermodel.FillPatternType
+import org.apache.poi.ss.usermodel.IndexedColors
 import org.apache.poi.ss.util.CellRangeAddress
+import org.apache.poi.xssf.usermodel.XSSFColor
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import java.io.File
 import java.io.FileOutputStream
@@ -363,16 +366,35 @@ class ExcelActivity:BaseRefreshActivity() {
         val headerRow1 = sheet.createRow(0)
         val headerRow2 = sheet.createRow(1)
 
+        // Create bold style for main headers
+        val boldFont = workbook.createFont().apply {
+            bold = true
+        }
+
+        val boldStyle = workbook.createCellStyle().apply {
+            setFont(boldFont)
+            val skyBlueColor = XSSFColor(byteArrayOf(0xB2.toByte(), 0xCC.toByte(), 0xFF.toByte())) // #B2CCFF 색상
+            setFillForegroundColor(skyBlueColor)
+            setFillPattern(FillPatternType.SOLID_FOREGROUND)
+        }
+
+        val lightGrayStyle = workbook.createCellStyle().apply {
+            setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index) // 연한 그레이색
+            setFillPattern(FillPatternType.SOLID_FOREGROUND)
+        }
+
         // Set main headers (merge cells for each group)
         mainHeaders.forEachIndexed { index, mainHeader ->
             val cell = headerRow1.createCell(index)
             cell.setCellValue(mainHeader)
+            cell.cellStyle = boldStyle // Apply bold style
         }
 
         // Set sub-headers
         headers.forEachIndexed { index, header ->
             val cell = headerRow2.createCell(index)
             cell.setCellValue(header)
+            cell.cellStyle = lightGrayStyle // Apply light gray background
         }
 
         // Fill data rows
