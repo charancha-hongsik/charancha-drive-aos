@@ -210,6 +210,7 @@ class ExcelActivity:BaseRefreshActivity() {
                 "사용자 구분" to (history.userCar?.type ?: ""),
                 "법인 사용자 이름" to (history.userCar?.data?.name ?: ""),
                 "법인 부서명" to (history.userCar?.data?.department ?: ""),
+                "운전자 메모" to "메모",
                 "출발지" to (history.startAddress?.parcel?.name ?: ""),
                 "도착지" to (history.endAddress?.parcel?.name ?: ""),
                 "방문지" to (history.endAddress?.places?.takeIf { it.isNotEmpty() }?.get(0)?.name ?: ""),
@@ -258,11 +259,6 @@ class ExcelActivity:BaseRefreshActivity() {
                             jsonString,
                             GetDriveHistoryResponse::class.java
                         )
-
-                        Log.d("testsetsetseset","testestsetest call :: " + call.request().url)
-
-                        Log.d("testsetsetseset","testestsetest size :: " + getDriveHistroyResponse.items.size)
-
                         // 함수 호출
                          createDrivingDataWithHeaders(getDrivingData(getDriveHistroyResponse))
                         // 업무용 승용차 운행기록부 생성
@@ -399,7 +395,7 @@ class ExcelActivity:BaseRefreshActivity() {
 
         // Define main headers and their sub-headers
         val mainHeaders = listOf(
-            "주행", "", "", "", "", "", "", "사용자 구분", "", "",
+            "주행", "", "", "", "", "", "", "사용자 구분", "", "","",
             "방문지", "", "", "고속/저속 주행", "", "", "",
             "속력", "", "", "", "급가감속", "", "", "",
             "최적/가혹 주행", "", "", ""

@@ -214,26 +214,6 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         iv_corp = findViewById(R.id.iv_corp)
 
         view_map = findViewById(R.id.view_map)
-
-
-        repeat(5) {
-            // Inflate the ConstraintLayout view
-            val constraintLayoutView = layoutInflater.inflate(R.layout.item_drive_image, layout_drive_image, false)
-
-            // Find the ImageView within the newly inflated ConstraintLayout
-            val iv_drive_image = constraintLayoutView.findViewById<ImageView>(R.id.iv_drive_image)
-
-            // Load the image into the ImageView with Glide
-            Glide.with(this)
-                .asBitmap()
-                .load("https://charancha.com/uploads/carimg/xxlarge/2024/86410fad-5eaa-4467-88b0-758f5a8691a8.jpg?w=1200&h=675&f=webp")
-                .transform(RoundedCornersTransformation(5, 0))  // 5dp의 반경
-                .into(iv_drive_image)
-
-            // Add the inflated ConstraintLayout to the parent LinearLayout
-            layout_drive_image.addView(constraintLayoutView)
-        }
-
     }
 
     private fun setObserver(){
