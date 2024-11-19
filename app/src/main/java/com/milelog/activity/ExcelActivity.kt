@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Environment
 import android.os.Environment.getExternalStoragePublicDirectory
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -24,17 +25,28 @@ import com.milelog.CarViews
 import com.milelog.DividerItemDecoration
 import com.milelog.PreferenceUtil
 import com.milelog.R
+import com.milelog.retrofit.response.GetDriveHistoryResponse
 import com.milelog.room.entity.MyCarsEntity
+import com.milelog.viewmodel.BaseViewModel.Event
+import com.milelog.viewmodel.state.GetDriveHistoryState
 import com.nex3z.flowlayout.FlowLayout
+import okhttp3.ResponseBody
 import org.apache.poi.ss.usermodel.FillPatternType
+import org.apache.poi.ss.usermodel.HorizontalAlignment
 import org.apache.poi.ss.usermodel.IndexedColors
 import org.apache.poi.ss.util.CellRangeAddress
 import org.apache.poi.xssf.usermodel.XSSFColor
+import org.apache.poi.xssf.usermodel.XSSFSheet
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
@@ -160,76 +172,84 @@ class ExcelActivity:BaseRefreshActivity() {
         }
     }
 
+    fun getDrivingData(getDriveHistroyResponse: GetDriveHistoryResponse): List<Map<String,String>>{
+        val drivingData:MutableList<Map<String,String>> = mutableListOf()
+
+        for(history in getDriveHistroyResponse.items){
+            drivingData.add(mapOf(
+                "주행 시작 일시" to history.startTime,
+                "주행 종료 일시" to history.endTime,
+                "주행 시간" to history.totalTime.toString(),
+                "주행 거리 (km)" to history.totalDistance.toString(),
+                "데이터 인증" to history.verification,
+                "이동 수단" to (history.userCar?.carName ?: ""),
+                "주행 목적" to  (history.userCar?.type ?: ""),
+                "사용자 구분" to (history.userCar?.type ?: ""),
+                "법인 사용자 이름" to (history.userCar?.data?.name ?: ""),
+                "법인 부서명" to (history.userCar?.data?.department ?: ""),
+                "출발지" to (history.startAddress?.parcel?.name ?: ""),
+                "도착지" to (history.endAddress?.parcel?.name ?: ""),
+                "방문지" to (history.endAddress?.places?.takeIf { it.isNotEmpty() }?.get(0)?.name ?: ""),
+                "고속 주행 거리 (km)" to "20",
+                "저속 주행 거리 (km)" to "5",
+                "고속 주행 거리 비율 (%)" to "80",
+                "저속 주행 거리 비율 (%)" to "20",
+                "최고 속력 (km/h)" to "152",
+                "평균 속력 (km/h)" to "72",
+                "고속 주행 최고 속력 (km/h)" to "132",
+                "저속 주행 최고 속력 (km/h)" to "40",
+                "급가속 횟수" to "2",
+                "급감속 횟수" to "1",
+                "급출발 횟수" to "2",
+                "급정지 횟수" to "1",
+                "최적 주행 거리 (km)" to "21",
+                "가혹 주행 거리 (km)" to "2",
+                "최적 주행 비율 (%)" to "90",
+                "가혹 주행 비율 (%)" to "10"
+            ))
+        }
+
+        return drivingData
+    }
+
     fun setClickListener(){
         btn_save_excel.setOnClickListener {
-            val drivingData = listOf(
-                mapOf(
-                    "주행 시작 일시" to "2024.12.31(화) 03:20:09",
-                    "주행 종료 일시" to "2024.12.31(화) 04:20:09",
-                    "주행 시간" to "1:06:00",
-                    "주행 거리 (km)" to "202",
-                    "데이터 인증" to "L1",
-                    "이동 수단" to "5989 BMW 7시리즈",
-                    "주행 목적" to "출/퇴근",
-                    "사용자 구분" to "법인",
-                    "법인 사용자 이름" to "홍길동",
-                    "법인 부서명" to "영업 1팀",
-                    "출발지" to "서울특별시 동대문구 답십리동 530-18",
-                    "도착지" to "강원특별자치도 속초시 조양동 1542-12",
-                    "방문지" to "배꽃나라 주유소",
-                    "고속 주행 거리 (km)" to "20",
-                    "저속 주행 거리 (km)" to "5",
-                    "고속 주행 거리 비율 (%)" to "80",
-                    "저속 주행 거리 비율 (%)" to "20",
-                    "최고 속력 (km/h)" to "152",
-                    "평균 속력 (km/h)" to "72",
-                    "고속 주행 최고 속력 (km/h)" to "132",
-                    "저속 주행 최고 속력 (km/h)" to "40",
-                    "급가속 횟수" to "2",
-                    "급감속 횟수" to "1",
-                    "급출발 횟수" to "2",
-                    "급정지 횟수" to "1",
-                    "최적 주행 거리 (km)" to "21",
-                    "가혹 주행 거리 (km)" to "2",
-                    "최적 주행 비율 (%)" to "90",
-                    "가혹 주행 비율 (%)" to "10"
-                ),
-                // 추가 데이터는 계속해서 추가
-                mapOf(
-                    "주행 시작 일시" to "2024.12.31(화) 03:20:09",
-                    "주행 종료 일시" to "2024.12.31(화) 04:20:09",
-                    "주행 시간" to "1:06:00",
-                    "주행 거리 (km)" to "202",
-                    "데이터 인증" to "L1",
-                    "이동 수단" to "5989 BMW 7시리즈",
-                    "주행 목적" to "출/퇴근",
-                    "사용자 구분" to "법인",
-                    "법인 사용자 이름" to "홍길동",
-                    "법인 부서명" to "영업 1팀",
-                    "출발지" to "서울특별시 동대문구 답십리동 530-18",
-                    "도착지" to "강원특별자치도 속초시 조양동 1542-12",
-                    "방문지" to "배꽃나라 주유소",
-                    "고속 주행 거리 (km)" to "20",
-                    "저속 주행 거리 (km)" to "5",
-                    "고속 주행 거리 비율 (%)" to "80",
-                    "저속 주행 거리 비율 (%)" to "20",
-                    "최고 속력 (km/h)" to "152",
-                    "평균 속력 (km/h)" to "72",
-                    "고속 주행 최고 속력 (km/h)" to "132",
-                    "저속 주행 최고 속력 (km/h)" to "40",
-                    "급가속 횟수" to "2",
-                    "급감속 횟수" to "1",
-                    "급출발 횟수" to "2",
-                    "급정지 횟수" to "1",
-                    "최적 주행 거리 (km)" to "21",
-                    "가혹 주행 거리 (km)" to "2",
-                    "최적 주행 비율 (%)" to "90",
-                    "가혹 주행 비율 (%)" to "10"
-                ),
-            )
 
-            // 함수 호출
-            createDrivingDataWithHeaders(drivingData)
+            apiService().getDrivingHistories(
+                token = "Bearer " + PreferenceUtil.getPref(this,  PreferenceUtil.ACCESS_TOKEN, "")!!,
+                size = 30,
+                order = "DESC",
+                afterCursor =  null,
+                beforeCursor = null,
+                key = "startTime",
+                startTime = getDateRange(selectedDate).second,
+                endTime = getDateRange(selectedDate).first,
+                isActive = true,
+                userCarId = "f3f889a1-a154-4173-9c89-1414731f61bc").enqueue(object: Callback<ResponseBody> {
+                override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                    if(response.code() == 200 || response.code() == 201){
+                        val jsonString = response.body()?.string()
+                        val getDriveHistroyResponse = GsonBuilder().serializeNulls().create().fromJson(
+                            jsonString,
+                            GetDriveHistoryResponse::class.java
+                        )
+
+                        // 함수 호출
+                         createDrivingDataWithHeaders(getDrivingData(getDriveHistroyResponse))
+                        // 업무용 승용차 운행기록부 생성
+                        // createCarUsageRecord()
+
+
+                    } else{
+
+                    }
+                }
+
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+                }
+
+            })
         }
 
         btn_choose_date.setOnClickListener {
@@ -443,4 +463,41 @@ class ExcelActivity:BaseRefreshActivity() {
             workbook.close()
         }
     }
+
+    fun createCarUsageRecord() {
+        val workbook = XSSFWorkbook()  // Apache POI를 사용하여 엑셀 파일 생성
+        val sheet = workbook.createSheet("업무용승용차 운행기록부")
+
+        // 첫 번째 행: 업무용승용차 운행기록부에 관한 별지 서식
+        var row = sheet.createRow(0)
+        row.createCell(1).setCellValue("【업무용승용차 운행기록부에 관한 별지 서식】<2016.4.1. 제정>")
+        sheet.addMergedRegion(CellRangeAddress(0, 0, 1, 16))  // A1부터 Q1까지 병합
+
+        // 두 번째부터 다섯 번째 행까지 병합하고 "과세기간" 추가
+        row = sheet.createRow(1)
+        row.createCell(1).setCellValue("과세기간")
+        sheet.addMergedRegion(CellRangeAddress(1, 4, 1, 2))  // A2부터 B5까지 병합
+
+        // 병합된 셀을 가운데 정렬로 설정
+        val cellStyle = workbook.createCellStyle()
+        cellStyle.alignment = HorizontalAlignment.CENTER
+        row.getCell(0).cellStyle = cellStyle
+
+        // 파일 이름 설정
+        val currentDate = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val fileName = "CarUsageRecord_$currentDate.xlsx"
+
+        // 파일 경로 설정
+        val file = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), fileName)
+
+        try {
+            FileOutputStream(file).use { output ->
+                workbook.write(output)
+            }
+            println("엑셀 파일이 성공적으로 저장되었습니다.")
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
 }
