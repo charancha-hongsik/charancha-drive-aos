@@ -31,11 +31,13 @@
             android:scrollbars="none"/>
         
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/view_edit_detail"
             android:layout_width="match_parent"
             android:layout_height="46dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="28dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
+            android:visibility=""
             android:layout_marginBottom="12dp"
             android:padding="14dp"
             android:background="@drawable/radius5_orange100">
