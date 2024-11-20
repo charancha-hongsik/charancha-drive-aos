@@ -642,6 +642,7 @@ open class BaseActivity: AppCompatActivity(){
             PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.ACCOUNT_ADDRESS, "")
             PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.USER_CARID, "")
             PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.USER_ID, "")
+            PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.MY_CAR_ENTITIES, "")
 
             PreferenceUtil.putBooleanPref(this@BaseActivity, PreferenceUtil.HAVE_BEEN_HOME, false)
 
