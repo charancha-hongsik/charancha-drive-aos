@@ -172,6 +172,7 @@ class MyGarageActivity:BaseRefreshActivity() {
                             view_personal_tab.visibility = INVISIBLE
                         }else{
                             layout_tab.visibility = GONE
+                            rv_garage.adapter = GarageAdapter(context = this@MyGarageActivity, cars = getMyCarInfoResponses.items.toMutableList())
                         }
 
                         for(car in getMyCarInfoResponses.items){
