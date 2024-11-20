@@ -30,6 +30,7 @@ import com.google.gson.reflect.TypeToken
 import com.milelog.DividerItemDecoration
 import com.milelog.PreferenceUtil
 import com.milelog.R
+import com.milelog.activity.LoadCarMoreInfoActivity.Companion.CORPORATE
 import com.milelog.activity.LoadCarMoreInfoActivity.Companion.PERSONAL
 import com.milelog.retrofit.response.GetMyCarInfoItem
 import com.milelog.retrofit.response.GetMyCarInfoResponse
@@ -44,6 +45,7 @@ class MyGarageActivity:BaseRefreshActivity() {
     lateinit var rv_garage: RecyclerView
     lateinit var btn_add:LinearLayout
     lateinit var ib_arrow_register_car: ImageButton
+    lateinit var layout_tab:LinearLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_garage)
@@ -61,9 +63,10 @@ class MyGarageActivity:BaseRefreshActivity() {
         rv_garage = findViewById(R.id.rv_garage)
         btn_add = findViewById(R.id.btn_add)
         ib_arrow_register_car = findViewById(R.id.ib_arrow_register_car)
+        layout_tab = findViewById(R.id.layout_tab)
 
         rv_garage.layoutManager = LinearLayoutManager(this@MyGarageActivity)
-        val dividerItemDecoration = DividerItemDecoration(this@MyGarageActivity, R.color.gray_50, dpToPx(32f)) // 색상 리소스와 구분선 높이 설정
+        val dividerItemDecoration = DividerItemDecoration(this@MyGarageActivity, R.color.gray_50, dpToPx(20f)) // 색상 리소스와 구분선 높이 설정
         rv_garage.addItemDecoration(dividerItemDecoration)
 
         setClickListener()
@@ -129,6 +132,14 @@ class MyGarageActivity:BaseRefreshActivity() {
                     if(getMyCarInfoResponses.items.size > 0){
                         rv_garage.adapter = GarageAdapter(context = this@MyGarageActivity, cars = getMyCarInfoResponses.items.toMutableList())
 
+                        val hasCorp = getMyCarInfoResponses.items.any { it.type == CORPORATE }
+                        val hasPersonal = getMyCarInfoResponses.items.any { it.type == PERSONAL }
+
+                        if(hasCorp && hasPersonal){
+                            layout_tab.visibility = VISIBLE
+                        }else{
+                            layout_tab.visibility = GONE
+                        }
 
                         for(car in getMyCarInfoResponses.items){
                             myCarsListOnServer.add(MyCarsEntity(car.id, car.carName, car.licensePlateNumber, null,null))
