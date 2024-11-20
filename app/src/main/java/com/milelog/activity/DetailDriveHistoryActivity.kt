@@ -110,7 +110,6 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var iv_tooltip_low_speed_average:ImageView
     lateinit var iv_tooltip_rapid_start:ImageView
     lateinit var iv_tooltip_rapid_acc:ImageView
-    lateinit var iv_map:ImageView
 
     lateinit var tv_start_address:TextView
     lateinit var tv_end_address:TextView
@@ -163,7 +162,6 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
             userCar = Gson().fromJson(it, UserCar::class.java)
         }
 
-        iv_map = findViewById(R.id.iv_map)
         tv_date = findViewById(R.id.tv_date)
         tv_distance = findViewById(R.id.tv_distance)
         tv_start_time = findViewById(R.id.tv_start_time)
@@ -590,11 +588,6 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
             googleMap.setOnMapLoadedCallback {
                 try {
-                    googleMap.snapshot { bitmap ->
-                        iv_map.setImageBitmap(bitmap)
-                        iv_map.visibility = GONE
-                    }
-
                     /**
                      * 마커 추가
                      */
