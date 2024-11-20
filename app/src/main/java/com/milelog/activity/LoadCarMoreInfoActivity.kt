@@ -166,12 +166,15 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
         if(!postMyCarResponse.fuelNm.isNullOrEmpty())
             tv_fuel.text = postMyCarResponse.fuelNm
 
-        if(postMyCarResponse.makerCd == null && postMyCarResponse.modelCd == null) {
+        if(postMyCarResponse.makerCd == null || postMyCarResponse.modelCd == null) {
             tv_car_name.text = "선택해 주세요"
             iv_arrow.visibility = GONE
             btn_car_more_info.visibility = VISIBLE
             btn_next.isSelected = false
             btn_next.isClickable = false
+            btn_save.isSelected = false
+            btn_save.isClickable = false
+
         } else{
             val carName = listOfNotNull(
                 postMyCarResponse.makerNm,
@@ -189,6 +192,8 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
             if(!postMyCarResponse.fuelCd.isNullOrEmpty()){
                 btn_next.isSelected = true
                 btn_next.isClickable = true
+                btn_save.isSelected = true
+                btn_save.isClickable = true
             }
         }
 
@@ -488,7 +493,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                 view_scrollview.smoothScrollTo(0, view_scrollview.getChildAt(0).height)
             }
 
-            if(!tv_fuel.text.toString().isNullOrEmpty() && !et_corp_department.text.toString().isNullOrEmpty() && !et_corp_name.text.toString().isNullOrEmpty()){
+            if(!tv_fuel.text.toString().isNullOrEmpty() && !et_corp_department.text.toString().isNullOrEmpty() && !et_corp_name.text.toString().isNullOrEmpty() && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
                 btn_next.isSelected = true
                 btn_next.isClickable = true
 
@@ -512,12 +517,19 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
             tv_corp.setTextColor(resources.getColor(R.color.gray_300))
             tv_personal.setTextColor(resources.getColor(R.color.corp_selected))
 
-            if(tv_fuel.text.toString().isNullOrEmpty()){
+            if(tv_fuel.text.toString().isNullOrEmpty() && postMyCarResponse.makerCd.isNullOrEmpty() && postMyCarResponse.modelCd.isNullOrEmpty()){
                 btn_next.isSelected = false
                 btn_next.isClickable = false
+
+                btn_save.isSelected = false
+                btn_save.isClickable = false
+
             }else{
                 btn_next.isSelected = true
                 btn_next.isClickable = true
+
+                btn_save.isSelected = true
+                btn_save.isClickable = true
             }
         }
 
@@ -529,7 +541,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 p0?.let{
                     if(p0.length>=1){
-                        if(!et_corp_department.text.toString().isNullOrEmpty() && !tv_fuel.text.toString().isNullOrEmpty()){
+                        if(!et_corp_department.text.toString().isNullOrEmpty() && !tv_fuel.text.toString().isNullOrEmpty() && postMyCarResponse.makerCd.isNullOrEmpty() && postMyCarResponse.modelCd.isNullOrEmpty()){
                             btn_next.isSelected = true
                             btn_next.isClickable = true
 
@@ -565,7 +577,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 p0?.let{
                     if(p0.length>=1){
-                        if(!et_corp_name.text.toString().isNullOrEmpty() && !tv_fuel.text.toString().isNullOrEmpty()){
+                        if(!et_corp_name.text.toString().isNullOrEmpty() && !tv_fuel.text.toString().isNullOrEmpty() && postMyCarResponse.makerCd.isNullOrEmpty() && postMyCarResponse.modelCd.isNullOrEmpty()){
                             btn_next.isSelected = true
                             btn_next.isClickable = true
 
@@ -612,7 +624,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
 
                     layout_select.visibility = GONE
 
-                    if(!et_corp_name.text.toString().isNullOrEmpty() && !et_corp_department.text.toString().isNullOrEmpty()){
+                    if(!et_corp_name.text.toString().isNullOrEmpty() && !et_corp_department.text.toString().isNullOrEmpty() && postMyCarResponse.makerCd.isNullOrEmpty() && postMyCarResponse.modelCd.isNullOrEmpty()){
                         btn_next.isSelected = true
                         btn_next.isClickable = true
 
