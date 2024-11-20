@@ -136,9 +136,9 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     var pastMemo:String? = null
 
     enum class CorpType(val description: String) {
-        WORK("출/퇴근"),
+        COMMUTE("출/퇴근"),
         NON_WORK("비업무"),
-        COMMUTE("일반업무");
+        WORK("일반업무");
 
         override fun toString(): String {
             return description
@@ -268,6 +268,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     tv_mycar.text = state.data.userCar.carName
                     iv_corp.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_star1))
                     iv_corp.visibility = VISIBLE
+
+                    btn_choose_mycar.isClickable = false
                 }
                 is PatchCorpTypeState.Error -> {
 
@@ -836,7 +838,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         val dividerItemDecoration = DividerItemDecoration(this, R.color.white_op_100, this.dpToPx(8f)) // 색상 리소스와 구분선 높이 설정
         rv_choose_corp.addItemDecoration(dividerItemDecoration)
 
-        rv_choose_corp.adapter = ChooseCorpAdapter(context = this, corpList = mutableListOf(CorpType.WORK.description, CorpType.NON_WORK.description,CorpType.COMMUTE.description), bottomSheetDialog, detailDriveHistoryViewModel, tracking_id, userCarId,tv_type.text.toString())
+        rv_choose_corp.adapter = ChooseCorpAdapter(context = this, corpList = mutableListOf(CorpType.COMMUTE.description, CorpType.WORK.description, CorpType.NON_WORK.description), bottomSheetDialog, detailDriveHistoryViewModel, tracking_id, userCarId,tv_type.text.toString())
 
         // Set the content view of the dialog
         bottomSheetDialog.setContentView(bottomSheetView)
