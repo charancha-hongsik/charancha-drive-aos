@@ -85,6 +85,7 @@
                     android:id="@+id/view_personal_tab"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
+                    android:visibility="invisible"
                     android:background="@color/gray_950"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"/>

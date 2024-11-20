@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
+import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ImageButton
@@ -19,6 +20,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -46,6 +48,11 @@ class MyGarageActivity:BaseRefreshActivity() {
     lateinit var btn_add:LinearLayout
     lateinit var ib_arrow_register_car: ImageButton
     lateinit var layout_tab:LinearLayout
+    lateinit var tv_corp_tab:TextView
+    lateinit var tv_personal_tab:TextView
+    lateinit var view_personal_tab:View
+    lateinit var view_corp_tab:View
+    lateinit var getMyCarInfoResponses:GetMyCarInfoResponse
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_garage)
@@ -64,6 +71,10 @@ class MyGarageActivity:BaseRefreshActivity() {
         btn_add = findViewById(R.id.btn_add)
         ib_arrow_register_car = findViewById(R.id.ib_arrow_register_car)
         layout_tab = findViewById(R.id.layout_tab)
+        tv_corp_tab = findViewById(R.id.tv_corp_tab)
+        tv_personal_tab = findViewById(R.id.tv_personal_tab)
+        view_personal_tab = findViewById(R.id.view_personal_tab)
+        view_corp_tab = findViewById(R.id.view_corp_tab)
 
         rv_garage.layoutManager = LinearLayoutManager(this@MyGarageActivity)
         val dividerItemDecoration = DividerItemDecoration(this@MyGarageActivity, R.color.gray_50, dpToPx(20f)) // 색상 리소스와 구분선 높이 설정
@@ -104,6 +115,23 @@ class MyGarageActivity:BaseRefreshActivity() {
         ib_arrow_register_car.setOnClickListener {
             finish()
         }
+
+        tv_corp_tab.setOnClickListener {
+            filterCorporate()
+            TextViewCompat.setTextAppearance(tv_corp_tab, R.style.garage_selected)
+            TextViewCompat.setTextAppearance(tv_personal_tab, R.style.garage_unselected)
+            view_corp_tab.visibility = VISIBLE
+            view_personal_tab.visibility = INVISIBLE
+        }
+
+        tv_personal_tab.setOnClickListener {
+            filterPersonal()
+            TextViewCompat.setTextAppearance(tv_personal_tab, R.style.garage_selected)
+            TextViewCompat.setTextAppearance(tv_corp_tab, R.style.garage_unselected)
+            view_corp_tab.visibility = INVISIBLE
+            view_personal_tab.visibility = VISIBLE
+
+        }
     }
 
     private fun setMyCarInfo(){
@@ -117,7 +145,7 @@ class MyGarageActivity:BaseRefreshActivity() {
                 if(response.code() == 200 || response.code() == 201){
                     val jsonString = response.body()?.string()
 
-                    val getMyCarInfoResponses = GsonBuilder().serializeNulls().create().fromJson(jsonString, GetMyCarInfoResponse::class.java)
+                    getMyCarInfoResponses = GsonBuilder().serializeNulls().create().fromJson(jsonString, GetMyCarInfoResponse::class.java)
 
                     val myCarsListOnServer: MutableList<MyCarsEntity> = mutableListOf()
                     val myCarsListOnDevice:MutableList<MyCarsEntity> = mutableListOf()
@@ -130,13 +158,18 @@ class MyGarageActivity:BaseRefreshActivity() {
                     }
 
                     if(getMyCarInfoResponses.items.size > 0){
-                        rv_garage.adapter = GarageAdapter(context = this@MyGarageActivity, cars = getMyCarInfoResponses.items.toMutableList())
 
                         val hasCorp = getMyCarInfoResponses.items.any { it.type == CORPORATE }
                         val hasPersonal = getMyCarInfoResponses.items.any { it.type == PERSONAL }
 
                         if(hasCorp && hasPersonal){
                             layout_tab.visibility = VISIBLE
+                            filterCorporate()
+
+                            TextViewCompat.setTextAppearance(tv_corp_tab, R.style.garage_selected)
+                            TextViewCompat.setTextAppearance(tv_personal_tab, R.style.garage_unselected)
+                            view_corp_tab.visibility = VISIBLE
+                            view_personal_tab.visibility = INVISIBLE
                         }else{
                             layout_tab.visibility = GONE
                         }
@@ -291,4 +324,16 @@ class MyGarageActivity:BaseRefreshActivity() {
         val iv_corp:ImageView = view.findViewById(R.id.iv_corp)
         val tv_corp:TextView = view.findViewById(R.id.tv_corp)
     }
+
+    fun filterPersonal() {
+        rv_garage.adapter = GarageAdapter(context = this@MyGarageActivity, cars = getMyCarInfoResponses.items.filter { it.type == PERSONAL }.toMutableList())
+
+    }
+
+    fun filterCorporate() {
+        rv_garage.adapter = GarageAdapter(context = this@MyGarageActivity, cars = getMyCarInfoResponses.items.filter { it.type == CORPORATE }.toMutableList())
+
+    }
+
+
 }
