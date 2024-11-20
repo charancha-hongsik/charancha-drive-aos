@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.graphics.Bitmap
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
@@ -20,6 +21,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -119,7 +121,12 @@ class MyGarageActivity:BaseRefreshActivity() {
         tv_corp_tab.setOnClickListener {
             filterCorporate()
             TextViewCompat.setTextAppearance(tv_corp_tab, R.style.garage_selected)
+            tv_corp_tab.setTypeface(ResourcesCompat.getFont(this@MyGarageActivity, R.font.pretendardbold), Typeface.BOLD)
+
+
             TextViewCompat.setTextAppearance(tv_personal_tab, R.style.garage_unselected)
+            tv_personal_tab.setTypeface(ResourcesCompat.getFont(this@MyGarageActivity, R.font.pretendardmedium), Typeface.NORMAL)
+
             view_corp_tab.visibility = VISIBLE
             view_personal_tab.visibility = INVISIBLE
         }
@@ -127,7 +134,11 @@ class MyGarageActivity:BaseRefreshActivity() {
         tv_personal_tab.setOnClickListener {
             filterPersonal()
             TextViewCompat.setTextAppearance(tv_personal_tab, R.style.garage_selected)
+            tv_personal_tab.setTypeface(ResourcesCompat.getFont(this@MyGarageActivity, R.font.pretendardbold), Typeface.BOLD)
+
             TextViewCompat.setTextAppearance(tv_corp_tab, R.style.garage_unselected)
+            tv_corp_tab.setTypeface(ResourcesCompat.getFont(this@MyGarageActivity, R.font.pretendardmedium), Typeface.NORMAL)
+
             view_corp_tab.visibility = INVISIBLE
             view_personal_tab.visibility = VISIBLE
 
@@ -167,7 +178,11 @@ class MyGarageActivity:BaseRefreshActivity() {
                             filterCorporate()
 
                             TextViewCompat.setTextAppearance(tv_corp_tab, R.style.garage_selected)
+                            tv_corp_tab.setTypeface(ResourcesCompat.getFont(this@MyGarageActivity, R.font.pretendardbold), Typeface.BOLD)
+
                             TextViewCompat.setTextAppearance(tv_personal_tab, R.style.garage_unselected)
+                            tv_personal_tab.setTypeface(ResourcesCompat.getFont(this@MyGarageActivity, R.font.pretendardmedium), Typeface.NORMAL)
+
                             view_corp_tab.visibility = VISIBLE
                             view_personal_tab.visibility = INVISIBLE
                         }else{
