@@ -314,12 +314,12 @@ class MyGarageActivity:BaseRefreshActivity() {
             }
 
             if(car.type == PERSONAL){
-                holder.iv_corp.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_star2))
-                holder.tv_corp.text = "개인"
+                holder.view_personal_badge.visibility = VISIBLE
+                holder.view_corp_badge.visibility = GONE
 
             }else{
-                holder.iv_corp.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_star1))
-                holder.tv_corp.text = "법인"
+                holder.view_personal_badge.visibility = GONE
+                holder.view_corp_badge.visibility = VISIBLE
 
             }
         }
@@ -339,6 +339,8 @@ class MyGarageActivity:BaseRefreshActivity() {
         val linear_default:LinearLayout = view.findViewById(R.id.linear_default)
         val iv_corp:ImageView = view.findViewById(R.id.iv_corp)
         val tv_corp:TextView = view.findViewById(R.id.tv_corp)
+        val view_personal_badge:LinearLayout = view.findViewById(R.id.view_personal_badge)
+        val view_corp_badge:LinearLayout = view.findViewById(R.id.view_corp_badge)
     }
 
     fun filterPersonal() {
