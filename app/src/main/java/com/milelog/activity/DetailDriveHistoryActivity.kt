@@ -634,7 +634,6 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
                     if(isMyCarScope(getDrivingInfoResponse.endTime)){
                         tv_scope_date_mycar.text = transformDateTo30Dayslater(getDrivingInfoResponse.endTime)
-                        btn_choose_mycar.isClickable = true
                     } else{
                         tv_scope_date_mycar.text = "변경 가능 기간이 지났어요."
                         btn_choose_mycar.isClickable = false
