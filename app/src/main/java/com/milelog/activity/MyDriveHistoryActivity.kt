@@ -69,6 +69,8 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var layout_flow2:LinearLayout
     lateinit var tv_inquire_size:TextView
     lateinit var layout_filter:ConstraintLayout
+    lateinit var btn_close_tooltip:View
+    lateinit var view_excel_tooltip:ImageView
 
     lateinit var behavior: BottomSheetBehavior<LinearLayout>
     lateinit var selectedDate: String
@@ -317,6 +319,12 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         lv_date = findViewById(R.id.lv_history)
         btn_back = findViewById(R.id.btn_back)
         tv_inquire_size = findViewById(R.id.tv_inquire_size)
+        btn_close_tooltip = findViewById(R.id.btn_close_tooltip)
+        view_excel_tooltip = findViewById(R.id.view_excel_tooltip)
+        if(PreferenceUtil.getBooleanPref(this, PreferenceUtil.EXCEL_TOOLTIP, true)){
+            view_excel_tooltip.visibility = VISIBLE
+        }
+
 
         layout_choose_date = findViewById(R.id.layout_choose_date)
         persistent_bottom_sheet = findViewById(R.id.persistent_bottom_sheet)
@@ -577,6 +585,11 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
 
         btn_inquire_date.setOnClickListener {
             layout_choose_date.visibility = GONE
+        }
+
+        btn_close_tooltip.setOnClickListener{
+            view_excel_tooltip.visibility = GONE
+            PreferenceUtil.putBooleanPref(this, PreferenceUtil.EXCEL_TOOLTIP, false)
         }
 
         btn_a_month.setOnClickListener {
