@@ -1013,7 +1013,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
         // 포맷된 문자열 반환
         val formattedDate = newZonedDateTime.format(formatter)
-        return "$formattedDate" + "까지만 변경 가능해요"
+        return "$formattedDate" + "까지 변경 가능해요"
     }
 
     fun isMyCarScope(isoDate: String): Boolean {

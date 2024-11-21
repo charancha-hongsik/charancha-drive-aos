@@ -244,7 +244,7 @@
                     android:id="@+id/tv_scope_date_mycar"
                     android:layout_width="wrap_content"
                     android:layout_height="14dp"
-                    android:text="6월 30일까지만 변경 가능해요."
+                    android:text="6월 30일까지 변경 가능해요."
                     android:textAppearance="@style/C2R"
                     android:textColor="@color/gray_500"
                     android:textFontWeight="400"
