@@ -467,7 +467,8 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                     }
 
                     override fun onCancel() {
-                        finish()
+                        layout_no_bluetooth.visibility = VISIBLE
+                        layout_bluetooth.visibility = GONE
                     }
 
                 }).show()
