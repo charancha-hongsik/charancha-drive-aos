@@ -1003,7 +1003,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
     fun transformDateTo30Dayslater(isoDate: String): String {
         // ISO 8601 형식의 날짜 문자열을 ZonedDateTime 객체로 변환
-        val zonedDateTime = ZonedDateTime.parse(isoDate)
+        val zonedDateTime = ZonedDateTime.parse(isoDate).withZoneSameInstant(ZoneId.systemDefault())
 
         // 30일 후의 날짜 계산
         val newZonedDateTime = zonedDateTime.plusDays(30)
@@ -1023,9 +1023,9 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         // 현재 로컬 날짜와 시간
         val now = ZonedDateTime.now(ZoneId.systemDefault())
 
-        // 주어진 날짜로부터 30일 후의 날짜 계산
-        val dateAfter30Days = zonedDateTime.plusDays(30).withHour(0).withMinute(0).withSecond(0).withNano(0)
-        // 현재 날짜가 주어진 날짜와 30일 후의 날짜 사이에 있는지 확인
+        // 주어진 날짜로부터 31일 후의 날짜 계산
+        val dateAfter30Days = zonedDateTime.plusDays(31).withHour(0).withMinute(0).withSecond(0).withNano(0)
+        // 현재 날짜가 주어진 날짜와 31일 후의 날짜 사이에 있는지 확인
         return now.isAfter(zonedDateTime) && now.isBefore(dateAfter30Days)
     }
 
