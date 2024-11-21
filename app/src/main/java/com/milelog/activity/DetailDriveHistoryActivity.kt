@@ -634,8 +634,10 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
                     if(isMyCarScope(getDrivingInfoResponse.endTime)){
                         tv_scope_date_mycar.text = transformDateTo30Dayslater(getDrivingInfoResponse.endTime)
+                        btn_choose_mycar.isClickable = true
                     } else{
                         tv_scope_date_mycar.text = "변경 가능 기간이 지났어요."
+                        btn_choose_mycar.isClickable = false
                     }
 
 
@@ -1014,16 +1016,15 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         return "$formattedDate" + "까지만 변경 가능해요"
     }
 
-    fun isMyCarScope(isoDate: String):Boolean{
-        // ISO 8601 형식의 날짜 문자열을 ZonedDateTime 객체로 변환
-        val zonedDateTime = ZonedDateTime.parse(isoDate)
+    fun isMyCarScope(isoDate: String): Boolean {
+        // ISO 8601 형식의 날짜 문자열을 ZonedDateTime 객체로 변환 (로컬 시간대로 변경)
+        val zonedDateTime = ZonedDateTime.parse(isoDate).withZoneSameInstant(ZoneId.systemDefault())
 
-        // 현재 날짜와 시간
-        val now = ZonedDateTime.now()
+        // 현재 로컬 날짜와 시간
+        val now = ZonedDateTime.now(ZoneId.systemDefault())
 
         // 주어진 날짜로부터 30일 후의 날짜 계산
-        val dateAfter30Days = zonedDateTime.plusDays(30)
-
+        val dateAfter30Days = zonedDateTime.plusDays(30).withHour(0).withMinute(0).withSecond(0).withNano(0)
         // 현재 날짜가 주어진 날짜와 30일 후의 날짜 사이에 있는지 확인
         return now.isAfter(zonedDateTime) && now.isBefore(dateAfter30Days)
     }
