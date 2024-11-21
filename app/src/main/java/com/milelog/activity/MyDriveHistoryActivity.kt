@@ -828,14 +828,14 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
 
                 // Start Address 설정
                 driveItem.startAddress?.let { startAddress ->
-                    val addressName = startAddress.road?.name ?: startAddress.parcel?.name
+                    val addressName = startAddress.road?.name ?: startAddress.parcel?.name?:"데이터 검토 중이에요"
                     holder.tv_start_address.text = addressName
                     holder.tv_start_address2.text = addressName
                 }
 
                 // End Address 설정
                 driveItem.endAddress?.let { endAddress ->
-                    val addressName = endAddress.road?.name ?: endAddress.parcel?.name
+                    val addressName = endAddress.road?.name ?: endAddress.parcel?.name?:"데이터 검토 중이에요"
                     holder.tv_end_address.text = addressName
                     holder.tv_end_address2.text = addressName
                 }

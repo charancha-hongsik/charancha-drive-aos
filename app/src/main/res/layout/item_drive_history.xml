@@ -169,7 +169,7 @@
                     android:textFontWeight="500"
                     android:includeFontPadding="false"
                     android:textColor="@color/gray_900"
-                    android:text="서울 동대문구 답십리동"/>
+                    android:text="데이터 검토 중이에요"/>
 
                 <TextView
                     android:id="@+id/tv_start_time"
@@ -190,7 +190,7 @@
                     android:includeFontPadding="false"
                     android:textFontWeight="500"
                     android:textColor="@color/gray_900"
-                    android:text="서울 동대문구 답십리동"/>
+                    android:text="데이터 검토 중이에요"/>
 
                 <TextView
                     android:id="@+id/tv_end_time"
@@ -410,7 +410,7 @@
                     android:textFontWeight="500"
                     android:includeFontPadding="false"
                     android:textColor="@color/gray_400"
-                    android:text="서울 동대문구 답십리동"/>
+                    android:text="데이터 검토 중이에요"/>
 
                 <TextView
                     android:id="@+id/tv_start_time2"
@@ -431,7 +431,7 @@
                     android:includeFontPadding="false"
                     android:textFontWeight="500"
                     android:textColor="@color/gray_400"
-                    android:text="서울 동대문구 답십리동"/>
+                    android:text="데이터 검토 중이에요"/>
 
                 <TextView
                     android:id="@+id/tv_end_time2"
