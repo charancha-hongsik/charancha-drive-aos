@@ -269,8 +269,6 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                     val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
                     val myCarsList: MutableList<MyCarsEntity> = GsonBuilder().serializeNulls().create().fromJson(it, type)
 
-                    Log.d("testestestest","testestestsetset :: " + myCarsList.size)
-
                     rv_registered_car.adapter = MyCarEntitiesAdapter(context = context, mycarEntities = myCarsList, macAddress,bluetoothName, bottomSheetDialog)
 
                     // Set the content view of the dialog

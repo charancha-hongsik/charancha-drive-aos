@@ -404,6 +404,48 @@ open class BaseActivity: AppCompatActivity(){
         }
     }
 
+    fun formatDateRangeForDriveHistory(startDate: String, endDate: String): String {
+        try {
+            // 시작 날짜와 종료 날짜를 OffsetDateTime 객체로 파싱
+            val startOffsetDateTime = OffsetDateTime.parse(startDate)
+            val endOffsetDateTime = OffsetDateTime.parse(endDate)
+
+            // OffsetDateTime 객체를 로컬 시간대로 변환 (한국 시간대로 설정 예시)
+            val koreaZoneId = ZoneId.of("Asia/Seoul")
+            val startDateTime = startOffsetDateTime.atZoneSameInstant(koreaZoneId).toLocalDateTime()
+            val endDateTime = endOffsetDateTime.atZoneSameInstant(koreaZoneId).toLocalDateTime()
+
+
+            if(startDateTime.year != endDateTime.year){
+                // 원하는 포맷으로 날짜를 변환
+                val formatterForStart = DateTimeFormatter.ofPattern("yyyy년 M월 d일", Locale.KOREAN)
+                val formatterForEnd = DateTimeFormatter.ofPattern("M월 d일", Locale.KOREAN)
+                val formattedStartDate = startDateTime.format(formatterForStart)
+                val formattedEndDate = endDateTime.format(formatterForEnd)
+
+                // 포맷된 날짜를 합쳐서 반환
+                return "$formattedStartDate ~ $formattedEndDate"
+            }else{
+                // 원하는 포맷으로 날짜를 변환
+                val formatterForStart = DateTimeFormatter.ofPattern("yyyy년 M월 d일", Locale.KOREAN)
+                val formatterForEnd = DateTimeFormatter.ofPattern("M월 d일", Locale.KOREAN)
+                val formattedStartDate = startDateTime.format(formatterForStart)
+                val formattedEndDate = endDateTime.format(formatterForEnd)
+
+                // 포맷된 날짜를 합쳐서 반환
+                return "$formattedStartDate ~ $formattedEndDate"
+            }
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            // 예외 처리: 날짜 형식이 올바르지 않은 경우 빈 문자열 반환 또는 예외 처리 로직 추가
+            return ""
+        }
+    }
+
+
+
+
     fun formatDateRangeForAMonth(startDate: String, endDate: String): String {
         try {
             // 시작 날짜와 종료 날짜를 OffsetDateTime 객체로 파싱
@@ -429,6 +471,35 @@ open class BaseActivity: AppCompatActivity(){
             return ""
         }
     }
+
+    fun formatDateRangeForAMonthForDriveHistory(startDate: String, endDate: String): String {
+        try {
+            // 시작 날짜와 종료 날짜를 OffsetDateTime 객체로 파싱
+            val startOffsetDateTime = OffsetDateTime.parse(startDate)
+            val endOffsetDateTime = OffsetDateTime.parse(endDate)
+
+            // OffsetDateTime 객체를 로컬 시간대로 변환 (한국 시간대로 설정 예시)
+            val koreaZoneId = ZoneId.of("Asia/Seoul")
+            val startDateTime = startOffsetDateTime.atZoneSameInstant(koreaZoneId).toLocalDateTime()
+            val endDateTime = endOffsetDateTime.atZoneSameInstant(koreaZoneId).toLocalDateTime()
+
+            // 원하는 포맷으로 날짜를 변환
+            val startFormatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일", Locale.KOREAN)
+            val endFormatter = DateTimeFormatter.ofPattern("M월 d일", Locale.KOREAN)
+
+            val formattedStartDate = startDateTime.format(startFormatter)
+            val formattedEndDate = endDateTime.format(endFormatter)
+
+            // 포맷된 날짜를 합쳐서 반환
+            return "$formattedStartDate ~ $formattedEndDate"
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            // 예외 처리: 날짜 형식이 올바르지 않은 경우 빈 문자열 반환 또는 예외 처리 로직 추가
+            return ""
+        }
+    }
+
 
     fun transformTimeToHHMM(isoDate: String):String{
         // UTC 시간 파싱

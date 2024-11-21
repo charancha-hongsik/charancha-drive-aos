@@ -637,7 +637,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                         startTimeForFilter = getCurrentAndPastTimeForISO(29).second
                         endTimeForFilter = getCurrentAndPastTimeForISO(29).first
                         setInquireScope(
-                            formatDateRangeForAMonth(
+                            formatDateRangeForAMonthForDriveHistory(
                                 startTimeForFilter,
                                 endTimeForFilter
                             )
@@ -651,7 +651,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                     } else if (btn_six_month.isSelected) {
                         startTimeForFilter = getCurrentAndPastTimeForISO(SIX_MONTH).second
                         endTimeForFilter = getCurrentAndPastTimeForISO(SIX_MONTH).first
-                        setInquireScope(formatDateRange(startTimeForFilter, endTimeForFilter))
+                        setInquireScope(formatDateRangeForDriveHistory(startTimeForFilter, endTimeForFilter))
                         historyViewModel.getHistories(
                             startTimeForFilter,
                             endTimeForFilter,
@@ -662,7 +662,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                     } else if (btn_each_month.isSelected) {
                         startTimeForFilter = getDateRange(selectedDate).second
                         endTimeForFilter = getDateRange(selectedDate).first
-                        setInquireScope(getDateRangeString(selectedDate))
+                        setInquireScope(selectedDate)
                         historyViewModel.getHistories(
                             startTimeForFilter,
                             endTimeForFilter,
@@ -699,7 +699,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         tv_selected_date.text = selectedDate
 
         setInquireScope(
-            formatDateRangeForAMonth(
+            formatDateRangeForAMonthForDriveHistory(
                 getCurrentAndPastTimeForISO(29).second,
                 getCurrentAndPastTimeForISO(29).first
             )
@@ -938,7 +938,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         return choseDateList
     }
 
-    fun getDateRangeString(yearMonth: String): String {
+    fun getDateRangeStringForDriveHistory(yearMonth: String): String {
 
         // 주어진 문자열을 LocalDate로 파싱 (해당 월의 첫날)
         val startDate = LocalDate.parse("$yearMonth 1일", DateTimeFormatter.ofPattern("yyyy년 M월 d일"))

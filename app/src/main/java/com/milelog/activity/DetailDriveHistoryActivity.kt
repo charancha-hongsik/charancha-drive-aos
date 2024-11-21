@@ -565,20 +565,26 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
 
                     if(getDrivingInfoResponse.startAddress != null){
-                        tv_start_time.text = getDrivingInfoResponse.startAddress.road?.name?:getDrivingInfoResponse.startAddress.parcel?.name
-                        tv_start_address.text = getDrivingInfoResponse.startAddress.road?.name?:getDrivingInfoResponse.startAddress.parcel?.name
+                        tv_start_address.text = getDrivingInfoResponse.startAddress.road?.name?:getDrivingInfoResponse.startAddress.parcel?.name?:"데이터 검토 중이에요"
+                    }else{
+                        tv_start_address.text = "데이터 검토 중이에요"
                     }
                     if(getDrivingInfoResponse.endAddress != null){
-                        tv_end_time.text = getDrivingInfoResponse.endAddress.road?.name?:getDrivingInfoResponse.endAddress.parcel?.name
-                        tv_end_address.text = getDrivingInfoResponse.endAddress.road?.name?:getDrivingInfoResponse.endAddress.parcel?.name
+                        tv_end_address.text = getDrivingInfoResponse.endAddress.road?.name?:getDrivingInfoResponse.endAddress.parcel?.name?:"데이터 검토 중이에요"
 
                         if(!getDrivingInfoResponse.endAddress.places.isNullOrEmpty()){
-                            tv_end_address_detail.text = getDrivingInfoResponse.endAddress.places?.get(0)?.name
+                            tv_end_address_detail.text = getDrivingInfoResponse.endAddress.places?.get(0)?.name?:"데이터 검토 중이에요"
 
                             tv_end_address_detail.setOnClickListener {
                                 startActivity(Intent(this@DetailDriveHistoryActivity, AllAddressActivity::class.java).putExtra("places",Gson().toJson(getDrivingInfoResponse.endAddress.places)))
                             }
+                        }else{
+                            tv_end_address_detail.text = "데이터 검토 중이에요"
                         }
+                    }else{
+                        tv_end_address.text = "데이터 검토 중이에요"
+                        tv_end_address_detail.text = "데이터 검토 중이에요"
+
                     }
 
                     isActive = getDrivingInfoResponse.isActive
