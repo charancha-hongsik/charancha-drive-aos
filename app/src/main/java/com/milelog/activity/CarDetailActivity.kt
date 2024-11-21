@@ -216,7 +216,8 @@ class CarDetailActivity: BaseRefreshActivity() {
 
         if (postMyCarResponse.trimHint.isNullOrEmpty()) {
             // trimHint가 없는 경우, visibility를 GONE으로 설정
-            tv_confirm_mycar_info1.visibility = GONE
+            tv_confirm_mycar_info1.text = "내 차량명을\n확인해 주세요."
+            tv_confirm_mycar_info1.visibility = VISIBLE
         } else {
             // trimHint가 있는 경우, 텍스트를 설정하고 visibility를 VISIBLE로 설정
             tv_confirm_mycar_info1.text = postMyCarResponse.trimHint + "\n차량명이 맞으신가요?"
