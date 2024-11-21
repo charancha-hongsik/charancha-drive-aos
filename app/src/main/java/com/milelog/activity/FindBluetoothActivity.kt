@@ -188,65 +188,12 @@ class FindBluetoothActivity: BaseRefreshActivity() {
 
                 holder.tv_find_bluetooth_text1.text = userEntity.name
 
-                val profileStr = when (userEntity.major) {
-                    1076 -> "Audio/Video: Camcorder"
-                    1056 -> "Audio/Video: Car Audio"
-                    1032 -> "Audio/Video: Handsfree"
-                    1048 -> "Audio/Video: Headphones"
-                    1064 -> "Audio/Video: HiFi Audio"
-                    1044 -> "Audio/Video: Loudspeaker"
-                    1040 -> "Audio/Video: Microphone"
-                    1052 -> "Audio/Video: Portable Audio"
-                    1060 -> "Audio/Video: Set Top Box"
-                    1024 -> "Audio/Video: Uncategorized"
-                    1068 -> "Audio/Video: VCR"
-                    1072 -> "Audio/Video: Video Camera"
-                    1088 -> "Audio/Video: Video Conferencing"
-                    1084 -> "Audio/Video: Video Display and Loudspeaker"
-                    1096 -> "Audio/Video: Video Gaming Toy"
-                    1080 -> "Audio/Video: Video Monitor"
-                    1028 -> "Audio/Video: Wearable Headset"
-                    260 -> "Computer: Desktop"
-                    272 -> "Computer: Handheld PC/PDA"
-                    268 -> "Computer: Laptop"
-                    276 -> "Computer: Palm Size PC/PDA"
-                    264 -> "Computer: Server"
-                    256 -> "Computer: Uncategorized"
-                    280 -> "Computer: Wearable"
-                    2308 -> "Health: Blood Pressure"
-                    2332 -> "Health: Data Display"
-                    2320 -> "Health: Glucose"
-                    2324 -> "Health: Pulse Oximeter"
-                    2328 -> "Health: Pulse Rate"
-                    2312 -> "Health: Thermometer"
-                    2304 -> "Health: Uncategorized"
-                    2316 -> "Health: Weighing"
-                    1344 -> "Peripheral: Keyboard"
-                    1472 -> "Peripheral: Keyboard/Pointing"
-                    1280 -> "Peripheral: Non Keyboard/Non Pointing"
-                    1408 -> "Peripheral: Pointing"
-                    516 -> "Phone: Cellular"
-                    520 -> "Phone: Cordless"
-                    532 -> "Phone: ISDN"
-                    528 -> "Phone: Modem or Gateway"
-                    524 -> "Phone: Smart"
-                    512 -> "Phone: Uncategorized"
-                    2064 -> "Toy: Controller"
-                    2060 -> "Toy: Doll/Action Figure"
-                    2068 -> "Toy: Game"
-                    2052 -> "Toy: Robot"
-                    2048 -> "Toy: Uncategorized"
-                    2056 -> "Toy: Vehicle"
-                    1812 -> "Wearable: Glasses"
-                    1808 -> "Wearable: Helmet"
-                    1804 -> "Wearable: Jacket"
-                    1800 -> "Wearable: Pager"
-                    1792 -> "Wearable: Uncategorized"
-                    1796 -> "Wearable: Wrist Watch"
-                    else -> "Unknown"
-                }
 
                 holder.tv_find_bluetooth_text1.setOnClickListener {
+                    showBottomSheetForEditCar(userEntity.macAdress, userEntity.name)
+                }
+
+                holder.btn_find_bluetooth_text.setOnClickListener {
                     showBottomSheetForEditCar(userEntity.macAdress, userEntity.name)
                 }
             }
@@ -255,27 +202,44 @@ class FindBluetoothActivity: BaseRefreshActivity() {
         fun showBottomSheetForEditCar(macAddress: String, bluetoothName:String) {
             PreferenceUtil.getPref(context as FindBluetoothActivity, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
                 if(it != ""){
-                    // Create a BottomSheetDialog
-                    val bottomSheetDialog = BottomSheetDialog(context, R.style.CustomBottomSheetDialog)
-
-                    // Inflate the layout
-                    val bottomSheetView = context.layoutInflater.inflate(R.layout.dialog_registered_bluetooth, null)
-                    val rv_registered_car = bottomSheetView.findViewById<RecyclerView>(R.id.rv_registered_car)
-
-                    rv_registered_car.layoutManager = LinearLayoutManager(context)
-                    val dividerItemDecoration = DividerItemDecoration(context, R.color.white_op_100, context.dpToPx(8f)) // 색상 리소스와 구분선 높이 설정
-                    rv_registered_car.addItemDecoration(dividerItemDecoration)
 
                     val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
                     val myCarsList: MutableList<MyCarsEntity> = GsonBuilder().serializeNulls().create().fromJson(it, type)
 
-                    rv_registered_car.adapter = MyCarEntitiesAdapter(context = context, mycarEntities = myCarsList, macAddress,bluetoothName, bottomSheetDialog)
+                    Log.d("testeststest","testestestes :: " + myCarsList.size)
 
-                    // Set the content view of the dialog
-                    bottomSheetDialog.setContentView(bottomSheetView)
 
-                    // Show the dialog
-                    bottomSheetDialog.show()
+                    if(myCarsList.size < 1){
+                        myCarsList.first().bluetooth_mac_address = macAddress
+                        myCarsList.first().bluetooth_name = bluetoothName
+
+                        PreferenceUtil.putPref(context, PreferenceUtil.MY_CAR_ENTITIES, GsonBuilder().serializeNulls().create().toJson(myCarsList))
+
+                        context.setConnectedCarList()
+
+                        Toast.makeText(context,
+                            myCarsList.first().name +"블루투스가 연결됐어요", Toast.LENGTH_SHORT).show()
+                    }else{
+                        // Create a BottomSheetDialog
+                        val bottomSheetDialog = BottomSheetDialog(context, R.style.CustomBottomSheetDialog)
+
+                        // Inflate the layout
+                        val bottomSheetView = context.layoutInflater.inflate(R.layout.dialog_registered_bluetooth, null)
+                        val rv_registered_car = bottomSheetView.findViewById<RecyclerView>(R.id.rv_registered_car)
+
+                        rv_registered_car.layoutManager = LinearLayoutManager(context)
+                        val dividerItemDecoration = DividerItemDecoration(context, R.color.white_op_100, context.dpToPx(8f)) // 색상 리소스와 구분선 높이 설정
+                        rv_registered_car.addItemDecoration(dividerItemDecoration)
+
+
+                        rv_registered_car.adapter = MyCarEntitiesAdapter(context = context, mycarEntities = myCarsList, macAddress,bluetoothName, bottomSheetDialog)
+
+                        // Set the content view of the dialog
+                        bottomSheetDialog.setContentView(bottomSheetView)
+
+                        // Show the dialog
+                        bottomSheetDialog.show()
+                    }
                 }
             }
         }
@@ -288,6 +252,7 @@ class FindBluetoothActivity: BaseRefreshActivity() {
 
     class DetectedStatusViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tv_find_bluetooth_text1:TextView  = view.findViewById(R.id.tv_find_bluetooth_text1)
+        val btn_find_bluetooth_text:LinearLayout = view.findViewById(R.id.btn_find_bluetooth_text)
 
     }
 
@@ -348,8 +313,6 @@ class FindBluetoothActivity: BaseRefreshActivity() {
 
                                     myCarsListOnDevice.get(position).bluetooth_mac_address = macAddress
                                     myCarsListOnDevice.get(position).bluetooth_name = bluetoothName
-
-                                    Log.d("testsetse","testesest size1 :: " + myCarsListOnDevice.size)
 
                                     PreferenceUtil.putPref(context, PreferenceUtil.MY_CAR_ENTITIES, GsonBuilder().serializeNulls().create().toJson(myCarsListOnDevice))
 
