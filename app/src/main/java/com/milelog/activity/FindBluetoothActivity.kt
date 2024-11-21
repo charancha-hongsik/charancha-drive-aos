@@ -209,17 +209,7 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                     Log.d("testeststest","testestestes :: " + myCarsList.size)
 
 
-                    if(myCarsList.size < 1){
-                        myCarsList.first().bluetooth_mac_address = macAddress
-                        myCarsList.first().bluetooth_name = bluetoothName
-
-                        PreferenceUtil.putPref(context, PreferenceUtil.MY_CAR_ENTITIES, GsonBuilder().serializeNulls().create().toJson(myCarsList))
-
-                        context.setConnectedCarList()
-
-                        Toast.makeText(context,
-                            myCarsList.first().name +"블루투스가 연결됐어요", Toast.LENGTH_SHORT).show()
-                    }else{
+                    if(myCarsList.size > 1){
                         // Create a BottomSheetDialog
                         val bottomSheetDialog = BottomSheetDialog(context, R.style.CustomBottomSheetDialog)
 
@@ -239,6 +229,16 @@ class FindBluetoothActivity: BaseRefreshActivity() {
 
                         // Show the dialog
                         bottomSheetDialog.show()
+                    }else{
+                        myCarsList.first().bluetooth_mac_address = macAddress
+                        myCarsList.first().bluetooth_name = bluetoothName
+
+                        PreferenceUtil.putPref(context, PreferenceUtil.MY_CAR_ENTITIES, GsonBuilder().serializeNulls().create().toJson(myCarsList))
+
+                        context.setConnectedCarList()
+
+                        Toast.makeText(context,
+                            myCarsList.first().name +"블루투스가 연결됐어요", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
