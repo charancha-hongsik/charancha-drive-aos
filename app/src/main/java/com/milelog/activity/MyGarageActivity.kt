@@ -87,32 +87,35 @@ class MyGarageActivity:BaseRefreshActivity() {
     }
 
     private fun setClickListener(){
-        btn_add.setOnClickListener {
-            apiService().getMyCarCount("Bearer " + PreferenceUtil.getPref(this,  PreferenceUtil.ACCESS_TOKEN, "")!!).enqueue(object :
-                Callback<ResponseBody> {
-                override fun onResponse(
-                    call: Call<ResponseBody>,
-                    response: Response<ResponseBody>
-                ) {
-                    if(response.code() == 200 || response.code() == 201){
-                        if(response.body()!!.string().toInt() < 10){
-                            startActivity(Intent(this@MyGarageActivity, RegisterCarActivity::class.java).putExtra("add",true))
-                        }else{
-                            Toast.makeText(this@MyGarageActivity, "자동차는 최대 10개까지 추가할 수 있습니다.",Toast.LENGTH_SHORT).show()
+        btn_add.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                apiService().getMyCarCount("Bearer " + PreferenceUtil.getPref(this@MyGarageActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!).enqueue(object :
+                    Callback<ResponseBody> {
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+                        if(response.code() == 200 || response.code() == 201){
+                            if(response.body()!!.string().toInt() < 10){
+                                startActivity(Intent(this@MyGarageActivity, RegisterCarActivity::class.java).putExtra("add",true))
+                            }else{
+                                Toast.makeText(this@MyGarageActivity, "자동차는 최대 10개까지 추가할 수 있습니다.",Toast.LENGTH_SHORT).show()
+                            }
+                        }else if(response.code() == 401){
+                            logout()
                         }
-                    }else if(response.code() == 401){
-                        logout()
                     }
-                }
 
-                override fun onFailure(
-                    call: Call<ResponseBody>,
-                    t: Throwable
-                ) {
+                    override fun onFailure(
+                        call: Call<ResponseBody>,
+                        t: Throwable
+                    ) {
 
-                }
-            })
-        }
+                    }
+                })
+            }
+
+        })
 
         ib_arrow_register_car.setOnClickListener {
             finish()
