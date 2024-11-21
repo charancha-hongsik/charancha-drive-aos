@@ -259,16 +259,8 @@ class ExcelActivity:BaseRefreshActivity() {
                             jsonString,
                             GetDriveHistoryResponse::class.java
                         )
-                        Log.d("testestsetest","testestestsetes size :: " + getDriveHistroyResponse.items.size)
-                        Log.d("testestsetest","testestestsetes isActiveForFilter :: " + isActiveForFilter)
-                        Log.d("testestsetest","testestestsetes carIdForFilter :: " + carIdForFilter)
 
-
-                        // 함수 호출
-                         createDrivingDataWithHeaders(getDrivingData(getDriveHistroyResponse))
-                        // 업무용 승용차 운행기록부 생성
-                        // createCarUsageRecord()
-
+                        createDrivingDataWithHeaders(getDrivingData(getDriveHistroyResponse))
 
                     } else{
 

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white_op_100"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_edit_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="주행 목적"
+        android:textAppearance="@style/B2R"
+        android:textColor="@color/gray_600"
+        android:textFontWeight="400"/>
+
+    <TextView
+        android:id="@+id/tv_current"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="업무용"
+        android:layout_marginTop="4dp"
+        android:textAppearance="@style/B1SB"
+        android:textFontWeight="600"
+        android:textColor="@color/gray_900"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/radius5_gray50"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="18dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_caution_orange"
+                android:layout_gravity="bottom"
+                android:gravity="center_vertical"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="18dp"
+                android:text="최초 기록"
+                android:layout_marginLeft="4dp"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
+                android:textAppearance="@style/B2SB"
+                android:textFontWeight="600"
+                android:textColor="@color/gray_800"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_past"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textAppearance="@style/B1R"
+            android:textFontWeight="400"
+            android:textColor="@color/gray_700"
+            android:text="출/퇴근용"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,18 +1,22 @@
 package com.milelog.activity
 
-import android.Manifest.permission.ACTIVITY_RECOGNITION
+import android.Manifest
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.provider.Settings
+import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -22,9 +26,12 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -46,10 +53,15 @@ import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.milelog.CustomDialog
 import com.milelog.DividerItemDecoration
+import com.milelog.EditHistoryEntity
 import com.milelog.PreferenceUtil
+import com.milelog.activity.FindBluetoothActivity.MyCarEntitiesAdapter
 import com.milelog.activity.LoadCarMoreInfoActivity.Companion.CORPORATE
 import com.milelog.activity.LoadCarMoreInfoActivity.Companion.PERSONAL
+import com.milelog.activity.MyInfoActivity.Companion.REQUEST_READ_EXTERNAL_STORAGE
+import com.milelog.retrofit.request.DeleteImage
 import com.milelog.retrofit.request.PatchCorpType
+import com.milelog.retrofit.response.GetDrivingInfoResponse
 import com.milelog.retrofit.response.UserCar
 import com.milelog.retrofit.response.VWorldDetailResponse
 import com.milelog.retrofit.response.VWorldResponse
@@ -58,8 +70,18 @@ import com.milelog.viewmodel.BaseViewModel
 import com.milelog.viewmodel.state.GetDrivingInfoState
 import com.milelog.viewmodel.state.PatchCorpTypeState
 import com.milelog.viewmodel.state.PatchDrivingInfoState
+import com.milelog.viewmodel.state.PatchImageState
 import com.milelog.viewmodel.state.PatchMemoState
+import com.nex3z.flowlayout.FlowLayout
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.io.File
 import java.time.*
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -97,9 +119,12 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var tv_scope_date_mycar:TextView
     lateinit var tv_mycar:TextView
     lateinit var tv_type:TextView
-
     lateinit var btn_choose_mycar: LinearLayout
     lateinit var tv_mycar_scope_info:LinearLayout
+    lateinit var btn_add_image:ConstraintLayout
+    lateinit var tv_text_length:TextView
+    private val PICK_IMAGE_REQUEST = 1
+    lateinit var tv_edit:TextView
 
     lateinit var iv_tooltip_verification:ImageView
     lateinit var iv_tooltip_rapid_desc:ImageView
@@ -110,17 +135,27 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var iv_tooltip_low_speed_average:ImageView
     lateinit var iv_tooltip_rapid_start:ImageView
     lateinit var iv_tooltip_rapid_acc:ImageView
+    lateinit var tv_tv_add_image:TextView
 
     lateinit var tv_start_address:TextView
     lateinit var tv_end_address:TextView
     lateinit var tv_end_address_detail:TextView
+    lateinit var view_edit_detail:ConstraintLayout
 
     lateinit var view_map:CardView
-    lateinit var layout_drive_image:LinearLayout
+    lateinit var layout_drive_image:FlowLayout
+
+    lateinit var view_edit1:View
+    lateinit var view_edit2:View
+    lateinit var view_edit3:View
+    lateinit var view_edit4:View
+    lateinit var view_edit5:View
+
 
     lateinit var iv_corp:ImageView
 
     lateinit var btn_choose_corp: ConstraintLayout
+    private lateinit var imageMultipart: MultipartBody.Part // 선택한 이미지
 
     private var isCameraMoving = false
     private var currentAnimator: ValueAnimator? = null
@@ -132,7 +167,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     var userCarId:String? = null
     var userCar: UserCar? = null
     lateinit var tracking_id:String
-    var pastMemo:String? = null
+    var pastMemo:String = ""
+    var currentMemo:String = ""
 
     enum class CorpType(val description: String) {
         COMMUTE("출/퇴근"),
@@ -162,6 +198,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
             userCar = Gson().fromJson(it, UserCar::class.java)
         }
 
+        tv_text_length = findViewById(R.id.tv_text_length)
+        btn_add_image = findViewById(R.id.btn_add_image)
         tv_date = findViewById(R.id.tv_date)
         tv_distance = findViewById(R.id.tv_distance)
         tv_start_time = findViewById(R.id.tv_start_time)
@@ -185,6 +223,15 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         tv_scope_date_mycar = findViewById(R.id.tv_scope_date_mycar)
         tv_mycar_scope_info = findViewById(R.id.tv_mycar_scope_info)
         tv_type = findViewById(R.id.tv_type)
+        tv_tv_add_image = findViewById(R.id.tv_tv_add_image)
+        view_edit1 = findViewById(R.id.view_edit1)
+        view_edit2 = findViewById(R.id.view_edit2)
+        view_edit3 = findViewById(R.id.view_edit3)
+        view_edit4 = findViewById(R.id.view_edit4)
+        view_edit5 = findViewById(R.id.view_edit5)
+        tv_edit = findViewById(R.id.tv_edit)
+
+
 
         iv_tooltip_verification = findViewById(R.id.iv_tooltip_verification)
         iv_tooltip_low_speed = findViewById(R.id.iv_tooltip_low_speed)
@@ -197,6 +244,11 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         iv_tooltip_rapid_acc = findViewById(R.id.iv_tooltip_rapid_acc)
         tv_mycar = findViewById(R.id.tv_mycar)
         layout_drive_image = findViewById(R.id.layout_drive_image)
+        view_edit_detail = findViewById(R.id.view_edit_detail)
+
+        view_edit_detail.setOnClickListener {
+
+        }
 
         tv_start_address = findViewById(R.id.tv_start_address)
         tv_end_address = findViewById(R.id.tv_end_address)
@@ -209,9 +261,93 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
         et_memo = findViewById(R.id.et_memo)
 
+        et_memo.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                // 텍스트 변경 전 처리 (현재는 필요하지 않음)
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                p0?.let {
+                    // 텍스트 길이가 10을 초과하면 마지막 글자 삭제
+                    if (it.length > 10) {
+                        et_memo.setText(it.substring(0, 10))  // 마지막 글자 자르기
+                        et_memo.setSelection(10)  // 커서를 마지막으로 이동
+                    } else {
+                        // 텍스트 길이가 10 이하일 경우 tv_text_length 업데이트
+                        tv_text_length.text = "${it.length}/10"
+                    }
+
+                    currentMemo = et_memo.text.toString()
+                }
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+                // 텍스트 변경 후 처리 (현재는 필요하지 않음)
+            }
+        })
+
         iv_corp = findViewById(R.id.iv_corp)
 
         view_map = findViewById(R.id.view_map)
+    }
+
+    fun showBottomSheetForEditHistory(editHistoryEntities:MutableList<EditHistoryEntity>) {
+        // Create a BottomSheetDialog
+        val bottomSheetDialog = BottomSheetDialog(this, R.style.CustomBottomSheetDialog)
+
+        // Inflate the layout
+        val bottomSheetView = layoutInflater.inflate(R.layout.dialog_edit_history, null)
+        val rv_edit_history = bottomSheetView.findViewById<RecyclerView>(R.id.rv_edit_history)
+
+        rv_edit_history.layoutManager = LinearLayoutManager(this)
+        val dividerItemDecoration = DividerItemDecoration(this, R.color.white_op_100, dpToPx(26f)) // 색상 리소스와 구분선 높이 설정
+        rv_edit_history.addItemDecoration(dividerItemDecoration)
+
+        rv_edit_history.adapter = EditHistoryAdapter(context = this, editHistoryEntities = editHistoryEntities)
+
+        // Set the content view of the dialog
+        bottomSheetDialog.setContentView(bottomSheetView)
+
+        // Show the dialog
+        bottomSheetDialog.show()
+    }
+
+    class EditHistoryAdapter(
+        private val context: Context,
+        private val editHistoryEntities: MutableList<EditHistoryEntity>,
+    ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+        companion object {
+            private const val VIEW_TYPE_ITEM = 0
+        }
+
+        override fun getItemViewType(position: Int): Int {
+            return VIEW_TYPE_ITEM
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+            val view = LayoutInflater.from(context).inflate(R.layout.item_edit_history, parent, false)
+            return EditHistoryHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+            if (holder is EditHistoryHolder) {
+                val edit = editHistoryEntities.get(position)
+                holder.tv_edit_title.text = edit.title
+                holder.tv_current.text = edit.current
+                holder.tv_past.text = edit.past
+            }
+        }
+
+        override fun getItemCount(): Int {
+            return editHistoryEntities.size
+        }
+    }
+
+    class EditHistoryHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val tv_edit_title:TextView = view.findViewById(R.id.tv_edit_title)
+        val tv_current:TextView = view.findViewById(R.id.tv_current)
+        val tv_past:TextView = view.findViewById(R.id.tv_past)
     }
 
     private fun setObserver(){
@@ -246,6 +382,37 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     intent.putExtra("userCar",Gson().toJson(userCar))
                     setResult(RESULT_OK, intent)
                     finish()
+                }
+            }
+        })
+
+        detailDriveHistoryViewModel.patchImage.observe(this@DetailDriveHistoryActivity, BaseViewModel.EventObserver { state ->
+            when (state) {
+                is PatchImageState.Loading -> {
+
+                }
+                is PatchImageState.Success -> {
+
+                    while(layout_drive_image.childCount > 1) {
+                        layout_drive_image.removeViewAt(layout_drive_image.childCount-1)
+                    }
+
+
+                    state.data.images?.let{
+                        if(it.size > 0){
+                            for(image in it){
+                                addImageToLayout(url = image.url, image.id)
+                            }
+                        }else{
+                            tv_tv_add_image.text = "0/5"
+                        }
+                    }
+                }
+                is PatchImageState.Error -> {
+
+                }
+                is PatchImageState.Empty -> {
+
                 }
             }
         })
@@ -375,9 +542,17 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     tv_rapid_stop_count_info.text = getDrivingInfoResponse.rapidStopCount.toInt().toString() + "회"
                     tv_rapid_desc_count_info.text = getDrivingInfoResponse.rapidDecelerationCount.toInt().toString() + "회"
                     et_memo.setText(getDrivingInfoResponse.memo)
-                    pastMemo = getDrivingInfoResponse.memo
+                    pastMemo = getDrivingInfoResponse.memo?:""
                     state.data.type?.let{
                         tv_type.text = CorpType.valueOf(it).description
+                    }
+
+                    getDrivingInfoResponse.images?.let{
+                        if(it.size > 0){
+                            for(image in it){
+                                addImageToLayout(url = image.url, image.id)
+                            }
+                        }
                     }
 
                     getDrivingInfoResponse.userCar?.let{
@@ -457,6 +632,80 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                         tv_scope_date_mycar.text = "변경 가능 기간이 지났어요."
                     }
 
+
+                    getDrivingInfoResponse.edits?.let{
+                        var list:MutableList<EditHistoryEntity> = mutableListOf()
+
+                        it.type?.let{
+                            view_edit1.visibility = VISIBLE
+                            tv_type.text = it
+
+                            list.add(EditHistoryEntity(title = "주행 목적", past = getDrivingInfoResponse.type?:"데이터 없음", current = it))
+
+
+                        }
+
+                        it.startAddress?.let{
+                            view_edit2.visibility = VISIBLE
+                            tv_start_address.text = it
+
+                            if(getDrivingInfoResponse.startAddress != null){
+                                list.add(EditHistoryEntity(title = "출발지", past = getDrivingInfoResponse.startAddress.road?.name?:getDrivingInfoResponse.startAddress.parcel?.name?:"데이터 없음", current = it))
+                            }else{
+                                list.add(EditHistoryEntity(title = "출발지", past = "데이터 없음", current = it))
+                            }
+
+                        }
+
+                        it.endAddress?.let{
+                            view_edit3.visibility = VISIBLE
+                            tv_end_address.text = it
+
+                            if(getDrivingInfoResponse.endAddress != null){
+                                list.add(EditHistoryEntity(title = "도착지", past = getDrivingInfoResponse.endAddress.road?.name?:getDrivingInfoResponse.endAddress.parcel?.name?:"데이터 없음", current = it))
+                            }else{
+                                list.add(EditHistoryEntity(title = "도착지", past = "데이터 없음", current = it))
+                            }
+
+                        }
+
+                        it.place?.let{
+                            view_edit4.visibility = VISIBLE
+                            tv_end_address_detail.text = it
+
+                            val result = if (!getDrivingInfoResponse.endAddress?.places.isNullOrEmpty()) {
+                                getDrivingInfoResponse.endAddress?.places?.get(0)?.name?:"데이터 없음"
+                            } else {
+                                "데이터 없음"
+                            }
+
+                            list.add(EditHistoryEntity(title = "방문지", past = result, current = it))
+                        }
+
+                        it.totalDistance?.let{
+                            view_edit5.visibility = VISIBLE
+                            tv_drive_distance_info.text = transferDistanceWithUnit(it.toDouble())
+
+                            list.add(EditHistoryEntity(title = "주행 거리", past = transferDistanceWithUnit(getDrivingInfoResponse.totalDistance), current = transferDistanceWithUnit(it.toDouble())))
+                        }
+
+                        if(it.excludeRecord){
+                            tv_edit.text = "관리자에 의해 기록이 제외되었습니다."
+                        }
+
+                        if (it.type != null || it.totalDistance != null || it.startAddress != null || it.endAddress != null || it.place != null) {
+                            view_edit_detail.visibility = VISIBLE
+                        }
+
+
+                        view_edit_detail.setOnClickListener {
+                            if(list.size > 0)
+                                showBottomSheetForEditHistory(list)
+                        }
+
+
+                    }
+
                 }
                 is GetDrivingInfoState.Error -> {
                     if(state.code == 401){
@@ -528,12 +777,29 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
             }
         })
 
+        btn_add_image.setOnClickListener {
+            if(layout_drive_image.childCount < 6){
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) { // API 29 이하
+                    // 권한 체크
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                        openGallery() // 권한이 있으면 크롭 시작
+                    } else {
+                        // 권한이 없으면 요청
+                        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_READ_EXTERNAL_STORAGE)
+                    }
+                } else {
+                    // API 30 이상은 권한 체크 없이 바로 크롭 시작
+                    openGallery()
+                }
+            }else{
+                Toast.makeText(this, "최대 5개까지 등록할 수 있습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
 
         btn_back.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                if(pastMemo != et_memo.text.toString())
-                    detailDriveHistoryViewModel.patchMemo(et_memo.text.toString(), tracking_id)
-                else{
+                if(pastMemo.equals(currentMemo)){
                     val intent = Intent(this@DetailDriveHistoryActivity, MyDriveHistoryActivity::class.java)
                     intent.putExtra("isActive",isActive)
                     intent.putExtra("userCarId",userCarId)
@@ -541,6 +807,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     intent.putExtra("userCar",Gson().toJson(userCar))
                     setResult(RESULT_OK, intent)
                     finish()
+                }else{
+                    detailDriveHistoryViewModel.patchMemo(et_memo.text.toString(), tracking_id)
                 }
             }
         })
@@ -588,6 +856,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
             googleMap.setOnMapLoadedCallback {
                 try {
+
                     /**
                      * 마커 추가
                      */
@@ -755,9 +1024,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
 
     override fun onBackPressed() {
-        if(pastMemo != et_memo.text.toString())
-            detailDriveHistoryViewModel.patchMemo(et_memo.text.toString(), tracking_id)
-        else{
+        if(pastMemo.equals(currentMemo)){
             val intent = Intent(this@DetailDriveHistoryActivity, MyDriveHistoryActivity::class.java)
             intent.putExtra("isActive",isActive)
             intent.putExtra("userCarId",userCarId)
@@ -765,6 +1032,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
             intent.putExtra("userCar",Gson().toJson(userCar))
             setResult(RESULT_OK, intent)
             finish()
+        }else{
+            detailDriveHistoryViewModel.patchMemo(et_memo.text.toString(), tracking_id)
         }
     }
 
@@ -1040,6 +1309,144 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         }
 
         return vWorldResponse.response.result.first().text // 매칭되는 title이 없으면 null 반환
+    }
+
+    private val getMultipleImages = registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris ->
+        if (uris != null) {
+            var imageParts:MutableList<MultipartBody.Part> = mutableListOf()
+
+            Log.d("testestsetest","testestestesset size :: " + uris.size)
+            Log.d("testestsetest","testestestesset childCount :: " + (5-(layout_drive_image.childCount-1)))
+
+            /**
+             * (5-(layout_drive_image.childCount-1)) 는 최대로 업로드 할 수 있는 갯수
+             */
+
+            if(uris.size <= (5-(layout_drive_image.childCount-1))){
+                uris.forEach { uri ->
+                    val bitmap: Bitmap
+                    val selectedImageUri: Uri = uri
+
+                    selectedImageUri.let {
+                        if (Build.VERSION.SDK_INT < 28) {
+                            bitmap = MediaStore.Images.Media.getBitmap(
+                                this.contentResolver,
+                                selectedImageUri
+                            )
+                        } else {
+                            val source = ImageDecoder.createSource(
+                                this.contentResolver,
+                                selectedImageUri
+                            )
+                            bitmap = ImageDecoder.decodeBitmap(source)
+                        }
+                    }
+
+                    // 임시 파일 생성
+                    val imageFile = File.createTempFile("temp_image", ".jpg", cacheDir).apply {
+                        outputStream().use { output ->
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, output)
+                        }
+                    }
+
+                    // MultipartBody.Part 생성
+                    val imagePart = MultipartBody.Part.createFormData(
+                        "images.create", imageFile.name, imageFile.asRequestBody("image/jpeg".toMediaType())
+                    )
+
+                    // 이미지 리스트로 추가
+                    imageParts.add(imagePart)
+                }
+
+                apiService().patchDrivingInfo("Bearer " + PreferenceUtil.getPref(this,  PreferenceUtil.ACCESS_TOKEN, "")!!, drivingId = tracking_id, null, imageParts) .enqueue(object :
+                    Callback<ResponseBody> {
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+                        if(response.code() == 200 || response.code() == 201){
+                            showCustomToast(this@DetailDriveHistoryActivity, "저장 되었습니다.")
+
+                            val jsonString = response.body()?.string()
+                            val getDrivingInfoResponse = GsonBuilder().serializeNulls().create().fromJson(jsonString, GetDrivingInfoResponse::class.java)
+
+                            while(layout_drive_image.childCount > 1) {
+                                layout_drive_image.removeViewAt(layout_drive_image.childCount-1)
+                            }
+
+
+                            getDrivingInfoResponse.images?.let{
+                                if(it.size > 0){
+                                    for(image in it){
+                                        addImageToLayout(url = image.url, image.id)
+                                    }
+                                }else{
+                                    tv_tv_add_image.text = "0/5"
+                                }
+                            }
+
+                        }else if(response.code() == 401){
+                            logout()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+                    }
+
+                })
+            }else{
+                Toast.makeText(this, "최대 5개까지 등록할 수 있습니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+
+    // 갤러리에서 이미지 선택하기
+    private fun openGallery() {
+        getMultipleImages.launch("image/*") // 복수 이미지 선택
+    }
+
+    // 권한 요청 결과 처리
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_READ_EXTERNAL_STORAGE) {
+            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                // 권한이 허용된 경우 크롭 시작
+                openGallery()
+            } else {
+                // 권한이 거부된 경우 사용자에게 알림
+                showCustomToast(this, "권한이 필요합니다.")
+            }
+        }
+    }
+
+    private fun addImageToLayout(url:String, id:String){
+        val constraintLayoutView = layoutInflater.inflate(R.layout.item_drive_image, layout_drive_image, false)
+
+        // Find the ImageView within the newly inflated ConstraintLayout
+        val iv_drive_image = constraintLayoutView.findViewById<ImageView>(R.id.iv_drive_image)
+        val btn_delete_image = constraintLayoutView.findViewById<ImageView>(R.id.btn_delete_image)
+
+        btn_delete_image.setOnClickListener {
+            deleteImageToLayout(id)
+        }
+
+        // Load the image into the ImageView with Glide
+        Glide.with(this@DetailDriveHistoryActivity)
+            .asBitmap()
+            .load(url)
+            .transform(RoundedCornersTransformation(5, 0))  // 5dp의 반경
+            .into(iv_drive_image)
+
+        // Add the inflated ConstraintLayout to the parent LinearLayout
+        layout_drive_image.addView(constraintLayoutView)
+
+        tv_tv_add_image.text = (layout_drive_image.childCount - 1).toString() + "/5"
+    }
+
+    private fun deleteImageToLayout(id:String){
+        detailDriveHistoryViewModel.patchImages(listOf(DeleteImage(id)), tracking_id)
     }
 
 

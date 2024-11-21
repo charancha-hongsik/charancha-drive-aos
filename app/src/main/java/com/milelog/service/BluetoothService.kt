@@ -253,17 +253,19 @@ class BluetoothService : Service() {
                             }
                         } else if(activityType == DetectedActivity.IN_VEHICLE){
                             if (transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
-                                (context as BluetoothService).driveDatabase?.detectUserDao()?.insert(
-                                    DetectUserEntity(
-                                        user_id = "",
-                                        verification = "L1",
-                                        start_stop = "IN VEHICLE Enter(start)",
-                                        timestamp = System.currentTimeMillis().toString(),
-                                        sensor_state = context.fusedLocationClient != null
-                                    )
-                                )
+                                    if(event.elapsedRealTimeNanos >= 75){
+                                        (context as BluetoothService).driveDatabase?.detectUserDao()?.insert(
+                                            DetectUserEntity(
+                                                user_id = "",
+                                                verification = "L1",
+                                                start_stop = "IN VEHICLE Enter(start)",
+                                                timestamp = System.currentTimeMillis().toString(),
+                                                sensor_state = context.fusedLocationClient != null
+                                            )
+                                        )
 
-                                context.startSensor(L1)
+                                        context.startSensor(L1)
+                                    }
                             }
                         }
                     }

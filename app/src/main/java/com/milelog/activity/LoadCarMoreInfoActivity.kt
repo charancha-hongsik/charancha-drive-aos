@@ -218,6 +218,9 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                 et_corp_name.setText(postMyCarResponse.data.name)
                 et_corp_department.setText(postMyCarResponse.data.department)
 
+                btn_save.isSelected = true
+                btn_save.isClickable = true
+
             }else{
                 layout_corp_parent.visibility = GONE
                 layout_type.visibility = GONE
@@ -541,7 +544,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 p0?.let{
                     if(p0.length>=1){
-                        if(!et_corp_department.text.toString().isNullOrEmpty() && !tv_fuel.text.toString().isNullOrEmpty() && postMyCarResponse.makerCd.isNullOrEmpty() && postMyCarResponse.modelCd.isNullOrEmpty()){
+                        if(!et_corp_department.text.toString().isNullOrEmpty() && !tv_fuel.text.toString().isNullOrEmpty() && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
                             btn_next.isSelected = true
                             btn_next.isClickable = true
 
@@ -577,7 +580,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 p0?.let{
                     if(p0.length>=1){
-                        if(!et_corp_name.text.toString().isNullOrEmpty() && !tv_fuel.text.toString().isNullOrEmpty() && postMyCarResponse.makerCd.isNullOrEmpty() && postMyCarResponse.modelCd.isNullOrEmpty()){
+                        if(!et_corp_name.text.toString().isNullOrEmpty() && !tv_fuel.text.toString().isNullOrEmpty() && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
                             btn_next.isSelected = true
                             btn_next.isClickable = true
 
@@ -624,7 +627,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
 
                     layout_select.visibility = GONE
 
-                    if(!et_corp_name.text.toString().isNullOrEmpty() && !et_corp_department.text.toString().isNullOrEmpty() && postMyCarResponse.makerCd.isNullOrEmpty() && postMyCarResponse.modelCd.isNullOrEmpty()){
+                    if(!et_corp_name.text.toString().isNullOrEmpty() && !et_corp_department.text.toString().isNullOrEmpty() && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
                         btn_next.isSelected = true
                         btn_next.isClickable = true
 

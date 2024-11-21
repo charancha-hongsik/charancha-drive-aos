@@ -1,12 +1,13 @@
 package com.milelog.retrofit.response
 
+import com.milelog.activity.DetailDriveHistoryActivity
 import com.milelog.retrofit.request.Address
 
 data class GetDrivingInfoResponse (
     val id:String,
     val userId:String,
     val carId:String,
-    val userCarId:String,
+    val userCarId:String?,
     val createdAt:String,
     val updatedAt:String,
     val startTime:String,
@@ -57,9 +58,38 @@ data class GetDrivingInfoResponse (
     val harshDrivingPercentage:Double,
     val verification:String,
     val isActive:Boolean,
-    val startAddress: Address,
-    val endAddress: Address,
-    val memo:String,
+    val startAddress: Address?,
+    val endAddress: Address?,
+    val memo:String?,
     val type:String?,
-    val userCar:UserCar?
+    val userCar:UserCar?,
+    val images:List<Image>?,
+    val edits:Edits?
     ) : java.io.Serializable
+
+data class Image(
+    val createAt:String,
+    val deletedAt:String,
+    val updatedAt:String,
+    val id:String,
+    val key:String,
+    val url:String,
+    val mimetype:String,
+    val name:String,
+    val originalName:String,
+    val size:String,
+    val order:String,
+    )
+
+data class Edits(
+    val id: String,
+    val createdAt: String,
+    val deletedAt: String?,
+    val updatedAt: String,
+    val type: String?, // Enum으로 사용할 수 있다면 수정 가능 (예: WORK)
+    val totalDistance: Int?,
+    val startAddress: String?,
+    val endAddress: String?,
+    val place: String?,
+    val excludeRecord: Boolean
+)

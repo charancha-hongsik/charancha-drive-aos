@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="82dp"
-    android:layout_height="81dp"
-    android:layout_marginLeft="12dp"
+    android:layout_width="94dp"
+    android:layout_height="94dp"
+    android:layout_marginRight="2dp"
+    android:layout_gravity="bottom|left"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="72dp"
-        android:layout_height="72dp"
+        android:layout_width="84dp"
+        android:layout_height="84dp"
         android:background="@drawable/radius5"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <ImageView
             android:id="@+id/iv_drive_image"
-            android:layout_width="72dp"
-            android:layout_height="72dp"
+            android:layout_width="84dp"
+            android:layout_height="84dp"
             android:background="@drawable/radius5"
             android:scaleType="centerCrop" />
 

@@ -4,11 +4,13 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.milelog.PreferenceUtil
+import com.milelog.retrofit.request.DeleteImage
+import com.milelog.retrofit.request.Images
 import com.milelog.retrofit.request.PatchCorpType
 import com.milelog.retrofit.request.PatchDrivingInfo
+import com.milelog.retrofit.request.PatchImages
 import com.milelog.retrofit.request.PatchMemo
 import com.milelog.retrofit.response.GetDrivingInfoResponse
 import com.milelog.retrofit.response.PatchCorpTypeResponse
@@ -19,9 +21,10 @@ import com.milelog.room.entity.DriveForApp
 import com.milelog.viewmodel.state.GetDrivingInfoState
 import com.milelog.viewmodel.state.PatchCorpTypeState
 import com.milelog.viewmodel.state.PatchDrivingInfoState
+import com.milelog.viewmodel.state.PatchImageState
 import com.milelog.viewmodel.state.PatchMemoState
 import kotlinx.coroutines.launch
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -42,6 +45,9 @@ class DetailDriveHistoryViewModel: BaseViewModel() {
 
     private val _patchMemo = MutableLiveData<Event<PatchMemoState>>()
     val patchMemo: MutableLiveData<Event<PatchMemoState>> get() = _patchMemo
+
+    private val _patchImage = MutableLiveData<Event<PatchImageState>>()
+    val patchImage: MutableLiveData<Event<PatchImageState>> get() = _patchImage
 
     private val _patchCorpType = MutableLiveData<Event<PatchCorpTypeState>>()
     val patchCorpType: MutableLiveData<Event<PatchCorpTypeState>> get() = _patchCorpType
@@ -76,7 +82,11 @@ class DetailDriveHistoryViewModel: BaseViewModel() {
         val gson = GsonBuilder().serializeNulls().create()
         val jsonParam =
             gson.toJson(PatchDrivingInfo(userCarId, isActive))
-        apiService(context).patchDrivingInfo("Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!, tracking_id,jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object:
+
+        val requestBody = jsonParam.toRequestBody("application/json; charset=utf-8".toMediaType())
+
+
+        apiService(context).patchDrivingInfo("Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!, tracking_id,requestBody, null).enqueue(object:
             Callback<ResponseBody> {
             override fun onResponse(
                 call: Call<ResponseBody>,
@@ -110,7 +120,10 @@ class DetailDriveHistoryViewModel: BaseViewModel() {
         val gson = GsonBuilder().serializeNulls().create()
         val jsonParam =
             gson.toJson(PatchMemo(memo))
-        apiService(context).patchDrivingInfo("Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!, tracking_id,jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object:
+
+        val requestBody = jsonParam.toRequestBody("application/json; charset=utf-8".toMediaType())
+
+        apiService(context).patchDrivingInfo("Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!, tracking_id,requestBody, null).enqueue(object:
             Callback<ResponseBody> {
             override fun onResponse(
                 call: Call<ResponseBody>,
@@ -138,25 +151,56 @@ class DetailDriveHistoryViewModel: BaseViewModel() {
         })
     }
 
-    fun patchCorpType(userCarId: String, isActive:Boolean , type:String, tracking_id:String){
-        Log.d("testestestset","testestestest userCarId :: " + userCarId)
-        Log.d("testestestset","testestestest isActive :: " + isActive)
-        Log.d("testestestset","testestestest type :: " + type)
-        Log.d("testestestset","testestestest tracking_id :: " + tracking_id)
-        Log.d("testestestset","testestestest token :: " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!)
-
-
+    fun patchImages(images:List<DeleteImage>, tracking_id:String){
         val gson = GsonBuilder().serializeNulls().create()
         val jsonParam =
-            gson.toJson(PatchCorpType(userCarId, isActive, type))
-        apiService(context).patchDrivingInfo("Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!, tracking_id,jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object:
+            gson.toJson(PatchImages((Images((images)))))
+
+        val requestBody = jsonParam.toRequestBody("application/json; charset=utf-8".toMediaType())
+
+        apiService(context).patchDrivingInfo("Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!, tracking_id,requestBody, null).enqueue(object:
             Callback<ResponseBody> {
             override fun onResponse(
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
             ) {
                 try {
-                    Log.d("testestestset","testestestest :: " + response.code())
+                    if (response.code() == 200 || response.code() == 201) {
+                        val getDrivingInfoResponse = GsonBuilder().serializeNulls().create().fromJson(
+                            response.body()?.string(),
+                            GetDrivingInfoResponse::class.java
+                        )
+
+                        _patchImage.value = Event(PatchImageState.Success(getDrivingInfoResponse))
+                    }else if(response.code() == 401){
+                        _patchImage.value = Event(PatchImageState.Error(response.code(), response.message()))
+                    }
+                }catch (e:Exception){
+                    _patchImage.value = Event(PatchImageState.Empty)
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                _patchImage.value = Event(PatchImageState.Empty)
+            }
+
+        })
+    }
+
+    fun patchCorpType(userCarId: String, isActive:Boolean , type:String, tracking_id:String){
+        val gson = GsonBuilder().serializeNulls().create()
+        val jsonParam =
+            gson.toJson(PatchCorpType(userCarId, isActive, type))
+
+        val requestBody = jsonParam.toRequestBody("application/json; charset=utf-8".toMediaType())
+
+        apiService(context).patchDrivingInfo("Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!, tracking_id,requestBody, null).enqueue(object:
+            Callback<ResponseBody> {
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+                try {
                     if (response.code() == 200 || response.code() == 201) {
                         val patchCorpTypeResponse = GsonBuilder().serializeNulls().create().fromJson(
                             response.body()?.string(),
@@ -180,6 +224,9 @@ class DetailDriveHistoryViewModel: BaseViewModel() {
 
 
     fun getDrivingInfo(tracking_id:String){
+        Log.d("testestesteste","testestestset tracking_id :: " + tracking_id)
+        Log.d("testestesteste","testestestset ACCESS_TOKEN :: " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!)
+
         apiService(context).getDrivingInfo("Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!, tracking_id).enqueue(object : Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200 || response.code() == 201){

@@ -45,9 +45,14 @@ interface ApiServiceInterface {
 
 
 
-    // 주행 기록 수정
+    @Multipart
     @PATCH("api/v1/cars/user-cars/drivings/{drivingId}")
-    fun patchDrivingInfo(@Header("Authorization") token: String, @Path("drivingId") drivingId: String,@Body body: RequestBody): Call<ResponseBody>
+    fun patchDrivingInfo(
+        @Header("Authorization") token: String,
+        @Path("drivingId") drivingId: String,
+        @Part("data") data: RequestBody?,
+        @Part images: List<MultipartBody.Part>?
+    ): Call<ResponseBody>
 
     @POST("api/v1/auth/signup")
     fun postSignUp(@Body body: RequestBody): Call<ResponseBody>

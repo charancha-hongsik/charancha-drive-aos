@@ -57,7 +57,7 @@ class MyInfoActivity: BaseRefreshActivity() {
     private lateinit var imageMultipart: MultipartBody.Part // 선택한 이미지
 
     companion object {
-        private const val REQUEST_READ_EXTERNAL_STORAGE = 100 // 권한 요청 코드
+        const val REQUEST_READ_EXTERNAL_STORAGE = 100 // 권한 요청 코드
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,19 +81,26 @@ class MyInfoActivity: BaseRefreshActivity() {
         tv_login_oauth.text = intent.getStringExtra("provider")!!
         tv_email.text = intent.getStringExtra("email")
 
+        Log.d("testestes","testsetsees :: " + intent.getStringExtra("url"))
+
+
         Glide.with(this@MyInfoActivity)
             .asBitmap()
             .load(intent.getStringExtra("url"))
             .into(object : CustomTarget<Bitmap>() {
-                override fun onLoadCleared(placeholder: Drawable?) {}
+                override fun onLoadCleared(placeholder: Drawable?) {
+
+                }
 
                 override fun onLoadFailed(errorDrawable: Drawable?) {
                     super.onLoadFailed(errorDrawable)
+                    Log.d("testestes","testsetsees :: onLoadFailed")
 
                     //showAlertDialog("프로필 이미지를 불러오는데 실패했습니다.")
                 }
 
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    Log.d("testestes","testsetsees :: onResourceReady")
                     iv_circle.setImageBitmap(resource)
                 }
             })
