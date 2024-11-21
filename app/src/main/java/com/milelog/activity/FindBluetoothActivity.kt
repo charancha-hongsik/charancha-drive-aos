@@ -161,6 +161,8 @@ class FindBluetoothActivity: BaseRefreshActivity() {
             }
 
             rv_find_bluetooth.adapter = DetectedStatusAdapter(context = this, findBluetoothEntity = devices)
+
+            Toast.makeText(this, "등록 가능한 블루투스 기기를 불러왔어요.", Toast.LENGTH_SHORT).show()
         }
     }
 
