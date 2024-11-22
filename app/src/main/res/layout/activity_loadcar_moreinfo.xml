@@ -135,25 +135,29 @@
 
                         <TextView
                             android:layout_width="wrap_content"
-                            android:layout_height="22dp"
+                            android:layout_height="wrap_content"
                             android:textFontWeight="400"
                             android:layout_marginTop="6dp"
                             android:layout_marginBottom="6dp"
+                            android:textAppearance="@style/B1R"
                             android:textColor="@color/gray_600"
                             android:text="소유자명"/>
 
                         <TextView
                             android:layout_width="wrap_content"
-                            android:layout_height="22dp"
+                            android:layout_height="wrap_content"
                             android:layout_marginBottom="6dp"
                             android:textFontWeight="400"
+                            android:textAppearance="@style/B1R"
                             android:textColor="@color/gray_600"
                             android:text="최초 등록일"/>
 
                         <TextView
                             android:layout_width="wrap_content"
-                            android:layout_height="22dp"
+                            android:layout_height="wrap_content"
                             android:textFontWeight="400"
+                            android:textAppearance="@style/B1R"
+
                             android:textColor="@color/gray_600"
                             android:text="차대번호"/>
 
@@ -197,8 +201,9 @@
                         <TextView
                             android:id="@+id/tv_owner"
                             android:layout_width="wrap_content"
-                            android:layout_height="22dp"
+                            android:layout_height="wrap_content"
                             android:textFontWeight="400"
+                            android:textAppearance="@style/B1R"
                             android:layout_marginTop="6dp"
                             android:textColor="@color/gray_600"
                             android:text="김마일"/>
@@ -206,8 +211,9 @@
                         <TextView
                             android:id="@+id/tv_releaseDt"
                             android:layout_width="wrap_content"
-                            android:layout_height="22dp"
+                            android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
+                            android:textAppearance="@style/B1R"
                             android:layout_marginBottom="6dp"
                             android:textFontWeight="400"
                             android:textColor="@color/gray_600"
@@ -216,7 +222,8 @@
                         <TextView
                             android:id="@+id/tv_car_id"
                             android:layout_width="wrap_content"
-                            android:layout_height="22dp"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/B1R"
                             android:textFontWeight="400"
                             android:textColor="@color/gray_600"
                             android:text="1HGCM82633A123456"/>
@@ -230,14 +237,14 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/btn_edit_car"
                     android:layout_width="match_parent"
-                    android:layout_height="82dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:padding="20dp"
                     android:background="@drawable/radius8_white_gray100_border">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:orientation="vertical"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -285,15 +292,6 @@
 
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <ImageView
-                        android:id="@+id/iv_arrow"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_arrow_gray_right"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
 
 
 
@@ -347,9 +345,6 @@
                             app:layout_constraintRight_toRightOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintTop_toTopOf="parent"/>
-
-
-
 
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
