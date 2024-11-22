@@ -177,15 +177,33 @@
                 android:background="@drawable/radius8_white950"
                 >
 
-                <TextView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="이동수단"
+                    android:orientation="horizontal"
                     android:layout_marginTop="18dp"
-                    android:layout_marginLeft="20dp"
-                    android:textFontWeight="400"
-                    android:textAppearance="@style/C1R"
-                    android:textColor="@color/gray_700"/>
+                    android:layout_marginLeft="20dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="22dp"
+                        android:text="이동수단"
+                        android:textFontWeight="400"
+                        android:textAppearance="@style/C1R"
+                        android:textColor="@color/gray_700"/>
+
+                    <ImageView
+                        android:layout_width="8dp"
+                        android:layout_height="16dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="5dp"
+                        android:src="@drawable/ic_arrow_right2"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+                </LinearLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -225,15 +243,6 @@
 
                     </LinearLayout>
 
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:src="@drawable/ic_arrow_gray_right"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
-
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
@@ -243,9 +252,9 @@
                 <TextView
                     android:id="@+id/tv_scope_date_mycar"
                     android:layout_width="wrap_content"
-                    android:layout_height="14dp"
+                    android:layout_height="wrap_content"
                     android:text="6월 30일까지 변경 가능해요."
-                    android:textAppearance="@style/C2R"
+                    android:textAppearance="@style/B2R"
                     android:textColor="@color/gray_500"
                     android:textFontWeight="400"
                     android:layout_marginLeft="20dp"
