@@ -211,6 +211,8 @@
         android:background="@drawable/radius5_blue800"
         android:textColor="@color/white_op_95"
         android:text="주행 이력 저장하기"
+        android:textFontWeight="500"
+        android:textAppearance="@style/B1M"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
