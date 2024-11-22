@@ -64,7 +64,6 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
     private lateinit var btn_car_more_info: ConstraintLayout
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
     private lateinit var tv_car_name:TextView
-    private lateinit var iv_arrow: ImageView
     private lateinit var btn_fuel:ConstraintLayout
     private lateinit var tv_fuel:TextView
     private lateinit var btn_next: ConstraintLayout
@@ -118,7 +117,6 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
         ib_arrow_register_car = findViewById(R.id.ib_arrow_register_car)
         btn_car_more_info = findViewById(R.id.btn_car_more_info)
         tv_car_name = findViewById(R.id.tv_car_name)
-        iv_arrow = findViewById(R.id.iv_arrow)
         layout_select = findViewById(R.id.layout_select)
         listView = findViewById(R.id.listView)
         btn_fuel = findViewById(R.id.btn_fuel)
@@ -168,7 +166,6 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
 
         if(postMyCarResponse.makerCd == null || postMyCarResponse.modelCd == null) {
             tv_car_name.text = "선택해 주세요"
-            iv_arrow.visibility = GONE
             btn_car_more_info.visibility = VISIBLE
             btn_next.isSelected = false
             btn_next.isClickable = false
@@ -185,7 +182,6 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
             ).filterNot { it.isNullOrEmpty() } // null이나 빈 문자열을 필터링
                 .joinToString(" ")
 
-            iv_arrow.visibility = VISIBLE
             btn_car_more_info.visibility = GONE
             tv_car_name.text = carName
 
@@ -257,13 +253,6 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
         }
 
         btn_car_more_info.setOnClickListener {
-            resultLauncher.launch(
-                Intent(this@LoadCarMoreInfoActivity, CarDetailActivity::class.java)
-                    .putExtra("carInfo", Gson().toJson(postMyCarResponse))
-            )
-        }
-
-        iv_arrow.setOnClickListener {
             resultLauncher.launch(
                 Intent(this@LoadCarMoreInfoActivity, CarDetailActivity::class.java)
                     .putExtra("carInfo", Gson().toJson(postMyCarResponse))
