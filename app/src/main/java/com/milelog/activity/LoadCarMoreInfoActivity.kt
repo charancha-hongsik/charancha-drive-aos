@@ -61,7 +61,6 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
     private lateinit var tv_car_id: TextView
     private lateinit var postMyCarResponse: PostMyCarResponse
     private lateinit var ib_arrow_register_car: ImageButton
-    private lateinit var btn_car_more_info: ConstraintLayout
     private lateinit var resultLauncher: ActivityResultLauncher<Intent>
     private lateinit var tv_car_name:TextView
     private lateinit var btn_fuel:ConstraintLayout
@@ -115,7 +114,6 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
         tv_releaseDt = findViewById(R.id.tv_releaseDt)
         tv_car_id = findViewById(R.id.tv_car_id)
         ib_arrow_register_car = findViewById(R.id.ib_arrow_register_car)
-        btn_car_more_info = findViewById(R.id.btn_car_more_info)
         tv_car_name = findViewById(R.id.tv_car_name)
         layout_select = findViewById(R.id.layout_select)
         listView = findViewById(R.id.listView)
@@ -166,7 +164,6 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
 
         if(postMyCarResponse.makerCd == null || postMyCarResponse.modelCd == null) {
             tv_car_name.text = "선택해 주세요"
-            btn_car_more_info.visibility = VISIBLE
             btn_next.isSelected = false
             btn_next.isClickable = false
             btn_save.isSelected = false
@@ -182,7 +179,6 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
             ).filterNot { it.isNullOrEmpty() } // null이나 빈 문자열을 필터링
                 .joinToString(" ")
 
-            btn_car_more_info.visibility = GONE
             tv_car_name.text = carName
 
             if(!postMyCarResponse.fuelCd.isNullOrEmpty()){
@@ -250,13 +246,6 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
     private fun setListener(){
         ib_arrow_register_car.setOnClickListener{
             finish()
-        }
-
-        btn_car_more_info.setOnClickListener {
-            resultLauncher.launch(
-                Intent(this@LoadCarMoreInfoActivity, CarDetailActivity::class.java)
-                    .putExtra("carInfo", Gson().toJson(postMyCarResponse))
-            )
         }
 
         btn_edit_car.setOnClickListener {
