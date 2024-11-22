@@ -266,7 +266,7 @@ class MyGarageActivity:BaseRefreshActivity() {
 
             (holder as GarageViewHolder).tv_car_no.text = car.licensePlateNumber
             holder.tv_car_name.text = car.carName
-            holder.tv_car_info.text = car.releaseDt + " (" + car.modelYear.drop(2) + "년형) " + car.fuelNm
+            holder.tv_car_info.text = formatToYearMonth(car.releaseDt) + " (" + car.modelYear.drop(2) + "년형) " + car.fuelNm
 
             if(car.modelDetailImageUrl.isNullOrEmpty()){
                 holder.linear_default.visibility = VISIBLE
@@ -329,6 +329,19 @@ class MyGarageActivity:BaseRefreshActivity() {
 
         override fun getItemCount(): Int {
             return cars.size
+        }
+
+        private fun formatToYearMonth(date: String): String {
+            if(date.length == 8){
+                // 연도와 월 추출
+                val year = date.substring(0, 4)
+                val month = date.substring(4, 6)
+
+                // 결과 문자열 생성
+                return "$year/$month"
+            }else{
+                return date
+            }
         }
     }
 
