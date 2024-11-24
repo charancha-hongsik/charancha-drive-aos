@@ -32,6 +32,7 @@ class RegisterCarActivity: BaseActivity() {
     lateinit var tv_confirm:TextView
     lateinit var et_register_car:EditText
     lateinit var btn_register_car:ConstraintLayout
+    lateinit var tv_releaseDt:TextView
 
     var no = 0
 
@@ -61,6 +62,7 @@ class RegisterCarActivity: BaseActivity() {
         tv_register_car_caution = findViewById(R.id.tv_register_car_caution)
 
         et_register_car = findViewById(R.id.et_register_car)
+        tv_releaseDt = findViewById(R.id.tv_releaseDt)
 
         btn_register_car = findViewById(R.id.btn_register_car)
         btn_register_car.setOnClickListener(object :OnSingleClickListener(){

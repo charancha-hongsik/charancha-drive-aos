@@ -157,7 +157,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
     private fun setInfo(){
         tv_car_no.text = postMyCarResponse.licensePlateNumber
         tv_owner.text = postMyCarResponse.ownerName
-        tv_releaseDt.text = postMyCarResponse.releaseDt
+        tv_releaseDt.text = formatToKoreanDate(postMyCarResponse.releaseDt)
         tv_car_id.text = postMyCarResponse.vehicleIdentificationNumber
         if(!postMyCarResponse.fuelNm.isNullOrEmpty())
             tv_fuel.text = postMyCarResponse.fuelNm
