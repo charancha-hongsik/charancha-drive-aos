@@ -498,6 +498,8 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
             tv_corp.setTextColor(resources.getColor(R.color.gray_300))
             tv_personal.setTextColor(resources.getColor(R.color.corp_selected))
 
+
+
             if(tv_fuel.text.toString().isNullOrEmpty() && postMyCarResponse.makerCd.isNullOrEmpty() && postMyCarResponse.modelCd.isNullOrEmpty()){
                 btn_next.isSelected = false
                 btn_next.isClickable = false
@@ -522,18 +524,34 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 p0?.let{
                     if(p0.length>=1){
-                        if(!et_corp_department.text.toString().isNullOrEmpty() && !tv_fuel.text.toString().isNullOrEmpty() && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
-                            btn_next.isSelected = true
-                            btn_next.isClickable = true
+                        if(postMyCarResponse.type.equals(CORPORATE)){
+                            if(!et_corp_name.text.toString().isNullOrEmpty() && !et_corp_name.text.toString().isNullOrEmpty() && !et_corp_department.text.toString().isNullOrEmpty() && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
+                                btn_next.isSelected = true
+                                btn_next.isClickable = true
 
-                            btn_save.isSelected = true
-                            btn_save.isClickable = true
+                                btn_save.isSelected = true
+                                btn_save.isClickable = true
+                            }else{
+                                btn_next.isSelected = false
+                                btn_next.isClickable = false
+
+                                btn_save.isSelected = false
+                                btn_save.isClickable = false
+                            }
                         }else{
-                            btn_next.isSelected = false
-                            btn_next.isClickable = false
+                            if(!tv_fuel.text.toString().isNullOrEmpty() && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
+                                btn_next.isSelected = true
+                                btn_next.isClickable = true
 
-                            btn_save.isSelected = false
-                            btn_save.isClickable = false
+                                btn_save.isSelected = true
+                                btn_save.isClickable = true
+                            }else{
+                                btn_next.isSelected = false
+                                btn_next.isClickable = false
+
+                                btn_save.isSelected = false
+                                btn_save.isClickable = false
+                            }
                         }
                     }else{
                         btn_next.isSelected = false
@@ -558,18 +576,34 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 p0?.let{
                     if(p0.length>=1){
-                        if(!et_corp_name.text.toString().isNullOrEmpty() && !tv_fuel.text.toString().isNullOrEmpty() && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
-                            btn_next.isSelected = true
-                            btn_next.isClickable = true
+                        if(postMyCarResponse.type.equals(CORPORATE)){
+                            if(!et_corp_name.text.toString().isNullOrEmpty() && !et_corp_name.text.toString().isNullOrEmpty() && !et_corp_department.text.toString().isNullOrEmpty() && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
+                                btn_next.isSelected = true
+                                btn_next.isClickable = true
 
-                            btn_save.isSelected = true
-                            btn_save.isClickable = true
+                                btn_save.isSelected = true
+                                btn_save.isClickable = true
+                            }else{
+                                btn_next.isSelected = false
+                                btn_next.isClickable = false
+
+                                btn_save.isSelected = false
+                                btn_save.isClickable = false
+                            }
                         }else{
-                            btn_next.isSelected = false
-                            btn_next.isClickable = false
+                            if(!tv_fuel.text.toString().isNullOrEmpty() && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
+                                btn_next.isSelected = true
+                                btn_next.isClickable = true
 
-                            btn_save.isSelected = false
-                            btn_save.isClickable = false
+                                btn_save.isSelected = true
+                                btn_save.isClickable = true
+                            }else{
+                                btn_next.isSelected = false
+                                btn_next.isClickable = false
+
+                                btn_save.isSelected = false
+                                btn_save.isClickable = false
+                            }
                         }
                     }else{
                         btn_next.isSelected = false
@@ -605,19 +639,37 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
 
                     layout_select.visibility = GONE
 
-                    if(!et_corp_name.text.toString().isNullOrEmpty() && !et_corp_department.text.toString().isNullOrEmpty() && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
-                        btn_next.isSelected = true
-                        btn_next.isClickable = true
 
-                        btn_save.isSelected = true
-                        btn_save.isClickable = true
+                    if(postMyCarResponse.type.equals(CORPORATE)){
+                        if(!et_corp_name.text.toString().isNullOrEmpty() && !et_corp_name.text.toString().isNullOrEmpty() && !et_corp_department.text.toString().isNullOrEmpty() && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
+                            btn_next.isSelected = true
+                            btn_next.isClickable = true
+
+                            btn_save.isSelected = true
+                            btn_save.isClickable = true
+                        }else{
+                            btn_next.isSelected = false
+                            btn_next.isClickable = false
+
+                            btn_save.isSelected = false
+                            btn_save.isClickable = false
+                        }
                     }else{
-                        btn_next.isSelected = false
-                        btn_next.isClickable = false
+                        if(!tv_fuel.text.toString().isNullOrEmpty() && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
+                            btn_next.isSelected = true
+                            btn_next.isClickable = true
 
-                        btn_save.isSelected = false
-                        btn_save.isClickable = false
+                            btn_save.isSelected = true
+                            btn_save.isClickable = true
+                        }else{
+                            btn_next.isSelected = false
+                            btn_next.isClickable = false
+
+                            btn_save.isSelected = false
+                            btn_save.isClickable = false
+                        }
                     }
+
                 }
             }
 
