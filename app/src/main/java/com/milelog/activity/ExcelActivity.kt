@@ -217,22 +217,22 @@ class ExcelActivity:BaseRefreshActivity() {
                 "출발지" to (history.startAddress?.parcel?.name ?: ""),
                 "도착지" to (history.endAddress?.parcel?.name ?: ""),
                 "방문지" to (history.endAddress?.places?.takeIf { it.isNotEmpty() }?.get(0)?.name ?: ""),
-                "고속 주행 거리 (km)" to "20",
-                "저속 주행 거리 (km)" to "5",
-                "고속 주행 거리 비율 (%)" to "80",
-                "저속 주행 거리 비율 (%)" to "20",
-                "최고 속력 (km/h)" to "152",
-                "평균 속력 (km/h)" to "72",
-                "고속 주행 최고 속력 (km/h)" to "132",
-                "저속 주행 최고 속력 (km/h)" to "40",
-                "급가속 횟수" to "2",
-                "급감속 횟수" to "1",
-                "급출발 횟수" to "2",
-                "급정지 횟수" to "1",
-                "최적 주행 거리 (km)" to "21",
-                "가혹 주행 거리 (km)" to "2",
-                "최적 주행 비율 (%)" to "90",
-                "가혹 주행 비율 (%)" to "10"
+                "고속 주행 거리 (km)" to history.highSpeedDrivingDistance.toString(),
+                "저속 주행 거리 (km)" to history.lowSpeedDrivingDistance.toString(),
+                "고속 주행 거리 비율 (%)" to history.highSpeedDrivingDistancePercentage.toString(),
+                "저속 주행 거리 비율 (%)" to history.lowSpeedDrivingDistancePercentage.toString(),
+                "최고 속력 (km/h)" to history.maxSpeed.toString(),
+                "평균 속력 (km/h)" to history.averageSpeed.toString(),
+                "고속 주행 최고 속력 (km/h)" to history.highSpeedDrivingMaxSpeed.toString(),
+                "저속 주행 최고 속력 (km/h)" to history.lowSpeedDrivingMaxSpeed.toString(),
+                "급가속 횟수" to history.rapidAccelerationCount.toString(),
+                "급감속 횟수" to history.rapidDecelerationCount.toString(),
+                "급출발 횟수" to history.rapidStartCount.toString(),
+                "급정지 횟수" to history.rapidStopCount.toString(),
+                "최적 주행 거리 (km)" to history.optimalDrivingDistance.toString(),
+                "가혹 주행 거리 (km)" to history.harshDrivingDistance.toString(),
+                "최적 주행 비율 (%)" to history.optimalDrivingPercentage.toString(),
+                "가혹 주행 비율 (%)" to history.harshDrivingPercentage.toString()
             ))
         }
 
@@ -241,7 +241,7 @@ class ExcelActivity:BaseRefreshActivity() {
 
     fun setClickListener(){
         btn_save_excel.setOnClickListener {
-            apiService().getDrivingHistories(
+            apiService().getDrivingDetailHistories(
                 token = "Bearer " + PreferenceUtil.getPref(this,  PreferenceUtil.ACCESS_TOKEN, "")!!,
                 size = 30,
                 order = "DESC",

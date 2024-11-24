@@ -35,6 +35,19 @@ interface ApiServiceInterface {
                             @Query("endTime") endTime: String,
                             @Query("userCarId") userCarId: String?): Call<ResponseBody>
 
+    // 내 주행 목록 상세 조회
+    @GET("api/v1/cars/-/user-cars/-/drivings/-/detail")
+    fun getDrivingDetailHistories(@Header("Authorization") token: String,
+                            @Query("size") size: Int,
+                            @Query("order") order: String,
+                            @Query("afterCursor") afterCursor: String?,
+                            @Query("beforeCursor") beforeCursor: String?,
+                            @Query("key") key: String,
+                            @Query("isActive") isActive: Boolean?,
+                            @Query("startTime") startTime: String,
+                            @Query("endTime") endTime: String,
+                            @Query("userCarId") userCarId: String?): Call<ResponseBody>
+
     // 특정 유저차량의 주행목록 조회
     @GET("api/v1/cars/-/user-cars/{userCarId}/drivings")
     fun getDrivingInfoByUserCarId(@Header("Authorization") token: String, @Path("userCarId") userCarId: String): Call<ResponseBody>
