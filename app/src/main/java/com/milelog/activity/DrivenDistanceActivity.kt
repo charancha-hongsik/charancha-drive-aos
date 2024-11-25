@@ -601,7 +601,7 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
     private fun callMonthChart(){
         apiService().getDrivingDistanceGraphData(
             "Bearer " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.USER_CARID, "")!!,
+            userCarId,
             "ASC",
             null,
             null,
@@ -647,7 +647,7 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
     private fun callSixMonthChart(){
         apiService().getDrivingDistanceGraphData(
             "Bearer " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.USER_CARID, "")!!,
+            userCarId,
             "ASC",
             null,
             null,
@@ -695,7 +695,7 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
     private fun callYearChart(){
         apiService().getDrivingDistanceGraphData(
             "Bearer " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.USER_CARID, "")!!,
+            userCarId,
             "ASC",
             null,
             null,
@@ -2184,7 +2184,7 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
     private fun setRecentDrivingDistance(){
         apiService().getRecentDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!).enqueue(object:Callback<ResponseBody>{
+            userCarId).enqueue(object:Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 try {
                     if (response.code() == 200 || response.code() == 201) {
@@ -2247,11 +2247,7 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
                                     PreferenceUtil.ACCESS_TOKEN,
                                     ""
                                 )!!,
-                                PreferenceUtil.getPref(
-                                    this@DrivenDistanceActivity,
-                                    PreferenceUtil.USER_CARID,
-                                    ""
-                                )!!,
+                                userCarId,
                                 "ASC",
                                 null,
                                 null,
@@ -2349,7 +2345,7 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
 
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            userCarId,
             getCurrentAndPastTimeForISO(29).second,
             getCurrentAndPastTimeForISO(29).first,
             "startTime",
@@ -2461,7 +2457,7 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
 
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            userCarId,
             getCurrentAndPastTimeForISO(SIX_MONTH).second,
             getCurrentAndPastTimeForISO(SIX_MONTH).first,
             "startTime",
@@ -2558,7 +2554,7 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
 
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            userCarId,
             getCurrentAndPastTimeForISO(YEAR).second,
             getCurrentAndPastTimeForISO(YEAR).first,
             "startTime",
@@ -2651,7 +2647,6 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
     }
 
     private fun setResources(){
-        PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.USER_CARID, "")!!
         userCarId = intent.getStringExtra("userCarId")?:PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.USER_CARID, "")!!
 
         btn_back.setOnClickListener { finish() }

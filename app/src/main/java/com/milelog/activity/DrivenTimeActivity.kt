@@ -57,6 +57,8 @@ class DrivenTimeActivity: BaseRefreshActivity() {
     lateinit var tv_date2:TextView
     lateinit var tv_date3:TextView
 
+    lateinit var userCarId:String
+
 
     var recentStartTime = "2024-07-15T00:00:00.000Z"
     var recentEndTime = "2024-07-15T23:59:59.999Z"
@@ -101,6 +103,8 @@ class DrivenTimeActivity: BaseRefreshActivity() {
         tv_date3 = findViewById(R.id.tv_date3)
 
         btn_recent_drive.isSelected = true
+
+        userCarId = intent.getStringExtra("userCarId")?:PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.USER_CARID, "")!!
     }
 
     private fun setResources(){
@@ -113,7 +117,8 @@ class DrivenTimeActivity: BaseRefreshActivity() {
                 btn_recent_drive.isSelected = true
                 btn_month_drive.isSelected = false
                 btn_six_month_drive.isSelected = false
-                btn_year_drive.isSelected = false            }
+                btn_year_drive.isSelected = false
+            }
 
         })
 
@@ -125,7 +130,8 @@ class DrivenTimeActivity: BaseRefreshActivity() {
                 btn_recent_drive.isSelected = false
                 btn_month_drive.isSelected = true
                 btn_six_month_drive.isSelected = false
-                btn_year_drive.isSelected = false            }
+                btn_year_drive.isSelected = false
+            }
 
         })
 
@@ -137,7 +143,8 @@ class DrivenTimeActivity: BaseRefreshActivity() {
                 btn_recent_drive.isSelected = false
                 btn_month_drive.isSelected = false
                 btn_six_month_drive.isSelected = true
-                btn_year_drive.isSelected = false            }
+                btn_year_drive.isSelected = false
+            }
 
         })
 
@@ -149,7 +156,8 @@ class DrivenTimeActivity: BaseRefreshActivity() {
                 btn_recent_drive.isSelected = false
                 btn_month_drive.isSelected = false
                 btn_six_month_drive.isSelected = false
-                btn_year_drive.isSelected = true            }
+                btn_year_drive.isSelected = true
+            }
 
         })
     }
@@ -643,7 +651,7 @@ class DrivenTimeActivity: BaseRefreshActivity() {
     private fun callMonthChart(){
         apiService().getDrivingTimeGraphData(
             "Bearer " + PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.USER_CARID, "")!!,
+            userCarId,
             "ASC",
             null,
             null,
@@ -690,7 +698,7 @@ class DrivenTimeActivity: BaseRefreshActivity() {
 
         apiService().getDrivingTimeGraphData(
             "Bearer " + PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.USER_CARID, "")!!,
+            userCarId,
             "ASC",
             null,
             null,
@@ -736,7 +744,7 @@ class DrivenTimeActivity: BaseRefreshActivity() {
     private fun callYearChart(){
         apiService().getDrivingTimeGraphData(
             "Bearer " + PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.USER_CARID, "")!!,
+            userCarId,
             "ASC",
             null,
             null,
@@ -2222,7 +2230,7 @@ class DrivenTimeActivity: BaseRefreshActivity() {
     private fun setRecentDrivingTime(){
         apiService().getRecentDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!).enqueue(object:
+            userCarId).enqueue(object:
             Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 try {
@@ -2306,11 +2314,7 @@ class DrivenTimeActivity: BaseRefreshActivity() {
                                     PreferenceUtil.ACCESS_TOKEN,
                                     ""
                                 )!!,
-                                PreferenceUtil.getPref(
-                                    this@DrivenTimeActivity,
-                                    PreferenceUtil.USER_CARID,
-                                    ""
-                                )!!,
+                                userCarId,
                                 "ASC",
                                 null,
                                 null,
@@ -2456,7 +2460,7 @@ class DrivenTimeActivity: BaseRefreshActivity() {
 
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            userCarId,
             getCurrentAndPastTimeForISO(29).second,
             getCurrentAndPastTimeForISO(29).first,
             "startTime",
@@ -2610,7 +2614,7 @@ class DrivenTimeActivity: BaseRefreshActivity() {
 
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            userCarId,
             getCurrentAndPastTimeForISO(SIX_MONTH).second,
             getCurrentAndPastTimeForISO(SIX_MONTH).first,
             "startTime",
@@ -2741,7 +2745,7 @@ class DrivenTimeActivity: BaseRefreshActivity() {
 
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@DrivenTimeActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            userCarId,
             getCurrentAndPastTimeForISO(YEAR).second,
             getCurrentAndPastTimeForISO(YEAR).first,
             "startTime",

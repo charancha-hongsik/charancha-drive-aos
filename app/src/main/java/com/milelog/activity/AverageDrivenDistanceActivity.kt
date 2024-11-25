@@ -53,6 +53,8 @@ class AverageDrivenDistanceActivity: BaseRefreshActivity() {
     var recentStartTime = "2024-07-15T00:00:00.000Z"
     var recentEndTime = "2024-07-15T23:59:59.999Z"
 
+    lateinit var userCarId:String
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,6 +99,8 @@ class AverageDrivenDistanceActivity: BaseRefreshActivity() {
 
 
         btn_recent_drive.isSelected = true
+
+        userCarId = intent.getStringExtra("userCarId")?:PreferenceUtil.getPref(this@AverageDrivenDistanceActivity, PreferenceUtil.USER_CARID, "")!!
     }
 
 
@@ -583,7 +587,7 @@ class AverageDrivenDistanceActivity: BaseRefreshActivity() {
     private fun callMonthChart(){
         apiService().getDrivingDistancePerOneGraphData(
             "Bearer " + PreferenceUtil.getPref(this@AverageDrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this@AverageDrivenDistanceActivity, PreferenceUtil.USER_CARID, "")!!,
+            userCarId,
             "ASC",
             null,
             null,
@@ -626,7 +630,7 @@ class AverageDrivenDistanceActivity: BaseRefreshActivity() {
     private fun callSixMonthChart(){
         apiService().getDrivingDistancePerOneGraphData(
             "Bearer " + PreferenceUtil.getPref(this@AverageDrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this@AverageDrivenDistanceActivity, PreferenceUtil.USER_CARID, "")!!,
+            userCarId,
             "ASC",
             null,
             null,
@@ -668,7 +672,7 @@ class AverageDrivenDistanceActivity: BaseRefreshActivity() {
     private fun callYearChart(){
         apiService().getDrivingDistancePerOneGraphData(
             "Bearer " + PreferenceUtil.getPref(this@AverageDrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this@AverageDrivenDistanceActivity, PreferenceUtil.USER_CARID, "")!!,
+            userCarId,
             "ASC",
             null,
             null,
@@ -1184,7 +1188,7 @@ class AverageDrivenDistanceActivity: BaseRefreshActivity() {
 
         apiService().getRecentDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@AverageDrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!).enqueue(object:
+            userCarId).enqueue(object:
             Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 try {
@@ -1239,11 +1243,7 @@ class AverageDrivenDistanceActivity: BaseRefreshActivity() {
                                     PreferenceUtil.ACCESS_TOKEN,
                                     ""
                                 )!!,
-                                PreferenceUtil.getPref(
-                                    this@AverageDrivenDistanceActivity,
-                                    PreferenceUtil.USER_CARID,
-                                    ""
-                                )!!,
+                                userCarId,
                                 "ASC",
                                 null,
                                 null,
@@ -1351,7 +1351,7 @@ class AverageDrivenDistanceActivity: BaseRefreshActivity() {
     private fun setMonthDrivingDistance(){
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@AverageDrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            userCarId,
             getCurrentAndPastTimeForISO(29).second,
             getCurrentAndPastTimeForISO(29).first,
             "startTime",
@@ -1456,7 +1456,7 @@ class AverageDrivenDistanceActivity: BaseRefreshActivity() {
 
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@AverageDrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            userCarId,
             getCurrentAndPastTimeForISO(SIX_MONTH).second,
             getCurrentAndPastTimeForISO(SIX_MONTH).first,
             "startTime",
@@ -1552,7 +1552,7 @@ class AverageDrivenDistanceActivity: BaseRefreshActivity() {
     private fun setYearDrivingDistance(){
         apiService().getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(this@AverageDrivenDistanceActivity, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!,
+            userCarId,
             getCurrentAndPastTimeForISO(YEAR).second,
             getCurrentAndPastTimeForISO(YEAR).first,
             "startTime",

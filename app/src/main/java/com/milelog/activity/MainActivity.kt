@@ -427,6 +427,17 @@ class MainActivity:BaseActivity() {
         }
 
         @JavascriptInterface
+        fun openAverageDrivingDistanceStats(userCarId: String){
+            activity.startActivity(Intent(activity, AverageDrivenDistanceActivity::class.java).putExtra("userCarId", userCarId))
+        }
+
+        @JavascriptInterface
+        fun openDrivingTimeStats(userCarId: String){
+            activity.startActivity(Intent(activity, DrivenTimeActivity::class.java).putExtra("userCarId", userCarId))
+        }
+
+
+        @JavascriptInterface
         fun openDrivingScoreStats(userCarId: String){
             activity.startActivity(Intent(activity, MyScoreActivity::class.java).putExtra("userCarId", userCarId))
         }
