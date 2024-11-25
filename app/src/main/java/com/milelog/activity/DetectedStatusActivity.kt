@@ -85,10 +85,6 @@ class DetectedStatusActivity: BaseRefreshActivity() {
                     Toast.makeText(context,holder.tv_detected4.text , Toast.LENGTH_SHORT).show()
 
                 }
-
-
-
-
             }
         }
 
