@@ -275,7 +275,7 @@ open class BaseActivity: AppCompatActivity(){
 
 
             // 월의 첫 번째 날을 구합니다.
-            val firstDayOfMonth = localDate.withDayOfMonth(1)
+            val firstDayOfMonth = localDate
 
 
             // LocalDate를 ZonedDateTime으로 변환합니다.
