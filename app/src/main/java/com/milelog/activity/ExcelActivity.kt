@@ -216,7 +216,7 @@ class ExcelActivity:BaseRefreshActivity() {
                 "사용자 구분" to (history.userCar?.type ?: ""),
                 "법인 사용자 이름" to (history.userCar?.data?.name ?: ""),
                 "법인 부서명" to (history.userCar?.data?.department ?: ""),
-                "운전자 메모" to "메모",
+                "운전자 메모" to (history.memo?:""),
                 "출발지" to (history.startAddress?.parcel?.name ?: ""),
                 "도착지" to (history.endAddress?.parcel?.name ?: ""),
                 "방문지" to (history.endAddress?.places?.takeIf { it.isNotEmpty() }?.get(0)?.name ?: ""),

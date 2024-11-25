@@ -30,12 +30,5 @@ data class DriveItem (
     val harshDrivingDistance:Double,
     val optimalDrivingPercentage:Double,
     val harshDrivingPercentage:Double,
-
-
-
-
-
-
-
-
+    val memo:String?
     )

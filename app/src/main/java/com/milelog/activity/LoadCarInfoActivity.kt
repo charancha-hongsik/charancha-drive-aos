@@ -76,7 +76,7 @@ class LoadCarInfoActivity: BaseRefreshActivity() {
                         if (state.code == 401) {
                             logout()
                         }else{
-                            showCustomToast(this@LoadCarInfoActivity,state.message)
+                            showCustomToast(this@LoadCarInfoActivity,"차량 번호 또는 소유자명이 일치하지 않습니다.")
                             finish()
                         }
                     }
