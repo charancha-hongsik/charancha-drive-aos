@@ -1,5 +1,6 @@
 package com.milelog.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -37,6 +38,7 @@ import okhttp3.ResponseBody
 import org.apache.poi.ss.usermodel.FillPatternType
 import org.apache.poi.ss.usermodel.HorizontalAlignment
 import org.apache.poi.ss.usermodel.IndexedColors
+import org.apache.poi.ss.usermodel.Workbook
 import org.apache.poi.ss.util.CellRangeAddress
 import org.apache.poi.xssf.usermodel.XSSFColor
 import org.apache.poi.xssf.usermodel.XSSFSheet
@@ -62,6 +64,7 @@ class ExcelActivity:BaseRefreshActivity() {
     lateinit var tv_chosen_date:TextView
     lateinit var btn_back: ImageView
     var selectedDate:String = "2024년 10월"
+    lateinit var workbook: XSSFWorkbook
 
     val filterList: MutableList<CarListFilter> = mutableListOf()
     var carIdForFilter: String? = null
@@ -387,7 +390,7 @@ class ExcelActivity:BaseRefreshActivity() {
     }
 
     fun createDrivingDataWithHeaders(drivingData: List<Map<String, String>>) {
-        val workbook = XSSFWorkbook()
+        workbook = XSSFWorkbook()
         val sheet = workbook.createSheet("Driving Data")
 
         // Define main headers and their sub-headers
@@ -472,6 +475,7 @@ class ExcelActivity:BaseRefreshActivity() {
 
             // 공유할 파일 URI를 생성할 File 객체를 설정합니다.
             val file = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName)
+
             // 파일에 워크북 데이터를 저장
             FileOutputStream(file).use { output ->
                 workbook.write(output)
@@ -497,6 +501,7 @@ class ExcelActivity:BaseRefreshActivity() {
                 type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" // XLSX MIME 타입
                 putExtra(Intent.EXTRA_TITLE, fileName) // 사용자에게 보여줄 파일 이름
             }
+            saveIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
             // 두 개의 Intent를 포함하는 Chooser
             val chooserIntent = Intent.createChooser(shareIntent, "주행 데이터 공유하기").apply {
@@ -504,13 +509,35 @@ class ExcelActivity:BaseRefreshActivity() {
             }
 
             // OS 공유/저장 Bottom Sheet 호출
-            startActivity(chooserIntent)
+            startActivityForResult(chooserIntent, 1)
 
         } catch (e: Exception) {
             e.printStackTrace()
             Toast.makeText(this, "파일 처리에 실패했습니다.", Toast.LENGTH_SHORT).show()
-        } finally {
-            workbook.close()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
+            data?.data?.let { uri ->
+                try {
+                    // 선택된 URI에 대한 OutputStream을 열고
+                    contentResolver.openOutputStream(uri)?.use { outputStream ->
+                        // 워크북을 선택된 파일에 저장
+                        workbook.write(outputStream)
+                    }
+                    Toast.makeText(this, "파일이 성공적으로 저장되었습니다.", Toast.LENGTH_SHORT).show()
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    Toast.makeText(this, "파일 저장에 실패했습니다.", Toast.LENGTH_SHORT).show()
+                } finally {
+                    // 파일 저장이 끝났다면 워크북을 닫음
+                    workbook.close()
+                }
+            }
         }
     }
 
