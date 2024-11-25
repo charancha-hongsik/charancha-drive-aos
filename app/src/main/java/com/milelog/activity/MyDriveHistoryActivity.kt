@@ -833,8 +833,6 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                     (context as MyDriveHistoryActivity).resultLauncher.launch(
                         Intent(context, DetailDriveHistoryActivity::class.java).apply {
                             putExtra("trackingId", driveItem.id)
-                            putExtra("isActive", driveItem.isActive)
-                            putExtra("userCar", Gson().toJson(driveItem.userCar))
                         }
                     )
                 }

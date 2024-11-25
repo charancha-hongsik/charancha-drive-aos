@@ -193,10 +193,6 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
     private fun init(){
         tracking_id = intent.getStringExtra("trackingId").toString()
-        isActive = intent.getBooleanExtra("isActive",true)
-        intent.getStringExtra("userCar")?.let{
-            userCar = Gson().fromJson(it, UserCar::class.java)
-        }
 
         tv_text_length = findViewById(R.id.tv_text_length)
         btn_add_image = findViewById(R.id.btn_add_image)
@@ -556,6 +552,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     }
 
                     getDrivingInfoResponse.userCar?.let{
+                        this@DetailDriveHistoryActivity.userCar = it
+
                         if(it.type.equals(CORPORATE)){
                             btn_choose_mycar.isClickable = false
                         }else{

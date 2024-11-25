@@ -224,9 +224,6 @@ class DetailDriveHistoryViewModel: BaseViewModel() {
 
 
     fun getDrivingInfo(tracking_id:String){
-        Log.d("testestesteste","testestestset tracking_id :: " + tracking_id)
-        Log.d("testestesteste","testestestset ACCESS_TOKEN :: " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!)
-
         apiService(context).getDrivingInfo("Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!, tracking_id).enqueue(object : Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200 || response.code() == 201){
