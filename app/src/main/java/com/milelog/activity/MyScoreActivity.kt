@@ -129,7 +129,7 @@ class MyScoreActivity : BaseRefreshActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_my_score)
 
         init()
         mainViewModel.init(applicationContext)

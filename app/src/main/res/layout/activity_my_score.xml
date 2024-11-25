@@ -1,0 +1,1015 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray_50"
+    tools:context=".activity.MyScoreActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/gray_50"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:clipToPadding="false"
+        android:scrollbars="none">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_topbar"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="74dp"
+                    android:layout_height="22dp"
+                    android:layout_marginTop="18dp"
+                    android:src="@drawable/logo_white"
+                    android:textAppearance="@style/ST2SB"
+                    android:gravity="center_vertical"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"/>
+
+                <ImageView
+                    android:id="@+id/btn_noti"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginRight="12dp"
+                    android:src="@drawable/ic_notification"
+                    android:background="@null"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintRight_toLeftOf="@id/btn_history" />
+
+                <ImageView
+                    android:id="@+id/btn_history"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginTop="16dp"
+                    android:src="@drawable/ic_my"
+                    android:background="@null"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintRight_toRightOf="parent" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/tv_app_days1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/with_milelog"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="12dp"
+                android:textAppearance="@style/ST2M"
+                android:textColor="@color/gray_950"
+                android:textFontWeight="500"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_topbar" />
+
+            <TextView
+                android:id="@+id/tv_app_days2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="1일째"
+                android:textFontWeight="600"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="2dp"
+                android:textAppearance="@style/H3SB"
+                android:textColor="@color/pri_500"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_app_days1" />
+            
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_start_app"
+                android:layout_width="match_parent"
+                android:layout_height="172dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/radius8_gray100_with_gray200border"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_app_days2">
+
+                <ImageView
+                    android:id="@+id/btn_close_gift"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_close_gray"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginRight="12dp"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:src="@drawable/ic_gift"/>
+
+                    <ImageView
+                        android:layout_width="160dp"
+                        android:layout_height="46dp"
+                        android:src="@drawable/ic_gift_text"
+                        android:layout_marginTop="4dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textFontWeight="400"
+                        android:textColor="@color/gray_600"
+                        android:textAppearance="@style/C1R"
+                        android:text="앱을 종료해도 자동으로 주행이 기록돼요.\n스마트폰 재부팅 시 다시 앱을 실행해 주세요."
+                        android:layout_marginTop="12dp"/>
+
+
+                </LinearLayout>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_summary_info"
+                android:layout_width="match_parent"
+                android:layout_height="492dp"
+                android:layout_marginTop="16dp"
+                android:paddingTop="20dp"
+                android:paddingRight="20dp"
+                android:paddingLeft="20dp"
+                android:background="@drawable/radius8"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_start_app">
+
+
+                <TextView
+                    android:id="@+id/tv_car_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="BMW 5시리즈 530i"
+                    android:textColor="@color/gray_950"
+                    android:textAppearance="@style/ST2SB"
+                    android:textFontWeight="600"
+                    app:layout_constraintRight_toLeftOf="@+id/btn_edit"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <ImageView
+                    android:id="@+id/btn_edit"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_edit_gray"
+                    android:background="@null"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintLeft_toRightOf="@+id/tv_car_name"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <Button
+                    android:id="@+id/button_edit_overlay"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="#00000000"
+                    app:layout_constraintEnd_toEndOf="@id/btn_edit"
+                    app:layout_constraintStart_toStartOf="@id/btn_edit"
+                    app:layout_constraintTop_toTopOf="@id/btn_edit"
+                    app:layout_constraintBottom_toBottomOf="@id/btn_edit"/>
+
+                <TextView
+                    android:id="@+id/tv_car_no"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="123가456"
+                    android:textFontWeight="400"
+                    android:textColor="@color/gray_600"
+                    android:textAppearance="@style/B2R"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_car_name"/>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_summary"
+                    android:layout_width="match_parent"
+                    android:layout_height="203dp"
+                    android:paddingTop="34dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_car_no">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent">
+
+                        <com.github.mikephil.charting.charts.PieChart
+                            android:id="@+id/chart1"
+                            android:layout_width="444dp"
+                            android:layout_height="222dp"
+                            android:layout_gravity="center_horizontal" />
+                    </FrameLayout>
+
+
+
+                    <TextView
+                        android:id="@+id/tv_average_score_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="평균 점수 > "
+                        android:textColor="@color/gray_600"
+                        android:textFontWeight="400"
+                        android:textAppearance="@style/B2R"
+                        android:layout_marginBottom="99dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/tv_average_score"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/gray_950"
+                        android:textFontWeight="600"
+                        android:textAppearance="@style/H1SB"
+                        android:layout_marginBottom="46dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/tv_increase"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="변동 없음"
+                        android:textColor="@color/gray_500"
+                        android:textFontWeight="600"
+                        android:textAppearance="@style/C1SB"
+                        android:layout_marginBottom="32dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:layout_marginBottom="58dp"
+                        android:layout_marginLeft="14dp"
+                        android:textAppearance="@style/C2R"
+                        android:textFontWeight="400"
+                        android:textColor="@color/gray_600"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"/>
+
+                    <Button
+                        android:id="@+id/button_average_score_overlay"
+                        android:layout_width="88dp"
+                        android:layout_height="88dp"
+                        android:background="#00000000"
+                        app:layout_constraintEnd_toEndOf="@id/tv_average_score"
+                        app:layout_constraintStart_toStartOf="@id/tv_average_score"
+                        app:layout_constraintTop_toTopOf="@id/tv_average_score"
+                        app:layout_constraintBottom_toBottomOf="@id/tv_average_score"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1000"
+                        android:textAppearance="@style/C2R"
+                        android:textFontWeight="400"
+                        android:textColor="@color/gray_600"
+                        android:layout_marginBottom="58dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <TextView
+                    android:id="@+id/tv_past_30_days"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="지난 30일간"
+                    android:textColor="@color/gray_950"
+                    android:textFontWeight="400"
+                    android:textAppearance="@style/C1R"
+                    android:gravity="left"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/layout_summary"/>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_average_distance"
+                    android:layout_width="0dp"
+                    android:layout_height="105dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="4dp"
+                    android:background="@drawable/radius6_white950_stroke"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@+id/layout_average_time"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_past_30_days">
+
+                    <TextView
+                        android:id="@+id/tv_average_distance_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:text="@string/average_driving_distance"
+                        android:textAppearance="@style/C1R"
+                        android:textFontWeight="400"
+                        android:textColor="@color/gray_600"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/tv_average_distance_contents"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:text="0km"
+                        android:textFontWeight="500"
+                        android:textAppearance="@style/ST1M"
+                        android:textColor="@color/gray_950"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_average_distance_title" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/view_diff_distance_background"
+                        android:layout_width="wrap_content"
+                        android:layout_height="22dp"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/radius999_sec50"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_average_distance_contents" >
+
+                        <View
+                            android:id="@+id/view_no_diff_distance"
+                            android:layout_width="5dp"
+                            android:layout_height="2dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="14dp"
+                            android:layout_marginRight="14dp"
+                            android:visibility="gone"
+                            android:background="@drawable/radius2"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"/>
+
+                        <LinearLayout
+                            android:id="@+id/view_there_is_diff_distance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <ImageView
+                                android:id="@+id/iv_there_is_diff_distance"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/vector_sec"
+                                android:layout_marginLeft="8dp"
+                                android:layout_gravity="center_vertical"/>
+
+                            <TextView
+                                android:id="@+id/tv_there_is_diff_distance"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/C2M"
+                                android:textFontWeight="500"
+                                android:layout_marginTop="4dp"
+                                android:layout_marginBottom="4dp"
+                                android:layout_marginLeft="4dp"
+                                android:layout_marginRight="8dp"
+                                android:layout_gravity="center_vertical"
+                                android:gravity="center_vertical"
+                                android:textColor="@color/sec_500"
+                                android:text="1km"/>
+
+                        </LinearLayout>
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_average_time"
+                    android:layout_width="0dp"
+                    android:layout_height="105dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="4dp"
+                    android:background="@drawable/radius6_white950_stroke"
+                    app:layout_constraintLeft_toRightOf="@+id/layout_average_distance"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_past_30_days">
+
+                    <TextView
+                        android:id="@+id/tv_average_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:text="@string/average_driving_time"
+                        android:textAppearance="@style/C1R"
+                        android:textColor="@color/gray_600"
+                        android:textFontWeight="400"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/tv_average_time_contents"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:text="0시간 0분"
+                        android:textFontWeight="500"
+                        android:textColor="@color/gray_950"
+                        android:textAppearance="@style/ST1M"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_average_time" />
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/view_diff_time_background"
+                        android:layout_width="wrap_content"
+                        android:layout_height="22dp"
+                        android:layout_marginTop="4dp"
+                        android:background="@drawable/radius999_pri50"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_average_time_contents" >
+
+                        <View
+                            android:id="@+id/view_no_diff_time"
+                            android:layout_width="5dp"
+                            android:layout_height="2dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginLeft="14dp"
+                            android:layout_marginRight="14dp"
+                            android:background="@drawable/radius2"
+                            android:visibility="gone"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"/>
+
+                        <LinearLayout
+                            android:id="@+id/view_there_is_diff_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <ImageView
+                                android:id="@+id/iv_there_is_diff_time"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/vector_pri"
+                                android:layout_marginLeft="8dp"
+                                android:layout_gravity="center_vertical"/>
+
+                            <TextView
+                                android:id="@+id/tv_there_is_diff_time"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="@style/C2M"
+                                android:textFontWeight="500"
+                                android:layout_marginTop="4dp"
+                                android:layout_marginBottom="4dp"
+                                android:layout_marginLeft="4dp"
+                                android:layout_marginRight="8dp"
+                                android:layout_gravity="center_vertical"
+                                android:gravity="center_vertical"
+                                android:textColor="@color/pri_500"
+                                android:text="1km"/>
+
+                        </LinearLayout>
+
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_recent_manage_score"
+                    android:layout_width="0dp"
+                    android:layout_height="62dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/radius6_gray_background"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/layout_average_distance">
+
+                    <TextView
+                        android:id="@+id/tv_recent_score_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="18dp"
+                        android:text="@string/recent_score"
+                        android:textAppearance="@style/B2R"
+                        android:textColor="@color/gray_600"
+                        android:gravity="center_vertical"
+                        android:textFontWeight="400"
+                        android:layout_marginLeft="16dp"
+                        app:layout_constraintRight_toLeftOf="@+id/tv_recent_score"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_recent_score"
+                        android:layout_width="0dp"
+                        android:layout_height="28dp"
+                        android:layout_marginRight="2dp"
+                        android:layout_marginLeft="10dp"
+                        android:text="0"
+                        android:textFontWeight="500"
+                        android:gravity="center_vertical|right"
+                        android:textAppearance="@style/ST1M"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/tv_recent_score_title"
+                        app:layout_constraintRight_toLeftOf="@+id/tv_score_unit"/>
+
+                    <TextView
+                        android:id="@+id/tv_score_unit"
+                        android:layout_width="22dp"
+                        android:layout_height="14dp"
+                        android:text="@string/score"
+                        android:gravity="center_vertical"
+                        android:textFontWeight="400"
+                        android:textAppearance="@style/C2R"
+                        android:textColor="@color/gray_950"
+                        app:layout_constraintRight_toLeftOf="@+id/iv_arrow"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+
+
+                    <ImageView
+                        android:id="@+id/iv_arrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/arrow"
+                        android:layout_marginRight="18dp"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <ImageView
+                android:id="@+id/iv_home_banner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/banner"
+                android:scaleType="centerCrop"
+                android:layout_marginTop="16dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_summary_info" />
+
+            <TextView
+                android:id="@+id/tv_subtitle2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/overview_of_my_car"
+                android:textAppearance="@style/ST2SB"
+                android:layout_marginTop="36dp"
+                android:textFontWeight="600"
+                android:textColor="@color/gray_950"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/iv_home_banner"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_summary_info2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:paddingTop="20dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="24dp"
+                android:background="@drawable/radius8"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_subtitle2">
+
+                <TextView
+                    android:id="@+id/tv_recent_driving_score"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/recent_driving_score"
+                    android:textFontWeight="500"
+                    android:textAppearance="@style/B2M"
+                    android:textColor="@color/gray_950"
+                    android:gravity="left"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_recent_driving_score"
+                    app:layout_constraintLeft_toLeftOf="parent" >
+
+                    <TextView
+                        android:id="@+id/tv_recent_score2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="46dp"
+                        android:text="0"
+                        android:textAppearance="@style/H2SB"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/gray_950"
+                        android:textFontWeight="600"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent" />
+
+                    <TextView
+                        android:layout_width="30dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/score"
+                        android:textAppearance="@style/B1R"
+                        android:layout_marginBottom="3dp"
+                        android:textFontWeight="400"
+                        android:layout_marginLeft="3dp"
+                        android:textColor="@color/gray_950"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/tv_recent_score2" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <TextView
+                    android:id="@+id/tv_recent_info_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_data_shall_we_go"
+                    android:textAppearance="@style/C1R"
+                    android:textColor="@color/gray_600"
+                    android:textFontWeight="400"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/layout_score"/>
+
+                <ImageView
+                    android:id="@+id/iv_recent_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/resource_face_crying"
+                    app:layout_constraintLeft_toRightOf="@+id/tv_recent_info_text"
+                    app:layout_constraintTop_toBottomOf="@+id/layout_score" />
+
+                <TextView
+                    android:id="@+id/btn_recent"
+                    android:text="@string/recent_driving"
+                    android:layout_width="69dp"
+                    android:layout_height="28dp"
+                    android:layout_marginTop="32dp"
+                    android:gravity="center"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:textColor="@color/recent_score"
+                    android:background="@drawable/recent_score"
+                    android:textAppearance="@style/C1SB"
+                    android:textFontWeight="600"
+                    android:clickable="true"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_recent_info_text"
+                    app:layout_constraintLeft_toLeftOf="parent"/>
+
+                <TextView
+                    android:id="@+id/btn_one_month"
+                    android:text="@string/one_month"
+                    android:layout_width="49dp"
+                    android:layout_height="28dp"
+                    android:layout_marginTop="32dp"
+                    android:gravity="center"
+                    android:layout_marginLeft="6dp"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:textColor="@color/recent_score"
+                    android:background="@drawable/recent_score"
+                    android:textAppearance="@style/C1R"
+                    android:textFontWeight="400"
+                    android:clickable="true"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_recent_info_text"
+                    app:layout_constraintLeft_toRightOf="@id/btn_recent"/>
+
+                <TextView
+                    android:id="@+id/btn_six_month"
+                    android:text="@string/six_months"
+                    android:layout_width="51dp"
+                    android:layout_height="28dp"
+                    android:layout_marginTop="32dp"
+                    android:gravity="center"
+                    android:layout_marginLeft="6dp"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:textColor="@color/recent_score"
+                    android:background="@drawable/recent_score"
+                    android:textFontWeight="400"
+                    android:textAppearance="@style/C1R"
+                    android:clickable="true"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_recent_info_text"
+                    app:layout_constraintLeft_toRightOf="@id/btn_one_month"/>
+
+                <TextView
+                    android:id="@+id/btn_one_year"
+                    android:text="@string/one_year"
+                    android:layout_width="37dp"
+                    android:layout_height="28dp"
+                    android:layout_marginTop="32dp"
+                    android:gravity="center"
+                    android:layout_marginLeft="6dp"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:textColor="@color/recent_score"
+                    android:background="@drawable/recent_score"
+                    android:textFontWeight="400"
+                    android:textAppearance="@style/C1R"
+                    android:clickable="true"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_recent_info_text"
+                    app:layout_constraintLeft_toRightOf="@id/btn_six_month"/>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_engine"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:layout_marginTop="19dp"
+                    android:background="@drawable/radius6_white950_stroke"
+                    app:layout_constraintTop_toBottomOf="@+id/btn_recent"
+                    app:layout_constraintLeft_toLeftOf="parent">
+
+                    <TextView
+                        android:id="@+id/tv_engine"
+                        android:layout_width="wrap_content"
+                        android:layout_height="18dp"
+                        android:text="@string/engine"
+                        android:minWidth="55dp"
+                        android:layout_marginLeft="16dp"
+                        android:textAppearance="@style/B2R"
+                        android:textFontWeight="400"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/gray_600"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"/>
+
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/chart_line_engine"
+                        android:layout_width="69dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="14dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/tv_engine"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_engine_score"
+                        android:layout_width="0dp"
+                        android:layout_height="28dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginLeft="10dp"
+                        android:text="0"
+                        android:textColor="@color/gray_950"
+                        android:textFontWeight="600"
+                        android:gravity="center_vertical|right"
+                        android:textAppearance="@style/ST1M"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/chart_line_engine"
+                        app:layout_constraintRight_toLeftOf="@+id/iv_arrow_for_engine"/>
+
+
+
+                    <ImageView
+                        android:id="@+id/iv_arrow_for_engine"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/arrow"
+                        android:layout_marginRight="16dp"
+                        android:padding="0dp"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_tire"
+                    android:layout_width="match_parent"
+                    android:layout_height="64dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/radius6_white950_dash"
+                    app:layout_constraintTop_toBottomOf="@+id/layout_engine"
+                    app:layout_constraintLeft_toLeftOf="parent">
+
+                    <TextView
+                        android:id="@+id/tv_tire"
+                        android:layout_width="wrap_content"
+                        android:layout_height="18dp"
+                        android:minWidth="55dp"
+                        android:text="@string/brakes"
+                        android:layout_marginLeft="16dp"
+                        android:textAppearance="@style/B2R"
+                        android:textFontWeight="400"
+                        android:textColor="@color/gray_400"
+                        android:gravity="center_vertical"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"/>
+
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/chart_line_tire"
+                        android:layout_width="69dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="14dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/tv_tire"
+                        />
+
+
+                    <TextView
+                        android:id="@+id/tv_brake_score"
+                        android:layout_width="79dp"
+                        android:layout_height="28dp"
+                        android:text="곧 만나요!"
+                        android:textColor="@color/gray_600"
+                        android:textFontWeight="600"
+                        android:textAppearance="@style/B1SB"
+                        android:gravity="center_vertical"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toTopOf="@+id/tv_brake_score2"
+                        app:layout_constraintVertical_chainStyle="packed"/>
+
+                    <TextView
+                        android:id="@+id/tv_brake_score2"
+                        android:layout_width="86dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textAppearance="@style/C2R"
+                        android:text="하반기 오픈예정"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/gray_500"
+                        android:textFontWeight="400"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_brake_score"/>
+
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layout_brakes"
+                    android:layout_width="0dp"
+                    android:layout_height="64dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/radius6_white950_dash"
+                    app:layout_constraintTop_toBottomOf="@+id/layout_tire"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent">
+
+                    <TextView
+                        android:id="@+id/tv_brakes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="18dp"
+                        android:minWidth="55dp"
+                        android:text="@string/tires"
+                        android:layout_marginLeft="16dp"
+                        android:textAppearance="@style/B2R"
+                        android:textFontWeight="400"
+                        android:textColor="@color/gray_400"
+                        android:gravity="center_vertical"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"/>
+
+
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/chart_line_brakes"
+                        android:layout_width="69dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="14dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintLeft_toRightOf="@+id/tv_brakes"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_tire_score"
+                        android:layout_width="79dp"
+                        android:layout_height="28dp"
+                        android:text="곧 만나요!"
+                        android:textColor="@color/gray_600"
+                        android:textFontWeight="600"
+                        android:textAppearance="@style/B1SB"
+                        android:gravity="center_vertical"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toTopOf="@+id/tv_tire_score2"
+                        app:layout_constraintVertical_chainStyle="packed"/>
+
+                    <TextView
+                        android:id="@+id/tv_tire_score2"
+                        android:layout_width="86dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textAppearance="@style/C2R"
+                        android:text="하반기 오픈예정"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/gray_500"
+                        android:textFontWeight="400"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_tire_score"/>
+
+
+
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/tv_guide_subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:textFontWeight="700"
+                android:text="@string/guidance"
+                android:textColor="@color/gray_800"
+                android:textAppearance="@style/B2B"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_summary_info2" />
+
+            <TextView
+                android:id="@+id/tv_guide"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:paddingBottom="60dp"
+                android:textFontWeight="400"
+                android:text="@string/the_driving_data_provided_by"
+                android:textAppearance="@style/C1R"
+                android:textColor="@color/gray_700"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_guide_subtitle" />
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
