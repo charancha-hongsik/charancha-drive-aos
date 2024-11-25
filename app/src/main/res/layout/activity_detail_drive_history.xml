@@ -174,23 +174,28 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/radius8_white950"
-                >
+                android:background="@drawable/radius8_white950">
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="22dp"
                     android:orientation="horizontal"
                     android:layout_marginTop="18dp"
                     android:layout_marginLeft="20dp">
 
                     <TextView
+                        android:id="@+id/vehecle"
                         android:layout_width="wrap_content"
                         android:layout_height="22dp"
                         android:text="이동수단"
                         android:textFontWeight="400"
                         android:textAppearance="@style/C1R"
-                        android:textColor="@color/gray_700"/>
+                        android:textColor="@color/gray_700"
+                        android:gravity="center_vertical"
+                        android:includeFontPadding="false"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
 
                     <ImageView
                         android:layout_width="8dp"
@@ -198,12 +203,12 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="5dp"
                         android:src="@drawable/ic_arrow_right2"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
+                        app:layout_constraintLeft_toRightOf="@id/vehecle"
+                        app:layout_constraintTop_toTopOf="@id/vehecle"
+                        app:layout_constraintBottom_toBottomOf="@id/vehecle"/>
 
 
-                </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
