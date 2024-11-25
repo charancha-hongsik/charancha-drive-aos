@@ -163,7 +163,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
             tv_fuel.text = postMyCarResponse.fuelNm
 
         if(postMyCarResponse.makerCd == null || postMyCarResponse.modelCd == null) {
-            tv_car_name.text = "선택해 주세요"
+            tv_car_name.text = "차량명을 선택해 주세요"
             btn_next.isSelected = false
             btn_next.isClickable = false
             btn_save.isSelected = false
