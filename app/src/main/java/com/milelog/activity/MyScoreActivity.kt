@@ -36,7 +36,7 @@ import com.milelog.R
 import com.milelog.room.entity.MyCarsEntity
 import com.milelog.service.BluetoothService
 import com.milelog.viewmodel.BaseViewModel
-import com.milelog.viewmodel.MainViewModel
+import com.milelog.viewmodel.MyScoreViewModel
 import com.milelog.viewmodel.state.AccountState
 import com.milelog.viewmodel.state.CarInfoInquiryByCarIdState
 import com.milelog.viewmodel.state.GetDrivingStatisticsState
@@ -56,7 +56,7 @@ import java.util.*
  * 6.
  */
 class MyScoreActivity : BaseRefreshActivity() {
-    private val mainViewModel: MainViewModel by viewModels()
+    private val myScoreViewModel: MyScoreViewModel by viewModels()
 
     lateinit var btnHistory: ImageView
 
@@ -118,13 +118,13 @@ class MyScoreActivity : BaseRefreshActivity() {
     override fun onResume() {
         super.onResume()
 
-        mainViewModel.getMyCarInfo()
+        myScoreViewModel.getMyCarInfo()
         /**
          * 사용자에게 위치권한을 받은 후 앱으로 돌아왔을 때에 대한 동작
          */
         setNextPermissionProcess()
         setBluetoothService()
-        mainViewModel.postDrivingInfoNotSavedData()
+        myScoreViewModel.postDrivingInfoNotSavedData()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -132,10 +132,10 @@ class MyScoreActivity : BaseRefreshActivity() {
         setContentView(R.layout.activity_my_score)
 
         init()
-        mainViewModel.init(applicationContext)
+        myScoreViewModel.init(applicationContext)
         setObserver()
 
-        mainViewModel.getAccount()
+        myScoreViewModel.getAccount()
 
         Log.d("testsetestest","testestestset token :: " + PreferenceUtil.getPref(this,  PreferenceUtil.ACCESS_TOKEN, "")!!)
     }
@@ -204,7 +204,7 @@ class MyScoreActivity : BaseRefreshActivity() {
     }
 
     private fun setObserver(){
-        mainViewModel.accountResult.observe(this@MyScoreActivity, BaseViewModel.EventObserver{ state ->
+        myScoreViewModel.accountResult.observe(this@MyScoreActivity, BaseViewModel.EventObserver{ state ->
             when (state) {
                 is AccountState.Loading -> {
 
@@ -233,7 +233,7 @@ class MyScoreActivity : BaseRefreshActivity() {
             }
         })
 
-        mainViewModel.notSavedDataStateResult.observe(this@MyScoreActivity, BaseViewModel.EventObserver{ state ->
+        myScoreViewModel.notSavedDataStateResult.observe(this@MyScoreActivity, BaseViewModel.EventObserver{ state ->
             when (state) {
                 is NotSavedDataState.Error -> {
                     if(state.code == 401){
@@ -243,7 +243,7 @@ class MyScoreActivity : BaseRefreshActivity() {
             }
         })
 
-        mainViewModel.myCarInfoResult.observe(this@MyScoreActivity, BaseViewModel.EventObserver{ state ->
+        myScoreViewModel.myCarInfoResult.observe(this@MyScoreActivity, BaseViewModel.EventObserver{ state ->
             when (state) {
                 is MyCarInfoState.Loading -> {
 
@@ -262,7 +262,7 @@ class MyScoreActivity : BaseRefreshActivity() {
                     }
 
                     if(getMyCarInfoResponses.items.size > 0){
-                        mainViewModel.getCarInfoinquiryByCarId(getMyCarInfoResponses.items.get(0).id)
+                        myScoreViewModel.getCarInfoinquiryByCarId(getMyCarInfoResponses.items.get(0).id)
 
                         for(car in getMyCarInfoResponses.items){
                             myCarsListOnServer.add(MyCarsEntity(car.id, car.carName, car.licensePlateNumber, null,null, type = car.type))
@@ -286,7 +286,7 @@ class MyScoreActivity : BaseRefreshActivity() {
             }
         })
 
-        mainViewModel.carInfoInquiryByCarId.observe(this@MyScoreActivity, BaseViewModel.EventObserver{ state ->
+        myScoreViewModel.carInfoInquiryByCarId.observe(this@MyScoreActivity, BaseViewModel.EventObserver{ state ->
             when (state) {
                 is CarInfoInquiryByCarIdState.Loading -> {
 
@@ -297,9 +297,9 @@ class MyScoreActivity : BaseRefreshActivity() {
                     tv_car_name.setText(getMyCarInfoResponse.carName)
                     tv_car_no.setText(getMyCarInfoResponse.licensePlateNumber)
 
-                    mainViewModel.getManageScoreForAMonth()
-                    mainViewModel.getDrivingDistanceForAMonth()
-                    mainViewModel.setRecentManageScoreForSummary()
+                    myScoreViewModel.getManageScoreForAMonth()
+                    myScoreViewModel.getDrivingDistanceForAMonth()
+                    myScoreViewModel.setRecentManageScoreForSummary()
                 }
                 is CarInfoInquiryByCarIdState.Error -> {
                     if(state.code == 401){
@@ -312,7 +312,7 @@ class MyScoreActivity : BaseRefreshActivity() {
             }
         })
 
-        mainViewModel.managerScoreResult.observe(this@MyScoreActivity, BaseViewModel.EventObserver{ state ->
+        myScoreViewModel.managerScoreResult.observe(this@MyScoreActivity, BaseViewModel.EventObserver{ state ->
             when (state) {
                 is GetManageScoreState.Loading -> {
 
@@ -348,7 +348,7 @@ class MyScoreActivity : BaseRefreshActivity() {
             }
         })
 
-        mainViewModel.drivingStatisticsResult.observe(this@MyScoreActivity, BaseViewModel.EventObserver{ state ->
+        myScoreViewModel.drivingStatisticsResult.observe(this@MyScoreActivity, BaseViewModel.EventObserver{ state ->
             when (state) {
                 is GetDrivingStatisticsState.Loading -> {
 
@@ -450,7 +450,7 @@ class MyScoreActivity : BaseRefreshActivity() {
             }
         })
 
-        mainViewModel.recentManageScoreResult.observe(this@MyScoreActivity, BaseViewModel.EventObserver{ state ->
+        myScoreViewModel.recentManageScoreResult.observe(this@MyScoreActivity, BaseViewModel.EventObserver{ state ->
             when (state) {
                 is GetManageScoreState.Loading -> {
 
@@ -510,7 +510,7 @@ class MyScoreActivity : BaseRefreshActivity() {
             }
         })
 
-        mainViewModel.manageScoreForSummaryResult.observe(this@MyScoreActivity, BaseViewModel.EventObserver{ state ->
+        myScoreViewModel.manageScoreForSummaryResult.observe(this@MyScoreActivity, BaseViewModel.EventObserver{ state ->
             when (state) {
                 is GetManageScoreState.Loading -> {
 
@@ -754,7 +754,7 @@ class MyScoreActivity : BaseRefreshActivity() {
 
                 tv_recent_driving_score.text = "최근 주행 총점"
 
-                mainViewModel.setRecentManageScoreForSummary()
+                myScoreViewModel.setRecentManageScoreForSummary()
             }
 
         })
@@ -768,7 +768,7 @@ class MyScoreActivity : BaseRefreshActivity() {
 
                 tv_recent_driving_score.text = "1개월 평균"
 
-                mainViewModel.setManageSoreForSummary(29)
+                myScoreViewModel.setManageSoreForSummary(29)
             }
 
         })
@@ -782,7 +782,7 @@ class MyScoreActivity : BaseRefreshActivity() {
 
                 tv_recent_driving_score.text = "6개월 평균"
 
-                mainViewModel.setManageSoreForSummary(SIX_MONTH)
+                myScoreViewModel.setManageSoreForSummary(SIX_MONTH)
             }
 
         })
@@ -796,7 +796,7 @@ class MyScoreActivity : BaseRefreshActivity() {
                 tv_recent_driving_score.text = "1년 평균"
 
 
-                mainViewModel.setManageSoreForSummary(YEAR)
+                myScoreViewModel.setManageSoreForSummary(YEAR)
             }
         })
 

@@ -37,8 +37,11 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.concurrent.Executors
 
-class MainViewModel: BaseViewModel() {
+class MyScoreViewModel: BaseViewModel() {
     lateinit var context: Context
+
+    private val _accountResult = MutableLiveData<Event<AccountState>>()
+    val accountResult: MutableLiveData<Event<AccountState>> get() = _accountResult
 
     private val _notSavedDataResult = MutableLiveData<Event<NotSavedDataState>>()
     val notSavedDataStateResult: MutableLiveData<Event<NotSavedDataState>> get() = _notSavedDataResult
@@ -46,8 +49,48 @@ class MainViewModel: BaseViewModel() {
     private val _myCarInfoResult = MutableLiveData<Event<MyCarInfoState>>()
     val myCarInfoResult: MutableLiveData<Event<MyCarInfoState>> get() = _myCarInfoResult
 
+    private val _carInfoInquiryByCarId = MutableLiveData<Event<CarInfoInquiryByCarIdState>>()
+    val carInfoInquiryByCarId: MutableLiveData<Event<CarInfoInquiryByCarIdState>> get() = _carInfoInquiryByCarId
+
+    private val _managerScoreResult = MutableLiveData<Event<GetManageScoreState>>()
+    val managerScoreResult: MutableLiveData<Event<GetManageScoreState>> get() = _managerScoreResult
+
+    private val _drivingStatisticsResult = MutableLiveData<Event<GetDrivingStatisticsState>>()
+    val drivingStatisticsResult: MutableLiveData<Event<GetDrivingStatisticsState>> get() = _drivingStatisticsResult
+
+    private val _recentManageScoreResult = MutableLiveData<Event<GetManageScoreState>>()
+    val recentManageScoreResult: MutableLiveData<Event<GetManageScoreState>> get() = _recentManageScoreResult
+
+    private val _manageScoreForSummaryResult = MutableLiveData<Event<GetManageScoreState>>()
+    val manageScoreForSummaryResult: MutableLiveData<Event<GetManageScoreState>> get() = _manageScoreForSummaryResult
+
     fun init(context:Context){
         this.context = context
+    }
+
+    fun getAccount(){
+        apiService(context).getAccount("Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!).enqueue(object:
+            Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                when {
+                    response.code() == 200 || response.code() == 201 -> {
+                        val getAccountResponse = GsonBuilder().serializeNulls().create().fromJson(
+                            response.body()?.string(),
+                            GetAccountResponse::class.java
+                        )
+                        _accountResult.value = Event(AccountState.Success(getAccountResponse))
+                    }
+                    else -> {
+                        _accountResult.value = Event(AccountState.Error(response.code(), response.message()))
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+            }
+
+        })
     }
 
     fun postDrivingInfoNotSavedData(){
@@ -186,6 +229,162 @@ class MainViewModel: BaseViewModel() {
         })
     }
 
+    fun getCarInfoinquiryByCarId(id:String){
+        apiService(context).getCarInfoinquiryByCarId("Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!, id).enqueue(object :
+            Callback<ResponseBody> {
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+                if(response.code() == 200 || response.code() == 201){
+                    val getMyCarInfoResponse = GsonBuilder().serializeNulls().create().fromJson(
+                        response.body()?.string(),
+                        GetMyCarInfoItem::class.java
+                    )
+
+                    _carInfoInquiryByCarId.value = Event(CarInfoInquiryByCarIdState.Success(getMyCarInfoResponse))
+
+                }else if(response.code() == 401){
+                    _carInfoInquiryByCarId.value = Event(CarInfoInquiryByCarIdState.Error(response.code(), response.message()))
+
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+            }
+
+        })
+    }
+
+    fun getManageScoreForAMonth(){
+        apiService(context).getManageScoreStatistics(
+            "Bearer " + PreferenceUtil.getPref(context, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(context, PreferenceUtil.USER_CARID, "")!!,
+            getCurrentAndPastTimeForISO(29).second,
+            getCurrentAndPastTimeForISO(29).first).enqueue(object:
+            Callback<ResponseBody>{
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                try {
+                    if (response.code() == 200 || response.code() == 201) {
+                        val getManageScoreResponse = GsonBuilder().serializeNulls().create().fromJson(
+                            response.body()?.string(),
+                            GetManageScoreResponse::class.java
+                        )
+                        _managerScoreResult.value = Event(GetManageScoreState.Success(getManageScoreResponse))
+                    }else{
+                        _managerScoreResult.value = Event(GetManageScoreState.Error(response.code(), response.message()))
+
+                    }
+                }catch (e:Exception){
+
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+            }
+
+        })
+    }
+
+    fun getDrivingDistanceForAMonth(){
+        apiService(context).getDrivingStatistics(
+            "Bearer " + PreferenceUtil.getPref(context, PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(context, PreferenceUtil.USER_CARID, "")!!,
+            getCurrentAndPastTimeForISO(29).second,
+            getCurrentAndPastTimeForISO(29).first,
+            "startTime",
+            "day").enqueue(object:
+            Callback<ResponseBody>{
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                try {
+                    if (response.code() == 200 || response.code() == 201) {
+                        val getDrivingStatisticsResponse = GsonBuilder().serializeNulls().create().fromJson(
+                            response.body()?.string(),
+                            GetDrivingStatisticsResponse::class.java
+                        )
+                        _drivingStatisticsResult.value = Event(GetDrivingStatisticsState.Success(getDrivingStatisticsResponse))
+                    } else {
+                        _drivingStatisticsResult.value = Event(GetDrivingStatisticsState.Error(response.code(), response.message()))
+
+                    }
+                }catch (e:Exception){
+
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+            }
+
+        })
+    }
+
+    fun setRecentManageScoreForSummary(){
+        apiService(context).getRecentManageScoreStatistics(
+            "Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(context, PreferenceUtil.USER_CARID, "")!!
+        ).enqueue(object: Callback<ResponseBody>{
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+                try {
+                    if (response.code() == 200 || response.code() == 201) {
+                        val getManageScoreResponse = GsonBuilder().serializeNulls().create().fromJson(
+                            response.body()?.string(),
+                            GetManageScoreResponse::class.java
+                        )
+                        _recentManageScoreResult.value = Event(GetManageScoreState.Success(getManageScoreResponse))
+                    } else {
+                        _recentManageScoreResult.value = Event(GetManageScoreState.Error(response.code(), response.message()))
+
+                    }
+                }catch (e:Exception){
+
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+            }
+
+        })
+    }
+
+    fun setManageSoreForSummary(scope:Long){
+        apiService(context).getManageScoreStatistics(
+            "Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!,
+            PreferenceUtil.getPref(context, PreferenceUtil.USER_CARID, "")!!,
+            getCurrentAndPastTimeForISO(scope).second,
+            getCurrentAndPastTimeForISO(scope).first
+        ).enqueue(object :Callback<ResponseBody>{
+            override fun onResponse(
+                call: Call<ResponseBody>,
+                response: Response<ResponseBody>
+            ) {
+                try {
+                    if (response.code() == 200 || response.code() == 201) {
+                        val getManageScoreResponse = GsonBuilder().serializeNulls().create().fromJson(
+                            response.body()?.string(),
+                            GetManageScoreResponse::class.java
+                        )
+                        _manageScoreForSummaryResult.value = Event(GetManageScoreState.Success(getManageScoreResponse))
+                    }else{
+                        _manageScoreForSummaryResult.value = Event(GetManageScoreState.Error(response.code(), response.message()))
+
+                    }
+                }catch (e:Exception){
+
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+            }
+        })
+    }
 
     private fun callSaveDriving(startAddress:Address, endAddress: Address, drive:DriveForApi, driveDatabase: DriveDatabase){
         // 내 주행 저장 API 호출

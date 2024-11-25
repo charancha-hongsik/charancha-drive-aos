@@ -13,17 +13,28 @@ import android.os.PowerManager
 import android.provider.Settings
 import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
 import android.webkit.WebView
+import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import com.milelog.CommonUtil
 import com.milelog.CustomDialog
 import com.milelog.PreferenceUtil
 import com.milelog.PreferenceUtil.HAVE_BEEN_HOME
 import com.milelog.R
+import com.milelog.room.entity.MyCarsEntity
 import com.milelog.service.BluetoothService
+import com.milelog.viewmodel.BaseViewModel
+import com.milelog.viewmodel.MainViewModel
+import com.milelog.viewmodel.MyScoreViewModel
+import com.milelog.viewmodel.state.MyCarInfoState
+import com.milelog.viewmodel.state.NotSavedDataState
 
 class MainActivity:BaseActivity() {
+    private val mainViewModel: MainViewModel by viewModels()
+
     lateinit var wv_main:WebView
 
     /**
@@ -47,11 +58,67 @@ class MainActivity:BaseActivity() {
     override fun onResume() {
         super.onResume()
 
+        mainViewModel.getMyCarInfo()
         /**
          * 사용자에게 위치권한을 받은 후 앱으로 돌아왔을 때에 대한 동작
          */
         setNextPermissionProcess()
         setBluetoothService()
+        mainViewModel.postDrivingInfoNotSavedData()
+    }
+
+    private fun setObserver(){
+        mainViewModel.notSavedDataStateResult.observe(this@MainActivity, BaseViewModel.EventObserver{ state ->
+            when (state) {
+                is NotSavedDataState.Error -> {
+                    if(state.code == 401){
+                        logout()
+                    }
+                }
+            }
+        })
+
+        mainViewModel.myCarInfoResult.observe(this@MainActivity, BaseViewModel.EventObserver{ state ->
+            when (state) {
+                is MyCarInfoState.Loading -> {
+
+                }
+                is MyCarInfoState.Success -> {
+                    val getMyCarInfoResponses = state.data
+
+                    val myCarsListOnServer: MutableList<MyCarsEntity> = mutableListOf()
+                    val myCarsListOnDevice:MutableList<MyCarsEntity> = mutableListOf()
+
+                    PreferenceUtil.getPref(this@MainActivity, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
+                        if(it != "") {
+                            val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
+                            myCarsListOnDevice.addAll(GsonBuilder().serializeNulls().create().fromJson(it, type))
+                        }
+                    }
+
+                    if(getMyCarInfoResponses.items.size > 0){
+                        for(car in getMyCarInfoResponses.items){
+                            myCarsListOnServer.add(MyCarsEntity(car.id, car.carName, car.licensePlateNumber, null,null, type = car.type))
+                        }
+
+                        PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.MY_CAR_ENTITIES, GsonBuilder().serializeNulls().create().toJson(updateMyCarList(myCarsListOnServer, myCarsListOnDevice)))
+
+                    }else{
+                        startActivity(Intent(this@MainActivity, SplashActivity::class.java))
+                        finish()
+                    }
+                }
+                is MyCarInfoState.Error -> {
+                    if(state.code == 401){
+                        logout()
+                    }
+                }
+                is MyCarInfoState.Empty -> {
+
+                }
+            }
+        })
+
     }
 
     private fun init(){
@@ -218,4 +285,28 @@ class MainActivity:BaseActivity() {
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
+
+    fun updateMyCarList(
+        myCarsListOnServer: MutableList<MyCarsEntity>,
+        myCarsListOnDevice: MutableList<MyCarsEntity>
+    ): MutableList<MyCarsEntity> {
+        // 1. 유지할 리스트: 서버에 있는 차량만 남기고 type과 name 동기화
+        val retainedCars = myCarsListOnDevice.mapNotNull { deviceCar ->
+            myCarsListOnServer.find { serverCar -> serverCar.id == deviceCar.id }?.let { serverCar ->
+                deviceCar.copy(name = serverCar.name, type = serverCar.type, isActive = serverCar.isActive) // type과 name을 서버의 값으로 동기화
+            }
+        }.toMutableList()
+
+        // 2. 추가할 차량: 서버에 있는데 장치에 없는 차량 추가
+        val newCarsToAdd = myCarsListOnServer.filterNot { serverCar ->
+            myCarsListOnDevice.any { deviceCar -> deviceCar.id == serverCar.id }
+        }
+
+        // 3. 새 차량을 유지된 차량 리스트에 추가
+        retainedCars.addAll(newCarsToAdd)
+
+        // 업데이트된 리스트 반환
+        return retainedCars
+    }
+
 }
