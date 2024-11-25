@@ -76,16 +76,6 @@
             android:textFontWeight="600"
             android:textColor="@color/gray_950" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/gray_600"
-            android:textAppearance="@style/C1R"
-            android:textFontWeight="400"
-            android:layout_marginLeft="20dp"
-            android:text="*복수 선택 가능"
-            android:layout_marginTop="8dp"/>
-
         <com.nex3z.flowlayout.FlowLayout
             android:id="@+id/layout_flow"
             android:layout_width="match_parent"
