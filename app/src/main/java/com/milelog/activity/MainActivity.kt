@@ -52,6 +52,7 @@ class MainActivity:BaseActivity() {
         super.onCreate(savedInstanceState)
 
         init()
+        setObserver()
         setResources()
     }
 
@@ -122,8 +123,19 @@ class MainActivity:BaseActivity() {
     }
 
     private fun init(){
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
+
         wv_main = findViewById(R.id.wv_main)
 
+    }
+
+
+    private fun setResources(){
+        checkPermission()
+        checkDeeplink()
+    }
+
+    private fun checkPermission(){
         if(!PreferenceUtil.getBooleanPref(this, HAVE_BEEN_HOME, false)){
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 checkPermission(mutableListOf(
@@ -148,8 +160,10 @@ class MainActivity:BaseActivity() {
         PreferenceUtil.putBooleanPref(this, HAVE_BEEN_HOME, true)
     }
 
-    private fun setResources(){
-        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
+    private fun checkDeeplink(){
+        if(intent.getBooleanExtra("deeplink",false)){
+            startActivity(Intent(this@MainActivity, AlarmActivity::class.java))
+        }
     }
 
     private fun checkLocation(){
