@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white_op_95"
-    tools:context=".activity.MainActivity">
+    tools:context=".activity.MyInfoActivity">
     
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/view_topbar"

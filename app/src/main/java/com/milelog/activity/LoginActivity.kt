@@ -13,7 +13,6 @@ import com.milelog.PreferenceUtil
 import com.milelog.R
 import com.milelog.retrofit.request.SignInRequest
 import com.milelog.retrofit.request.SignUpRequest
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.milelog.CustomDialogNoCancel
@@ -384,7 +383,7 @@ class LoginActivity: BaseActivity() {
 
                                                 if(getMyCarInfoResponse.items.size > 0){
                                                     PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.items.get(0).id)
-                                                    startActivity(Intent(this@LoginActivity, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+                                                    startActivity(Intent(this@LoginActivity, MyScoreActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
 
                                                     finish()
                                                 }else{

@@ -26,7 +26,6 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.milelog.CommonUtil
@@ -56,7 +55,7 @@ import java.util.*
  * 5. 최근 주행 총점
  * 6.
  */
-class MainActivity : BaseRefreshActivity() {
+class MyScoreActivity : BaseRefreshActivity() {
     private val mainViewModel: MainViewModel by viewModels()
 
     lateinit var btnHistory: ImageView
@@ -177,7 +176,7 @@ class MainActivity : BaseRefreshActivity() {
         setBtn()
 
         if(intent.getBooleanExtra("deeplink",false)){
-            startActivity(Intent(this@MainActivity, AlarmActivity::class.java))
+            startActivity(Intent(this@MyScoreActivity, AlarmActivity::class.java))
         }
     }
 
@@ -205,7 +204,7 @@ class MainActivity : BaseRefreshActivity() {
     }
 
     private fun setObserver(){
-        mainViewModel.accountResult.observe(this@MainActivity, BaseViewModel.EventObserver{ state ->
+        mainViewModel.accountResult.observe(this@MyScoreActivity, BaseViewModel.EventObserver{ state ->
             when (state) {
                 is AccountState.Loading -> {
 
@@ -217,7 +216,7 @@ class MainActivity : BaseRefreshActivity() {
                         layout_start_app.visibility = GONE
                     }
 
-                    PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.USER_ID, getAccountResponse.id)
+                    PreferenceUtil.putPref(this@MyScoreActivity, PreferenceUtil.USER_ID, getAccountResponse.id)
                 }
                 is AccountState.Error -> {
                     if(state.code == 401){
@@ -234,7 +233,7 @@ class MainActivity : BaseRefreshActivity() {
             }
         })
 
-        mainViewModel.notSavedDataStateResult.observe(this@MainActivity, BaseViewModel.EventObserver{ state ->
+        mainViewModel.notSavedDataStateResult.observe(this@MyScoreActivity, BaseViewModel.EventObserver{ state ->
             when (state) {
                 is NotSavedDataState.Error -> {
                     if(state.code == 401){
@@ -244,7 +243,7 @@ class MainActivity : BaseRefreshActivity() {
             }
         })
 
-        mainViewModel.myCarInfoResult.observe(this@MainActivity, BaseViewModel.EventObserver{ state ->
+        mainViewModel.myCarInfoResult.observe(this@MyScoreActivity, BaseViewModel.EventObserver{ state ->
             when (state) {
                 is MyCarInfoState.Loading -> {
 
@@ -255,7 +254,7 @@ class MainActivity : BaseRefreshActivity() {
                     val myCarsListOnServer: MutableList<MyCarsEntity> = mutableListOf()
                     val myCarsListOnDevice:MutableList<MyCarsEntity> = mutableListOf()
 
-                    PreferenceUtil.getPref(this@MainActivity, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
+                    PreferenceUtil.getPref(this@MyScoreActivity, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
                         if(it != "") {
                             val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
                             myCarsListOnDevice.addAll(GsonBuilder().serializeNulls().create().fromJson(it, type))
@@ -269,10 +268,10 @@ class MainActivity : BaseRefreshActivity() {
                             myCarsListOnServer.add(MyCarsEntity(car.id, car.carName, car.licensePlateNumber, null,null, type = car.type))
                         }
 
-                        PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.MY_CAR_ENTITIES, GsonBuilder().serializeNulls().create().toJson(updateMyCarList(myCarsListOnServer, myCarsListOnDevice)))
+                        PreferenceUtil.putPref(this@MyScoreActivity, PreferenceUtil.MY_CAR_ENTITIES, GsonBuilder().serializeNulls().create().toJson(updateMyCarList(myCarsListOnServer, myCarsListOnDevice)))
 
                     }else{
-                        startActivity(Intent(this@MainActivity, SplashActivity::class.java))
+                        startActivity(Intent(this@MyScoreActivity, SplashActivity::class.java))
                         finish()
                     }
                 }
@@ -287,14 +286,14 @@ class MainActivity : BaseRefreshActivity() {
             }
         })
 
-        mainViewModel.carInfoInquiryByCarId.observe(this@MainActivity, BaseViewModel.EventObserver{ state ->
+        mainViewModel.carInfoInquiryByCarId.observe(this@MyScoreActivity, BaseViewModel.EventObserver{ state ->
             when (state) {
                 is CarInfoInquiryByCarIdState.Loading -> {
 
                 }
                 is CarInfoInquiryByCarIdState.Success -> {
                     val getMyCarInfoResponse = state.data
-                    PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.id)
+                    PreferenceUtil.putPref(this@MyScoreActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.id)
                     tv_car_name.setText(getMyCarInfoResponse.carName)
                     tv_car_no.setText(getMyCarInfoResponse.licensePlateNumber)
 
@@ -313,7 +312,7 @@ class MainActivity : BaseRefreshActivity() {
             }
         })
 
-        mainViewModel.managerScoreResult.observe(this@MainActivity, BaseViewModel.EventObserver{ state ->
+        mainViewModel.managerScoreResult.observe(this@MyScoreActivity, BaseViewModel.EventObserver{ state ->
             when (state) {
                 is GetManageScoreState.Loading -> {
 
@@ -349,7 +348,7 @@ class MainActivity : BaseRefreshActivity() {
             }
         })
 
-        mainViewModel.drivingStatisticsResult.observe(this@MainActivity, BaseViewModel.EventObserver{ state ->
+        mainViewModel.drivingStatisticsResult.observe(this@MyScoreActivity, BaseViewModel.EventObserver{ state ->
             when (state) {
                 is GetDrivingStatisticsState.Loading -> {
 
@@ -451,7 +450,7 @@ class MainActivity : BaseRefreshActivity() {
             }
         })
 
-        mainViewModel.recentManageScoreResult.observe(this@MainActivity, BaseViewModel.EventObserver{ state ->
+        mainViewModel.recentManageScoreResult.observe(this@MyScoreActivity, BaseViewModel.EventObserver{ state ->
             when (state) {
                 is GetManageScoreState.Loading -> {
 
@@ -511,7 +510,7 @@ class MainActivity : BaseRefreshActivity() {
             }
         })
 
-        mainViewModel.manageScoreForSummaryResult.observe(this@MainActivity, BaseViewModel.EventObserver{ state ->
+        mainViewModel.manageScoreForSummaryResult.observe(this@MyScoreActivity, BaseViewModel.EventObserver{ state ->
             when (state) {
                 is GetManageScoreState.Loading -> {
 
@@ -573,7 +572,7 @@ class MainActivity : BaseRefreshActivity() {
 
             override fun onCancel() {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    if(ContextCompat.checkSelfPermission(this@MainActivity, ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED){
+                    if(ContextCompat.checkSelfPermission(this@MyScoreActivity, ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED){
                         checkUserActivity()
                     }else{
                         setIgnoreBattery()
@@ -634,7 +633,7 @@ class MainActivity : BaseRefreshActivity() {
         btnHistory = findViewById(R.id.btn_history)
         btnHistory.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                startActivity(Intent(this@MainActivity, MyPageActivity::class.java))
+                startActivity(Intent(this@MyScoreActivity, MyPageActivity::class.java))
             }
 
         })
@@ -645,14 +644,14 @@ class MainActivity : BaseRefreshActivity() {
 
         tv_guide_subtitle = findViewById(R.id.tv_guide_subtitle)
         tv_guide_subtitle.setOnClickListener {
-            startActivity(Intent(this@MainActivity, DetectedStatusActivity::class.java))
+            startActivity(Intent(this@MyScoreActivity, DetectedStatusActivity::class.java))
         }
 
         button_edit_overlay = findViewById(R.id.button_edit_overlay)
         button_edit_overlay.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
 //                showBottomSheetForEditCar()
-                startActivity(Intent(this@MainActivity, MyGarageActivity::class.java))
+                startActivity(Intent(this@MyScoreActivity, MyGarageActivity::class.java))
 
             }
 
@@ -664,7 +663,7 @@ class MainActivity : BaseRefreshActivity() {
         layout_engine = findViewById(R.id.layout_engine)
         layout_engine.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                startActivity(Intent(this@MainActivity, ManageEngineActivity::class.java))
+                startActivity(Intent(this@MyScoreActivity, ManageEngineActivity::class.java))
             }
 
         })
@@ -675,14 +674,14 @@ class MainActivity : BaseRefreshActivity() {
 
         layout_average_distance.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                startActivity(Intent(this@MainActivity, DrivenDistanceActivity::class.java))
+                startActivity(Intent(this@MyScoreActivity, DrivenDistanceActivity::class.java))
             }
 
         })
 
         layout_average_time.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                startActivity(Intent(this@MainActivity, DrivenTimeActivity::class.java))
+                startActivity(Intent(this@MyScoreActivity, DrivenTimeActivity::class.java))
             }
 
         })
@@ -692,7 +691,7 @@ class MainActivity : BaseRefreshActivity() {
         button_average_score_overlay = findViewById(R.id.button_average_score_overlay)
         button_average_score_overlay.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                startActivity(Intent(this@MainActivity, DetailManageScoreActivity::class.java).putExtra("title","평균 관리 점수"))
+                startActivity(Intent(this@MyScoreActivity, DetailManageScoreActivity::class.java).putExtra("title","평균 관리 점수"))
             }
 
         })
@@ -701,7 +700,7 @@ class MainActivity : BaseRefreshActivity() {
         layout_recent_manage_score = findViewById(R.id.layout_recent_manage_score)
         layout_recent_manage_score.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                startActivity(Intent(this@MainActivity, DetailManageScoreActivity::class.java).putExtra("title","최근 관리 점수"))
+                startActivity(Intent(this@MyScoreActivity, DetailManageScoreActivity::class.java).putExtra("title","최근 관리 점수"))
             }
 
         })
@@ -739,7 +738,7 @@ class MainActivity : BaseRefreshActivity() {
         btn_noti = findViewById(R.id.btn_noti)
         btn_noti.setOnClickListener(object :OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                startActivity(Intent(this@MainActivity, AlarmActivity::class.java))
+                startActivity(Intent(this@MyScoreActivity, AlarmActivity::class.java))
             }
 
         })
@@ -814,7 +813,7 @@ class MainActivity : BaseRefreshActivity() {
 
         btn_close_gift.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                PreferenceUtil.putBooleanPref(this@MainActivity,
+                PreferenceUtil.putBooleanPref(this@MyScoreActivity,
                     PreferenceUtil.GIFT_EXPORTED, false)
 
                 layout_start_app.visibility = GONE
@@ -1119,7 +1118,7 @@ class MainActivity : BaseRefreshActivity() {
     }
 
     private fun setBluetoothService(){
-        if(CommonUtil.checkRequiredPermissions(this@MainActivity)){
+        if(CommonUtil.checkRequiredPermissions(this@MyScoreActivity)){
             val bluetoothIntent = Intent(this, BluetoothService::class.java)
             startForegroundService(bluetoothIntent)
         }else{

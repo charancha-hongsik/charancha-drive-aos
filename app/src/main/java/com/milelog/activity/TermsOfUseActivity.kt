@@ -13,9 +13,7 @@ import com.milelog.PreferenceUtil
 import com.milelog.R
 import com.milelog.retrofit.request.AgreeTermsRequest
 import com.milelog.retrofit.request.Agreements
-import com.milelog.retrofit.response.GetMyCarInfoResponse
 import com.milelog.retrofit.response.TermsSummaryResponse
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -25,7 +23,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.lang.reflect.Type
-import java.util.*
 
 
 /**
@@ -252,7 +249,7 @@ class TermsOfUseActivity: BaseActivity() {
 
 
                                             if(jsonString!!.toInt() > 0){
-                                                startActivity(Intent(this@TermsOfUseActivity, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+                                                startActivity(Intent(this@TermsOfUseActivity, MyScoreActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
 
                                                 finish()
                                             }else{

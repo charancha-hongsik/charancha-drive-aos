@@ -312,7 +312,7 @@
         </activity>
 
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".activity.MyScoreActivity"
             android:screenOrientation="portrait"
             android:exported="true"
             android:launchMode="singleTop"/>

@@ -11,24 +11,14 @@ import android.os.Looper
 import android.util.Log
 import androidx.activity.viewModels
 import com.milelog.*
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.milelog.CustomDialogNoCancel
 import com.milelog.PreferenceUtil
-import com.milelog.retrofit.response.GetMyCarInfoResponse
-import com.milelog.retrofit.response.SignInResponse
-import com.milelog.retrofit.response.TermsAgreeStatusResponse
 import com.milelog.viewmodel.BaseViewModel
 import com.milelog.viewmodel.SplashViewModel
 import com.milelog.viewmodel.state.CheckForceUpdateState
 import com.milelog.viewmodel.state.GetMyCarInfoState
 import com.milelog.viewmodel.state.GetTermsAgreeState
 import com.milelog.viewmodel.state.PostReissueState
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.lang.reflect.Type
 
 /**
  * 1. 로그인 되어있는지 체크 (RefreshToken)
@@ -112,7 +102,7 @@ class SplashActivity: BaseActivity() {
                     Log.d("testestestsetest","testestestset getMyCarInfo:: ")
 
                     if(state.data > 0){
-                        startActivity(Intent(this@SplashActivity, MainActivity::class.java).addFlags(
+                        startActivity(Intent(this@SplashActivity, MyScoreActivity::class.java).addFlags(
                             Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         ).putExtra("deeplink",intent.getBooleanExtra("deeplink",false)))
 

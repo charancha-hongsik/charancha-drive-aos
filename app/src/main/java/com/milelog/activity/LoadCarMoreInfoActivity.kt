@@ -9,7 +9,6 @@ import android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -42,7 +41,6 @@ import com.milelog.retrofit.request.PostMyCarRequest
 import com.milelog.retrofit.request.TypeInput
 import com.milelog.retrofit.response.CarDetailResponse
 import com.milelog.retrofit.response.GetMyCarInfoItem
-import com.milelog.retrofit.response.GetMyCarInfoResponse
 import com.milelog.retrofit.response.PostMyCarResponse
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -341,7 +339,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                                     PreferenceUtil.putPref(this@LoadCarMoreInfoActivity, PreferenceUtil.USER_CARID, getMyCarInfoItem.id)
                                     PreferenceUtil.putPref(this@LoadCarMoreInfoActivity,  PreferenceUtil.KM_MILE, "km")
                                     startActivity(
-                                        Intent(this@LoadCarMoreInfoActivity, MainActivity::class.java).addFlags(
+                                        Intent(this@LoadCarMoreInfoActivity, MyScoreActivity::class.java).addFlags(
                                             FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK
                                         ))
                                     finish()
@@ -441,7 +439,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                             PreferenceUtil.putPref(this@LoadCarMoreInfoActivity, PreferenceUtil.USER_CARID, getMyCarInfoItem.id)
                             PreferenceUtil.putPref(this@LoadCarMoreInfoActivity,  PreferenceUtil.KM_MILE, "km")
                             startActivity(
-                                Intent(this@LoadCarMoreInfoActivity, MainActivity::class.java).addFlags(
+                                Intent(this@LoadCarMoreInfoActivity, MyScoreActivity::class.java).addFlags(
                                     FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK
                                 ))
                             finish()
