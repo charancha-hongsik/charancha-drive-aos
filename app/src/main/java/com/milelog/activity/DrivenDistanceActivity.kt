@@ -61,6 +61,8 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
     var recentStartTime = "2024-07-15T00:00:00.000Z"
     var recentEndTime = "2024-07-15T23:59:59.999Z"
 
+    lateinit var userCarId:String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_driven_distance)
@@ -2341,9 +2343,6 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
     }
 
     private fun setMonthDrivingDistance(){
-        PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!
-
-
         tv_date1.text = formatDateRangeForAMonth(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
         tv_date2.text = formatDateRangeForAMonth(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
         tv_date3.text = formatDateRangeForAMonth(getCurrentAndPastTimeForISO(29).second,getCurrentAndPastTimeForISO(29).first)
@@ -2652,6 +2651,9 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
     }
 
     private fun setResources(){
+        PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.USER_CARID, "")!!
+        userCarId = intent.getStringExtra("userCarId")?:PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.USER_CARID, "")!!
+
         btn_back.setOnClickListener { finish() }
 
         btn_recent_drive.setOnClickListener {
