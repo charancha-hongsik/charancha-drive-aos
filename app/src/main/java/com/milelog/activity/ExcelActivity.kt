@@ -466,12 +466,13 @@ class ExcelActivity:BaseRefreshActivity() {
         // 현재 날짜와 시간 구하기
         val currentDate = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
 
-        // 파일 공유 기능 추가
         try {
-            // Write the workbook to a temporary file
+            // 현재 날짜를 기반으로 파일 이름 생성
             val fileName = "DrivingData_$currentDate.xlsx"
-            val file = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName)
 
+            // 공유할 파일 URI를 생성할 File 객체를 설정합니다.
+            val file = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName)
+            // 파일에 워크북 데이터를 저장
             FileOutputStream(file).use { output ->
                 workbook.write(output)
             }
@@ -483,18 +484,31 @@ class ExcelActivity:BaseRefreshActivity() {
                 file
             )
 
-            // 공유 Intent 생성
+            // 공유 Intent 생성 (ACTION_SEND)
             val shareIntent = Intent(Intent.ACTION_SEND).apply {
                 type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" // XLSX MIME 타입
                 putExtra(Intent.EXTRA_STREAM, fileUri)
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION) // URI 읽기 권한 부여
             }
 
-            // OS 공유 Bottom Sheet 호출
-            startActivity(Intent.createChooser(shareIntent, "주행 데이터 공유하기"))
+            // 저장 Intent 생성 (ACTION_CREATE_DOCUMENT)
+            val saveIntent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" // XLSX MIME 타입
+                putExtra(Intent.EXTRA_TITLE, fileName) // 사용자에게 보여줄 파일 이름
+            }
+
+            // 두 개의 Intent를 포함하는 Chooser
+            val chooserIntent = Intent.createChooser(shareIntent, "주행 데이터 공유하기").apply {
+                putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(saveIntent)) // 저장 옵션 추가
+            }
+
+            // OS 공유/저장 Bottom Sheet 호출
+            startActivity(chooserIntent)
+
         } catch (e: Exception) {
             e.printStackTrace()
-            Toast.makeText(this, "파일 공유에 실패했습니다.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "파일 처리에 실패했습니다.", Toast.LENGTH_SHORT).show()
         } finally {
             workbook.close()
         }
