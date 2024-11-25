@@ -6,19 +6,29 @@ import android.Manifest.permission.BLUETOOTH_CONNECT
 import android.Manifest.permission.POST_NOTIFICATIONS
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
 import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+import android.view.View.VISIBLE
+import android.webkit.CookieManager
+import android.webkit.JavascriptInterface
+import android.webkit.WebChromeClient
+import android.webkit.WebResourceRequest
+import android.webkit.WebSettings
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.activity.viewModels
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import com.milelog.BuildConfig.BASE_API_URL
 import com.milelog.CommonUtil
 import com.milelog.CustomDialog
 import com.milelog.PreferenceUtil
@@ -28,10 +38,14 @@ import com.milelog.room.entity.MyCarsEntity
 import com.milelog.service.BluetoothService
 import com.milelog.viewmodel.BaseViewModel
 import com.milelog.viewmodel.MainViewModel
-import com.milelog.viewmodel.MyScoreViewModel
 import com.milelog.viewmodel.state.MyCarInfoState
 import com.milelog.viewmodel.state.NotSavedDataState
 
+/**
+ * 파이어베이스 설정
+ * 퍼미션
+ * 딥링크
+ */
 class MainActivity:BaseActivity() {
     private val mainViewModel: MainViewModel by viewModels()
 
@@ -50,6 +64,7 @@ class MainActivity:BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
         init()
         setObserver()
@@ -124,15 +139,71 @@ class MainActivity:BaseActivity() {
 
     private fun init(){
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
+    }
 
-        wv_main = findViewById(R.id.wv_main)
+    fun setWebview(){
+        wv_main = findViewById(R.id.wv_login)
+        wv_main.visibility = VISIBLE
+        wv_main.settings.loadWithOverviewMode = true // 화면에 맞게 WebView 사이즈를 정의
+        wv_main.settings.useWideViewPort = true //html 컨텐츠가 웹뷰에 맞게 나타나도록 합니다.
+        wv_main.settings.defaultTextEncodingName = "UTF-8" // TextEncoding 이름 정의
+        wv_main.settings.javaScriptEnabled = true
+        wv_main.settings.userAgentString = "Mozilla/5.0 AppleWebKit/535.19 Chrome/56.0.0 Mobile Safari/535.19"
+        wv_main.settings.domStorageEnabled = true
+        wv_main.settings.cacheMode = WebSettings.LOAD_DEFAULT
+        wv_main.settings.textZoom = 100 // System 텍스트 사이즈 변경되지 않게
 
+        //chrome inspect 디버깅 모드
+        WebView.setWebContentsDebuggingEnabled(true)
+
+        // javascriptInterface 설정
+        wv_main.addJavascriptInterface(MilelogPublicApi(this), "MilelogPublicApi")
+
+        wv_main.webChromeClient = object: WebChromeClient(){
+            override fun onProgressChanged(view: WebView?, newProgress: Int) {
+                super.onProgressChanged(view, newProgress)
+            }
+        }
+
+        wv_main.webViewClient = object: WebViewClient(){
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                super.onPageStarted(view, url, favicon)
+            }
+
+            override fun onPageFinished(view: WebView?, url: String?) {
+                syncCookie()
+                super.onPageFinished(view, url)
+            }
+
+            override fun shouldOverrideUrlLoading(
+                view: WebView?,
+                request: WebResourceRequest?
+            ): Boolean {
+                return super.shouldOverrideUrlLoading(view, request)
+            }
+        }
+
+        val headers = mapOf("Authorization" to "Bearer " + PreferenceUtil.getPref(this,  PreferenceUtil.ACCESS_TOKEN, "")!!)
+        wv_main.loadUrl(BASE_API_URL + "/home" , headers)
+
+        // 쿠키 설정
+        syncCookie()
     }
 
 
     private fun setResources(){
         checkPermission()
         checkDeeplink()
+        setWebview()
+    }
+
+    private fun syncCookie(){
+        wv_main.settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW)
+
+        val cookieManager = CookieManager.getInstance()
+        cookieManager.setAcceptCookie(true)
+        cookieManager.setAcceptThirdPartyCookies(wv_main, true)
+        cookieManager.flush()
     }
 
     private fun checkPermission(){
@@ -321,6 +392,44 @@ class MainActivity:BaseActivity() {
 
         // 업데이트된 리스트 반환
         return retainedCars
+    }
+
+    class MilelogPublicApi(val activity: MainActivity) {
+        @JavascriptInterface
+        fun openMyPage(){
+            activity.startActivity(Intent(activity, MyPageActivity::class.java))
+        }
+
+        @JavascriptInterface
+        fun openNotification(){
+            activity.startActivity(Intent(activity, AlarmActivity::class.java))
+        }
+
+        @JavascriptInterface
+        fun openMyGarage(){
+            activity.startActivity(Intent(activity, MyGarageActivity::class.java))
+        }
+
+        @JavascriptInterface
+        fun openDrivingDetail(trackingId:String){
+            activity.startActivity(Intent(activity, DetailDriveHistoryActivity::class.java).putExtra("trackingId", trackingId))
+
+        }
+
+        @JavascriptInterface
+        fun openDrivings(){
+            activity.startActivity(Intent(activity, MyDriveHistoryActivity::class.java))
+        }
+
+        @JavascriptInterface
+        fun openDrivingDistanceStats(userCarId: String){
+            activity.startActivity(Intent(activity, DrivenDistanceActivity::class.java).putExtra("userCarId", userCarId))
+        }
+
+        @JavascriptInterface
+        fun openDrivingScoreStats(userCarId: String){
+            activity.startActivity(Intent(activity, MyScoreActivity::class.java).putExtra("userCarId", userCarId))
+        }
     }
 
 }
