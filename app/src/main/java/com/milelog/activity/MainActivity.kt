@@ -31,6 +31,7 @@ import com.google.gson.reflect.TypeToken
 import com.milelog.BuildConfig.BASE_API_URL
 import com.milelog.CommonUtil
 import com.milelog.CustomDialog
+import com.milelog.Endpoints.HOME
 import com.milelog.PreferenceUtil
 import com.milelog.PreferenceUtil.HAVE_BEEN_HOME
 import com.milelog.R
@@ -184,7 +185,7 @@ class MainActivity:BaseActivity() {
         }
 
         val headers = mapOf("Authorization" to "Bearer " + PreferenceUtil.getPref(this,  PreferenceUtil.ACCESS_TOKEN, "")!!)
-        wv_main.loadUrl(BASE_API_URL + "/home" , headers)
+        wv_main.loadUrl(BASE_API_URL + HOME , headers)
 
         // 쿠키 설정
         syncCookie()
