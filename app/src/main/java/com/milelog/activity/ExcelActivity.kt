@@ -426,7 +426,7 @@ class ExcelActivity:BaseRefreshActivity() {
         sheet.createRow(6).heightInPoints = 25f // Row 7
         sheet.createRow(7).heightInPoints = 24f // Row 8
         sheet.createRow(8).heightInPoints = 23f // Row 9
-        sheet.createRow(9).heightInPoints = 8f // Row 10
+        sheet.createRow(9).heightInPoints = 23f // Row 10
         sheet.createRow(10).heightInPoints = 26f // Row 11
         sheet.createRow(11).heightInPoints = 25f // Row 12
         sheet.createRow(12).heightInPoints = 26f // Row 13
