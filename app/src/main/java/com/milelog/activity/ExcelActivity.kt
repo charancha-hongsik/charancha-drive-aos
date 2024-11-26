@@ -264,7 +264,7 @@ class ExcelActivity:BaseRefreshActivity() {
                         )
 
 //                        createDrivingDataWithHeaders(getDrivingData(getDriveHistroyResponse))
-                        createDrivingDataWithHeaders2(getDrivingData(getDriveHistroyResponse), getDriveHistroyResponse.items.filter{it.userCar?.type == CORPORATE})
+                        createDrivingDataWithHeaders2(getDrivingData(getDriveHistroyResponse), getDriveHistroyResponse.items)
 
                     } else{
 
@@ -743,14 +743,14 @@ class ExcelActivity:BaseRefreshActivity() {
              * 부서
              */
             val cellC15 = sheet1.getRow(i).createCell(2)
-            cellC15.setCellValue(item.userCar?.data?.department?:"부서")
+            cellC15.setCellValue(item.userCar?.data?.department?:"")
             cellC15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
             /**
              * 성명
              */
             val cellE15 = sheet1.getRow(i).createCell(4)
-            cellE15.setCellValue(item.userCar?.data?.name?:"이름")
+            cellE15.setCellValue(item.userCar?.data?.name?:"")
             cellE15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
             /**

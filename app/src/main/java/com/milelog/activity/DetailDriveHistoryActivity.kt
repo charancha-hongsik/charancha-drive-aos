@@ -543,6 +543,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                         tv_type.text = CorpType.valueOf(it).description
                     }
 
+                    Log.d("testsetestest","testestestest :: " + state.data.type)
+
                     getDrivingInfoResponse.images?.let{
                         if(it.size > 0){
                             for(image in it){
