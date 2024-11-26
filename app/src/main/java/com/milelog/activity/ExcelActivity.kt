@@ -596,12 +596,12 @@ class ExcelActivity:BaseRefreshActivity() {
 
         mergeCells(sheet1, 8, 4, 8, 7) // E8:H8
         val cellE8 = sheet1.getRow(8).createCell(4)
-        cellE8.setCellValue(carNumber)
+        cellE8.setCellValue("②자동차등록번호")
         cellE8.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
         mergeCells(sheet1, 9, 4, 9, 7) // E8:H8
         val cellE9 = sheet1.getRow(9).createCell(4)
-        cellE9.setCellValue("12가1234")
+        cellE9.setCellValue(carNumber)
         cellE9.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 // 2. 업무용 사용비율 계산 병합 및 스타일링
