@@ -206,8 +206,8 @@ class ExcelActivity:BaseRefreshActivity() {
 
         for(history in getDriveHistroyResponse.items){
             drivingData.add(mapOf(
-                "주행 시작 일시" to formatToLocalTime(history.startTime),
-                "주행 종료 일시" to formatToLocalTime(history.endTime),
+                "주행 시작 일시" to formatToLocalTimeForExcel(history.startTime),
+                "주행 종료 일시" to formatToLocalTimeForExcel(history.endTime),
                 "주행 시간" to history.totalTime.toString(),
                 "주행 거리 (km)" to history.totalDistance.toString(),
                 "데이터 인증" to history.verification,
@@ -736,7 +736,7 @@ class ExcelActivity:BaseRefreshActivity() {
              * 사용일자
              */
             val cellB15 = sheet1.getRow(i).createCell(1)
-            cellB15.setCellValue(convertDateFormat(item.startTime))
+            cellB15.setCellValue(convertDateFormatForExcel(item.startTime))
             cellB15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
             /**
@@ -1079,18 +1079,23 @@ class ExcelActivity:BaseRefreshActivity() {
         }
     }
 
-    fun formatToLocalTime(isoDate: String): String {
-        // ISO 8601 형식의 날짜 문자열을 Date 객체로 변환
-        val isoFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-        isoFormat.timeZone = TimeZone.getTimeZone("UTC") // 입력 날짜가 UTC 기준임을 명시
+    fun formatToLocalTimeForExcel(isoDate: String): String {
+        try {
+            // ISO 8601 형식의 날짜 문자열을 Date 객체로 변환
+            val isoFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+            isoFormat.timeZone = TimeZone.getTimeZone("UTC") // 입력 날짜가 UTC 기준임을 명시
 
-        val date = isoFormat.parse(isoDate) ?: return "" // 날짜 파싱
+            val date = isoFormat.parse(isoDate) ?: return "" // 날짜 파싱
 
-        // 로컬 시간대 기준으로 포맷 변경
-        val localFormat = SimpleDateFormat("yyyy.MM.dd(E) HH:mm:ss", Locale.getDefault())
-        localFormat.timeZone = TimeZone.getDefault() // 현재 로컬 시간대
+            // 로컬 시간대 기준으로 포맷 변경
+            val localFormat = SimpleDateFormat("yyyy.MM.dd(E) HH:mm:ss", Locale.KOREAN)
+            localFormat.timeZone = TimeZone.getDefault() // 현재 로컬 시간대
 
-        return localFormat.format(date) // 변환된 날짜 반환
+            return localFormat.format(date) // 변환된 날짜 반환
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return "" // 예외 발생 시 빈 문자열 반환
+        }
     }
 
 

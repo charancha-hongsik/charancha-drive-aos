@@ -365,6 +365,27 @@ open class BaseActivity: AppCompatActivity(){
         }
     }
 
+    // 1번 형식의 데이터를 2번 형식의 데이터로 변환하는 함수
+    fun convertDateFormatForExcel(dateString: String): String {
+        try {
+            // 입력된 문자열을 OffsetDateTime 객체로 파싱
+            val offsetDateTime = OffsetDateTime.parse(dateString)
+
+            // OffsetDateTime 객체를 로컬 시간대로 변환 (한국 시간대로 설정)
+            val koreaZoneId = ZoneId.of("Asia/Seoul")
+            val localDateTime = offsetDateTime.atZoneSameInstant(koreaZoneId).toLocalDateTime()
+
+            // 요일을 포함한 날짜 형식으로 변환
+            val formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd(E)", Locale.KOREAN)
+            return localDateTime.format(formatter)
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            // 예외 처리: 날짜 형식이 올바르지 않은 경우 빈 문자열 반환 또는 예외 처리 로직 추가
+            return ""
+        }
+    }
+
     fun formatDateRange(startDate: String, endDate: String): String {
         try {
             // 시작 날짜와 종료 날짜를 OffsetDateTime 객체로 파싱
