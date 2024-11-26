@@ -14,6 +14,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -29,6 +30,7 @@ import com.milelog.viewmodel.BaseViewModel
 class AlarmActivity: BaseRefreshActivity() {
     lateinit var rv_alarm: RecyclerView
     lateinit var btn_back: ImageView
+    lateinit var layout_no_data: ConstraintLayout
 
     private val alarmViewModel: AlarmViewModel by viewModels()
     var notifications: MutableList<AlarmEntity> = mutableListOf()
@@ -46,6 +48,14 @@ class AlarmActivity: BaseRefreshActivity() {
         alarmViewModel.getAlarms(0)
         alarmViewModel.setAllAlarm.observe(this@AlarmActivity, BaseViewModel.EventObserver {
             it?.let{
+
+                if(notifications.size > 0){
+                    layout_no_data.visibility = GONE
+                    rv_alarm.visibility = VISIBLE
+                }else{
+                    layout_no_data.visibility = VISIBLE
+                    rv_alarm.visibility = GONE
+                }
 
                 if(notifications.size != 0)
                     notifications.removeLast()
@@ -86,6 +96,7 @@ class AlarmActivity: BaseRefreshActivity() {
 
         rv_alarm = findViewById(R.id.rv_alarm)
         btn_back = findViewById(R.id.btn_back)
+        layout_no_data = findViewById(R.id.layout_no_data)
 
         rv_alarm.layoutManager = LinearLayoutManager(this@AlarmActivity)
         val dividerItemDecoration = DividerItemDecoration(this@AlarmActivity, R.color.gray_50, dpToPx(12f)) // 색상 리소스와 구분선 높이 설정
