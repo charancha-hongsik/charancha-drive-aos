@@ -398,31 +398,31 @@ class ExcelActivity:BaseRefreshActivity() {
         workbook = XSSFWorkbook()
         val sheet = workbook.createSheet("국세청 양식")
 
-        // 열 너비 설정 (default: 53 -> width is set in units of 1/256 of a character width)
-        sheet.setColumnWidth(0, (17 * 256) / 6) // A
-        sheet.setColumnWidth(1, (86 * 256) / 6) // B
-        sheet.setColumnWidth(2, (32 * 256) / 6) // C
-        sheet.setColumnWidth(3, (29 * 256) / 6) // D
-        sheet.setColumnWidth(4, (36 * 256) / 6) // E
-        sheet.setColumnWidth(5, (26 * 256) / 6) // F
-        sheet.setColumnWidth(6, (34 * 256) / 6) // G
-        sheet.setColumnWidth(7, (37 * 256) / 6) // H
-        sheet.setColumnWidth(8, (31 * 256) / 6) // I
-        sheet.setColumnWidth(9, (37 * 256) / 6) // J
-        sheet.setColumnWidth(10, (62 * 256) / 6) // K
-        sheet.setColumnWidth(11, (44 * 256) / 6) // L
-        sheet.setColumnWidth(12, (44 * 256) / 6) // M
-        sheet.setColumnWidth(13, (16 * 256) / 6) // N
-        sheet.setColumnWidth(14, (72 * 256) / 6) // O
-        sheet.setColumnWidth(15, (18 * 256) / 6) // P
-        sheet.setColumnWidth(16, (75 * 256) / 6) // Q
+// 열 너비 설정
+        sheet.setColumnWidth(0, (17 * 256) / 6)
+        sheet.setColumnWidth(1, (86 * 256) / 6)
+        sheet.setColumnWidth(2, (32 * 256) / 6)
+        sheet.setColumnWidth(3, (29 * 256) / 6)
+        sheet.setColumnWidth(4, (36 * 256) / 6)
+        sheet.setColumnWidth(5, (26 * 256) / 6)
+        sheet.setColumnWidth(6, (34 * 256) / 6)
+        sheet.setColumnWidth(7, (37 * 256) / 6)
+        sheet.setColumnWidth(8, (31 * 256) / 6)
+        sheet.setColumnWidth(9, (37 * 256) / 6)
+        sheet.setColumnWidth(10, (62 * 256) / 6)
+        sheet.setColumnWidth(11, (44 * 256) / 6)
+        sheet.setColumnWidth(12, (44 * 256) / 6)
+        sheet.setColumnWidth(13, (16 * 256) / 6)
+        sheet.setColumnWidth(14, (72 * 256) / 6)
+        sheet.setColumnWidth(15, (18 * 256) / 6)
+        sheet.setColumnWidth(16, (75 * 256) / 6)
 
-        // 행 높이 설정 (default: 15 -> height is measured in points)
+// 행 높이 설정
         sheet.createRow(0).heightInPoints = 24f // Row 1
         sheet.createRow(1).heightInPoints = 18f // Row 2
-        sheet.createRow(2).heightInPoints = 8f // Row 3
-        sheet.createRow(3).heightInPoints = 8f // Row 4
-        sheet.createRow(5).heightInPoints = 8f // Row 6
+        sheet.createRow(2).heightInPoints = 8f  // Row 3
+        sheet.createRow(3).heightInPoints = 8f  // Row 4
+        sheet.createRow(5).heightInPoints = 8f  // Row 6
         sheet.createRow(6).heightInPoints = 25f // Row 7
         sheet.createRow(7).heightInPoints = 24f // Row 8
         sheet.createRow(8).heightInPoints = 23f // Row 9
@@ -434,12 +434,12 @@ class ExcelActivity:BaseRefreshActivity() {
 
         for (i in 14..76) {
             sheet.createRow(i).heightInPoints = 20f
-            mergeCells(sheet, i, 2, i, 3) // Merge C to D
-            mergeCells(sheet, i, 4, i, 5) // Merge E to F
-            mergeCells(sheet, i, 6, i, 7) // Merge G to H
-            mergeCells(sheet, i, 8, i, 9) // Merge I to J
-            mergeCells(sheet, i, 11, i, 13) // Merge L to N
-            mergeCells(sheet, i, 14, i, 15) // Merge O to P
+            mergeCells(sheet, i, 2, i, 3)  // C to D
+            mergeCells(sheet, i, 4, i, 5)  // E to F
+            mergeCells(sheet, i, 6, i, 7)  // G to H
+            mergeCells(sheet, i, 8, i, 9)  // I to J
+            mergeCells(sheet, i, 11, i, 13) // L to N
+            mergeCells(sheet, i, 14, i, 15) // O to P
         }
 
         sheet.createRow(77).heightInPoints = 30f // Row 78
@@ -536,31 +536,34 @@ class ExcelActivity:BaseRefreshActivity() {
         cellC12.setCellValue("④사용자")
         cellC12.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
-        mergeCells(sheet, 13, 2, 14, 3) // C13:D14
-        val cellC13 = sheet.getRow(13).createCell(2)
+// 1. 부서 & 성명 - 셀 병합 수정 (2칸, 1행)
+        mergeCells(sheet, 13, 2, 13, 3) // C13:D13 (부서)
+        val cellC13 = sheet.getRow(13).getCell(2) ?: sheet.getRow(13).createCell(2)
         cellC13.setCellValue("부서")
         cellC13.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
-        mergeCells(sheet, 13, 4, 14, 5) // E13:F14
-        val cellE13 = sheet.getRow(13).createCell(4)
+        mergeCells(sheet, 13, 4, 13, 5) // E13:F13 (성명)
+        val cellE13 = sheet.getRow(13).getCell(4) ?: sheet.getRow(13).createCell(4)
         cellE13.setCellValue("성명")
         cellE13.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
+// 2. ⑤주행 전 계기판의 거리(㎞) - 셀 병합 수정 (2칸, 1행)
+        mergeCells(sheet, 13, 6, 13, 7) // G13:H13 (⑤주행 전 계기판의 거리(㎞))
+        val cellG13 = sheet.getRow(13).getCell(6) ?: sheet.getRow(13).createCell(6)
+        cellG13.setCellValue("⑤주행 전 계기판의 거리(㎞)")
+        cellG13.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+
+// 3. ⑥주행 후 계기판의 거리(㎞) - 셀 병합 수정 (2칸, 1행)
+        mergeCells(sheet, 13, 8, 13, 9) // I13:J13 (⑥주행 후 계기판의 거리(㎞))
+        val cellI13 = sheet.getRow(13).getCell(8) ?: sheet.getRow(13).createCell(8)
+        cellI13.setCellValue("⑥주행 후 계기판의 거리(㎞)")
+        cellI13.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 // 3. 운행 내역 관련 병합 및 스타일링
         mergeCells(sheet, 12, 6, 12, 16) // G12:Q12
         val cellG12 = sheet.getRow(12).createCell(6)
         cellG12.setCellValue("운 행     내 역")
         cellG12.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
-        mergeCells(sheet, 13, 6, 14, 7) // G13:H14
-        val cellG13 = sheet.getRow(13).createCell(6)
-        cellG13.setCellValue("⑤주행 전 계기판의 거리(㎞)")
-        cellG13.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
-
-        mergeCells(sheet, 13, 8, 14, 9) // I13:J14
-        val cellI13 = sheet.getRow(13).createCell(8)
-        cellI13.setCellValue("⑥주행 후 계기판의 거리(㎞)")
-        cellI13.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
         mergeCells(sheet, 13, 10, 14, 10) // K13:K14
         val cellK13 = sheet.getRow(13).createCell(10)
@@ -656,6 +659,41 @@ class ExcelActivity:BaseRefreshActivity() {
             Toast.makeText(this, "파일 처리에 실패했습니다.", Toast.LENGTH_SHORT).show()
         }
     }
+
+    fun isMerged(sheet: Sheet, row: Int, col: Int): Boolean {
+        val mergedRegions = sheet.mergedRegions
+        for (region in mergedRegions) {
+            if (region.isInRange(row, col)) {
+                return true
+            }
+        }
+        return false
+    }
+
+    // 병합 처리
+    fun mergeCells(sheet: Sheet, startRow: Int, startCol: Int, endRow: Int, endCol: Int) {
+        if (!isMerged(sheet, startRow, startCol) && !isMerged(sheet, endRow, endCol)) {
+            sheet.addMergedRegion(CellRangeAddress(startRow, endRow, startCol, endCol))
+        }
+    }
+
+    fun createCellStyle(
+        workbook: Workbook,
+        fontSize: Int,
+        bold: Boolean = false,
+        verticalAlignment: VerticalAlignment = VerticalAlignment.BOTTOM,
+        horizontalAlignment: HorizontalAlignment = HorizontalAlignment.LEFT
+    ): CellStyle {
+        val style = workbook.createCellStyle()
+        val font = workbook.createFont()
+        font.fontHeightInPoints = fontSize.toShort()
+        font.bold = bold
+        style.setFont(font)
+        style.verticalAlignment = verticalAlignment
+        style.alignment = horizontalAlignment
+        return style
+    }
+
 
     fun createDrivingDataWithHeaders(drivingData: List<Map<String, String>>) {
         workbook = XSSFWorkbook()
@@ -784,41 +822,6 @@ class ExcelActivity:BaseRefreshActivity() {
             Toast.makeText(this, "파일 처리에 실패했습니다.", Toast.LENGTH_SHORT).show()
         }
     }
-
-    fun isMerged(sheet: Sheet, row: Int, col: Int): Boolean {
-        val mergedRegions = sheet.mergedRegions
-        for (region in mergedRegions) {
-            if (region.isInRange(row, col)) {
-                return true
-            }
-        }
-        return false
-    }
-
-    // 병합 처리
-    fun mergeCells(sheet: Sheet, startRow: Int, startCol: Int, endRow: Int, endCol: Int) {
-        if (!isMerged(sheet, startRow, startCol) && !isMerged(sheet, endRow, endCol)) {
-            sheet.addMergedRegion(CellRangeAddress(startRow, endRow, startCol, endCol))
-        }
-    }
-
-    fun createCellStyle(
-        workbook: Workbook,
-        fontSize: Int,
-        bold: Boolean = false,
-        verticalAlignment: VerticalAlignment = VerticalAlignment.BOTTOM,
-        horizontalAlignment: HorizontalAlignment = HorizontalAlignment.LEFT
-    ): CellStyle {
-        val style = workbook.createCellStyle()
-        val font = workbook.createFont()
-        font.fontHeightInPoints = fontSize.toShort()
-        font.bold = bold
-        style.setFont(font)
-        style.verticalAlignment = verticalAlignment
-        style.alignment = horizontalAlignment
-        return style
-    }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
