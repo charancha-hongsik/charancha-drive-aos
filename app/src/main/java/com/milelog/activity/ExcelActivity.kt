@@ -653,24 +653,24 @@ class ExcelActivity:BaseRefreshActivity() {
 
 // 1. 부서 & 성명 - 셀 병합 수정 (2칸, 1행)
         mergeCells(sheet1, 14, 2, 14, 3) // C13:D13 (부서)
-        val cellC13 = sheet1.getRow(14).createCell(3)
+        val cellC13 = sheet1.getRow(14).createCell(2)
         cellC13.setCellValue("부서")
         cellC13.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
         mergeCells(sheet1, 14, 4, 14, 5) // E13:F13 (성명)
-        val cellE13 = sheet1.getRow(14).createCell(5)
+        val cellE13 = sheet1.getRow(14).createCell(4)
         cellE13.setCellValue("성명")
         cellE13.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 // 2. ⑤주행 전 계기판의 거리(㎞) - 셀 병합 수정 (2칸, 1행)
         mergeCells(sheet1, 14, 6, 14, 7) // G13:H13 (⑤주행 전 계기판의 거리(㎞))
-        val cellG13 = sheet1.getRow(14).createCell(7)
+        val cellG13 = sheet1.getRow(14).createCell(6)
         cellG13.setCellValue("⑤주행 전 계기판의 거리(㎞)")
         cellG13.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 // 3. ⑥주행 후 계기판의 거리(㎞) - 셀 병합 수정 (2칸, 1행)
         mergeCells(sheet1, 14, 8, 14, 9) // I13:J13 (⑥주행 후 계기판의 거리(㎞))
-        val cellI13 = sheet1.getRow(14).createCell(9)
+        val cellI13 = sheet1.getRow(14).createCell(8)
         cellI13.setCellValue("⑥주행 후 계기판의 거리(㎞)")
         cellI13.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
@@ -780,10 +780,6 @@ class ExcelActivity:BaseRefreshActivity() {
             cellO15.setCellValue("")
             cellO15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
-
-            Log.d("tetestsetesest","testsetesestset totalDistance :: " + item.totalDistance)
-            Log.d("tetestsetesest","testsetesestset userCar?.type :: " + item.userCar?.type)
-            Log.d("tetestsetesest","testsetesestset type :: " + item.type)
 
             /**
              * ⑩비 고
