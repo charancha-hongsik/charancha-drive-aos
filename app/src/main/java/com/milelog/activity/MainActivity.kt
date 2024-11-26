@@ -46,6 +46,9 @@ import com.milelog.viewmodel.state.NotSavedDataState
  * 파이어베이스 설정
  * 퍼미션
  * 딥링크
+ * 주행데이터 전송
+ * MyCarInfo 업데이트
+ * HAVE_BEEN_HOME 처리
  */
 class MainActivity:BaseActivity() {
     private val mainViewModel: MainViewModel by viewModels()
@@ -139,6 +142,7 @@ class MainActivity:BaseActivity() {
     }
 
     private fun init(){
+        mainViewModel.init(applicationContext)
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
     }
 
