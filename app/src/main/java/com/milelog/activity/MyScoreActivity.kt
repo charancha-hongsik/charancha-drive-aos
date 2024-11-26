@@ -100,6 +100,7 @@ class MyScoreActivity : BaseRefreshActivity() {
     lateinit var btn_close_gift:ImageView
     lateinit var btn_noti:ImageView
     lateinit var tv_subtitle2:TextView
+    lateinit var tv_recent_date:TextView
 
     lateinit var tv_guide_subtitle:TextView
 
@@ -460,7 +461,8 @@ class MyScoreActivity : BaseRefreshActivity() {
 
                     if (getManageScoreResponse.isRecent) {
                         if (getManageScoreResponse.total.totalEngineScore != 0.0) {
-                            tv_recent_score.text =
+                            tv_recent_date.visibility = VISIBLE
+                            tv_recent_date.text = getManageScoreResponse.recentCriteriaAt.split("T").first()
                                 transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
                             tv_recent_score2.text =
                                 transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
@@ -485,6 +487,7 @@ class MyScoreActivity : BaseRefreshActivity() {
                             }
 
                         } else {
+                            tv_recent_date.visibility = GONE
                             tv_recent_score2.text = "0"
                             tv_engine_score.text = "0"
 
@@ -492,6 +495,7 @@ class MyScoreActivity : BaseRefreshActivity() {
                             iv_recent_info.setImageDrawable(resources.getDrawable(R.drawable.resource_face_soso))
                         }
                     } else {
+                        tv_recent_date.visibility = GONE
                         tv_recent_score2.text = "0"
                         tv_engine_score.text = "0"
 
@@ -637,7 +641,7 @@ class MyScoreActivity : BaseRefreshActivity() {
             }
 
         })
-
+        tv_recent_date = findViewById(R.id.tv_recent_date)
         tv_subtitle2 = findViewById(R.id.tv_subtitle2)
         tv_subtitle2.setOnClickListener {
         }
