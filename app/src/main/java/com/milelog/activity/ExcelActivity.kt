@@ -511,8 +511,8 @@ class ExcelActivity:BaseRefreshActivity() {
         mergeCells(sheet1, 14, 14, 14, 15) // O to P
 
 
-        sheet1.createRow(drivingData.size + 14).heightInPoints = 30f // Row 78
-        sheet1.createRow(drivingData.size + 15).heightInPoints = 29f // Row 79
+        sheet1.createRow(driveItems.size + 15).heightInPoints = 30f // Row 78
+        sheet1.createRow(driveItems.size + 16).heightInPoints = 29f // Row 79
 
 
         mergeCells(sheet1, 0, 1, 0, 16) // Merge B1 to Q1
@@ -607,45 +607,45 @@ class ExcelActivity:BaseRefreshActivity() {
         cellC12.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
         // B78:B79 병합 및 스타일 설정
-        mergeCells(sheet1, drivingData.size + 14, 1, drivingData.size + 15, 1) // B78:B79
-        val cellB78 = sheet1.getRow(drivingData.size + 14).createCell(1)
+        mergeCells(sheet1, driveItems.size + 15, 1, driveItems.size + 16, 1) // B78:B79
+        val cellB78 = sheet1.getRow(driveItems.size + 15).createCell(1)
         cellB78.cellStyle = createCellStyle(workbook, 10)
 
 // C78:F79 병합 및 스타일 설정
-        mergeCells(sheet1, drivingData.size + 14, 2, drivingData.size + 15, 5) // C78:F79
-        val cellC78 = sheet1.getRow(drivingData.size + 14).createCell(2)
+        mergeCells(sheet1, driveItems.size + 15, 2, driveItems.size + 16, 5) // C78:F79
+        val cellC78 = sheet1.getRow(driveItems.size + 15).createCell(2)
         cellC78.cellStyle = createCellStyle(workbook, 10)
 
 // G78:K78 병합 및 스타일 설정
-        mergeCells(sheet1, drivingData.size + 14, 6, drivingData.size + 14, 10) // G78:K78
-        val cellG78 = sheet1.getRow(drivingData.size + 14).createCell(6)
+        mergeCells(sheet1, driveItems.size + 15, 6, driveItems.size + 15, 10) // G78:K78
+        val cellG78 = sheet1.getRow(driveItems.size + 15).createCell(6)
         cellG78.setCellValue("⑪과세기간 총주행 거리(㎞)")
         cellG78.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
-        mergeCells(sheet1, drivingData.size + 15, 6, drivingData.size + 15, 10) // G78:K78
-        val cellG79 = sheet1.getRow(drivingData.size + 15).createCell(6)
+        mergeCells(sheet1, driveItems.size + 16, 6, driveItems.size + 16, 10) // G78:K78
+        val cellG79 = sheet1.getRow(driveItems.size + 16).createCell(6)
         cellG79.setCellValue("과세기간 총주행 거리 테스트")
         cellG79.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 // L78:P78 병합 및 스타일 설정
-        mergeCells(sheet1, drivingData.size + 14, 11, drivingData.size + 14, 15) // L78:P78
-        val cellL78 = sheet1.getRow(drivingData.size + 14).createCell(11)
+        mergeCells(sheet1, driveItems.size + 15, 11, driveItems.size + 15, 15) // L78:P78
+        val cellL78 = sheet1.getRow(driveItems.size + 15).createCell(11)
         cellL78.setCellValue("⑫과세기간 업무용 사용거리(㎞)")
         cellL78.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 
-        mergeCells(sheet1, drivingData.size + 15, 11, drivingData.size + 15, 15) // L78:P78
-        val cellL79 = sheet1.getRow(drivingData.size + 15).createCell(11)
+        mergeCells(sheet1, driveItems.size + 16, 11, driveItems.size + 16, 15) // L78:P78
+        val cellL79 = sheet1.getRow(driveItems.size + 16).createCell(11)
         cellL79.setCellValue("과세기간 업무용 사용거리 테스트")
         cellL79.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 // Q78 스타일 설정
-        val cellQ78 = sheet1.getRow(drivingData.size + 14).createCell(16)
+        val cellQ78 = sheet1.getRow(driveItems.size + 15).createCell(16)
         cellQ78.setCellValue("⑬업무사용비율(⑫/⑪)")
         cellQ78.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 // G79:K79 병합
-        val cellQ79 = sheet1.getRow(drivingData.size + 15).createCell(16)
+        val cellQ79 = sheet1.getRow(driveItems.size + 16).createCell(16)
         cellQ79.setCellValue("업무사용비율 테스트테스트")
         cellQ79.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
