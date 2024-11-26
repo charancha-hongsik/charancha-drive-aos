@@ -578,14 +578,25 @@ class ExcelActivity:BaseRefreshActivity() {
         cellB8.setCellValue("①차 종")
         cellB8.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
+
+        var carName = ""
+        if(driveItems.size > 0){
+            carName = driveItems.get(0).userCar?.carName?:""
+        }
+
         mergeCells(sheet1, 9, 1, 9, 3) // B8:D8
         val cellB9 = sheet1.getRow(9).createCell(1)
-        cellB9.setCellValue("소나타")
+        cellB9.setCellValue(carName)
         cellB9.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+
+        var carNumber = ""
+        if(driveItems.size > 0){
+            carNumber = driveItems.get(0).userCar?.licensePlateNumber?:""
+        }
 
         mergeCells(sheet1, 8, 4, 8, 7) // E8:H8
         val cellE8 = sheet1.getRow(8).createCell(4)
-        cellE8.setCellValue("②자동차등록번호")
+        cellE8.setCellValue(carNumber)
         cellE8.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
         mergeCells(sheet1, 9, 4, 9, 7) // E8:H8
