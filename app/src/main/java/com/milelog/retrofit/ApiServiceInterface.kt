@@ -36,7 +36,7 @@ interface ApiServiceInterface {
                             @Query("userCarId") userCarId: String?): Call<ResponseBody>
 
     // 내 주행 목록 상세 조회
-    @GET("api/v1/cars/-/user-cars/-/drivings/-/detail")
+    @GET("api/v1/me/cars/-/user-cars/-/drivings/-/detail")
     fun getDrivingDetailHistories(@Header("Authorization") token: String,
                             @Query("size") size: Int,
                             @Query("order") order: String,

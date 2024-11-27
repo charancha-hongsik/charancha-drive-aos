@@ -250,7 +250,7 @@ class MyScoreActivity : BaseRefreshActivity() {
                 }
                 is CarInfoInquiryByCarIdState.Success -> {
                     val getMyCarInfoResponse = state.data
-                    PreferenceUtil.putPref(this@MyScoreActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.id)
+                    userCarId
                     tv_car_name.setText(getMyCarInfoResponse.carName)
                     tv_car_no.setText(getMyCarInfoResponse.licensePlateNumber)
 

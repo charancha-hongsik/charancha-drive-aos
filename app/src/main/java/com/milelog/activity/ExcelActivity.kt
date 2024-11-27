@@ -243,10 +243,11 @@ class ExcelActivity:BaseRefreshActivity() {
     }
 
     fun setClickListener(){
+
         btn_save_excel.setOnClickListener {
             apiService().getDrivingDetailHistories(
                 token = "Bearer " + PreferenceUtil.getPref(this,  PreferenceUtil.ACCESS_TOKEN, "")!!,
-                size = 30,
+                size = 100,
                 order = "DESC",
                 afterCursor =  null,
                 beforeCursor = null,
@@ -638,7 +639,7 @@ class ExcelActivity:BaseRefreshActivity() {
 
         mergeCells(sheet1, lastNo2, 6, lastNo2, 10) // G78:K78
         val cellG79 = sheet1.getRow(lastNo2).createCell(6)
-        cellG79.setCellValue((driveItems.sumOf { it.totalDistance }/1000).toString() + "km")
+        cellG79.setCellValue(((driveItems.sumOf { it.totalDistance }/1000).toInt()).toString() + "km")
         cellG79.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 // L78:P78 병합 및 스타일 설정
@@ -650,7 +651,7 @@ class ExcelActivity:BaseRefreshActivity() {
 
         mergeCells(sheet1, lastNo2, 11, lastNo2, 15) // L78:P78
         val cellL79 = sheet1.getRow(lastNo2).createCell(11)
-        cellL79.setCellValue((driveItems.sumOf { it.totalDistance }/1000).toString() + "km")
+        cellL79.setCellValue((driveItems.sumOf { it.totalDistance }/1000).toInt().toString() + "km")
         cellL79.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 // Q78 스타일 설정
@@ -658,9 +659,16 @@ class ExcelActivity:BaseRefreshActivity() {
         cellQ78.setCellValue("⑬업무사용비율(⑫/⑪)")
         cellQ78.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
+        // type이 null이 아닌 아이템 개수
+        val nonNullTypeCount = driveItems.count { it.type != null }
+
+        // 비율 계산
+        val ratio = if (driveItems.size > 0) nonNullTypeCount.toDouble() / driveItems.size else 0.0
+
+
 // G79:K79 병합
         val cellQ79 = sheet1.getRow(lastNo2).createCell(16)
-        cellQ79.setCellValue("")
+        cellQ79.setCellValue(ratio.toString())
         cellQ79.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 
@@ -775,7 +783,7 @@ class ExcelActivity:BaseRefreshActivity() {
              * ⑦주행거리(㎞)
              */
             val cellK15 = sheet1.getRow(i).createCell(10)
-            cellK15.setCellValue((item.totalDistance/1000).toString() + "km")
+            cellK15.setCellValue(((item.totalDistance/1000).toInt()).toString() + "km")
             cellK15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 
@@ -783,26 +791,24 @@ class ExcelActivity:BaseRefreshActivity() {
              * ⑧출․퇴근용(㎞)
              */
             var distanceForCommute = 0.0
+            var distanceForWork = 0.0
+
             item.type?.let{
                 if(it.equals(DetailDriveHistoryActivity.CorpType.COMMUTE.name)){
                     distanceForCommute = item.totalDistance
                 }
+
+                if(it.equals(DetailDriveHistoryActivity.CorpType.WORK.name)){
+                    distanceForWork = item.totalDistance
+                }
+
+
             }
 
             val cellL15 = sheet1.getRow(i).createCell(11)
             cellL15.setCellValue(distanceForCommute.toString())
             cellL15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
-
-            var distanceForWork = 0.0
-            item.type?.let{
-                if(it.equals(DetailDriveHistoryActivity.CorpType.WORK.name)){
-                    distanceForWork = item.totalDistance
-                }
-            }
-
-            Log.d("testsetestest","testsetsetset ::  distanceForCommute" + distanceForCommute)
-            Log.d("testsetestest","testsetsetset ::  distanceForWork" + distanceForWork)
 
             /**
              * ⑨일반 업무용(㎞)
