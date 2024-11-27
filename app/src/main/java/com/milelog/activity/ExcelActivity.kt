@@ -668,7 +668,7 @@ class ExcelActivity:BaseRefreshActivity() {
 
 // G79:K79 병합
         val cellQ79 = sheet1.getRow(lastNo2).createCell(16)
-        cellQ79.setCellValue(ratio.toString())
+        cellQ79.setCellValue(ratio.toInt().toString())
         cellQ79.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 
