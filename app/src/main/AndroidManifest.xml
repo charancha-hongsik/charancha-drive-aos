@@ -317,6 +317,13 @@
             android:exported="true"
             android:launchMode="singleTop"/>
 
+        <activity
+            android:name=".activity.MainActivity"
+            android:screenOrientation="portrait"
+            android:exported="true"
+            android:launchMode="singleTop"/>
+
+
 
 
         <activity

@@ -102,7 +102,7 @@ class SplashActivity: BaseActivity() {
                     Log.d("testestestsetest","testestestset getMyCarInfo:: ")
 
                     if(state.data > 0){
-                        startActivity(Intent(this@SplashActivity, MyScoreActivity::class.java).addFlags(
+                        startActivity(Intent(this@SplashActivity, MainActivity::class.java).addFlags(
                             Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                         ).putExtra("deeplink",intent.getBooleanExtra("deeplink",false)))
 

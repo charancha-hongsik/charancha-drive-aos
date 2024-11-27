@@ -339,7 +339,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                                     PreferenceUtil.putPref(this@LoadCarMoreInfoActivity, PreferenceUtil.USER_CARID, getMyCarInfoItem.id)
                                     PreferenceUtil.putPref(this@LoadCarMoreInfoActivity,  PreferenceUtil.KM_MILE, "km")
                                     startActivity(
-                                        Intent(this@LoadCarMoreInfoActivity, MyScoreActivity::class.java).addFlags(
+                                        Intent(this@LoadCarMoreInfoActivity, MainActivity::class.java).addFlags(
                                             FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK
                                         ))
                                     finish()
@@ -439,7 +439,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                             PreferenceUtil.putPref(this@LoadCarMoreInfoActivity, PreferenceUtil.USER_CARID, getMyCarInfoItem.id)
                             PreferenceUtil.putPref(this@LoadCarMoreInfoActivity,  PreferenceUtil.KM_MILE, "km")
                             startActivity(
-                                Intent(this@LoadCarMoreInfoActivity, MyScoreActivity::class.java).addFlags(
+                                Intent(this@LoadCarMoreInfoActivity, MainActivity::class.java).addFlags(
                                     FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK
                                 ))
                             finish()

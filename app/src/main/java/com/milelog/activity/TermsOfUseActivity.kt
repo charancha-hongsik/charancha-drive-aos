@@ -249,7 +249,7 @@ class TermsOfUseActivity: BaseActivity() {
 
 
                                             if(jsonString!!.toInt() > 0){
-                                                startActivity(Intent(this@TermsOfUseActivity, MyScoreActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+                                                startActivity(Intent(this@TermsOfUseActivity, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
 
                                                 finish()
                                             }else{

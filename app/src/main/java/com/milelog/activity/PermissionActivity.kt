@@ -270,7 +270,7 @@ class PermissionActivity: BaseActivity(){
                     if(jsonString!!.toInt() > 0){
                         PreferenceUtil.putBooleanPref(this@PermissionActivity, PreferenceUtil.PERMISSION_ALL_CHECKED, true)
 
-                        startActivity(Intent(this@PermissionActivity, MyScoreActivity::class.java).addFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK))
+                        startActivity(Intent(this@PermissionActivity, MainActivity::class.java).addFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK))
                         finish()
                     }else{
                         PreferenceUtil.putBooleanPref(this@PermissionActivity, PreferenceUtil.PERMISSION_ALL_CHECKED, true)

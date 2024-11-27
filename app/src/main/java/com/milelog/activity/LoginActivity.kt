@@ -383,7 +383,7 @@ class LoginActivity: BaseActivity() {
 
                                                 if(getMyCarInfoResponse.items.size > 0){
                                                     PreferenceUtil.putPref(this@LoginActivity, PreferenceUtil.USER_CARID, getMyCarInfoResponse.items.get(0).id)
-                                                    startActivity(Intent(this@LoginActivity, MyScoreActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+                                                    startActivity(Intent(this@LoginActivity, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
 
                                                     finish()
                                                 }else{

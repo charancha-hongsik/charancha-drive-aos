@@ -13,11 +13,13 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
 import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+import android.util.Log
 import android.view.View.VISIBLE
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -147,7 +149,7 @@ class MainActivity:BaseActivity() {
     }
 
     fun setWebview(){
-        wv_main = findViewById(R.id.wv_login)
+        wv_main = findViewById(R.id.wv_main)
         wv_main.visibility = VISIBLE
         wv_main.settings.loadWithOverviewMode = true // 화면에 맞게 WebView 사이즈를 정의
         wv_main.settings.useWideViewPort = true //html 컨텐츠가 웹뷰에 맞게 나타나도록 합니다.
@@ -185,6 +187,14 @@ class MainActivity:BaseActivity() {
                 request: WebResourceRequest?
             ): Boolean {
                 return super.shouldOverrideUrlLoading(view, request)
+            }
+
+            override fun shouldInterceptRequest(
+                view: WebView?,
+                request: WebResourceRequest?
+            ): WebResourceResponse? {
+                Log.d("", "request.getRequestHeaders()::"+request?.getRequestHeaders());
+                return super.shouldInterceptRequest(view, request)
             }
         }
 
@@ -403,48 +413,73 @@ class MainActivity:BaseActivity() {
         @JavascriptInterface
         fun openMyPage(){
             activity.startActivity(Intent(activity, MyPageActivity::class.java))
+            Log.d("testsetestestset","testestestestset ::openMyPage ")
         }
 
         @JavascriptInterface
         fun openNotification(){
             activity.startActivity(Intent(activity, AlarmActivity::class.java))
+            Log.d("testsetestestset","testestestestset ::openNotification ")
+
         }
 
         @JavascriptInterface
         fun openMyGarage(){
             activity.startActivity(Intent(activity, MyGarageActivity::class.java))
+            Log.d("testsetestestset","testestestestset ::openMyGarage ")
+
         }
 
         @JavascriptInterface
         fun openDrivingDetail(trackingId:String){
             activity.startActivity(Intent(activity, DetailDriveHistoryActivity::class.java).putExtra("trackingId", trackingId))
+            Log.d("testsetestestset","testestestestset ::openDrivingDetail ")
 
         }
 
         @JavascriptInterface
         fun openDrivings(){
             activity.startActivity(Intent(activity, MyDriveHistoryActivity::class.java))
+            Log.d("testsetestestset","testestestestset ::openDrivings ")
+
         }
 
         @JavascriptInterface
         fun openDrivingDistanceStats(userCarId: String){
             activity.startActivity(Intent(activity, DrivenDistanceActivity::class.java).putExtra("userCarId", userCarId))
+            Log.d("testsetestestset","testestestestset ::openDrivingDistanceStats ")
+
         }
 
         @JavascriptInterface
         fun openAverageDrivingDistanceStats(userCarId: String){
             activity.startActivity(Intent(activity, AverageDrivenDistanceActivity::class.java).putExtra("userCarId", userCarId))
+            Log.d("testsetestestset","testestestestset ::openAverageDrivingDistanceStats ")
+
         }
 
         @JavascriptInterface
         fun openDrivingTimeStats(userCarId: String){
             activity.startActivity(Intent(activity, DrivenTimeActivity::class.java).putExtra("userCarId", userCarId))
+            Log.d("testsetestestset","testestestestset ::openDrivingTimeStats ")
+
         }
 
 
         @JavascriptInterface
         fun openDrivingScoreStats(userCarId: String){
             activity.startActivity(Intent(activity, MyScoreActivity::class.java).putExtra("userCarId", userCarId))
+            Log.d("testsetestestset","testestestestset ::openDrivingScoreStats ")
+        }
+
+        @JavascriptInterface
+        fun getAccessToken():String{
+            return PreferenceUtil.getPref(activity, PreferenceUtil.ACCESS_TOKEN, "")!!
+        }
+
+        @JavascriptInterface
+        fun getRefreshToken():String{
+            return PreferenceUtil.getPref(activity, PreferenceUtil.REFRESH_TOKEN, "")!!
         }
     }
 
