@@ -660,7 +660,7 @@ class ExcelActivity:BaseRefreshActivity() {
 
 // G79:K79 병합
         val cellQ79 = sheet1.getRow(lastNo2).createCell(16)
-        cellQ79.setCellValue("업무사용비율 테스트테스트")
+        cellQ79.setCellValue("")
         cellQ79.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 
@@ -782,16 +782,33 @@ class ExcelActivity:BaseRefreshActivity() {
             /**
              * ⑧출․퇴근용(㎞)
              */
+            var distanceForCommute = 0.0
+            item.type?.let{
+                if(it.equals(DetailDriveHistoryActivity.CorpType.COMMUTE.name)){
+                    distanceForCommute = item.totalDistance
+                }
+            }
+
             val cellL15 = sheet1.getRow(i).createCell(11)
-            cellL15.setCellValue("")
+            cellL15.setCellValue(distanceForCommute.toString())
             cellL15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
+
+            var distanceForWork = 0.0
+            item.type?.let{
+                if(it.equals(DetailDriveHistoryActivity.CorpType.WORK.name)){
+                    distanceForWork = item.totalDistance
+                }
+            }
+
+            Log.d("testsetestest","testsetsetset ::  distanceForCommute" + distanceForCommute)
+            Log.d("testsetestest","testsetsetset ::  distanceForWork" + distanceForWork)
 
             /**
              * ⑨일반 업무용(㎞)
              */
             val cellO15 = sheet1.getRow(i).createCell(14)
-            cellO15.setCellValue("")
+            cellO15.setCellValue(distanceForWork.toString())
             cellO15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 
