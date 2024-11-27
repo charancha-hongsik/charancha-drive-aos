@@ -806,7 +806,7 @@ class ExcelActivity:BaseRefreshActivity() {
             }
 
             val cellL15 = sheet1.getRow(i).createCell(11)
-            cellL15.setCellValue(distanceForCommute.toString())
+            cellL15.setCellValue(distanceForCommute.toInt().toString() + "km")
             cellL15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 
@@ -814,7 +814,7 @@ class ExcelActivity:BaseRefreshActivity() {
              * ⑨일반 업무용(㎞)
              */
             val cellO15 = sheet1.getRow(i).createCell(14)
-            cellO15.setCellValue(distanceForWork.toString())
+            cellO15.setCellValue(distanceForWork.toInt().toString() + "km")
             cellO15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 
