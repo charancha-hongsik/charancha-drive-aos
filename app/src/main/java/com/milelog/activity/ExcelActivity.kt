@@ -513,10 +513,16 @@ class ExcelActivity:BaseRefreshActivity() {
 
         val lastNo1 = driveItems.size + 16
         val lastNo2 = driveItems.size + 17
+        val lastNo3 = driveItems.size + 18
+        val lastNo4 = driveItems.size + 19
+        val lastNo5 = driveItems.size + 20
 
 
         sheet1.createRow(lastNo1).heightInPoints = 30f // Row 78
         sheet1.createRow(lastNo2).heightInPoints = 29f // Row 79
+        sheet1.createRow(lastNo3).heightInPoints = 30f // Row 78
+        sheet1.createRow(lastNo4).heightInPoints = 29f // Row 79        sheet1.createRow(lastNo1).heightInPoints = 30f // Row 78
+        sheet1.createRow(lastNo5).heightInPoints = 29f // Row 79
 
 
         mergeCells(sheet1, 0, 1, 0, 16) // Merge B1 to Q1
@@ -663,12 +669,12 @@ class ExcelActivity:BaseRefreshActivity() {
         val nonNullTypeCount = driveItems.count { it.type != null }
 
         // 비율 계산
-        val ratio = if (driveItems.size > 0) nonNullTypeCount.toDouble() / driveItems.size else 0.0
+        val ratio:Double = if (driveItems.size > 0) nonNullTypeCount.toDouble() / driveItems.size.toDouble() else 0.0
 
 
 // G79:K79 병합
         val cellQ79 = sheet1.getRow(lastNo2).createCell(16)
-        cellQ79.setCellValue(ratio.toInt().toString())
+        cellQ79.setCellValue((ratio*100).toInt().toString() + "%")
         cellQ79.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 
