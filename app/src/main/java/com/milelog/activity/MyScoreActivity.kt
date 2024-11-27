@@ -105,27 +105,11 @@ class MyScoreActivity : BaseRefreshActivity() {
     lateinit var tv_guide_subtitle:TextView
 
     lateinit var layout_start_app:ConstraintLayout
+    lateinit var userCarId:String
 
-    private lateinit var firebaseAnalytics: FirebaseAnalytics
 
     companion object {
         private const val VIEW_TYPE_ITEM = 0
-    }
-
-
-    var checkingUserActivityPermission = false
-    var checkingIgnoreBatteryPermission = false
-
-    override fun onResume() {
-        super.onResume()
-
-        myScoreViewModel.getMyCarInfo()
-        /**
-         * 사용자에게 위치권한을 받은 후 앱으로 돌아왔을 때에 대한 동작
-         */
-        setNextPermissionProcess()
-        setBluetoothService()
-        myScoreViewModel.postDrivingInfoNotSavedData()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -142,8 +126,7 @@ class MyScoreActivity : BaseRefreshActivity() {
     }
 
     private fun init(){
-        // FirebaseAnalytics 인스턴스 초기화
-        firebaseAnalytics = FirebaseAnalytics.getInstance(this)
+        userCarId = intent.getStringExtra("userCarId")?:PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!
 
         setPieChart(0.0f)
 
@@ -151,34 +134,7 @@ class MyScoreActivity : BaseRefreshActivity() {
         setLineChartForEngine(findViewById(R.id.chart_line_engine))
         setLineChartForTire(findViewById(R.id.chart_line_tire))
 
-        if(!PreferenceUtil.getBooleanPref(this, HAVE_BEEN_HOME, false)){
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                checkPermission(mutableListOf(
-                    BLUETOOTH_CONNECT
-                ).apply {
-
-                }.toTypedArray(),0)
-            }
-        }else{
-            if(ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                checkLocation()
-            } else{
-                if(ContextCompat.checkSelfPermission(this, ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED){
-                    checkUserActivity()
-                }else{
-                    setIgnoreBattery()
-                }
-            }
-        }
-
-        // 홈화면 진입 여부 체크
-        PreferenceUtil.putBooleanPref(this, HAVE_BEEN_HOME, true)
-
         setBtn()
-
-        if(intent.getBooleanExtra("deeplink",false)){
-            startActivity(Intent(this@MyScoreActivity, AlarmActivity::class.java))
-        }
     }
 
     fun updateMyCarList(
@@ -560,75 +516,6 @@ class MyScoreActivity : BaseRefreshActivity() {
                 }
             }
         })
-    }
-
-    fun checkLocation(){
-        CustomDialog(this, "위치 정보 권한", "위치 서비스를 사용할 수 없습니다. 기기의 ‘마일로그 > 권한 > 위치”에서 위치 서비스를 “항상 허용\"으로 켜주세요 (필수 권한)", "설정으로 이동","취소",  object : CustomDialog.DialogCallback{
-            override fun onConfirm() {
-                val openSettingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                    val uri: Uri = Uri.fromParts("package", packageName, null)
-                    data = uri
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                }
-                checkingUserActivityPermission = true
-                startActivity(openSettingsIntent)
-            }
-
-            override fun onCancel() {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    if(ContextCompat.checkSelfPermission(this@MyScoreActivity, ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED){
-                        checkUserActivity()
-                    }else{
-                        setIgnoreBattery()
-                    }
-                }
-            }
-
-        }).show()
-    }
-
-    fun checkUserActivity(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            if(ContextCompat.checkSelfPermission(this, ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED) {
-                CustomDialog(
-                    this,
-                    "신체 활동",
-                    "신체 활동 서비스를 사용할 수 없습니다. 기기의 ‘마일로그 > 권한 > 신체 활동”에서 신체 활동을 “허용\" 으로 켜주세요 (필수 권한)",
-                    "설정으로 이동",
-                    "취소",
-                    object : CustomDialog.DialogCallback {
-                        override fun onConfirm() {
-                            val openSettingsIntent =
-                                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                                    val uri: Uri = Uri.fromParts("package", packageName, null)
-                                    data = uri
-                                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                }
-                            checkingIgnoreBatteryPermission = true
-                            startActivity(openSettingsIntent)
-                        }
-
-                        override fun onCancel() {
-                            setIgnoreBattery()
-                        }
-
-                    }).show()
-            }
-        }
-    }
-
-    private fun setIgnoreBattery(){
-        val i = Intent()
-        val pm = getSystemService(POWER_SERVICE) as PowerManager
-
-        if(!pm.isIgnoringBatteryOptimizations(packageName)) {
-            i.action = ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-            i.data = Uri.parse("package:$packageName")
-
-            startActivity(i)
-        }
-
-        checkingIgnoreBatteryPermission = false
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -1097,42 +984,6 @@ class MyScoreActivity : BaseRefreshActivity() {
         chart.invalidate()
     }
 
-    private fun checkPermission(permissions: Array<String>, code: Int) {
-        if(ContextCompat.checkSelfPermission(this, permissions[0]) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this, permissions,code)
-            return
-        }
-    }
-
-    private fun setNextPermissionProcess(){
-        if(checkingUserActivityPermission){
-            if(ContextCompat.checkSelfPermission(this, ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED){
-                checkingIgnoreBatteryPermission = true
-                checkUserActivity()
-            } else{
-                setIgnoreBattery()
-            }
-
-            checkingUserActivityPermission = false
-        }
-
-        if(checkingIgnoreBatteryPermission){
-            setIgnoreBattery()
-        }
-    }
-
-    private fun setBluetoothService(){
-        if(CommonUtil.checkRequiredPermissions(this@MyScoreActivity)){
-            val bluetoothIntent = Intent(this, BluetoothService::class.java)
-            startForegroundService(bluetoothIntent)
-        }else{
-            if(isMyServiceRunning(BluetoothService::class.java)){
-                val bluetoothIntent = Intent(this, BluetoothService::class.java)
-                stopService(bluetoothIntent)
-            }
-        }
-    }
-
     fun openChromeWithUrl(url:String){
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -1144,34 +995,5 @@ class MyScoreActivity : BaseRefreshActivity() {
             intent.setPackage(null)
             startActivity(intent)
         }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        when(requestCode){
-            0 -> {
-                for(permission in permissions){
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                        checkPermission(mutableListOf(
-                            POST_NOTIFICATIONS
-                        ).apply {
-
-                        }.toTypedArray(),1)
-                    }else{
-                        setIgnoreBattery()
-                    }
-                }
-            }
-
-            1->{
-                setIgnoreBattery()
-            }
-
-
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 }
