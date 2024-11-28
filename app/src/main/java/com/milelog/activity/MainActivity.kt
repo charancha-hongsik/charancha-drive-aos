@@ -470,7 +470,7 @@ class MainActivity:BaseActivity() {
         @JavascriptInterface
         fun openDrivingScoreStats(userCarId: String){
             activity.startActivity(Intent(activity, MyScoreActivity::class.java).putExtra("userCarId", userCarId))
-            Log.d("testsetestestset","testestestestset ::openDrivingScoreStats ")
+            Log.d("testsetestestset","testestestestset ::openDrivingScoreStats :: " + userCarId)
         }
 
         @JavascriptInterface

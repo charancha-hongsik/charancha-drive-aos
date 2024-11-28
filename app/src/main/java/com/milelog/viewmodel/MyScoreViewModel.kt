@@ -1,6 +1,7 @@
 package com.milelog.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.GsonBuilder
 import com.milelog.BoundingBoxCalculator
@@ -73,6 +74,7 @@ class MyScoreViewModel: BaseViewModel() {
             Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 when {
+
                     response.code() == 200 || response.code() == 201 -> {
                         val getAccountResponse = GsonBuilder().serializeNulls().create().fromJson(
                             response.body()?.string(),
@@ -208,7 +210,6 @@ class MyScoreViewModel: BaseViewModel() {
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
             ) {
-
                 if(response.code() == 200 || response.code() == 201){
                     val jsonString = response.body()?.string()
                     val getMyCarInfoResponses = GsonBuilder().serializeNulls().create().fromJson(jsonString,GetMyCarInfoResponse::class.java)
@@ -236,6 +237,8 @@ class MyScoreViewModel: BaseViewModel() {
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
             ) {
+                Log.d("testestestst","testesestestes response.code :: " + response.code())
+
                 if(response.code() == 200 || response.code() == 201){
                     val getMyCarInfoResponse = GsonBuilder().serializeNulls().create().fromJson(
                         response.body()?.string(),
@@ -257,15 +260,16 @@ class MyScoreViewModel: BaseViewModel() {
         })
     }
 
-    fun getManageScoreForAMonth(){
+    fun getManageScoreForAMonth(userCarId:String){
         apiService(context).getManageScoreStatistics(
             "Bearer " + PreferenceUtil.getPref(context, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(context, PreferenceUtil.USER_CARID, "")!!,
+            userCarId,
             getCurrentAndPastTimeForISO(29).second,
             getCurrentAndPastTimeForISO(29).first).enqueue(object:
             Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 try {
+                    Log.d("testestestst","testesestestes response.code :: " + response.code())
                     if (response.code() == 200 || response.code() == 201) {
                         val getManageScoreResponse = GsonBuilder().serializeNulls().create().fromJson(
                             response.body()?.string(),
@@ -288,10 +292,10 @@ class MyScoreViewModel: BaseViewModel() {
         })
     }
 
-    fun getDrivingDistanceForAMonth(){
+    fun getDrivingDistanceForAMonth(userCarId:String){
         apiService(context).getDrivingStatistics(
             "Bearer " + PreferenceUtil.getPref(context, PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(context, PreferenceUtil.USER_CARID, "")!!,
+            userCarId,
             getCurrentAndPastTimeForISO(29).second,
             getCurrentAndPastTimeForISO(29).first,
             "startTime",
@@ -299,6 +303,8 @@ class MyScoreViewModel: BaseViewModel() {
             Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 try {
+                    Log.d("testestestst","testesestestes response.code :: " + response.code())
+
                     if (response.code() == 200 || response.code() == 201) {
                         val getDrivingStatisticsResponse = GsonBuilder().serializeNulls().create().fromJson(
                             response.body()?.string(),
@@ -321,10 +327,10 @@ class MyScoreViewModel: BaseViewModel() {
         })
     }
 
-    fun setRecentManageScoreForSummary(){
+    fun setRecentManageScoreForSummary(userCarId:String){
         apiService(context).getRecentManageScoreStatistics(
             "Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(context, PreferenceUtil.USER_CARID, "")!!
+            userCarId
         ).enqueue(object: Callback<ResponseBody>{
             override fun onResponse(
                 call: Call<ResponseBody>,
@@ -353,10 +359,10 @@ class MyScoreViewModel: BaseViewModel() {
         })
     }
 
-    fun setManageSoreForSummary(scope:Long){
+    fun setManageSoreForSummary(scope:Long, userCarId:String){
         apiService(context).getManageScoreStatistics(
             "Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!,
-            PreferenceUtil.getPref(context, PreferenceUtil.USER_CARID, "")!!,
+            userCarId,
             getCurrentAndPastTimeForISO(scope).second,
             getCurrentAndPastTimeForISO(scope).first
         ).enqueue(object :Callback<ResponseBody>{

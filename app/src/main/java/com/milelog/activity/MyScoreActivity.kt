@@ -121,13 +121,11 @@ class MyScoreActivity : BaseRefreshActivity() {
         setObserver()
 
         myScoreViewModel.getAccount()
-
-        Log.d("testsetestest","testestestset token :: " + PreferenceUtil.getPref(this,  PreferenceUtil.ACCESS_TOKEN, "")!!)
+        myScoreViewModel.getMyCarInfo()
     }
 
     private fun init(){
         userCarId = intent.getStringExtra("userCarId")?:PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!
-
         setPieChart(0.0f)
 
         setLineChartForBrakes(findViewById(R.id.chart_line_brakes))
@@ -219,7 +217,7 @@ class MyScoreActivity : BaseRefreshActivity() {
                     }
 
                     if(getMyCarInfoResponses.items.size > 0){
-                        myScoreViewModel.getCarInfoinquiryByCarId(getMyCarInfoResponses.items.get(0).id)
+                        myScoreViewModel.getCarInfoinquiryByCarId(userCarId)
 
                         for(car in getMyCarInfoResponses.items){
                             myCarsListOnServer.add(MyCarsEntity(car.id, car.carName, car.licensePlateNumber, null,null, type = car.type))
@@ -250,13 +248,12 @@ class MyScoreActivity : BaseRefreshActivity() {
                 }
                 is CarInfoInquiryByCarIdState.Success -> {
                     val getMyCarInfoResponse = state.data
-                    userCarId
                     tv_car_name.setText(getMyCarInfoResponse.carName)
                     tv_car_no.setText(getMyCarInfoResponse.licensePlateNumber)
 
-                    myScoreViewModel.getManageScoreForAMonth()
-                    myScoreViewModel.getDrivingDistanceForAMonth()
-                    myScoreViewModel.setRecentManageScoreForSummary()
+                    myScoreViewModel.getManageScoreForAMonth(userCarId)
+                    myScoreViewModel.getDrivingDistanceForAMonth(userCarId)
+                    myScoreViewModel.setRecentManageScoreForSummary(userCarId)
                 }
                 is CarInfoInquiryByCarIdState.Error -> {
                     if(state.code == 401){
@@ -645,7 +642,7 @@ class MyScoreActivity : BaseRefreshActivity() {
 
                 tv_recent_driving_score.text = "최근 주행 총점"
 
-                myScoreViewModel.setRecentManageScoreForSummary()
+                myScoreViewModel.setRecentManageScoreForSummary(userCarId)
             }
 
         })
@@ -659,7 +656,7 @@ class MyScoreActivity : BaseRefreshActivity() {
 
                 tv_recent_driving_score.text = "1개월 평균"
 
-                myScoreViewModel.setManageSoreForSummary(29)
+                myScoreViewModel.setManageSoreForSummary(29, userCarId)
             }
 
         })
@@ -673,7 +670,7 @@ class MyScoreActivity : BaseRefreshActivity() {
 
                 tv_recent_driving_score.text = "6개월 평균"
 
-                myScoreViewModel.setManageSoreForSummary(SIX_MONTH)
+                myScoreViewModel.setManageSoreForSummary(SIX_MONTH, userCarId)
             }
 
         })
@@ -687,7 +684,7 @@ class MyScoreActivity : BaseRefreshActivity() {
                 tv_recent_driving_score.text = "1년 평균"
 
 
-                myScoreViewModel.setManageSoreForSummary(YEAR)
+                myScoreViewModel.setManageSoreForSummary(YEAR, userCarId)
             }
         })
 
