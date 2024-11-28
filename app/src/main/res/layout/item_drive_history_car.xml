@@ -3,6 +3,10 @@
     android:id="@+id/view_parent"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
     android:background="@drawable/choose_filter_car_selector"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -10,10 +14,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
         android:gravity="center"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -42,6 +42,8 @@
             android:id="@+id/tv_car_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:textAppearance="@style/car_filter_unselected"
             android:text="전체" />
 
