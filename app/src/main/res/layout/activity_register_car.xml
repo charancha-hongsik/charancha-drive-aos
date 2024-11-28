@@ -587,7 +587,7 @@
 
             <EditText
                 android:id="@+id/et_register_car"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginLeft="54dp"
                 android:layout_marginRight="54dp"
