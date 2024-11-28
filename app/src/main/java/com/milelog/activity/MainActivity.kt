@@ -4,6 +4,7 @@ import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.Manifest.permission.ACTIVITY_RECOGNITION
 import android.Manifest.permission.BLUETOOTH_CONNECT
 import android.Manifest.permission.POST_NOTIFICATIONS
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -485,6 +486,20 @@ class MainActivity:BaseActivity() {
         @JavascriptInterface
         fun closeWebview(){
             activity.finish()
+        }
+
+        @JavascriptInterface
+        fun openBrowser(url:String){
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.setPackage("com.android.chrome")
+            try {
+                activity.startActivity(intent)
+            } catch (ex: ActivityNotFoundException) {
+                // Chrome browser presumably not installed so allow user to choose instead
+                intent.setPackage(null)
+                activity.startActivity(intent)
+            }
         }
     }
 
