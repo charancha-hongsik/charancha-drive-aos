@@ -129,6 +129,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="22dp"
                             android:textFontWeight="400"
+                            android:layout_weight="400"
+                            android:textAppearance="@style/B1R"
                             android:visibility="gone"
                             android:textColor="@color/gray_600"
                             android:text="사용자 구분"/>
