@@ -205,11 +205,27 @@ class ExcelActivity:BaseRefreshActivity() {
         val drivingData:MutableList<Map<String,String>> = mutableListOf()
 
         for(history in getDriveHistroyResponse.items){
+
+            var totalDistance = history.totalDistance
+            var startAddress = history.startAddress?.parcel?.name ?: ""
+            var endAddress = history.endAddress?.parcel?.name ?: ""
+            var endAddressDetail = history.endAddress?.places?.takeIf { it.isNotEmpty() }?.get(0)?.name ?: ""
+
+            if(history.type != null){
+                totalDistance = history.edit?.totalDistance?.toDouble()?:totalDistance
+                startAddress = history.edit?.startAddress?:startAddress
+                endAddress = history.edit?.endAddress?:endAddress
+                endAddressDetail = history.edit?.place?:endAddressDetail
+            }
+
+
+
+
             drivingData.add(mapOf(
                 "주행 시작 일시" to formatToLocalTimeForExcel(history.startTime),
                 "주행 종료 일시" to formatToLocalTimeForExcel(history.endTime),
                 "주행 시간" to history.totalTime.toString(),
-                "주행 거리 (km)" to history.totalDistance.toString(),
+                "주행 거리 (km)" to (totalDistance/1000).toInt().toString(),
                 "데이터 인증" to history.verification,
                 "이동 수단" to (history.userCar?.carName ?: ""),
                 "주행 목적" to  (history.userCar?.type ?: ""),
@@ -217,11 +233,11 @@ class ExcelActivity:BaseRefreshActivity() {
                 "법인 사용자 이름" to (history.userCar?.data?.name ?: ""),
                 "법인 부서명" to (history.userCar?.data?.department ?: ""),
                 "운전자 메모" to (history.memo?:""),
-                "출발지" to (history.startAddress?.parcel?.name ?: ""),
-                "도착지" to (history.endAddress?.parcel?.name ?: ""),
-                "방문지" to (history.endAddress?.places?.takeIf { it.isNotEmpty() }?.get(0)?.name ?: ""),
-                "고속 주행 거리 (km)" to history.highSpeedDrivingDistance.toString(),
-                "저속 주행 거리 (km)" to history.lowSpeedDrivingDistance.toString(),
+                "출발지" to startAddress,
+                "도착지" to endAddress,
+                "방문지" to endAddressDetail,
+                "고속 주행 거리 (km)" to (history.highSpeedDrivingDistance/1000).toInt().toString(),
+                "저속 주행 거리 (km)" to (history.lowSpeedDrivingDistance/1000).toInt().toString(),
                 "고속 주행 거리 비율 (%)" to history.highSpeedDrivingDistancePercentage.toString(),
                 "저속 주행 거리 비율 (%)" to history.lowSpeedDrivingDistancePercentage.toString(),
                 "최고 속력 (km/h)" to history.maxSpeed.toString(),
@@ -232,8 +248,8 @@ class ExcelActivity:BaseRefreshActivity() {
                 "급감속 횟수" to history.rapidDecelerationCount.toString(),
                 "급출발 횟수" to history.rapidStartCount.toString(),
                 "급정지 횟수" to history.rapidStopCount.toString(),
-                "최적 주행 거리 (km)" to history.optimalDrivingDistance.toString(),
-                "가혹 주행 거리 (km)" to history.harshDrivingDistance.toString(),
+                "최적 주행 거리 (km)" to (history.optimalDrivingDistance/1000).toInt().toString(),
+                "가혹 주행 거리 (km)" to (history.harshDrivingDistance/1000).toInt().toString(),
                 "최적 주행 비율 (%)" to history.optimalDrivingPercentage.toString(),
                 "가혹 주행 비율 (%)" to history.harshDrivingPercentage.toString()
             ))
@@ -708,7 +724,6 @@ class ExcelActivity:BaseRefreshActivity() {
         cellG12.setCellValue("운 행     내 역")
         cellG12.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
-
         mergeCells(sheet1, 13, 10, 14, 10) // K13:K14
         val cellK13 = sheet1.getRow(13).createCell(10)
         cellK13.setCellValue("⑦주행 거리(㎞)")
@@ -775,7 +790,6 @@ class ExcelActivity:BaseRefreshActivity() {
             cellG15.setCellValue("")
             cellG15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
-
             /**
              * ⑥주행 후
              * 계기판의 거리(㎞)
@@ -784,14 +798,12 @@ class ExcelActivity:BaseRefreshActivity() {
             cellI15.setCellValue("")
             cellI15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
-
             /**
              * ⑦주행거리(㎞)
              */
             val cellK15 = sheet1.getRow(i).createCell(10)
             cellK15.setCellValue(((item.totalDistance/1000).toInt()).toString() + "km")
             cellK15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
-
 
             /**
              * ⑧출․퇴근용(㎞)
@@ -812,7 +824,7 @@ class ExcelActivity:BaseRefreshActivity() {
             }
 
             val cellL15 = sheet1.getRow(i).createCell(11)
-            cellL15.setCellValue(distanceForCommute.toInt().toString() + "km")
+            cellL15.setCellValue((distanceForCommute/1000).toInt().toString() + "km")
             cellL15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 
@@ -820,26 +832,33 @@ class ExcelActivity:BaseRefreshActivity() {
              * ⑨일반 업무용(㎞)
              */
             val cellO15 = sheet1.getRow(i).createCell(14)
-            cellO15.setCellValue(distanceForWork.toInt().toString() + "km")
+            cellO15.setCellValue((distanceForWork/1000).toInt().toString() + "km")
             cellO15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 
+            val type = item.type?.let{
+                if(it.equals(DetailDriveHistoryActivity.CorpType.NON_WORK.name)){
+                    ""
+                }else{
+                    it
+                }
+            }
             /**
              * ⑩비 고
              */
             val cellQ15 = sheet1.getRow(i).createCell(16)
-            cellQ15.setCellValue(item.type)
+            cellQ15.setCellValue(type)
             cellQ15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
         }
 
 
         // 현재 날짜와 시간 구하기
-        val currentDate = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val currentDate = SimpleDateFormat("yyyyMMdd").format(Date())
 
         try {
             // 현재 날짜를 기반으로 파일 이름 생성
-            val fileName = "DrivingData_$currentDate.xlsx"
+            val fileName = currentDate + "_마일로그_주행 이력 저장.xlsx"
 
             // 공유할 파일 URI를 생성할 File 객체를 설정합니다.
             val file = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName)
@@ -919,135 +938,6 @@ class ExcelActivity:BaseRefreshActivity() {
         return style
     }
 
-
-    fun createDrivingDataWithHeaders(drivingData: List<Map<String, String>>) {
-        workbook = XSSFWorkbook()
-        val sheet = workbook.createSheet("마일로그 상세 기록")
-
-        // Define main headers and their sub-headers
-        val mainHeaders = listOf(
-            "주행", "", "", "", "", "", "", "사용자 구분", "", "","",
-            "방문지", "", "", "고속/저속 주행", "", "", "",
-            "속력", "", "", "", "급가감속", "", "", "",
-            "최적/가혹 주행", "", "", ""
-        )
-
-        val headers = listOf(
-            "주행 시작 일시", "주행 종료 일시", "주행 시간", "주행 거리 (km)", "데이터 인증", "이동 수단", "주행 목적",
-            "개인/법인", "법인 사용자 이름", "법인 부서명","운전자 메모",
-            "출발지", "도착지", "방문지",
-            "고속 주행 거리 (km)", "저속 주행 거리 (km)", "고속 주행 거리 비율 (%)", "저속 주행 거리 비율 (%)",
-            "최고 속력 (km/h)", "평균 속력 (km/h)", "고속 주행 최고 속력 (km/h)", "저속 주행 최고 속력 (km/h)",
-            "급가속 횟수", "급감속 횟수", "급출발 횟수", "급정지 횟수",
-            "최적 주행 거리 (km)", "가혹 주행 거리 (km)", "최적 주행 비율 (%)", "가혹 주행 비율 (%)"
-        )
-
-        // Create header rows
-        val headerRow1 = sheet.createRow(0)
-        val headerRow2 = sheet.createRow(1)
-
-        // Create bold style for main headers
-        val boldFont = workbook.createFont().apply {
-            bold = true
-        }
-
-        val boldStyle = workbook.createCellStyle().apply {
-            setFont(boldFont)
-            val skyBlueColor = XSSFColor(byteArrayOf(0xB2.toByte(), 0xCC.toByte(), 0xFF.toByte())) // #B2CCFF 색상
-            setFillForegroundColor(skyBlueColor)
-            setFillPattern(FillPatternType.SOLID_FOREGROUND)
-        }
-
-        val lightGrayStyle = workbook.createCellStyle().apply {
-            setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index) // 연한 그레이색
-            setFillPattern(FillPatternType.SOLID_FOREGROUND)
-        }
-
-        // Set main headers (merge cells for each group)
-        mainHeaders.forEachIndexed { index, mainHeader ->
-            val cell = headerRow1.createCell(index)
-            cell.setCellValue(mainHeader)
-            cell.cellStyle = boldStyle // Apply bold style
-        }
-
-        // Set sub-headers
-        headers.forEachIndexed { index, header ->
-            val cell = headerRow2.createCell(index)
-            cell.setCellValue(header)
-            cell.cellStyle = lightGrayStyle // Apply light gray background
-        }
-
-        // Fill data rows
-        drivingData.forEachIndexed { rowIndex, data ->
-            val row = sheet.createRow(rowIndex + 2) // Data starts from the third row
-            headers.forEachIndexed { colIndex, header ->
-                val cell = row.createCell(colIndex)
-                cell.setCellValue(data[header] ?: "")
-            }
-        }
-
-        // 수동으로 열 너비 설정
-        headers.indices.forEach { colIndex ->
-            var maxLength = 0
-            for (rowIndex in 0 until sheet.physicalNumberOfRows) {
-                val cell = sheet.getRow(rowIndex)?.getCell(colIndex)
-                val cellValue = cell?.toString() ?: ""
-                maxLength = maxOf(maxLength, cellValue.length)
-            }
-            sheet.setColumnWidth(colIndex, (maxLength + 2) * 256) // 너비를 설정 (2 추가)
-        }
-
-        // 현재 날짜와 시간 구하기
-        val currentDate = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-
-        try {
-            // 현재 날짜를 기반으로 파일 이름 생성
-            val fileName = "DrivingData_$currentDate.xlsx"
-
-            // 공유할 파일 URI를 생성할 File 객체를 설정합니다.
-            val file = File(getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), fileName)
-
-            // 파일에 워크북 데이터를 저장
-            FileOutputStream(file).use { output ->
-                workbook.write(output)
-            }
-
-            // 공유를 위한 FileProvider URI 생성
-            val fileUri = FileProvider.getUriForFile(
-                this,
-                "$packageName.fileprovider", // FileProvider의 authority는 AndroidManifest에서 설정
-                file
-            )
-
-            // 공유 Intent 생성 (ACTION_SEND)
-            val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" // XLSX MIME 타입
-                putExtra(Intent.EXTRA_STREAM, fileUri)
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION) // URI 읽기 권한 부여
-            }
-
-            // 저장 Intent 생성 (ACTION_CREATE_DOCUMENT)
-            val saveIntent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-                addCategory(Intent.CATEGORY_OPENABLE)
-                type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" // XLSX MIME 타입
-                putExtra(Intent.EXTRA_TITLE, fileName) // 사용자에게 보여줄 파일 이름
-            }
-            saveIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-
-            // 두 개의 Intent를 포함하는 Chooser
-            val chooserIntent = Intent.createChooser(shareIntent, "주행 데이터 공유하기").apply {
-                putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(saveIntent)) // 저장 옵션 추가
-            }
-
-            // OS 공유/저장 Bottom Sheet 호출
-            startActivityForResult(chooserIntent, 1)
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Toast.makeText(this, "파일 처리에 실패했습니다.", Toast.LENGTH_SHORT).show()
-        }
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -1092,7 +982,7 @@ class ExcelActivity:BaseRefreshActivity() {
         row.getCell(0).cellStyle = cellStyle
 
         // 파일 이름 설정
-        val currentDate = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+        val currentDate = SimpleDateFormat("yyyyMMdd_마일로그_주행 이력 저장")
         val fileName = "CarUsageRecord_$currentDate.xlsx"
 
         // 파일 경로 설정

@@ -31,5 +31,6 @@ data class DriveItem (
     val optimalDrivingPercentage:Double,
     val harshDrivingPercentage:Double,
     val memo:String?,
-    val type:String?
+    val type:String?,
+    val edit:Edits?
     )
