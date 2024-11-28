@@ -271,6 +271,8 @@
                             android:textAppearance="@style/B1SB"
                             android:textFontWeight="600"
                             android:textColor="@color/gray_950"
+                            android:maxWidth="230dp"
+                            android:ellipsize="end"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintBottom_toBottomOf="parent"/>
