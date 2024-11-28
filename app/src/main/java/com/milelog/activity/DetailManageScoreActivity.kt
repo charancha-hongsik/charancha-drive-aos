@@ -540,7 +540,8 @@ class DetailManageScoreActivity: BaseRefreshActivity(){
             if(layout_select_main.visibility == GONE){
 
                 listView_choose_date_own.visibility = GONE
-                layout_select_main.visibility = VISIBLE
+                layout_select_main.visibility = GONE
+                layout_choose_date.visibility = GONE
 
                 tv_selected_date.text = selectedDate
             }else{
