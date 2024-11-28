@@ -1232,7 +1232,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     class MyCarEntitiesHolder(view: View) : RecyclerView.ViewHolder(view) {
         val tv_car_name:TextView = view.findViewById(R.id.tv_car_name)
         val tv_car_no:TextView = view.findViewById(R.id.tv_car_no)
-        val layout_name:LinearLayout = view.findViewById(R.id.layout_name)
+        val layout_name:ConstraintLayout = view.findViewById(R.id.layout_name)
         val tv_no_mycar:TextView = view.findViewById(R.id.tv_no_mycar)
         val layout_car:LinearLayout = view.findViewById(R.id.layout_car)
         val iv_corp:ImageView = view.findViewById(R.id.iv_corp)
