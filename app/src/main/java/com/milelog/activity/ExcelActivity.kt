@@ -208,6 +208,19 @@ class ExcelActivity:BaseRefreshActivity() {
         }
     }
 
+    fun formatSecondsToTime(seconds: Double): String {
+        // 초를 정수로 변환
+        val totalSeconds = seconds.toInt()
+
+        // 시간, 분, 초 계산
+        val hours = totalSeconds / 3600
+        val minutes = (totalSeconds % 3600) / 60
+        val secs = totalSeconds % 60
+
+        // 포맷 적용
+        return String.format("%d:%02d:%02d", hours, minutes, secs)
+    }
+
     fun getDrivingData(getDriveHistroyResponse: GetDriveHistoryResponse): List<Map<String,String>>{
         val drivingData:MutableList<Map<String,String>> = mutableListOf()
 
@@ -242,10 +255,10 @@ class ExcelActivity:BaseRefreshActivity() {
             drivingData.add(mapOf(
                 "주행 시작 일시" to formatToLocalTimeForExcel(history.startTime),
                 "주행 종료 일시" to formatToLocalTimeForExcel(history.endTime),
-                "주행 시간" to history.totalTime.toString(),
-                "주행 거리 (km)" to (totalDistance/1000).toInt().toString(),
+                "주행 시간" to formatSecondsToTime(history.totalTime),
+                "주행 거리 (km)" to (String.format("%.1f",totalDistance/1000)),
                 "데이터 인증" to history.verification,
-                "이동 수단" to (history.userCar?.modelNm ?: ""),
+                "이동 수단" to (history.userCar?.licensePlateNumber?:"").takeLast(4) + " "+ (history.userCar?.modelNm ?: ""),
                 "주행 목적" to  drivingReason,
                 "개인/법인" to userType,
                 "법인 사용자 이름" to (history.userCar?.data?.name ?: ""),
@@ -254,22 +267,22 @@ class ExcelActivity:BaseRefreshActivity() {
                 "출발지" to startAddress,
                 "도착지" to endAddress,
                 "방문지" to endAddressDetail,
-                "고속 주행 거리 (km)" to (history.highSpeedDrivingDistance/1000).toInt().toString(),
-                "저속 주행 거리 (km)" to (history.lowSpeedDrivingDistance/1000).toInt().toString(),
-                "고속 주행 거리 비율 (%)" to history.highSpeedDrivingDistancePercentage.toString(),
-                "저속 주행 거리 비율 (%)" to history.lowSpeedDrivingDistancePercentage.toString(),
-                "최고 속력 (km/h)" to history.maxSpeed.toString(),
-                "평균 속력 (km/h)" to history.averageSpeed.toString(),
-                "고속 주행 최고 속력 (km/h)" to history.highSpeedDrivingMaxSpeed.toString(),
-                "저속 주행 최고 속력 (km/h)" to history.lowSpeedDrivingMaxSpeed.toString(),
+                "고속 주행 거리 (km)" to (String.format("%.1f",history.highSpeedDrivingDistance/1000)),
+                "저속 주행 거리 (km)" to (String.format("%.1f",history.lowSpeedDrivingDistance/1000)),
+                "고속 주행 거리 비율 (%)" to (String.format("%.1f",history.highSpeedDrivingDistancePercentage)),
+                "저속 주행 거리 비율 (%)" to (String.format("%.1f",history.lowSpeedDrivingDistancePercentage)),
+                "최고 속력 (km/h)" to (String.format("%.1f",history.maxSpeed)),
+                "평균 속력 (km/h)" to (String.format("%.1f",history.averageSpeed)),
+                "고속 주행 최고 속력 (km/h)" to (String.format("%.1f",history.highSpeedDrivingMaxSpeed)),
+                "저속 주행 최고 속력 (km/h)" to (String.format("%.1f",history.lowSpeedDrivingMaxSpeed)),
                 "급가속 횟수" to history.rapidAccelerationCount.toString(),
                 "급감속 횟수" to history.rapidDecelerationCount.toString(),
                 "급출발 횟수" to history.rapidStartCount.toString(),
                 "급정지 횟수" to history.rapidStopCount.toString(),
-                "최적 주행 거리 (km)" to (history.optimalDrivingDistance/1000).toInt().toString(),
-                "가혹 주행 거리 (km)" to (history.harshDrivingDistance/1000).toInt().toString(),
-                "최적 주행 비율 (%)" to history.optimalDrivingPercentage.toString(),
-                "가혹 주행 비율 (%)" to history.harshDrivingPercentage.toString()
+                "최적 주행 거리 (km)" to (String.format("%.1f",history.optimalDrivingDistance/1000)),
+                "가혹 주행 거리 (km)" to (String.format("%.1f",history.harshDrivingDistance/1000)),
+                "최적 주행 비율 (%)" to (String.format("%.1f",history.optimalDrivingPercentage)),
+                "가혹 주행 비율 (%)" to (String.format("%.1f",history.harshDrivingPercentage))
             ))
         }
 
@@ -680,7 +693,7 @@ class ExcelActivity:BaseRefreshActivity() {
 
             mergeCells(sheet1, lastNo2, 6, lastNo2, 10) // G78:K78
             val cellG79 = sheet1.getRow(lastNo2).createCell(6)
-            cellG79.setCellValue(((driveItems.sumOf { it.totalDistance }/1000).toInt()).toString() + "km")
+            cellG79.setCellValue((String.format("%.1f",(driveItems.sumOf { it.totalDistance }/1000)) + "km"))
             cellG79.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 // L78:P78 병합 및 스타일 설정
@@ -692,7 +705,7 @@ class ExcelActivity:BaseRefreshActivity() {
 
             mergeCells(sheet1, lastNo2, 11, lastNo2, 15) // L78:P78
             val cellL79 = sheet1.getRow(lastNo2).createCell(11)
-            cellL79.setCellValue((driveItems.sumOf { it.totalDistance }/1000).toInt().toString() + "km")
+            cellL79.setCellValue((String.format("%.1f",(driveItems.sumOf { it.totalDistance }/1000)) + "km"))
             cellL79.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 // Q78 스타일 설정
@@ -822,7 +835,7 @@ class ExcelActivity:BaseRefreshActivity() {
                  * ⑦주행거리(㎞)
                  */
                 val cellK15 = sheet1.getRow(i).createCell(10)
-                cellK15.setCellValue(((item.totalDistance/1000).toInt()).toString() + "km")
+                cellK15.setCellValue((String.format("%.1f", item.totalDistance/1000) + "km"))
                 cellK15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
                 /**
@@ -844,7 +857,7 @@ class ExcelActivity:BaseRefreshActivity() {
                 }
 
                 val cellL15 = sheet1.getRow(i).createCell(11)
-                cellL15.setCellValue(if(distanceForCommute != 0.0){(distanceForCommute/1000).toInt().toString() + "km"}else{""})
+                cellL15.setCellValue(if(distanceForCommute != 0.0){(String.format("%.1f",distanceForCommute/1000)) + "km"}else{""})
                 cellL15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 
@@ -852,7 +865,7 @@ class ExcelActivity:BaseRefreshActivity() {
                  * ⑨일반 업무용(㎞)
                  */
                 val cellO15 = sheet1.getRow(i).createCell(14)
-                cellO15.setCellValue(if(distanceForWork != 0.0){(distanceForWork/1000).toInt().toString() + "km"}else{""})
+                cellO15.setCellValue(if(distanceForWork != 0.0){(String.format("%.1f",distanceForWork/1000) + "km")}else{""})
                 cellO15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 
