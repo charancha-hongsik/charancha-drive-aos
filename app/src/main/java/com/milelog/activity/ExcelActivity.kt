@@ -294,7 +294,7 @@ class ExcelActivity:BaseRefreshActivity() {
         btn_save_excel.setOnClickListener {
             apiService().getDrivingDetailHistories(
                 token = "Bearer " + PreferenceUtil.getPref(this,  PreferenceUtil.ACCESS_TOKEN, "")!!,
-                size = 100,
+                size = 200,
                 order = "DESC",
                 afterCursor =  null,
                 beforeCursor = null,
@@ -885,7 +885,6 @@ class ExcelActivity:BaseRefreshActivity() {
 
             }
         }
-
 
         // 현재 날짜와 시간 구하기
         val currentDate = SimpleDateFormat("yyyyMMdd").format(Date())

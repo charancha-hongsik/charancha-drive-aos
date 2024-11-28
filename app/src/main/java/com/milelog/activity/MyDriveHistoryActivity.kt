@@ -573,6 +573,18 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
 
         layout_filter.setOnClickListener {
             layout_choose_date.visibility = VISIBLE
+            layout_select_main.visibility = VISIBLE
+            layout_date_own.visibility = GONE
+            listView_choose_date_own.visibility = GONE
+            btn_select_date_from_list.visibility = GONE
+
+            btn_a_month.isSelected = true
+            btn_six_month.isSelected = false
+            btn_each_month.isSelected = false
+
+            TextViewCompat.setTextAppearance(btn_a_month, R.style.B1SBweight600)
+            TextViewCompat.setTextAppearance(btn_six_month, R.style.B1Mweight500)
+            TextViewCompat.setTextAppearance(btn_each_month, R.style.B1Mweight500)
         }
 
         layout_choose_date.setOnClickListener {
