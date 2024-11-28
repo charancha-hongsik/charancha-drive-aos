@@ -69,6 +69,7 @@ class ExcelActivity:BaseRefreshActivity() {
     val filterList: MutableList<CarListFilter> = mutableListOf()
     var carIdForFilter: String? = null
     var isActiveForFilter: Boolean? = null
+    var isTaxRequired:Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -146,15 +147,19 @@ class ExcelActivity:BaseRefreshActivity() {
                         if(tv_car_name.text.toString().equals("전체")){
                             isActiveForFilter = null
                             carIdForFilter = null
+                            isTaxRequired = false
                         }
                         else if(tv_car_name.text.toString().equals(getString(R.string.pending))){
                             isActiveForFilter = true
                             carIdForFilter = "null"
+                            isTaxRequired = true
                         }else if(tv_car_name.text.toString().equals(getString(R.string.not_my_car))){
                             isActiveForFilter = false
                             carIdForFilter = "null"
+                            isTaxRequired = true
                         }else{
                             isActiveForFilter = true
+                            isTaxRequired = true
                         }
 
 
@@ -484,373 +489,375 @@ class ExcelActivity:BaseRefreshActivity() {
             sheet.setColumnWidth(colIndex, (maxLength + 2) * 256) // 너비를 설정 (2 추가)
         }
 
-        val sheet1 = workbook.createSheet("국세청 양식")
+        if(isTaxRequired){
+            val sheet1 = workbook.createSheet("국세청 양식")
 
 // 열 너비 설정
-        sheet1.setColumnWidth(0, (17 * 256) / 6)
-        sheet1.setColumnWidth(1, (86 * 256) / 6)
-        sheet1.setColumnWidth(2, (32 * 256) / 6)
-        sheet1.setColumnWidth(3, (29 * 256) / 6)
-        sheet1.setColumnWidth(4, (36 * 256) / 6)
-        sheet1.setColumnWidth(5, (26 * 256) / 6)
-        sheet1.setColumnWidth(6, (34 * 256) / 6)
-        sheet1.setColumnWidth(7, (37 * 256) / 6)
-        sheet1.setColumnWidth(8, (31 * 256) / 6)
-        sheet1.setColumnWidth(9, (37 * 256) / 6)
-        sheet1.setColumnWidth(10, (62 * 256) / 6)
-        sheet1.setColumnWidth(11, (44 * 256) / 6)
-        sheet1.setColumnWidth(12, (44 * 256) / 6)
-        sheet1.setColumnWidth(13, (16 * 256) / 6)
-        sheet1.setColumnWidth(14, (72 * 256) / 6)
-        sheet1.setColumnWidth(15, (18 * 256) / 6)
-        sheet1.setColumnWidth(16, (75 * 256) / 6)
+            sheet1.setColumnWidth(0, (17 * 256) / 6)
+            sheet1.setColumnWidth(1, (86 * 256) / 6)
+            sheet1.setColumnWidth(2, (32 * 256) / 6)
+            sheet1.setColumnWidth(3, (29 * 256) / 6)
+            sheet1.setColumnWidth(4, (36 * 256) / 6)
+            sheet1.setColumnWidth(5, (26 * 256) / 6)
+            sheet1.setColumnWidth(6, (34 * 256) / 6)
+            sheet1.setColumnWidth(7, (37 * 256) / 6)
+            sheet1.setColumnWidth(8, (31 * 256) / 6)
+            sheet1.setColumnWidth(9, (37 * 256) / 6)
+            sheet1.setColumnWidth(10, (62 * 256) / 6)
+            sheet1.setColumnWidth(11, (44 * 256) / 6)
+            sheet1.setColumnWidth(12, (44 * 256) / 6)
+            sheet1.setColumnWidth(13, (16 * 256) / 6)
+            sheet1.setColumnWidth(14, (72 * 256) / 6)
+            sheet1.setColumnWidth(15, (18 * 256) / 6)
+            sheet1.setColumnWidth(16, (75 * 256) / 6)
 
 // 행 높이 설정
-        sheet1.createRow(0).heightInPoints = 24f // Row 1
-        sheet1.createRow(1).heightInPoints = 18f // Row 2
-        sheet1.createRow(2).heightInPoints = 8f  // Row 3
-        sheet1.createRow(3).heightInPoints = 8f  // Row 4
-        sheet1.createRow(5).heightInPoints = 8f  // Row 6
-        sheet1.createRow(6).heightInPoints = 25f // Row 7
-        sheet1.createRow(7).heightInPoints = 24f // Row 8
-        sheet1.createRow(8).heightInPoints = 23f // Row 9
-        sheet1.createRow(9).heightInPoints = 23f // Row 10
-        sheet1.createRow(10).heightInPoints = 26f // Row 11
-        sheet1.createRow(11).heightInPoints = 25f // Row 12
-        sheet1.createRow(12).heightInPoints = 26f // Row 13
-        sheet1.createRow(13).heightInPoints = 23f // Row 14
-        sheet1.createRow(14).heightInPoints = 20f
-        mergeCells(sheet1, 14, 2, 14, 3)  // C to D
-        mergeCells(sheet1, 14, 4, 14, 5)  // E to F
-        mergeCells(sheet1, 14, 6, 14, 7)  // G to H
-        mergeCells(sheet1, 14, 8, 14, 9)  // I to J
-        mergeCells(sheet1, 14, 11, 14, 13) // L to N
-        mergeCells(sheet1, 14, 14, 14, 15) // O to P
+            sheet1.createRow(0).heightInPoints = 24f // Row 1
+            sheet1.createRow(1).heightInPoints = 18f // Row 2
+            sheet1.createRow(2).heightInPoints = 8f  // Row 3
+            sheet1.createRow(3).heightInPoints = 8f  // Row 4
+            sheet1.createRow(5).heightInPoints = 8f  // Row 6
+            sheet1.createRow(6).heightInPoints = 25f // Row 7
+            sheet1.createRow(7).heightInPoints = 24f // Row 8
+            sheet1.createRow(8).heightInPoints = 23f // Row 9
+            sheet1.createRow(9).heightInPoints = 23f // Row 10
+            sheet1.createRow(10).heightInPoints = 26f // Row 11
+            sheet1.createRow(11).heightInPoints = 25f // Row 12
+            sheet1.createRow(12).heightInPoints = 26f // Row 13
+            sheet1.createRow(13).heightInPoints = 23f // Row 14
+            sheet1.createRow(14).heightInPoints = 20f
+            mergeCells(sheet1, 14, 2, 14, 3)  // C to D
+            mergeCells(sheet1, 14, 4, 14, 5)  // E to F
+            mergeCells(sheet1, 14, 6, 14, 7)  // G to H
+            mergeCells(sheet1, 14, 8, 14, 9)  // I to J
+            mergeCells(sheet1, 14, 11, 14, 13) // L to N
+            mergeCells(sheet1, 14, 14, 14, 15) // O to P
 
-        val lastNo1 = driveItems.size + 16
-        val lastNo2 = driveItems.size + 17
-        val lastNo3 = driveItems.size + 18
-        val lastNo4 = driveItems.size + 19
-        val lastNo5 = driveItems.size + 20
-
-
-        sheet1.createRow(lastNo1).heightInPoints = 30f // Row 78
-        sheet1.createRow(lastNo2).heightInPoints = 29f // Row 79
-        sheet1.createRow(lastNo3).heightInPoints = 30f // Row 78
-        sheet1.createRow(lastNo4).heightInPoints = 29f // Row 79        sheet1.createRow(lastNo1).heightInPoints = 30f // Row 78
-        sheet1.createRow(lastNo5).heightInPoints = 29f // Row 79
+            val lastNo1 = driveItems.size + 16
+            val lastNo2 = driveItems.size + 17
+            val lastNo3 = driveItems.size + 18
+            val lastNo4 = driveItems.size + 19
+            val lastNo5 = driveItems.size + 20
 
 
-        mergeCells(sheet1, 0, 1, 0, 16) // Merge B1 to Q1
-        val cellB1 = sheet1.getRow(0).createCell(1)
-        cellB1.setCellValue("【업무용승용차 운행기록부에 관한 별지 서식】<2016.4.1. 제정>")
-        cellB1.cellStyle = createCellStyle(workbook, 10, bold = false, verticalAlignment = VerticalAlignment.CENTER)
-        val border = workbook.createCellStyle()
-        border.setBorderBottom(BorderStyle.THIN)
-        border.setBottomBorderColor(IndexedColors.BLACK.index)
-        cellB1.cellStyle = border
-
-        // Row 2 to Row 5 - 과세기간 영역
-        mergeCells(sheet1, 1, 1, 4, 2) // B2:C5
-        val cellB2 = sheet1.getRow(1).createCell(1)
-        cellB2.setCellValue("과   세   기   간")
-        cellB2.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
-
-        mergeCells(sheet1, 1, 3, 1, 6) // D2:G2
-        val cellD2 = sheet1.getRow(1).createCell(3)
-        cellD2.setCellValue(".      .      .")
-        cellD2.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
-
-        mergeCells(sheet1, 2, 3, 3, 6) // D3:G4
-        val cellD3 = sheet1.getRow(2).createCell(3)
-        cellD3.setCellValue("~")
-        cellD3.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
-
-        mergeCells(sheet1, 4, 3, 4, 6) // D5:G5
-        val row4 = sheet1.getRow(4) ?: sheet1.createRow(4)  // Row 4가 없으면 새로 생성
-        val cellD5 = row4.createCell(3)
-        cellD5.setCellValue(".      .      .")
-        cellD5.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
-
-        // Title: 업무용승용차 운행기록부
-        mergeCells(sheet1, 1, 7, 4, 12) // H2:M5
-        val cellH2 = sheet1.getRow(1).createCell(7)
-        cellH2.setCellValue("업무용승용차 운행기록부")
-        cellH2.cellStyle = createCellStyle(workbook, 18, bold = true, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
-
-        // 상호명 & 사업자등록번호
-        mergeCells(sheet1, 1, 13, 2, 14) // N2:O3
-        val cellN2 = sheet1.getRow(1).createCell(13)
-        cellN2.setCellValue("상      호      명")
-        cellN2.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
-
-        mergeCells(sheet1, 3, 13, 4, 14) // N4:O5
-        val cellN4 = sheet1.getRow(3).createCell(13)
-        cellN4.setCellValue("사업자등록번호")
-        cellN4.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+            sheet1.createRow(lastNo1).heightInPoints = 30f // Row 78
+            sheet1.createRow(lastNo2).heightInPoints = 29f // Row 79
+            sheet1.createRow(lastNo3).heightInPoints = 30f // Row 78
+            sheet1.createRow(lastNo4).heightInPoints = 29f // Row 79        sheet1.createRow(lastNo1).heightInPoints = 30f // Row 78
+            sheet1.createRow(lastNo5).heightInPoints = 29f // Row 79
 
 
-        // 1. 기본정보 관련 병합 및 스타일링
-        mergeCells(sheet1, 7, 1, 7, 8) // B7:I7
-        val cellB7 = sheet1.getRow(7).createCell(1)
-        cellB7.setCellValue("1. 기본정보")
-        cellB7.cellStyle = createCellStyle(workbook, 12, bold = true, verticalAlignment = VerticalAlignment.CENTER)
+            mergeCells(sheet1, 0, 1, 0, 16) // Merge B1 to Q1
+            val cellB1 = sheet1.getRow(0).createCell(1)
+            cellB1.setCellValue("【업무용승용차 운행기록부에 관한 별지 서식】<2016.4.1. 제정>")
+            cellB1.cellStyle = createCellStyle(workbook, 10, bold = false, verticalAlignment = VerticalAlignment.CENTER)
+            val border = workbook.createCellStyle()
+            border.setBorderBottom(BorderStyle.THIN)
+            border.setBottomBorderColor(IndexedColors.BLACK.index)
+            cellB1.cellStyle = border
 
-        mergeCells(sheet1, 8, 1, 8, 3) // B8:D8
-        val cellB8 = sheet1.getRow(8).createCell(1)
-        cellB8.setCellValue("①차 종")
-        cellB8.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+            // Row 2 to Row 5 - 과세기간 영역
+            mergeCells(sheet1, 1, 1, 4, 2) // B2:C5
+            val cellB2 = sheet1.getRow(1).createCell(1)
+            cellB2.setCellValue("과   세   기   간")
+            cellB2.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+
+            mergeCells(sheet1, 1, 3, 1, 6) // D2:G2
+            val cellD2 = sheet1.getRow(1).createCell(3)
+            cellD2.setCellValue(".      .      .")
+            cellD2.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+
+            mergeCells(sheet1, 2, 3, 3, 6) // D3:G4
+            val cellD3 = sheet1.getRow(2).createCell(3)
+            cellD3.setCellValue("~")
+            cellD3.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+
+            mergeCells(sheet1, 4, 3, 4, 6) // D5:G5
+            val row4 = sheet1.getRow(4) ?: sheet1.createRow(4)  // Row 4가 없으면 새로 생성
+            val cellD5 = row4.createCell(3)
+            cellD5.setCellValue(".      .      .")
+            cellD5.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+
+            // Title: 업무용승용차 운행기록부
+            mergeCells(sheet1, 1, 7, 4, 12) // H2:M5
+            val cellH2 = sheet1.getRow(1).createCell(7)
+            cellH2.setCellValue("업무용승용차 운행기록부")
+            cellH2.cellStyle = createCellStyle(workbook, 18, bold = true, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+
+            // 상호명 & 사업자등록번호
+            mergeCells(sheet1, 1, 13, 2, 14) // N2:O3
+            val cellN2 = sheet1.getRow(1).createCell(13)
+            cellN2.setCellValue("상      호      명")
+            cellN2.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+
+            mergeCells(sheet1, 3, 13, 4, 14) // N4:O5
+            val cellN4 = sheet1.getRow(3).createCell(13)
+            cellN4.setCellValue("사업자등록번호")
+            cellN4.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 
-        var carName = ""
-        if(driveItems.size > 0){
-            carName = driveItems.get(0).userCar?.modelNm?:""
-        }
+            // 1. 기본정보 관련 병합 및 스타일링
+            mergeCells(sheet1, 7, 1, 7, 8) // B7:I7
+            val cellB7 = sheet1.getRow(7).createCell(1)
+            cellB7.setCellValue("1. 기본정보")
+            cellB7.cellStyle = createCellStyle(workbook, 12, bold = true, verticalAlignment = VerticalAlignment.CENTER)
 
-        mergeCells(sheet1, 9, 1, 9, 3) // B8:D8
-        val cellB9 = sheet1.getRow(9).createCell(1)
-        cellB9.setCellValue(carName)
-        cellB9.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+            mergeCells(sheet1, 8, 1, 8, 3) // B8:D8
+            val cellB8 = sheet1.getRow(8).createCell(1)
+            cellB8.setCellValue("①차 종")
+            cellB8.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
-        var carNumber = ""
-        if(driveItems.size > 0){
-            carNumber = driveItems.get(0).userCar?.licensePlateNumber?:""
-        }
 
-        mergeCells(sheet1, 8, 4, 8, 7) // E8:H8
-        val cellE8 = sheet1.getRow(8).createCell(4)
-        cellE8.setCellValue("②자동차등록번호")
-        cellE8.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+            var carName = ""
+            if(driveItems.size > 0){
+                carName = driveItems.get(0).userCar?.modelNm?:""
+            }
 
-        mergeCells(sheet1, 9, 4, 9, 7) // E8:H8
-        val cellE9 = sheet1.getRow(9).createCell(4)
-        cellE9.setCellValue(carNumber)
-        cellE9.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+            mergeCells(sheet1, 9, 1, 9, 3) // B8:D8
+            val cellB9 = sheet1.getRow(9).createCell(1)
+            cellB9.setCellValue(carName)
+            cellB9.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+
+            var carNumber = ""
+            if(driveItems.size > 0){
+                carNumber = driveItems.get(0).userCar?.licensePlateNumber?:""
+            }
+
+            mergeCells(sheet1, 8, 4, 8, 7) // E8:H8
+            val cellE8 = sheet1.getRow(8).createCell(4)
+            cellE8.setCellValue("②자동차등록번호")
+            cellE8.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+
+            mergeCells(sheet1, 9, 4, 9, 7) // E8:H8
+            val cellE9 = sheet1.getRow(9).createCell(4)
+            cellE9.setCellValue(carNumber)
+            cellE9.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 // 2. 업무용 사용비율 계산 병합 및 스타일링
-        mergeCells(sheet1, 11, 1, 11, 8) // B11:I11
-        val cellB11 = sheet1.getRow(11).createCell(1)
-        cellB11.setCellValue("2. 업무용 사용비율 계산")
-        cellB11.cellStyle = createCellStyle(workbook, 12, bold = true, verticalAlignment = VerticalAlignment.CENTER)
+            mergeCells(sheet1, 11, 1, 11, 8) // B11:I11
+            val cellB11 = sheet1.getRow(11).createCell(1)
+            cellB11.setCellValue("2. 업무용 사용비율 계산")
+            cellB11.cellStyle = createCellStyle(workbook, 12, bold = true, verticalAlignment = VerticalAlignment.CENTER)
 
-        mergeCells(sheet1, 12, 1, 14, 1) // B12:B14
-        val cellB12 = sheet1.getRow(12).createCell(1)
-        cellB12.setCellValue("③사용일자(요일)")
-        cellB12.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+            mergeCells(sheet1, 12, 1, 14, 1) // B12:B14
+            val cellB12 = sheet1.getRow(12).createCell(1)
+            cellB12.setCellValue("③사용일자(요일)")
+            cellB12.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
-        mergeCells(sheet1, 12, 2, 12, 5) // C12:F12
-        val cellC12 = sheet1.getRow(12).createCell(2)
-        cellC12.setCellValue("④사용자")
-        cellC12.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+            mergeCells(sheet1, 12, 2, 12, 5) // C12:F12
+            val cellC12 = sheet1.getRow(12).createCell(2)
+            cellC12.setCellValue("④사용자")
+            cellC12.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
-        // B78:B79 병합 및 스타일 설정
-        mergeCells(sheet1, lastNo1, 1, lastNo2, 1) // B78:B79
-        val cellB78 = sheet1.getRow(lastNo1).createCell(1)
-        cellB78.cellStyle = createCellStyle(workbook, 10)
+            // B78:B79 병합 및 스타일 설정
+            mergeCells(sheet1, lastNo1, 1, lastNo2, 1) // B78:B79
+            val cellB78 = sheet1.getRow(lastNo1).createCell(1)
+            cellB78.cellStyle = createCellStyle(workbook, 10)
 
 // C78:F79 병합 및 스타일 설정
-        mergeCells(sheet1, lastNo1, 2, lastNo2, 5) // C78:F79
-        val cellC78 = sheet1.getRow(lastNo1).createCell(2)
-        cellC78.cellStyle = createCellStyle(workbook, 10)
+            mergeCells(sheet1, lastNo1, 2, lastNo2, 5) // C78:F79
+            val cellC78 = sheet1.getRow(lastNo1).createCell(2)
+            cellC78.cellStyle = createCellStyle(workbook, 10)
 
 // G78:K78 병합 및 스타일 설정
-        mergeCells(sheet1, lastNo1, 6, lastNo1, 10) // G78:K78
-        val cellG78 = sheet1.getRow(lastNo1).createCell(6)
-        cellG78.setCellValue("⑪과세기간 총주행 거리(㎞)")
-        cellG78.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+            mergeCells(sheet1, lastNo1, 6, lastNo1, 10) // G78:K78
+            val cellG78 = sheet1.getRow(lastNo1).createCell(6)
+            cellG78.setCellValue("⑪과세기간 총주행 거리(㎞)")
+            cellG78.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
-        mergeCells(sheet1, lastNo2, 6, lastNo2, 10) // G78:K78
-        val cellG79 = sheet1.getRow(lastNo2).createCell(6)
-        cellG79.setCellValue(((driveItems.sumOf { it.totalDistance }/1000).toInt()).toString() + "km")
-        cellG79.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+            mergeCells(sheet1, lastNo2, 6, lastNo2, 10) // G78:K78
+            val cellG79 = sheet1.getRow(lastNo2).createCell(6)
+            cellG79.setCellValue(((driveItems.sumOf { it.totalDistance }/1000).toInt()).toString() + "km")
+            cellG79.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 // L78:P78 병합 및 스타일 설정
-        mergeCells(sheet1, lastNo1, 11, lastNo1, 15) // L78:P78
-        val cellL78 = sheet1.getRow(lastNo1).createCell(11)
-        cellL78.setCellValue("⑫과세기간 업무용 사용거리(㎞)")
-        cellL78.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+            mergeCells(sheet1, lastNo1, 11, lastNo1, 15) // L78:P78
+            val cellL78 = sheet1.getRow(lastNo1).createCell(11)
+            cellL78.setCellValue("⑫과세기간 업무용 사용거리(㎞)")
+            cellL78.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 
-        mergeCells(sheet1, lastNo2, 11, lastNo2, 15) // L78:P78
-        val cellL79 = sheet1.getRow(lastNo2).createCell(11)
-        cellL79.setCellValue((driveItems.sumOf { it.totalDistance }/1000).toInt().toString() + "km")
-        cellL79.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+            mergeCells(sheet1, lastNo2, 11, lastNo2, 15) // L78:P78
+            val cellL79 = sheet1.getRow(lastNo2).createCell(11)
+            cellL79.setCellValue((driveItems.sumOf { it.totalDistance }/1000).toInt().toString() + "km")
+            cellL79.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 // Q78 스타일 설정
-        val cellQ78 = sheet1.getRow(lastNo1).createCell(16)
-        cellQ78.setCellValue("⑬업무사용비율(⑫/⑪)")
-        cellQ78.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+            val cellQ78 = sheet1.getRow(lastNo1).createCell(16)
+            cellQ78.setCellValue("⑬업무사용비율(⑫/⑪)")
+            cellQ78.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
-        // type이 null이 아닌 아이템 개수
-        val nonNullTypeCount = driveItems.count { it.type != null }
+            // type이 null이 아닌 아이템 개수
+            val nonNullTypeCount = driveItems.count { it.type != null }
 
-        // 비율 계산
-        val ratio:Double = if (driveItems.size > 0) nonNullTypeCount.toDouble() / driveItems.size.toDouble() else 0.0
+            // 비율 계산
+            val ratio:Double = if (driveItems.size > 0) nonNullTypeCount.toDouble() / driveItems.size.toDouble() else 0.0
 
 
 // G79:K79 병합
-        val cellQ79 = sheet1.getRow(lastNo2).createCell(16)
+            val cellQ79 = sheet1.getRow(lastNo2).createCell(16)
 //        cellQ79.setCellValue((ratio*100).toInt().toString() + "%")
-        cellQ79.setCellValue("")
-        cellQ79.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+            cellQ79.setCellValue("")
+            cellQ79.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 
 
 // 1. 부서 & 성명 - 셀 병합 수정 (2칸, 1행)
-        mergeCells(sheet1, 14, 2, 14, 3) // C13:D13 (부서)
-        val cellC13 = sheet1.getRow(14).createCell(2)
-        cellC13.setCellValue("부서")
-        cellC13.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+            mergeCells(sheet1, 14, 2, 14, 3) // C13:D13 (부서)
+            val cellC13 = sheet1.getRow(14).createCell(2)
+            cellC13.setCellValue("부서")
+            cellC13.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
-        mergeCells(sheet1, 14, 4, 14, 5) // E13:F13 (성명)
-        val cellE13 = sheet1.getRow(14).createCell(4)
-        cellE13.setCellValue("성명")
-        cellE13.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+            mergeCells(sheet1, 14, 4, 14, 5) // E13:F13 (성명)
+            val cellE13 = sheet1.getRow(14).createCell(4)
+            cellE13.setCellValue("성명")
+            cellE13.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 // 2. ⑤주행 전 계기판의 거리(㎞) - 셀 병합 수정 (2칸, 1행)
-        mergeCells(sheet1, 14, 6, 14, 7) // G13:H13 (⑤주행 전 계기판의 거리(㎞))
-        val cellG13 = sheet1.getRow(14).createCell(6)
-        cellG13.setCellValue("⑤주행 전 계기판의 거리(㎞)")
-        cellG13.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+            mergeCells(sheet1, 14, 6, 14, 7) // G13:H13 (⑤주행 전 계기판의 거리(㎞))
+            val cellG13 = sheet1.getRow(14).createCell(6)
+            cellG13.setCellValue("⑤주행 전 계기판의 거리(㎞)")
+            cellG13.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 // 3. ⑥주행 후 계기판의 거리(㎞) - 셀 병합 수정 (2칸, 1행)
-        mergeCells(sheet1, 14, 8, 14, 9) // I13:J13 (⑥주행 후 계기판의 거리(㎞))
-        val cellI13 = sheet1.getRow(14).createCell(8)
-        cellI13.setCellValue("⑥주행 후 계기판의 거리(㎞)")
-        cellI13.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+            mergeCells(sheet1, 14, 8, 14, 9) // I13:J13 (⑥주행 후 계기판의 거리(㎞))
+            val cellI13 = sheet1.getRow(14).createCell(8)
+            cellI13.setCellValue("⑥주행 후 계기판의 거리(㎞)")
+            cellI13.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 // 3. 운행 내역 관련 병합 및 스타일링
-        mergeCells(sheet1, 12, 6, 12, 16) // G12:Q12
-        val cellG12 = sheet1.getRow(12).createCell(6)
-        cellG12.setCellValue("운 행     내 역")
-        cellG12.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+            mergeCells(sheet1, 12, 6, 12, 16) // G12:Q12
+            val cellG12 = sheet1.getRow(12).createCell(6)
+            cellG12.setCellValue("운 행     내 역")
+            cellG12.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
-        mergeCells(sheet1, 13, 10, 14, 10) // K13:K14
-        val cellK13 = sheet1.getRow(13).createCell(10)
-        cellK13.setCellValue("⑦주행 거리(㎞)")
-        cellK13.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+            mergeCells(sheet1, 13, 10, 14, 10) // K13:K14
+            val cellK13 = sheet1.getRow(13).createCell(10)
+            cellK13.setCellValue("⑦주행 거리(㎞)")
+            cellK13.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 // 4. 업무용 사용거리 세부항목
-        mergeCells(sheet1, 13, 11, 13, 15) // L13:P13
-        val cellL13 = sheet1.getRow(13).createCell(11)
-        cellL13.setCellValue("업무용 사용거리(㎞)")
-        cellL13.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+            mergeCells(sheet1, 13, 11, 13, 15) // L13:P13
+            val cellL13 = sheet1.getRow(13).createCell(11)
+            cellL13.setCellValue("업무용 사용거리(㎞)")
+            cellL13.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
-        mergeCells(sheet1, 14, 11, 14, 13) // L14:N14
-        val cellL14 = sheet1.getRow(14).createCell(11)
-        cellL14.setCellValue("⑧출․퇴근용(㎞)")
-        cellL14.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+            mergeCells(sheet1, 14, 11, 14, 13) // L14:N14
+            val cellL14 = sheet1.getRow(14).createCell(11)
+            cellL14.setCellValue("⑧출․퇴근용(㎞)")
+            cellL14.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
-        mergeCells(sheet1, 14, 14, 14, 15) // O14:P14
-        val cellO14 = sheet1.getRow(14).createCell(14)
-        cellO14.setCellValue("⑨일반 업무용(㎞)")
-        cellO14.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+            mergeCells(sheet1, 14, 14, 14, 15) // O14:P14
+            val cellO14 = sheet1.getRow(14).createCell(14)
+            cellO14.setCellValue("⑨일반 업무용(㎞)")
+            cellO14.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
-        mergeCells(sheet1, 13, 16, 14, 16) // Q13:Q14
-        val cellQ13 = sheet1.getRow(13).createCell(16)
-        cellQ13.setCellValue("⑩비 고")
-        cellQ13.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+            mergeCells(sheet1, 13, 16, 14, 16) // Q13:Q14
+            val cellQ13 = sheet1.getRow(13).createCell(16)
+            cellQ13.setCellValue("⑩비 고")
+            cellQ13.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 
-        for((index, item) in driveItems.withIndex()){
-            var i = index+15
-            sheet1.createRow(i).heightInPoints = 20f
-            mergeCells(sheet1, i, 2, i, 3)  // C to D
-            mergeCells(sheet1, i, 4, i, 5)  // E to F
-            mergeCells(sheet1, i, 6, i, 7)  // G to H
-            mergeCells(sheet1, i, 8, i, 9)  // I to J
-            mergeCells(sheet1, i, 11, i, 13) // L to N
-            mergeCells(sheet1, i, 14, i, 15) // O to P
+            for((index, item) in driveItems.withIndex()){
+                var i = index+15
+                sheet1.createRow(i).heightInPoints = 20f
+                mergeCells(sheet1, i, 2, i, 3)  // C to D
+                mergeCells(sheet1, i, 4, i, 5)  // E to F
+                mergeCells(sheet1, i, 6, i, 7)  // G to H
+                mergeCells(sheet1, i, 8, i, 9)  // I to J
+                mergeCells(sheet1, i, 11, i, 13) // L to N
+                mergeCells(sheet1, i, 14, i, 15) // O to P
 
-            /**
-             * 사용일자
-             */
-            val cellB15 = sheet1.getRow(i).createCell(1)
-            cellB15.setCellValue(convertDateFormatForExcel(item.startTime))
-            cellB15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+                /**
+                 * 사용일자
+                 */
+                val cellB15 = sheet1.getRow(i).createCell(1)
+                cellB15.setCellValue(convertDateFormatForExcel(item.startTime))
+                cellB15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
-            /**
-             * 부서
-             */
-            val cellC15 = sheet1.getRow(i).createCell(2)
-            cellC15.setCellValue(item.userCar?.data?.department?:"")
-            cellC15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+                /**
+                 * 부서
+                 */
+                val cellC15 = sheet1.getRow(i).createCell(2)
+                cellC15.setCellValue(item.userCar?.data?.department?:"")
+                cellC15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
-            /**
-             * 성명
-             */
-            val cellE15 = sheet1.getRow(i).createCell(4)
-            cellE15.setCellValue(item.userCar?.data?.name?:"")
-            cellE15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+                /**
+                 * 성명
+                 */
+                val cellE15 = sheet1.getRow(i).createCell(4)
+                cellE15.setCellValue(item.userCar?.data?.name?:"")
+                cellE15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
-            /**
-             * ⑤주행 전
-             * 계기판의 거리(㎞)
-             */
-            val cellG15 = sheet1.getRow(i).createCell(6)
-            cellG15.setCellValue("")
-            cellG15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+                /**
+                 * ⑤주행 전
+                 * 계기판의 거리(㎞)
+                 */
+                val cellG15 = sheet1.getRow(i).createCell(6)
+                cellG15.setCellValue("")
+                cellG15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
-            /**
-             * ⑥주행 후
-             * 계기판의 거리(㎞)
-             */
-            val cellI15 = sheet1.getRow(i).createCell(8)
-            cellI15.setCellValue("")
-            cellI15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+                /**
+                 * ⑥주행 후
+                 * 계기판의 거리(㎞)
+                 */
+                val cellI15 = sheet1.getRow(i).createCell(8)
+                cellI15.setCellValue("")
+                cellI15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
-            /**
-             * ⑦주행거리(㎞)
-             */
-            val cellK15 = sheet1.getRow(i).createCell(10)
-            cellK15.setCellValue(((item.totalDistance/1000).toInt()).toString() + "km")
-            cellK15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+                /**
+                 * ⑦주행거리(㎞)
+                 */
+                val cellK15 = sheet1.getRow(i).createCell(10)
+                cellK15.setCellValue(((item.totalDistance/1000).toInt()).toString() + "km")
+                cellK15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
-            /**
-             * ⑧출․퇴근용(㎞)
-             */
-            var distanceForCommute = 0.0
-            var distanceForWork = 0.0
+                /**
+                 * ⑧출․퇴근용(㎞)
+                 */
+                var distanceForCommute = 0.0
+                var distanceForWork = 0.0
 
-            item.type?.let{
-                if(it.equals(DetailDriveHistoryActivity.CorpType.COMMUTE.name)){
-                    distanceForCommute = item.totalDistance
+                item.type?.let{
+                    if(it.equals(DetailDriveHistoryActivity.CorpType.COMMUTE.name)){
+                        distanceForCommute = item.totalDistance
+                    }
+
+                    if(it.equals(DetailDriveHistoryActivity.CorpType.WORK.name)){
+                        distanceForWork = item.totalDistance
+                    }
+
+
                 }
 
-                if(it.equals(DetailDriveHistoryActivity.CorpType.WORK.name)){
-                    distanceForWork = item.totalDistance
-                }
+                val cellL15 = sheet1.getRow(i).createCell(11)
+                cellL15.setCellValue(if(distanceForCommute != 0.0){(distanceForCommute/1000).toInt().toString() + "km"}else{""})
+                cellL15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
+
+                /**
+                 * ⑨일반 업무용(㎞)
+                 */
+                val cellO15 = sheet1.getRow(i).createCell(14)
+                cellO15.setCellValue(if(distanceForWork != 0.0){(distanceForWork/1000).toInt().toString() + "km"}else{""})
+                cellO15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
+
+
+                val type = item.type?.let{
+                    if(it.equals(DetailDriveHistoryActivity.CorpType.NON_WORK.name)){
+                        ""
+                    }else{
+                        it
+                    }
+                }
+                /**
+                 * ⑩비 고
+                 */
+                val cellQ15 = sheet1.getRow(i).createCell(16)
+                cellQ15.setCellValue(type)
+                cellQ15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
             }
-
-            val cellL15 = sheet1.getRow(i).createCell(11)
-            cellL15.setCellValue(if(distanceForCommute != 0.0){(distanceForCommute/1000).toInt().toString() + "km"}else{""})
-            cellL15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
-
-
-            /**
-             * ⑨일반 업무용(㎞)
-             */
-            val cellO15 = sheet1.getRow(i).createCell(14)
-            cellO15.setCellValue(if(distanceForWork != 0.0){(distanceForWork/1000).toInt().toString() + "km"}else{""})
-            cellO15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
-
-
-            val type = item.type?.let{
-                if(it.equals(DetailDriveHistoryActivity.CorpType.NON_WORK.name)){
-                    ""
-                }else{
-                    it
-                }
-            }
-            /**
-             * ⑩비 고
-             */
-            val cellQ15 = sheet1.getRow(i).createCell(16)
-            cellQ15.setCellValue(type)
-            cellQ15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
-
         }
 
 

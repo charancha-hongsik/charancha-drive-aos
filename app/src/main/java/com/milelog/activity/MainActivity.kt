@@ -481,6 +481,11 @@ class MainActivity:BaseActivity() {
         fun getRefreshToken():String{
             return PreferenceUtil.getPref(activity, PreferenceUtil.REFRESH_TOKEN, "")!!
         }
+
+        @JavascriptInterface
+        fun closeWebview(){
+            activity.finish()
+        }
     }
 
 }
