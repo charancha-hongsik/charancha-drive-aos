@@ -552,10 +552,10 @@ class ExcelActivity:BaseRefreshActivity() {
             sheet1.createRow(12).heightInPoints = 26f // Row 13
             sheet1.createRow(13).heightInPoints = 23f // Row 14
             sheet1.createRow(14).heightInPoints = 20f
-            mergeCells(sheet1, 14, 2, 14, 3)  // C to D
-            mergeCells(sheet1, 14, 4, 14, 5)  // E to F
-            mergeCells(sheet1, 14, 6, 14, 7)  // G to H
-            mergeCells(sheet1, 14, 8, 14, 9)  // I to J
+            mergeCells(sheet1, 13, 2, 14, 3)  // C to D
+            mergeCells(sheet1, 13, 4, 14, 5)  // E to F
+            mergeCells(sheet1, 13, 6, 14, 7)  // G to H
+            mergeCells(sheet1, 13, 8, 14, 9)  // I to J
             mergeCells(sheet1, 14, 11, 14, 13) // L to N
             mergeCells(sheet1, 14, 14, 14, 15) // O to P
 
@@ -729,25 +729,25 @@ class ExcelActivity:BaseRefreshActivity() {
 
 
 // 1. 부서 & 성명 - 셀 병합 수정 (2칸, 1행)
-            mergeCells(sheet1, 14, 2, 14, 3) // C13:D13 (부서)
-            val cellC13 = sheet1.getRow(14).createCell(2)
+            mergeCells(sheet1, 13, 2, 14, 3) // C13:D13 (부서)
+            val cellC13 = sheet1.getRow(13).createCell(2)
             cellC13.setCellValue("부서")
             cellC13.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
-            mergeCells(sheet1, 14, 4, 14, 5) // E13:F13 (성명)
-            val cellE13 = sheet1.getRow(14).createCell(4)
+            mergeCells(sheet1, 13, 4, 14, 5) // E13:F13 (성명)
+            val cellE13 = sheet1.getRow(13).createCell(4)
             cellE13.setCellValue("성명")
             cellE13.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 // 2. ⑤주행 전 계기판의 거리(㎞) - 셀 병합 수정 (2칸, 1행)
-            mergeCells(sheet1, 14, 6, 14, 7) // G13:H13 (⑤주행 전 계기판의 거리(㎞))
-            val cellG13 = sheet1.getRow(14).createCell(6)
+            mergeCells(sheet1, 13, 6, 14, 7) // G13:H13 (⑤주행 전 계기판의 거리(㎞))
+            val cellG13 = sheet1.getRow(13).createCell(6)
             cellG13.setCellValue("⑤주행 전 계기판의 거리(㎞)")
             cellG13.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 // 3. ⑥주행 후 계기판의 거리(㎞) - 셀 병합 수정 (2칸, 1행)
-            mergeCells(sheet1, 14, 8, 14, 9) // I13:J13 (⑥주행 후 계기판의 거리(㎞))
-            val cellI13 = sheet1.getRow(14).createCell(8)
+            mergeCells(sheet1, 13, 8, 14, 9) // I13:J13 (⑥주행 후 계기판의 거리(㎞))
+            val cellI13 = sheet1.getRow(13).createCell(8)
             cellI13.setCellValue("⑥주행 후 계기판의 거리(㎞)")
             cellI13.cellStyle = createCellStyle(workbook, 10, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
