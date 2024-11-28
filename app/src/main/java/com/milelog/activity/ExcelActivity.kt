@@ -28,7 +28,9 @@ import com.milelog.CarViews
 import com.milelog.DividerItemDecoration
 import com.milelog.PreferenceUtil
 import com.milelog.R
+import com.milelog.activity.DetailDriveHistoryActivity.CorpType
 import com.milelog.activity.LoadCarMoreInfoActivity.Companion.CORPORATE
+import com.milelog.activity.LoadCarMoreInfoActivity.Companion.PERSONAL
 import com.milelog.retrofit.response.DriveItem
 import com.milelog.retrofit.response.GetDriveHistoryResponse
 import com.milelog.room.entity.MyCarsEntity
@@ -215,12 +217,23 @@ class ExcelActivity:BaseRefreshActivity() {
             var startAddress = history.startAddress?.parcel?.name ?: ""
             var endAddress = history.endAddress?.parcel?.name ?: ""
             var endAddressDetail = history.endAddress?.places?.takeIf { it.isNotEmpty() }?.get(0)?.name ?: ""
+            var drivingReason = ""
+            var userType = ""
 
             if(history.type != null){
                 totalDistance = history.edit?.totalDistance?.toDouble()?:totalDistance
                 startAddress = history.edit?.startAddress?:startAddress
                 endAddress = history.edit?.endAddress?:endAddress
                 endAddressDetail = history.edit?.place?:endAddressDetail
+                drivingReason = CorpType.valueOf(history.type).toString()
+            }
+
+            if((history.userCar?.type ?:"").equals(CORPORATE)){
+                userType = "법인"
+            }
+
+            if((history.userCar?.type ?:"").equals(PERSONAL)){
+                userType = "개인"
             }
 
 
@@ -232,9 +245,9 @@ class ExcelActivity:BaseRefreshActivity() {
                 "주행 시간" to history.totalTime.toString(),
                 "주행 거리 (km)" to (totalDistance/1000).toInt().toString(),
                 "데이터 인증" to history.verification,
-                "이동 수단" to (history.userCar?.carName ?: ""),
-                "주행 목적" to  (history.userCar?.type ?: ""),
-                "사용자 구분" to (history.userCar?.type ?: ""),
+                "이동 수단" to (history.userCar?.modelNm ?: ""),
+                "주행 목적" to  drivingReason,
+                "개인/법인" to userType,
                 "법인 사용자 이름" to (history.userCar?.data?.name ?: ""),
                 "법인 부서명" to (history.userCar?.data?.department ?: ""),
                 "운전자 메모" to (history.memo?:""),
@@ -847,7 +860,7 @@ class ExcelActivity:BaseRefreshActivity() {
                     if(it.equals(DetailDriveHistoryActivity.CorpType.NON_WORK.name)){
                         ""
                     }else{
-                        it
+                        CorpType.valueOf(it).description
                     }
                 }
                 /**
