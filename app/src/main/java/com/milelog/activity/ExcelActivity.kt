@@ -604,7 +604,7 @@ class ExcelActivity:BaseRefreshActivity() {
 
         var carName = ""
         if(driveItems.size > 0){
-            carName = driveItems.get(0).userCar?.carName?:""
+            carName = driveItems.get(0).userCar?.modelNm?:""
         }
 
         mergeCells(sheet1, 9, 1, 9, 3) // B8:D8
@@ -825,7 +825,7 @@ class ExcelActivity:BaseRefreshActivity() {
             }
 
             val cellL15 = sheet1.getRow(i).createCell(11)
-            cellL15.setCellValue((distanceForCommute/1000).toInt().toString() + "km")
+            cellL15.setCellValue(if(distanceForCommute != 0.0){(distanceForCommute/1000).toInt().toString() + "km"}else{""})
             cellL15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 
@@ -833,7 +833,7 @@ class ExcelActivity:BaseRefreshActivity() {
              * ⑨일반 업무용(㎞)
              */
             val cellO15 = sheet1.getRow(i).createCell(14)
-            cellO15.setCellValue((distanceForWork/1000).toInt().toString() + "km")
+            cellO15.setCellValue(if(distanceForWork != 0.0){(distanceForWork/1000).toInt().toString() + "km"}else{""})
             cellO15.cellStyle = createCellStyle(workbook, 10, bold = false, horizontalAlignment = HorizontalAlignment.CENTER, verticalAlignment = VerticalAlignment.CENTER)
 
 
