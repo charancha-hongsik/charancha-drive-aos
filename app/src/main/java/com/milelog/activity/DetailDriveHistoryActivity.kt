@@ -169,6 +169,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var tracking_id:String
     var pastMemo:String = ""
     var currentMemo:String = ""
+    val maxLengthForMemo = 100
 
     enum class CorpType(val description: String) {
         COMMUTE("출/퇴근"),
@@ -265,12 +266,12 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 p0?.let {
                     // 텍스트 길이가 10을 초과하면 마지막 글자 삭제
-                    if (it.length > 10) {
-                        et_memo.setText(it.substring(0, 10))  // 마지막 글자 자르기
-                        et_memo.setSelection(10)  // 커서를 마지막으로 이동
+                    if (it.length > maxLengthForMemo) {
+                        et_memo.setText(it.substring(0, maxLengthForMemo))  // 마지막 글자 자르기
+                        et_memo.setSelection(maxLengthForMemo)  // 커서를 마지막으로 이동
                     } else {
                         // 텍스트 길이가 10 이하일 경우 tv_text_length 업데이트
-                        tv_text_length.text = "${it.length}/10"
+                        tv_text_length.text = "${it.length}/100"
                     }
 
                     currentMemo = et_memo.text.toString()
