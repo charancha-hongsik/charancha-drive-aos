@@ -462,6 +462,9 @@ class BluetoothService : Service() {
         maxDistance = mutableListOf()
         pastMaxDistance = mutableListOf()
         distance_array = MutableList(24) { 0f } // 23개 시간대의 distance
+        pastLocation = null
+        pastTimeStamp = 0
+        pastSpeed = 0f
         PreferenceUtil.putPref(this, PreferenceUtil.RUNNING_LEVEL, level)
     }
 
@@ -590,16 +593,11 @@ class BluetoothService : Service() {
                                 /**
                                  * W0D-78 중복시간 삭제
                                  */
-                                if(getDateFromTimeStampToSS(pastTimeStamp) != getDateFromTimeStampToSS(timeStamp)){
-                                    if(pastLocation!=null){
-                                        pastLocation = location
-                                        pastTimeStamp = timeStamp
-                                    } else{
-                                        processLocationCallback(location, timeStamp)
-                                    }
-                                }else{
+                                if(getDateFromTimeStampToSS(pastTimeStamp) == getDateFromTimeStampToSS(timeStamp)){
                                     pastLocation = location
                                     pastTimeStamp = timeStamp
+                                }else{
+                                    processLocationCallback(location, timeStamp)
                                 }
                             }
                         }
