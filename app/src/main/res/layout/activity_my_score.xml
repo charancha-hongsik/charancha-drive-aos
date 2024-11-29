@@ -83,7 +83,7 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="2dp"
                 android:textAppearance="@style/H3SB"
-                android:textColor="@color/pri_500"
+                android:textColor="@color/pri_800"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_app_days1" />
             
@@ -407,7 +407,7 @@
                                 android:layout_marginRight="8dp"
                                 android:layout_gravity="center_vertical"
                                 android:gravity="center_vertical"
-                                android:textColor="@color/sec_500"
+                                android:textColor="@color/sec_800"
                                 android:text="1km"/>
 
                         </LinearLayout>
@@ -510,7 +510,7 @@
                                 android:layout_marginRight="8dp"
                                 android:layout_gravity="center_vertical"
                                 android:gravity="center_vertical"
-                                android:textColor="@color/pri_500"
+                                android:textColor="@color/pri_800"
                                 android:text="1km"/>
 
                         </LinearLayout>

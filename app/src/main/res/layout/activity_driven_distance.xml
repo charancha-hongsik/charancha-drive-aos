@@ -165,7 +165,7 @@
                     android:layout_height="18dp"
                     android:text="+ 21분km 증가"
                     android:textAppearance="@style/C1R"
-                    android:textColor="@color/pri_500"
+                    android:textColor="@color/pri_800"
                     android:textFontWeight="400"
                     android:layout_marginBottom="4dp"
                     />

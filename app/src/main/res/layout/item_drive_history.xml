@@ -299,7 +299,7 @@
                     android:text="기록제외"
                     android:gravity="center"
                     android:layout_marginBottom="10dp"
-                    android:textColor="@color/sec_500"
+                    android:textColor="@color/sec_800"
                     android:textAppearance="@style/C2M"
                     android:textFontWeight="500"
                     android:background="@drawable/radius3_sec50"
