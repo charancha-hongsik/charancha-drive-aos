@@ -7,14 +7,18 @@ import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageButton
@@ -84,6 +88,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
     lateinit var view_line:View
     lateinit var tv_corp_title:TextView
     lateinit var view_type:LinearLayout
+    lateinit var sv_for_et:ScrollView
 
     companion object {
         const val PERSONAL = "PERSONAL"
@@ -131,6 +136,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
         view_scrollview = findViewById(R.id.view_scrollview)
         layout_type = findViewById(R.id.layout_type)
         tv_type_title = findViewById(R.id.tv_type_title)
+        sv_for_et = findViewById(R.id.sv_for_et)
 
         layout_corp = findViewById(R.id.layout_corp)
         btn_corp = findViewById(R.id.btn_corp)
@@ -521,6 +527,17 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
 
                 btn_save.isSelected = true
                 btn_save.isClickable = true
+            }
+        }
+
+        et_corp_name.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                // 0.2초 후에 scrollview의 가장 하단부로 스크롤
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // ScrollView를 찾고 가장 하단으로 스크롤
+                    val lastChild = view_scrollview.getChildAt(view_scrollview.childCount - 1)
+                    view_scrollview.smoothScrollTo(0, lastChild.bottom)
+                }, 200)  // 200ms (0.2초) 후에 실행
             }
         }
 
