@@ -115,7 +115,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var tv_rapid_acc_count_info:TextView
     lateinit var tv_rapid_stop_count_info:TextView
     lateinit var tv_rapid_desc_count_info:TextView
-    lateinit var btn_back: ImageView
+    lateinit var btn_back: View
     lateinit var tv_scope_date_mycar:TextView
     lateinit var tv_mycar:TextView
     lateinit var tv_type:TextView

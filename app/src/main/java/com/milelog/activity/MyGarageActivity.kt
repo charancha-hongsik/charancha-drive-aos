@@ -48,7 +48,7 @@ import java.lang.reflect.Type
 class MyGarageActivity:BaseRefreshActivity() {
     lateinit var rv_garage: RecyclerView
     lateinit var btn_add:LinearLayout
-    lateinit var ib_arrow_register_car: ImageButton
+    lateinit var ib_arrow_register_car: View
     lateinit var layout_tab:LinearLayout
     lateinit var tv_corp_tab:TextView
     lateinit var tv_personal_tab:TextView
