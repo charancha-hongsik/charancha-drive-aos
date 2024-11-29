@@ -591,17 +591,9 @@ class BluetoothService : Service() {
                                  * W0D-78 중복시간 삭제
                                  */
                                 if(getDateFromTimeStampToSS(pastTimeStamp) != getDateFromTimeStampToSS(timeStamp)){
-                                    /**
-                                     * W0D-75 1초간 이동거리 70m 이상이면 삭제
-                                     */
                                     if(pastLocation!=null){
-                                        if((pastLocation!!.distanceTo(location) * 1000 / (timeStamp-pastTimeStamp)) > 70){
-                                            // 튀는 데이터가 여러개인 경우가 있어 주석처리
-//                                            pastLocation = location
-//                                            pastTimeStamp = timeStamp
-                                        } else {
-                                            processLocationCallback(location, timeStamp)
-                                        }
+                                        pastLocation = location
+                                        pastTimeStamp = timeStamp
                                     } else{
                                         processLocationCallback(location, timeStamp)
                                     }
