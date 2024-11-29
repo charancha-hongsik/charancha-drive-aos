@@ -64,7 +64,7 @@ class ExcelActivity:BaseRefreshActivity() {
     lateinit var btn_save_excel:TextView
     lateinit var btn_choose_date:LinearLayout
     lateinit var tv_chosen_date:TextView
-    lateinit var btn_back: ImageView
+    lateinit var btn_back: View
     var selectedDate:String = "2024년 10월"
     lateinit var workbook: Workbook
 

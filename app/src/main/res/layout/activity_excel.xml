@@ -21,8 +21,15 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent">
 
-            <ImageView
+            <View
                 android:id="@+id/btn_back"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+
+            <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_marginLeft="16dp"
