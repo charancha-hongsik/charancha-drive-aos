@@ -5,6 +5,13 @@
     android:background="@color/gray_50"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <View
+        android:id="@+id/btn_edit_car"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -77,16 +84,6 @@
             android:layout_height="20dp"
             android:padding="2dp"
             android:src="@drawable/ic_edit_gray"
-            android:layout_marginTop="4dp"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
-
-        <View
-            android:id="@+id/btn_edit_car"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@null"
             android:layout_marginTop="4dp"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
