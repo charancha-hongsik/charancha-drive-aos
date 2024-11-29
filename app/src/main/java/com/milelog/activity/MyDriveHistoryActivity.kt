@@ -574,6 +574,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         layout_filter.setOnClickListener {
             layout_choose_date.visibility = VISIBLE
             layout_select_main.visibility = VISIBLE
+            btn_inquire_date.visibility = VISIBLE
             layout_date_own.visibility = GONE
             listView_choose_date_own.visibility = GONE
             btn_select_date_from_list.visibility = GONE
