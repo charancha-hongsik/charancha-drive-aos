@@ -256,7 +256,7 @@
                                 android:text="+11점 증가"
                                 android:textFontWeight="400"
                                 android:textAppearance="@style/C1R"
-                                android:textColor="@color/pri_500"
+                                android:textColor="@color/pri_800"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
                                 app:layout_constraintLeft_toLeftOf="parent" />

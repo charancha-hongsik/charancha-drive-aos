@@ -2273,7 +2273,7 @@ class DrivenTimeActivity: BaseRefreshActivity() {
                                     "+" + transferSecondsToHourAndMinutes(recentDrivingDistance.diffTotal.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(
                                         recentDrivingDistance.diffTotal.totalTime
                                     ).second + "분 증가"
-                                tv_diff_time.setTextColor(resources.getColor(R.color.pri_500))
+                                tv_diff_time.setTextColor(resources.getColor(R.color.pri_800))
 
                             } else if (recentDrivingDistance.diffTotal.totalTime < 0.0) {
                                 tv_diff_time.text =
@@ -2305,7 +2305,7 @@ class DrivenTimeActivity: BaseRefreshActivity() {
                                 transferSecondsToHourAndMinutes(recentDrivingDistance.total.totalTime).first.toString() + "시간" + transferSecondsToHourAndMinutes(
                                     recentDrivingDistance.total.totalTime
                                 ).second + "분",
-                                resources.getColor(R.color.pri_500)
+                                resources.getColor(R.color.pri_800)
                             )
 
                             apiService().getDrivingTimeGraphData(
@@ -2505,7 +2505,7 @@ class DrivenTimeActivity: BaseRefreshActivity() {
                                     "+" + transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(
                                         drivingDistance.diffAverage.totalTime
                                     ).second + "분 증가"
-                                tv_diff_time.setTextColor(resources.getColor(R.color.pri_500))
+                                tv_diff_time.setTextColor(resources.getColor(R.color.pri_800))
 
                             } else if (drivingDistance.diffAverage.totalTime < 0.0) {
                                 tv_diff_time.text =
@@ -2541,7 +2541,7 @@ class DrivenTimeActivity: BaseRefreshActivity() {
                                 transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first.toString() + "시간" + transferSecondsToHourAndMinutes(
                                     drivingDistance.total.totalTime
                                 ).second + "분",
-                                resources.getColor(R.color.pri_500)
+                                resources.getColor(R.color.pri_800)
                             )
                         } else {
                             tv_diff_time.visibility = View.INVISIBLE
@@ -2658,7 +2658,7 @@ class DrivenTimeActivity: BaseRefreshActivity() {
                                     "+" + transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(
                                         drivingDistance.diffAverage.totalTime
                                     ).second + "분 증가"
-                                tv_diff_time.setTextColor(resources.getColor(R.color.pri_500))
+                                tv_diff_time.setTextColor(resources.getColor(R.color.pri_800))
 
                             } else if (drivingDistance.diffAverage.totalTime < 0.0) {
                                 tv_diff_time.text =
@@ -2681,7 +2681,7 @@ class DrivenTimeActivity: BaseRefreshActivity() {
                                 transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first.toString() + "시간" + transferSecondsToHourAndMinutes(
                                     drivingDistance.total.totalTime
                                 ).second + "분",
-                                resources.getColor(R.color.pri_500)
+                                resources.getColor(R.color.pri_800)
                             )
                         } else {
                             tv_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()
@@ -2788,7 +2788,7 @@ class DrivenTimeActivity: BaseRefreshActivity() {
                                     "+" + transferSecondsToHourAndMinutes(drivingDistance.diffAverage.totalTime).first.toString() + "시간 " + transferSecondsToHourAndMinutes(
                                         drivingDistance.diffAverage.totalTime
                                     ).second + "분 증가"
-                                tv_diff_time.setTextColor(resources.getColor(R.color.pri_500))
+                                tv_diff_time.setTextColor(resources.getColor(R.color.pri_800))
 
                             } else if (drivingDistance.diffAverage.totalTime < 0.0) {
                                 tv_diff_time.text =
@@ -2811,7 +2811,7 @@ class DrivenTimeActivity: BaseRefreshActivity() {
                                 transferSecondsToHourAndMinutes(drivingDistance.total.totalTime).first.toString() + "시간" + transferSecondsToHourAndMinutes(
                                     drivingDistance.total.totalTime
                                 ).second + "분",
-                                resources.getColor(R.color.pri_500)
+                                resources.getColor(R.color.pri_800)
                             )
                         } else {
                             tv_hour.text = transferSecondsToHourAndMinutes(0.0).first.toString()

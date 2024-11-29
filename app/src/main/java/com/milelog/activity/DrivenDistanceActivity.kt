@@ -2212,7 +2212,7 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
                             } else if (recentDrivingDistance.diffTotal.totalDistance > 0.0) {
                                 tv_diff_distance.text =
                                     "+" + transferDistance(recentDrivingDistance.diffTotal.totalDistance) + distance_unit + " 증가"
-                                tv_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
+                                tv_diff_distance.setTextColor(resources.getColor(R.color.pri_800))
 
                             } else if (recentDrivingDistance.diffTotal.totalDistance < 0.0) {
                                 tv_diff_distance.text =
@@ -2237,7 +2237,7 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
                                 this@DrivenDistanceActivity,
                                 "최근 1일간 내 차는\n" + transferDistance(recentDrivingDistance.total.totalDistance) + distance_unit + " 달렸어요",
                                 transferDistance(recentDrivingDistance.total.totalDistance) + distance_unit,
-                                resources.getColor(R.color.pri_500)
+                                resources.getColor(R.color.pri_800)
                             )
 
 
@@ -2371,7 +2371,7 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
                             } else if (drivingDistance.diffAverage.totalDistance > 0.0) {
                                 tv_diff_distance.text =
                                     "+" + transferDistance(drivingDistance.diffAverage.totalDistance) + distance_unit + " 증가"
-                                tv_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
+                                tv_diff_distance.setTextColor(resources.getColor(R.color.pri_800))
 
                             } else if (drivingDistance.diffAverage.totalDistance < 0.0) {
                                 tv_diff_distance.text =
@@ -2394,7 +2394,7 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
                                 this@DrivenDistanceActivity,
                                 "최근 1개월간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요",
                                 transferDistance(drivingDistance.total.totalDistance) + distance_unit,
-                                resources.getColor(R.color.pri_500)
+                                resources.getColor(R.color.pri_800)
                             )
                         } else {
                             tv_total_distance.text = transferDistance(0.0)
@@ -2482,7 +2482,7 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
                             } else if (drivingDistance.diffAverage.totalDistance > 0.0) {
                                 tv_diff_distance.text =
                                     "+" + transferDistance(drivingDistance.diffAverage.totalDistance) + distance_unit + " 증가"
-                                tv_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
+                                tv_diff_distance.setTextColor(resources.getColor(R.color.pri_800))
 
                             } else if (drivingDistance.diffAverage.totalDistance < 0.0) {
                                 tv_diff_distance.text =
@@ -2506,7 +2506,7 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
                                 this@DrivenDistanceActivity,
                                 "최근 6개월간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요",
                                 transferDistance(drivingDistance.total.totalDistance) + distance_unit,
-                                resources.getColor(R.color.pri_500)
+                                resources.getColor(R.color.pri_800)
                             )
                         }
                     } else {
@@ -2579,7 +2579,7 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
                             } else if (drivingDistance.diffAverage.totalDistance > 0.0) {
                                 tv_diff_distance.text =
                                     "+" + transferDistance(drivingDistance.diffAverage.totalDistance) + distance_unit + " 증가"
-                                tv_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
+                                tv_diff_distance.setTextColor(resources.getColor(R.color.pri_800))
 
                             } else if (drivingDistance.diffAverage.totalDistance < 0.0) {
                                 tv_diff_distance.text =
@@ -2604,7 +2604,7 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
                                 this@DrivenDistanceActivity,
                                 "최근 1년 간 내 차는\n" + transferDistance(drivingDistance.total.totalDistance) + distance_unit + " 달렸어요",
                                 transferDistance(drivingDistance.total.totalDistance) + distance_unit,
-                                resources.getColor(R.color.pri_500)
+                                resources.getColor(R.color.pri_800)
                             )
                         } else {
                             tv_total_distance.text = transferDistance(0.0)

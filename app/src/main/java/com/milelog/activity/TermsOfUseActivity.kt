@@ -118,7 +118,7 @@ class TermsOfUseActivity: BaseActivity() {
                 this@TermsOfUseActivity,
                 resources.getString(R.string.first_terms_text),
                 resources.getString(R.string.first_terms_text_red),
-                resources.getColor(R.color.pri_500)
+                resources.getColor(R.color.pri_800)
             )
             tvTermsTitle1.text = CommonUtil.getSpannableString(
                 this@TermsOfUseActivity,

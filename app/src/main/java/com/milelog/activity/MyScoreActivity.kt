@@ -282,7 +282,7 @@ class MyScoreActivity : BaseRefreshActivity() {
                     } else if (getManageScoreResponse.diffAverage.totalEngineScore > 0.0) {
                         tv_increase.text =
                             "+" + transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore) + "점 증가"
-                        tv_increase.setTextColor(resources.getColor(R.color.pri_500))
+                        tv_increase.setTextColor(resources.getColor(R.color.pri_800))
                     } else if (getManageScoreResponse.diffAverage.totalEngineScore < 0.0) {
                         tv_increase.text =
                             transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore).toString() + "점 하락"
@@ -334,7 +334,7 @@ class MyScoreActivity : BaseRefreshActivity() {
                                 getDrivingStatisticsResponse.diffAverage.totalDistance
                             )
                         )
-                        tv_there_is_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
+                        tv_there_is_diff_distance.setTextColor(resources.getColor(R.color.pri_800))
 
 
                     } else if (getDrivingStatisticsResponse.diffAverage.totalDistance < 0.0) {
@@ -372,7 +372,7 @@ class MyScoreActivity : BaseRefreshActivity() {
                                 getDrivingStatisticsResponse.diffAverage.totalTime
                             ).second.toString() + "분"
                         )
-                        tv_there_is_diff_time.setTextColor(resources.getColor(R.color.pri_500))
+                        tv_there_is_diff_time.setTextColor(resources.getColor(R.color.pri_800))
 
 
                     } else if (getDrivingStatisticsResponse.diffAverage.totalTime < 0.0) {

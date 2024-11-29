@@ -229,7 +229,7 @@ class ConstantSpeedDrivingActivity: BaseRefreshActivity() {
                                     "%.0f",
                                     recentDrivingDistance.diffAverage.constantSpeedDrivingDistancePercentage
                                 ) + "% 증가"
-                                tv_diff_percent.setTextColor(resources.getColor(R.color.pri_500))
+                                tv_diff_percent.setTextColor(resources.getColor(R.color.pri_800))
 
                             } else if (recentDrivingDistance.diffAverage.constantSpeedDrivingDistancePercentage < 0.0) {
                                 tv_diff_percent.text = String.format(
@@ -415,7 +415,7 @@ class ConstantSpeedDrivingActivity: BaseRefreshActivity() {
                                     "%.0f",
                                     drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage
                                 ) + "% 증가"
-                                tv_diff_percent.setTextColor(resources.getColor(R.color.pri_500))
+                                tv_diff_percent.setTextColor(resources.getColor(R.color.pri_800))
 
                             } else if (drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage < 0.0) {
                                 tv_diff_percent.text = String.format(
@@ -515,7 +515,7 @@ class ConstantSpeedDrivingActivity: BaseRefreshActivity() {
                                     "%.0f",
                                     drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage
                                 ) + "% 증가"
-                                tv_diff_percent.setTextColor(resources.getColor(R.color.pri_500))
+                                tv_diff_percent.setTextColor(resources.getColor(R.color.pri_800))
 
                             } else if (drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage < 0.0) {
                                 tv_diff_percent.text = String.format(
@@ -618,7 +618,7 @@ class ConstantSpeedDrivingActivity: BaseRefreshActivity() {
                                     "%.0f",
                                     drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage
                                 ) + "% 증가"
-                                tv_diff_percent.setTextColor(resources.getColor(R.color.pri_500))
+                                tv_diff_percent.setTextColor(resources.getColor(R.color.pri_800))
 
                             } else if (drivingDistance.diffAverage.constantSpeedDrivingDistancePercentage < 0.0) {
                                 tv_diff_percent.text = String.format(

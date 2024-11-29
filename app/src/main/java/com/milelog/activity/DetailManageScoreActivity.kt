@@ -407,7 +407,7 @@ class DetailManageScoreActivity: BaseRefreshActivity(){
             iv_no_score.setImageDrawable(resources.getDrawable(R.drawable.resource_face_love))
 
             tv_increased_score.text =  "+" +transferNumWithRounds(getManageScoreResponse.diffAverage.totalEngineScore).toString() + "점 증가"
-            tv_increased_score.setTextColor(resources.getColor(R.color.pri_500))
+            tv_increased_score.setTextColor(resources.getColor(R.color.pri_800))
 
             view_engine_chart_score.background = resources.getDrawable(R.drawable.radius999_pri500)
 

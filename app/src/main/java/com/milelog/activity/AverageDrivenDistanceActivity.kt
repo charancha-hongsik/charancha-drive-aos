@@ -1218,7 +1218,7 @@ class AverageDrivenDistanceActivity: BaseRefreshActivity() {
                             } else if (recentDrivingDistance.diffPerOneAverage.totalDistance > 0.0) {
                                 tv_diff_distance.text =
                                     "+" + transferDistance(recentDrivingDistance.diffPerOneAverage.totalDistance) + distance_unit + " 증가"
-                                tv_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
+                                tv_diff_distance.setTextColor(resources.getColor(R.color.pri_800))
 
                             } else if (recentDrivingDistance.diffPerOneAverage.totalDistance < 0.0) {
                                 tv_diff_distance.text =
@@ -1398,7 +1398,7 @@ class AverageDrivenDistanceActivity: BaseRefreshActivity() {
                             } else if (drivingDistance.diffPerOneAverage.totalDistance > 0.0) {
                                 tv_diff_distance.text =
                                     "+" + transferDistance(drivingDistance.diffPerOneAverage.totalDistance) + distance_unit + " 증가"
-                                tv_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
+                                tv_diff_distance.setTextColor(resources.getColor(R.color.pri_800))
 
                             } else if (drivingDistance.diffPerOneAverage.totalDistance < 0.0) {
                                 tv_diff_distance.text =
@@ -1492,7 +1492,7 @@ class AverageDrivenDistanceActivity: BaseRefreshActivity() {
                             } else if (drivingDistance.diffPerOneAverage.totalDistance > 0.0) {
                                 tv_diff_distance.text =
                                     "+" + transferDistance(drivingDistance.diffPerOneAverage.totalDistance) + distance_unit + " 증가"
-                                tv_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
+                                tv_diff_distance.setTextColor(resources.getColor(R.color.pri_800))
 
                             } else if (drivingDistance.diffPerOneAverage.totalDistance < 0.0) {
                                 tv_diff_distance.text =
@@ -1576,7 +1576,7 @@ class AverageDrivenDistanceActivity: BaseRefreshActivity() {
                             } else if (drivingDistance.diffPerOneAverage.totalDistance > 0.0) {
                                 tv_diff_distance.text =
                                     "+" + transferDistance(drivingDistance.diffPerOneAverage.totalDistance) + distance_unit + " 증가"
-                                tv_diff_distance.setTextColor(resources.getColor(R.color.pri_500))
+                                tv_diff_distance.setTextColor(resources.getColor(R.color.pri_800))
 
                             } else if (drivingDistance.diffPerOneAverage.totalDistance < 0.0) {
                                 tv_diff_distance.text =
