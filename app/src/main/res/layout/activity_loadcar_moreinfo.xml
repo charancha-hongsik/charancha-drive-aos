@@ -238,15 +238,15 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="132dp"
+                    android:layout_height="136dp"
                     android:layout_marginTop="16dp"
                     android:padding="20dp"
                     android:background="@drawable/radius8_white_gray100_border">
 
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="18dp"
-                        android:textAppearance="@style/B2B"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/B1B"
                         android:textFontWeight="700"
                         android:textColor="@color/gray_950"
                         android:text="차량명"
@@ -294,15 +294,15 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="132dp"
+                    android:layout_height="136dp"
                     android:layout_marginTop="16dp"
                     android:padding="20dp"
                     android:background="@drawable/radius8_white_gray100_border">
 
                     <TextView
                         android:layout_width="wrap_content"
-                        android:layout_height="18dp"
-                        android:textAppearance="@style/B2B"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/B1B"
                         android:textFontWeight="700"
                         android:textColor="@color/gray_950"
                         android:text="연료"
@@ -356,14 +356,16 @@
                     android:background="@drawable/radius8_white_gray100_border">
 
                     <TextView
+                        android:id="@+id/tv_corp_title"
                         android:layout_width="wrap_content"
-                        android:layout_height="18dp"
-                        android:textAppearance="@style/B2B"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/B1B"
                         android:textFontWeight="700"
                         android:textColor="@color/gray_950"
                         android:text="사용자 구분" />
 
                     <LinearLayout
+                        android:id="@+id/view_type"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp">
@@ -421,13 +423,14 @@
                         android:id="@+id/layout_corp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="24dp"
                         android:visibility="gone"
                         android:orientation="vertical">
 
                         <View
+                            android:id="@+id/view_line"
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
+                            android:layout_marginTop="24dp"
                             android:background="@color/gray_100"/>
 
                         <LinearLayout

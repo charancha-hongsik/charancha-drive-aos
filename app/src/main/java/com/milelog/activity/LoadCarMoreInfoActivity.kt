@@ -81,6 +81,9 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
     lateinit var view_scrollview:ScrollView
     lateinit var layout_type:LinearLayout
     lateinit var tv_type_title:TextView
+    lateinit var view_line:View
+    lateinit var tv_corp_title:TextView
+    lateinit var view_type:LinearLayout
 
     companion object {
         const val PERSONAL = "PERSONAL"
@@ -136,6 +139,9 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
         btn_personal = findViewById(R.id.btn_personal)
         iv_personal = findViewById(R.id.iv_personal)
         tv_personal = findViewById(R.id.tv_personal)
+        view_line = findViewById(R.id.view_line)
+        tv_corp_title = findViewById(R.id.tv_corp_title)
+        view_type = findViewById(R.id.view_type)
 
         val jsonString = intent.getStringExtra("carInfo")
         val gson = GsonBuilder().serializeNulls().create()
@@ -210,6 +216,10 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
 
                 btn_save.isSelected = true
                 btn_save.isClickable = true
+
+                tv_corp_title.text = "내 정보"
+                view_line.visibility = GONE
+                view_type.visibility = GONE
 
             }else{
                 layout_corp_parent.visibility = GONE
