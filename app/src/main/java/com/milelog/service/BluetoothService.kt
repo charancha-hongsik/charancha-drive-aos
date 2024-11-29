@@ -579,7 +579,13 @@ class BluetoothService : Service() {
                     /**
                      * W0D-74 1행 데이터 삭제
                      */
-                    if(firstLocation != null){
+                    if(firstLocation == null){
+                        locationResult.lastLocation?.let{
+                            firstLocation = it
+                            pastLocation = it
+                            pastTimeStamp = it.time
+                        }
+                    }else{
                         locationResult.lastLocation?.let{
                             val location: Location = it
                             val timeStamp = location.time
@@ -600,12 +606,6 @@ class BluetoothService : Service() {
                                     processLocationCallback(location, timeStamp)
                                 }
                             }
-                        }
-                    }else{
-                        locationResult.lastLocation?.let{
-                            firstLocation = it
-                            pastLocation = it
-                            pastTimeStamp = it.time
                         }
                     }
                 }catch (e:Exception){
