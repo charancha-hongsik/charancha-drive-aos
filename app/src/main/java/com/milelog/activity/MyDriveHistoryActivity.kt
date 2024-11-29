@@ -49,7 +49,7 @@ import java.util.*
 
 class MyDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var lv_date: RecyclerView
-    lateinit var btn_back: ImageView
+    lateinit var btn_back: View
 
     lateinit var layout_choose_date: CoordinatorLayout
     lateinit var persistent_bottom_sheet: LinearLayout
@@ -76,7 +76,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var selectedDate: String
 
     lateinit var resultLauncher: ActivityResultLauncher<Intent>
-    lateinit var btn_download:ImageView
+    lateinit var btn_download:View
     val filterList: MutableList<CarListFilter> = mutableListOf()
     var histories: MutableList<DriveItem> = mutableListOf()
     var newHistories: MutableList<NewDriveHistoryResponse> = mutableListOf()
