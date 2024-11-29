@@ -43,6 +43,7 @@ import com.milelog.viewmodel.state.GetDrivingStatisticsState
 import com.milelog.viewmodel.state.GetManageScoreState
 import com.milelog.viewmodel.state.MyCarInfoState
 import com.milelog.viewmodel.state.NotSavedDataState
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -415,8 +416,8 @@ class MyScoreActivity : BaseRefreshActivity() {
                     if (getManageScoreResponse.isRecent) {
                         if (getManageScoreResponse.total.totalEngineScore != 0.0) {
                             tv_recent_date.visibility = VISIBLE
-                            tv_recent_date.text = getManageScoreResponse.recentCriteriaAt.split("T").first()
-                                transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
+                            tv_recent_date.text = formatDate(getManageScoreResponse.recentCriteriaAt.split("T").first())
+
                             tv_recent_score2.text =
                                 transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
                             tv_engine_score.text =
@@ -991,6 +992,23 @@ class MyScoreActivity : BaseRefreshActivity() {
             // Chrome browser presumably not installed so allow user to choose instead
             intent.setPackage(null)
             startActivity(intent)
+        }
+    }
+
+    fun formatDate(inputDate: String): String {
+        // 입력 형식 정의
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        // 출력 형식 정의
+        val outputFormat = SimpleDateFormat("yyyy년 MM월 dd일", Locale.getDefault())
+
+        return try {
+            // 입력 문자열을 Date로 파싱
+            val date = inputFormat.parse(inputDate)
+            // Date를 출력 형식으로 포맷팅
+            outputFormat.format(date)
+        } catch (e: Exception) {
+            // 변환 실패 시 처리 (예: 입력 형식이 잘못되었을 때)
+            inputDate
         }
     }
 }
