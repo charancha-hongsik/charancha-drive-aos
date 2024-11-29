@@ -415,7 +415,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
 
         btn_save.setOnClickListener {
             var typeInput: TypeInput? = null
-            if(iv_corp.isSelected){
+            if(postMyCarResponse.type.equals(CORPORATE)){
                 typeInput = TypeInput(CORPORATE,Data(et_corp_name.text.toString(), et_corp_department.text.toString()))
             }
 
@@ -549,7 +549,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 p0?.let{
                     if(p0.length>=1){
-                        if(iv_corp.isSelected){
+                        if(postMyCarResponse.type.equals(CORPORATE)){
                             if(!et_corp_name.text.toString().isNullOrEmpty() && !et_corp_name.text.toString().isNullOrEmpty() && !et_corp_department.text.toString().isNullOrEmpty() && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
                                 btn_next.isSelected = true
                                 btn_next.isClickable = true
@@ -601,7 +601,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 p0?.let{
                     if(p0.length>=1){
-                        if(iv_corp.isSelected){
+                        if(postMyCarResponse.type.equals(CORPORATE)){
                             if(!et_corp_name.text.toString().isNullOrEmpty() && !et_corp_name.text.toString().isNullOrEmpty() && !et_corp_department.text.toString().isNullOrEmpty() && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
                                 btn_next.isSelected = true
                                 btn_next.isClickable = true
@@ -665,7 +665,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                     layout_select.visibility = GONE
 
 
-                    if(iv_corp.isSelected){
+                    if(postMyCarResponse.type.equals(CORPORATE)){
                         if(!et_corp_name.text.toString().isNullOrEmpty() && !et_corp_name.text.toString().isNullOrEmpty() && !et_corp_department.text.toString().isNullOrEmpty() && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
                             btn_next.isSelected = true
                             btn_next.isClickable = true
