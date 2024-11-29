@@ -583,6 +583,11 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
             btn_six_month.isSelected = false
             btn_each_month.isSelected = false
 
+            val itemList = getDateList()
+
+            selectedDate = itemList.get(0).date
+            tv_selected_date.text = selectedDate
+
             TextViewCompat.setTextAppearance(btn_a_month, R.style.B1SBweight600)
             TextViewCompat.setTextAppearance(btn_six_month, R.style.B1Mweight500)
             TextViewCompat.setTextAppearance(btn_each_month, R.style.B1Mweight500)
