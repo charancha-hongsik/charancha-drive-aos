@@ -698,7 +698,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                         }
 
                         if(it.excludeRecord){
-                            tv_edit.text = "관리자에 의해 기록이 제외되었습니다."
+                            tv_edit.text = "관리자에 의해 운행일지에 제외되었습니다."
                         }
 
                         if (it.type != null || it.totalDistance != null || it.startAddress != null || it.endAddress != null || it.place != null) {
