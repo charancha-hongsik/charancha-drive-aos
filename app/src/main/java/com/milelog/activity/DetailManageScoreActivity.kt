@@ -534,6 +534,34 @@ class DetailManageScoreActivity: BaseRefreshActivity(){
             selectedDate = itemList.get(0).date
             tv_selected_date.text = selectedDate
 
+            // adapter 생성
+            val dateAdapter = DateAdapter(
+                this,
+                itemList,
+                object : DateAdapter.DateCallback {
+                    override fun chosenDate(date: String) {
+                        selectedDate = date
+
+                        for (list in itemList) {
+                            list.selected = false
+                            if (list.date == date) {
+                                list.selected = true
+                            }
+                        }
+                        (listView_choose_date_own.adapter as DateAdapter).notifyDataSetChanged()
+
+                        listView_choose_date_own.visibility = GONE
+                        layout_select_main.visibility = VISIBLE
+                        btn_inquire_date.visibility = VISIBLE
+
+                        tv_selected_date.text = selectedDate
+
+                    }
+                })
+
+            // listView에 adapter 연결
+            listView_choose_date_own.adapter = dateAdapter
+
             TextViewCompat.setTextAppearance(btn_a_month, R.style.B1SBweight600)
             TextViewCompat.setTextAppearance(btn_six_month, R.style.B1Mweight500)
             TextViewCompat.setTextAppearance(btn_each_month, R.style.B1Mweight500)
