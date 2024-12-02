@@ -302,7 +302,7 @@ class BluetoothService : Service() {
                                                 DetectUserEntity(
                                                     user_id = "",
                                                     verification = "L2",
-                                                    start_stop = "Bluetooth(start)" + drivingMyCarsEntity?.bluetooth_name,
+                                                    start_stop = "Bluetooth(start)" + device.name,
                                                     timestamp = System.currentTimeMillis().toString(),
                                                     sensor_state = fusedLocationClient != null
                                                 )
@@ -332,7 +332,7 @@ class BluetoothService : Service() {
                                                 DetectUserEntity(
                                                     user_id = "",
                                                     verification = "L2",
-                                                    start_stop = "Bluetooth(stop)",
+                                                    start_stop = "Bluetooth(stop) " + device.name,
                                                     timestamp = System.currentTimeMillis().toString(),
                                                     sensor_state = fusedLocationClient != null
                                                 )

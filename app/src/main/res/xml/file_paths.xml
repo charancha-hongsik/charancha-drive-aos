@@ -3,4 +3,12 @@
         name="external_files"
         path="Android/data/com.milelog.dev/files/Documents/" />
 
+    <external-path
+        name="external_files"
+        path="Android/data/com.milelog/files/Documents/" />
+
+    <external-path
+        name="external_files"
+        path="Android/data/com.milelog/files/Documents/" />
+
 </paths>
