@@ -285,19 +285,26 @@ class BluetoothService : Service() {
                         val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
 
                         pairedDevices?.forEach { device ->
+                            Log.d("testestestestest","testsetestsetset name :: " + device.name)
+                            Log.d("testestestestest","testsetestsetset deviceClass :: " + device.bluetoothClass.deviceClass)
+
+
                             if(drivingMyCarsEntity == null){
                                 if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
-                                    val myCarsListOnDevice:MutableList<MyCarsEntity> = mutableListOf()
+                                    Log.d("testestestestest","testsetestsetset isBluetoothDeviceConnected :: " + isBluetoothDeviceConnected(device))
 
-                                    PreferenceUtil.getPref(this@BluetoothService, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
-                                        if(it != "") {
-                                            val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
-                                            myCarsListOnDevice.addAll(GsonBuilder().serializeNulls().create().fromJson(it, type))
-                                        }
+                                    if(isBluetoothDeviceConnected(device)) {
+                                        val myCarsListOnDevice:MutableList<MyCarsEntity> = mutableListOf()
 
-                                        drivingMyCarsEntity = myCarsListOnDevice.find { it.bluetooth_mac_address == device.address } ?: MyCarsEntity(id = null,name =null, number = null,bluetooth_mac_address = device.address, bluetooth_name = device.name)
+                                        PreferenceUtil.getPref(this@BluetoothService, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
+                                            if(it != "") {
+                                                val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
+                                                myCarsListOnDevice.addAll(GsonBuilder().serializeNulls().create().fromJson(it, type))
+                                            }
 
-                                        if(isBluetoothDeviceConnected(device)){
+                                            drivingMyCarsEntity = myCarsListOnDevice.find { it.bluetooth_mac_address == device.address } ?: MyCarsEntity(id = null,name =null, number = null,bluetooth_mac_address = device.address, bluetooth_name = device.name)
+
+
                                             driveDatabase?.detectUserDao()?.insert(
                                                 DetectUserEntity(
                                                     user_id = "",
@@ -309,9 +316,10 @@ class BluetoothService : Service() {
                                             )
 
                                             startSensor(L2)
+
+
+
                                         }
-
-
                                     }
                                 }
                             }
@@ -324,21 +332,23 @@ class BluetoothService : Service() {
 
                         val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
                         pairedDevices?.forEach { device ->
-                            drivingMyCarsEntity?.let{ drivingCar ->
-                                if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
-                                    if (!isBluetoothDeviceConnected(device)) {
-                                        if(drivingCar.bluetooth_mac_address.equals(device.address)){
-                                            driveDatabase?.detectUserDao()?.insert(
-                                                DetectUserEntity(
-                                                    user_id = "",
-                                                    verification = "L2",
-                                                    start_stop = "Bluetooth(stop) " + device.name,
-                                                    timestamp = System.currentTimeMillis().toString(),
-                                                    sensor_state = fusedLocationClient != null
+                            if(drivingMyCarsEntity != null){
+                                drivingMyCarsEntity?.let{ drivingCar ->
+                                    if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
+                                        if (!isBluetoothDeviceConnected(device)) {
+                                            if(drivingCar.bluetooth_mac_address.equals(device.address)){
+                                                driveDatabase?.detectUserDao()?.insert(
+                                                    DetectUserEntity(
+                                                        user_id = "",
+                                                        verification = "L2",
+                                                        start_stop = "Bluetooth(stop) " + device.name,
+                                                        timestamp = System.currentTimeMillis().toString(),
+                                                        sensor_state = fusedLocationClient != null
+                                                    )
                                                 )
-                                            )
 
-                                            stopSensor(L2)
+                                                stopSensor(L2)
+                                            }
                                         }
                                     }
                                 }
