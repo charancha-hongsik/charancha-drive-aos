@@ -285,13 +285,8 @@ class BluetoothService : Service() {
                         val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
 
                         pairedDevices?.forEach { device ->
-                            Log.d("testestestestest","testsetestsetset name :: " + device.name)
-                            Log.d("testestestestest","testsetestsetset deviceClass :: " + device.bluetoothClass.deviceClass)
-
-
                             if(drivingMyCarsEntity == null){
                                 if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
-                                    Log.d("testestestestest","testsetestsetset isBluetoothDeviceConnected :: " + isBluetoothDeviceConnected(device))
 
                                     if(isBluetoothDeviceConnected(device)) {
                                         val myCarsListOnDevice:MutableList<MyCarsEntity> = mutableListOf()
