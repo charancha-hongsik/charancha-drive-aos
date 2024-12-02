@@ -384,7 +384,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
         }
 
         btn_delete.setOnClickListener {
-            CustomDialog(this, "자동차 정보 삭제", "자동차 정보를 삭제하면 기존 데이터는 삭제됩니다. 삭제 하시겠습니까?", "삭제","취소",  object : CustomDialog.DialogCallback{
+            CustomDialog(this, "자동차 정보 삭제", "자동차 정보를 삭제하면 기존 데이터는 삭제됩니다. 삭제하시겠습니까?", "삭제","취소",  object : CustomDialog.DialogCallback{
                 override fun onConfirm() {
                     apiService().deleteMyCarByCarId("Bearer " + PreferenceUtil.getPref(this@LoadCarMoreInfoActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, intent.getStringExtra("carId")!!).enqueue(object :
                         Callback<ResponseBody> {
