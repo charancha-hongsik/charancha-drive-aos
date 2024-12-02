@@ -22,17 +22,11 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.milelog.BuildConfig.BASE_TERMS_URL
 import com.milelog.PreferenceUtil
 import com.milelog.R
-import com.milelog.activity.LoginActivity.MilelogPublicApi
 import java.io.File
 import java.io.FileOutputStream
-import java.util.jar.Manifest
 
 class CommonWebviewActivity: BaseActivity() {
     lateinit var wv_common:WebView

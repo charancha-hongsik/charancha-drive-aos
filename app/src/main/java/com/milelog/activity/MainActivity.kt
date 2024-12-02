@@ -6,6 +6,7 @@ import android.Manifest.permission.BLUETOOTH_CONNECT
 import android.Manifest.permission.POST_NOTIFICATIONS
 import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -13,6 +14,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
+import android.provider.MediaStore
 import android.provider.Settings
 import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
 import android.util.Log
@@ -47,6 +49,8 @@ import com.milelog.viewmodel.BaseViewModel
 import com.milelog.viewmodel.MainViewModel
 import com.milelog.viewmodel.state.MyCarInfoState
 import com.milelog.viewmodel.state.NotSavedDataState
+import java.io.File
+import java.io.FileOutputStream
 
 /**
  * 파이어베이스 설정
@@ -78,12 +82,63 @@ class MainActivity:BaseActivity() {
             if (result.resultCode == Activity.RESULT_OK) {
                 val data: Intent? = result.data
                 val results = WebChromeClient.FileChooserParams.parseResult(result.resultCode, data)
-                fileChooserCallback?.onReceiveValue(results)
+
+                if (results.isNullOrEmpty()) {
+                    fileChooserCallback?.onReceiveValue(null)
+                } else {
+                    // 선택된 파일들을 모두 처리하기 위해 리스트로 저장
+                    val compressedUris = mutableListOf<Uri>()
+
+                    // 모든 선택된 파일에 대해 처리
+                    for (selectedUri in results) {
+                        // 선택된 파일을 압축하여 40% 퀄리티로 새로운 파일로 저장
+                        val compressedFile = compressImage(selectedUri, this)
+
+                        if (compressedFile != null) {
+                            Log.d("test", "Compressed file exists")
+                            // 압축된 파일을 Uri로 변환
+                            val compressedUri = Uri.fromFile(compressedFile)
+                            compressedUris.add(compressedUri)
+                        } else {
+                            Log.d("test", "Compressed file is null")
+                        }
+                    }
+
+                    // 압축된 파일들이 있다면 콜백으로 전달
+                    if (compressedUris.isNotEmpty()) {
+                        fileChooserCallback?.onReceiveValue(compressedUris.toTypedArray())
+                    } else {
+                        fileChooserCallback?.onReceiveValue(null)
+                    }
+                }
             } else {
                 fileChooserCallback?.onReceiveValue(null)
             }
+
             fileChooserCallback = null
         }
+
+    // 이미지를 압축하여 40% 퀄리티로 저장하는 함수
+    fun compressImage(uri: Uri, context: Context): File? {
+        try {
+            // 선택된 Uri에서 이미지 경로를 얻고, Bitmap으로 변환
+            val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, uri)
+
+            // 압축된 파일 경로
+            val compressedFile = File(context.cacheDir, "compressed_${System.currentTimeMillis()}.jpg")
+            val outputStream = FileOutputStream(compressedFile)
+
+            // Bitmap을 압축하여 파일로 저장 (70% 품질)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 70, outputStream)
+            outputStream.flush()
+            outputStream.close()
+
+            return compressedFile
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
