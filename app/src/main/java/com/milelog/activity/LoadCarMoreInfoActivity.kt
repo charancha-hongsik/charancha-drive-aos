@@ -488,7 +488,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                 view_scrollview.smoothScrollTo(0, view_scrollview.getChildAt(0).height)
             }
 
-            if(!tv_fuel.text.toString().isNullOrEmpty() && !et_corp_department.text.toString().isNullOrEmpty() && !et_corp_name.text.toString().isNullOrEmpty() && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
+            if(!tv_fuel.text.toString().equals("선택해 주세요") && !et_corp_department.text.toString().isNullOrEmpty() && !et_corp_name.text.toString().isNullOrEmpty() && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
                 btn_next.isSelected = true
                 btn_next.isClickable = true
 
@@ -514,19 +514,19 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
 
 
 
-            if(tv_fuel.text.toString().isNullOrEmpty() && postMyCarResponse.makerCd.isNullOrEmpty() && postMyCarResponse.modelCd.isNullOrEmpty()){
-                btn_next.isSelected = false
-                btn_next.isClickable = false
-
-                btn_save.isSelected = false
-                btn_save.isClickable = false
-
-            }else{
+            if(!tv_fuel.text.toString().equals("선택해 주세요") && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
                 btn_next.isSelected = true
                 btn_next.isClickable = true
 
                 btn_save.isSelected = true
                 btn_save.isClickable = true
+
+            }else{
+                btn_next.isSelected = false
+                btn_next.isClickable = false
+
+                btn_save.isSelected = false
+                btn_save.isClickable = false
             }
         }
 
@@ -648,7 +648,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                             btn_save.isClickable = false
                         }
                     }else{
-                        if(!tv_fuel.text.toString().isNullOrEmpty() && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
+                        if(!tv_fuel.text.toString().equals("선택해 주세요") && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
                             btn_next.isSelected = true
                             btn_next.isClickable = true
 
