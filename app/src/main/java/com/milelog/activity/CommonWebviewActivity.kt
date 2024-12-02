@@ -28,7 +28,6 @@ import java.io.FileOutputStream
 class CommonWebviewActivity: BaseActivity() {
     lateinit var wv_common:WebView
     var url:String = BASE_TERMS_URL
-    var maxCount:Int = 5
 
     /**
      * firebase
@@ -108,7 +107,6 @@ class CommonWebviewActivity: BaseActivity() {
                 try {
                     // Use TedImagePicker for selecting multiple images
                     TedImagePicker.with(this@CommonWebviewActivity)
-                        .max(maxCount, "최대 5개까지 등록할 수 있습니다.")
                         .cancelListener {
                             fileChooserCallback?.onReceiveValue(null)
                             fileChooserCallback = null
@@ -117,7 +115,6 @@ class CommonWebviewActivity: BaseActivity() {
                             if (uriList.isEmpty()) {
                                 fileChooserCallback?.onReceiveValue(null)
                             } else {
-                                maxCount = maxCount - uriList.size
                                 // Compress selected images and collect compressed URIs
                                 val compressedUris = mutableListOf<Uri>()
                                 for (selectedUri in uriList) {
@@ -273,11 +270,6 @@ class CommonWebviewActivity: BaseActivity() {
                 intent.setPackage(null)
                 activity.startActivity(intent)
             }
-        }
-
-        @JavascriptInterface
-        fun imageRemovedCallback(){
-            activity.maxCount -= 1
         }
     }
 

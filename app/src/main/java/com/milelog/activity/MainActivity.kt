@@ -65,7 +65,6 @@ class MainActivity:BaseActivity() {
     private val mainViewModel: MainViewModel by viewModels()
 
     lateinit var wv_main:WebView
-    var maxCount:Int = 5
 
     /**
      * for permission
@@ -219,7 +218,6 @@ class MainActivity:BaseActivity() {
                 try {
                     // Use TedImagePicker for selecting multiple images
                     TedImagePicker.with(this@MainActivity)
-                        .max(maxCount, "최대 5개까지 등록할 수 있습니다.")
                         .cancelListener {
                             fileChooserCallback?.onReceiveValue(null)
                             fileChooserCallback = null
@@ -228,7 +226,6 @@ class MainActivity:BaseActivity() {
                             if (uriList.isEmpty()) {
                                 fileChooserCallback?.onReceiveValue(null)
                             } else {
-                                maxCount = maxCount - uriList.size
                                 // Compress selected images and collect compressed URIs
                                 val compressedUris = mutableListOf<Uri>()
                                 for (selectedUri in uriList) {
@@ -590,10 +587,6 @@ class MainActivity:BaseActivity() {
             }
         }
 
-        @JavascriptInterface
-        fun imageRemovedCallback(){
-            activity.maxCount -= 1
-        }
     }
 
     override fun onBackPressed() {
