@@ -25,6 +25,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.milelog.BuildConfig.BASE_TERMS_URL
 import com.milelog.PreferenceUtil
 import com.milelog.R
+import gun0912.tedimagepicker.builder.TedImagePicker
 import java.io.File
 import java.io.FileOutputStream
 
@@ -161,21 +162,46 @@ class CommonWebviewActivity: BaseActivity() {
             ): Boolean {
                 fileChooserCallback = filePathCallback
 
-                val intent = Intent(Intent.ACTION_GET_CONTENT)
-                intent.addCategory(Intent.CATEGORY_OPENABLE)
-                intent.type = "image/*"
-                // 여러 이미지를 선택할 수 있도록 설정
-                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-                intent.putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/jpeg", "image/png", "image/jpg"))
 
                 try {
-                    fileChooserLauncher.launch(intent)
+                    // Use TedImagePicker for selecting multiple images
+                    TedImagePicker.with(this@CommonWebviewActivity)
+                        .cancelListener {
+                            fileChooserCallback?.onReceiveValue(null)
+                            fileChooserCallback = null
+                        }
+                        .startMultiImage { uriList ->
+                            if (uriList.isEmpty()) {
+                                fileChooserCallback?.onReceiveValue(null)
+                            } else {
+                                // Compress selected images and collect compressed URIs
+                                val compressedUris = mutableListOf<Uri>()
+                                for (selectedUri in uriList) {
+                                    val compressedFile = compressImage(selectedUri, this@CommonWebviewActivity)
+                                    if (compressedFile != null) {
+                                        val compressedUri = Uri.fromFile(compressedFile)
+                                        compressedUris.add(compressedUri)
+                                    } else {
+                                        Log.d("test", "Compressed file is null for URI: $selectedUri")
+                                    }
+                                }
+
+                                // Pass compressed URIs to the file chooser callback
+                                if (compressedUris.isNotEmpty()) {
+                                    fileChooserCallback?.onReceiveValue(compressedUris.toTypedArray())
+                                } else {
+                                    fileChooserCallback?.onReceiveValue(null)
+                                }
+                            }
+                        }
                 } catch (e: Exception) {
+                    fileChooserCallback?.onReceiveValue(null)
                     fileChooserCallback = null
                     return false
                 }
 
                 return true
+
             }
         }
 
