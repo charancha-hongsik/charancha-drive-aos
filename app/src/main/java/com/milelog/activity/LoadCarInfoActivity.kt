@@ -10,12 +10,20 @@ import android.view.View
 import android.view.animation.TranslateAnimation
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.google.gson.Gson
+import com.milelog.PreferenceUtil
 import com.milelog.R
+import com.milelog.retrofit.response.PostMyCarResponse
 import com.milelog.viewmodel.BaseViewModel
 import com.milelog.viewmodel.LoadCarInfoViewModel
 import com.milelog.viewmodel.state.GetCarInfoInquiryState
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class LoadCarInfoActivity: BaseRefreshActivity() {
@@ -65,11 +73,38 @@ class LoadCarInfoActivity: BaseRefreshActivity() {
                     }
 
                     is GetCarInfoInquiryState.Success -> {
-                        val intent = Intent(this@LoadCarInfoActivity, LoadCarMoreInfoActivity::class.java)
-                        intent.putExtra("carInfo", state.data)
-                        intent.putExtra("add",add)
-                        startActivity(intent)
-                        finish()
+                        val vehicleIdentificationNumber = Gson().fromJson(state.data, PostMyCarResponse::class.java).vehicleIdentificationNumber
+                        apiService().getMyCarCount("Bearer " + PreferenceUtil.getPref(this@LoadCarInfoActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, vehicleIdentificationNumber = vehicleIdentificationNumber).enqueue(object :
+                            Callback<ResponseBody> {
+                            override fun onResponse(
+                                call: Call<ResponseBody>,
+                                response: Response<ResponseBody>
+                            ) {
+
+                                if(response.code() == 200 || response.code() == 201){
+                                    if(response.body()!!.string().toInt() > 0){
+                                        Toast.makeText(this@LoadCarInfoActivity, "동일한 차량이 이미 등록되어 있어요.",
+                                            Toast.LENGTH_SHORT).show()
+                                        finish()
+                                    }else{
+                                        val intent = Intent(this@LoadCarInfoActivity, LoadCarMoreInfoActivity::class.java)
+                                        intent.putExtra("carInfo", state.data)
+                                        intent.putExtra("add",add)
+                                        startActivity(intent)
+                                        finish()
+                                    }
+                                }else if(response.code() == 401){
+                                    logout()
+                                }
+                            }
+
+                            override fun onFailure(
+                                call: Call<ResponseBody>,
+                                t: Throwable
+                            ) {
+
+                            }
+                        })
                     }
 
                     is GetCarInfoInquiryState.Error -> {

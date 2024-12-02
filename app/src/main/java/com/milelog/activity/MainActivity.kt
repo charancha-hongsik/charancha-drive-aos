@@ -158,6 +158,8 @@ class MainActivity:BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        Log.d("testestestestset","testsetestseet token :: " + PreferenceUtil.getPref(this,  PreferenceUtil.ACCESS_TOKEN, "")!!)
+
         init()
         setObserver()
         setResources()

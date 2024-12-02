@@ -137,6 +137,7 @@ interface ApiServiceInterface {
     @GET("api/v1/me/cars/-/user-cars/-/count")
     fun getMyCarCount(
         @Header("Authorization") token: String,
+        @Query("vehicleIdentificationNumber") vehicleIdentificationNumber: String? = null,
         @Query("makerCd") makerCd: String? = null,
         @Query("modelCd") modelCd: String? = null,
         @Query("modelDetailCd") modelDetailCd: String? = null,

@@ -3,7 +3,9 @@ package com.milelog.viewmodel
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
 import com.milelog.PreferenceUtil
+import com.milelog.retrofit.response.PostMyCarResponse
 import com.milelog.viewmodel.state.GetCarInfoInquiryState
 import okhttp3.ResponseBody
 import retrofit2.Call
