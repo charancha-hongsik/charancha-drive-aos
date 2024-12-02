@@ -96,7 +96,7 @@
                             android:id="@+id/tv_car_no"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="123가 1234"
+                            android:text="000가 1234"
                             android:textAppearance="@style/B1B"
                             android:layout_gravity="center_vertical"
                             android:textColor="@color/gray_950"
