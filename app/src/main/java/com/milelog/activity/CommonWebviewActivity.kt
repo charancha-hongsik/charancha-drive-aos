@@ -94,8 +94,8 @@ class CommonWebviewActivity: BaseActivity() {
             val compressedFile = File(context.cacheDir, "compressed_${System.currentTimeMillis()}.jpg")
             val outputStream = FileOutputStream(compressedFile)
 
-            // Bitmap을 압축하여 파일로 저장 (40% 품질)
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 40, outputStream)
+            // Bitmap을 압축하여 파일로 저장 (70% 품질)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 70, outputStream)
             outputStream.flush()
             outputStream.close()
 
