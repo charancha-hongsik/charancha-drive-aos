@@ -73,6 +73,7 @@ class RegisterCarActivity: BaseActivity() {
         })
 
         btn_next = findViewById(R.id.btn_next)
+
         btn_next.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
                 when(no) {
@@ -95,6 +96,9 @@ class RegisterCarActivity: BaseActivity() {
                 }
             }
         })
+
+        btn_next.isClickable = false
+        btn_next.isSelected = false
 
 
         view_register_percent1.isSelected = true
