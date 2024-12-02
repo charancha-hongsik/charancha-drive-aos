@@ -1,24 +1,60 @@
 package com.milelog.activity
 
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+import android.app.Activity
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View.VISIBLE
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
+import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.milelog.BuildConfig.BASE_TERMS_URL
+import com.milelog.PreferenceUtil
 import com.milelog.R
 import com.milelog.activity.LoginActivity.MilelogPublicApi
+import java.util.jar.Manifest
 
 class CommonWebviewActivity: BaseActivity() {
     lateinit var wv_common:WebView
     var url:String = BASE_TERMS_URL
+
+    /**
+     * firebase
+     */
+    private var fileChooserCallback: ValueCallback<Array<Uri>>? = null
+
+    private val fileChooserLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data: Intent? = result.data
+                val results = WebChromeClient.FileChooserParams.parseResult(result.resultCode, data)
+
+                if (results.isNullOrEmpty()) {
+                    fileChooserCallback?.onReceiveValue(null)
+                } else {
+                    fileChooserCallback?.onReceiveValue(results)
+                }
+            } else {
+                fileChooserCallback?.onReceiveValue(null)
+            }
+            fileChooserCallback = null
+        }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_common_webview)
@@ -45,6 +81,8 @@ class CommonWebviewActivity: BaseActivity() {
         wv_common.settings.domStorageEnabled = true
         wv_common.settings.cacheMode = WebSettings.LOAD_DEFAULT
         wv_common.settings.textZoom = 100 // System 텍스트 사이즈 변경되지 않게
+        wv_common.settings.allowContentAccess = true
+        wv_common.settings.allowFileAccess = true
 
         //chrome inspect 디버깅 모드
         WebView.setWebContentsDebuggingEnabled(true)
@@ -55,6 +93,27 @@ class CommonWebviewActivity: BaseActivity() {
         wv_common.webChromeClient = object: WebChromeClient(){
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
                 super.onProgressChanged(view, newProgress)
+            }
+
+            override fun onShowFileChooser(
+                webView: WebView?,
+                filePathCallback: ValueCallback<Array<Uri>>?,
+                fileChooserParams: FileChooserParams?
+            ): Boolean {
+                fileChooserCallback = filePathCallback
+
+                val intent = Intent(Intent.ACTION_GET_CONTENT)
+                intent.addCategory(Intent.CATEGORY_OPENABLE)
+                intent.type = "image/*"
+
+                try {
+                    fileChooserLauncher.launch(intent)
+                } catch (e: Exception) {
+                    fileChooserCallback = null
+                    return false
+                }
+
+                return true
             }
         }
 
@@ -94,8 +153,94 @@ class CommonWebviewActivity: BaseActivity() {
 
     class MilelogPublicApi(val activity: CommonWebviewActivity) {
         @JavascriptInterface
+        fun openMyPage(){
+            activity.startActivity(Intent(activity, MyPageActivity::class.java))
+            Log.d("testsetestestset","testestestestset ::openMyPage ")
+        }
+
+        @JavascriptInterface
+        fun openNotification(){
+            activity.startActivity(Intent(activity, AlarmActivity::class.java))
+            Log.d("testsetestestset","testestestestset ::openNotification ")
+
+        }
+
+        @JavascriptInterface
+        fun openMyGarage(){
+            activity.startActivity(Intent(activity, MyGarageActivity::class.java))
+            Log.d("testsetestestset","testestestestset ::openMyGarage ")
+
+        }
+
+        @JavascriptInterface
+        fun openDrivingDetail(trackingId:String){
+            activity.startActivity(Intent(activity, DetailDriveHistoryActivity::class.java).putExtra("trackingId", trackingId))
+            Log.d("testsetestestset","testestestestset ::openDrivingDetail ")
+
+        }
+
+        @JavascriptInterface
+        fun openDrivings(){
+            activity.startActivity(Intent(activity, MyDriveHistoryActivity::class.java))
+            Log.d("testsetestestset","testestestestset ::openDrivings ")
+
+        }
+
+        @JavascriptInterface
+        fun openDrivingDistanceStats(userCarId: String){
+            activity.startActivity(Intent(activity, DrivenDistanceActivity::class.java).putExtra("userCarId", userCarId))
+            Log.d("testsetestestset","testestestestset ::openDrivingDistanceStats ")
+
+        }
+
+        @JavascriptInterface
+        fun openAverageDrivingDistanceStats(userCarId: String){
+            activity.startActivity(Intent(activity, AverageDrivenDistanceActivity::class.java).putExtra("userCarId", userCarId))
+            Log.d("testsetestestset","testestestestset ::openAverageDrivingDistanceStats ")
+
+        }
+
+        @JavascriptInterface
+        fun openDrivingTimeStats(userCarId: String){
+            activity.startActivity(Intent(activity, DrivenTimeActivity::class.java).putExtra("userCarId", userCarId))
+            Log.d("testsetestestset","testestestestset ::openDrivingTimeStats ")
+
+        }
+
+
+        @JavascriptInterface
+        fun openDrivingScoreStats(userCarId: String){
+            activity.startActivity(Intent(activity, MyScoreActivity::class.java).putExtra("userCarId", userCarId))
+            Log.d("testsetestestset","testestestestset ::openDrivingScoreStats :: " + userCarId)
+        }
+
+        @JavascriptInterface
+        fun getAccessToken():String{
+            return PreferenceUtil.getPref(activity, PreferenceUtil.ACCESS_TOKEN, "")!!
+        }
+
+        @JavascriptInterface
+        fun getRefreshToken():String{
+            return PreferenceUtil.getPref(activity, PreferenceUtil.REFRESH_TOKEN, "")!!
+        }
+
+        @JavascriptInterface
         fun closeWebview(){
             activity.finish()
+        }
+
+        @JavascriptInterface
+        fun openBrowser(url:String){
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.setPackage("com.android.chrome")
+            try {
+                activity.startActivity(intent)
+            } catch (ex: ActivityNotFoundException) {
+                // Chrome browser presumably not installed so allow user to choose instead
+                intent.setPackage(null)
+                activity.startActivity(intent)
+            }
         }
     }
 }

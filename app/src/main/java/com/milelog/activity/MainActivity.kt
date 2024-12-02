@@ -4,6 +4,7 @@ import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.Manifest.permission.ACTIVITY_RECOGNITION
 import android.Manifest.permission.BLUETOOTH_CONNECT
 import android.Manifest.permission.POST_NOTIFICATIONS
+import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -18,12 +19,14 @@ import android.util.Log
 import android.view.View.VISIBLE
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
+import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.app.ActivityCompat
@@ -68,6 +71,19 @@ class MainActivity:BaseActivity() {
      * firebase
      */
     private lateinit var firebaseAnalytics: FirebaseAnalytics
+    private var fileChooserCallback: ValueCallback<Array<Uri>>? = null
+
+    private val fileChooserLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data: Intent? = result.data
+                val results = WebChromeClient.FileChooserParams.parseResult(result.resultCode, data)
+                fileChooserCallback?.onReceiveValue(results)
+            } else {
+                fileChooserCallback?.onReceiveValue(null)
+            }
+            fileChooserCallback = null
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -160,6 +176,8 @@ class MainActivity:BaseActivity() {
         wv_main.settings.domStorageEnabled = true
         wv_main.settings.cacheMode = WebSettings.LOAD_DEFAULT
         wv_main.settings.textZoom = 100 // System 텍스트 사이즈 변경되지 않게
+        wv_main.settings.allowContentAccess = true
+        wv_main.settings.allowFileAccess = true
 
         //chrome inspect 디버깅 모드
         WebView.setWebContentsDebuggingEnabled(true)
@@ -171,6 +189,28 @@ class MainActivity:BaseActivity() {
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
                 super.onProgressChanged(view, newProgress)
             }
+
+            override fun onShowFileChooser(
+                webView: WebView?,
+                filePathCallback: ValueCallback<Array<Uri>>?,
+                fileChooserParams: FileChooserParams?
+            ): Boolean {
+                fileChooserCallback = filePathCallback
+
+                val intent = Intent(Intent.ACTION_GET_CONTENT)
+                intent.addCategory(Intent.CATEGORY_OPENABLE)
+                intent.type = "image/*"
+
+                try {
+                    fileChooserLauncher.launch(intent)
+                } catch (e: Exception) {
+                    fileChooserCallback = null
+                    return false
+                }
+
+                return true
+            }
+
         }
 
         wv_main.webViewClient = object: WebViewClient(){

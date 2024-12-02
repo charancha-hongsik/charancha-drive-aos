@@ -4,5 +4,8 @@
         <domain includeSubdomains="true">43.201.46.37</domain>
         <domain includeSubdomains="true">172.16.10.111</domain>
         <domain includeSubdomains="true">172.16.10.70</domain>
+        <domain includeSubdomains="true">milelog.charancha.com</domain>
+        <domain includeSubdomains="true">dev.milelog.charancha.com</domain>
+        <domain includeSubdomains="true">staging.milelog.charancha.com</domain>
     </domain-config>
 </network-security-config>
