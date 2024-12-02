@@ -73,6 +73,7 @@ import com.milelog.viewmodel.state.PatchDrivingInfoState
 import com.milelog.viewmodel.state.PatchImageState
 import com.milelog.viewmodel.state.PatchMemoState
 import com.nex3z.flowlayout.FlowLayout
+import gun0912.tedimagepicker.builder.TedImagePicker
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -1322,9 +1323,6 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         if (uris != null) {
             var imageParts:MutableList<MultipartBody.Part> = mutableListOf()
 
-            Log.d("testestsetest","testestestesset size :: " + uris.size)
-            Log.d("testestsetest","testestestesset childCount :: " + (5-(layout_drive_image.childCount-1)))
-
             /**
              * (5-(layout_drive_image.childCount-1)) 는 최대로 업로드 할 수 있는 갯수
              */
@@ -1411,7 +1409,93 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
     // 갤러리에서 이미지 선택하기
     private fun openGallery() {
-        getMultipleImages.launch("image/*") // 복수 이미지 선택
+        // Use TedImagePicker for selecting multiple images
+        TedImagePicker.with(this@DetailDriveHistoryActivity)
+            .max(5-(layout_drive_image.childCount-1), "최대 5개까지 등록할 수 있습니다.")
+            .cancelListener {
+
+            }
+            .startMultiImage { uriList ->
+                if (uriList.isEmpty()) {
+
+                } else {
+                    var imageParts:MutableList<MultipartBody.Part> = mutableListOf()
+
+                    uriList.forEach { uri ->
+                        val bitmap: Bitmap
+                        val selectedImageUri: Uri = uri
+
+                        selectedImageUri.let {
+                            if (Build.VERSION.SDK_INT < 28) {
+                                bitmap = MediaStore.Images.Media.getBitmap(
+                                    this.contentResolver,
+                                    selectedImageUri
+                                )
+                            } else {
+                                val source = ImageDecoder.createSource(
+                                    this.contentResolver,
+                                    selectedImageUri
+                                )
+                                bitmap = ImageDecoder.decodeBitmap(source)
+                            }
+                        }
+
+                        // 임시 파일 생성
+                        val imageFile = File.createTempFile("temp_image", ".jpg", cacheDir).apply {
+                            outputStream().use { output ->
+                                bitmap.compress(Bitmap.CompressFormat.JPEG, 20, output)
+                            }
+                        }
+
+                        // MultipartBody.Part 생성
+                        val imagePart = MultipartBody.Part.createFormData(
+                            "images.create", imageFile.name, imageFile.asRequestBody("image/jpeg".toMediaType())
+                        )
+
+                        // 이미지 리스트로 추가
+                        imageParts.add(imagePart)
+                    }
+
+                    apiService().patchDrivingInfo("Bearer " + PreferenceUtil.getPref(this,  PreferenceUtil.ACCESS_TOKEN, "")!!, drivingId = tracking_id, null, imageParts) .enqueue(object :
+                        Callback<ResponseBody> {
+                        override fun onResponse(
+                            call: Call<ResponseBody>,
+                            response: Response<ResponseBody>
+                        ) {
+                            if(response.code() == 200 || response.code() == 201){
+                                showCustomToast(this@DetailDriveHistoryActivity, "저장 되었습니다.")
+
+                                val jsonString = response.body()?.string()
+                                val getDrivingInfoResponse = GsonBuilder().serializeNulls().create().fromJson(jsonString, GetDrivingInfoResponse::class.java)
+
+                                while(layout_drive_image.childCount > 1) {
+                                    layout_drive_image.removeViewAt(layout_drive_image.childCount-1)
+                                }
+
+
+                                getDrivingInfoResponse.images?.let{
+                                    if(it.size > 0){
+                                        for(image in it){
+                                            addImageToLayout(url = image.url, image.id)
+                                        }
+                                    }else{
+                                        tv_tv_add_image.text = "0/5"
+                                    }
+                                }
+
+                            }else if(response.code() == 401){
+                                logout()
+                            }
+                        }
+
+                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+                        }
+
+                    })
+
+                }
+            }
     }
 
     // 권한 요청 결과 처리
