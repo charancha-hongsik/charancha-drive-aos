@@ -1,12 +1,9 @@
 package com.milelog.activity
 
-import android.Manifest.permission.READ_EXTERNAL_STORAGE
-import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
@@ -21,7 +18,6 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.activity.result.contract.ActivityResultContracts
 import com.milelog.BuildConfig.BASE_TERMS_URL
 import com.milelog.PreferenceUtil
 import com.milelog.R
@@ -32,67 +28,13 @@ import java.io.FileOutputStream
 class CommonWebviewActivity: BaseActivity() {
     lateinit var wv_common:WebView
     var url:String = BASE_TERMS_URL
+    var maxCount:Int = 5
 
     /**
      * firebase
      */
     private var fileChooserCallback: ValueCallback<Array<Uri>>? = null
 
-    private val fileChooserLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val data: Intent? = result.data
-                val results: Array<Uri>?
-
-                // 여러 개의 파일이 선택되었을 때 처리
-                if (data?.clipData != null) {
-                    val clipData = data.clipData
-                    val uris = ArrayList<Uri>()
-                    for (i in 0 until clipData!!.itemCount) {
-                        uris.add(clipData.getItemAt(i).uri)
-                    }
-                    results = uris.toArray(arrayOfNulls(uris.size)) // 여러 파일 선택
-                } else {
-                    // 하나의 파일만 선택되었을 때 처리
-                    val uri = data?.data
-                    results = if (uri != null) arrayOf(uri) else emptyArray() // 하나의 파일 선택
-                }
-
-                // results가 비어있지 않으면 처리
-                if (results.isNullOrEmpty()) {
-                    fileChooserCallback?.onReceiveValue(null)
-                } else {
-                    // 선택된 파일들을 모두 처리하기 위해 리스트로 저장
-                    val compressedUris = mutableListOf<Uri>()
-
-                    // 모든 선택된 파일에 대해 처리
-                    for (selectedUri in results) {
-                        // 선택된 파일을 압축하여 40% 퀄리티로 새로운 파일로 저장
-                        val compressedFile = compressImage(selectedUri, this)
-
-                        if (compressedFile != null) {
-                            Log.d("test", "Compressed file exists")
-                            // 압축된 파일을 Uri로 변환
-                            val compressedUri = Uri.fromFile(compressedFile)
-                            compressedUris.add(compressedUri)
-                        } else {
-                            Log.d("test", "Compressed file is null")
-                        }
-                    }
-
-                    // 압축된 파일들이 있다면 콜백으로 전달
-                    if (compressedUris.isNotEmpty()) {
-                        fileChooserCallback?.onReceiveValue(compressedUris.toTypedArray())
-                    } else {
-                        fileChooserCallback?.onReceiveValue(null)
-                    }
-                }
-            } else {
-                fileChooserCallback?.onReceiveValue(null)
-            }
-
-            fileChooserCallback = null
-        }
     // 이미지를 압축하여 40% 퀄리티로 저장하는 함수
     fun compressImage(uri: Uri, context: Context): File? {
         try {
@@ -166,6 +108,7 @@ class CommonWebviewActivity: BaseActivity() {
                 try {
                     // Use TedImagePicker for selecting multiple images
                     TedImagePicker.with(this@CommonWebviewActivity)
+                        .max(maxCount, "최대 5개까지 등록할 수 있습니다.")
                         .cancelListener {
                             fileChooserCallback?.onReceiveValue(null)
                             fileChooserCallback = null
@@ -174,6 +117,7 @@ class CommonWebviewActivity: BaseActivity() {
                             if (uriList.isEmpty()) {
                                 fileChooserCallback?.onReceiveValue(null)
                             } else {
+                                maxCount = maxCount - uriList.size
                                 // Compress selected images and collect compressed URIs
                                 val compressedUris = mutableListOf<Uri>()
                                 for (selectedUri in uriList) {
@@ -329,6 +273,11 @@ class CommonWebviewActivity: BaseActivity() {
                 intent.setPackage(null)
                 activity.startActivity(intent)
             }
+        }
+
+        @JavascriptInterface
+        fun imageRemovedCallback(){
+            activity.maxCount -= 1
         }
     }
 
