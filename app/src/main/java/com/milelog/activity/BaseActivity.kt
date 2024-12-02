@@ -804,15 +804,18 @@ open class BaseActivity: AppCompatActivity(){
 
     fun formatToKoreanDate(date: String): String {
         // 입력 값이 8자리인지 확인 (yyyymmdd)
-        require(date.length == 8) { "Invalid date format. Expected yyyymmdd." }
+        require(date.length == 8) { date }
 
         // 연도, 월, 일 추출
         val year = date.substring(0, 4)
-        val month = date.substring(4, 6)
+        val monthRaw = date.substring(4, 6)
         val day = date.substring(6, 8)
 
+        // 월의 앞에 있는 0을 제거 (10, 11, 12는 유지)
+        val month = if (monthRaw.startsWith("0")) monthRaw.substring(1) else monthRaw
+
         // 결과 문자열 생성
-        return year + "년 " + month + "월 " + day + "일"
+        return "${year}년 ${month}월 ${day}일"
     }
 
 
