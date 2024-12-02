@@ -5,20 +5,12 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.milelog.PreferenceUtil
 import com.milelog.R
-import com.milelog.activity.CarDetailActivity.Companion.MAKER
-import com.milelog.activity.CarDetailActivity.Companion.MODEL
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 
 class RegisterCarActivity: BaseActivity() {

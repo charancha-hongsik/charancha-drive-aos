@@ -618,4 +618,14 @@ class MainActivity:BaseActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        if (wv_main.canGoBack()) {
+            // Go back to the previous page in WebView's history
+            wv_main.goBack()
+        } else {
+            // Finish the activity if WebView cannot go back
+            super.onBackPressed()
+        }
+    }
+
 }

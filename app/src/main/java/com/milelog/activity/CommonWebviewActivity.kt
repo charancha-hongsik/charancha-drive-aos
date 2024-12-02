@@ -305,4 +305,13 @@ class CommonWebviewActivity: BaseActivity() {
             }
         }
     }
+
+    override fun onBackPressed() {
+        if (wv_common.canGoBack()) {
+            wv_common.goBack()
+        } else {
+            // Finish the activity if WebView cannot go back
+            super.onBackPressed()
+        }
+    }
 }
