@@ -271,6 +271,7 @@ class MainActivity:BaseActivity() {
                 intent.type = "image/*"
 
                 intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                intent.putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/jpeg", "image/png", "image/jpg"))
 
 
                 try {

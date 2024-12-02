@@ -166,6 +166,7 @@ class CommonWebviewActivity: BaseActivity() {
                 intent.type = "image/*"
                 // 여러 이미지를 선택할 수 있도록 설정
                 intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                intent.putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/jpeg", "image/png", "image/jpg"))
 
                 try {
                     fileChooserLauncher.launch(intent)
