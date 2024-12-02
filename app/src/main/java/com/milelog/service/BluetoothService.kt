@@ -279,43 +279,61 @@ class BluetoothService : Service() {
             if(ContextCompat.checkSelfPermission(this@BluetoothService, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED){
                 when (intent?.action) {
                     BluetoothDevice.ACTION_ACL_CONNECTED -> {
+                        // 무언가 Connected 된 상황
                         val bluetoothManager: BluetoothManager = getSystemService(BluetoothManager::class.java)
                         val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
 
                         val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
 
-                        pairedDevices?.forEach { device ->
-                            if(drivingMyCarsEntity == null){
-                                if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
+                        if(drivingMyCarsEntity == null) {
+                            // L2로 주행중이 아닌 상황
+                            pairedDevices?.forEach { device ->
+                                if (device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE && isBluetoothDeviceConnected(device)) {
+                                    // 핸즈프리 && 연결된 디바이스
+                                    val myCarsListOnDevice: MutableList<MyCarsEntity> =
+                                        mutableListOf()
 
-                                    if(isBluetoothDeviceConnected(device)) {
-                                        val myCarsListOnDevice:MutableList<MyCarsEntity> = mutableListOf()
-
-                                        PreferenceUtil.getPref(this@BluetoothService, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
-                                            if(it != "") {
-                                                val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
-                                                myCarsListOnDevice.addAll(GsonBuilder().serializeNulls().create().fromJson(it, type))
-                                            }
-
-                                            drivingMyCarsEntity = myCarsListOnDevice.find { it.bluetooth_mac_address == device.address } ?: MyCarsEntity(id = null,name =null, number = null,bluetooth_mac_address = device.address, bluetooth_name = device.name)
-
-
-                                            driveDatabase?.detectUserDao()?.insert(
-                                                DetectUserEntity(
-                                                    user_id = "",
-                                                    verification = "L2",
-                                                    start_stop = "Bluetooth(start)" + device.name,
-                                                    timestamp = System.currentTimeMillis().toString(),
-                                                    sensor_state = fusedLocationClient != null
-                                                )
+                                    PreferenceUtil.getPref(
+                                        this@BluetoothService,
+                                        PreferenceUtil.MY_CAR_ENTITIES,
+                                        ""
+                                    )?.let {
+                                        if (it != "") {
+                                            val type = object :
+                                                TypeToken<MutableList<MyCarsEntity>>() {}.type
+                                            myCarsListOnDevice.addAll(
+                                                GsonBuilder().serializeNulls().create()
+                                                    .fromJson(it, type)
                                             )
-
-                                            startSensor(L2)
-
-
-
                                         }
+
+                                        drivingMyCarsEntity =
+                                            myCarsListOnDevice.find { it.bluetooth_mac_address == device.address }
+                                                ?: MyCarsEntity(
+                                                    id = null,
+                                                    name = null,
+                                                    number = null,
+                                                    bluetooth_mac_address = device.address,
+                                                    bluetooth_name = device.name
+                                                )
+
+
+                                        driveDatabase?.detectUserDao()?.insert(
+                                            DetectUserEntity(
+                                                user_id = "",
+                                                verification = "L2",
+                                                start_stop = "Bluetooth(start)" + device.name,
+                                                timestamp = System.currentTimeMillis()
+                                                    .toString(),
+                                                sensor_state = fusedLocationClient != null
+                                            )
+                                        )
+
+                                        startSensor(L2)
+
+
                                     }
+
                                 }
                             }
                         }
