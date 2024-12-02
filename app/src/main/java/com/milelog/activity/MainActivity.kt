@@ -81,8 +81,23 @@ class MainActivity:BaseActivity() {
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val data: Intent? = result.data
-                val results = WebChromeClient.FileChooserParams.parseResult(result.resultCode, data)
+                val results: Array<Uri>?
 
+                // 여러 개의 파일이 선택되었을 때 처리
+                if (data?.clipData != null) {
+                    val clipData = data.clipData
+                    val uris = ArrayList<Uri>()
+                    for (i in 0 until clipData!!.itemCount) {
+                        uris.add(clipData.getItemAt(i).uri)
+                    }
+                    results = uris.toArray(arrayOfNulls(uris.size)) // 여러 파일 선택
+                } else {
+                    // 하나의 파일만 선택되었을 때 처리
+                    val uri = data?.data
+                    results = if (uri != null) arrayOf(uri) else emptyArray() // 하나의 파일 선택
+                }
+
+                // results가 비어있지 않으면 처리
                 if (results.isNullOrEmpty()) {
                     fileChooserCallback?.onReceiveValue(null)
                 } else {
@@ -117,7 +132,6 @@ class MainActivity:BaseActivity() {
 
             fileChooserCallback = null
         }
-
     // 이미지를 압축하여 40% 퀄리티로 저장하는 함수
     fun compressImage(uri: Uri, context: Context): File? {
         try {
@@ -255,6 +269,9 @@ class MainActivity:BaseActivity() {
                 val intent = Intent(Intent.ACTION_GET_CONTENT)
                 intent.addCategory(Intent.CATEGORY_OPENABLE)
                 intent.type = "image/*"
+
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+
 
                 try {
                     fileChooserLauncher.launch(intent)
