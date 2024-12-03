@@ -141,7 +141,7 @@
                         android:id="@+id/tv_const_percent1"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:text="35.1"
+                        android:text="0"
                         android:textColor="@color/gray_950"
                         android:textAppearance="@style/H1SB"
                         android:textFontWeight="600"
@@ -162,7 +162,7 @@
                     android:id="@+id/tv_diff_percent"
                     android:layout_width="wrap_content"
                     android:layout_height="18dp"
-                    android:text="+ 1.1% 증가"
+                    android:text="+ 0% 증가"
                     android:textAppearance="@style/C1R"
                     android:textColor="@color/pri_800"
                     android:textFontWeight="400"
@@ -266,7 +266,7 @@
                             android:layout_gravity="center_vertical"
                             android:textColor="@color/gray_950"
                             android:gravity="center_vertical"
-                            android:text="34.1%"/>
+                            android:text="0%"/>
 
 
 
