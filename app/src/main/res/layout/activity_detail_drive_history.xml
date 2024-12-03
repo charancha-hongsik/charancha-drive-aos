@@ -459,13 +459,12 @@
                         android:text="-"
                         android:textFontWeight="600"
                         android:textAppearance="@style/B1SB"
-                        android:maxLines="1"
+                        android:maxLines="2"
                         android:ellipsize="end"
                         android:layout_marginLeft="12dp"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintLeft_toRightOf="@+id/view_start_address_title"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
+                        app:layout_constraintTop_toTopOf="@+id/view_start_address_title"
+                        app:layout_constraintLeft_toRightOf="@+id/view_start_address_title" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -518,14 +517,13 @@
                         android:gravity="right"
                         android:textFontWeight="600"
                         android:textAppearance="@style/B1SB"
-                        android:maxLines="1"
+                        android:maxLines="2"
                         android:text="-"
                         android:layout_marginLeft="12dp"
                         android:ellipsize="end"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintLeft_toRightOf="@+id/view_end_address_title"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
+                        app:layout_constraintTop_toTopOf="@+id/view_end_address_title"
+                        app:layout_constraintLeft_toRightOf="@+id/view_end_address_title" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -579,14 +577,13 @@
                         android:gravity="right"
                         android:textFontWeight="600"
                         android:textAppearance="@style/B1SB"
-                        android:maxLines="1"
+                        android:maxLines="2"
                         android:text="-"
                         android:ellipsize="end"
                         android:layout_marginLeft="12dp"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintLeft_toRightOf="@+id/view_end_address_detail_title"
-                        app:layout_constraintBottom_toBottomOf="parent"/>
+                        app:layout_constraintTop_toTopOf="@+id/view_end_address_detail_title"
+                        app:layout_constraintLeft_toRightOf="@+id/view_end_address_detail_title" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
