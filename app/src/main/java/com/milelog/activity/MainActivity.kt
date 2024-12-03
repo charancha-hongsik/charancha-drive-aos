@@ -441,7 +441,7 @@ class MainActivity:BaseActivity() {
         // 1. 유지할 리스트: 서버에 있는 차량만 남기고 type과 name 동기화
         val retainedCars = myCarsListOnDevice.mapNotNull { deviceCar ->
             myCarsListOnServer.find { serverCar -> serverCar.id == deviceCar.id }?.let { serverCar ->
-                deviceCar.copy(name = serverCar.name, type = serverCar.type, isActive = serverCar.isActive) // type과 name을 서버의 값으로 동기화
+                deviceCar.copy(name = serverCar.name, fullName = serverCar.fullName, type = serverCar.type, isActive = serverCar.isActive) // type과 name을 서버의 값으로 동기화
             }
         }.toMutableList()
 
