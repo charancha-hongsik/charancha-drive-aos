@@ -329,12 +329,13 @@
         <activity
             android:name=".activity.DetailDriveHistoryActivity"
             android:screenOrientation="portrait"
-
+            android:windowSoftInputMode="adjustResize"
             android:exported="true"/>
 
         <activity
             android:name=".activity.ExcelActivity"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true"/>
 
         <activity
