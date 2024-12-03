@@ -190,6 +190,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                 .joinToString(" ")
 
             tv_car_name.text = carName
+            Log.d("testsetestest","testsetestset :: " + carName)
 
             if(!postMyCarResponse.fuelCd.isNullOrEmpty()){
                 btn_next.isSelected = true
