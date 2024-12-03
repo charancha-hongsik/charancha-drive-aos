@@ -31,6 +31,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
@@ -190,7 +191,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                 .joinToString(" ")
 
             tv_car_name.text = carName
-            Log.d("testsetestest","testsetestset :: " + carName)
+            tv_car_name.setTextColor(ContextCompat.getColor(this, R.color.gray_500))
 
             if(!postMyCarResponse.fuelCd.isNullOrEmpty()){
                 btn_next.isSelected = true
