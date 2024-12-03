@@ -9,6 +9,7 @@ import com.milelog.activity.LoadCarMoreInfoActivity.Companion.PERSONAL
 data class MyCarsEntity(
     @ColumnInfo(name="id") var id: String?, // Car ID
     @ColumnInfo(name="name") var name: String?, // Car Name
+    @ColumnInfo(name="fullName") var fullName: String?, // Car Full Name
     @ColumnInfo(name="number") var number: String?, // Car License Number
     @ColumnInfo(name="bluetooth_mac_address") var bluetooth_mac_address: String?,
     @ColumnInfo(name="bluetooth_name") var bluetooth_name: String?,

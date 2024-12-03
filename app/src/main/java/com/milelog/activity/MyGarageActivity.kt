@@ -194,7 +194,7 @@ class MyGarageActivity:BaseRefreshActivity() {
                         }
 
                         for(car in getMyCarInfoResponses.items){
-                            myCarsListOnServer.add(MyCarsEntity(car.id, car.carName, car.licensePlateNumber, null,null))
+                            myCarsListOnServer.add(MyCarsEntity(car.id, name = car.makerNm + " " + car.modelNm, fullName = car.carName, car.licensePlateNumber, null,null))
                         }
 
                         PreferenceUtil.putPref(this@MyGarageActivity, PreferenceUtil.MY_CAR_ENTITIES, GsonBuilder().serializeNulls().create().toJson(updateMyCarList(myCarsListOnServer, myCarsListOnDevice)))

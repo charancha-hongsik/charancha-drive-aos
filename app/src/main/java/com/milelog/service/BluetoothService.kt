@@ -311,6 +311,7 @@ class BluetoothService : Service() {
                                             myCarsListOnDevice.find { it.bluetooth_mac_address == device.address }
                                                 ?: MyCarsEntity(
                                                     id = null,
+                                                    fullName = null,
                                                     name = null,
                                                     number = null,
                                                     bluetooth_mac_address = device.address,

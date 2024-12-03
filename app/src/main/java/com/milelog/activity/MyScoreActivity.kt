@@ -221,7 +221,7 @@ class MyScoreActivity : BaseRefreshActivity() {
                         myScoreViewModel.getCarInfoinquiryByCarId(userCarId)
 
                         for(car in getMyCarInfoResponses.items){
-                            myCarsListOnServer.add(MyCarsEntity(car.id, car.carName, car.licensePlateNumber, null,null, type = car.type))
+                            myCarsListOnServer.add(MyCarsEntity(car.id, name = car.makerNm + " " + car.modelNm, fullName = car.carName, car.licensePlateNumber, null,null, type = car.type))
                         }
 
                         PreferenceUtil.putPref(this@MyScoreActivity, PreferenceUtil.MY_CAR_ENTITIES, GsonBuilder().serializeNulls().create().toJson(updateMyCarList(myCarsListOnServer, myCarsListOnDevice)))

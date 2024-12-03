@@ -1090,8 +1090,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     car.isActive = true
                 }
 
-                myCarsList.add(MyCarsEntity(null,null,null,null,null,false))
-                myCarsList.add(MyCarsEntity(null,null,null,null,null,true))
+                myCarsList.add(MyCarsEntity(null,null,null, null,null,null,false))
+                myCarsList.add(MyCarsEntity(null,null,null, null,null,null,true))
 
 
                 rv_registered_car.adapter = MyCarEntitiesAdapter(context = this, mycarEntities = myCarsList, tracking_id = tracking_id, viewModel = detailDriveHistoryViewModel, bottomSheetDialog, isActive, userCarId )
