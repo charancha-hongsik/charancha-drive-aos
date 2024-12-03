@@ -446,6 +446,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                     if(response.code() == 201 || response.code() == 200){
 
                         if(intent.getBooleanExtra("edit",false)){
+                            showCustomToast(this@LoadCarMoreInfoActivity, "내 차 정보가 수정되었어요.")
                             finish()
                         }else{
                             val getMyCarInfoItem = Gson().fromJson(
