@@ -53,7 +53,7 @@
     <string name="terms_title6_gray">(필수)</string>
     <string name="next">다음</string>
 
-    <string name="permission_info_text1">편리한 마일로그앱 사용을 위해\n아래의 권한을 허용해 주세요</string>
+    <string name="permission_info_text1">편리한 마일로그앱 사용을 위해\n아래의 권한을 허용해 주세요.</string>
     <string name="permission_info_force_update">필수 접근 권한</string>
     <string name="permission_info_title1">나만의 주행 스타일</string>
     <string name="permission_info_contents1">주행 분석에만 사용되니 안심하세요!\n반드시 필요한 접근 권한이에요:)</string>
