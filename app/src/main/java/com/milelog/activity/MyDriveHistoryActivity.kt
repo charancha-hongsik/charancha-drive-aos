@@ -1097,7 +1097,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         localDateFormatter.timeZone = TimeZone.getDefault()
 
         val groupedDriveItems = driveItems.groupBy { item ->
-            val date = utcFormatter.parse(item.endTime)
+            val date = utcFormatter.parse(item.startTime)
             localDateFormatter.format(date)
         }
 
@@ -1109,7 +1109,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
     fun updateHistories(histories: MutableList<DriveItem>, newHistories: MutableList<NewDriveHistoryResponse>) {
         histories.forEach { driveItem ->
             // 현지 시간대로 변환하여 날짜 형식을 "6월 13일 화요일" 형식으로 변환
-            val localDate = convertToLocalDate(driveItem.endTime)
+            val localDate = convertToLocalDate(driveItem.startTime)
 
             // 같은 날짜가 있는지 확인
             val existingHistoryGroup = newHistories.find { it.date == localDate }
