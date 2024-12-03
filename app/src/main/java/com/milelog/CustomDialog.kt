@@ -4,12 +4,14 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.Window
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.milelog.activity.BaseActivity
 
-class CustomDialog(context: Context, val title:String, val contents:String, val confirmBtnText:String, val cancelBtnText:String, val dialogCallback: DialogCallback): Dialog(context) {
+class CustomDialog(context: Context, val title:String? = null, val contents:String, val confirmBtnText:String, val cancelBtnText:String, val dialogCallback: DialogCallback): Dialog(context) {
     lateinit var layout_confirm:ConstraintLayout
     lateinit var layout_cancel:ConstraintLayout
     lateinit var tv_dialog_title:TextView
@@ -48,7 +50,12 @@ class CustomDialog(context: Context, val title:String, val contents:String, val 
             }
         })
 
-        tv_dialog_title.text = title
+        if(title != null){
+            tv_dialog_title.visibility = VISIBLE
+            tv_dialog_title.text = title
+        }else{
+            tv_dialog_title.visibility = GONE
+        }
         tv_dialog_contents.text = contents
         tv_comfirm.text = confirmBtnText
         tv_cancel.text = cancelBtnText

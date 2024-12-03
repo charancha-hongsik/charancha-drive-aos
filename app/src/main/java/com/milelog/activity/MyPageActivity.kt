@@ -3,8 +3,12 @@ package com.milelog.activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -19,6 +23,7 @@ import com.milelog.retrofit.response.TermsSummaryResponse
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.milelog.BuildConfig.BASE_API_URL
+import com.milelog.CustomDialog
 import com.milelog.Endpoints.FAQ
 import com.milelog.Endpoints.INQUIRY
 import de.hdodenhof.circleimageview.CircleImageView
@@ -132,7 +137,22 @@ class MyPageActivity: BaseRefreshActivity() {
 
         btn_logout.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                logout()
+                CustomDialog(
+                    this@MyPageActivity,
+                    null,
+                    "로그아웃 하시겠습니까?",
+                    "로그아웃",
+                    "취소",
+                    object : CustomDialog.DialogCallback {
+                        override fun onConfirm() {
+                            logout()
+                        }
+
+                        override fun onCancel() {
+
+                        }
+
+                    }).show()
             }
 
         })
