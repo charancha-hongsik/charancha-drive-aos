@@ -851,7 +851,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                     val isCorporate = userCar.type.equals(CORPORATE)
                     holder.layout_corp.visibility = if (isCorporate) VISIBLE else GONE
                     holder.iv_corp.visibility = if (isCorporate) VISIBLE else GONE
-                    holder.tv_car.text = userCar.carName
+                    holder.tv_car.text = userCar.makerNm + " " + userCar.modelNm
                 }
 
                 // Distance and Time 설정 최적화
