@@ -61,7 +61,6 @@ class RegisterCarActivity: BaseActivity() {
             override fun onSingleClick(v: View?) {
                 et_register_car.performClick()
             }
-
         })
 
         btn_next = findViewById(R.id.btn_next)

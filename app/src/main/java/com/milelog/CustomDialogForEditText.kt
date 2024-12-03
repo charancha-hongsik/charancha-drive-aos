@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
+import android.view.View
 import android.view.Window
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -13,6 +14,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.milelog.activity.BaseActivity
 
 class CustomDialogForEditText(context: Context, val title:String, val subtitle:String, val hint:String, val confirmBtnText:String, val cancelBtnText:String, val dialogCallback: DialogCallback): Dialog(context) {
     lateinit var layout_confirm:ConstraintLayout
@@ -41,20 +43,25 @@ class CustomDialogForEditText(context: Context, val title:String, val subtitle:S
         et_dialog_contents = findViewById(R.id.et_dialog_contents)
 
 
-
-        layout_confirm.setOnClickListener {
-            if(et_dialog_contents.text.isNotEmpty()){
-                dialogCallback.onConfirm(et_dialog_contents.text.toString())
-                dismiss()
-            }else{
-                showCustomToast(context, "1글자 이상 입력하세요.")
+        layout_confirm.setOnClickListener(object: BaseActivity.OnSingleClickListener() {
+            override fun onSingleClick(v: View?) {
+                if(et_dialog_contents.text.isNotEmpty()){
+                    dialogCallback.onConfirm(et_dialog_contents.text.toString())
+                    dismiss()
+                }else{
+                    showCustomToast(context, "1글자 이상 입력하세요.")
+                }
             }
-        }
 
-        layout_cancel.setOnClickListener {
-            dialogCallback.onCancel()
-            dismiss()
-        }
+        })
+
+        layout_cancel.setOnClickListener(object :BaseActivity.OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                dialogCallback.onCancel()
+                dismiss()
+            }
+
+        })
 
         tv_dialog_title.text = title
         tv_dialog_subtitle.text = subtitle

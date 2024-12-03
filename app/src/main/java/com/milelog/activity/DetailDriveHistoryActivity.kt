@@ -247,9 +247,6 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         layout_drive_image = findViewById(R.id.layout_drive_image)
         view_edit_detail = findViewById(R.id.view_edit_detail)
 
-        view_edit_detail.setOnClickListener {
-
-        }
 
         tv_start_address = findViewById(R.id.tv_start_address)
         tv_end_address = findViewById(R.id.tv_end_address)
@@ -717,12 +714,13 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                             view_edit_detail.visibility = VISIBLE
                         }
 
+                        view_edit_detail.setOnClickListener(object:OnSingleClickListener(){
+                            override fun onSingleClick(v: View?) {
+                                if(list.size > 0)
+                                    showBottomSheetForEditHistory(list)
+                            }
 
-                        view_edit_detail.setOnClickListener {
-                            if(list.size > 0)
-                                showBottomSheetForEditHistory(list)
-                        }
-
+                        })
 
                     }
 

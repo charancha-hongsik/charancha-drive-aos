@@ -632,10 +632,13 @@ open class BaseActivity: AppCompatActivity(){
         // Set the content view of the dialog
         bottomSheetDialog.setContentView(bottomSheetView)
 
-        // Set the close button action
-        bottomSheetView.findViewById<TextView>(R.id.btn_set_mycar)?.setOnClickListener {
-            bottomSheetDialog.dismiss()
-        }
+
+        bottomSheetView.findViewById<TextView>(R.id.btn_set_mycar)?.setOnClickListener(object :OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                bottomSheetDialog.dismiss()
+            }
+
+        })
 
         // Show the dialog
         bottomSheetDialog.show()
@@ -657,10 +660,13 @@ open class BaseActivity: AppCompatActivity(){
         // Set the content view of the dialog
         bottomSheetDialog.setContentView(bottomSheetView)
 
-        // Set the close button action
-        bottomSheetView.findViewById<TextView>(R.id.btn_set_mycar)?.setOnClickListener {
-            bottomSheetDialog.dismiss()
-        }
+        bottomSheetView.findViewById<TextView>(R.id.btn_set_mycar)?.setOnClickListener(object:
+            OnSingleClickListener() {
+            override fun onSingleClick(v: View?) {
+                bottomSheetDialog.dismiss()
+            }
+
+        })
 
         // Show the dialog
         bottomSheetDialog.show()

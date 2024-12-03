@@ -567,59 +567,66 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
 
         })
 
-        btn_download.setOnClickListener {
-            startActivity(Intent(this, ExcelActivity::class.java))
-        }
 
-        layout_filter.setOnClickListener {
-            layout_choose_date.visibility = VISIBLE
-            layout_select_main.visibility = VISIBLE
-            btn_inquire_date.visibility = VISIBLE
-            layout_date_own.visibility = GONE
-            listView_choose_date_own.visibility = GONE
-            btn_select_date_from_list.visibility = GONE
+        btn_download.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                startActivity(Intent(this@MyDriveHistoryActivity, ExcelActivity::class.java))
+            }
 
-            btn_a_month.isSelected = true
-            btn_six_month.isSelected = false
-            btn_each_month.isSelected = false
+        })
 
-            val itemList = getDateList()
+        layout_filter.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                layout_choose_date.visibility = VISIBLE
+                layout_select_main.visibility = VISIBLE
+                btn_inquire_date.visibility = VISIBLE
+                layout_date_own.visibility = GONE
+                listView_choose_date_own.visibility = GONE
+                btn_select_date_from_list.visibility = GONE
 
-            selectedDate = itemList.get(0).date
-            tv_selected_date.text = selectedDate
+                btn_a_month.isSelected = true
+                btn_six_month.isSelected = false
+                btn_each_month.isSelected = false
 
-            // adapter 생성
-            val dateAdapter = DetailManageScoreActivity.DateAdapter(
-                this,
-                itemList,
-                object : DetailManageScoreActivity.DateAdapter.DateCallback {
-                    override fun chosenDate(date: String) {
-                        selectedDate = date
+                val itemList = getDateList()
 
-                        for (list in itemList) {
-                            list.selected = false
-                            if (list.date == date) {
-                                list.selected = true
+                selectedDate = itemList.get(0).date
+                tv_selected_date.text = selectedDate
+
+                // adapter 생성
+                val dateAdapter = DetailManageScoreActivity.DateAdapter(
+                    this@MyDriveHistoryActivity,
+                    itemList,
+                    object : DetailManageScoreActivity.DateAdapter.DateCallback {
+                        override fun chosenDate(date: String) {
+                            selectedDate = date
+
+                            for (list in itemList) {
+                                list.selected = false
+                                if (list.date == date) {
+                                    list.selected = true
+                                }
                             }
+                            (listView_choose_date_own.adapter as DetailManageScoreActivity.DateAdapter).notifyDataSetChanged()
+
+                            listView_choose_date_own.visibility = GONE
+                            layout_select_main.visibility = VISIBLE
+                            btn_inquire_date.visibility = VISIBLE
+
+                            tv_selected_date.text = selectedDate
+
                         }
-                        (listView_choose_date_own.adapter as DetailManageScoreActivity.DateAdapter).notifyDataSetChanged()
+                    })
 
-                        listView_choose_date_own.visibility = GONE
-                        layout_select_main.visibility = VISIBLE
-                        btn_inquire_date.visibility = VISIBLE
+                // listView에 adapter 연결
+                listView_choose_date_own.adapter = dateAdapter
 
-                        tv_selected_date.text = selectedDate
+                TextViewCompat.setTextAppearance(btn_a_month, R.style.B1SBweight600)
+                TextViewCompat.setTextAppearance(btn_six_month, R.style.B1Mweight500)
+                TextViewCompat.setTextAppearance(btn_each_month, R.style.B1Mweight500)
+            }
 
-                    }
-                })
-
-            // listView에 adapter 연결
-            listView_choose_date_own.adapter = dateAdapter
-
-            TextViewCompat.setTextAppearance(btn_a_month, R.style.B1SBweight600)
-            TextViewCompat.setTextAppearance(btn_six_month, R.style.B1Mweight500)
-            TextViewCompat.setTextAppearance(btn_each_month, R.style.B1Mweight500)
-        }
+        })
 
         layout_choose_date.setOnClickListener {
             layout_choose_date.visibility = GONE

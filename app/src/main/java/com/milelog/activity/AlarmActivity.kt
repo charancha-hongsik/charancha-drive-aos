@@ -186,9 +186,12 @@ class AlarmActivity: BaseRefreshActivity() {
                     holder.tvLast.visibility = View.GONE
                 }
 
-                holder.tvMore.setOnClickListener {
-                    callback.clickedMore(meta, notifications)
-                }
+                holder.tvMore.setOnClickListener { object :OnSingleClickListener(){
+                    override fun onSingleClick(v: View?) {
+                        callback.clickedMore(meta, notifications)
+                    }
+
+                } }
             }
         }
 

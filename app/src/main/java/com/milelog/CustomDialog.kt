@@ -3,9 +3,11 @@ package com.milelog
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.view.View
 import android.view.Window
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.milelog.activity.BaseActivity
 
 class CustomDialog(context: Context, val title:String, val contents:String, val confirmBtnText:String, val cancelBtnText:String, val dialogCallback: DialogCallback): Dialog(context) {
     lateinit var layout_confirm:ConstraintLayout
@@ -32,15 +34,19 @@ class CustomDialog(context: Context, val title:String, val contents:String, val 
         tv_cancel = findViewById(R.id.tv_cancel)
 
 
-        layout_confirm.setOnClickListener {
-            dialogCallback.onConfirm()
-            dismiss()
-        }
+        layout_confirm.setOnClickListener(object :BaseActivity.OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                dialogCallback.onConfirm()
+                dismiss()
+            }
+        })
 
-        layout_cancel.setOnClickListener {
-            dialogCallback.onCancel()
-            dismiss()
-        }
+        layout_cancel.setOnClickListener(object:BaseActivity.OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                dialogCallback.onCancel()
+                dismiss()
+            }
+        })
 
         tv_dialog_title.text = title
         tv_dialog_contents.text = contents

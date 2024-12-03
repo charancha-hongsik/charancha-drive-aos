@@ -3,9 +3,11 @@ package com.milelog
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.view.View
 import android.view.Window
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.milelog.activity.BaseActivity
 
 class CustomDialogNoCancel(context: Context, val title:String, val contents:String, val confirmBtnText:String, val dialogCallback: DialogCallback): Dialog(context) {
     lateinit var layout_confirm:ConstraintLayout
@@ -28,10 +30,13 @@ class CustomDialogNoCancel(context: Context, val title:String, val contents:Stri
         tv_comfirm = findViewById(R.id.tv_comfirm)
 
 
-        layout_confirm.setOnClickListener {
-            dialogCallback.onConfirm()
-            dismiss()
-        }
+        layout_confirm.setOnClickListener(object :BaseActivity.OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                dialogCallback.onConfirm()
+                dismiss()
+            }
+
+        })
 
         tv_dialog_title.text = title
         tv_dialog_contents.text = contents
