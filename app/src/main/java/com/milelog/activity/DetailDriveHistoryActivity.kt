@@ -16,7 +16,10 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.text.Editable
+import android.text.SpannableString
+import android.text.Spanned
 import android.text.TextWatcher
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -271,8 +274,16 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                         et_memo.setText(it.substring(0, maxLengthForMemo))  // 마지막 글자 자르기
                         et_memo.setSelection(maxLengthForMemo)  // 커서를 마지막으로 이동
                     } else {
-                        // 텍스트 길이가 10 이하일 경우 tv_text_length 업데이트
-                        tv_text_length.text = "${it.length}/100"
+                        val lengthText = "${it.length}/100"
+
+                        val indexOfSlash = lengthText.indexOf("/")
+
+                        val spannableString = SpannableString(lengthText)
+                        val color = ContextCompat.getColor(this@DetailDriveHistoryActivity, R.color.gray_600)
+
+                        spannableString.setSpan(ForegroundColorSpan(color), 0, indexOfSlash, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+                        tv_text_length.text = spannableString
                     }
 
                     currentMemo = et_memo.text.toString()
