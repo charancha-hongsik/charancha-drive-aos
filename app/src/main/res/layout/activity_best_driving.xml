@@ -283,8 +283,9 @@
 
                         <View
                             android:id="@+id/layout_extra_speed_percent"
-                            android:layout_width="300dp"
+                            android:layout_width="0dp"
                             android:layout_height="10dp"
+                            android:visibility="gone"
                             android:background="@drawable/radius2_orange500"
                             app:layout_constraintTop_toTopOf="parent"
                             app:layout_constraintLeft_toLeftOf="parent"
@@ -336,7 +337,7 @@
                     android:layout_marginTop="4dp"
                     android:paddingLeft="20dp"
                     android:paddingRight="20dp"
-                    android:text="최근 내 차의\n최적 주행 비율이에요"
+                    android:text="아직 데이터가 없어요.\n함께 달려볼까요?"
                     android:textAppearance="@style/ST2SB"
                     android:textFontWeight="600"
                     android:textColor="@color/gray_950"/>
