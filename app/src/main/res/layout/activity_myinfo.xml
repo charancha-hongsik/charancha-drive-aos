@@ -209,38 +209,21 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/tv_withdrawal"
             android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:orientation="horizontal"
-            android:layout_marginTop="24dp"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginLeft="8dp"
+            android:textAppearance="@style/B2M"
+            android:textColor="@color/gray_400"
+            android:textFontWeight="500"
+            android:text="회원탈퇴"
+            android:layout_marginBottom="40dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="마일로그를 그만 이용하고 싶은걸까요?"
-                android:textAppearance="@style/B2R"
-                android:textColor="@color/gray_600"
-                android:textFontWeight="400"
-                android:layout_gravity="center_vertical"/>
-
-            <TextView
-                android:id="@+id/tv_withdrawal"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:layout_marginLeft="8dp"
-                android:textAppearance="@style/C1SB"
-                android:textColor="@color/gray_900"
-                android:textFontWeight="600"
-                android:text="@string/withdrawal_with_underlined"/>
-
-
-        </LinearLayout>
+            app:layout_constraintRight_toRightOf="parent"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
