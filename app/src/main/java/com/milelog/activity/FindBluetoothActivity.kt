@@ -445,8 +445,8 @@ class FindBluetoothActivity: BaseRefreshActivity() {
         } else {
             CustomDialog(
                 this,
-                "블루투스",
-                "동작 및 피트니스 서비스를 사용할 수 없습니다. 기기의 ‘설정 > 개인정보 보호'에서 동작 및 피트니스 서비스를 켜주세요 (필수 권한)",
+                "블루투스 권한",
+                "블루투스 서비스를 사용할 수 없습니다. 기기의 ‘마일로그 > 권한 > 근처기기’에서 근처 기기를 “허용\"으로 켜주세요",
                 "설정으로 이동",
                 "취소",
                 object : CustomDialog.DialogCallback {
