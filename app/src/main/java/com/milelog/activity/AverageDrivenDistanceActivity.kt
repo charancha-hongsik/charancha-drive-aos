@@ -1132,7 +1132,12 @@ class AverageDrivenDistanceActivity: BaseRefreshActivity() {
     }
 
     private fun setResources(){
-        btn_back.setOnClickListener { finish() }
+        btn_back.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                finish()
+            }
+
+        })
 
         btn_recent_drive.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {

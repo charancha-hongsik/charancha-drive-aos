@@ -76,13 +76,19 @@ class FindBluetoothActivity: BaseRefreshActivity() {
         rv_connected_car.layoutManager = LinearLayoutManager(this)
         rv_connected_car.addItemDecoration(dividerItemDecoration)
 
-        btn_find_bluetooth.setOnClickListener {
-            setList()
-        }
+        btn_find_bluetooth.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                setList()
+            }
 
-        btn_find_bluetooth2.setOnClickListener{
-            setList()
-        }
+        })
+
+        btn_find_bluetooth2.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                setList()
+            }
+
+        })
         setList()
     }
 

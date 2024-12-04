@@ -208,8 +208,6 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
 
             iv_corp.isSelected = true
             iv_personal.isSelected = false
-            btn_corp.setOnClickListener { }
-            btn_personal.setOnClickListener{ }
             tv_corp.setTextColor(resources.getColor(R.color.corp_selected))
             tv_personal.setTextColor(resources.getColor(R.color.gray_300))
 
@@ -260,278 +258,309 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
     }
 
     private fun setListener(){
-        ib_arrow_register_car.setOnClickListener{
-            finish()
-        }
+        ib_arrow_register_car.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                finish()
+            }
 
-        btn_edit_car.setOnClickListener {
-            resultLauncher.launch(
-                Intent(this@LoadCarMoreInfoActivity, CarDetailActivity::class.java)
-                    .putExtra("carInfo", Gson().toJson(postMyCarResponse))
-            )
-        }
+        })
 
-        layout_select.setOnClickListener{
-            layout_select.visibility = GONE
-        }
+        btn_edit_car.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                resultLauncher.launch(
+                    Intent(this@LoadCarMoreInfoActivity, CarDetailActivity::class.java)
+                        .putExtra("carInfo", Gson().toJson(postMyCarResponse))
+                )
+            }
 
-        btn_fuel.setOnClickListener {
-            apiService().getCharanchaCode("Bearer " + PreferenceUtil.getPref(this@LoadCarMoreInfoActivity, PreferenceUtil.ACCESS_TOKEN, "")!!, FUEL, null).enqueue(object:
-                Callback<ResponseBody> {
-                override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+        })
 
-                    val jsonString = response.body()?.string()
+        layout_select.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                layout_select.visibility = GONE
+            }
 
-                    val gson = Gson()
-                    val type: Type = object : TypeToken<List<CarDetailResponse>>() {}.type
-                    val carDetails:List<CarDetailResponse> = gson.fromJson(jsonString, type)
+        })
 
-                    val itemList: MutableList<CarDetail> = ArrayList()
+        btn_fuel.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                apiService().getCharanchaCode("Bearer " + PreferenceUtil.getPref(this@LoadCarMoreInfoActivity, PreferenceUtil.ACCESS_TOKEN, "")!!, FUEL, null).enqueue(object:
+                    Callback<ResponseBody> {
+                    override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
 
-                    for(carDetail in carDetails)
-                        itemList.add(CarDetail(carDetail.code, carDetail.codeNm))
+                        val jsonString = response.body()?.string()
 
-                    // adapter 생성
-                    val adapter = CarDetailAdapter(this@LoadCarMoreInfoActivity, R.layout.edit_fuel_textview, itemList)
+                        val gson = Gson()
+                        val type: Type = object : TypeToken<List<CarDetailResponse>>() {}.type
+                        val carDetails:List<CarDetailResponse> = gson.fromJson(jsonString, type)
 
-                    // listView에 adapter 연결
-                    listView.adapter = adapter
+                        val itemList: MutableList<CarDetail> = ArrayList()
 
-                    layout_select.visibility = VISIBLE
-                }
+                        for(carDetail in carDetails)
+                            itemList.add(CarDetail(carDetail.code, carDetail.codeNm))
 
-                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        // adapter 생성
+                        val adapter = CarDetailAdapter(this@LoadCarMoreInfoActivity, R.layout.edit_fuel_textview, itemList)
 
-                }
+                        // listView에 adapter 연결
+                        listView.adapter = adapter
 
-            })
-        }
-
-
-        btn_next.setOnClickListener {
-            CustomDialog(this, "차량 등록", "법인 또는 개인은 차량 등록 이후에\n변경할 수 없어요. 등록할까요?", "등록","취소",  object : CustomDialog.DialogCallback{
-                override fun onConfirm() {
-                    var type:String = PERSONAL
-                    var data:Data? = null
-                    if(iv_corp.isSelected){
-                        type = CORPORATE
-                        data = Data(et_corp_name.text.toString(), et_corp_department.text.toString())
+                        layout_select.visibility = VISIBLE
                     }
-                    val gson = Gson()
-                    val jsonParam =
-                        gson.toJson(
-                            PostMyCarRequest(
-                                licensePlateNumber = postMyCarResponse.licensePlateNumber,
-                                ownerName = postMyCarResponse.ownerName,
-                                vehicleIdentificationNumber = postMyCarResponse.vehicleIdentificationNumber,
-                                carName = postMyCarResponse.carName,
-                                makerCd = postMyCarResponse.makerCd!!,
-                                modelCd = postMyCarResponse.modelCd!!,
-                                modelDetailCd = postMyCarResponse.modelDetailCd,
-                                gradeCd = postMyCarResponse.gradeCd,
-                                gradeDetailCd = postMyCarResponse.gradeDetailCd,
-                                fuelCd = postMyCarResponse.fuelCd!!,
-                                typeInput = TypeInput(type = type, data)
-                            )
-                        )
 
-                    apiService(60).postMyCar(
-                        "Bearer " + PreferenceUtil.getPref(this@LoadCarMoreInfoActivity,  PreferenceUtil.ACCESS_TOKEN, ""), jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :
-                        Callback<ResponseBody> {
-                        override fun onResponse(
-                            call: Call<ResponseBody>,
-                            response: Response<ResponseBody>
-                        ) {
-                            if(response.code() == 201 || response.code() == 200){
-                                if(intent.getBooleanExtra("add",false)){
-                                    startActivity(
-                                        Intent(this@LoadCarMoreInfoActivity, MyGarageActivity::class.java).addFlags(
-                                            FLAG_ACTIVITY_CLEAR_TOP or FLAG_ACTIVITY_SINGLE_TOP
-                                        ))
-                                    finish()
-                                }else{
-                                    val getMyCarInfoItem = Gson().fromJson(
-                                        response.body()?.string(),
-                                        GetMyCarInfoItem::class.java
-                                    )
-                                    PreferenceUtil.putPref(this@LoadCarMoreInfoActivity, PreferenceUtil.USER_CARID, getMyCarInfoItem.id)
-                                    PreferenceUtil.putPref(this@LoadCarMoreInfoActivity,  PreferenceUtil.KM_MILE, "km")
-                                    startActivity(
-                                        Intent(this@LoadCarMoreInfoActivity, MainActivity::class.java).addFlags(
-                                            FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK
-                                        ))
-                                    finish()
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+                    }
+
+                })
+            }
+
+        })
+
+        btn_next.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                CustomDialog(this@LoadCarMoreInfoActivity, "차량 등록", "법인 또는 개인은 차량 등록 이후에\n변경할 수 없어요. 등록할까요?", "등록","취소",  object : CustomDialog.DialogCallback{
+                    override fun onConfirm() {
+                        var type:String = PERSONAL
+                        var data:Data? = null
+                        if(iv_corp.isSelected){
+                            type = CORPORATE
+                            data = Data(et_corp_name.text.toString(), et_corp_department.text.toString())
+                        }
+                        val gson = Gson()
+                        val jsonParam =
+                            gson.toJson(
+                                PostMyCarRequest(
+                                    licensePlateNumber = postMyCarResponse.licensePlateNumber,
+                                    ownerName = postMyCarResponse.ownerName,
+                                    vehicleIdentificationNumber = postMyCarResponse.vehicleIdentificationNumber,
+                                    carName = postMyCarResponse.carName,
+                                    makerCd = postMyCarResponse.makerCd!!,
+                                    modelCd = postMyCarResponse.modelCd!!,
+                                    modelDetailCd = postMyCarResponse.modelDetailCd,
+                                    gradeCd = postMyCarResponse.gradeCd,
+                                    gradeDetailCd = postMyCarResponse.gradeDetailCd,
+                                    fuelCd = postMyCarResponse.fuelCd!!,
+                                    typeInput = TypeInput(type = type, data)
+                                )
+                            )
+
+                        apiService(60).postMyCar(
+                            "Bearer " + PreferenceUtil.getPref(this@LoadCarMoreInfoActivity,  PreferenceUtil.ACCESS_TOKEN, ""), jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :
+                            Callback<ResponseBody> {
+                            override fun onResponse(
+                                call: Call<ResponseBody>,
+                                response: Response<ResponseBody>
+                            ) {
+                                if(response.code() == 201 || response.code() == 200){
+                                    if(intent.getBooleanExtra("add",false)){
+                                        startActivity(
+                                            Intent(this@LoadCarMoreInfoActivity, MyGarageActivity::class.java).addFlags(
+                                                FLAG_ACTIVITY_CLEAR_TOP or FLAG_ACTIVITY_SINGLE_TOP
+                                            ))
+                                        finish()
+                                    }else{
+                                        val getMyCarInfoItem = Gson().fromJson(
+                                            response.body()?.string(),
+                                            GetMyCarInfoItem::class.java
+                                        )
+                                        PreferenceUtil.putPref(this@LoadCarMoreInfoActivity, PreferenceUtil.USER_CARID, getMyCarInfoItem.id)
+                                        PreferenceUtil.putPref(this@LoadCarMoreInfoActivity,  PreferenceUtil.KM_MILE, "km")
+                                        startActivity(
+                                            Intent(this@LoadCarMoreInfoActivity, MainActivity::class.java).addFlags(
+                                                FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK
+                                            ))
+                                        finish()
+                                    }
+                                }else if(response.code() == 401){
+                                    logout()
+                                } else{
+                                    showCustomToast(this@LoadCarMoreInfoActivity,"차량 등록에 실패했습니다.")
+
                                 }
-                            }else if(response.code() == 401){
-                                logout()
-                            } else{
+                            }
+
+                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                                 showCustomToast(this@LoadCarMoreInfoActivity,"차량 등록에 실패했습니다.")
 
                             }
-                        }
 
-                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        })
+                    }
+
+                    override fun onCancel() {
+
+                    }
+
+                }).show()
+            }
+
+        })
+
+
+        btn_delete.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                CustomDialog(this@LoadCarMoreInfoActivity, "자동차 정보 삭제", "자동차 정보를 삭제하면 기존 데이터는 삭제됩니다. 삭제하시겠습니까?", "삭제","취소",  object : CustomDialog.DialogCallback{
+                    override fun onConfirm() {
+                        apiService().deleteMyCarByCarId("Bearer " + PreferenceUtil.getPref(this@LoadCarMoreInfoActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, intent.getStringExtra("carId")!!).enqueue(object :
+                            Callback<ResponseBody> {
+                            override fun onResponse(
+                                call: Call<ResponseBody>,
+                                response: Response<ResponseBody>
+                            ) {
+                                if(response.code() == 204){
+                                    finish()
+                                }else if(response.code() == 401){
+                                    logout()
+                                }
+                            }
+
+                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                            }
+
+                        })
+                    }
+
+                    override fun onCancel() {
+
+
+                    }
+
+                }).show()
+            }
+
+        })
+
+        btn_save.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                Log.d("testestestset","testestestestset :: btn_save.setOnClickListener" )
+
+                var typeInput: TypeInput? = null
+                if(postMyCarResponse.type.equals(CORPORATE)){
+                    typeInput = TypeInput(CORPORATE,Data(et_corp_name.text.toString(), et_corp_department.text.toString()))
+                }
+
+                val gson = GsonBuilder().serializeNulls().create()
+                val jsonParam =
+                    gson.toJson(
+                        EditMyCarRequest(
+                            licensePlateNumber = postMyCarResponse.licensePlateNumber,
+                            ownerName = postMyCarResponse.ownerName,
+                            carName = postMyCarResponse.carName,
+                            makerCd = postMyCarResponse.makerCd,
+                            modelCd = postMyCarResponse.modelCd,
+                            modelDetailCd = postMyCarResponse.modelDetailCd,
+                            gradeCd = postMyCarResponse.gradeCd,
+                            gradeDetailCd = postMyCarResponse.gradeDetailCd,
+                            fuelCd = postMyCarResponse.fuelCd,
+                            typeInput = typeInput
+                        )
+                    )
+
+                apiService(60).patchCarInfoByCarId(
+                    "Bearer " + PreferenceUtil.getPref(this@LoadCarMoreInfoActivity,  PreferenceUtil.ACCESS_TOKEN, ""),intent.getStringExtra("carId")!! ,jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :
+                    Callback<ResponseBody> {
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+                        if(response.code() == 201 || response.code() == 200){
+                            Log.d("testestestset","testestestestset btn_save.setOnClickListener response :: " + response.code() )
+
+
+                            if(intent.getBooleanExtra("edit",false)){
+                                showCustomToast(this@LoadCarMoreInfoActivity, "내 차 정보가 수정되었어요.")
+                                finish()
+                            }else{
+                                val getMyCarInfoItem = Gson().fromJson(
+                                    response.body()?.string(),
+                                    GetMyCarInfoItem::class.java
+                                )
+                                PreferenceUtil.putPref(this@LoadCarMoreInfoActivity, PreferenceUtil.USER_CARID, getMyCarInfoItem.id)
+                                PreferenceUtil.putPref(this@LoadCarMoreInfoActivity,  PreferenceUtil.KM_MILE, "km")
+                                startActivity(
+                                    Intent(this@LoadCarMoreInfoActivity, MainActivity::class.java).addFlags(
+                                        FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK
+                                    ))
+                                finish()
+                            }
+                        }else if(response.code() == 401){
+                            logout()
+                        } else{
                             showCustomToast(this@LoadCarMoreInfoActivity,"차량 등록에 실패했습니다.")
 
                         }
+                    }
 
-                    })
-                }
-
-                override fun onCancel() {
-
-                }
-
-            }).show()
-        }
-
-        btn_delete.setOnClickListener {
-            CustomDialog(this, "자동차 정보 삭제", "자동차 정보를 삭제하면 기존 데이터는 삭제됩니다. 삭제하시겠습니까?", "삭제","취소",  object : CustomDialog.DialogCallback{
-                override fun onConfirm() {
-                    apiService().deleteMyCarByCarId("Bearer " + PreferenceUtil.getPref(this@LoadCarMoreInfoActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, intent.getStringExtra("carId")!!).enqueue(object :
-                        Callback<ResponseBody> {
-                        override fun onResponse(
-                            call: Call<ResponseBody>,
-                            response: Response<ResponseBody>
-                        ) {
-                            if(response.code() == 204){
-                                finish()
-                            }else if(response.code() == 401){
-                                logout()
-                            }
-                        }
-
-                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                        }
-
-                    })
-                }
-
-                override fun onCancel() {
-
-
-                }
-
-            }).show()
-        }
-
-        btn_save.setOnClickListener {
-            var typeInput: TypeInput? = null
-            if(postMyCarResponse.type.equals(CORPORATE)){
-                typeInput = TypeInput(CORPORATE,Data(et_corp_name.text.toString(), et_corp_department.text.toString()))
-            }
-
-            val gson = GsonBuilder().serializeNulls().create()
-            val jsonParam =
-                gson.toJson(
-                    EditMyCarRequest(
-                        licensePlateNumber = postMyCarResponse.licensePlateNumber,
-                        ownerName = postMyCarResponse.ownerName,
-                        carName = postMyCarResponse.carName,
-                        makerCd = postMyCarResponse.makerCd,
-                        modelCd = postMyCarResponse.modelCd,
-                        modelDetailCd = postMyCarResponse.modelDetailCd,
-                        gradeCd = postMyCarResponse.gradeCd,
-                        gradeDetailCd = postMyCarResponse.gradeDetailCd,
-                        fuelCd = postMyCarResponse.fuelCd,
-                        typeInput = typeInput
-                    )
-                )
-
-            apiService(60).patchCarInfoByCarId(
-                "Bearer " + PreferenceUtil.getPref(this,  PreferenceUtil.ACCESS_TOKEN, ""),intent.getStringExtra("carId")!! ,jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object :
-                Callback<ResponseBody> {
-                override fun onResponse(
-                    call: Call<ResponseBody>,
-                    response: Response<ResponseBody>
-                ) {
-                    if(response.code() == 201 || response.code() == 200){
-
-                        if(intent.getBooleanExtra("edit",false)){
-                            showCustomToast(this@LoadCarMoreInfoActivity, "내 차 정보가 수정되었어요.")
-                            finish()
-                        }else{
-                            val getMyCarInfoItem = Gson().fromJson(
-                                response.body()?.string(),
-                                GetMyCarInfoItem::class.java
-                            )
-                            PreferenceUtil.putPref(this@LoadCarMoreInfoActivity, PreferenceUtil.USER_CARID, getMyCarInfoItem.id)
-                            PreferenceUtil.putPref(this@LoadCarMoreInfoActivity,  PreferenceUtil.KM_MILE, "km")
-                            startActivity(
-                                Intent(this@LoadCarMoreInfoActivity, MainActivity::class.java).addFlags(
-                                    FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK
-                                ))
-                            finish()
-                        }
-                    }else if(response.code() == 401){
-                        logout()
-                    } else{
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                         showCustomToast(this@LoadCarMoreInfoActivity,"차량 등록에 실패했습니다.")
 
                     }
+
+                })
+            }
+
+        })
+
+        btn_corp.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                layout_corp.visibility = VISIBLE
+                iv_corp.isSelected = true
+                iv_personal.isSelected = false
+
+                tv_corp.setTextColor(resources.getColor(R.color.corp_selected))
+                tv_personal.setTextColor(resources.getColor(R.color.gray_300))
+
+                view_scrollview.post {
+                    view_scrollview.smoothScrollTo(0, view_scrollview.getChildAt(0).height)
                 }
 
-                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                    showCustomToast(this@LoadCarMoreInfoActivity,"차량 등록에 실패했습니다.")
+                if(!tv_fuel.text.toString().equals("선택해 주세요") && !et_corp_department.text.toString().isNullOrEmpty() && !et_corp_name.text.toString().isNullOrEmpty() && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
+                    btn_next.isSelected = true
+                    btn_next.isClickable = true
 
+                    btn_save.isSelected = true
+                    btn_save.isClickable = true
+                }else{
+                    btn_next.isSelected = false
+                    btn_next.isClickable = false
+
+                    btn_save.isSelected = false
+                    btn_save.isClickable = false
                 }
-
-            })
-        }
-
-        btn_corp.setOnClickListener {
-            layout_corp.visibility = VISIBLE
-            iv_corp.isSelected = true
-            iv_personal.isSelected = false
-
-            tv_corp.setTextColor(resources.getColor(R.color.corp_selected))
-            tv_personal.setTextColor(resources.getColor(R.color.gray_300))
-
-            view_scrollview.post {
-                view_scrollview.smoothScrollTo(0, view_scrollview.getChildAt(0).height)
             }
 
-            if(!tv_fuel.text.toString().equals("선택해 주세요") && !et_corp_department.text.toString().isNullOrEmpty() && !et_corp_name.text.toString().isNullOrEmpty() && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
-                btn_next.isSelected = true
-                btn_next.isClickable = true
+        })
 
-                btn_save.isSelected = true
-                btn_save.isClickable = true
-            }else{
-                btn_next.isSelected = false
-                btn_next.isClickable = false
+        btn_personal.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                layout_corp.visibility = GONE
 
-                btn_save.isSelected = false
-                btn_save.isClickable = false
+                iv_corp.isSelected = false
+                iv_personal.isSelected = true
+
+                tv_corp.setTextColor(resources.getColor(R.color.gray_300))
+                tv_personal.setTextColor(resources.getColor(R.color.corp_selected))
+
+
+
+                if(!tv_fuel.text.toString().equals("선택해 주세요") && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
+                    btn_next.isSelected = true
+                    btn_next.isClickable = true
+
+                    btn_save.isSelected = true
+                    btn_save.isClickable = true
+
+                }else{
+                    btn_next.isSelected = false
+                    btn_next.isClickable = false
+
+                    btn_save.isSelected = false
+                    btn_save.isClickable = false
+                }
             }
-        }
 
-        btn_personal.setOnClickListener {
-            layout_corp.visibility = GONE
-
-            iv_corp.isSelected = false
-            iv_personal.isSelected = true
-
-            tv_corp.setTextColor(resources.getColor(R.color.gray_300))
-            tv_personal.setTextColor(resources.getColor(R.color.corp_selected))
-
-
-
-            if(!tv_fuel.text.toString().equals("선택해 주세요") && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
-                btn_next.isSelected = true
-                btn_next.isClickable = true
-
-                btn_save.isSelected = true
-                btn_save.isClickable = true
-
-            }else{
-                btn_next.isSelected = false
-                btn_next.isClickable = false
-
-                btn_save.isSelected = false
-                btn_save.isClickable = false
-            }
-        }
+        })
 
         et_corp_name.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {

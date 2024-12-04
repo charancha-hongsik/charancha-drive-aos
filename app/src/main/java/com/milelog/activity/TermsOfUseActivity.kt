@@ -295,59 +295,81 @@ class TermsOfUseActivity: BaseActivity() {
 
         btnNext.isClickable = false
 
-        ibAllAccept.setOnClickListener {
-            ibAllAccept.isSelected = !ibAllAccept.isSelected
+        ibAllAccept.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                ibAllAccept.isSelected = !ibAllAccept.isSelected
 
-            ibTerms1.isSelected = ibAllAccept.isSelected
-            ibTerms2.isSelected = ibAllAccept.isSelected
-            ibTerms3.isSelected = ibAllAccept.isSelected
-            ibTerms4.isSelected = ibAllAccept.isSelected
-            ibTerms5.isSelected = ibAllAccept.isSelected
-            ibTerms6.isSelected = ibAllAccept.isSelected
+                ibTerms1.isSelected = ibAllAccept.isSelected
+                ibTerms2.isSelected = ibAllAccept.isSelected
+                ibTerms3.isSelected = ibAllAccept.isSelected
+                ibTerms4.isSelected = ibAllAccept.isSelected
+                ibTerms5.isSelected = ibAllAccept.isSelected
+                ibTerms6.isSelected = ibAllAccept.isSelected
 
-            checkAllAccept()
-        }
+                checkAllAccept()
+            }
+        })
 
-        ibTerms1.setOnClickListener {
-            ibTerms1.isSelected = !ibTerms1.isSelected
 
-            if(!ibTerms1.isSelected)
-                ibAllAccept.isSelected = false
+        ibTerms1.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                ibTerms1.isSelected = !ibTerms1.isSelected
 
-            checkAllAccept()
-        }
+                if(!ibTerms1.isSelected)
+                    ibAllAccept.isSelected = false
 
-        ibTerms2.setOnClickListener {
-            ibTerms2.isSelected = !ibTerms2.isSelected
+                checkAllAccept()
+            }
 
-            if(!ibTerms2.isSelected)
-                ibAllAccept.isSelected = false
+        })
 
-            checkAllAccept()
-        }
-        ibTerms3.setOnClickListener {
-            ibTerms3.isSelected = !ibTerms3.isSelected
+        ibTerms2.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                ibTerms2.isSelected = !ibTerms2.isSelected
 
-            if(!ibTerms3.isSelected)
-                ibAllAccept.isSelected = false
+                if(!ibTerms2.isSelected)
+                    ibAllAccept.isSelected = false
 
-            checkAllAccept()
-        }
+                checkAllAccept()
+            }
 
-        ibTerms4.setOnClickListener {
-            ibTerms4.isSelected = !ibTerms4.isSelected
-        }
+        })
 
-        ibTerms5.setOnClickListener {
-            ibTerms5.isSelected = !ibTerms5.isSelected
-        }
+        ibTerms3.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                ibTerms3.isSelected = !ibTerms3.isSelected
 
-        ibTerms6.setOnClickListener{
-            ibTerms6.isSelected = !ibTerms6.isSelected
+                if(!ibTerms3.isSelected)
+                    ibAllAccept.isSelected = false
 
-            checkAllAccept()
+                checkAllAccept()
+            }
 
-        }
+        })
+
+        ibTerms4.setOnClickListener(object :OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                ibTerms4.isSelected = !ibTerms4.isSelected
+            }
+
+        })
+
+        ibTerms5.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                ibTerms5.isSelected = !ibTerms5.isSelected
+            }
+
+        })
+
+        ibTerms6.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                ibTerms6.isSelected = !ibTerms6.isSelected
+
+                checkAllAccept()
+            }
+
+        })
+
 
         tvTermsTitle2.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
@@ -384,11 +406,9 @@ class TermsOfUseActivity: BaseActivity() {
 
         tvTermsTitle5.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                tvTermsTitle5.setOnClickListener{
-                    for(term in termsSummaryResponse){
-                        if(tvTermsTitle5.text.contains(term.title)){
-                            startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
-                        }
+                for(term in termsSummaryResponse){
+                    if(tvTermsTitle5.text.contains(term.title)){
+                        startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
                     }
                 }
             }
@@ -396,11 +416,9 @@ class TermsOfUseActivity: BaseActivity() {
 
         tvTermsTitle6.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                tvTermsTitle6.setOnClickListener{
-                    for(term in termsSummaryResponse){
-                        if(tvTermsTitle6.text.contains(term.title)){
-                            startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
-                        }
+                for(term in termsSummaryResponse){
+                    if(tvTermsTitle6.text.contains(term.title)){
+                        startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
                     }
                 }
             }

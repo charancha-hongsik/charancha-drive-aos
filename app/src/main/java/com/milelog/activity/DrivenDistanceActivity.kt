@@ -3,6 +3,7 @@ package com.milelog.activity
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.view.View.*
 import android.widget.ImageView
 import android.widget.TextView
@@ -2649,46 +2650,61 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
     private fun setResources(){
         userCarId = intent.getStringExtra("userCarId")?:PreferenceUtil.getPref(this@DrivenDistanceActivity, PreferenceUtil.USER_CARID, "")!!
 
-        btn_back.setOnClickListener { finish() }
+        btn_back.setOnClickListener(object : OnSingleClickListener() {
+            override fun onSingleClick(v: View?) {
+                finish()
+            }
+        })
 
-        btn_recent_drive.setOnClickListener {
-            setRecentDrivingDistance()
+        btn_recent_drive.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                setRecentDrivingDistance()
 
-            btn_recent_drive.isSelected = true
-            btn_month_drive.isSelected = false
-            btn_six_month_drive.isSelected = false
-            btn_year_drive.isSelected = false
-        }
+                btn_recent_drive.isSelected = true
+                btn_month_drive.isSelected = false
+                btn_six_month_drive.isSelected = false
+                btn_year_drive.isSelected = false
+            }
 
-        btn_month_drive.setOnClickListener {
-            callMonthChart()
-            setMonthDrivingDistance()
+        })
 
-            btn_recent_drive.isSelected = false
-            btn_month_drive.isSelected = true
-            btn_six_month_drive.isSelected = false
-            btn_year_drive.isSelected = false
+        btn_month_drive.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                callMonthChart()
+                setMonthDrivingDistance()
 
-        }
+                btn_recent_drive.isSelected = false
+                btn_month_drive.isSelected = true
+                btn_six_month_drive.isSelected = false
+                btn_year_drive.isSelected = false
+            }
 
-        btn_six_month_drive.setOnClickListener {
-            callSixMonthChart()
-            setSixMonthDrivingDistance()
+        })
 
-            btn_recent_drive.isSelected = false
-            btn_month_drive.isSelected = false
-            btn_six_month_drive.isSelected = true
-            btn_year_drive.isSelected = false
-        }
+        btn_six_month_drive.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                callSixMonthChart()
+                setSixMonthDrivingDistance()
 
-        btn_year_drive.setOnClickListener {
-            callYearChart()
-            setYearDrivingDistance()
+                btn_recent_drive.isSelected = false
+                btn_month_drive.isSelected = false
+                btn_six_month_drive.isSelected = true
+                btn_year_drive.isSelected = false
+            }
 
-            btn_recent_drive.isSelected = false
-            btn_month_drive.isSelected = false
-            btn_six_month_drive.isSelected = false
-            btn_year_drive.isSelected = true
-        }
+        })
+
+        btn_year_drive.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                callYearChart()
+                setYearDrivingDistance()
+
+                btn_recent_drive.isSelected = false
+                btn_month_drive.isSelected = false
+                btn_six_month_drive.isSelected = false
+                btn_year_drive.isSelected = true
+            }
+
+        })
     }
 }

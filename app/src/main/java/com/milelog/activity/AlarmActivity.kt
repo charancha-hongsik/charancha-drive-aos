@@ -102,9 +102,12 @@ class AlarmActivity: BaseRefreshActivity() {
         val dividerItemDecoration = DividerItemDecoration(this@AlarmActivity, R.color.gray_50, dpToPx(12f)) // 색상 리소스와 구분선 높이 설정
         rv_alarm.addItemDecoration(dividerItemDecoration)
 
-        btn_back.setOnClickListener{
-            finish()
-        }
+        btn_back.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                finish()
+            }
+
+        })
     }
 
     class NotificationAdapter(

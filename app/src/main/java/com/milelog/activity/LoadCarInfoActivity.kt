@@ -135,9 +135,12 @@ class LoadCarInfoActivity: BaseRefreshActivity() {
         iv_animation_pot3 = findViewById(R.id.iv_animation_pot3)
         animation_load_parent = findViewById(R.id.animation_load_parent)
 
-        ib_arrow_register_car.setOnClickListener {
-            finish()
-        }
+        ib_arrow_register_car.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                finish()
+            }
+
+        })
 
         // 상하 이동 애니메이션 설정
         animation_parent.post {

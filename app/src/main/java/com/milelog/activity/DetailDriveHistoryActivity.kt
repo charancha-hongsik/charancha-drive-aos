@@ -253,9 +253,6 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         tv_end_address_detail = findViewById(R.id.tv_end_address_detail)
 
         btn_choose_corp = findViewById(R.id.btn_choose_corp)
-        btn_choose_corp.setOnClickListener {
-//            showBottomSheetForChooseCorp(userCar!!.id)
-        }
 
         et_memo = findViewById(R.id.et_memo)
 
@@ -585,9 +582,12 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                         if(!getDrivingInfoResponse.endAddress.places.isNullOrEmpty()){
                             tv_end_address_detail.text = getDrivingInfoResponse.endAddress.places?.get(0)?.name?:"데이터 검토 중이에요"
 
-                            tv_end_address_detail.setOnClickListener {
-                                startActivity(Intent(this@DetailDriveHistoryActivity, AllAddressActivity::class.java).putExtra("places",Gson().toJson(getDrivingInfoResponse.endAddress.places)))
-                            }
+                            tv_end_address_detail.setOnClickListener(object:OnSingleClickListener(){
+                                override fun onSingleClick(v: View?) {
+                                    startActivity(Intent(this@DetailDriveHistoryActivity, AllAddressActivity::class.java).putExtra("places",Gson().toJson(getDrivingInfoResponse.endAddress.places)))
+                                }
+
+                            })
                         }else{
                             tv_end_address_detail.text = "데이터 검토 중이에요"
                         }
@@ -795,24 +795,27 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
             }
         })
 
-        btn_add_image.setOnClickListener {
-            if(layout_drive_image.childCount < 6){
-                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) { // API 29 이하
-                    // 권한 체크
-                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                        openGallery() // 권한이 있으면 크롭 시작
+        btn_add_image.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                if(layout_drive_image.childCount < 6){
+                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) { // API 29 이하
+                        // 권한 체크
+                        if (ContextCompat.checkSelfPermission(this@DetailDriveHistoryActivity, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                            openGallery() // 권한이 있으면 크롭 시작
+                        } else {
+                            // 권한이 없으면 요청
+                            ActivityCompat.requestPermissions(this@DetailDriveHistoryActivity, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_READ_EXTERNAL_STORAGE)
+                        }
                     } else {
-                        // 권한이 없으면 요청
-                        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_READ_EXTERNAL_STORAGE)
+                        // API 30 이상은 권한 체크 없이 바로 크롭 시작
+                        openGallery()
                     }
-                } else {
-                    // API 30 이상은 권한 체크 없이 바로 크롭 시작
-                    openGallery()
+                }else{
+                    Toast.makeText(this@DetailDriveHistoryActivity, "최대 5개까지 등록할 수 있습니다.", Toast.LENGTH_SHORT).show()
                 }
-            }else{
-                Toast.makeText(this, "최대 5개까지 등록할 수 있습니다.", Toast.LENGTH_SHORT).show()
             }
-        }
+
+        })
 
 
         btn_back.setOnClickListener(object: OnSingleClickListener(){
@@ -831,9 +834,13 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
             }
         })
 
-        btn_choose_mycar.setOnClickListener {
-            showBottomSheetForEditCar()
-        }
+
+        btn_choose_mycar.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                showBottomSheetForEditCar()
+            }
+
+        })
 
         detailDriveHistoryViewModel.getMapData(tracking_id)
         detailDriveHistoryViewModel.getDrivingInfo(tracking_id)
@@ -1179,17 +1186,20 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
                         holder.tv_car_name.text = myCarsEntity.name
 
-                        holder.layout_car.setOnClickListener {
-                            myCarsEntity.type?.let{
-                                if(it.equals(CORPORATE)){
-                                    (context as DetailDriveHistoryActivity).showBottomSheetForChooseCorp(myCarsEntity.id!!)
-                                    bottomSheetDialog.dismiss()
-                                }else{
-                                    viewModel.patchDrivingInfo(true, myCarsEntity.id, tracking_id)
-                                    bottomSheetDialog.dismiss()
+                        holder.layout_car.setOnClickListener(object:OnSingleClickListener(){
+                            override fun onSingleClick(v: View?) {
+                                myCarsEntity.type?.let{
+                                    if(it.equals(CORPORATE)){
+                                        (context as DetailDriveHistoryActivity).showBottomSheetForChooseCorp(myCarsEntity.id!!)
+                                        bottomSheetDialog.dismiss()
+                                    }else{
+                                        viewModel.patchDrivingInfo(true, myCarsEntity.id, tracking_id)
+                                        bottomSheetDialog.dismiss()
+                                    }
                                 }
                             }
-                        }
+
+                        })
 
                         holder.tv_car_no.text = myCarsEntity.number
                     }else{
@@ -1207,10 +1217,15 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
                         holder.tv_no_mycar.text = context.getString(R.string.pending)
 
-                        holder.layout_car.setOnClickListener {
-                            viewModel.patchDrivingInfo(true, null, tracking_id)
-                            bottomSheetDialog.dismiss()
-                        }
+                        holder.layout_car.setOnClickListener(object:OnSingleClickListener(){
+                            override fun onSingleClick(v: View?) {
+                                viewModel.patchDrivingInfo(true, null, tracking_id)
+                                bottomSheetDialog.dismiss()
+                            }
+
+                        })
+
+
                         holder.iv_corp.visibility = GONE
                     }
                 }else{
@@ -1220,10 +1235,14 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     holder.tv_no_mycar.visibility = VISIBLE
 
                     holder.tv_no_mycar.text = context.getString(R.string.not_my_car)
-                    holder.layout_car.setOnClickListener {
-                        viewModel.patchDrivingInfo(false, null, tracking_id)
-                        bottomSheetDialog.dismiss()
-                    }
+                    holder.layout_car.setOnClickListener(object:OnSingleClickListener(){
+                        override fun onSingleClick(v: View?) {
+                            viewModel.patchDrivingInfo(false, null, tracking_id)
+                            bottomSheetDialog.dismiss()
+                        }
+
+                    })
+
 
                     if(!isActive){
                         holder.layout_car.isSelected = true
@@ -1282,21 +1301,24 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 //                    TextViewCompat.setTextAppearance(holder.tv_corp, R.style.type_selected)
 //                }
 
-                holder.layout_car.setOnClickListener {
-                    if(userCarId != null){
-                        CustomDialog(context, "이동수단 변경", "이동 수단을 법인차로 저장하면 더이상\n변경할 수 없습니다. 변경하시겠습니까?", "변경","취소",  object : CustomDialog.DialogCallback{
-                            override fun onConfirm() {
-                                viewModel.patchCorpType(userCarId, true, getNameFromDescription(corp), tracking_id = tracking_id)
-                                bottomSheetDialog.dismiss()
-                            }
+                holder.layout_car.setOnClickListener(object:OnSingleClickListener(){
+                    override fun onSingleClick(v: View?) {
+                        if(userCarId != null){
+                            CustomDialog(context, "이동수단 변경", "이동 수단을 법인차로 저장하면 더이상\n변경할 수 없습니다. 변경하시겠습니까?", "변경","취소",  object : CustomDialog.DialogCallback{
+                                override fun onConfirm() {
+                                    viewModel.patchCorpType(userCarId, true, getNameFromDescription(corp), tracking_id = tracking_id)
+                                    bottomSheetDialog.dismiss()
+                                }
 
-                            override fun onCancel() {
-                                bottomSheetDialog.dismiss()
-                            }
+                                override fun onCancel() {
+                                    bottomSheetDialog.dismiss()
+                                }
 
-                        }).show()
+                            }).show()
+                        }
                     }
-                }
+
+                })
             }
         }
 
@@ -1442,9 +1464,13 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         val iv_drive_image = constraintLayoutView.findViewById<ImageView>(R.id.iv_drive_image)
         val btn_delete_image = constraintLayoutView.findViewById<ImageView>(R.id.btn_delete_image)
 
-        btn_delete_image.setOnClickListener {
-            deleteImageToLayout(id)
-        }
+        btn_delete_image.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                deleteImageToLayout(id)
+            }
+
+        })
+
 
         // Load the image into the ImageView with Glide
         Glide.with(this@DetailDriveHistoryActivity)

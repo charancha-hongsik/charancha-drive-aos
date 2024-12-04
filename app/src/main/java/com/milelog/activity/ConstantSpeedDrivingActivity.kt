@@ -73,7 +73,12 @@ class ConstantSpeedDrivingActivity: BaseRefreshActivity() {
         layout_const_speed_background = findViewById(R.id.layout_const_speed_background)
 
         btn_back = findViewById(R.id.btn_back)
-        btn_back.setOnClickListener { finish() }
+        btn_back.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                finish()
+            }
+
+        })
 
         btn_recent_drive = findViewById(R.id.btn_recent_drive)
         btn_month_drive = findViewById(R.id.btn_month_drive)

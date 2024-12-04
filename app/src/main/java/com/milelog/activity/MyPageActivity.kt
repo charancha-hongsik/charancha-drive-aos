@@ -77,9 +77,13 @@ class MyPageActivity: BaseRefreshActivity() {
         btn_setting_bluetooth = findViewById(R.id.btn_setting_bluetooth)
 
 
-        iv_circle.setOnClickListener{
-            startActivity(Intent(this@MyPageActivity, MyInfoActivity::class.java).putExtra("nickname",getAccountProfilesResponse.nickName).putExtra("email", getAccountProfilesResponse.user.email).putExtra("provider",getAccountProfilesResponse.user.provider.text.en).putExtra("url",getAccountProfilesResponse.imageUrl))
-        }
+        iv_circle.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                startActivity(Intent(this@MyPageActivity, MyInfoActivity::class.java).putExtra("nickname",getAccountProfilesResponse.nickName).putExtra("email", getAccountProfilesResponse.user.email).putExtra("provider",getAccountProfilesResponse.user.provider.text.en).putExtra("url",getAccountProfilesResponse.imageUrl))
+
+            }
+
+        })
 
         apiService().getTerms("MILELOG_USAGE").enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
@@ -157,26 +161,43 @@ class MyPageActivity: BaseRefreshActivity() {
 
         })
 
-        btn_faq.setOnClickListener{
-            startActivity(Intent(this@MyPageActivity, CommonWebviewActivity::class.java).putExtra("url", BASE_API_URL + FAQ))
-        }
 
-        btn_inquiry.setOnClickListener{
-            startActivity(Intent(this@MyPageActivity, CommonWebviewActivity::class.java).putExtra("url", BASE_API_URL + INQUIRY))
-        }
+        btn_faq.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                startActivity(Intent(this@MyPageActivity, CommonWebviewActivity::class.java).putExtra("url", BASE_API_URL + FAQ))
+            }
 
-        btn_my_garage.setOnClickListener {
-            startActivity(Intent(this@MyPageActivity, MyGarageActivity::class.java))
-        }
+        })
 
-        iv_edit.setOnClickListener {
-            startActivity(Intent(this@MyPageActivity, MyInfoActivity::class.java).putExtra("nickname",getAccountProfilesResponse.nickName).putExtra("email", getAccountProfilesResponse.user.email).putExtra("provider",getAccountProfilesResponse.user.provider.text.en).putExtra("url",getAccountProfilesResponse.imageUrl))
-        }
 
-        btn_setting_bluetooth.setOnClickListener {
-            startActivity(Intent(this@MyPageActivity, FindBluetoothActivity::class.java))
+        btn_inquiry.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                startActivity(Intent(this@MyPageActivity, CommonWebviewActivity::class.java).putExtra("url", BASE_API_URL + INQUIRY))
+            }
 
-        }
+        })
+
+        btn_my_garage.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                startActivity(Intent(this@MyPageActivity, MyGarageActivity::class.java))
+            }
+
+        })
+
+        iv_edit.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                startActivity(Intent(this@MyPageActivity, MyInfoActivity::class.java).putExtra("nickname",getAccountProfilesResponse.nickName).putExtra("email", getAccountProfilesResponse.user.email).putExtra("provider",getAccountProfilesResponse.user.provider.text.en).putExtra("url",getAccountProfilesResponse.imageUrl))
+            }
+
+        })
+
+        btn_setting_bluetooth.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                startActivity(Intent(this@MyPageActivity, FindBluetoothActivity::class.java))
+
+            }
+
+        })
     }
 
     override fun onResume() {

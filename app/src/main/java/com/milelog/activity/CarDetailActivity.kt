@@ -130,82 +130,112 @@ class CarDetailActivity: BaseRefreshActivity() {
             setSelector(MAKER)
         }
 
-        btn_model.setOnClickListener {
-            setSelector(MODEL)
-        }
-
-        btn_model_detail.setOnClickListener {
-            setSelector(MODEL_DETAIL)
-        }
-
-        btn_grade.setOnClickListener {
-            setSelector(GRADE)
-        }
-
-        btn_grade_detail.setOnClickListener {
-            setSelector(GRADE_DETAIL)
-
-        }
-
-        layout_select.setOnClickListener{
-            layout_select.visibility = GONE
-        }
-
-        btn_next.setOnClickListener {
-            selectedMaker?.let{
-                postMyCarResponse.makerCd = it.makerCd
-                postMyCarResponse.makerNm = it.makerNm
+        btn_maker.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                setSelector(MAKER)
             }
 
-            selectedModel?.let{
-                postMyCarResponse.modelCd = it.modelCd
-                postMyCarResponse.modelNm = it.modelNm
+        })
+
+        btn_model.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                setSelector(MODEL)
             }
 
-            selectedModelDetail?.let{
-                postMyCarResponse.modelDetailCd = it.modelDetailCd
-                postMyCarResponse.modelDetailNm = it.modelDetailNm
-            }?: run{
-                postMyCarResponse.modelDetailCd = null
-                postMyCarResponse.modelDetailNm = null
+        })
+
+        btn_model_detail.setOnClickListener(object :OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                setSelector(MODEL_DETAIL)
             }
 
-            selectedGrade?.let{
-                postMyCarResponse.gradeCd = it.gradeCd
-                postMyCarResponse.gradeNm = it.gradeNm
-            }?: run {
-                postMyCarResponse.gradeCd = null
-                postMyCarResponse.gradeNm = null
+        })
+
+        btn_grade.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                setSelector(GRADE)
             }
 
-            selectedGradeDetail?.let{
-                postMyCarResponse.gradeDetailCd = it.gradeDetailCd
-                postMyCarResponse.gradeDetailNm = it.gradeDetailNm
-            }?: run{
-                postMyCarResponse.gradeDetailCd = null
-                postMyCarResponse.gradeDetailNm = null
+        })
+
+        btn_grade_detail.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                setSelector(GRADE_DETAIL)
             }
 
-            val carName = listOfNotNull(
-                postMyCarResponse.makerNm,
-                if (postMyCarResponse.modelDetailNm.isNullOrEmpty()) postMyCarResponse.modelNm else null, // modelDetailNm이 없을 때만 modelNm 추가
-                postMyCarResponse.modelDetailNm,
-                postMyCarResponse.gradeNm,
-                postMyCarResponse.gradeDetailNm
-            ).filterNot { it.isNullOrEmpty() } // null이나 빈 문자열을 필터링
-                .joinToString(" ")
+        })
 
-            postMyCarResponse.carName = carName
 
-            val intent = Intent(this@CarDetailActivity, LoadCarMoreInfoActivity::class.java)
-            intent.putExtra("carInfo",Gson().toJson(postMyCarResponse))
-            setResult(RESULT_OK, intent)
-            finish()
-        }
 
-        ib_arrow_register_car.setOnClickListener {
-            finish()
-        }
+        layout_select.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                layout_select.visibility = GONE
+            }
+
+        })
+
+        btn_next.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                selectedMaker?.let{
+                    postMyCarResponse.makerCd = it.makerCd
+                    postMyCarResponse.makerNm = it.makerNm
+                }
+
+                selectedModel?.let{
+                    postMyCarResponse.modelCd = it.modelCd
+                    postMyCarResponse.modelNm = it.modelNm
+                }
+
+                selectedModelDetail?.let{
+                    postMyCarResponse.modelDetailCd = it.modelDetailCd
+                    postMyCarResponse.modelDetailNm = it.modelDetailNm
+                }?: run{
+                    postMyCarResponse.modelDetailCd = null
+                    postMyCarResponse.modelDetailNm = null
+                }
+
+                selectedGrade?.let{
+                    postMyCarResponse.gradeCd = it.gradeCd
+                    postMyCarResponse.gradeNm = it.gradeNm
+                }?: run {
+                    postMyCarResponse.gradeCd = null
+                    postMyCarResponse.gradeNm = null
+                }
+
+                selectedGradeDetail?.let{
+                    postMyCarResponse.gradeDetailCd = it.gradeDetailCd
+                    postMyCarResponse.gradeDetailNm = it.gradeDetailNm
+                }?: run{
+                    postMyCarResponse.gradeDetailCd = null
+                    postMyCarResponse.gradeDetailNm = null
+                }
+
+                val carName = listOfNotNull(
+                    postMyCarResponse.makerNm,
+                    if (postMyCarResponse.modelDetailNm.isNullOrEmpty()) postMyCarResponse.modelNm else null, // modelDetailNm이 없을 때만 modelNm 추가
+                    postMyCarResponse.modelDetailNm,
+                    postMyCarResponse.gradeNm,
+                    postMyCarResponse.gradeDetailNm
+                ).filterNot { it.isNullOrEmpty() } // null이나 빈 문자열을 필터링
+                    .joinToString(" ")
+
+                postMyCarResponse.carName = carName
+
+                val intent = Intent(this@CarDetailActivity, LoadCarMoreInfoActivity::class.java)
+                intent.putExtra("carInfo",Gson().toJson(postMyCarResponse))
+                setResult(RESULT_OK, intent)
+                finish()
+            }
+
+        })
+
+        ib_arrow_register_car.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                finish()
+            }
+
+        })
+
 
     }
 
@@ -403,85 +433,88 @@ class CarDetailActivity: BaseRefreshActivity() {
                 val tv_fuel = view.findViewById<TextView>(R.id.tv_fuel)
                 tv_fuel.text = carDetail.name
 
-                tv_fuel.setOnClickListener {
-                    when(key){
-                        MAKER -> {
-                            tv_maker_hint.visibility = GONE
-                            tv_maker.visibility = VISIBLE
-                            tv_maker.text = carDetail.name
+                tv_fuel.setOnClickListener(object:OnSingleClickListener(){
+                    override fun onSingleClick(v: View?) {
+                        when(key){
+                            MAKER -> {
+                                tv_maker_hint.visibility = GONE
+                                tv_maker.visibility = VISIBLE
+                                tv_maker.text = carDetail.name
 
-                            selectedMaker = MakerResponse(carDetail.code, carDetail.name)
-                            selectedModel = null
-                            selectedModelDetail = null
-                            selectedGrade = null
-                            selectedGradeDetail = null
+                                selectedMaker = MakerResponse(carDetail.code, carDetail.name)
+                                selectedModel = null
+                                selectedModelDetail = null
+                                selectedGrade = null
+                                selectedGradeDetail = null
 
-                            layout_select.visibility = GONE
+                                layout_select.visibility = GONE
 
-                            setNext(MODEL)
-                        }
+                                setNext(MODEL)
+                            }
 
-                        MODEL -> {
-                            tv_model_hint.visibility = GONE
-                            tv_model.visibility = VISIBLE
-                            tv_model.text = carDetail.name
+                            MODEL -> {
+                                tv_model_hint.visibility = GONE
+                                tv_model.visibility = VISIBLE
+                                tv_model.text = carDetail.name
 
-                            selectedModel = ModelResponse(carDetail.code, carDetail.name)
-                            selectedModelDetail = null
-                            selectedGrade = null
-                            selectedGradeDetail = null
+                                selectedModel = ModelResponse(carDetail.code, carDetail.name)
+                                selectedModelDetail = null
+                                selectedGrade = null
+                                selectedGradeDetail = null
 
-                            layout_select.visibility = GONE
+                                layout_select.visibility = GONE
 
-                            btn_next.isSelected = true
-                            btn_next.isClickable = true
+                                btn_next.isSelected = true
+                                btn_next.isClickable = true
 
-                            setNext(MODEL_DETAIL)
-                        }
+                                setNext(MODEL_DETAIL)
+                            }
 
-                        MODEL_DETAIL -> {
-                            tv_model_detail_hint.visibility = GONE
-                            tv_model_detail.visibility = VISIBLE
-                            tv_model_detail.text = carDetail.name
+                            MODEL_DETAIL -> {
+                                tv_model_detail_hint.visibility = GONE
+                                tv_model_detail.visibility = VISIBLE
+                                tv_model_detail.text = carDetail.name
 
-                            selectedModelDetail = ModelDetailResponse(carDetail.code, carDetail.name)
-                            selectedGrade = null
-                            selectedGradeDetail = null
+                                selectedModelDetail = ModelDetailResponse(carDetail.code, carDetail.name)
+                                selectedGrade = null
+                                selectedGradeDetail = null
 
-                            layout_select.visibility = GONE
+                                layout_select.visibility = GONE
 
-                            setNext(GRADE)
-                        }
+                                setNext(GRADE)
+                            }
 
-                        GRADE -> {
-                            tv_grade_hint.visibility = GONE
-                            tv_grade.visibility = VISIBLE
-                            tv_grade.text = carDetail.name
+                            GRADE -> {
+                                tv_grade_hint.visibility = GONE
+                                tv_grade.visibility = VISIBLE
+                                tv_grade.text = carDetail.name
 
-                            selectedGradeDetail = null
+                                selectedGradeDetail = null
 
-                            selectedGrade = GradeResponse(carDetail.code, carDetail.name)
+                                selectedGrade = GradeResponse(carDetail.code, carDetail.name)
 
-                            layout_select.visibility = GONE
+                                layout_select.visibility = GONE
 
-                            setNext(GRADE_DETAIL)
-                        }
+                                setNext(GRADE_DETAIL)
+                            }
 
-                        GRADE_DETAIL -> {
-                            tv_grade_detail_hint.visibility = GONE
-                            tv_grade_detail.visibility = VISIBLE
-                            tv_grade_detail.text = carDetail.name
+                            GRADE_DETAIL -> {
+                                tv_grade_detail_hint.visibility = GONE
+                                tv_grade_detail.visibility = VISIBLE
+                                tv_grade_detail.text = carDetail.name
 
-                            selectedGradeDetail = GradeDetailResponse(carDetail.code, carDetail.name)
+                                selectedGradeDetail = GradeDetailResponse(carDetail.code, carDetail.name)
 
-                            layout_select.visibility = GONE
-                        }
+                                layout_select.visibility = GONE
+                            }
 
-                        FUEL -> {
+                            FUEL -> {
 
+                            }
                         }
                     }
-                }
+
+                })
             }
 
             return view

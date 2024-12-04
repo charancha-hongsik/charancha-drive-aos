@@ -640,55 +640,69 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
             layout_choose_date.visibility = GONE
         }
 
-        btn_close_tooltip.setOnClickListener{
-            view_excel_tooltip.visibility = GONE
-            PreferenceUtil.putBooleanPref(this, PreferenceUtil.EXCEL_TOOLTIP, false)
-        }
 
-        btn_a_month.setOnClickListener {
-            btn_a_month.isSelected = true
-            btn_six_month.isSelected = false
-            btn_each_month.isSelected = false
 
-            TextViewCompat.setTextAppearance(btn_a_month, R.style.B1SBweight600)
-            TextViewCompat.setTextAppearance(btn_six_month, R.style.B1Mweight500)
-            TextViewCompat.setTextAppearance(btn_each_month, R.style.B1Mweight500)
+        btn_close_tooltip.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                view_excel_tooltip.visibility = GONE
+                PreferenceUtil.putBooleanPref(this@MyDriveHistoryActivity, PreferenceUtil.EXCEL_TOOLTIP, false)
+            }
 
-            btn_select_date_from_list.visibility = GONE
+        })
 
-        }
+        btn_a_month.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                btn_a_month.isSelected = true
+                btn_six_month.isSelected = false
+                btn_each_month.isSelected = false
 
-        btn_six_month.setOnClickListener {
-            btn_a_month.isSelected = false
-            btn_six_month.isSelected = true
-            btn_each_month.isSelected = false
+                TextViewCompat.setTextAppearance(btn_a_month, R.style.B1SBweight600)
+                TextViewCompat.setTextAppearance(btn_six_month, R.style.B1Mweight500)
+                TextViewCompat.setTextAppearance(btn_each_month, R.style.B1Mweight500)
 
-            TextViewCompat.setTextAppearance(btn_a_month, R.style.B1Mweight500)
-            TextViewCompat.setTextAppearance(btn_six_month, R.style.B1SBweight600)
-            TextViewCompat.setTextAppearance(btn_each_month, R.style.B1Mweight500)
+                btn_select_date_from_list.visibility = GONE
+            }
 
-            btn_select_date_from_list.visibility = GONE
-            layout_date_own.visibility = GONE
+        })
 
-        }
+        btn_six_month.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                btn_a_month.isSelected = false
+                btn_six_month.isSelected = true
+                btn_each_month.isSelected = false
 
-        btn_select_date_from_list.setOnClickListener {
-            listView_choose_date_own.visibility = VISIBLE
-            layout_select_main.visibility = GONE
-            btn_inquire_date.visibility = GONE
-        }
+                TextViewCompat.setTextAppearance(btn_a_month, R.style.B1Mweight500)
+                TextViewCompat.setTextAppearance(btn_six_month, R.style.B1SBweight600)
+                TextViewCompat.setTextAppearance(btn_each_month, R.style.B1Mweight500)
 
-        btn_each_month.setOnClickListener {
-            btn_a_month.isSelected = false
-            btn_six_month.isSelected = false
-            btn_each_month.isSelected = true
+                btn_select_date_from_list.visibility = GONE
+                layout_date_own.visibility = GONE
+            }
 
-            TextViewCompat.setTextAppearance(btn_a_month, R.style.B1Mweight500)
-            TextViewCompat.setTextAppearance(btn_six_month, R.style.B1Mweight500)
-            TextViewCompat.setTextAppearance(btn_each_month, R.style.B1SBweight600)
+        })
 
-            btn_select_date_from_list.visibility = VISIBLE
-        }
+        btn_select_date_from_list.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                listView_choose_date_own.visibility = VISIBLE
+                layout_select_main.visibility = GONE
+                btn_inquire_date.visibility = GONE
+            }
+        })
+
+        btn_each_month.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                btn_a_month.isSelected = false
+                btn_six_month.isSelected = false
+                btn_each_month.isSelected = true
+
+                TextViewCompat.setTextAppearance(btn_a_month, R.style.B1Mweight500)
+                TextViewCompat.setTextAppearance(btn_six_month, R.style.B1Mweight500)
+                TextViewCompat.setTextAppearance(btn_each_month, R.style.B1SBweight600)
+
+                btn_select_date_from_list.visibility = VISIBLE
+            }
+
+        })
 
         btn_inquire_date.setOnClickListener(object : OnSingleClickListener() {
             override fun onSingleClick(v: View?) {
