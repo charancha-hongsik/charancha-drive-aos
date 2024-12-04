@@ -194,16 +194,28 @@ class BluetoothService : Service() {
         driveDatabase = DriveDatabase.getDatabase(this)
         carConnectionQueryHandler = CarConnectionQueryHandler(contentResolver)
 
+        /**
+         * 1. 주행중인 경우
+         * - Notification이 없으면 Notification 띄우기
+         *
+         *
+         * 2. 주행이 아닌 경우
+         * - WalkingDetectReceiver(L1) 등록
+         * - TransitionsReceiver(L2, L3) 등록
+         * - 주행관찰 중 Notification 띄우기
+         * - 사용자 활동 탐지 시작
+         */
         if(fusedLocationClient == null){
+            /**
+             * WalkingDetectReceiver(L1) 등록
+             */
+            registerDetectUserActivityReceiver()
+
             /**
              * TransitionsReceiver(L2, L3) 등록
              */
             registerDetectCarConnectedReceiver()
 
-            /**
-             * WalkingDetectReceiver(L1) 등록
-             */
-            registerDetectUserActivityReceiver()
 
             /**
              * Notification 띄우기
