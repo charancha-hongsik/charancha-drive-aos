@@ -73,6 +73,9 @@ class SettingActivity: BaseRefreshActivity(){
         btn_km.setOnClickListener {
             btn_km.isSelected = true
             btn_mile.isSelected = false
+
+            tv_unit.text = "km"
+
             PreferenceUtil.putPref(this@SettingActivity, PreferenceUtil.KM_MILE, "km")
 
             layout_select_distance_unit.visibility = GONE
@@ -81,6 +84,9 @@ class SettingActivity: BaseRefreshActivity(){
         btn_mile.setOnClickListener {
             btn_km.isSelected = false
             btn_mile.isSelected = true
+
+            tv_unit.text = "mile"
+
             PreferenceUtil.putPref(this@SettingActivity, PreferenceUtil.KM_MILE,"mile")
 
             layout_select_distance_unit.visibility = GONE
