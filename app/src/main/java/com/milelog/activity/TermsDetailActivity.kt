@@ -1,6 +1,7 @@
 package com.milelog.activity
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import com.milelog.R
@@ -35,8 +36,13 @@ class TermsDetailActivity: BaseRefreshActivity() {
         tvTermsTitle = findViewById(R.id.tv_terms_title)
         tvTermsContents = findViewById(R.id.tv_terms_contents)
         btnBackTerm = findViewById(R.id.btn_back_term)
-        
-        tvTermsTitle.setText(intent.getStringExtra("title"))
+
+        var title = intent.getStringExtra("title")
+        if(!title!!.contains("동의")){
+            title = title + " 동의"
+        }
+        tvTermsTitle.setText(title)
+
     }
     
     fun setContents(){

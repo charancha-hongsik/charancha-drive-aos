@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
-        android:text="서비스 이용약관"
+        android:text="서비스 이용약관 동의"
         android:textFontWeight="700"
         android:textAppearance="@style/ST2B"
         android:textColor="@color/gray_950"
