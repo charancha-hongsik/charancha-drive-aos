@@ -42,6 +42,7 @@
         app:layout_constraintLeft_toLeftOf="parent">
 
         <LinearLayout
+            android:id="@+id/layout_connected_car"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -75,6 +76,7 @@
             android:background="@color/gray_50"/>
 
         <LinearLayout
+            android:id="@+id/layout_find_bluetooth"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -95,13 +97,47 @@
                 android:id="@+id/rv_find_bluetooth"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="visible"
                 android:layout_marginTop="12dp"
                 android:paddingBottom="32dp"
                 android:scrollbars="none"
                 android:clipToPadding="false" />
 
+            <LinearLayout
+                android:id="@+id/layout_no_find_bluetooth"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="12dp"
+                android:paddingBottom="32dp"
+                android:visibility="gone"
+                android:scrollbars="none"
+                android:orientation="vertical"
+                android:clipToPadding="false"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_error2" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="등록 가능한 블루투스 기기가 없어요."
+                    android:textAppearance="@style/B1R"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:textFontWeight="400"
+                    android:layout_marginTop="20dp"
+                    android:textColor="@color/gray_500"/>
+            </LinearLayout>
+
+
 
         </LinearLayout>
+
+
 
         <TextView
             android:id="@+id/btn_find_bluetooth2"

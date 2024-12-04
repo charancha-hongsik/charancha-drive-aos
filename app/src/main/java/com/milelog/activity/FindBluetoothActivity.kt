@@ -53,6 +53,7 @@ class FindBluetoothActivity: BaseRefreshActivity() {
     lateinit var btn_back:ImageView
     var permissionState = false
     lateinit var btn_find_bluetooth2:TextView
+    lateinit var layout_no_find_bluetooth:LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +65,7 @@ class FindBluetoothActivity: BaseRefreshActivity() {
         rv_connected_car = findViewById(R.id.rv_connected_car)
         btn_find_bluetooth = findViewById(R.id.btn_find_bluetooth)
         btn_find_bluetooth2 = findViewById(R.id.btn_find_bluetooth2)
+        layout_no_find_bluetooth = findViewById(R.id.layout_no_find_bluetooth)
         btn_back = findViewById(R.id.btn_back)
         btn_back.setOnClickListener {
             finish()
@@ -99,8 +101,7 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                 setList()
                 permissionState = false
             }else{
-                layout_no_bluetooth.visibility = VISIBLE
-                layout_bluetooth.visibility = GONE
+                setNoPermissionUI()
             }
         }
     }
@@ -115,18 +116,10 @@ class FindBluetoothActivity: BaseRefreshActivity() {
 
                 }.toTypedArray(),0)
             }else{
-                setBluetoothList()
-                setConnectedCarList()
-
-                layout_no_bluetooth.visibility = GONE
-                layout_bluetooth.visibility = VISIBLE
+                setHasPermissionUI()
             }
         }else{
-            setBluetoothList()
-            setConnectedCarList()
-
-            layout_no_bluetooth.visibility = GONE
-            layout_bluetooth.visibility = VISIBLE
+            setHasPermissionUI()
         }
     }
 
@@ -448,11 +441,7 @@ class FindBluetoothActivity: BaseRefreshActivity() {
         grantResults: IntArray
     ) {
         if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-            setBluetoothList()
-            setConnectedCarList()
-
-            layout_no_bluetooth.visibility = GONE
-            layout_bluetooth.visibility = VISIBLE
+            setHasPermissionUI()
         } else {
             CustomDialog(
                 this,
@@ -473,13 +462,46 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                     }
 
                     override fun onCancel() {
-                        layout_no_bluetooth.visibility = VISIBLE
-                        layout_bluetooth.visibility = GONE
+                        setNoPermissionUI()
                     }
 
                 }).show()
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    private fun setNoPermissionUI(){
+        PreferenceUtil.getPref(this@FindBluetoothActivity, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
+            if(it != ""){
+                val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
+                var myCarsList: List<MyCarsEntity> = GsonBuilder().serializeNulls().create().fromJson(it, type)
+                myCarsList = myCarsList.filterNot { it.bluetooth_mac_address.isNullOrEmpty() }
+
+                if(myCarsList.size > 0){
+                    layout_no_bluetooth.visibility = GONE
+                    layout_bluetooth.visibility = VISIBLE
+                    rv_find_bluetooth.visibility = VISIBLE
+                    layout_no_find_bluetooth.visibility = GONE
+                }else{
+                    layout_no_bluetooth.visibility = VISIBLE
+                    layout_bluetooth.visibility = GONE
+                    rv_find_bluetooth.visibility = GONE
+                    layout_no_find_bluetooth.visibility = VISIBLE
+                }
+
+
+            }
+        }
+    }
+
+    private fun setHasPermissionUI(){
+        setBluetoothList()
+        setConnectedCarList()
+
+        layout_no_bluetooth.visibility = GONE
+        layout_bluetooth.visibility = VISIBLE
+        rv_find_bluetooth.visibility = VISIBLE
+        layout_no_find_bluetooth.visibility = GONE
     }
 
 }
