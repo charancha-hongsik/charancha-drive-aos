@@ -27,7 +27,6 @@ class SettingActivity: BaseRefreshActivity(){
     lateinit var layout_select_distance_unit: CoordinatorLayout
     lateinit var persistent_bottom_sheet_distance: LinearLayout
     lateinit var behavior: BottomSheetBehavior<LinearLayout>
-    lateinit var btn_set_distance_unit: TextView
     lateinit var btn_km:LinearLayout
     lateinit var btn_mile:LinearLayout
     lateinit var btn_open_set_distance_unit: ConstraintLayout
@@ -48,7 +47,6 @@ class SettingActivity: BaseRefreshActivity(){
     fun init(){
         layout_select_distance_unit = findViewById(R.id.layout_select_distance_unit)
         persistent_bottom_sheet_distance = findViewById(R.id.persistent_bottom_sheet_distance)
-        btn_set_distance_unit = findViewById(R.id.btn_set_distance_unit)
         btn_km = findViewById(R.id.btn_km)
         btn_mile = findViewById(R.id.btn_mile)
         btn_open_set_distance_unit = findViewById(R.id.btn_open_set_distance_unit)
@@ -72,26 +70,20 @@ class SettingActivity: BaseRefreshActivity(){
             layout_select_distance_unit.visibility = GONE
         }
 
-        btn_set_distance_unit.setOnClickListener {
-            if(btn_km.isSelected){
-                tv_unit.text = "km"
-                PreferenceUtil.putPref(this@SettingActivity, PreferenceUtil.KM_MILE, "km")
-            }else{
-                tv_unit.text = "mile"
-                PreferenceUtil.putPref(this@SettingActivity, PreferenceUtil.KM_MILE,"mile")
-            }
-
-            layout_select_distance_unit.visibility = GONE
-        }
-
         btn_km.setOnClickListener {
             btn_km.isSelected = true
             btn_mile.isSelected = false
+            PreferenceUtil.putPref(this@SettingActivity, PreferenceUtil.KM_MILE, "km")
+
+            layout_select_distance_unit.visibility = GONE
         }
 
         btn_mile.setOnClickListener {
             btn_km.isSelected = false
             btn_mile.isSelected = true
+            PreferenceUtil.putPref(this@SettingActivity, PreferenceUtil.KM_MILE,"mile")
+
+            layout_select_distance_unit.visibility = GONE
         }
 
         persistentBottomSheetEvent()

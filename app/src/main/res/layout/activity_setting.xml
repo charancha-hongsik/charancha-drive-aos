@@ -184,7 +184,7 @@
         android:id="@+id/layout_select_distance_unit"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:visibility="gone"
+        android:visibility="visible"
         android:background="@color/black_op_70"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -260,19 +260,6 @@
 
 
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/btn_set_distance_unit"
-                android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:layout_marginTop="32dp"
-                android:background="@drawable/radius8_gray950"
-                android:gravity="center"
-                android:text="설정하기"
-                android:textColor="@color/white_op_95"
-                android:layout_weight="600"
-                android:textAppearance="@style/B1SB"/>
-
 
         </LinearLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

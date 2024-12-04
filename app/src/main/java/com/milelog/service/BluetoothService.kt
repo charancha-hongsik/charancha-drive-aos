@@ -265,22 +265,16 @@ class BluetoothService : Service() {
                             }
                         } else if(activityType == DetectedActivity.IN_VEHICLE){
                             if (transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
-                                val recognitionResult = ActivityRecognitionResult.extractResult(intent)
-                                recognitionResult?.probableActivities?.forEach { activity ->
-                                    if (activity.type == DetectedActivity.IN_VEHICLE && activity.confidence >= 75) {
-                                        // 높은 신뢰도의 IN_VEHICLE 상태
-                                        (context as BluetoothService).driveDatabase?.detectUserDao()?.insert(
-                                            DetectUserEntity(
-                                                user_id = "",
-                                                verification = "L1",
-                                                start_stop = "IN VEHICLE - High Confidence(" + activity.confidence + ")",
-                                                timestamp = System.currentTimeMillis().toString(),
-                                                sensor_state = context.fusedLocationClient != null
-                                            )
-                                        )
-                                        context.startSensor(L1)
-                                    }
-                                }
+                                (context as BluetoothService).driveDatabase?.detectUserDao()?.insert(
+                                    DetectUserEntity(
+                                        user_id = "",
+                                        verification = "L1",
+                                        start_stop = "IN VEHICLE (start)",
+                                        timestamp = System.currentTimeMillis().toString(),
+                                        sensor_state = context.fusedLocationClient != null
+                                    )
+                                )
+                                context.startSensor(L1)
                             }
                         }
                     }
