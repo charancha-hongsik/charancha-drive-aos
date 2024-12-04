@@ -483,8 +483,8 @@ class FindBluetoothActivity: BaseRefreshActivity() {
 
                     layout_no_bluetooth.visibility = GONE
                     layout_bluetooth.visibility = VISIBLE
-                    rv_find_bluetooth.visibility = VISIBLE
-                    layout_no_find_bluetooth.visibility = GONE
+                    rv_find_bluetooth.visibility = GONE
+                    layout_no_find_bluetooth.visibility = VISIBLE
                 }else{
                     layout_no_bluetooth.visibility = VISIBLE
                     layout_bluetooth.visibility = GONE
