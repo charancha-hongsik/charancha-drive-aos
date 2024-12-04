@@ -78,7 +78,13 @@ class MyInfoActivity: BaseRefreshActivity() {
         btn_edit_nickname = findViewById(R.id.btn_edit_nickname)
         nickName = intent.getStringExtra("nickname")!!
         tv_nickname.text = nickName
-        tv_login_oauth.text = intent.getStringExtra("provider")!!
+        val provider = intent.getStringExtra("provider")?.lowercase() ?: ""
+
+        tv_login_oauth.text = when {
+            provider.equals("google", ignoreCase = true) -> "구글"
+            provider.equals("apple", ignoreCase = true) -> "애플"
+            else -> "알 수 없음" // 다른 값일 경우 처리
+        }
         tv_email.text = intent.getStringExtra("email")
 
 
