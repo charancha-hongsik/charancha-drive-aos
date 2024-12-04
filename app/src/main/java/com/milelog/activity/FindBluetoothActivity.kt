@@ -478,6 +478,9 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                 myCarsList = myCarsList.filterNot { it.bluetooth_mac_address.isNullOrEmpty() }
 
                 if(myCarsList.size > 0){
+                    setBluetoothList()
+                    setConnectedCarList()
+
                     layout_no_bluetooth.visibility = GONE
                     layout_bluetooth.visibility = VISIBLE
                     rv_find_bluetooth.visibility = VISIBLE
