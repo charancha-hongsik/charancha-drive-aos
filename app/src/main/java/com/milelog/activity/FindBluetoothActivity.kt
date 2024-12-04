@@ -131,8 +131,8 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                 myCarsList = myCarsList.filterNot { it.bluetooth_mac_address.isNullOrEmpty() }
 
                 rv_connected_car.adapter = ConnectedCarAdapter(context = this, mycarEntities = myCarsList.toMutableList())
-
             }
+            setBluetoothList()
         }
     }
 
@@ -142,26 +142,40 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                 BLUETOOTH_CONNECT
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            val bluetoothManager: BluetoothManager = getSystemService(BluetoothManager::class.java)
-            val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
 
-            val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
+            var myCarsList: List<MyCarsEntity> = listOf()
 
-            val devices:MutableList<FindBluetoothEntity> = mutableListOf()
-
-            pairedDevices?.forEach { device ->
-                if(handsfreeStatus){
-                    if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE)
-                        devices.add(FindBluetoothEntity(device.name, device.address, device.bluetoothClass.deviceClass))
-                }else{
-                    devices.add(FindBluetoothEntity(device.name, device.address, device.bluetoothClass.deviceClass))
+            PreferenceUtil.getPref(this, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
+                if(it != ""){
+                    val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
+                    myCarsList = GsonBuilder().serializeNulls().create().fromJson(it, type)
+                    myCarsList = myCarsList.filterNot { it.bluetooth_mac_address.isNullOrEmpty() }
                 }
 
+
+                val bluetoothManager: BluetoothManager = getSystemService(BluetoothManager::class.java)
+                val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
+
+                val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
+
+                val devices:MutableList<FindBluetoothEntity> = mutableListOf()
+
+                pairedDevices?.forEach { device ->
+
+                    val isDuplicate = myCarsList.any { car -> car.bluetooth_mac_address == device.address }
+
+                    if (!isDuplicate) {
+                        // 중복이 아니면 devices에 추가
+                        devices.add(FindBluetoothEntity(device.name, device.address, device.bluetoothClass.deviceClass))
+                    }
+                }
+
+                rv_find_bluetooth.adapter = DetectedStatusAdapter(context = this, findBluetoothEntity = devices)
+
+                Toast.makeText(this, "등록 가능한 블루투스 기기를 불러왔어요.", Toast.LENGTH_SHORT).show()
+
+
             }
-
-            rv_find_bluetooth.adapter = DetectedStatusAdapter(context = this, findBluetoothEntity = devices)
-
-            Toast.makeText(this, "등록 가능한 블루투스 기기를 불러왔어요.", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -319,10 +333,12 @@ class FindBluetoothActivity: BaseRefreshActivity() {
 
                                     (context as FindBluetoothActivity).setConnectedCarList()
 
+
                                     Toast.makeText(context,
                                         myCarsEntity.name +"블루투스가 연결됐어요", Toast.LENGTH_SHORT).show()
 
                                     bottomSheetDialog.dismiss()
+
                                 }
                             }
                         }
@@ -478,7 +494,6 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                 myCarsList = myCarsList.filterNot { it.bluetooth_mac_address.isNullOrEmpty() }
 
                 if(myCarsList.size > 0){
-                    setBluetoothList()
                     setConnectedCarList()
 
                     layout_no_bluetooth.visibility = GONE
@@ -498,7 +513,6 @@ class FindBluetoothActivity: BaseRefreshActivity() {
     }
 
     private fun setHasPermissionUI(){
-        setBluetoothList()
         setConnectedCarList()
 
         layout_no_bluetooth.visibility = GONE
