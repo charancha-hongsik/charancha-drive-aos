@@ -81,8 +81,6 @@ class MyInfoActivity: BaseRefreshActivity() {
         tv_login_oauth.text = intent.getStringExtra("provider")!!
         tv_email.text = intent.getStringExtra("email")
 
-        Log.d("testestes","testsetsees :: " + intent.getStringExtra("url"))
-
 
         Glide.with(this@MyInfoActivity)
             .asBitmap()

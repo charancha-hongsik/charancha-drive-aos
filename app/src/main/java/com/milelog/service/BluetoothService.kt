@@ -273,7 +273,7 @@ class BluetoothService : Service() {
                                             DetectUserEntity(
                                                 user_id = "",
                                                 verification = "L1",
-                                                start_stop = "IN VEHICLE - High Confidence",
+                                                start_stop = "IN VEHICLE - High Confidence(" + activity.confidence + ")",
                                                 timestamp = System.currentTimeMillis().toString(),
                                                 sensor_state = context.fusedLocationClient != null
                                             )
