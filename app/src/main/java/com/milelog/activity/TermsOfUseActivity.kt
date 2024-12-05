@@ -350,6 +350,9 @@ class TermsOfUseActivity: BaseActivity() {
         ibTerms4.setOnClickListener(object :OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
                 ibTerms4.isSelected = !ibTerms4.isSelected
+
+                checkAllAccept()
+
             }
 
         })
@@ -357,6 +360,8 @@ class TermsOfUseActivity: BaseActivity() {
         ibTerms5.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
                 ibTerms5.isSelected = !ibTerms5.isSelected
+
+                checkAllAccept()
             }
 
         })
@@ -428,5 +433,11 @@ class TermsOfUseActivity: BaseActivity() {
     private fun checkAllAccept(){
         btnNext.isSelected = ibTerms1.isSelected && ibTerms2.isSelected && ibTerms3.isSelected && ibTerms6.isSelected
         btnNext.isClickable = ibTerms1.isSelected && ibTerms2.isSelected && ibTerms3.isSelected && ibTerms6.isSelected
+
+        if(ibTerms1.isSelected && ibTerms2.isSelected && ibTerms3.isSelected && ibTerms4.isSelected && ibTerms5.isSelected && ibTerms6.isSelected){
+            ibAllAccept.isSelected = true
+        }else{
+            ibAllAccept.isSelected = false
+        }
     }
 }
