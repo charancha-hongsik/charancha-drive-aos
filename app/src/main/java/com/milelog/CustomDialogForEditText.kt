@@ -8,6 +8,8 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.Window
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -16,6 +18,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.transition.Visibility
 import com.milelog.activity.BaseActivity
 
 class CustomDialogForEditText(context: Context, val title:String, val subtitle:String, val hint:String, val confirmBtnText:String, val cancelBtnText:String, val dialogCallback: DialogCallback): Dialog(context) {
@@ -27,6 +30,7 @@ class CustomDialogForEditText(context: Context, val title:String, val subtitle:S
     lateinit var tv_comfirm:TextView
     lateinit var et_dialog_contents: EditText
     lateinit var btn_delete_name:ImageView
+    lateinit var layout_et:ConstraintLayout
 
     init {
         setCancelable(false)
@@ -45,6 +49,7 @@ class CustomDialogForEditText(context: Context, val title:String, val subtitle:S
         tv_cancel = findViewById(R.id.tv_cancel)
         et_dialog_contents = findViewById(R.id.et_dialog_contents)
         btn_delete_name = findViewById(R.id.btn_delete_name)
+        layout_et = findViewById(R.id.layout_et)
 
 
         layout_confirm.setOnClickListener(object: BaseActivity.OnSingleClickListener() {
@@ -88,8 +93,11 @@ class CustomDialogForEditText(context: Context, val title:String, val subtitle:S
         et_dialog_contents.setOnFocusChangeListener { view, b ->
             if(b){
                 showKeyboard(et_dialog_contents)
+                layout_et.isSelected = true
+                btn_delete_name.visibility = VISIBLE
             }else{
-
+                layout_et.isSelected = false
+                btn_delete_name.visibility = GONE
             }
         }
 
