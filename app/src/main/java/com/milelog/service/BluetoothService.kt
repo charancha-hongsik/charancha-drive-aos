@@ -1319,7 +1319,7 @@ class BluetoothService : Service() {
     }
 
     private fun checkVariableValue() {
-        thirtyMinCheckpointLocation?.let{
+        pastLocation?.let{
             if(isTimeDifferenceGreaterThan30Minutes(it)){
                 driveDatabase?.detectUserDao()?.insert(
                     DetectUserEntity(
@@ -1336,10 +1336,10 @@ class BluetoothService : Service() {
         }
     }
 
-    fun isTimeDifferenceGreaterThan30Minutes(thirtyMinCheckpointLocation: Location): Boolean {
+    fun isTimeDifferenceGreaterThan30Minutes(pastLocation: Location): Boolean {
         val currentTime = Calendar.getInstance().time
 
-        val diffInMillis = currentTime.time - thirtyMinCheckpointLocation.time
+        val diffInMillis = currentTime.time - pastLocation.time
         val diffInMinutes = diffInMillis / (60 * 1000)
 
         return diffInMinutes >= 30
