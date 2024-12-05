@@ -714,8 +714,8 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                     tv_selected_date.text = selectedDate
                 } else {
                     if (btn_a_month.isSelected) {
-                        startTimeForFilter = getCurrentAndPastTimeForISO(29).second
-                        endTimeForFilter = getCurrentAndPastTimeForISO(29).first
+                        startTimeForFilter = getCurrentAndPastTimeForISOForDrivingHistory(29).second
+                        endTimeForFilter = getCurrentAndPastTimeForISOForDrivingHistory(29).first
                         setInquireScope(
                             formatDateRangeForAMonthForDriveHistory(
                                 startTimeForFilter,
@@ -729,8 +729,8 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                             isActive = isActiveForFilter
                         )
                     } else if (btn_six_month.isSelected) {
-                        startTimeForFilter = getCurrentAndPastTimeForISO(SIX_MONTH).second
-                        endTimeForFilter = getCurrentAndPastTimeForISO(SIX_MONTH).first
+                        startTimeForFilter = getCurrentAndPastTimeForISOForDrivingHistory(SIX_MONTH).second
+                        endTimeForFilter = getCurrentAndPastTimeForISOForDrivingHistory(SIX_MONTH).first
                         setInquireScope(formatDateRangeForDriveHistory(startTimeForFilter, endTimeForFilter))
                         historyViewModel.getHistories(
                             startTimeForFilter,
