@@ -28,7 +28,9 @@
         <LinearLayout
             android:id="@+id/layout_corp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            >
 
             <ImageView
                 android:layout_width="16dp"
@@ -53,7 +55,6 @@
             android:id="@+id/tv_car_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:textAppearance="@style/B1M"
             android:textFontWeight="500"
             android:textColor="@color/gray_950"
