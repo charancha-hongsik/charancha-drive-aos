@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
@@ -49,8 +50,13 @@ class CustomDialogForEditText(context: Context, val title:String, val subtitle:S
         layout_confirm.setOnClickListener(object: BaseActivity.OnSingleClickListener() {
             override fun onSingleClick(v: View?) {
                 if(et_dialog_contents.text.isNotEmpty()){
-                    dialogCallback.onConfirm(et_dialog_contents.text.toString())
-                    dismiss()
+                    if(et_dialog_contents.text.toString().equals(hint)){
+                        showCustomToast(context, "중복된 이름입니다.")
+                    }else{
+                        dialogCallback.onConfirm(et_dialog_contents.text.toString())
+                        dismiss()
+                    }
+
                 }else{
                     showCustomToast(context, "1글자 이상 입력하세요.")
                 }
@@ -77,11 +83,10 @@ class CustomDialogForEditText(context: Context, val title:String, val subtitle:S
         tv_dialog_subtitle.text = subtitle
         tv_comfirm.text = confirmBtnText
         tv_cancel.text = cancelBtnText
-        et_dialog_contents.hint = hint
+        et_dialog_contents.setText(hint)
 
         et_dialog_contents.setOnFocusChangeListener { view, b ->
             if(b){
-                et_dialog_contents.hint = ""
                 showKeyboard(et_dialog_contents)
             }else{
 

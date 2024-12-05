@@ -57,7 +57,7 @@
                 android:id="@+id/et_dialog_contents"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:hint="김마일"
+                android:hint=""
                 android:theme="@style/EditCarText"
                 android:background="@null"
                 android:textCursorDrawable="@drawable/register_car_cursor"

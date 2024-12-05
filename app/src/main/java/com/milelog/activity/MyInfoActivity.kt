@@ -136,9 +136,10 @@ class MyInfoActivity: BaseRefreshActivity() {
                                 response: Response<ResponseBody>
                             ) {
                                 if(response.code() == 200 || response.code() == 201){
-                                    showCustomToast(this@MyInfoActivity, "저장 되었습니다.")
+                                    showCustomToast(this@MyInfoActivity, "저장되었습니다.")
 
                                     tv_nickname.text = contents
+                                    nickName = contents
 
                                 }else if(response.code() == 401){
                                     logout()
@@ -226,7 +227,7 @@ class MyInfoActivity: BaseRefreshActivity() {
                     response: Response<ResponseBody>
                 ) {
                     if(response.code() == 200 || response.code() == 201){
-                        showCustomToast(this@MyInfoActivity, "저장 되었습니다.")
+                        showCustomToast(this@MyInfoActivity, "저장되었습니다.")
 
                         iv_circle.setImageBitmap(bitmap)
 

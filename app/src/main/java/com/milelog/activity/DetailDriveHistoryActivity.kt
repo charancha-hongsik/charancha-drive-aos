@@ -1408,7 +1408,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                             response: Response<ResponseBody>
                         ) {
                             if(response.code() == 200 || response.code() == 201){
-                                showCustomToast(this@DetailDriveHistoryActivity, "저장 되었습니다.")
+                                showCustomToast(this@DetailDriveHistoryActivity, "저장되었습니다.")
 
                                 val jsonString = response.body()?.string()
                                 val getDrivingInfoResponse = GsonBuilder().serializeNulls().create().fromJson(jsonString, GetDrivingInfoResponse::class.java)
