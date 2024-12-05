@@ -514,11 +514,14 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                     layout_bluetooth.visibility = VISIBLE
                     rv_find_bluetooth.visibility = GONE
                     layout_no_find_bluetooth.visibility = VISIBLE
+                    btn_find_bluetooth2.visibility = GONE
                 }else{
                     layout_no_bluetooth.visibility = VISIBLE
                     layout_bluetooth.visibility = GONE
                     rv_find_bluetooth.visibility = GONE
                     layout_no_find_bluetooth.visibility = VISIBLE
+                    btn_find_bluetooth2.visibility = GONE
+
                 }
 
 
@@ -533,6 +536,8 @@ class FindBluetoothActivity: BaseRefreshActivity() {
         layout_bluetooth.visibility = VISIBLE
         rv_find_bluetooth.visibility = VISIBLE
         layout_no_find_bluetooth.visibility = GONE
+        btn_find_bluetooth2.visibility = VISIBLE
+
     }
 
 }

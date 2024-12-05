@@ -13,6 +13,7 @@ import android.database.Cursor
 import android.location.Location
 import android.net.Uri
 import android.os.Build
+import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
@@ -62,6 +63,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.Calendar
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 
@@ -77,10 +79,16 @@ class BluetoothService : Service() {
         const val TRANSITIONS_RECEIVER_ACTION = "TRANSITIONS_RECEIVER_ACTION"
 
         // auto app on your phone will send broadcast with this action when connection state changes
-        const val ACTION_CAR_CONNECTION_UPDATED = "androidx.car.app.connection.action.CAR_CONNECTION_UPDATED"
+        const val ACTION_CAR_CONNECTION_UPDATED =
+            "androidx.car.app.connection.action.CAR_CONNECTION_UPDATED"
 
         // phone is not connected to car
         const val CONNECTION_TYPE_NOT_CONNECTED = 0
+
+
+        // Handler와 Thread 선언
+        private val handler = Handler(Looper.getMainLooper())
+        private var serviceThread: Thread? = null
 
         const val L4 = "L4"
         const val L3 = "L3"
@@ -116,7 +124,8 @@ class BluetoothService : Service() {
      */
     private var driveDatabase: DriveDatabase? = null
 
-    private var fusedLocationClient :FusedLocationProviderClient? = null
+    private var fusedLocationClient: FusedLocationProviderClient? = null
+
     // 위치 업데이트 요청 설정
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
@@ -186,7 +195,7 @@ class BluetoothService : Service() {
         /**
          * BootReceiver 에서 실행 시킨 경우 필수 권한 확인 후 Service 실행하기 위한 로직
          */
-        if(!CommonUtil.checkRequiredPermissions(this@BluetoothService)){
+        if (!CommonUtil.checkRequiredPermissions(this@BluetoothService)) {
             stopSelf()
             return START_STICKY
         }
@@ -205,7 +214,7 @@ class BluetoothService : Service() {
          * - 주행관찰 중 Notification 띄우기
          * - 사용자 활동 탐지 시작
          */
-        if(fusedLocationClient == null){
+        if (fusedLocationClient == null) {
             /**
              * WalkingDetectReceiver(L1) 등록
              */
@@ -226,11 +235,11 @@ class BluetoothService : Service() {
              * 사용자 활동 탐지 시작
              */
             scheduleWalkingDetectWork()
-        }else{
+        } else {
             /**
              * 주행중인 경우 && 사용자가 임의로 notification을 없앤 경우
              */
-            if(intent?.action == ACTION_RESTART_NOTIFICATION){
+            if (intent?.action == ACTION_RESTART_NOTIFICATION) {
                 showNotification()
             }
         }
@@ -248,32 +257,34 @@ class BluetoothService : Service() {
                         val activityType = event.activityType
                         val transitionType = event.transitionType
 
-                        if(activityType == DetectedActivity.WALKING) {
+                        if (activityType == DetectedActivity.WALKING) {
                             if (transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
                                 // Walking 활동에 들어감
-                                (context as BluetoothService).driveDatabase?.detectUserDao()?.insert(
-                                    DetectUserEntity(
-                                        user_id = "",
-                                        verification = "L1",
-                                        start_stop = "Walking Enter(stop)",
-                                        timestamp = System.currentTimeMillis().toString(),
-                                        sensor_state = context.fusedLocationClient != null
+                                (context as BluetoothService).driveDatabase?.detectUserDao()
+                                    ?.insert(
+                                        DetectUserEntity(
+                                            user_id = "",
+                                            verification = "L1",
+                                            start_stop = "Walking Enter(stop)",
+                                            timestamp = System.currentTimeMillis().toString(),
+                                            sensor_state = context.fusedLocationClient != null
+                                        )
                                     )
-                                )
                                 context.stopSensor()
 
                             }
-                        } else if(activityType == DetectedActivity.IN_VEHICLE){
+                        } else if (activityType == DetectedActivity.IN_VEHICLE) {
                             if (transitionType == ActivityTransition.ACTIVITY_TRANSITION_ENTER) {
-                                (context as BluetoothService).driveDatabase?.detectUserDao()?.insert(
-                                    DetectUserEntity(
-                                        user_id = "",
-                                        verification = "L1",
-                                        start_stop = "IN VEHICLE (start)",
-                                        timestamp = System.currentTimeMillis().toString(),
-                                        sensor_state = context.fusedLocationClient != null
+                                (context as BluetoothService).driveDatabase?.detectUserDao()
+                                    ?.insert(
+                                        DetectUserEntity(
+                                            user_id = "",
+                                            verification = "L1",
+                                            start_stop = "IN VEHICLE (start)",
+                                            timestamp = System.currentTimeMillis().toString(),
+                                            sensor_state = context.fusedLocationClient != null
+                                        )
                                     )
-                                )
                                 context.startSensor(L1)
                             }
                         }
@@ -285,19 +296,27 @@ class BluetoothService : Service() {
 
     inner class DetectCarConnectedReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            if(ContextCompat.checkSelfPermission(this@BluetoothService, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED){
+            if (ContextCompat.checkSelfPermission(
+                    this@BluetoothService,
+                    Manifest.permission.BLUETOOTH_CONNECT
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
                 when (intent?.action) {
                     BluetoothDevice.ACTION_ACL_CONNECTED -> {
                         // 무언가 Connected 된 상황
-                        val bluetoothManager: BluetoothManager = getSystemService(BluetoothManager::class.java)
+                        val bluetoothManager: BluetoothManager =
+                            getSystemService(BluetoothManager::class.java)
                         val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
 
                         val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
 
-                        if(drivingMyCarsEntity == null) {
+                        if (drivingMyCarsEntity == null) {
                             // L2로 주행중이 아닌 상황
                             pairedDevices?.forEach { device ->
-                                if (device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE && isBluetoothDeviceConnected(device)) {
+                                if (device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE && isBluetoothDeviceConnected(
+                                        device
+                                    )
+                                ) {
                                     // 핸즈프리 && 연결된 디바이스
                                     val myCarsListOnDevice: MutableList<MyCarsEntity> =
                                         mutableListOf()
@@ -348,24 +367,27 @@ class BluetoothService : Service() {
                             }
                         }
                     }
+
                     BluetoothDevice.ACTION_ACL_DISCONNECTED -> {
-                        val bluetoothManager: BluetoothManager = getSystemService(BluetoothManager::class.java)
+                        val bluetoothManager: BluetoothManager =
+                            getSystemService(BluetoothManager::class.java)
                         val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
 
 
                         val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
                         pairedDevices?.forEach { device ->
-                            if(drivingMyCarsEntity != null){
-                                drivingMyCarsEntity?.let{ drivingCar ->
-                                    if(device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE){
+                            if (drivingMyCarsEntity != null) {
+                                drivingMyCarsEntity?.let { drivingCar ->
+                                    if (device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE) {
                                         if (!isBluetoothDeviceConnected(device)) {
-                                            if(drivingCar.bluetooth_mac_address.equals(device.address)){
+                                            if (drivingCar.bluetooth_mac_address.equals(device.address)) {
                                                 driveDatabase?.detectUserDao()?.insert(
                                                     DetectUserEntity(
                                                         user_id = "",
                                                         verification = "L2",
                                                         start_stop = "Bluetooth(stop) " + device.name,
-                                                        timestamp = System.currentTimeMillis().toString(),
+                                                        timestamp = System.currentTimeMillis()
+                                                            .toString(),
                                                         sensor_state = fusedLocationClient != null
                                                     )
                                                 )
@@ -378,6 +400,7 @@ class BluetoothService : Service() {
                             }
                         }
                     }
+
                     else -> {
                         queryForState()
                     }
@@ -386,7 +409,8 @@ class BluetoothService : Service() {
         }
     }
 
-    inner class CarConnectionQueryHandler(resolver: ContentResolver?) : AsyncQueryHandler(resolver) {
+    inner class CarConnectionQueryHandler(resolver: ContentResolver?) :
+        AsyncQueryHandler(resolver) {
 
         // notify new queryed connection status when query complete
         override fun onQueryComplete(token: Int, cookie: Any?, response: Cursor?) {
@@ -427,7 +451,7 @@ class BluetoothService : Service() {
         }
     }
 
-    private fun registerDetectCarConnectedReceiver(){
+    private fun registerDetectCarConnectedReceiver() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(DetectCarConnectedReceiver(), filter, RECEIVER_EXPORTED)
         } else {
@@ -435,7 +459,7 @@ class BluetoothService : Service() {
         }
     }
 
-    private fun registerDetectUserActivityReceiver(){
+    private fun registerDetectUserActivityReceiver() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             // Detecting L1 Receiver
             registerReceiver(DetectUserActivityReceiver(), IntentFilter().apply {
@@ -449,7 +473,7 @@ class BluetoothService : Service() {
         }
     }
 
-    private fun showNotification(){
+    private fun showNotification() {
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
             channel
         )
@@ -464,31 +488,35 @@ class BluetoothService : Service() {
         )
 
         if (Build.VERSION.SDK_INT >= 34) {
-            startForeground(1, notification
-                .setSmallIcon(R.mipmap.ic_notification)
-                .setAutoCancel(false)
-                .setOngoing(true)
-                .setContentText("주행 관찰중이에요.")
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setOnlyAlertOnce(true)
-                .setDeleteIntent(pendingDeleteIntent)
-                .build(), FOREGROUND_SERVICE_TYPE_HEALTH)
-        }else{
-            startForeground(1, notification
-                .setSmallIcon(R.mipmap.ic_notification)
-                .setAutoCancel(false)
-                .setOngoing(true)
-                .setContentText("주행 관찰중이에요.")
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setOnlyAlertOnce(true)
-                .build())
+            startForeground(
+                1, notification
+                    .setSmallIcon(R.mipmap.ic_notification)
+                    .setAutoCancel(false)
+                    .setOngoing(true)
+                    .setContentText("주행 관찰중이에요.")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setOnlyAlertOnce(true)
+                    .setDeleteIntent(pendingDeleteIntent)
+                    .build(), FOREGROUND_SERVICE_TYPE_HEALTH
+            )
+        } else {
+            startForeground(
+                1, notification
+                    .setSmallIcon(R.mipmap.ic_notification)
+                    .setAutoCancel(false)
+                    .setOngoing(true)
+                    .setContentText("주행 관찰중이에요.")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setOnlyAlertOnce(true)
+                    .build()
+            )
         }
     }
 
-    private fun initDriveData(level:String){
+    private fun initDriveData(level: String) {
         var startTimeStamp = System.currentTimeMillis()
         initDriveForApp(startTimeStamp)
-        initDriveForApi(level,startTimeStamp)
+        initDriveForApi(level, startTimeStamp)
 
         firstLocation = null
         thirtyMinCheckpointLocation = null
@@ -501,14 +529,15 @@ class BluetoothService : Service() {
         PreferenceUtil.putPref(this, PreferenceUtil.RUNNING_LEVEL, level)
     }
 
-    private fun initDriveForApp(startTimeStamp:Long){
+    private fun initDriveForApp(startTimeStamp: Long) {
         gpsInfoForApp = mutableListOf()
         driveForApp = DriveForApp(
-            startTimeStamp.toString(),null,null,null,
-            gpsInfoForApp)
+            startTimeStamp.toString(), null, null, null,
+            gpsInfoForApp
+        )
     }
 
-    private fun initDriveForApi(level:String, startTimeStamp:Long){
+    private fun initDriveForApi(level: String, startTimeStamp: Long) {
         gpsInfoForApi = mutableListOf()
         driveForApi = DriveForApi(
             tracking_id = startTimeStamp.toString(),
@@ -518,20 +547,21 @@ class BluetoothService : Service() {
             verification = level,
             gpses = gpsInfoForApi,
             null,
-            Point("0","0"),Point("0","0")
+            Point("0", "0"), Point("0", "0")
         )
     }
 
     /**
      * sensor가 이미 켜져있으면 켜지지않음.
      */
-    fun startSensor(level:String){
+    fun startSensor(level: String) {
         try {
             if (fusedLocationClient == null) {
                 initDriveData(level)
                 setLocation()
+                startCheckingThread()
             }
-        } catch(e:Exception){
+        } catch (e: Exception) {
             stopSensorNotForSaving()
         }
     }
@@ -540,53 +570,65 @@ class BluetoothService : Service() {
      * sensor 상태가 On일 때 끌 수 있음.
      * level이 같아야 끌 수 있음.
      */
-    private fun stopSensor(level:String){
+    private fun stopSensor(level: String) {
         try {
             if (fusedLocationClient != null) {
                 if (level == PreferenceUtil.getPref(this, PreferenceUtil.RUNNING_LEVEL, "")) {
-                    if(distance_array.sum() > 500f){
-                        callApi(driveForApi.copy(gpses = driveForApi.gpses.map{it.copy()}), driveForApp.copy(gpses = driveForApp.gpses.map{it.copy()}))
+                    if (distance_array.sum() > 500f) {
+                        callApi(
+                            driveForApi.copy(gpses = driveForApi.gpses.map { it.copy() }),
+                            driveForApp.copy(gpses = driveForApp.gpses.map { it.copy() })
+                        )
                     }
                     fusedLocationClient?.removeLocationUpdates(locationCallback)
                     fusedLocationClient = null
                     drivingMyCarsEntity = null
+                    stopCheckingThread()
                 }
             }
-        }catch (e:Exception){
+        } catch (e: Exception) {
             fusedLocationClient?.removeLocationUpdates(locationCallback)
             fusedLocationClient = null
             drivingMyCarsEntity = null
+            stopCheckingThread()
         }
     }
 
-    fun stopSensor(){
+    fun stopSensor() {
         try {
             if (fusedLocationClient != null) {
-                if(distance_array.sum() > 500f){
-                    callApi(driveForApi.copy(gpses = driveForApi.gpses.map{it.copy()}), driveForApp.copy(gpses = driveForApp.gpses.map{it.copy()}))
+                if (distance_array.sum() > 500f) {
+                    callApi(
+                        driveForApi.copy(gpses = driveForApi.gpses.map { it.copy() }),
+                        driveForApp.copy(gpses = driveForApp.gpses.map { it.copy() })
+                    )
                 }
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
                 drivingMyCarsEntity = null
+                stopCheckingThread()
             }
-        }catch(e:Exception){
+        } catch (e: Exception) {
             fusedLocationClient?.removeLocationUpdates(locationCallback)
             fusedLocationClient = null
             drivingMyCarsEntity = null
+            stopCheckingThread()
         }
     }
 
-    fun stopSensorNotForSaving(){
+    fun stopSensorNotForSaving() {
         try {
             if (fusedLocationClient != null) {
                 fusedLocationClient?.removeLocationUpdates(locationCallback)
                 fusedLocationClient = null
                 drivingMyCarsEntity = null
+                stopCheckingThread()
             }
-        }catch(e:Exception){
+        } catch (e: Exception) {
             fusedLocationClient?.removeLocationUpdates(locationCallback)
             fusedLocationClient = null
             drivingMyCarsEntity = null
+            stopCheckingThread()
         }
     }
 
@@ -608,40 +650,43 @@ class BluetoothService : Service() {
         // 위치 업데이트 리스너 생성
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
-                try{
+                try {
                     /**
                      * W0D-74 1행 데이터 삭제
                      */
-                    if(firstLocation == null){
-                        locationResult.lastLocation?.let{
+                    if (firstLocation == null) {
+                        locationResult.lastLocation?.let {
                             firstLocation = it
                             pastLocation = it
                             pastTimeStamp = it.time
                         }
-                    }else{
-                        locationResult.lastLocation?.let{
+                    } else {
+                        locationResult.lastLocation?.let {
                             val location: Location = it
                             val timeStamp = location.time
                             /**
                              * WD-46 1행 데이터와 같은 데이터 삭제
                              */
-                            if(firstLocation!!.latitude == location.latitude && firstLocation!!.longitude == location.longitude){
+                            if (firstLocation!!.latitude == location.latitude && firstLocation!!.longitude == location.longitude) {
                                 pastLocation = location
                                 pastTimeStamp = timeStamp
-                            } else{
+                            } else {
                                 /**
                                  * W0D-78 중복시간 삭제
                                  */
-                                if(getDateFromTimeStampToSS(pastTimeStamp) == getDateFromTimeStampToSS(timeStamp)){
+                                if (getDateFromTimeStampToSS(pastTimeStamp) == getDateFromTimeStampToSS(
+                                        timeStamp
+                                    )
+                                ) {
                                     pastLocation = location
                                     pastTimeStamp = timeStamp
-                                }else{
+                                } else {
                                     processLocationCallback(location, timeStamp)
                                 }
                             }
                         }
                     }
-                }catch (e:Exception){
+                } catch (e: Exception) {
                     stopSensor()
                 }
             }
@@ -676,12 +721,12 @@ class BluetoothService : Service() {
         )
     }
 
-    private fun processLocationCallback(location:Location, timeStamp:Long){
+    private fun processLocationCallback(location: Location, timeStamp: Long) {
         /**
          * W0D-48 최후 종료 조건 추가
          * thirtyMinCheckpointLocation은 반경을 계산하기 위한 location 값
          */
-        if(thirtyMinCheckpointLocation == null){
+        if (thirtyMinCheckpointLocation == null) {
             thirtyMinCheckpointLocation = location
         }
 
@@ -690,7 +735,7 @@ class BluetoothService : Service() {
          * 30분동안 반경 300m 이하 일 경우 종료
          * 60초 * 30분 = 1800
          */
-        if((timeStamp - thirtyMinCheckpointLocation!!.time) > 1800000L){
+        if ((timeStamp - thirtyMinCheckpointLocation!!.time) > 1800000L) {
             /**
              * 반경 300미터 이하 체크
              */
@@ -698,7 +743,7 @@ class BluetoothService : Service() {
                 /**
                  * pastMaxDistance.size가 0이라는건 30분 주행이라는 것. (첫번째 체크)
                  */
-                if(pastMaxDistance.size == 0){
+                if (pastMaxDistance.size == 0) {
                     driveDatabase?.detectUserDao()?.insert(
                         DetectUserEntity(
                             user_id = "",
@@ -709,7 +754,7 @@ class BluetoothService : Service() {
                         )
                     )
                     stopSensorNotForSaving()
-                }else{
+                } else {
                     driveDatabase?.detectUserDao()?.insert(
                         DetectUserEntity(
                             user_id = "",
@@ -722,7 +767,7 @@ class BluetoothService : Service() {
 
                     stopSensor()
                 }
-            }else{
+            } else {
                 pastMaxDistance = maxDistance.toMutableList()
 
                 maxDistance = mutableListOf()
@@ -733,15 +778,30 @@ class BluetoothService : Service() {
         maxDistance.add(location.distanceTo(thirtyMinCheckpointLocation!!))
 
         var distance = 0f
-        if(pastLocation != null){
+        if (pastLocation != null) {
             distance = pastLocation!!.distanceTo(location)
         }
 
         val speed = location.speed * MS_TO_KH
         val acceleration = (location.speed * MS_TO_KH) - (pastSpeed * MS_TO_KH)
 
-        gpsInfoForApp.add(EachGpsDtoForApp(timeStamp, location.latitude, location.longitude, String.format("%.0f", location.altitude).toDouble()))
-        gpsInfoForApi.add(EachGpsDtoForApi(timeStamp, String.format("%.0f",speed).toFloat() ,String.format("%.0f",distance).toFloat(),String.format("%.0f", location.altitude).toDouble(), String.format("%.0f",acceleration).toFloat()))
+        gpsInfoForApp.add(
+            EachGpsDtoForApp(
+                timeStamp,
+                location.latitude,
+                location.longitude,
+                String.format("%.0f", location.altitude).toDouble()
+            )
+        )
+        gpsInfoForApi.add(
+            EachGpsDtoForApi(
+                timeStamp,
+                String.format("%.0f", speed).toFloat(),
+                String.format("%.0f", distance).toFloat(),
+                String.format("%.0f", location.altitude).toDouble(),
+                String.format("%.0f", acceleration).toFloat()
+            )
+        )
 
         var HH = getDateFromTimeStampToHH(timeStamp)
 
@@ -755,37 +815,71 @@ class BluetoothService : Service() {
         pastLocation = location
     }
 
-    private fun callApi(dataForApi:DriveForApi, dataForApp: DriveForApp){
+    private fun callApi(dataForApi: DriveForApi, dataForApp: DriveForApp) {
         dataForApi.endTimestamp = System.currentTimeMillis()
 
         val carId = drivingMyCarsEntity?.id
         val bluetoothName = drivingMyCarsEntity?.bluetooth_name
 
         dataForApi.userCarId = carId
-        dataForApi.startPoint = Point(dataForApp.gpses.first().longtitude.toString(), dataForApp.gpses.first().latitude.toString())
-        dataForApi.endPoint = Point(dataForApp.gpses.last().longtitude.toString(), dataForApp.gpses.last().latitude.toString())
+        dataForApi.startPoint = Point(
+            dataForApp.gpses.first().longtitude.toString(),
+            dataForApp.gpses.first().latitude.toString()
+        )
+        dataForApi.endPoint = Point(
+            dataForApp.gpses.last().longtitude.toString(),
+            dataForApp.gpses.last().latitude.toString()
+        )
 
         dataForApp.bluetooth_name = bluetoothName
 
         if (isInternetConnected(this@BluetoothService)) {
 
-            val startPoint  = dataForApp.gpses.first().longtitude.toString() + "," + dataForApp.gpses.first().latitude.toString()
-            val endPoint  = dataForApp.gpses.last().longtitude.toString() + "," + dataForApp.gpses.last().latitude.toString()
+            val startPoint =
+                dataForApp.gpses.first().longtitude.toString() + "," + dataForApp.gpses.first().latitude.toString()
+            val endPoint =
+                dataForApp.gpses.last().longtitude.toString() + "," + dataForApp.gpses.last().latitude.toString()
 
-            val startBbox = BoundingBoxCalculator.getBoundingBox(BoundingBoxCalculator.MapPoint(dataForApp.gpses.first().longtitude, dataForApp.gpses.first().latitude),0.02)
-            val endBbox = BoundingBoxCalculator.getBoundingBox(BoundingBoxCalculator.MapPoint(dataForApp.gpses.last().longtitude, dataForApp.gpses.last().latitude),0.02)
+            val startBbox = BoundingBoxCalculator.getBoundingBox(
+                BoundingBoxCalculator.MapPoint(
+                    dataForApp.gpses.first().longtitude,
+                    dataForApp.gpses.first().latitude
+                ), 0.02
+            )
+            val endBbox = BoundingBoxCalculator.getBoundingBox(
+                BoundingBoxCalculator.MapPoint(
+                    dataForApp.gpses.last().longtitude,
+                    dataForApp.gpses.last().latitude
+                ), 0.02
+            )
 
-            val startBboxPoint = startBbox.minPoint.longitude.toString() + "," + startBbox.minPoint.latitude.toString() + "," + startBbox.maxPoint.longitude.toString() + "," + startBbox.maxPoint.latitude.toString()
-            val endBboxPoint = endBbox.minPoint.longitude.toString() + "," + endBbox.minPoint.latitude.toString() + "," + endBbox.maxPoint.longitude.toString() + "," + endBbox.maxPoint.latitude.toString()
+            val startBboxPoint =
+                startBbox.minPoint.longitude.toString() + "," + startBbox.minPoint.latitude.toString() + "," + startBbox.maxPoint.longitude.toString() + "," + startBbox.maxPoint.latitude.toString()
+            val endBboxPoint =
+                endBbox.minPoint.longitude.toString() + "," + endBbox.minPoint.latitude.toString() + "," + endBbox.maxPoint.longitude.toString() + "," + endBbox.maxPoint.latitude.toString()
 
-            var startAddress = Address(Point(dataForApp.gpses.first().longtitude.toString(), dataForApp.gpses.first().latitude.toString()),null,null,null)
-            var endAddress = Address(Point(dataForApp.gpses.last().longtitude.toString(), dataForApp.gpses.last().latitude.toString()),null,null,null)
+            var startAddress = Address(
+                Point(
+                    dataForApp.gpses.first().longtitude.toString(),
+                    dataForApp.gpses.first().latitude.toString()
+                ), null, null, null
+            )
+            var endAddress = Address(
+                Point(
+                    dataForApp.gpses.last().longtitude.toString(),
+                    dataForApp.gpses.last().latitude.toString()
+                ), null, null, null
+            )
 
             /**
              * startAddress
              */
-            apiService(this@BluetoothService, 30, "https://api.vworld.kr/").getAddress(point = startPoint).enqueue(object:
-                Callback<ResponseBody>{
+            apiService(
+                this@BluetoothService,
+                30,
+                "https://api.vworld.kr/"
+            ).getAddress(point = startPoint).enqueue(object :
+                Callback<ResponseBody> {
                 override fun onResponse(
                     call: Call<ResponseBody>,
                     response: Response<ResponseBody>
@@ -800,30 +894,46 @@ class BluetoothService : Service() {
                         ?: vWorldResponse.response.result.first().structure.level4A
                         ?: vWorldResponse.response.result.first().structure.level4AC
 
-                    startAddress.parcel = vWorldResponse.response.result.find { it.type == "parcel" }?.text?.let { Parcel(it) }
-                    startAddress.road = vWorldResponse.response.result.find { it.type == "road" }?.text?.let { Road(it) }
+                    startAddress.parcel =
+                        vWorldResponse.response.result.find { it.type == "parcel" }?.text?.let {
+                            Parcel(it)
+                        }
+                    startAddress.road =
+                        vWorldResponse.response.result.find { it.type == "road" }?.text?.let {
+                            Road(it)
+                        }
 
 
-                    apiService(this@BluetoothService, 30, "https://api.vworld.kr/").getAddressDetail(query = level4, bbox = startBboxPoint).enqueue(object:
-                        Callback<ResponseBody>{
+                    apiService(
+                        this@BluetoothService,
+                        30,
+                        "https://api.vworld.kr/"
+                    ).getAddressDetail(query = level4, bbox = startBboxPoint).enqueue(object :
+                        Callback<ResponseBody> {
                         override fun onResponse(
                             call: Call<ResponseBody>,
                             response: Response<ResponseBody>
                         ) {
                             val jsonString = response.body()?.string()
-                            val vWorldDetailResponse = GsonBuilder().serializeNulls().create().fromJson(
-                                jsonString,
-                                VWorldDetailResponse::class.java
-                            )
+                            val vWorldDetailResponse =
+                                GsonBuilder().serializeNulls().create().fromJson(
+                                    jsonString,
+                                    VWorldDetailResponse::class.java
+                                )
 
-                            if(vWorldDetailResponse.response.status != "NOT_FOUND"){
+                            if (vWorldDetailResponse.response.status != "NOT_FOUND") {
 
-                                var places:MutableList<Place> = mutableListOf()
-                                for(detail in vWorldDetailResponse.response.result.items){
+                                var places: MutableList<Place> = mutableListOf()
+                                for (detail in vWorldDetailResponse.response.result.items) {
                                     places.add(
-                                        Place(detail.category, detail.title, Point(detail.point.x, detail.point.y), PlaceAddress(
-                                            Road(detail.address.road), Parcel(detail.address.road)
-                                        )
+                                        Place(
+                                            detail.category,
+                                            detail.title,
+                                            Point(detail.point.x, detail.point.y),
+                                            PlaceAddress(
+                                                Road(detail.address.road),
+                                                Parcel(detail.address.road)
+                                            )
                                         )
                                     )
                                 }
@@ -835,7 +945,14 @@ class BluetoothService : Service() {
                             /**
                              * endAddress
                              */
-                            callGetEndAddress(startAddress, endAddress, dataForApi, dataForApp, endPoint, endBboxPoint)
+                            callGetEndAddress(
+                                startAddress,
+                                endAddress,
+                                dataForApi,
+                                dataForApp,
+                                endPoint,
+                                endBboxPoint
+                            )
                         }
 
                         override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
@@ -843,7 +960,14 @@ class BluetoothService : Service() {
                             /**
                              * endAddress
                              */
-                            callGetEndAddress(startAddress, endAddress, dataForApi, dataForApp, endPoint, endBboxPoint)
+                            callGetEndAddress(
+                                startAddress,
+                                endAddress,
+                                dataForApi,
+                                dataForApp,
+                                endPoint,
+                                endBboxPoint
+                            )
                         }
                     })
                 }
@@ -858,7 +982,7 @@ class BluetoothService : Service() {
         }
     }
 
-    private fun handlePostDrivingInfoError(dataForApi:DriveForApi, dataForApp: DriveForApp){
+    private fun handlePostDrivingInfoError(dataForApi: DriveForApi, dataForApp: DriveForApp) {
         writeToRoomForApi(dataForApi)
         writeToRoomForApp(dataForApp, dataForApi.tracking_id)
     }
@@ -866,12 +990,12 @@ class BluetoothService : Service() {
     /**
      * App내 위경도 값 저장
      */
-    fun writeToRoomForApp(dataForApp: DriveForApp, trackingId:String){
-        Executors.newSingleThreadExecutor().execute{
+    fun writeToRoomForApp(dataForApp: DriveForApp, trackingId: String) {
+        Executors.newSingleThreadExecutor().execute {
             try {
                 dataForApp.tracking_id = trackingId
                 driveDatabase?.driveForAppDao()?.insert(dataForApp)
-            } catch (e:Exception){
+            } catch (e: Exception) {
 
             }
         }
@@ -880,11 +1004,11 @@ class BluetoothService : Service() {
     /**
      * API 호출실패 시 저장
      */
-    fun writeToRoomForApi(driveForApi: DriveForApi){
+    fun writeToRoomForApi(driveForApi: DriveForApi) {
         Executors.newSingleThreadExecutor().execute {
             try {
                 driveDatabase?.driveForApiDao()?.insert(driveForApi)
-            } catch (e:Exception){
+            } catch (e: Exception) {
 
             }
         }
@@ -914,12 +1038,13 @@ class BluetoothService : Service() {
                 ExistingPeriodicWorkPolicy.REPLACE,
                 workRequest
             )
-        }catch (e:Exception){
+        } catch (e: Exception) {
 
         }
     }
 
-    class WalkingDetectWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
+    class WalkingDetectWorker(context: Context, params: WorkerParameters) :
+        Worker(context, params) {
 
         private val activityRecognitionClient: ActivityRecognitionClient =
             ActivityRecognition.getClient(context)
@@ -1020,9 +1145,14 @@ class BluetoothService : Service() {
         }
     }
 
-    private fun callSaveDriving(startAddress:Address, endAddress: Address,dataForApi: DriveForApi, dataForApp: DriveForApp ){
+    private fun callSaveDriving(
+        startAddress: Address,
+        endAddress: Address,
+        dataForApi: DriveForApi,
+        dataForApp: DriveForApp
+    ) {
         val postDriveDtoForApi = PostDrivingInfoRequest(
-            userCarId= dataForApi.userCarId,
+            userCarId = dataForApi.userCarId,
             startTimestamp = dataForApi.startTimestamp,
             endTimestamp = dataForApi.endTimestamp,
             verification = dataForApi.verification,
@@ -1039,21 +1169,30 @@ class BluetoothService : Service() {
 
 
 
-        apiService(this@BluetoothService).postMyDrivingInfo("Bearer " + PreferenceUtil.getPref(this@BluetoothService,  PreferenceUtil.ACCESS_TOKEN, "")!!, jsonParam.toRequestBody("application/json".toMediaTypeOrNull())).enqueue(object : Callback<ResponseBody> {
+        apiService(this@BluetoothService).postMyDrivingInfo(
+            "Bearer " + PreferenceUtil.getPref(
+                this@BluetoothService,
+                PreferenceUtil.ACCESS_TOKEN,
+                ""
+            )!!, jsonParam.toRequestBody("application/json".toMediaTypeOrNull())
+        ).enqueue(object : Callback<ResponseBody> {
             override fun onResponse(
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
             ) {
-                try{
-                    if(response.code() == 200 || response.code() == 201){
-                        val postDrivingInfoResponse = gson.fromJson(response.body()?.string(), PostDrivingInfoResponse::class.java)
+                try {
+                    if (response.code() == 200 || response.code() == 201) {
+                        val postDrivingInfoResponse = gson.fromJson(
+                            response.body()?.string(),
+                            PostDrivingInfoResponse::class.java
+                        )
                         writeToRoomForApp(dataForApp, postDrivingInfoResponse.id)
-                    }else if(response.code() == 429){
+                    } else if (response.code() == 429) {
 
-                    }else{
+                    } else {
                         handlePostDrivingInfoError(dataForApi, dataForApp)
                     }
-                }catch (e:Exception){
+                } catch (e: Exception) {
 
                 }
             }
@@ -1064,72 +1203,147 @@ class BluetoothService : Service() {
         })
     }
 
-    private fun callGetEndAddress(startAddress:Address, endAddress: Address,dataForApi: DriveForApi, dataForApp: DriveForApp, endPoint:String,endBboxPoint:String ){
+    private fun callGetEndAddress(
+        startAddress: Address,
+        endAddress: Address,
+        dataForApi: DriveForApi,
+        dataForApp: DriveForApp,
+        endPoint: String,
+        endBboxPoint: String
+    ) {
         // endAddress api 시작
         /**
          * endAddress
          */
-        apiService(this@BluetoothService, 30,"https://api.vworld.kr/").getAddress(point = endPoint).enqueue(object:
-            Callback<ResponseBody>{
-            override fun onResponse(
-                call: Call<ResponseBody>,
-                response: Response<ResponseBody>
-            ) {
-                val vWorldResponse = GsonBuilder().serializeNulls().create().fromJson(
-                    response.body()?.string(),
-                    VWorldResponse::class.java
-                )
+        apiService(this@BluetoothService, 30, "https://api.vworld.kr/").getAddress(point = endPoint)
+            .enqueue(object :
+                Callback<ResponseBody> {
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: Response<ResponseBody>
+                ) {
+                    val vWorldResponse = GsonBuilder().serializeNulls().create().fromJson(
+                        response.body()?.string(),
+                        VWorldResponse::class.java
+                    )
 
 
-                endAddress.parcel = vWorldResponse.response.result.find { it.type == "parcel" }?.text?.let { Parcel(it) }
-                endAddress.road = vWorldResponse.response.result.find { it.type == "road" }?.text?.let { Road(it) }
+                    endAddress.parcel =
+                        vWorldResponse.response.result.find { it.type == "parcel" }?.text?.let {
+                            Parcel(it)
+                        }
+                    endAddress.road =
+                        vWorldResponse.response.result.find { it.type == "road" }?.text?.let {
+                            Road(it)
+                        }
 
-                val level4 = vWorldResponse.response.result.first().structure.level4L
-                    ?: vWorldResponse.response.result.first().structure.level4LC
-                    ?: vWorldResponse.response.result.first().structure.level4A
-                    ?: vWorldResponse.response.result.first().structure.level4AC
+                    val level4 = vWorldResponse.response.result.first().structure.level4L
+                        ?: vWorldResponse.response.result.first().structure.level4LC
+                        ?: vWorldResponse.response.result.first().structure.level4A
+                        ?: vWorldResponse.response.result.first().structure.level4AC
 
-                apiService(this@BluetoothService, 30,"https://api.vworld.kr/").getAddressDetail(query = level4, bbox = endBboxPoint).enqueue(object:
-                    Callback<ResponseBody>{
-                    override fun onResponse(
-                        call: Call<ResponseBody>,
-                        response: Response<ResponseBody>
-                    ) {
-                        val vWorldDetailResponse = GsonBuilder().serializeNulls().create().fromJson(
-                            response.body()?.string(),
-                            VWorldDetailResponse::class.java
-                        )
-
-                        if(vWorldDetailResponse.response.status != "NOT_FOUND"){
-                            var places:MutableList<Place> = mutableListOf()
-                            for(detail in vWorldDetailResponse.response.result.items){
-                                places.add(
-                                    Place(detail.category, detail.title, Point(detail.point.x, detail.point.y), PlaceAddress(
-                                        Road(detail.address.road), Parcel(detail.address.road)
-                                    )
-                                    )
+                    apiService(
+                        this@BluetoothService,
+                        30,
+                        "https://api.vworld.kr/"
+                    ).getAddressDetail(query = level4, bbox = endBboxPoint).enqueue(object :
+                        Callback<ResponseBody> {
+                        override fun onResponse(
+                            call: Call<ResponseBody>,
+                            response: Response<ResponseBody>
+                        ) {
+                            val vWorldDetailResponse =
+                                GsonBuilder().serializeNulls().create().fromJson(
+                                    response.body()?.string(),
+                                    VWorldDetailResponse::class.java
                                 )
+
+                            if (vWorldDetailResponse.response.status != "NOT_FOUND") {
+                                var places: MutableList<Place> = mutableListOf()
+                                for (detail in vWorldDetailResponse.response.result.items) {
+                                    places.add(
+                                        Place(
+                                            detail.category,
+                                            detail.title,
+                                            Point(detail.point.x, detail.point.y),
+                                            PlaceAddress(
+                                                Road(detail.address.road),
+                                                Parcel(detail.address.road)
+                                            )
+                                        )
+                                    )
+                                }
+
+                                endAddress.places = places
+
+                                // 내 주행 저장 API 호출
+                                callSaveDriving(startAddress, endAddress, dataForApi, dataForApp)
+                            } else {
+                                callSaveDriving(startAddress, endAddress, dataForApi, dataForApp)
                             }
+                        }
 
-                            endAddress.places = places
-
-                            // 내 주행 저장 API 호출
-                            callSaveDriving(startAddress, endAddress, dataForApi, dataForApp)
-                        }else{
+                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                             callSaveDriving(startAddress, endAddress, dataForApi, dataForApp)
                         }
-                    }
+                    })
+                }
 
-                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                        callSaveDriving(startAddress, endAddress, dataForApi, dataForApp)
-                    }
-                })
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                callSaveDriving(startAddress, endAddress, dataForApi, dataForApp)
-            }
-        })
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    callSaveDriving(startAddress, endAddress, dataForApi, dataForApp)
+                }
+            })
     }
+
+    private fun startCheckingThread() {
+        serviceThread = Thread {
+            try {
+                while (!Thread.currentThread().isInterrupted) {
+                    // 30분 대기 (30분 = 30 * 60 * 1000ms)
+                    Thread.sleep(30 * 60 * 1000L)
+
+                    // 변수 값 체크
+                    checkVariableValue()
+                }
+            } catch (e: InterruptedException) {
+                // Thread가 중단될 경우 처리
+                e.printStackTrace()
+            }
+        }
+        serviceThread?.start()
+    }
+
+    private fun stopCheckingThread() {
+        serviceThread?.interrupt()
+        serviceThread = null
+    }
+
+    private fun checkVariableValue() {
+        thirtyMinCheckpointLocation?.let{
+            if(isTimeDifferenceGreaterThan30Minutes(it)){
+                driveDatabase?.detectUserDao()?.insert(
+                    DetectUserEntity(
+                        user_id = "",
+                        verification = "thirtyMinCheck thread",
+                        start_stop = "stop",
+                        timestamp = System.currentTimeMillis().toString(),
+                        sensor_state = fusedLocationClient != null
+                    )
+                )
+
+                stopSensor()
+            }
+        }
+    }
+
+    fun isTimeDifferenceGreaterThan30Minutes(thirtyMinCheckpointLocation: Location): Boolean {
+        val currentTime = Calendar.getInstance().time
+
+        val diffInMillis = currentTime.time - thirtyMinCheckpointLocation.time
+        val diffInMinutes = diffInMillis / (60 * 1000)
+
+        return diffInMinutes >= 30
+    }
+
 
 }
