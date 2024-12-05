@@ -49,7 +49,9 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE"/>
 
 
-
+    <queries>
+        <package android:name="com.android.chrome" />
+    </queries>
 
 
     <application

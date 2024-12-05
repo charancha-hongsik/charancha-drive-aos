@@ -54,6 +54,8 @@ class FindBluetoothActivity: BaseRefreshActivity() {
     var permissionState = false
     lateinit var btn_find_bluetooth2:TextView
     lateinit var layout_no_find_bluetooth:LinearLayout
+    lateinit var view_divider:View
+    lateinit var layout_connected_car:LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +68,8 @@ class FindBluetoothActivity: BaseRefreshActivity() {
         btn_find_bluetooth = findViewById(R.id.btn_find_bluetooth)
         btn_find_bluetooth2 = findViewById(R.id.btn_find_bluetooth2)
         layout_no_find_bluetooth = findViewById(R.id.layout_no_find_bluetooth)
+        view_divider = findViewById(R.id.view_divider)
+        layout_connected_car = findViewById(R.id.layout_connected_car)
         btn_back = findViewById(R.id.btn_back)
         btn_back.setOnClickListener {
             finish()
@@ -130,7 +134,17 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                 var myCarsList: List<MyCarsEntity> = GsonBuilder().serializeNulls().create().fromJson(it, type)
                 myCarsList = myCarsList.filterNot { it.bluetooth_mac_address.isNullOrEmpty() }
 
+                if(myCarsList.size > 0){
+                    layout_connected_car.visibility = VISIBLE
+                    view_divider.visibility = VISIBLE
+                }else{
+                    layout_connected_car.visibility = GONE
+                    view_divider.visibility = GONE
+                }
+
                 rv_connected_car.adapter = ConnectedCarAdapter(context = this, mycarEntities = myCarsList.toMutableList())
+
+
             }
             setBluetoothList()
         }

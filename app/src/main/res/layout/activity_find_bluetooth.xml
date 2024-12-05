@@ -30,131 +30,127 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <LinearLayout
-        android:id="@+id/layout_bluetooth"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="12dp"
-        android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/layout_topbar"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btn_find_bluetooth2"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent">
 
         <LinearLayout
-            android:id="@+id/layout_connected_car"
+            android:id="@+id/layout_bluetooth"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp">
-
-            <TextView
-                android:id="@+id/btn_hands_free"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="연결된 기기"
-                android:textAppearance="@style/B2M"
-                android:textFontWeight="500"
-                android:textColor="@color/gray_600"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_connected_car"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:paddingBottom="32dp"
-                android:scrollbars="none"
-                android:clipToPadding="false" />
-
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="8dp"
-            android:background="@color/gray_50"/>
-
-        <LinearLayout
-            android:id="@+id/layout_find_bluetooth"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_marginTop="32dp"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="등록 가능한 기기"
-                android:textAppearance="@style/B2M"
-                android:textFontWeight="500"
-                android:textColor="@color/gray_600"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_find_bluetooth"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="visible"
-                android:layout_marginTop="12dp"
-                android:paddingBottom="32dp"
-                android:scrollbars="none"
-                android:clipToPadding="false" />
+            android:layout_height="0dp"
+            android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/layout_no_find_bluetooth"
+                android:id="@+id/layout_connected_car"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="12dp"
-                android:paddingBottom="32dp"
-                android:visibility="gone"
-                android:scrollbars="none"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:clipToPadding="false"
-                android:gravity="center">
+                android:paddingTop="12dp"
+                android:paddingBottom="20dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp">
 
-                <ImageView
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_error2" />
+                <TextView
+                    android:id="@+id/btn_hands_free"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="연결된 기기"
+                    android:textAppearance="@style/B2M"
+                    android:textFontWeight="500"
+                    android:textColor="@color/gray_600"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_connected_car"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:paddingBottom="32dp"
+                    android:scrollbars="none"
+                    android:nestedScrollingEnabled="false"
+                    android:clipToPadding="false" />
+
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/view_divider"
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:background="@color/gray_50"/>
+
+            <LinearLayout
+                android:id="@+id/layout_find_bluetooth"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="32dp"
+
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="등록 가능한 블루투스 기기가 없어요."
-                    android:textAppearance="@style/B1R"
-                    android:gravity="center"
-                    android:layout_gravity="center"
-                    android:textFontWeight="400"
-                    android:layout_marginTop="20dp"
-                    android:textColor="@color/gray_500"/>
-            </LinearLayout>
+                    android:text="등록 가능한 기기"
+                    android:textAppearance="@style/B2M"
+                    android:textFontWeight="500"
+                    android:textColor="@color/gray_600"/>
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_find_bluetooth"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    android:layout_marginTop="12dp"
+                    android:paddingBottom="32dp"
+                    android:scrollbars="none"
+                    android:nestedScrollingEnabled="false"
+                    android:clipToPadding="false" />
+
+                <LinearLayout
+                    android:id="@+id/layout_no_find_bluetooth"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingTop="72dp"
+                    android:paddingBottom="95dp"
+                    android:visibility="gone"
+                    android:scrollbars="none"
+                    android:orientation="vertical"
+                    android:clipToPadding="false"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_error2" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="등록 가능한 블루투스 기기가 없어요."
+                        android:textAppearance="@style/B1R"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:textFontWeight="400"
+                        android:layout_marginTop="20dp"
+                        android:textColor="@color/gray_500"/>
+                </LinearLayout>
+
+
+
+            </LinearLayout>
 
 
         </LinearLayout>
 
 
+    </ScrollView>
 
-        <TextView
-            android:id="@+id/btn_find_bluetooth2"
-            android:layout_width="match_parent"
-            android:text="블루투스 검색"
-            android:textAppearance="@style/B1SB"
-            android:textFontWeight="600"
-            android:textColor="@color/white_op_95"
-            android:layout_height="52dp"
-            android:gravity="center"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/radius5_blue800"
-            android:layout_marginBottom="40dp"
-            android:layout_marginTop="12dp"/>
-
-    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/layout_no_bluetooth"
@@ -207,6 +203,24 @@
 
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/btn_find_bluetooth2"
+        android:layout_width="match_parent"
+        android:text="블루투스 검색"
+        android:textAppearance="@style/B1SB"
+        android:textFontWeight="600"
+        android:textColor="@color/white_op_95"
+        android:layout_height="52dp"
+        android:gravity="center"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/radius5_blue800"
+        android:layout_marginBottom="40dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 
 

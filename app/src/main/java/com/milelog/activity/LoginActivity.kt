@@ -1,23 +1,34 @@
 package com.milelog.activity
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.View.*
-import android.webkit.*
+import android.view.View.VISIBLE
+import android.webkit.CookieManager
+import android.webkit.JavascriptInterface
+import android.webkit.WebChromeClient
+import android.webkit.WebResourceRequest
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.browser.customtabs.CustomTabsIntent
-import com.milelog.BuildConfig
-import com.milelog.PreferenceUtil
-import com.milelog.R
-import com.milelog.retrofit.request.SignInRequest
-import com.milelog.retrofit.request.SignUpRequest
+import com.google.android.datatransport.runtime.scheduling.persistence.EventStoreModule_PackageNameFactory.packageName
+import com.google.android.gms.common.wrappers.Wrappers.packageManager
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import com.milelog.BuildConfig
 import com.milelog.CustomDialogNoCancel
+import com.milelog.PreferenceUtil
+import com.milelog.R
 import com.milelog.retrofit.request.PostConnectDeviceRequest
-import com.milelog.retrofit.response.*
+import com.milelog.retrofit.request.SignInRequest
+import com.milelog.retrofit.request.SignUpRequest
+import com.milelog.retrofit.response.GetMyCarInfoResponse
+import com.milelog.retrofit.response.SignInResponse
+import com.milelog.retrofit.response.TermsAgreeStatusResponse
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
@@ -25,6 +36,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.lang.reflect.Type
+
 
 /**
  * 1. 회원가입 및 로그인 시
@@ -185,7 +197,19 @@ class LoginActivity: BaseActivity() {
         fun startLogin(url:String){
             val builder = CustomTabsIntent.Builder()
             val customTabsIntent = builder.build()
-//            customTabsIntent.intent.setPackage("com.android.chrome")
+
+//            var chromeInstalled: Boolean
+//
+//            try {
+//                val appInfo = activity.packageManager.getApplicationInfo("com.android.chrome", 0)
+//                chromeInstalled = true
+//            } catch (e: PackageManager.NameNotFoundException) {
+//                chromeInstalled = false
+//            }
+//
+//            if(chromeInstalled)
+//                customTabsIntent.intent.setPackage("com.android.chrome")
+
             customTabsIntent.launchUrl(activity, Uri.parse(url))
         }
     }
