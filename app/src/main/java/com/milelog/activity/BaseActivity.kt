@@ -815,15 +815,15 @@ open class BaseActivity: AppCompatActivity(){
         // 연도, 월, 일 추출
         val year = date.substring(0, 4)
         val monthRaw = date.substring(4, 6)
-        val day = date.substring(6, 8)
+        val dayRaw = date.substring(6, 8)
 
-        // 월의 앞에 있는 0을 제거 (10, 11, 12는 유지)
+        // 월과 일 앞에 있는 0을 제거 (10, 11, 12는 유지)
         val month = if (monthRaw.startsWith("0")) monthRaw.substring(1) else monthRaw
+        val day = if (dayRaw.startsWith("0")) dayRaw.substring(1) else dayRaw
 
         // 결과 문자열 생성
         return "${year}년 ${month}월 ${day}일"
     }
-
 
 
 
