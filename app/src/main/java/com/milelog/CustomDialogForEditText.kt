@@ -10,6 +10,7 @@ import android.view.View
 import android.view.Window
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -24,6 +25,7 @@ class CustomDialogForEditText(context: Context, val title:String, val subtitle:S
     lateinit var tv_cancel:TextView
     lateinit var tv_comfirm:TextView
     lateinit var et_dialog_contents: EditText
+    lateinit var btn_delete_name:ImageView
 
     init {
         setCancelable(false)
@@ -41,6 +43,7 @@ class CustomDialogForEditText(context: Context, val title:String, val subtitle:S
         tv_comfirm = findViewById(R.id.tv_comfirm)
         tv_cancel = findViewById(R.id.tv_cancel)
         et_dialog_contents = findViewById(R.id.et_dialog_contents)
+        btn_delete_name = findViewById(R.id.btn_delete_name)
 
 
         layout_confirm.setOnClickListener(object: BaseActivity.OnSingleClickListener() {
@@ -59,6 +62,13 @@ class CustomDialogForEditText(context: Context, val title:String, val subtitle:S
             override fun onSingleClick(v: View?) {
                 dialogCallback.onCancel()
                 dismiss()
+            }
+
+        })
+
+        btn_delete_name.setOnClickListener(object:BaseActivity.OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                et_dialog_contents.setText("")
             }
 
         })

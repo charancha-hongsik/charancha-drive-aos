@@ -67,10 +67,20 @@
                 android:inputType="text"
                 android:maxLength="16"
                 android:layout_margin="16dp"
+                app:layout_constraintRight_toLeftOf="@+id/btn_delete_name"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" />
+
+            <ImageView
+                android:id="@+id/btn_delete_name"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginRight="16dp"
+                android:src="@drawable/ic_close_filled"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -108,7 +118,7 @@
             android:id="@+id/layout_confirm"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@drawable/radius6_gray950"
+            android:background="@drawable/radius5_blue800"
             android:layout_marginBottom="24dp"
             android:layout_marginRight="24dp"
             android:layout_marginTop="24dp"
