@@ -615,7 +615,18 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                     // ScrollView를 찾고 가장 하단으로 스크롤
                     val lastChild = view_scrollview.getChildAt(view_scrollview.childCount - 1)
                     view_scrollview.smoothScrollTo(0, lastChild.bottom)
-                }, 200)  // 200ms (0.2초) 후에 실행
+                }, 300)  // 200ms (0.2초) 후에 실행
+            }
+        }
+
+        et_corp_department.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                // 0.2초 후에 scrollview의 가장 하단부로 스크롤
+                Handler(Looper.getMainLooper()).postDelayed({
+                    // ScrollView를 찾고 가장 하단으로 스크롤
+                    val lastChild = view_scrollview.getChildAt(view_scrollview.childCount - 1)
+                    view_scrollview.smoothScrollTo(0, lastChild.bottom)
+                }, 300)  // 200ms (0.2초) 후에 실행
             }
         }
 

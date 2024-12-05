@@ -145,6 +145,7 @@
             android:name=".activity.MyGarageActivity"
             android:theme="@style/Theme.Charanchadrivewhite100"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true"/>
 
 
