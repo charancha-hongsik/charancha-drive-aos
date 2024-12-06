@@ -493,7 +493,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                                 } else if(car.tv_car_num.equals(rearCarList.last().tv_car_num)){
                                     tv_car_number2.text = tv_car_number2.text.toString() + ")"
                                 } else{
-                                    tv_car_number2.text = "," + tv_car_number2.text
+                                    tv_car_number2.text = ", " + tv_car_number2.text
                                 }
 
 
@@ -552,7 +552,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                     if(car.tv_car_num.equals(rearCarList.first().tv_car_num)){
                         tv_car_number2.text = "(" + tv_car_number2.text
                     } else{
-                        tv_car_number2.text = "," + tv_car_number2.text
+                        tv_car_number2.text = ", " + tv_car_number2.text
                     }
 
 
