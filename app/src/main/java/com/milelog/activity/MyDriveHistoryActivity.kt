@@ -461,7 +461,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                         }
 
                         if (tv_car_name.text.equals("전체")) {
-                            tv_inquire_size.text = carViews.size.toString() + "개 선택"
+                            tv_inquire_size.text = (carViews.size-1).toString() + "개 선택"
                             isActiveForFilter = null
 
 
@@ -523,7 +523,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                     layout_flow.addView(constraintLayoutView)
                 }
 
-                tv_inquire_size.text = carViews.size.toString() + "개 선택"
+                tv_inquire_size.text = (carViews.size-1).toString() + "개 선택"
                 isActiveForFilter = null
 
 
