@@ -40,6 +40,7 @@ import com.milelog.viewmodel.BaseViewModel
 import com.milelog.viewmodel.state.GetDriveHistoryMoreState
 import com.milelog.viewmodel.state.GetDriveHistoryState
 import com.nex3z.flowlayout.FlowLayout
+import org.apache.poi.ss.usermodel.HorizontalAlignment
 import java.text.SimpleDateFormat
 import java.time.*
 import java.time.format.DateTimeFormatter
@@ -71,6 +72,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
     lateinit var layout_filter:ConstraintLayout
     lateinit var btn_close_tooltip:View
     lateinit var view_excel_tooltip:ImageView
+    lateinit var layout_flow2_parent:HorizontalScrollView
 
     lateinit var behavior: BottomSheetBehavior<LinearLayout>
     lateinit var selectedDate: String
@@ -143,12 +145,12 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                                 layout_flow.visibility = View.GONE
                             }
 
-                        layout_flow2.animate()
+                        layout_flow2_parent.animate()
                             .alpha(1f)
                             .translationY(0f)
                             .setDuration(200)
                             .withEndAction {
-                                layout_flow2.visibility = View.VISIBLE
+                                layout_flow2_parent.visibility = View.VISIBLE
                             }
 
                         // RecyclerView 높이 애니메이션
@@ -163,12 +165,12 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                                 layout_flow.visibility = View.VISIBLE
                             }
 
-                        layout_flow2.animate()
+                        layout_flow2_parent.animate()
                             .alpha(0f)
                             .translationY(initialFlowHeight.toFloat())
                             .setDuration(200)
                             .withEndAction {
-                                layout_flow2.visibility = View.GONE
+                                layout_flow2_parent.visibility = View.GONE
                             }
 
                         // RecyclerView 높이 애니메이션
@@ -324,6 +326,8 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         if(PreferenceUtil.getBooleanPref(this, PreferenceUtil.EXCEL_TOOLTIP, true)){
             view_excel_tooltip.visibility = VISIBLE
         }
+
+        layout_flow2_parent = findViewById(R.id.layout_flow2_parent)
 
 
         layout_choose_date = findViewById(R.id.layout_choose_date)
