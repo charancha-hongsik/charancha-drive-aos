@@ -4,6 +4,8 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -83,6 +85,8 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
     var histories: MutableList<DriveItem> = mutableListOf()
     var newHistories: MutableList<NewDriveHistoryResponse> = mutableListOf()
 
+    private var isAnimating = false // 애니메이션 중인지 확인하는 플래그
+
 
     /**
      * 전체 -> carId null / isActive null
@@ -134,7 +138,9 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                 val shouldShowFlow2 = totalScroll > scrollThreshold
 
                 // 이전 상태와 비교하여 visibility 변경을 최소화합니다.
-                if (shouldShowFlow2 != lastVisibilityState) {
+                if (shouldShowFlow2 != lastVisibilityState && !isAnimating) {
+                    isAnimating = true // 애니메이션 시작
+
                     if (shouldShowFlow2) {
                         // layout_flow를 GONE으로, layout_flow2를 VISIBLE로 설정하며 애니메이션을 추가
                         layout_flow.animate()
@@ -177,8 +183,11 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                         changeRecyclerViewHeight(initialRecyclerViewHeight, initialRecyclerViewHeight + initialFlowHeight)
                     }
 
-                    // 상태 갱신
+                    // 상태 갱신 후 애니메이션 완료
                     lastVisibilityState = shouldShowFlow2
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        isAnimating = false // 애니메이션 완료 후 플래그 리셋
+                    }, 200) // 애니메이션 시간과 동일하게 설정
                 }
             }
         })
