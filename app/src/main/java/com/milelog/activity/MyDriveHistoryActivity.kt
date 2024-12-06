@@ -123,7 +123,9 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
     private fun setTopBarAnimation() {
         var lastVisibilityState = false // false = layout_flow, true = layout_flow2
 
-        val scrollThreshold = 1000
+        var scrollThreshold = 1000
+        var scrollGap = 320
+
 
         // 초기 높이 설정
         val initialFlowHeight = layout_flow.height
@@ -133,15 +135,21 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
+
                 // 현재 스크롤된 양을 가져옵니다.
                 val totalScroll = recyclerView.computeVerticalScrollOffset()
+
+
                 val shouldShowFlow2 = totalScroll > scrollThreshold
+
+
 
                 // 이전 상태와 비교하여 visibility 변경을 최소화합니다.
                 if (shouldShowFlow2 != lastVisibilityState && !isAnimating) {
                     isAnimating = true // 애니메이션 시작
 
                     if (shouldShowFlow2) {
+                        scrollThreshold = scrollThreshold-scrollGap
                         // layout_flow를 GONE으로, layout_flow2를 VISIBLE로 설정하며 애니메이션을 추가
                         layout_flow.animate()
                             .alpha(0f)
@@ -162,6 +170,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                         // RecyclerView 높이 애니메이션
                         changeRecyclerViewHeight(initialRecyclerViewHeight + initialFlowHeight, initialRecyclerViewHeight)
                     } else {
+                        scrollThreshold = scrollThreshold+scrollGap
                         // layout_flow를 VISIBLE로, layout_flow2를 GONE으로 설정하며 애니메이션을 추가
                         layout_flow.animate()
                             .alpha(1f)
