@@ -476,7 +476,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                                 tv_car_name2.text = car.tv_car_name.text
 
                                 if(car.tv_car_name.equals(rearCarList.last().tv_car_name)){
-                                    tv_car_name2.text = car.tv_car_name.text.toString() + ")"
+                                    tv_car_name2.text = car.tv_car_name.text.toString() + ", 미확정, 내 차가 아니에요)"
                                 }
 
 
@@ -538,7 +538,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                     tv_car_name2.text = car.tv_car_name.text
 
                     if(car.tv_car_name.equals(rearCarList.last().tv_car_name)){
-                        tv_car_name2.text = car.tv_car_name.text.toString() + ")"
+                        tv_car_name2.text = car.tv_car_name.text.toString() + ", 미확정, 내 차가 아니에요)"
                     }
 
                     val tv_car_number2 = constraintLayoutView2.findViewById<TextView>(R.id.tv_car_number)
