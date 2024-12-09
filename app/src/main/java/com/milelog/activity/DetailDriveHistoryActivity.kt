@@ -1408,24 +1408,32 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                             response: Response<ResponseBody>
                         ) {
                             if(response.code() == 200 || response.code() == 201){
-                                showCustomToast(this@DetailDriveHistoryActivity, "저장되었습니다.")
+                                try {
+                                    showCustomToast(this@DetailDriveHistoryActivity, "저장되었습니다.")
 
-                                val jsonString = response.body()?.string()
-                                val getDrivingInfoResponse = GsonBuilder().serializeNulls().create().fromJson(jsonString, GetDrivingInfoResponse::class.java)
+                                    val jsonString = response.body()?.string()
+                                    val getDrivingInfoResponse =
+                                        GsonBuilder().serializeNulls().create().fromJson(
+                                            jsonString,
+                                            GetDrivingInfoResponse::class.java
+                                        )
 
-                                while(layout_drive_image.childCount > 1) {
-                                    layout_drive_image.removeViewAt(layout_drive_image.childCount-1)
-                                }
-
-
-                                getDrivingInfoResponse.images?.let{
-                                    if(it.size > 0){
-                                        for(image in it){
-                                            addImageToLayout(url = image.url, image.id)
-                                        }
-                                    }else{
-                                        tv_tv_add_image.text = "0/5"
+                                    while (layout_drive_image.childCount > 1) {
+                                        layout_drive_image.removeViewAt(layout_drive_image.childCount - 1)
                                     }
+
+
+                                    getDrivingInfoResponse.images?.let {
+                                        if (it.size > 0) {
+                                            for (image in it) {
+                                                addImageToLayout(url = image.url, image.id)
+                                            }
+                                        } else {
+                                            tv_tv_add_image.text = "0/5"
+                                        }
+                                    }
+                                }catch(e:Exception){
+
                                 }
 
                             }else if(response.code() == 401){
