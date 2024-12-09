@@ -181,6 +181,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_marginTop="16dp"
+                android:paddingBottom="18dp"
                 android:background="@drawable/radius8_white950">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -273,8 +274,7 @@
                     android:textAppearance="@style/B2R"
                     android:textColor="@color/gray_500"
                     android:textFontWeight="400"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginBottom="18dp"/>
+                    android:layout_marginLeft="20dp" />
 
 
             </LinearLayout>
