@@ -204,14 +204,14 @@ class LoginActivity: BaseActivity() {
 
             try {
                 val appInfo = activity.packageManager.getApplicationInfo("com.android.chrome", 0)
-                chromeInstalled = true
+                chromeInstalled = appInfo.enabled
             } catch (e: PackageManager.NameNotFoundException) {
                 chromeInstalled = false
             }
 
             try {
                 val appInfo = activity.packageManager.getApplicationInfo("com.sec.android.app.sbrowser", 0)
-                samsungBrowserInstalled = true
+                samsungBrowserInstalled = appInfo.enabled
             } catch (e: PackageManager.NameNotFoundException) {
                 samsungBrowserInstalled = false
             }
