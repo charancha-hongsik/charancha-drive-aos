@@ -51,6 +51,7 @@
 
     <queries>
         <package android:name="com.android.chrome" />
+        <package android:name="com.sec.android.app.sbrowser" />
     </queries>
 
 

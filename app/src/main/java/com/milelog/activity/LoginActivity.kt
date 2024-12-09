@@ -216,6 +216,7 @@ class LoginActivity: BaseActivity() {
                 samsungBrowserInstalled = false
             }
 
+
             if(chromeInstalled) { customTabsIntent.intent.setPackage("com.android.chrome") }
             else {
                 if(samsungBrowserInstalled) { customTabsIntent.intent.setPackage("com.sec.android.app.sbrowser") }
