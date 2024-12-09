@@ -211,7 +211,9 @@ class MyPageActivity: BaseRefreshActivity() {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
 
                 if(response.code() == 200 || response.code() == 201){
-                    getAccountProfilesResponse = GsonBuilder().serializeNulls().create().fromJson(
+                    try{
+
+                        getAccountProfilesResponse = GsonBuilder().serializeNulls().create().fromJson(
                         response.body()?.string(),
                         GetAccountProfilesResponse::class.java
                     )
@@ -219,7 +221,6 @@ class MyPageActivity: BaseRefreshActivity() {
 
                     tv_nickname.text = getAccountProfilesResponse.nickName + "님"
 
-                    try{
                         Glide.with(this@MyPageActivity)
                             .asBitmap()
                             .load(getAccountProfilesResponse.imageUrl)

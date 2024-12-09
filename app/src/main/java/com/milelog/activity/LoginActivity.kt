@@ -198,17 +198,28 @@ class LoginActivity: BaseActivity() {
             val builder = CustomTabsIntent.Builder()
             val customTabsIntent = builder.build()
 
-//            var chromeInstalled: Boolean
-//
-//            try {
-//                val appInfo = activity.packageManager.getApplicationInfo("com.android.chrome", 0)
-//                chromeInstalled = true
-//            } catch (e: PackageManager.NameNotFoundException) {
-//                chromeInstalled = false
-//            }
-//
-//            if(chromeInstalled)
-//                customTabsIntent.intent.setPackage("com.android.chrome")
+            var chromeInstalled: Boolean
+            var samsungBrowserInstalled: Boolean
+
+
+            try {
+                val appInfo = activity.packageManager.getApplicationInfo("com.android.chrome", 0)
+                chromeInstalled = true
+            } catch (e: PackageManager.NameNotFoundException) {
+                chromeInstalled = false
+            }
+
+            try {
+                val appInfo = activity.packageManager.getApplicationInfo("com.sec.android.app.sbrowser", 0)
+                samsungBrowserInstalled = true
+            } catch (e: PackageManager.NameNotFoundException) {
+                samsungBrowserInstalled = false
+            }
+
+            if(chromeInstalled) { customTabsIntent.intent.setPackage("com.android.chrome") }
+            else {
+                if(samsungBrowserInstalled) { customTabsIntent.intent.setPackage("com.sec.android.app.sbrowser") }
+            }
 
             customTabsIntent.launchUrl(activity, Uri.parse(url))
         }
