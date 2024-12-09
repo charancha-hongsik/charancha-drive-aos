@@ -148,6 +148,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
     lateinit var view_map:CardView
     lateinit var layout_drive_image:FlowLayout
+    lateinit var view_edit_arrow:ImageView
 
     lateinit var view_edit1:View
     lateinit var view_edit2:View
@@ -231,6 +232,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         view_edit4 = findViewById(R.id.view_edit4)
         view_edit5 = findViewById(R.id.view_edit5)
         tv_edit = findViewById(R.id.tv_edit)
+        view_edit_arrow = findViewById(R.id.view_edit_arrow)
 
 
 
@@ -644,9 +646,12 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
                     if(isMyCarScope(getDrivingInfoResponse.endTime)){
                         tv_scope_date_mycar.text = transformDateTo30Dayslater(getDrivingInfoResponse.endTime)
+                        view_edit_arrow.visibility = VISIBLE
                     } else{
                         tv_scope_date_mycar.text = "변경 가능 기간이 지났어요."
                         btn_choose_mycar.isClickable = false
+                        view_edit_arrow.visibility = GONE
+
                     }
 
 

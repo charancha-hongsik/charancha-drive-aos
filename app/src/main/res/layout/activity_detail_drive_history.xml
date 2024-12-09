@@ -205,6 +205,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"/>
 
                     <ImageView
+                        android:id="@+id/view_edit_arrow"
                         android:layout_width="8dp"
                         android:layout_height="16dp"
                         android:layout_gravity="center_vertical"
