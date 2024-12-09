@@ -219,22 +219,27 @@ class MyPageActivity: BaseRefreshActivity() {
 
                     tv_nickname.text = getAccountProfilesResponse.nickName + "님"
 
-                    Glide.with(this@MyPageActivity)
-                    .asBitmap()
-                    .load(getAccountProfilesResponse.imageUrl)
-                    .into(object : CustomTarget<Bitmap>() {
-                        override fun onLoadCleared(placeholder: Drawable?) {}
+                    try{
+                        Glide.with(this@MyPageActivity)
+                            .asBitmap()
+                            .load(getAccountProfilesResponse.imageUrl)
+                            .into(object : CustomTarget<Bitmap>() {
+                                override fun onLoadCleared(placeholder: Drawable?) {}
 
-                        override fun onLoadFailed(errorDrawable: Drawable?) {
-                            super.onLoadFailed(errorDrawable)
+                                override fun onLoadFailed(errorDrawable: Drawable?) {
+                                    super.onLoadFailed(errorDrawable)
 
-                            //showAlertDialog("프로필 이미지를 불러오는데 실패했습니다.")
-                        }
+                                    //showAlertDialog("프로필 이미지를 불러오는데 실패했습니다.")
+                                }
 
-                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                            iv_circle.setImageBitmap(resource)
-                        }
-                    })
+                                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                                    iv_circle.setImageBitmap(resource)
+                                }
+                            })
+                    }catch (e:Exception){
+
+                    }
+
 
                 }else if(response.code() == 401){
                     logout()
