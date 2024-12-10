@@ -86,6 +86,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
+import java.io.FileOutputStream
 import java.time.*
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -456,6 +457,9 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                 for(raw in it.gpses){
                     polylines.add(LatLng(raw.latitude,raw.longtitude))
                 }
+
+//                saveGpsDataToFile(this@DetailDriveHistoryActivity, Gson().toJson(it.gpses), it.tracking_id)
+
 
                 bluetoothNameExpected = it.bluetooth_name
 
@@ -1501,6 +1505,20 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     private fun deleteImageToLayout(id:String){
         detailDriveHistoryViewModel.patchImages(listOf(DeleteImage(id)), tracking_id)
     }
+
+//    fun saveGpsDataToFile(context: Context, gpsData: String, fileName: String) {
+//        // Save JSON to a file in the app's private storage
+//        try {
+//            val file = File(context.filesDir, fileName) // filesDir: /data/data/your.package.name/files/
+//            FileOutputStream(file).use { output ->
+//                output.write(gpsData.toByteArray())
+//            }
+//            println("File saved successfully: ${file.absolutePath}")
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//            println("Failed to save file: ${e.message}")
+//        }
+//    }
 
 
 }
