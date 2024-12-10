@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/item_win_reward"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:padding="20dp">
+        
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="당첨"
+                android:paddingRight="8dp"
+                android:paddingLeft="8dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:textColor="@color/pri_700"
+                android:textAppearance="@style/C1M"
+                android:textFontWeight="500"
+                android:background="@drawable/radius4_primary100_blue100"
+                android:gravity="center"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+            
+            <TextView
+                android:id="@+id/tv_dday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="D-30"
+                android:textColor="@color/sec_700"
+                android:textAppearance="@style/B2M"
+                android:textFontWeight="500"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/tv_dday">
+
+                <TextView
+                    android:id="@+id/tv_dday_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/gray_400"
+                    android:text="2024.12.30까지"
+                    android:textFontWeight="400"
+                    android:textAppearance="@style/B2R" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="6dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@color/gray_200"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginRight="6dp"/>
+
+
+            </LinearLayout>
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
+            
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/card_reward"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:background="@drawable/radius6_white950_stroke"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent">
+
+                <ImageView
+                    android:id="@+id/iv_reward"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="20dp"
+                app:layout_constraintLeft_toRightOf="@+id/card_reward"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <TextView
+                    android:id="@+id/tv_reward_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="불스원"
+                    android:textAppearance="@style/B2R"
+                    android:textFontWeight="400"
+                    android:textColor="@color/gray_400"/>
+
+                <TextView
+                    android:id="@+id/tv_reward_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="불스원샷 수분제거 동결방지제 부식방지제 500ml"
+                    android:textAppearance="@style/ST2SB"
+                    android:textFontWeight="600"
+                    android:textColor="@color/black_op_100"/>
+
+
+            </LinearLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/gray_50"
+            android:textColor="@color/gray_600"
+            android:textAppearance="@style/C1M"
+            android:textFontWeight="500"
+            android:text="정보 입력하기"
+            android:gravity="center"/>
+        
+    </LinearLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
