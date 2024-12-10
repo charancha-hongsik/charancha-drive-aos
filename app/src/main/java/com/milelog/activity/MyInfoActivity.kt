@@ -96,8 +96,6 @@ class MyInfoActivity: BaseRefreshActivity() {
                 val clip = ClipData.newPlainText("email", tv_email.text.toString())
                 // ClipData를 ClipboardManager에 설정하여 클립보드에 복사합니다.
                 clipboardManager.setPrimaryClip(clip)
-                // 복사 완료 메시지를 표시할 수 있습니다. (선택 사항)
-                Toast.makeText(this@MyInfoActivity, "복사되었습니다.", Toast.LENGTH_SHORT).show()
             }
 
         })
