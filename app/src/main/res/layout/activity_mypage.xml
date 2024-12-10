@@ -125,10 +125,36 @@
                         android:textColor="@color/gray_500"/>
 
                     <LinearLayout
-                        android:id="@+id/btn_my_garage"
+                        android:id="@+id/btn_drive_history_webview"
                         android:layout_width="match_parent"
                         android:layout_height="44dp"
                         android:layout_marginTop="20dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/ic_drive_history_webview"
+                            android:layout_gravity="center_vertical"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:text="주행 기록"
+                            android:layout_marginLeft="12dp"
+                            android:textColorHint="@color/gray_950"
+                            android:textAppearance="@style/B1M"
+                            android:textFontWeight="500"/>
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/btn_my_garage"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:layout_marginTop="12dp"
                         android:orientation="horizontal">
 
                         <ImageView
@@ -166,7 +192,53 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:text="주행 이력"
+                            android:text="전체 주행 이력"
+                            android:layout_marginLeft="12dp"
+                            android:textColorHint="@color/gray_950"
+                            android:textAppearance="@style/B1M"
+                            android:textFontWeight="500"/>
+
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:padding="20dp"
+                    android:orientation="vertical"
+                    android:background="@drawable/radius7_white100">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="혜택"
+                        android:textFontWeight="400"
+                        android:textAppearance="@style/B2R"
+                        android:textColor="@color/gray_500"/>
+
+                    <LinearLayout
+                        android:id="@+id/btn_reward_win"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:layout_marginTop="12dp">
+
+                        <ImageView
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/ic_reward_win"
+                            android:layout_gravity="center_vertical"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:text="당첨 내역"
                             android:layout_marginLeft="12dp"
                             android:textColorHint="@color/gray_950"
                             android:textAppearance="@style/B1M"

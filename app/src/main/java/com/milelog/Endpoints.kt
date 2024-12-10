@@ -3,6 +3,6 @@ package com.milelog
 object Endpoints {
     const val FAQ = "faq?isInit=true"
     const val INQUIRY = "inquiry?isInit=true"
-    const val HOME = "home"
+    const val HOME = "home?isInit=true"
     const val REWARD = "reward"
 }
