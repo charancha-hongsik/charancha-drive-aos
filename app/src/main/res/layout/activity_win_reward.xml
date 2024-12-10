@@ -53,7 +53,7 @@
             android:id="@+id/tv_inquire_scope"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2024년 6월 16일 ~ 2024년 6월 17일"
+            android:text="2024년 6월"
             android:textFontWeight="600"
             android:textAppearance="@style/B1SB"
             android:textColor="@color/gray_950"
