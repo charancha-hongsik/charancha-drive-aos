@@ -3,12 +3,8 @@ package com.milelog.activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Bundle
-import android.provider.Settings
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -25,6 +21,7 @@ import com.google.gson.reflect.TypeToken
 import com.milelog.BuildConfig.BASE_API_URL
 import com.milelog.CustomDialog
 import com.milelog.Endpoints.FAQ
+import com.milelog.Endpoints.HOME
 import com.milelog.Endpoints.INQUIRY
 import de.hdodenhof.circleimageview.CircleImageView
 import okhttp3.MultipartBody
@@ -50,6 +47,8 @@ class MyPageActivity: BaseRefreshActivity() {
     lateinit var btn_my_garage:LinearLayout
     lateinit var iv_edit:ImageView
     lateinit var btn_setting_bluetooth:LinearLayout
+    lateinit var btn_drive_history_webview:LinearLayout
+    lateinit var btn_reward_win:LinearLayout
     private lateinit var imageMultipart: MultipartBody.Part // 선택한 이미지
 
 
@@ -75,15 +74,9 @@ class MyPageActivity: BaseRefreshActivity() {
         btn_my_garage = findViewById(R.id.btn_my_garage)
         iv_edit = findViewById(R.id.iv_edit)
         btn_setting_bluetooth = findViewById(R.id.btn_setting_bluetooth)
+        btn_drive_history_webview = findViewById(R.id.btn_drive_history_webview)
+        btn_reward_win = findViewById(R.id.btn_reward_win)
 
-
-        iv_circle.setOnClickListener(object:OnSingleClickListener(){
-            override fun onSingleClick(v: View?) {
-                startActivity(Intent(this@MyPageActivity, MyInfoActivity::class.java).putExtra("nickname",getAccountProfilesResponse.nickName).putExtra("email", getAccountProfilesResponse.user.email).putExtra("provider",getAccountProfilesResponse.user.provider.text.en).putExtra("url",getAccountProfilesResponse.imageUrl))
-
-            }
-
-        })
 
         apiService().getTerms("MILELOG_USAGE").enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
@@ -116,6 +109,14 @@ class MyPageActivity: BaseRefreshActivity() {
 
         })
 
+        iv_circle.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                startActivity(Intent(this@MyPageActivity, MyInfoActivity::class.java).putExtra("nickname",getAccountProfilesResponse.nickName).putExtra("email", getAccountProfilesResponse.user.email).putExtra("provider",getAccountProfilesResponse.user.provider.text.en).putExtra("url",getAccountProfilesResponse.imageUrl))
+
+            }
+
+        })
+
         btn_drive_history.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
                 startActivity(Intent(this@MyPageActivity, MyDriveHistoryActivity::class.java))
@@ -133,6 +134,12 @@ class MyPageActivity: BaseRefreshActivity() {
         btn_setting.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
                 startActivity(Intent(this@MyPageActivity, SettingActivity::class.java))
+            }
+        })
+
+        btn_drive_history_webview.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                startActivity(Intent(this@MyPageActivity, CommonWebviewActivity::class.java).putExtra("url", BASE_API_URL + HOME))
             }
         })
 
@@ -197,6 +204,13 @@ class MyPageActivity: BaseRefreshActivity() {
 
             }
 
+        })
+
+        btn_reward_win.setOnClickListener(object :OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                startActivity(Intent(this@MyPageActivity, WinRewardHistoryActivity::class.java))
+
+            }
         })
     }
 
