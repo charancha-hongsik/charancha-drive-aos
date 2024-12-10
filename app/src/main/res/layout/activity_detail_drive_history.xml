@@ -122,7 +122,7 @@
                 android:textAppearance="@style/H3SB"
                 android:textFontWeight="600"
                 android:textColor="@color/gray_950"
-                android:text="73.2km"/>
+                android:text=""/>
 
 
             <androidx.constraintlayout.widget.ConstraintLayout

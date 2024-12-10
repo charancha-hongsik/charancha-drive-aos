@@ -648,45 +648,56 @@ class BluetoothService : Service() {
         locationRequest.setInterval(INTERVAL) // INTERVAL 마다 업데이트 요청
 
         // 위치 업데이트 리스너 생성
+        // 위치 업데이트 리스너 생성
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
-                try {
+                try{
                     /**
                      * W0D-74 1행 데이터 삭제
                      */
-                    if (firstLocation == null) {
-                        locationResult.lastLocation?.let {
-                            firstLocation = it
-                            pastLocation = it
-                            pastTimeStamp = it.time
-                        }
-                    } else {
-                        locationResult.lastLocation?.let {
+                    if(firstLocation != null){
+                        locationResult.lastLocation?.let{
                             val location: Location = it
                             val timeStamp = location.time
                             /**
                              * WD-46 1행 데이터와 같은 데이터 삭제
                              */
-                            if (firstLocation!!.latitude == location.latitude && firstLocation!!.longitude == location.longitude) {
+                            if(firstLocation!!.latitude == location.latitude && firstLocation!!.longitude == location.longitude){
                                 pastLocation = location
                                 pastTimeStamp = timeStamp
-                            } else {
+                            } else{
                                 /**
                                  * W0D-78 중복시간 삭제
                                  */
-                                if (getDateFromTimeStampToSS(pastTimeStamp) == getDateFromTimeStampToSS(
-                                        timeStamp
-                                    )
-                                ) {
+                                if(getDateFromTimeStampToSS(pastTimeStamp) != getDateFromTimeStampToSS(timeStamp)){
+                                    /**
+                                     * W0D-75 1초간 이동거리 100m 이상이면 삭제
+                                     */
+                                    if(pastLocation!=null){
+                                        if((pastLocation!!.distanceTo(location) * 1000 / (timeStamp-pastTimeStamp)) > 100){
+                                            // 튀는 데이터가 여러개인 경우가 있어 주석처리
+//                                            pastLocation = location
+//                                            pastTimeStamp = timeStamp
+                                        } else {
+                                            processLocationCallback(location, timeStamp)
+                                        }
+                                    } else{
+                                        processLocationCallback(location, timeStamp)
+                                    }
+                                }else{
                                     pastLocation = location
                                     pastTimeStamp = timeStamp
-                                } else {
-                                    processLocationCallback(location, timeStamp)
                                 }
                             }
                         }
+                    }else{
+                        locationResult.lastLocation?.let{
+                            firstLocation = it
+                            pastLocation = it
+                            pastTimeStamp = it.time
+                        }
                     }
-                } catch (e: Exception) {
+                }catch (e:Exception){
                     stopSensor()
                 }
             }
