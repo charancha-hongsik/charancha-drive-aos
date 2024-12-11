@@ -148,7 +148,7 @@ data class ItemDetail(
     val id: String,
     val editor: Editor,
     val editorId: String,
-    val category: Category,
+    val category: String, // String?
     val categoryId: String,
     val brand: String,
     val name: String,

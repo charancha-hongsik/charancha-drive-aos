@@ -136,6 +136,7 @@ class BluetoothService : Service() {
     private var pastLocation: Location? = null
     private var pastSpeed: Float = 0f
     private var pastTimeStamp = 0L
+    private var locationSpikes: Location? = null
 
 
     private var INTERVAL = 1000L
@@ -524,6 +525,7 @@ class BluetoothService : Service() {
         pastMaxDistance = mutableListOf()
         distance_array = MutableList(24) { 0f } // 23개 시간대의 distance
         pastLocation = null
+        locationSpikes = null
         pastTimeStamp = 0
         pastSpeed = 0f
         PreferenceUtil.putPref(this, PreferenceUtil.RUNNING_LEVEL, level)
@@ -675,11 +677,20 @@ class BluetoothService : Service() {
                                      */
                                     if(pastLocation!=null){
                                         if((pastLocation!!.distanceTo(location) * 1000 / (timeStamp-pastTimeStamp)) > 100){
-                                            // 튀는 데이터가 여러개인 경우가 있어 주석처리
-//                                            pastLocation = location
-//                                            pastTimeStamp = timeStamp
+                                            // 튄 데이터 저장
+                                            locationSpikes = location
                                         } else {
-                                            processLocationCallback(location, timeStamp)
+                                            if(locationSpikes!=null){
+                                                locationSpikes?.let{
+                                                    if(it.latitude == location.latitude && it.longitude == location.longitude){
+
+                                                    }else{
+                                                        processLocationCallback(location, timeStamp)
+                                                    }
+                                                }
+                                            }else{
+                                                processLocationCallback(location, timeStamp)
+                                            }
                                         }
                                     } else{
                                         processLocationCallback(location, timeStamp)
@@ -827,7 +838,7 @@ class BluetoothService : Service() {
     }
 
     private fun callApi(dataForApi: DriveForApi, dataForApp: DriveForApp) {
-        dataForApi.endTimestamp = System.currentTimeMillis()
+        dataForApi.endTimestamp = dataForApp.gpses.last().timestamp
 
         val carId = drivingMyCarsEntity?.id
         val bluetoothName = drivingMyCarsEntity?.bluetooth_name

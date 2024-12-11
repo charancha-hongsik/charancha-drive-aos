@@ -24,6 +24,7 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
     lateinit var btn_back: View
     lateinit var layout_no_data:ConstraintLayout
     lateinit var lv_win_reward:RecyclerView
+    lateinit var layout_filter:ConstraintLayout
     private val winRewardHistoryViewModel: WinRewardHistoryViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,6 +41,7 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
         btn_back = findViewById(R.id.btn_back)
         layout_no_data = findViewById(R.id.layout_no_data)
         lv_win_reward = findViewById(R.id.lv_win_reward)
+        layout_filter = findViewById(R.id.layout_filter)
 
         winRewardHistoryViewModel.init(applicationContext)
         winRewardHistoryViewModel.getHistories()
@@ -60,7 +62,11 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
 
                 }
                 is GetWinRewardHistoryState.Success -> {
-                    Log.d("testestsetestset","testestestestesest :: " + state.data.items.size)
+                    if(state.data.items.size == 0){
+                        setBlank()
+                    }else{
+                        setRecyclerviewData()
+                    }
                 }
                 is GetWinRewardHistoryState.Error -> {
 
