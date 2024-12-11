@@ -43,6 +43,7 @@ import com.bumptech.glide.Glide
 import com.milelog.R
 import com.milelog.viewmodel.DetailDriveHistoryViewModel
 import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.Marker
@@ -895,9 +896,14 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                      * 마커 추가
                      */
                     val markerPosition = LatLng(polylines[0].latitude, polylines[0].longitude)
-                    currentMarker = googleMap.addMarker(
-                        MarkerOptions().position(markerPosition).title("marker")
-                    )
+
+                    // 사용자 정의 이미지로 마커 아이콘 설정
+                    val markerOptions = MarkerOptions()
+                        .position(markerPosition)
+                        .title("marker")
+                        .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_milelog_launcher)) // custom_marker는 drawable에 있는 이미지 리소스입니다.
+
+                    currentMarker = googleMap.addMarker(markerOptions)
 
                     /**
                      * 마커 애니메이션 추가 및 애니메이션
