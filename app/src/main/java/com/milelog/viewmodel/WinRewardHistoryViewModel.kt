@@ -20,11 +20,11 @@ class WinRewardHistoryViewModel: BaseViewModel() {
     lateinit var context: Context
 
 
-    private val _driveHistoryMoreResult = MutableLiveData<Event<GetDriveHistoryMoreState>>()
-    val driveHistoryMoreResult: MutableLiveData<Event<GetDriveHistoryMoreState>> get() = _driveHistoryMoreResult
+    private val _winRewardHistoryMoreResult = MutableLiveData<Event<GetDriveHistoryMoreState>>()
+    val winRewardHistoryMoreResult: MutableLiveData<Event<GetDriveHistoryMoreState>> get() = _winRewardHistoryMoreResult
 
-    private val _driveHistoryResult = MutableLiveData<Event<GetDriveHistoryState>>()
-    val driveHistoryResult: MutableLiveData<Event<GetDriveHistoryState>> get() = _driveHistoryResult
+    private val _winRewardHistoryResult = MutableLiveData<Event<GetDriveHistoryState>>()
+    val winRewardHistoryResult: MutableLiveData<Event<GetDriveHistoryState>> get() = _winRewardHistoryResult
 
 
     fun init(context:Context){
@@ -33,17 +33,10 @@ class WinRewardHistoryViewModel: BaseViewModel() {
 
     fun getHistoriesMore(startTime:String, endTime:String, meta: Meta, isActive:Boolean? = null, userCarId:String? = null){
 
-        apiService(context).getDrivingHistories(
+        apiService(context).getWinRewardHistories(
             token = "Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!,
             size = 30,
-            order = "DESC",
-            afterCursor =  meta.afterCursor,
-            beforeCursor = null,
-            key = "startTime",
-            startTime = startTime,
-            endTime = endTime,
-            isActive = isActive,
-            userCarId = userCarId).enqueue(object: Callback<ResponseBody> {
+            order = "DESC").enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200 || response.code() == 201){
                     val getDriveHistroyResponse = GsonBuilder().serializeNulls().create().fromJson(
@@ -51,9 +44,9 @@ class WinRewardHistoryViewModel: BaseViewModel() {
                         GetDriveHistoryResponse::class.java
                     )
                     meta.afterCursor = getDriveHistroyResponse.meta.afterCursor
-                    _driveHistoryMoreResult.value = Event(GetDriveHistoryMoreState.Success(getDriveHistroyResponse))
+                    _winRewardHistoryMoreResult.value = Event(GetDriveHistoryMoreState.Success(getDriveHistroyResponse))
                 }else{
-                    _driveHistoryMoreResult.value = Event(GetDriveHistoryMoreState.Error(response.code(), response.message()))
+                    _winRewardHistoryMoreResult.value = Event(GetDriveHistoryMoreState.Error(response.code(), response.message()))
                 }
             }
 
@@ -65,17 +58,10 @@ class WinRewardHistoryViewModel: BaseViewModel() {
 
     fun getHistories(startTime:String, endTime:String,isActive:Boolean? = null, userCarId:String?){
 
-        apiService(context).getDrivingHistories(
+        apiService(context).getWinRewardHistories(
             token = "Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!,
             size = 30,
-            order = "DESC",
-            afterCursor =  null,
-            beforeCursor = null,
-            key = "startTime",
-            startTime = startTime,
-            endTime = endTime,
-            isActive = isActive,
-            userCarId = userCarId).enqueue(object: Callback<ResponseBody>{
+            order = "DESC").enqueue(object: Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200 || response.code() == 201){
                     val jsonString = response.body()?.string()
@@ -84,10 +70,10 @@ class WinRewardHistoryViewModel: BaseViewModel() {
                         GetDriveHistoryResponse::class.java
                     )
 
-                    _driveHistoryResult.value = Event(GetDriveHistoryState.Success(getDriveHistroyResponse, startTime, endTime))
+                    _winRewardHistoryResult.value = Event(GetDriveHistoryState.Success(getDriveHistroyResponse, startTime, endTime))
 
                 } else{
-                    _driveHistoryResult.value = Event(GetDriveHistoryState.Error(response.code(), response.message()))
+                    _winRewardHistoryResult.value = Event(GetDriveHistoryState.Error(response.code(), response.message()))
 
                 }
             }

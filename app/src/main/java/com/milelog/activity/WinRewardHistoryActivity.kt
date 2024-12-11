@@ -4,16 +4,21 @@ import android.os.Bundle
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.milelog.DividerItemDecoration
 import com.milelog.R
+import com.milelog.viewmodel.DetailDriveHistoryViewModel
+import com.milelog.viewmodel.WinRewardHistoryViewModel
 
 class WinRewardHistoryActivity:BaseRefreshActivity() {
     lateinit var btn_back: View
     lateinit var layout_no_data:ConstraintLayout
     lateinit var lv_win_reward:RecyclerView
+    private val winRewardHistoryViewModel: WinRewardHistoryViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_win_reward)
@@ -26,6 +31,8 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
         btn_back = findViewById(R.id.btn_back)
         layout_no_data = findViewById(R.id.layout_no_data)
         lv_win_reward = findViewById(R.id.lv_win_reward)
+
+        winRewardHistoryViewModel.init(applicationContext)
     }
 
     private fun setListener(){
@@ -34,6 +41,10 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                 finish()
             }
         })
+    }
+
+    private fun setObserver(){
+
     }
 
     private fun setBlank(){

@@ -336,12 +336,12 @@ interface ApiServiceInterface {
 
     @GET("api/v1/me/notifications/-/agreements")
     fun getWinRewardHistories(@Header("Authorization") token: String,
-                                @Query("page") size: Int,
-                                @Query("limit") limit: Int,
-                                @Query("order") order: String?,
-                                @Query("sort") sort: String?,
-                                @Query("filters") filters: String?,
-                                @Query("custom-filters") customFilters: String?): Call<ResponseBody>
+                                @Query("page") size: Int? = 1,
+                                @Query("limit") limit: Int? = 30,
+                                @Query("order") order: String? = "DESC",
+                                @Query("sort") sort: String? = "createdAt",
+                                @Query("filters") filters: String? = "",
+                                @Query("custom-filters") customFilters: String? = ""): Call<ResponseBody>
 
 
 
