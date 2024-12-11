@@ -683,15 +683,7 @@ class BluetoothService : Service() {
                                             if(locationSpikes!=null){
                                                 locationSpikes?.let{
                                                     if(it.latitude == location.latitude && it.longitude == location.longitude){
-                                                        driveDatabase?.detectUserDao()?.insert(
-                                                            DetectUserEntity(
-                                                                user_id = "",
-                                                                verification = "locationSpikes",
-                                                                start_stop = "stop",
-                                                                timestamp = System.currentTimeMillis().toString(),
-                                                                sensor_state = fusedLocationClient != null
-                                                            )
-                                                        )
+
                                                     }else{
                                                         processLocationCallback(location, timeStamp)
                                                     }
