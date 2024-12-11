@@ -34,7 +34,7 @@ class WinRewardHistoryViewModel: BaseViewModel() {
         this.context = context
     }
 
-    fun getHistoriesMore(startTime:String, endTime:String, meta: Meta, isActive:Boolean? = null, userCarId:String? = null){
+    fun getHistoriesMore(){
 
         apiService(context).getWinRewardHistories(
             token = "Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!,
@@ -58,7 +58,7 @@ class WinRewardHistoryViewModel: BaseViewModel() {
         })
     }
 
-    fun getHistories(startTime:String, endTime:String,isActive:Boolean? = null, userCarId:String?){
+    fun getHistories(){
 
         apiService(context).getWinRewardHistories(
             token = "Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!,
@@ -67,6 +67,7 @@ class WinRewardHistoryViewModel: BaseViewModel() {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200 || response.code() == 201){
                     val jsonString = response.body()?.string()
+                    Log.d("testsetestest","testestesestset jsonString :: " + jsonString)
                     val winRewardHistoryResponse = GsonBuilder().serializeNulls().create().fromJson(
                         jsonString,
                         WinRewardHistoryResponse::class.java

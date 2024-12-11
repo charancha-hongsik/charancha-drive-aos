@@ -2,6 +2,7 @@ package com.milelog.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -15,6 +16,7 @@ import com.milelog.R
 import com.milelog.viewmodel.BaseViewModel
 import com.milelog.viewmodel.DetailDriveHistoryViewModel
 import com.milelog.viewmodel.WinRewardHistoryViewModel
+import com.milelog.viewmodel.state.GetWinRewardHistoryMoreState
 import com.milelog.viewmodel.state.GetWinRewardHistoryState
 import com.milelog.viewmodel.state.PatchMemoState
 
@@ -30,6 +32,8 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
 
         init()
         setListener()
+        setObserver()
+
     }
 
     private fun init(){
@@ -38,6 +42,7 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
         lv_win_reward = findViewById(R.id.lv_win_reward)
 
         winRewardHistoryViewModel.init(applicationContext)
+        winRewardHistoryViewModel.getHistories()
     }
 
     private fun setListener(){
@@ -55,12 +60,29 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
 
                 }
                 is GetWinRewardHistoryState.Success -> {
-
+                    Log.d("testestsetestset","testestestestesest :: " + state.data.items.size)
                 }
                 is GetWinRewardHistoryState.Error -> {
 
                 }
                 is GetWinRewardHistoryState.Empty -> {
+
+                }
+            }
+        })
+
+        winRewardHistoryViewModel.winRewardHistoryMoreResult.observe(this, BaseViewModel.EventObserver { state ->
+            when (state) {
+                is GetWinRewardHistoryMoreState.Loading -> {
+
+                }
+                is GetWinRewardHistoryMoreState.Success -> {
+
+                }
+                is GetWinRewardHistoryMoreState.Error -> {
+
+                }
+                is GetWinRewardHistoryMoreState.Empty -> {
 
                 }
             }

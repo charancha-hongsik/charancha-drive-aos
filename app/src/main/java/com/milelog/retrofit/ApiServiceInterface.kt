@@ -334,7 +334,7 @@ interface ApiServiceInterface {
                    @Query("errorformat") errorformat: String = "json",
                    @Query("key") key: String = "FA9E1CC5-49CC-345E-A27E-18266F94C2A7"):Call<ResponseBody>
 
-    @GET("api/v1/me/notifications/-/agreements")
+    @GET("api/v1/me/rewards/boxes/results")
     fun getWinRewardHistories(@Header("Authorization") token: String,
                                 @Query("page") size: Int? = 1,
                                 @Query("limit") limit: Int? = 30,
