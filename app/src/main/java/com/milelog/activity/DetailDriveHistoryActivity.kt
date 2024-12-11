@@ -901,7 +901,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     val markerOptions = MarkerOptions()
                         .position(markerPosition)
                         .title("marker")
-                        .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_milelog_launcher)) // custom_marker는 drawable에 있는 이미지 리소스입니다.
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car)) // custom_marker는 drawable에 있는 이미지 리소스입니다.
 
                     currentMarker = googleMap.addMarker(markerOptions)
 
