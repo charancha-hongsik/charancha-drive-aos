@@ -1,5 +1,6 @@
 package com.milelog.viewmodel
 
+import WinRewardHistoryResponse
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
@@ -11,6 +12,8 @@ import com.milelog.retrofit.response.GetDriveHistoryResponse
 import com.milelog.retrofit.response.Meta
 import com.milelog.viewmodel.state.GetDriveHistoryMoreState
 import com.milelog.viewmodel.state.GetDriveHistoryState
+import com.milelog.viewmodel.state.GetWinRewardHistoryMoreState
+import com.milelog.viewmodel.state.GetWinRewardHistoryState
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -20,11 +23,11 @@ class WinRewardHistoryViewModel: BaseViewModel() {
     lateinit var context: Context
 
 
-    private val _winRewardHistoryMoreResult = MutableLiveData<Event<GetDriveHistoryMoreState>>()
-    val winRewardHistoryMoreResult: MutableLiveData<Event<GetDriveHistoryMoreState>> get() = _winRewardHistoryMoreResult
+    private val _winRewardHistoryMoreResult = MutableLiveData<Event<GetWinRewardHistoryMoreState>>()
+    val winRewardHistoryMoreResult: MutableLiveData<Event<GetWinRewardHistoryMoreState>> get() = _winRewardHistoryMoreResult
 
-    private val _winRewardHistoryResult = MutableLiveData<Event<GetDriveHistoryState>>()
-    val winRewardHistoryResult: MutableLiveData<Event<GetDriveHistoryState>> get() = _winRewardHistoryResult
+    private val _winRewardHistoryResult = MutableLiveData<Event<GetWinRewardHistoryState>>()
+    val winRewardHistoryResult: MutableLiveData<Event<GetWinRewardHistoryState>> get() = _winRewardHistoryResult
 
 
     fun init(context:Context){
@@ -39,14 +42,13 @@ class WinRewardHistoryViewModel: BaseViewModel() {
             order = "DESC").enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200 || response.code() == 201){
-                    val getDriveHistroyResponse = GsonBuilder().serializeNulls().create().fromJson(
+                    val winRewardHistoryResponse = GsonBuilder().serializeNulls().create().fromJson(
                         response.body()?.string(),
-                        GetDriveHistoryResponse::class.java
+                        WinRewardHistoryResponse::class.java
                     )
-                    meta.afterCursor = getDriveHistroyResponse.meta.afterCursor
-                    _winRewardHistoryMoreResult.value = Event(GetDriveHistoryMoreState.Success(getDriveHistroyResponse))
+                    _winRewardHistoryMoreResult.value = Event(GetWinRewardHistoryMoreState.Success(winRewardHistoryResponse))
                 }else{
-                    _winRewardHistoryMoreResult.value = Event(GetDriveHistoryMoreState.Error(response.code(), response.message()))
+                    _winRewardHistoryMoreResult.value = Event(GetWinRewardHistoryMoreState.Error(response.code(), response.message()))
                 }
             }
 
@@ -65,15 +67,15 @@ class WinRewardHistoryViewModel: BaseViewModel() {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200 || response.code() == 201){
                     val jsonString = response.body()?.string()
-                    val getDriveHistroyResponse = GsonBuilder().serializeNulls().create().fromJson(
+                    val winRewardHistoryResponse = GsonBuilder().serializeNulls().create().fromJson(
                         jsonString,
-                        GetDriveHistoryResponse::class.java
+                        WinRewardHistoryResponse::class.java
                     )
 
-                    _winRewardHistoryResult.value = Event(GetDriveHistoryState.Success(getDriveHistroyResponse, startTime, endTime))
+                    _winRewardHistoryResult.value = Event(GetWinRewardHistoryState.Success(winRewardHistoryResponse))
 
                 } else{
-                    _winRewardHistoryResult.value = Event(GetDriveHistoryState.Error(response.code(), response.message()))
+                    _winRewardHistoryResult.value = Event(GetWinRewardHistoryState.Error(response.code(), response.message()))
 
                 }
             }

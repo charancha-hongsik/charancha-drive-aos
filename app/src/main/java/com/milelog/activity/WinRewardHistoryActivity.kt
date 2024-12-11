@@ -1,5 +1,6 @@
 package com.milelog.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.View.GONE
@@ -8,10 +9,14 @@ import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import com.milelog.DividerItemDecoration
 import com.milelog.R
+import com.milelog.viewmodel.BaseViewModel
 import com.milelog.viewmodel.DetailDriveHistoryViewModel
 import com.milelog.viewmodel.WinRewardHistoryViewModel
+import com.milelog.viewmodel.state.GetWinRewardHistoryState
+import com.milelog.viewmodel.state.PatchMemoState
 
 class WinRewardHistoryActivity:BaseRefreshActivity() {
     lateinit var btn_back: View
@@ -44,6 +49,22 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
     }
 
     private fun setObserver(){
+        winRewardHistoryViewModel.winRewardHistoryResult.observe(this, BaseViewModel.EventObserver { state ->
+            when (state) {
+                is GetWinRewardHistoryState.Loading -> {
+
+                }
+                is GetWinRewardHistoryState.Success -> {
+
+                }
+                is GetWinRewardHistoryState.Error -> {
+
+                }
+                is GetWinRewardHistoryState.Empty -> {
+
+                }
+            }
+        })
 
     }
 
