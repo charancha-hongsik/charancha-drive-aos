@@ -692,8 +692,6 @@ class BluetoothService : Service() {
                                                                 sensor_state = fusedLocationClient != null
                                                             )
                                                         )
-
-                                                        stopSensor()
                                                     }else{
                                                         processLocationCallback(location, timeStamp)
                                                     }
