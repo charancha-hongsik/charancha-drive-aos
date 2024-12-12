@@ -62,10 +62,15 @@ data class Profile(
 )
 
 data class File(
+    val file: FileDetail,
+)
+
+data class FileDetail(
     val id: String,
     val bucket: String,
     val createdAt: String,
     val key: String,
+    val url: String,
     val mimetype: String,
     val name: String,
     val originalName: String,

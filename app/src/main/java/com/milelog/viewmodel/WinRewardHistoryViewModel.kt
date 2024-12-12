@@ -7,11 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.milelog.PreferenceUtil
-import com.milelog.retrofit.response.DriveItem
-import com.milelog.retrofit.response.GetDriveHistoryResponse
-import com.milelog.retrofit.response.Meta
-import com.milelog.viewmodel.state.GetDriveHistoryMoreState
-import com.milelog.viewmodel.state.GetDriveHistoryState
+import com.milelog.retrofit.request.FilterRequest
 import com.milelog.viewmodel.state.GetWinRewardHistoryMoreState
 import com.milelog.viewmodel.state.GetWinRewardHistoryState
 import okhttp3.ResponseBody
@@ -59,10 +55,15 @@ class WinRewardHistoryViewModel: BaseViewModel() {
     }
 
     fun getHistories(){
+        val filter = FilterRequest(field = "isWin", operator = "EQUALS", value = true)
+        Log.d("testsetestest","testsetestse :: " + Gson().toJson(listOf(filter)))
+
+
         apiService(context).getWinRewardHistories(
             token = "Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!,
             page = 1,
-            order = "DESC").enqueue(object: Callback<ResponseBody>{
+            order = "DESC",
+            filters = Gson().toJson(listOf(filter))).enqueue(object: Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200 || response.code() == 201){
                     val jsonString = response.body()?.string()

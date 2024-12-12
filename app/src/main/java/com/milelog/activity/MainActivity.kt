@@ -108,6 +108,8 @@ class MainActivity:BaseActivity() {
         init()
         setObserver()
         setResources()
+
+        Log.d("testestestestset","testsetsetestse :: " + PreferenceUtil.getPref(this,PreferenceUtil.ACCESS_TOKEN, "")!!)
     }
 
     override fun onResume() {
