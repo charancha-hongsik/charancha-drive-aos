@@ -356,7 +356,17 @@ open class BaseActivity: AppCompatActivity(){
 
         if(past == 29L){
             previousDate = now.minus(past, ChronoUnit.DAYS)
+
+            // Instant를 LocalDateTime으로 변환 (UTC 기준 -> 시스템 기본 시간대)
+            val previousDateTime = LocalDateTime.ofInstant(previousDate, ZoneId.systemDefault())
+
+            // 시간을 00시 00분 00초로 설정 (자정)
+            previousDate = previousDateTime.toLocalDate().atStartOfDay()
+                .atZone(ZoneId.systemDefault())
+                .toInstant()
         }
+
+
 
         if(past == SIX_MONTH){
             // Instant를 LocalDate로 변환합니다.

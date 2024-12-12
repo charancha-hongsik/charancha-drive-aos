@@ -32,6 +32,9 @@ class MyDriveHistoryViewModel: BaseViewModel() {
     }
 
     fun getHistoriesMore(startTime:String, endTime:String, meta: Meta, isActive:Boolean? = null, userCarId:String? = null){
+        Log.d("testestestset","testsetestset :: " + startTime)
+        Log.d("testestestset","testsetestset :: " + endTime)
+
 
         apiService(context).getDrivingHistories(
             token = "Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!,
@@ -64,6 +67,9 @@ class MyDriveHistoryViewModel: BaseViewModel() {
     }
 
     fun getHistories(startTime:String, endTime:String,isActive:Boolean? = null, userCarId:String?){
+        Log.d("testestestset","testsetestset :: " + startTime)
+        Log.d("testestestset","testsetestset :: " + endTime)
+
 
         apiService(context).getDrivingHistories(
             token = "Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!,
