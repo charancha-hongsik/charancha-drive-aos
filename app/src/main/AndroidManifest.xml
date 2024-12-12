@@ -43,6 +43,8 @@
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
     <!-- API 버전 29 (OS 10) 이상 -->
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <!-- API 버전 29 (OS 11) 이상 -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <!-- API 버전 32 (OS 12)  이상 -->
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <!-- API 버전 33 (OS 13)  이상 -->
