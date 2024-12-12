@@ -13,7 +13,7 @@ data class Item(
     val isWin: Boolean,
     val expiredAt: String?,
     val item: ItemDetail?,
-    val edits: List<Edit>?,
+    val edit: Edit?,
     val userDelivery: UserDelivery?
 )
 
@@ -26,7 +26,7 @@ data class Box(
     val userId: String,
     val reward: Reward,
     val rewardId: String,
-    val status: Status,
+    val status: String,
     val statusId: String,
     val data: BoxData,
     val result: Result?
@@ -39,7 +39,7 @@ data class User(
     val id: String,
     val email: String,
     val isPrivateEmail: Boolean,
-    val provider: Provider,
+    val provider: String,
     val providerId: String,
     val firstName: String,
     val lastName: String,
@@ -48,14 +48,6 @@ data class User(
     val accountAddress: String
 )
 
-data class Provider(
-    val createdAt: String,
-    val deletedAt: String?,
-    val updatedAt: String,
-    val id: String,
-    val key: String,
-    val text: LocalizationText
-)
 
 data class Profile(
     val createdAt: String,
@@ -63,7 +55,7 @@ data class Profile(
     val updatedAt: String,
     val id: String,
     val nickName: String,
-    val user: String,
+    val user: User,
     val userId: String,
     val image: File?,
     val imageId: String?
@@ -87,34 +79,16 @@ data class Reward(
     val updatedAt: String,
     val id: String,
     val isActive: Boolean,
-    val type: RewardType,
+    val type: String,
     val typeId: String,
     val data: RewardData,
     val parent: String?,
     val parentId: String?
 )
 
-data class RewardType(
-    val createdAt: String,
-    val deletedAt: String?,
-    val updatedAt: String,
-    val id: String,
-    val key: String,
-    val text: LocalizationText
-)
-
 data class RewardData(
     val maxAllowedBoxes: Int,
     val standardDistance: Int
-)
-
-data class Status(
-    val createdAt: String,
-    val deletedAt: String?,
-    val updatedAt: String,
-    val id: String,
-    val key: String,
-    val text: LocalizationText
 )
 
 data class LocalizationText(
@@ -130,15 +104,15 @@ data class Result(
     val deletedAt: String?,
     val updatedAt: String,
     val id: String,
-    val box: String,
+    val box: Box,
     val boxId: String,
     val isWin: Boolean,
     val expiredAt: String?,
     val item: ItemDetail,
     val itemId: String,
     val data: ResultData,
-    val edits: List<String>,
-    val userDeliveries: List<String>
+    val edit: Edit?,
+    val userDelivery: UserDelivery?
 )
 
 data class ItemDetail(
@@ -174,27 +148,9 @@ data class Editor(
     val name: String,
     val password: String,
     val permissions: List<String?>,
-    val role: Role,
+    val role: String,
     val roleId: String,
     val signinId: String
-)
-
-data class Role(
-    val createdAt: String,
-    val deletedAt: String?,
-    val updatedAt: String,
-    val id: String,
-    val key: String,
-    val text: LocalizationText
-)
-
-data class Category(
-    val createdAt: String,
-    val deletedAt: String?,
-    val updatedAt: String,
-    val id: String,
-    val key: String,
-    val text: LocalizationText
 )
 
 data class ResultData(
@@ -219,7 +175,7 @@ data class Edit(
     val memo: String?,
     val parent: String?,
     val parentId: String?,
-    val files: List<EditFile>
+    val files: List<EditFile>?
 )
 
 data class EditFile(
@@ -242,7 +198,7 @@ data class UserDelivery(
     val privacyConsent: Boolean,
     val result: Result,
     val resultId:String,
-    val status:Status,
+    val status:String,
     val statusId:String,
     val deliveredAt:String,
     val data:UserDeliveryData,

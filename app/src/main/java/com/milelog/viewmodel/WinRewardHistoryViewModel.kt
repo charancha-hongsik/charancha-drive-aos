@@ -64,10 +64,6 @@ class WinRewardHistoryViewModel: BaseViewModel() {
             page = 1,
             order = "DESC").enqueue(object: Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                Log.d("testsetestest","testestesestset code :: " + response.code())
-                Log.d("testsetestest","testestesestset call url :: " + call.request().url)
-
-
                 if(response.code() == 200 || response.code() == 201){
                     val jsonString = response.body()?.string()
                     Log.d("testsetestest","testestesestset jsonString :: " + jsonString)
