@@ -78,8 +78,6 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                     if(state.data.items.size == 0){
                         setBlank()
                     }else{
-                        Log.d("testsetestest","testestesestset winRewardHistoryResponse :: " + state.data.items.size)
-
                         setRecyclerviewData(state.data)
                     }
                 }
@@ -323,6 +321,7 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                             holder.item_send_completed.visibility = GONE
                             it.expiredAt?.let{ expiredAt ->
                                 holder.tv_dday_date_for_expired.text = formatIsoToCustomDate(expiredAt)
+                                Log.d("testestestest","testestestset :: " + formatIsoToCustomDate(expiredAt))
                             }
 
                             Glide.with(context)
@@ -332,7 +331,7 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                                     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                                         Log.d("testsetestest","testestestestest :: " + it.item?.files?.get(0)?.file?.url)
 
-                                        holder.iv_reward_for_expired.setImageBitmap(resource)
+                                        holder.iv_reward_for_input_complete.setImageBitmap(resource)
                                     }
 
                                     override fun onLoadCleared(placeholder: Drawable?) {
@@ -342,8 +341,8 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                                     }
                                 })
 
-                            holder.tv_reward_title_for_expired.text = item.item?.brand
-                            holder.tv_reward_detail_for_expired.text = item.item?.name
+                            holder.tv_reward_title_for_input_complete.text = item.item?.brand
+                            holder.tv_reward_detail_for_input_complete.text = item.item?.name
                         }
                     }
                 }
@@ -397,7 +396,7 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
 
             return try {
                 val date = isoFormat.parse(isoTime)
-                val customFormat = SimpleDateFormat("yyyy.M.d")
+                val customFormat = SimpleDateFormat("yyyy.M.D")
                 customFormat.timeZone = TimeZone.getDefault() // Use local timezone
                 customFormat.format(date)
             } catch (e: ParseException) {
