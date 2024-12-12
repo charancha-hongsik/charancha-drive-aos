@@ -321,7 +321,6 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                             holder.item_send_completed.visibility = GONE
                             it.expiredAt?.let{ expiredAt ->
                                 holder.tv_dday_date_for_expired.text = formatIsoToCustomDate(expiredAt)
-                                Log.d("testestestest","testestestset :: " + formatIsoToCustomDate(expiredAt))
                             }
 
                             Glide.with(context)
@@ -329,15 +328,12 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                                 .load(it.item?.files?.get(0)?.file?.url)
                                 .into(object : CustomTarget<Bitmap>() {
                                     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                                        Log.d("testsetestest","testestestestest :: " + it.item?.files?.get(0)?.file?.url)
 
                                         holder.iv_reward_for_input_complete.setImageBitmap(resource)
                                     }
 
                                     override fun onLoadCleared(placeholder: Drawable?) {
                                         // 이 부분은 Glide가 리소스를 해제할 때 호출됩니다.
-                                        Log.d("testsetestest","testestestestest2 :: " + it.item?.files?.get(0)?.file?.url)
-
                                     }
                                 })
 
