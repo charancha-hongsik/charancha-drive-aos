@@ -66,7 +66,6 @@ class WinRewardHistoryViewModel: BaseViewModel() {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200 || response.code() == 201){
                     val jsonString = response.body()?.string()
-                    Log.d("testsetestest","testestesestset jsonString :: " + jsonString)
                     val winRewardHistoryResponse = GsonBuilder().serializeNulls().create().fromJson(
                         jsonString,
                         WinRewardHistoryResponse::class.java
