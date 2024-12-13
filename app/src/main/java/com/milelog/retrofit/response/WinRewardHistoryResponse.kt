@@ -14,7 +14,7 @@ data class Item(
     val expiredAt: String?,
     val item: ItemDetail?,
     val edit: Edit?,
-    val userDelivery: UserDelivery?
+    var userDelivery: UserDelivery?
 )
 
 data class Box(

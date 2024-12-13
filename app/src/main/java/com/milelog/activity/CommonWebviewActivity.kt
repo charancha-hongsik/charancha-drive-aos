@@ -18,6 +18,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.google.gson.Gson
 import com.milelog.BuildConfig.BASE_TERMS_URL
 import com.milelog.PreferenceUtil
 import com.milelog.R
@@ -224,6 +225,10 @@ class CommonWebviewActivity: BaseActivity() {
         @JavascriptInterface
         fun closeWebviewWithParam(json:String){
             Log.d("testestestse","testestestestse closeWebviewWithParam :: " + json)
+
+            val intent = Intent(activity, WinRewardHistoryActivity::class.java)
+            intent.putExtra("json", json)
+            activity.setResult(RESULT_OK, intent)
             activity.finish()
         }
 

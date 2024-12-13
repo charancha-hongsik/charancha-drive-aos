@@ -1,5 +1,6 @@
 package com.milelog.activity
 
+import UserDelivery
 import WinRewardHistoryResponse
 import android.content.Context
 import android.content.Intent
@@ -16,6 +17,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.TextView
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -25,12 +28,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.google.gson.Gson
 import com.milelog.BuildConfig.BASE_API_URL
 import com.milelog.ChosenDate
 import com.milelog.DividerItemDecoration
 import com.milelog.Endpoints.FAQ
 import com.milelog.Endpoints.REWARD_INPUT
 import com.milelog.R
+import com.milelog.retrofit.response.PostMyCarResponse
 import com.milelog.viewmodel.BaseViewModel
 import com.milelog.viewmodel.WinRewardHistoryViewModel
 import com.milelog.viewmodel.state.GetWinRewardHistoryMoreState
@@ -67,6 +72,8 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
     lateinit var driveItemAdapter: WinRewardHistoryAdapter
 
     private val winRewardHistoryViewModel: WinRewardHistoryViewModel by viewModels()
+
+    private lateinit var resultLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -112,6 +119,17 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
             dpToPx(this, 16)
         ) // 색상 리소스와 구분선 높이 설정
         lv_win_reward.addItemDecoration(dividerItemDecoration)
+
+        resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+            if(it.resultCode == RESULT_OK){
+                val response = Gson().fromJson(it.data?.getStringExtra("json"), UserDelivery::class.java)
+
+                Log.d("testestestsetest","testsetestestse :: " + response.status)
+
+                winRewardHistoryResponse.items.filter { item -> item?.id == response.id }.get(0)?.userDelivery = response
+                driveItemAdapter.notifyDataSetChanged()
+            }
+        }
     }
 
     private fun setListener(){
@@ -351,7 +369,7 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
      */
     private fun setRecyclerviewData(winRewardHistoryResponse: WinRewardHistoryResponse){
         winRewardHistoryResponse.items.add(null)
-        driveItemAdapter = WinRewardHistoryAdapter(this, winRewardHistoryResponse, winRewardHistoryViewModel)
+        driveItemAdapter = WinRewardHistoryAdapter(this, winRewardHistoryResponse, winRewardHistoryViewModel, resultLauncher)
         lv_win_reward.adapter = driveItemAdapter
         layout_no_data.visibility = GONE
         lv_win_reward.visibility = VISIBLE
@@ -360,7 +378,8 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
     class WinRewardHistoryAdapter(
         private val context: Context,
         private val rewardResponse: WinRewardHistoryResponse,
-        private val viewModel:WinRewardHistoryViewModel
+        private val viewModel:WinRewardHistoryViewModel,
+        private val resultLauncher:ActivityResultLauncher<Intent>
     ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         class WinRewardViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val item_win_reward: LinearLayout = view.findViewById(R.id.item_win_reward)
@@ -467,9 +486,10 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                             holder.tv_reward_title.text = item.item?.brand
                             holder.tv_reward_detail.text = item.item?.name
                             holder.tv_input_info.setOnClickListener{
-                                context.startActivity(Intent(context, CommonWebviewActivity::class.java).putExtra("url", BASE_API_URL + REWARD_INPUT + item.id))
+                                resultLauncher.launch(
+                                    Intent(context, CommonWebviewActivity::class.java)
+                                        .putExtra("url", BASE_API_URL + REWARD_INPUT + item.id))
                             }
-
                         } else{
                             /**
                              * 기간 만료
@@ -502,7 +522,7 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                             holder.tv_reward_detail_for_expired.text = item.item?.name
                         }
                     } else if(it.userDelivery != null){
-                        if(it.userDelivery.status.equals("COMPLETED")){
+                        if(it.userDelivery?.status.equals("COMPLETED")){
                             /**
                              * 발송 완료
                              */
@@ -538,7 +558,7 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                             holder.item_send_completed.visibility = GONE
 
                             it.expiredAt?.let{ expiredAt ->
-                                holder.tv_dday_date_for_expired.text = formatIsoToCustomDate(expiredAt)
+                                holder.tv_dday_date_for_input_complete.text = formatIsoToCustomDate(expiredAt)
                             }
 
                             Glide.with(context)
@@ -555,7 +575,9 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                                     }
                                 })
                             holder.btn_edit_input.setOnClickListener{
-                                context.startActivity(Intent(context, CommonWebviewActivity::class.java).putExtra("url", BASE_API_URL + REWARD_INPUT + item.id))
+                                resultLauncher.launch(
+                                    Intent(context, CommonWebviewActivity::class.java)
+                                        .putExtra("url", BASE_API_URL + REWARD_INPUT + item.id))
                             }
                             holder.tv_reward_title_for_input_complete.text = item.item?.brand
                             holder.tv_reward_detail_for_input_complete.text = item.item?.name
