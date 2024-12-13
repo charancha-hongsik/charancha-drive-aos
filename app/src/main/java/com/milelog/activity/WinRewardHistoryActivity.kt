@@ -98,6 +98,14 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
 
         winRewardHistoryViewModel.init(applicationContext)
         winRewardHistoryViewModel.getHistories(startTimeForFilter, endTimeForFilter)
+
+        lv_win_reward.layoutManager = LinearLayoutManager(this)
+        val dividerItemDecoration = DividerItemDecoration(
+            this,
+            R.color.gray_50,
+            dpToPx(this, 16)
+        ) // 색상 리소스와 구분선 높이 설정
+        lv_win_reward.addItemDecoration(dividerItemDecoration)
     }
 
     private fun setListener(){
@@ -331,17 +339,9 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
      *     userDelivery == null && Date.now > expiredAt
      */
     private fun setRecyclerviewData(winRewardHistoryResponse: WinRewardHistoryResponse){
-        lv_win_reward.layoutManager = LinearLayoutManager(this)
         winRewardHistoryResponse.items.add(null)
         val driveItemAdapter = WinRewardHistoryAdapter(this, winRewardHistoryResponse)
         lv_win_reward.adapter = driveItemAdapter
-        val dividerItemDecoration = DividerItemDecoration(
-            this,
-            R.color.gray_50,
-            dpToPx(this, 32)
-        ) // 색상 리소스와 구분선 높이 설정
-        lv_win_reward.addItemDecoration(dividerItemDecoration)
-
         layout_no_data.visibility = GONE
         lv_win_reward.visibility = VISIBLE
     }
