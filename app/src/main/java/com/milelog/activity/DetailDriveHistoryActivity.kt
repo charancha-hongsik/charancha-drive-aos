@@ -622,6 +622,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                                     tv_mycar.text = myCar?.name
 
                                     if(myCar?.type == PERSONAL){
+                                        iv_corp.visibility = GONE
                                         iv_corp.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_star2))
                                         btn_choose_corp.visibility = GONE
                                     }else{
@@ -1041,7 +1042,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         val newZonedDateTime = zonedDateTime.plusDays(30)
 
         // 원하는 형식의 DateTimeFormatter 생성
-        val formatter = DateTimeFormatter.ofPattern("MM월 dd일", Locale.KOREAN)
+        val formatter = DateTimeFormatter.ofPattern("M월 d일", Locale.KOREAN)
 
         // 포맷된 문자열 반환
         val formattedDate = newZonedDateTime.format(formatter)
