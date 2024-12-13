@@ -660,6 +660,10 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
                     }
 
+                    if(getDrivingInfoResponse.userCar?.type == CORPORATE){
+                        tv_scope_date_mycar.visibility = GONE
+                    }
+
 
                     getDrivingInfoResponse.edits?.let{
                         var list:MutableList<EditHistoryEntity> = mutableListOf()
