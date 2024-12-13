@@ -662,6 +662,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
                     if(getDrivingInfoResponse.userCar?.type == CORPORATE){
                         tv_scope_date_mycar.visibility = GONE
+                        view_edit_arrow.visibility = GONE
                     }
 
 
