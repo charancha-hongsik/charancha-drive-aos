@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white_op_100"
+    android:background="@drawable/radius7_white95"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
@@ -146,7 +146,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="20dp"
-            android:background="@color/gray_50"
+            android:background="@drawable/radius5_gray50"
             android:textColor="@color/gray_600"
             android:textAppearance="@style/C1M"
             android:textFontWeight="500"
