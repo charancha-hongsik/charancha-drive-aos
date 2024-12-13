@@ -54,16 +54,18 @@ class WinRewardHistoryViewModel: BaseViewModel() {
         })
     }
 
-    fun getHistories(){
-        val filter = FilterRequest(field = "isWin", operator = "EQUALS", value = true)
-        Log.d("testsetestest","testsetestse :: " + Gson().toJson(listOf(filter)))
+    fun getHistories(startDate:String, endDate:String){
+        val filter1 = FilterRequest(field = "isWin", operator = "EQUALS", value = true)
+        val filter2 = FilterRequest(field = "createdAt", operator = "BETWEEN", value = listOf(startDate, endDate))
+
+        Log.d("testestestestset","testestestestset :: " + Gson().toJson(listOf(filter1, filter2)))
 
 
         apiService(context).getWinRewardHistories(
             token = "Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!,
             page = 1,
             order = "DESC",
-            filters = Gson().toJson(listOf(filter))).enqueue(object: Callback<ResponseBody>{
+            filters = Gson().toJson(listOf(filter1, filter2))).enqueue(object: Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200 || response.code() == 201){
                     val jsonString = response.body()?.string()

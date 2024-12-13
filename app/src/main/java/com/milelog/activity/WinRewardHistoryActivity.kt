@@ -13,14 +13,18 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ListView
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.milelog.ChosenDate
 import com.milelog.DividerItemDecoration
 import com.milelog.R
 import com.milelog.viewmodel.BaseViewModel
@@ -29,6 +33,8 @@ import com.milelog.viewmodel.state.GetWinRewardHistoryMoreState
 import com.milelog.viewmodel.state.GetWinRewardHistoryState
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.TimeZone
 import kotlin.math.exp
@@ -38,6 +44,22 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
     lateinit var layout_no_data:ConstraintLayout
     lateinit var lv_win_reward:RecyclerView
     lateinit var layout_filter:ConstraintLayout
+    lateinit var layout_choose_date:CoordinatorLayout
+    lateinit var layout_select_main:LinearLayout
+    lateinit var btn_inquire_date:TextView
+    lateinit var layout_date_own:ConstraintLayout
+    lateinit var listView_choose_date_own: ListView
+    lateinit var btn_select_date_from_list:ConstraintLayout
+    lateinit var btn_a_month:TextView
+    lateinit var btn_six_month:TextView
+    lateinit var btn_each_month:TextView
+    lateinit var selectedDate: String
+    lateinit var tv_selected_date:TextView
+    lateinit var btn_close_select_date:ImageView
+    lateinit var tv_inquire_scope:TextView
+    var startTimeForFilter: String = getCurrentAndPastTimeForISO(29).second
+    var endTimeForFilter: String = getCurrentAndPastTimeForISO(29).first
+
     private val winRewardHistoryViewModel: WinRewardHistoryViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,7 +69,6 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
         init()
         setListener()
         setObserver()
-
     }
 
     private fun init(){
@@ -55,9 +76,28 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
         layout_no_data = findViewById(R.id.layout_no_data)
         lv_win_reward = findViewById(R.id.lv_win_reward)
         layout_filter = findViewById(R.id.layout_filter)
+        layout_choose_date = findViewById(R.id.layout_choose_date)
+        layout_select_main = findViewById(R.id.layout_select_main)
+        btn_inquire_date = findViewById(R.id.btn_inquire_date)
+        layout_date_own = findViewById(R.id.layout_date_own)
+        listView_choose_date_own = findViewById(R.id.listView_choose_date_own)
+        btn_select_date_from_list = findViewById(R.id.btn_select_date_from_list)
+        btn_a_month = findViewById(R.id.btn_a_month)
+        btn_six_month = findViewById(R.id.btn_six_month)
+        btn_each_month = findViewById(R.id.btn_each_month)
+        tv_selected_date = findViewById(R.id.tv_selected_date)
+        btn_close_select_date = findViewById(R.id.btn_close_select_date)
+        tv_inquire_scope = findViewById(R.id.tv_inquire_scope)
+
+        val itemList = getDateList()
+
+        selectedDate = itemList.get(0).date
+        startTimeForFilter = getDateRange(selectedDate).second
+        endTimeForFilter = getDateRange(selectedDate).first
+        setInquireScope(selectedDate)
 
         winRewardHistoryViewModel.init(applicationContext)
-        winRewardHistoryViewModel.getHistories()
+        winRewardHistoryViewModel.getHistories(startTimeForFilter, endTimeForFilter)
     }
 
     private fun setListener(){
@@ -66,6 +106,172 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                 finish()
             }
         })
+
+        layout_filter.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                layout_choose_date.visibility = VISIBLE
+                layout_select_main.visibility = VISIBLE
+                btn_inquire_date.visibility = VISIBLE
+                layout_date_own.visibility = GONE
+                listView_choose_date_own.visibility = GONE
+                btn_select_date_from_list.visibility = GONE
+
+                btn_a_month.isSelected = true
+                btn_six_month.isSelected = false
+                btn_each_month.isSelected = false
+
+                val itemList = getDateList()
+
+                selectedDate = itemList.get(0).date
+                tv_selected_date.text = selectedDate
+
+                // adapter 생성
+                val dateAdapter = DetailManageScoreActivity.DateAdapter(
+                    this@WinRewardHistoryActivity,
+                    itemList,
+                    object : DetailManageScoreActivity.DateAdapter.DateCallback {
+                        override fun chosenDate(date: String) {
+                            selectedDate = date
+
+                            for (list in itemList) {
+                                list.selected = false
+                                if (list.date == date) {
+                                    list.selected = true
+                                }
+                            }
+                            (listView_choose_date_own.adapter as DetailManageScoreActivity.DateAdapter).notifyDataSetChanged()
+
+                            listView_choose_date_own.visibility = GONE
+                            layout_select_main.visibility = VISIBLE
+                            btn_inquire_date.visibility = VISIBLE
+
+                            tv_selected_date.text = selectedDate
+
+                        }
+                    })
+
+                // listView에 adapter 연결
+                listView_choose_date_own.adapter = dateAdapter
+
+                TextViewCompat.setTextAppearance(btn_a_month, R.style.B1SBweight600)
+                TextViewCompat.setTextAppearance(btn_six_month, R.style.B1Mweight500)
+                TextViewCompat.setTextAppearance(btn_each_month, R.style.B1Mweight500)
+            }
+
+        })
+
+        layout_choose_date.setOnClickListener {
+            layout_choose_date.visibility = GONE
+        }
+
+        btn_close_select_date.setOnClickListener {
+            layout_choose_date.visibility = GONE
+        }
+
+        btn_inquire_date.setOnClickListener {
+            layout_choose_date.visibility = GONE
+        }
+
+        btn_a_month.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                btn_a_month.isSelected = true
+                btn_six_month.isSelected = false
+                btn_each_month.isSelected = false
+
+                TextViewCompat.setTextAppearance(btn_a_month, R.style.B1SBweight600)
+                TextViewCompat.setTextAppearance(btn_six_month, R.style.B1Mweight500)
+                TextViewCompat.setTextAppearance(btn_each_month, R.style.B1Mweight500)
+
+                btn_select_date_from_list.visibility = GONE
+            }
+
+        })
+
+        btn_six_month.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                btn_a_month.isSelected = false
+                btn_six_month.isSelected = true
+                btn_each_month.isSelected = false
+
+                TextViewCompat.setTextAppearance(btn_a_month, R.style.B1Mweight500)
+                TextViewCompat.setTextAppearance(btn_six_month, R.style.B1SBweight600)
+                TextViewCompat.setTextAppearance(btn_each_month, R.style.B1Mweight500)
+
+                btn_select_date_from_list.visibility = GONE
+                layout_date_own.visibility = GONE
+            }
+
+        })
+
+        btn_select_date_from_list.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                listView_choose_date_own.visibility = VISIBLE
+                layout_select_main.visibility = GONE
+                btn_inquire_date.visibility = GONE
+            }
+        })
+
+        btn_each_month.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                btn_a_month.isSelected = false
+                btn_six_month.isSelected = false
+                btn_each_month.isSelected = true
+
+                TextViewCompat.setTextAppearance(btn_a_month, R.style.B1Mweight500)
+                TextViewCompat.setTextAppearance(btn_six_month, R.style.B1Mweight500)
+                TextViewCompat.setTextAppearance(btn_each_month, R.style.B1SBweight600)
+
+                btn_select_date_from_list.visibility = VISIBLE
+            }
+
+        })
+
+        btn_inquire_date.setOnClickListener(object : OnSingleClickListener() {
+            override fun onSingleClick(v: View?) {
+                if (layout_select_main.visibility == GONE) {
+
+                    listView_choose_date_own.visibility = GONE
+                    layout_select_main.visibility = VISIBLE
+
+                    tv_selected_date.text = selectedDate
+                } else {
+                    if (btn_a_month.isSelected) {
+                        startTimeForFilter = getCurrentAndPastTimeForISOForDrivingHistory(29).second
+                        endTimeForFilter = getCurrentAndPastTimeForISOForDrivingHistory(29).first
+                        setInquireScope(
+                            formatDateRangeForAMonthForDriveHistory(
+                                startTimeForFilter,
+                                endTimeForFilter
+                            )
+                        )
+                        winRewardHistoryViewModel.getHistories(
+                            startTimeForFilter,
+                            endTimeForFilter,
+                        )
+                    } else if (btn_six_month.isSelected) {
+                        startTimeForFilter = getCurrentAndPastTimeForISOForDrivingHistory(SIX_MONTH).second
+                        endTimeForFilter = getCurrentAndPastTimeForISOForDrivingHistory(SIX_MONTH).first
+                        setInquireScope(formatDateRangeForDriveHistory(startTimeForFilter, endTimeForFilter))
+                        winRewardHistoryViewModel.getHistories(
+                            startTimeForFilter,
+                            endTimeForFilter,
+                        )
+
+                    } else if (btn_each_month.isSelected) {
+                        startTimeForFilter = getDateRange(selectedDate).second
+                        endTimeForFilter = getDateRange(selectedDate).first
+                        setInquireScope(selectedDate)
+                        winRewardHistoryViewModel.getHistories(
+                            startTimeForFilter,
+                            endTimeForFilter,
+                        )
+                    }
+                    layout_choose_date.visibility = GONE
+
+                }
+            }
+        })
+
     }
 
     private fun setObserver(){
@@ -261,7 +467,7 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                             holder.item_send_completed.visibility = GONE
 
                             it.expiredAt?.let{ expiredAt ->
-                                holder.tv_dday_date_for_input_complete.text = formatIsoToCustomDate(expiredAt)
+                                holder.tv_dday_date_for_expired.text = formatIsoToCustomDate(expiredAt)
                             }
 
                             Glide.with(context)
@@ -270,7 +476,7 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                                 .load(it.item?.files?.get(0)?.file?.url)
                                 .into(object : CustomTarget<Bitmap>() {
                                     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                                        holder.iv_reward_for_input_complete.setImageBitmap(resource)
+                                        holder.iv_reward_for_expired.setImageBitmap(resource)
                                     }
 
                                     override fun onLoadCleared(placeholder: Drawable?) {
@@ -279,10 +485,8 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                                     }
                                 })
 
-
-                            holder.tv_reward_title_for_input_complete.text = item.item?.brand
-                            holder.tv_reward_detail_for_input_complete.text = item.item?.name
-
+                            holder.tv_reward_title_for_expired.text = item.item?.brand
+                            holder.tv_reward_detail_for_expired.text = item.item?.name
                         }
                     } else if(it.userDelivery != null){
                         if(it.userDelivery.status.equals("COMPLETED")){
@@ -423,4 +627,39 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
             }
         }
     }
+
+    fun getDateList(): MutableList<ChosenDate> {
+        val currentDate = LocalDate.now()
+
+        // 날짜 형식을 지정합니다. 예: "2024년 6월"
+        val formatter = DateTimeFormatter.ofPattern("yyyy년 M월")
+
+        // 결과를 저장할 리스트를 생성합니다.
+        val dateList = mutableListOf<String>()
+
+        // 36개월 동안의 날짜를 역순으로 추가합니다.
+        for (i in 0 until 36) {
+            val date = currentDate.minusMonths(i.toLong())
+            val formattedDate = date.format(formatter)
+            dateList.add(formattedDate)
+        }
+
+        val choseDateList = mutableListOf<ChosenDate>()
+
+        for (i in 0 until 36) {
+            if (i == 0) {
+                choseDateList.add(ChosenDate(dateList.get(i), true))
+            } else {
+                choseDateList.add(ChosenDate(dateList.get(i), false))
+            }
+        }
+
+
+        return choseDateList
+    }
+
+    private fun setInquireScope(scope: String) {
+        tv_inquire_scope.text = scope
+    }
+
 }
