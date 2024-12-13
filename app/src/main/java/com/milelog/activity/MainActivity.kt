@@ -548,6 +548,12 @@ class MainActivity:BaseActivity() {
         }
 
         @JavascriptInterface
+        fun closeWebviewWithParam(json:String){
+            Log.d("testestestse","testestestestse closeWebviewWithParam :: " + json)
+            activity.finish()
+        }
+
+        @JavascriptInterface
         fun openBrowser(url:String){
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

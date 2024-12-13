@@ -217,8 +217,16 @@ class CommonWebviewActivity: BaseActivity() {
 
         @JavascriptInterface
         fun closeWebview(){
+            Log.d("testestestse","testestestestse :: closeWebview ")
             activity.finish()
         }
+
+        @JavascriptInterface
+        fun closeWebviewWithParam(json:String){
+            Log.d("testestestse","testestestestse closeWebviewWithParam :: " + json)
+            activity.finish()
+        }
+
 
         @JavascriptInterface
         fun openBrowser(url:String){
