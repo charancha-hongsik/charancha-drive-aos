@@ -285,7 +285,7 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
 
                         }
                     } else if(it.userDelivery != null){
-                        if(it.userDelivery.status.equals("COMPLETE")){
+                        if(it.userDelivery.status.equals("COMPLETED")){
                             /**
                              * 발송 완료
                              */
