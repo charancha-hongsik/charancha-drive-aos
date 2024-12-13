@@ -2,6 +2,7 @@ package com.milelog.activity
 
 import WinRewardHistoryResponse
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -24,8 +25,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.milelog.BuildConfig.BASE_API_URL
 import com.milelog.ChosenDate
 import com.milelog.DividerItemDecoration
+import com.milelog.Endpoints.FAQ
+import com.milelog.Endpoints.REWARD_INPUT
 import com.milelog.R
 import com.milelog.viewmodel.BaseViewModel
 import com.milelog.viewmodel.WinRewardHistoryViewModel
@@ -454,7 +458,7 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                             holder.tv_reward_title.text = item.item?.brand
                             holder.tv_reward_detail.text = item.item?.name
                             holder.tv_input_info.setOnClickListener{
-
+                                context.startActivity(Intent(context, CommonWebviewActivity::class.java).putExtra("url", BASE_API_URL + REWARD_INPUT + item.id))
                             }
 
                         } else{
