@@ -500,6 +500,9 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                             holder.item_send_completed.visibility = GONE
 
                             it.expiredAt?.let{ expiredAt ->
+                                Log.d("testestsetestes","testestestsetse expiredAt :: " + expiredAt)
+                                Log.d("testestsetestes","testestestsetse formatIsoToCustomDate :: " + formatIsoToCustomDate(expiredAt))
+
                                 holder.tv_dday_date_for_expired.text = formatIsoToCustomDate(expiredAt)
                             }
 
@@ -633,7 +636,7 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
 
             return try {
                 val date = isoFormat.parse(isoTime)
-                val customFormat = SimpleDateFormat("yyyy.M.D")
+                val customFormat = SimpleDateFormat("yyyy.M.d")
                 customFormat.timeZone = TimeZone.getDefault() // Use local timezone
                 customFormat.format(date)
             } catch (e: ParseException) {
