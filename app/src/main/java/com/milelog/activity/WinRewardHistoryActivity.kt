@@ -368,6 +368,7 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
             val iv_reward_for_input_complete:ImageView = view.findViewById(R.id.iv_reward_for_input_complete)
             val tv_reward_title_for_input_complete:TextView = view.findViewById(R.id.tv_reward_title_for_input_complete)
             val tv_reward_detail_for_input_complete:TextView = view.findViewById(R.id.tv_reward_detail_for_input_complete)
+            val btn_edit_input:LinearLayout = view.findViewById(R.id.btn_edit_input)
 
             val item_send_completed: LinearLayout = view.findViewById(R.id.item_send_completed)
             val iv_reward_for_send_complete:ImageView = view.findViewById(R.id.iv_reward_for_send_complete)
@@ -527,6 +528,7 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                             holder.item_expired.visibility = GONE
                             holder.item_input_completed.visibility = VISIBLE
                             holder.item_send_completed.visibility = GONE
+
                             it.expiredAt?.let{ expiredAt ->
                                 holder.tv_dday_date_for_expired.text = formatIsoToCustomDate(expiredAt)
                             }
@@ -544,7 +546,9 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                                         // 이 부분은 Glide가 리소스를 해제할 때 호출됩니다.
                                     }
                                 })
-
+                            holder.btn_edit_input.setOnClickListener{
+                                context.startActivity(Intent(context, CommonWebviewActivity::class.java).putExtra("url", BASE_API_URL + REWARD_INPUT + item.id))
+                            }
                             holder.tv_reward_title_for_input_complete.text = item.item?.brand
                             holder.tv_reward_detail_for_input_complete.text = item.item?.name
                         }
