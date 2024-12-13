@@ -1140,7 +1140,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         val dividerItemDecoration = DividerItemDecoration(this, R.color.white_op_100, this.dpToPx(8f)) // 색상 리소스와 구분선 높이 설정
         rv_choose_corp.addItemDecoration(dividerItemDecoration)
 
-        rv_choose_corp.adapter = ChooseCorpAdapter(context = this, corpList = mutableListOf(CorpType.COMMUTE.description, CorpType.WORK.description, CorpType.NON_WORK.description), bottomSheetDialog, detailDriveHistoryViewModel, tracking_id, userCarId,tv_type.text.toString())
+        rv_choose_corp.adapter = ChooseCorpAdapter(context = this, corpList = mutableListOf(CorpType.COMMUTE.description, CorpType.NON_WORK.description,CorpType.WORK.description), bottomSheetDialog, detailDriveHistoryViewModel, tracking_id, userCarId,tv_type.text.toString())
 
         // Set the content view of the dialog
         bottomSheetDialog.setContentView(bottomSheetView)
