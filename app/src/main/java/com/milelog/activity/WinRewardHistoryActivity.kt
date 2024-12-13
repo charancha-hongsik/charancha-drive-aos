@@ -63,6 +63,8 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
     lateinit var tv_inquire_scope:TextView
     var startTimeForFilter: String = getCurrentAndPastTimeForISO(29).second
     var endTimeForFilter: String = getCurrentAndPastTimeForISO(29).first
+    lateinit var winRewardHistoryResponse: WinRewardHistoryResponse
+    lateinit var driveItemAdapter: WinRewardHistoryAdapter
 
     private val winRewardHistoryViewModel: WinRewardHistoryViewModel by viewModels()
 
@@ -296,7 +298,8 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                     if(state.data.items.size == 0){
                         setBlank()
                     }else{
-                        setRecyclerviewData(state.data)
+                        winRewardHistoryResponse = state.data
+                        setRecyclerviewData(winRewardHistoryResponse)
                     }
                 }
                 is GetWinRewardHistoryState.Error -> {
@@ -314,7 +317,11 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
 
                 }
                 is GetWinRewardHistoryMoreState.Success -> {
-
+                    winRewardHistoryResponse.items.removeAt(winRewardHistoryResponse.items.size-1)
+                    winRewardHistoryResponse.items.addAll(state.data.items)
+                    winRewardHistoryResponse.items.add(null)
+                    winRewardHistoryResponse.meta = state.data.meta
+                    driveItemAdapter.notifyDataSetChanged()
                 }
                 is GetWinRewardHistoryMoreState.Error -> {
 
@@ -344,7 +351,7 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
      */
     private fun setRecyclerviewData(winRewardHistoryResponse: WinRewardHistoryResponse){
         winRewardHistoryResponse.items.add(null)
-        val driveItemAdapter = WinRewardHistoryAdapter(this, winRewardHistoryResponse)
+        driveItemAdapter = WinRewardHistoryAdapter(this, winRewardHistoryResponse, winRewardHistoryViewModel)
         lv_win_reward.adapter = driveItemAdapter
         layout_no_data.visibility = GONE
         lv_win_reward.visibility = VISIBLE
@@ -353,6 +360,7 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
     class WinRewardHistoryAdapter(
         private val context: Context,
         private val rewardResponse: WinRewardHistoryResponse,
+        private val viewModel:WinRewardHistoryViewModel
     ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         class WinRewardViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val item_win_reward: LinearLayout = view.findViewById(R.id.item_win_reward)
@@ -557,17 +565,16 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
 
 
             } else if (holder is LastItemViewHolder) {
-
-//                if (rewardResponse.meta.afterCursor.isNullOrBlank()) {
-//                    holder.tvMore.visibility = GONE
-//                    holder.tvLast.visibility = View.VISIBLE
-//                } else {
-//                    holder.tvMore.visibility = View.VISIBLE
-//                    holder.tvLast.visibility = GONE
-//                }
-//                holder.tvMore.setOnClickListener {
-//
-//                }
+                if (rewardResponse.meta.currentPage == rewardResponse.meta.totalPages) {
+                    holder.tvMore.visibility = GONE
+                    holder.tvLast.visibility = View.VISIBLE
+                } else {
+                    holder.tvMore.visibility = View.VISIBLE
+                    holder.tvLast.visibility = GONE
+                }
+                holder.tvMore.setOnClickListener {
+                    viewModel.getHistoriesMore(rewardResponse.meta.currentPage+1)
+                }
             }
         }
 

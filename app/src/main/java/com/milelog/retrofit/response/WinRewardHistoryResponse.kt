@@ -1,6 +1,6 @@
 data class WinRewardHistoryResponse(
     val items: MutableList<Item?>,
-    val meta:Meta,
+    var meta:Meta,
     val links:Links
 )
 
