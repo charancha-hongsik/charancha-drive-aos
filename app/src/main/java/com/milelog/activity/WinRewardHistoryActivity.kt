@@ -681,17 +681,15 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                 calendar.set(Calendar.SECOND, 0)
                 calendar.set(Calendar.MILLISECOND, 0)
 
-                Log.d("testsetestest","testestesteset targetCalendar :: " + targetCalendar.time)
-                Log.d("testsetestest","testestesteset calendar :: " + calendar.time)
-
-
                 // Calculate the difference in days
                 val diffInMillis = targetCalendar.timeInMillis - calendar.timeInMillis
                 val daysRemaining = (diffInMillis / (1000 * 60 * 60 * 24)).toInt()
 
-                if (daysRemaining >= 0) {
+                if (daysRemaining > 0) {
                     "D-${daysRemaining}"
-                } else {
+                } else if(daysRemaining == 0){
+                    "오늘 만료"
+                }else{
                     "D+${-daysRemaining}"
                 }
             } catch (e: Exception) {
