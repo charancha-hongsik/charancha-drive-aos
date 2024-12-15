@@ -650,7 +650,7 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                 val date = isoFormat.parse(isoTime)
                 val customFormat = SimpleDateFormat("yyyy.M.d")
                 customFormat.timeZone = TimeZone.getDefault() // Use local timezone
-                customFormat.format(date)
+                customFormat.format(date) + "까지"
             } catch (e: ParseException) {
                 e.printStackTrace()
                 "Invalid date"
