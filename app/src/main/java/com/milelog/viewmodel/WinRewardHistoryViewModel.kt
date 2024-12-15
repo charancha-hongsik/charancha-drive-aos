@@ -37,7 +37,7 @@ class WinRewardHistoryViewModel: BaseViewModel() {
         apiService(context).getWinRewardHistories(
             token = "Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!,
             page = page,
-            limit = 5,
+            limit = 30,
             order = "DESC",
             filters = Gson().toJson(listOf(filter1, filter2))).enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
@@ -65,7 +65,7 @@ class WinRewardHistoryViewModel: BaseViewModel() {
         apiService(context).getWinRewardHistories(
             token = "Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!,
             page = 1,
-            limit = 5,
+            limit = 30,
             order = "DESC",
             filters = Gson().toJson(listOf(filter1, filter2))).enqueue(object: Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
