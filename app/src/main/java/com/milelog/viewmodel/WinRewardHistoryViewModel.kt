@@ -30,12 +30,20 @@ class WinRewardHistoryViewModel: BaseViewModel() {
         this.context = context
     }
 
-    fun getHistoriesMore(page:Int){
+    fun getHistoriesMore(page:Int, startDate:String, endDate:String){
+        Log.d("testsetestset","testestestes startDate :: " + startDate)
+        Log.d("testsetestset","testestestes endDate :: " + endDate)
+
+
+        val filter1 = FilterRequest(field = "isWin", operator = "EQUALS", value = true)
+        val filter2 = FilterRequest(field = "createdAt", operator = "BETWEEN", value = listOf(startDate, endDate))
+
         apiService(context).getWinRewardHistories(
             token = "Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!,
             page = page,
-            limit = 30,
-            order = "DESC").enqueue(object: Callback<ResponseBody> {
+            limit = 5,
+            order = "DESC",
+            filters = Gson().toJson(listOf(filter1, filter2))).enqueue(object: Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if(response.code() == 200 || response.code() == 201){
                     val winRewardHistoryResponse = GsonBuilder().serializeNulls().create().fromJson(
@@ -55,13 +63,16 @@ class WinRewardHistoryViewModel: BaseViewModel() {
     }
 
     fun getHistories(startDate:String, endDate:String){
+        Log.d("testsetestset","testestestes startDate :: " + startDate)
+        Log.d("testsetestset","testestestes endDate :: " + endDate)
+
         val filter1 = FilterRequest(field = "isWin", operator = "EQUALS", value = true)
         val filter2 = FilterRequest(field = "createdAt", operator = "BETWEEN", value = listOf(startDate, endDate))
 
         apiService(context).getWinRewardHistories(
             token = "Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!,
             page = 1,
-            limit = 30,
+            limit = 5,
             order = "DESC",
             filters = Gson().toJson(listOf(filter1, filter2))).enqueue(object: Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {

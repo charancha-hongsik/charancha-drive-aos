@@ -377,7 +377,7 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
      */
     private fun setRecyclerviewData(winRewardHistoryResponse: WinRewardHistoryResponse){
         winRewardHistoryResponse.items.add(null)
-        driveItemAdapter = WinRewardHistoryAdapter(this, winRewardHistoryResponse, winRewardHistoryViewModel, resultLauncher)
+        driveItemAdapter = WinRewardHistoryAdapter(this, winRewardHistoryResponse, winRewardHistoryViewModel, resultLauncher, startTimeForFilter, endTimeForFilter)
         lv_win_reward.adapter = driveItemAdapter
         layout_no_data.visibility = GONE
         lv_win_reward.visibility = VISIBLE
@@ -387,7 +387,9 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
         private val context: Context,
         private val rewardResponse: WinRewardHistoryResponse,
         private val viewModel:WinRewardHistoryViewModel,
-        private val resultLauncher:ActivityResultLauncher<Intent>
+        private val resultLauncher:ActivityResultLauncher<Intent>,
+        private val startTimeForFilter:String,
+        private val endTimeForFilter:String
     ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         class WinRewardViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val item_win_reward: LinearLayout = view.findViewById(R.id.item_win_reward)
@@ -494,8 +496,6 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                             holder.tv_reward_title.text = item.item?.brand
                             holder.tv_reward_detail.text = item.item?.name
                             holder.tv_input_info.setOnClickListener{
-
-                                Log.d("testestsetest","testsetestestse setOnClickListener :: " + item.id)
                                 resultLauncher.launch(
                                     Intent(context, CommonWebviewActivity::class.java)
                                         .putExtra("url", BASE_API_URL + REWARD_INPUT + item.id)
@@ -511,9 +511,6 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                             holder.item_send_completed.visibility = GONE
 
                             it.expiredAt?.let{ expiredAt ->
-                                Log.d("testestsetestes","testestestsetse expiredAt :: " + expiredAt)
-                                Log.d("testestsetestes","testestestsetse formatIsoToCustomDate :: " + formatIsoToCustomDate(expiredAt))
-
                                 holder.tv_dday_date_for_expired.text = formatIsoToCustomDate(expiredAt)
                             }
 
@@ -610,7 +607,7 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                     holder.tvLast.visibility = GONE
                 }
                 holder.tvMore.setOnClickListener {
-                    viewModel.getHistoriesMore(rewardResponse.meta.currentPage+1)
+                    viewModel.getHistoriesMore(rewardResponse.meta.currentPage+1, startTimeForFilter, endTimeForFilter)
                 }
             }
         }
