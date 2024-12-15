@@ -31,10 +31,6 @@ class WinRewardHistoryViewModel: BaseViewModel() {
     }
 
     fun getHistoriesMore(page:Int, startDate:String, endDate:String){
-        Log.d("testsetestset","testestestes startDate :: " + startDate)
-        Log.d("testsetestset","testestestes endDate :: " + endDate)
-
-
         val filter1 = FilterRequest(field = "isWin", operator = "EQUALS", value = true)
         val filter2 = FilterRequest(field = "createdAt", operator = "BETWEEN", value = listOf(startDate, endDate))
 
@@ -63,9 +59,6 @@ class WinRewardHistoryViewModel: BaseViewModel() {
     }
 
     fun getHistories(startDate:String, endDate:String){
-        Log.d("testsetestset","testestestes startDate :: " + startDate)
-        Log.d("testsetestset","testestestes endDate :: " + endDate)
-
         val filter1 = FilterRequest(field = "isWin", operator = "EQUALS", value = true)
         val filter2 = FilterRequest(field = "createdAt", operator = "BETWEEN", value = listOf(startDate, endDate))
 
