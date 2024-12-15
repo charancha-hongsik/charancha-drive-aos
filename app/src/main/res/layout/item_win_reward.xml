@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -115,7 +115,8 @@
                 android:layout_marginLeft="20dp"
                 app:layout_constraintLeft_toRightOf="@+id/card_reward"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
 
                 <TextView
                     android:id="@+id/tv_reward_title"
@@ -239,7 +240,8 @@
                 android:layout_marginLeft="20dp"
                 app:layout_constraintLeft_toRightOf="@+id/card_reward_for_input_complete"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
 
                 <TextView
                     android:id="@+id/tv_reward_title_for_input_complete"
@@ -364,7 +366,8 @@
                 android:layout_marginLeft="20dp"
                 app:layout_constraintLeft_toRightOf="@+id/card_reward_for_send_complete"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
 
                 <TextView
                     android:id="@+id/tv_reward_title_for_send_complete"
@@ -425,7 +428,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -501,7 +504,8 @@
                 android:layout_marginLeft="20dp"
                 app:layout_constraintLeft_toRightOf="@+id/card_reward_for_expired"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
 
                 <TextView
                     android:id="@+id/tv_reward_title_for_expired"
@@ -519,7 +523,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="불스원샷 수분제거 동결방지제 부식방지제 500ml"
+                    android:text="불스원샷"
                     android:textAppearance="@style/ST2SB"
                     android:textFontWeight="600"
                     android:textColor="@color/black_op_100"/>
