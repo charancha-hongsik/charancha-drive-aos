@@ -44,6 +44,7 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.Calendar
 import java.util.Date
 import java.util.TimeZone
 import kotlin.math.exp
@@ -122,12 +123,19 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
 
         resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
             if(it.resultCode == RESULT_OK){
-                val response = Gson().fromJson(it.data?.getStringExtra("json"), UserDelivery::class.java)
+                try {
+                    val response =
+                        Gson().fromJson(it.data?.getStringExtra("json"), UserDelivery::class.java)
 
-                Log.d("testestestsetest","testsetestestse :: " + response.status)
+                    winRewardHistoryResponse.items.filter { item ->
+                        item?.id == it.data?.getStringExtra(
+                            "id"
+                        )
+                    }.get(0)?.userDelivery = response
+                    driveItemAdapter.notifyDataSetChanged()
+                }catch (e:Exception){
 
-                winRewardHistoryResponse.items.filter { item -> item?.id == response.id }.get(0)?.userDelivery = response
-                driveItemAdapter.notifyDataSetChanged()
+                }
             }
         }
     }
@@ -486,9 +494,12 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                             holder.tv_reward_title.text = item.item?.brand
                             holder.tv_reward_detail.text = item.item?.name
                             holder.tv_input_info.setOnClickListener{
+
+                                Log.d("testestsetest","testsetestestse setOnClickListener :: " + item.id)
                                 resultLauncher.launch(
                                     Intent(context, CommonWebviewActivity::class.java)
-                                        .putExtra("url", BASE_API_URL + REWARD_INPUT + item.id))
+                                        .putExtra("url", BASE_API_URL + REWARD_INPUT + item.id)
+                                        .putExtra("id",item.id))
                             }
                         } else{
                             /**
@@ -580,7 +591,8 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                             holder.btn_edit_input.setOnClickListener{
                                 resultLauncher.launch(
                                     Intent(context, CommonWebviewActivity::class.java)
-                                        .putExtra("url", BASE_API_URL + REWARD_INPUT + item.id))
+                                        .putExtra("url", BASE_API_URL + REWARD_INPUT + item.id)
+                                        .putExtra("id",item.id))
                             }
                             holder.tv_reward_title_for_input_complete.text = item.item?.brand
                             holder.tv_reward_detail_for_input_complete.text = item.item?.name
@@ -650,10 +662,31 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
             isoFormat.timeZone = TimeZone.getTimeZone("UTC")
 
             return try {
+                // Parse the ISO date string
                 val targetDate = isoFormat.parse(isoTime)
-                val currentDate = Date()
+                val calendar = Calendar.getInstance()
 
-                val diffInMillis = targetDate.time - currentDate.time
+                // Set the target date to local time with no time component
+                val targetCalendar = Calendar.getInstance()
+                targetCalendar.time = targetDate
+                targetCalendar.add(Calendar.DAY_OF_MONTH, 1)
+                targetCalendar.set(Calendar.HOUR_OF_DAY, 0)
+                targetCalendar.set(Calendar.MINUTE, 0)
+                targetCalendar.set(Calendar.SECOND, 0)
+                targetCalendar.set(Calendar.MILLISECOND, 0)
+
+                // Get the current date with no time component
+                calendar.set(Calendar.HOUR_OF_DAY, 0)
+                calendar.set(Calendar.MINUTE, 0)
+                calendar.set(Calendar.SECOND, 0)
+                calendar.set(Calendar.MILLISECOND, 0)
+
+                Log.d("testsetestest","testestesteset targetCalendar :: " + targetCalendar.time)
+                Log.d("testsetestest","testestesteset calendar :: " + calendar.time)
+
+
+                // Calculate the difference in days
+                val diffInMillis = targetCalendar.timeInMillis - calendar.timeInMillis
                 val daysRemaining = (diffInMillis / (1000 * 60 * 60 * 24)).toInt()
 
                 if (daysRemaining >= 0) {
@@ -661,7 +694,7 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                 } else {
                     "D+${-daysRemaining}"
                 }
-            } catch (e: ParseException) {
+            } catch (e: Exception) {
                 e.printStackTrace()
                 "Invalid date"
             }
