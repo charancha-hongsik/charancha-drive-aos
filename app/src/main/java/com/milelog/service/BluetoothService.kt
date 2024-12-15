@@ -488,7 +488,7 @@ class BluetoothService : Service() {
             FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE
         )
 
-        if (Build.VERSION.SDK_INT >= 34) {
+        if (Build.VERSION.SDK_INT >= 29) {
             startForeground(
                 1, notification
                     .setSmallIcon(R.mipmap.ic_notification)
