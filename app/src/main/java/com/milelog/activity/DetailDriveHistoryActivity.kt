@@ -489,6 +489,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                             iv_corp.visibility = VISIBLE
 
                             if(userCar?.type == PERSONAL){
+                                iv_corp.visibility = GONE
                                 iv_corp.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_star2))
                                 btn_choose_corp.visibility = GONE
                             }else{
