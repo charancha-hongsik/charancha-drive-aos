@@ -274,7 +274,7 @@ class MyGarageActivity:BaseRefreshActivity() {
             val car = cars[position]
 
             (holder as GarageViewHolder).tv_car_no.text = car.licensePlateNumber
-            holder.tv_car_name.text = car.carName
+            holder.tv_car_name.text = car.makerNm + " " + car.modelNm
             holder.tv_car_info.text = formatToYearMonth(car.releaseDt) + " (" + car.modelYear.drop(2) + "년형) " + car.fuelNm
 
             if(car.modelDetailImageUrl.isNullOrEmpty()){
