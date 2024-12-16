@@ -29,8 +29,6 @@ import java.io.FileOutputStream
 class CommonWebviewActivity: BaseActivity() {
     lateinit var wv_common:WebView
     var url:String = BASE_TERMS_URL
-    var id:String = ""
-
     /**
      * firebase
      */
@@ -66,10 +64,6 @@ class CommonWebviewActivity: BaseActivity() {
             url = it
         }
 
-        intent.getStringExtra("id")?.let{
-            id = it
-        }
-
         init()
         setWebview()
     }
@@ -95,7 +89,7 @@ class CommonWebviewActivity: BaseActivity() {
         WebView.setWebContentsDebuggingEnabled(true)
 
         // javascriptInterface 설정
-        wv_common.addJavascriptInterface(MilelogPublicApi(this@CommonWebviewActivity,id), "MilelogPublicApi")
+        wv_common.addJavascriptInterface(MilelogPublicApi(this@CommonWebviewActivity), "MilelogPublicApi")
 
         wv_common.webChromeClient = object: WebChromeClient(){
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
@@ -148,7 +142,7 @@ class CommonWebviewActivity: BaseActivity() {
         cookieManager.flush()
     }
 
-    class MilelogPublicApi(val activity: CommonWebviewActivity, val id:String) {
+    class MilelogPublicApi(val activity: CommonWebviewActivity) {
         @JavascriptInterface
         fun openMyPage(){
             activity.startActivity(Intent(activity, MyPageActivity::class.java))
@@ -233,7 +227,6 @@ class CommonWebviewActivity: BaseActivity() {
 
             val intent = Intent(activity, WinRewardHistoryActivity::class.java)
             intent.putExtra("json", json)
-            intent.putExtra("id", id)
             activity.setResult(RESULT_OK, intent)
             activity.finish()
         }

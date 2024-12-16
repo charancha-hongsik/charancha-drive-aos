@@ -71,6 +71,7 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
     var endTimeForFilter: String = getCurrentAndPastTimeForISO(29).first
     lateinit var winRewardHistoryResponse: WinRewardHistoryResponse
     lateinit var driveItemAdapter: WinRewardHistoryAdapter
+    private var itemId = ""
 
     private val winRewardHistoryViewModel: WinRewardHistoryViewModel by viewModels()
 
@@ -128,9 +129,7 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                         Gson().fromJson(it.data?.getStringExtra("json"), UserDelivery::class.java)
 
                     winRewardHistoryResponse.items.filter { item ->
-                        item?.id == it.data?.getStringExtra(
-                            "id"
-                        )
+                        item?.id == itemId
                     }.get(0)?.userDelivery = response
                     driveItemAdapter.notifyDataSetChanged()
                 }catch (e:Exception){
@@ -377,7 +376,12 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
      */
     private fun setRecyclerviewData(winRewardHistoryResponse: WinRewardHistoryResponse){
         winRewardHistoryResponse.items.add(null)
-        driveItemAdapter = WinRewardHistoryAdapter(this, winRewardHistoryResponse, winRewardHistoryViewModel, resultLauncher, startTimeForFilter, endTimeForFilter)
+        driveItemAdapter = WinRewardHistoryAdapter(this, winRewardHistoryResponse, winRewardHistoryViewModel, resultLauncher, startTimeForFilter, endTimeForFilter, object: ItemClickedCallback{
+            override fun onClicked(id: String) {
+                itemId = id
+            }
+
+        })
         lv_win_reward.adapter = driveItemAdapter
         layout_no_data.visibility = GONE
         lv_win_reward.visibility = VISIBLE
@@ -389,7 +393,8 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
         private val viewModel:WinRewardHistoryViewModel,
         private val resultLauncher:ActivityResultLauncher<Intent>,
         private val startTimeForFilter:String,
-        private val endTimeForFilter:String
+        private val endTimeForFilter:String,
+        private var itemClickedCallback:ItemClickedCallback
     ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         class WinRewardViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val item_win_reward: LinearLayout = view.findViewById(R.id.item_win_reward)
@@ -497,10 +502,10 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                             holder.tv_reward_title.text = item.item?.brand
                             holder.tv_reward_detail.text = item.item?.name
                             holder.tv_input_info.setOnClickListener{
+                                itemClickedCallback.onClicked(item.id)
                                 resultLauncher.launch(
                                     Intent(context, CommonWebviewActivity::class.java)
-                                        .putExtra("url", BASE_API_URL + REWARD_INPUT + item.id)
-                                        .putExtra("id",item.id))
+                                        .putExtra("url", BASE_API_URL + REWARD_INPUT + item.id))
                             }
                         } else{
                             /**
@@ -730,6 +735,10 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
 
     private fun setInquireScope(scope: String) {
         tv_inquire_scope.text = scope
+    }
+
+    interface ItemClickedCallback {
+        fun onClicked(id:String)
     }
 
 }

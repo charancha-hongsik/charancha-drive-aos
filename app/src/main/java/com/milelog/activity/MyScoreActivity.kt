@@ -99,7 +99,6 @@ class MyScoreActivity : BaseRefreshActivity() {
     lateinit var iv_home_banner:ImageView
     lateinit var tv_recent_driving_score:TextView
     lateinit var btn_close_gift:ImageView
-    lateinit var btn_noti:ImageView
     lateinit var tv_subtitle2:TextView
     lateinit var tv_recent_date:TextView
 
@@ -107,6 +106,7 @@ class MyScoreActivity : BaseRefreshActivity() {
 
     lateinit var layout_start_app:ConstraintLayout
     lateinit var userCarId:String
+    lateinit var btn_back:View
 
 
     companion object {
@@ -127,7 +127,7 @@ class MyScoreActivity : BaseRefreshActivity() {
 
     private fun init(){
         userCarId = intent.getStringExtra("userCarId")?:PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!
-        setPieChart(0.0f)
+//        setPieChart(0.0f)
 
         setLineChartForBrakes(findViewById(R.id.chart_line_brakes))
         setLineChartForEngine(findViewById(R.id.chart_line_engine))
@@ -298,7 +298,7 @@ class MyScoreActivity : BaseRefreshActivity() {
                     }
                 }
                 is GetManageScoreState.Empty -> {
-
+                    setPieChart(0.0f)
                 }
             }
         })
@@ -519,13 +519,11 @@ class MyScoreActivity : BaseRefreshActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setBtn(){
         tv_recent_driving_score = findViewById(R.id.tv_recent_driving_score)
-        btnHistory = findViewById(R.id.btn_history)
-        btnHistory.setOnClickListener(object: OnSingleClickListener(){
-            override fun onSingleClick(v: View?) {
-                startActivity(Intent(this@MyScoreActivity, MyPageActivity::class.java))
-            }
+        btn_back = findViewById(R.id.btn_back)
+        btn_back.setOnClickListener{
+            finish()
+        }
 
-        })
         tv_recent_date = findViewById(R.id.tv_recent_date)
         tv_subtitle2 = findViewById(R.id.tv_subtitle2)
         tv_subtitle2.setOnClickListener {
@@ -623,14 +621,6 @@ class MyScoreActivity : BaseRefreshActivity() {
         btn_one_year = findViewById(R.id.btn_one_year)
         layout_start_app = findViewById(R.id.layout_start_app)
         btn_close_gift = findViewById(R.id.btn_close_gift)
-
-        btn_noti = findViewById(R.id.btn_noti)
-        btn_noti.setOnClickListener(object :OnSingleClickListener(){
-            override fun onSingleClick(v: View?) {
-                startActivity(Intent(this@MyScoreActivity, AlarmActivity::class.java))
-            }
-
-        })
 
         btn_recent.isSelected = true
 
