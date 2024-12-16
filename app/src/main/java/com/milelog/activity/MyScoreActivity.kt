@@ -249,7 +249,7 @@ class MyScoreActivity : BaseRefreshActivity() {
                 }
                 is CarInfoInquiryByCarIdState.Success -> {
                     val getMyCarInfoResponse = state.data
-                    tv_car_name.setText(getMyCarInfoResponse.carName)
+                    tv_car_name.setText(getMyCarInfoResponse.makerNm + " " + getMyCarInfoResponse.modelNm)
                     tv_car_no.setText(getMyCarInfoResponse.licensePlateNumber)
 
                     myScoreViewModel.getManageScoreForAMonth(userCarId)
