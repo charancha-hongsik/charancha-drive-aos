@@ -482,6 +482,7 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                                 .load(it.item?.files?.get(0)?.file?.url)
                                 .into(object : CustomTarget<Bitmap>() {
                                     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                                        holder.iv_reward.scaleType = ImageView.ScaleType.CENTER_INSIDE
                                         holder.iv_reward.setImageBitmap(resource)
                                     }
 
@@ -520,6 +521,7 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                                 .load(it.item?.files?.get(0)?.file?.url)
                                 .into(object : CustomTarget<Bitmap>() {
                                     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                                        holder.iv_reward_for_expired.scaleType = ImageView.ScaleType.CENTER_INSIDE
                                         holder.iv_reward_for_expired.setImageBitmap(resource)
                                     }
 
@@ -548,7 +550,7 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                                 .load(it.item?.files?.get(0)?.file?.url)
                                 .into(object : CustomTarget<Bitmap>() {
                                     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-
+                                        holder.iv_reward_for_send_complete.scaleType = ImageView.ScaleType.CENTER_INSIDE
                                         holder.iv_reward_for_send_complete.setImageBitmap(resource)
                                     }
 
@@ -577,7 +579,7 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                                 .load(it.item?.files?.get(0)?.file?.url)
                                 .into(object : CustomTarget<Bitmap>() {
                                     override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-
+                                        holder.iv_reward_for_input_complete.scaleType = ImageView.ScaleType.CENTER_INSIDE
                                         holder.iv_reward_for_input_complete.setImageBitmap(resource)
                                     }
 
