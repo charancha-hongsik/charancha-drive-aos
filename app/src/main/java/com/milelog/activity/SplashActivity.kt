@@ -83,11 +83,10 @@ class SplashActivity: BaseActivity() {
                 }
                 is CheckForceUpdateState.Error -> {
                     Log.d("testestestsetest","testestestset checkForceUpdate:: ")
-
+                    goSplash()
                 }
                 is CheckForceUpdateState.Empty -> {
                     Log.d("testestestsetest","testestestset checkForceUpdate:: ")
-
                     goSplash()
                 }
             }
