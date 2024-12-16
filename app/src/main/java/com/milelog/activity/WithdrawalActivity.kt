@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.milelog.CustomDialog
 import com.milelog.PreferenceUtil
 import com.milelog.R
 import okhttp3.ResponseBody
@@ -43,24 +44,33 @@ class WithdrawalActivity: BaseRefreshActivity() {
         tv_confirm_withdrawal.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
                 if(ib_terms1.isSelected){
-                    apiService().deleteAccount("Bearer " + PreferenceUtil.getPref(this@WithdrawalActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!).enqueue(object:
-                        Callback<ResponseBody> {
-                        override fun onResponse(
-                            call: Call<ResponseBody>,
-                            response: Response<ResponseBody>
-                        ) {
-                            if(response.code() == 200 || response.code() == 201){
-                                logout()
-                            }else if(response.code() == 401){
-                                logout()
-                            }
+                    CustomDialog(this@WithdrawalActivity, "정말로 떠나시나요?", "탈퇴하시면 지금까지의 주행 기록과 선물 박스를 모두 복구할 수 없어요.\n그래도 탈퇴하시겠어요?", "확인","취소",  object : CustomDialog.DialogCallback{
+                        override fun onConfirm() {
+                            apiService().deleteAccount("Bearer " + PreferenceUtil.getPref(this@WithdrawalActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!).enqueue(object:
+                                Callback<ResponseBody> {
+                                override fun onResponse(
+                                    call: Call<ResponseBody>,
+                                    response: Response<ResponseBody>
+                                ) {
+                                    if(response.code() == 200 || response.code() == 201){
+                                        logout()
+                                    }else if(response.code() == 401){
+                                        logout()
+                                    }
+                                }
+
+                                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+
+                                }
+
+                            })
                         }
 
-                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        override fun onCancel() {
 
                         }
 
-                    })
+                    }).show()
                 } else{
                     showCustomToast(this@WithdrawalActivity, "약관 동의 후 탈퇴 가능합니다.")
 

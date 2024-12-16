@@ -115,6 +115,50 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="13dp"
+                android:text="보유 중인 선물 박스는 소멸됩니다."
+                android:textColor="@color/gray_700"
+                android:textFontWeight="400"
+                android:textAppearance="@style/B1R"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="3dp"
+                android:layout_height="3dp"
+                android:background="@drawable/radius999_gray700"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="13dp"
+                android:text="입력되지 않은 당첨 상품은 다시 받을 수 없습니다."
+                android:textColor="@color/gray_700"
+                android:textFontWeight="400"
+                android:textAppearance="@style/B1R"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="3dp"
+                android:layout_height="3dp"
+                android:background="@drawable/radius999_gray700"
+                android:layout_marginTop="10dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="13dp"
                 android:text="해당 데이터는 한 번 삭제되면 복구할 수 없습니다."
                 android:textColor="@color/gray_700"
                 android:textFontWeight="400"
@@ -180,7 +224,7 @@
         android:textFontWeight="600"
         android:layout_marginBottom="40dp"
         android:gravity="center"
-        android:background="@drawable/radius6_gray950"
+        android:background="@drawable/radius6_pri800"
         app:layout_constraintLeft_toRightOf="@+id/tv_cancel_withdrawal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
