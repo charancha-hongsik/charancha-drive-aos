@@ -459,7 +459,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     polylines.add(LatLng(raw.latitude,raw.longtitude))
                 }
 
-//                saveGpsDataToFile(this@DetailDriveHistoryActivity, Gson().toJson(it.gpses), it.tracking_id)
+                saveGpsDataToFile(this@DetailDriveHistoryActivity, Gson().toJson(it.gpses), it.tracking_id)
 
 
                 bluetoothNameExpected = it.bluetooth_name
@@ -904,13 +904,17 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                      */
                     val markerPosition = LatLng(polylines[0].latitude, polylines[0].longitude)
 
-                    // 사용자 정의 이미지로 마커 아이콘 설정
-                    val markerOptions = MarkerOptions()
-                        .position(markerPosition)
-                        .title("marker")
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car)) // custom_marker는 drawable에 있는 이미지 리소스입니다.
+//                    // 사용자 정의 이미지로 마커 아이콘 설정
+//                    val markerOptions = MarkerOptions()
+//                        .position(markerPosition)
+//                        .title("marker")
+//                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_car)) // custom_marker는 drawable에 있는 이미지 리소스입니다.
+//
+//                    currentMarker = googleMap.addMarker(markerOptions)
 
-                    currentMarker = googleMap.addMarker(markerOptions)
+                    currentMarker = googleMap.addMarker(
+                        MarkerOptions().position(markerPosition).title("marker")
+                    )
 
                     /**
                      * 마커 애니메이션 추가 및 애니메이션
@@ -1519,19 +1523,19 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         detailDriveHistoryViewModel.patchImages(listOf(DeleteImage(id)), tracking_id)
     }
 
-//    fun saveGpsDataToFile(context: Context, gpsData: String, fileName: String) {
-//        // Save JSON to a file in the app's private storage
-//        try {
-//            val file = File(context.filesDir, fileName) // filesDir: /data/data/your.package.name/files/
-//            FileOutputStream(file).use { output ->
-//                output.write(gpsData.toByteArray())
-//            }
-//            println("File saved successfully: ${file.absolutePath}")
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            println("Failed to save file: ${e.message}")
-//        }
-//    }
+    fun saveGpsDataToFile(context: Context, gpsData: String, fileName: String) {
+        // Save JSON to a file in the app's private storage
+        try {
+            val file = File(context.filesDir, fileName) // filesDir: /data/data/your.package.name/files/
+            FileOutputStream(file).use { output ->
+                output.write(gpsData.toByteArray())
+            }
+            println("File saved successfully: ${file.absolutePath}")
+        } catch (e: Exception) {
+            e.printStackTrace()
+            println("Failed to save file: ${e.message}")
+        }
+    }
 
 
 }
