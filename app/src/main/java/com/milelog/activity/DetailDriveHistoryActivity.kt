@@ -1412,7 +1412,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                         // 임시 파일 생성
                         val imageFile = File.createTempFile("temp_image", ".jpg", cacheDir).apply {
                             outputStream().use { output ->
-                                bitmap.compress(Bitmap.CompressFormat.JPEG, 20, output)
+                                bitmap.compress(Bitmap.CompressFormat.JPEG, 10, output)
                             }
                         }
 

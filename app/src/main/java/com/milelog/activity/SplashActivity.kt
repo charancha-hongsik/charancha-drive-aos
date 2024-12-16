@@ -69,12 +69,8 @@ class SplashActivity: BaseActivity() {
         splashViewModel.checkForceUpdate.observe(this@SplashActivity, BaseViewModel.EventObserver{ state ->
             when (state) {
                 is CheckForceUpdateState.Loading -> {
-                    Log.d("testestestsetest","testestestset checkForceUpdate:: ")
-
                 }
                 is CheckForceUpdateState.Success -> {
-                    Log.d("testestestsetest","testestestset checkForceUpdate:: ")
-
                     if(state.isRequired){
                         goUpdate()
                     }else{
@@ -82,11 +78,9 @@ class SplashActivity: BaseActivity() {
                     }
                 }
                 is CheckForceUpdateState.Error -> {
-                    Log.d("testestestsetest","testestestset checkForceUpdate:: ")
                     goSplash()
                 }
                 is CheckForceUpdateState.Empty -> {
-                    Log.d("testestestsetest","testestestset checkForceUpdate:: ")
                     goSplash()
                 }
             }
@@ -98,8 +92,6 @@ class SplashActivity: BaseActivity() {
 
                 }
                 is GetMyCarInfoState.Success -> {
-                    Log.d("testestestsetest","testestestset getMyCarInfo:: ")
-
                     if(state.data > 0){
                         startActivity(Intent(this@SplashActivity, MainActivity::class.java).addFlags(
                             Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -132,8 +124,6 @@ class SplashActivity: BaseActivity() {
 
                 }
                 is GetTermsAgreeState.Success -> {
-                    Log.d("testestestsetest","testestestset getTermsAgree:: ")
-
                     val termsAgreeStatusResponses = state.data
 
                     var agree = true
@@ -200,8 +190,6 @@ class SplashActivity: BaseActivity() {
 
                 }
                 is PostReissueState.Success -> {
-                    Log.d("testestestsetest","testestestset postReissue:: ")
-
                     splashViewModel.getTermsAgree()
                 }
                 is PostReissueState.Error -> {

@@ -34,7 +34,7 @@ android {
         applicationId "com.milelog"
         minSdk 28
         targetSdk 34 // (AOS 14)
-        versionCode 41
+        versionCode 42
         versionName "1.0.8"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
