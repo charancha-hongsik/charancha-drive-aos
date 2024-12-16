@@ -55,6 +55,7 @@ class MyGarageActivity:BaseRefreshActivity() {
     lateinit var view_personal_tab:View
     lateinit var view_corp_tab:View
     lateinit var getMyCarInfoResponses:GetMyCarInfoResponse
+    var selectedTab = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_garage)
@@ -122,6 +123,7 @@ class MyGarageActivity:BaseRefreshActivity() {
         }
 
         tv_corp_tab.setOnClickListener {
+            selectedTab = 0
             filterCorporate()
             TextViewCompat.setTextAppearance(tv_corp_tab, R.style.garage_selected)
             tv_corp_tab.setTypeface(ResourcesCompat.getFont(this@MyGarageActivity, R.font.pretendardbold), Typeface.BOLD)
@@ -135,6 +137,7 @@ class MyGarageActivity:BaseRefreshActivity() {
         }
 
         tv_personal_tab.setOnClickListener {
+            selectedTab = 1
             filterPersonal()
             TextViewCompat.setTextAppearance(tv_personal_tab, R.style.garage_selected)
             tv_personal_tab.setTypeface(ResourcesCompat.getFont(this@MyGarageActivity, R.font.pretendardbold), Typeface.BOLD)
@@ -188,6 +191,12 @@ class MyGarageActivity:BaseRefreshActivity() {
 
                             view_corp_tab.visibility = VISIBLE
                             view_personal_tab.visibility = INVISIBLE
+
+                            if(selectedTab == 0){
+                                tv_corp_tab.performClick()
+                            }else{
+                                tv_personal_tab.performClick()
+                            }
                         }else{
                             layout_tab.visibility = GONE
                             rv_garage.adapter = GarageAdapter(context = this@MyGarageActivity, cars = getMyCarInfoResponses.items.toMutableList())
