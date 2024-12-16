@@ -78,7 +78,7 @@
                 android:id="@+id/tv_app_days2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="1일째"
+                android:text=""
                 android:textFontWeight="600"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="2dp"
@@ -243,7 +243,7 @@
                         android:id="@+id/tv_average_score"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="0"
+                        android:text=""
                         android:textColor="@color/gray_950"
                         android:textFontWeight="600"
                         android:textAppearance="@style/H1SB"
@@ -344,7 +344,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
-                        android:text="0km"
+                        android:text=""
                         android:textFontWeight="500"
                         android:textAppearance="@style/ST1M"
                         android:textColor="@color/gray_950"
@@ -408,7 +408,7 @@
                                 android:layout_gravity="center_vertical"
                                 android:gravity="center_vertical"
                                 android:textColor="@color/sec_800"
-                                android:text="1km"/>
+                                android:text=""/>
 
                         </LinearLayout>
 
@@ -447,7 +447,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
-                        android:text="0시간 0분"
+                        android:text=""
                         android:textFontWeight="500"
                         android:textColor="@color/gray_950"
                         android:textAppearance="@style/ST1M"
@@ -511,7 +511,7 @@
                                 android:layout_gravity="center_vertical"
                                 android:gravity="center_vertical"
                                 android:textColor="@color/pri_800"
-                                android:text="1km"/>
+                                android:text=""/>
 
                         </LinearLayout>
 
@@ -572,7 +572,7 @@
                         android:layout_height="28dp"
                         android:layout_marginRight="2dp"
                         android:layout_marginLeft="10dp"
-                        android:text="0"
+                        android:text=""
                         android:textFontWeight="500"
                         android:gravity="center_vertical|right"
                         android:textAppearance="@style/ST1M"
