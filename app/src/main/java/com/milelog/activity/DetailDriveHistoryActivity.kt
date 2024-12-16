@@ -607,6 +607,9 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
                     isActive = getDrivingInfoResponse.isActive
                     userCarId = getDrivingInfoResponse.userCarId
+                    getDrivingInfoResponse.userCar?.let{
+                        tv_mycar.text = it.carName
+                    }
 
                     if(isActive){
                         if(!getDrivingInfoResponse.userCarId.isNullOrEmpty()){
