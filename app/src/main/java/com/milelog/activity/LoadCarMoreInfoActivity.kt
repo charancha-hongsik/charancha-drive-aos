@@ -722,7 +722,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                     layout_select.visibility = GONE
 
 
-                    if(iv_corp.isSelected){
+                    if(postMyCarResponse.type.equals(CORPORATE)){
                         if(!et_corp_name.text.toString().isNullOrEmpty() && !et_corp_name.text.toString().isNullOrEmpty() && !et_corp_department.text.toString().isNullOrEmpty() && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
                             btn_next.isSelected = true
                             btn_next.isClickable = true
