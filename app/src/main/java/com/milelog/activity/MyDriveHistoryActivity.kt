@@ -154,7 +154,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                         layout_flow.animate()
                             .alpha(0f)
                             .translationY(-initialFlowHeight.toFloat())
-                            .setDuration(200)
+                            .setDuration(100)
                             .withEndAction {
                                 layout_flow.visibility = View.GONE
                             }
@@ -162,7 +162,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                         layout_flow2_parent.animate()
                             .alpha(1f)
                             .translationY(0f)
-                            .setDuration(200)
+                            .setDuration(100)
                             .withEndAction {
                                 layout_flow2_parent.visibility = View.VISIBLE
                             }
@@ -175,7 +175,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                         layout_flow.animate()
                             .alpha(1f)
                             .translationY(0f)
-                            .setDuration(200)
+                            .setDuration(100)
                             .withEndAction {
                                 layout_flow.visibility = View.VISIBLE
                             }
@@ -183,7 +183,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                         layout_flow2_parent.animate()
                             .alpha(0f)
                             .translationY(initialFlowHeight.toFloat())
-                            .setDuration(200)
+                            .setDuration(100)
                             .withEndAction {
                                 layout_flow2_parent.visibility = View.GONE
                             }
@@ -196,7 +196,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                     lastVisibilityState = shouldShowFlow2
                     Handler(Looper.getMainLooper()).postDelayed({
                         isAnimating = false // 애니메이션 완료 후 플래그 리셋
-                    }, 200) // 애니메이션 시간과 동일하게 설정
+                    }, 100) // 애니메이션 시간과 동일하게 설정
                 }
             }
         })
@@ -211,7 +211,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
             layoutParams.height = value
             lv_date.layoutParams = layoutParams
         }
-        animator.duration = 200
+        animator.duration = 100
         animator.start()
     }
 
