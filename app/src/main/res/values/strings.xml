@@ -7,8 +7,8 @@
     <string name="down_points">n점 감소</string>
     <string name="no_change">변동 없음</string>
     <string name="last_30_days">지난 30일간</string>
-    <string name="average_driving_distance">평균 주행거리 > </string>
-    <string name="average_driving_time">평균 주행시간 ></string>
+    <string name="average_driving_distance">평균 주행거리</string>
+    <string name="average_driving_time">평균 주행시간</string>
     <string name="recent_score">최근 관리 점수</string>
     <string name="overview_of_my_car">내 차 한눈에 보기</string>
     <string name="recent_driving_score">최근 주행 총점</string>
