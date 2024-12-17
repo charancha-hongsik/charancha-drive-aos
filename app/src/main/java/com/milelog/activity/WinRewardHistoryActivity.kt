@@ -705,10 +705,9 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                 // Set the target date to local time with no time component
                 val targetCalendar = Calendar.getInstance()
                 targetCalendar.time = targetDate
-                targetCalendar.add(Calendar.DAY_OF_MONTH, 1)
-                targetCalendar.set(Calendar.HOUR_OF_DAY, 0)
-                targetCalendar.set(Calendar.MINUTE, 0)
-                targetCalendar.set(Calendar.SECOND, 0)
+                targetCalendar.set(Calendar.HOUR_OF_DAY, 23)
+                targetCalendar.set(Calendar.MINUTE, 59)
+                targetCalendar.set(Calendar.SECOND, 59)
                 targetCalendar.set(Calendar.MILLISECOND, 0)
 
                 // Get the current date with no time component
