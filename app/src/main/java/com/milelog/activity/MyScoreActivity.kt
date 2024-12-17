@@ -123,7 +123,7 @@ class MyScoreActivity : BaseRefreshActivity() {
 
     private fun init(){
         userCarId = intent.getStringExtra("userCarId")?:PreferenceUtil.getPref(this, PreferenceUtil.USER_CARID, "")!!
-//        setPieChart(0.0f)
+        setPieChart(0.0f)
 
         setLineChartForBrakes(findViewById(R.id.chart_line_brakes))
         setLineChartForEngine(findViewById(R.id.chart_line_engine))
