@@ -428,6 +428,7 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
         class LastItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val tvMore: TextView = view.findViewById(R.id.tv_more)
             val tvLast: TextView = view.findViewById(R.id.tv_last)
+            val btn_more:ConstraintLayout = view.findViewById(R.id.btn_more)
         }
 
         companion object {
@@ -609,13 +610,25 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                 if (rewardResponse.meta.currentPage == rewardResponse.meta.totalPages) {
                     holder.tvMore.visibility = GONE
                     holder.tvLast.visibility = View.VISIBLE
+
+                    holder.btn_more.setOnClickListener(object:OnSingleClickListener(){
+                        override fun onSingleClick(v: View?) {
+
+                        }
+
+                    })
                 } else {
                     holder.tvMore.visibility = View.VISIBLE
                     holder.tvLast.visibility = GONE
+
+                    holder.btn_more.setOnClickListener(object:OnSingleClickListener(){
+                        override fun onSingleClick(v: View?) {
+                            viewModel.getHistoriesMore(rewardResponse.meta.currentPage+1, startTimeForFilter, endTimeForFilter)
+                        }
+
+                    })
                 }
-                holder.tvMore.setOnClickListener {
-                    viewModel.getHistoriesMore(rewardResponse.meta.currentPage+1, startTimeForFilter, endTimeForFilter)
-                }
+
 
                 holder.tvLast.text = "마지막 당첨이에요"
             }

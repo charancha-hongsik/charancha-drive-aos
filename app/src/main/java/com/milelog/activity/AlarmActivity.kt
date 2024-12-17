@@ -184,17 +184,23 @@ class AlarmActivity: BaseRefreshActivity() {
                     holder.tvLast.text = "마지막 알림이에요"
                     holder.tvMore.visibility = View.GONE
                     holder.tvLast.visibility = View.VISIBLE
+                    holder.btn_more.setOnClickListener { object :OnSingleClickListener(){
+                        override fun onSingleClick(v: View?) {
+
+                        }
+                    }
+                    }
                 } else {
                     holder.tvMore.visibility = View.VISIBLE
                     holder.tvLast.visibility = View.GONE
-                }
 
-                holder.tvMore.setOnClickListener { object :OnSingleClickListener(){
-                    override fun onSingleClick(v: View?) {
-                        callback.clickedMore(meta, notifications)
+                    holder.btn_more.setOnClickListener { object :OnSingleClickListener(){
+                        override fun onSingleClick(v: View?) {
+                            callback.clickedMore(meta, notifications)
+                        }
                     }
-
-                } }
+                    }
+                }
             }
         }
 
@@ -204,6 +210,7 @@ class AlarmActivity: BaseRefreshActivity() {
 
         class LastItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val tvMore: TextView = view.findViewById(R.id.tv_more)
+            val btn_more:ConstraintLayout = view.findViewById(R.id.btn_more)
             val tvLast: TextView = view.findViewById(R.id.tv_last)
         }
 

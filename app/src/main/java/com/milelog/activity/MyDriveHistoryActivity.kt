@@ -948,6 +948,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         class LastItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val tvMore: TextView = view.findViewById(R.id.tv_more)
             val tvLast: TextView = view.findViewById(R.id.tv_last)
+            val btn_more:ConstraintLayout = view.findViewById(R.id.btn_more)
         }
 
         interface DriveCallback {
@@ -1070,6 +1071,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         class LastItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val tvMore: TextView = view.findViewById(R.id.tv_more)
             val tvLast: TextView = view.findViewById(R.id.tv_last)
+            val btn_more:ConstraintLayout = view.findViewById(R.id.btn_more)
         }
 
         companion object {
@@ -1113,12 +1115,23 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                 if (meta.afterCursor.isNullOrBlank()) {
                     holder.tvMore.visibility = View.GONE
                     holder.tvLast.visibility = View.VISIBLE
+
+                    holder.btn_more.setOnClickListener(object:OnSingleClickListener(){
+                        override fun onSingleClick(v: View?) {
+
+                        }
+
+                    })
                 } else {
                     holder.tvMore.visibility = View.VISIBLE
                     holder.tvLast.visibility = View.GONE
-                }
-                holder.tvMore.setOnClickListener {
-                    callback.clickedMore(meta, dateList.toMutableList())
+
+                    holder.btn_more.setOnClickListener(object:OnSingleClickListener(){
+                        override fun onSingleClick(v: View?) {
+                            callback.clickedMore(meta, dateList.toMutableList())
+                        }
+
+                    })
                 }
             }
         }
