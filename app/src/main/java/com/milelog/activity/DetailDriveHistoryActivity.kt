@@ -538,8 +538,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
                     tv_date.text = transformTimeToDate(getDrivingInfoResponse.startTime)
                     tv_distance.text = transferDistanceWithUnit(getDrivingInfoResponse.totalDistance)
-                    tv_start_time_info.text = transformTimeToDateWithTime(getDrivingInfoResponse.startTime)
-                    tv_end_time_info.text = transformTimeToDateWithTime(getDrivingInfoResponse.endTime)
+                    tv_start_time_info.text = transformTimeToDateWithTimeForDetailDriveHistory(getDrivingInfoResponse.startTime)
+                    tv_end_time_info.text = transformTimeToDateWithTimeForDetailDriveHistory(getDrivingInfoResponse.endTime)
                     tv_drive_time_info.text = transformSecondsToHHMMSS(getDrivingInfoResponse.totalTime)
                     tv_drive_distance_info.text = transferDistanceWithUnit(getDrivingInfoResponse.totalDistance)
                     tv_drive_verification_info.text = getDrivingInfoResponse.verification
@@ -665,7 +665,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     }
 
                     if(getDrivingInfoResponse.userCar?.type == CORPORATE){
-                        tv_scope_date_mycar.visibility = GONE
+                        tv_scope_date_mycar.visibility = VISIBLE
+                        tv_scope_date_mycar.text = "법인차는 변경이 불가능해요."
                         view_edit_arrow.visibility = GONE
                     }
 
@@ -1043,7 +1044,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         val minutes = (seconds.toInt() % 3600) / 60
         val secs = seconds.toInt() % 60
 
-        return "${hours}시간 ${minutes}분 ${secs}초"
+        return "${hours}:${minutes}:${secs}"
     }
 
 
@@ -1524,6 +1525,25 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
     private fun deleteImageToLayout(id:String){
         detailDriveHistoryViewModel.patchImages(listOf(DeleteImage(id)), tracking_id)
+    }
+
+    fun transformTimeToDateWithTimeForDetailDriveHistory(isoDate: String): String {
+        // UTC 시간 파싱
+        val utcTime = LocalDateTime.parse(isoDate, DateTimeFormatter.ISO_DATE_TIME)
+
+        // ZonedDateTime으로 변환
+        val zonedUtcTime = utcTime.atZone(ZoneId.of("UTC"))
+
+        // 한국 시간대로 변환 (UTC+9)
+        val kstTime = zonedUtcTime.withZoneSameInstant(ZoneId.of("Asia/Seoul"))
+
+        // yyyy년 M.d(요일) HH:mm:ss 형식으로 변환
+        val kstTimeStr = kstTime.format(
+            DateTimeFormatter.ofPattern("yyyy.M.d(E) HH:mm:ss").withLocale(Locale.KOREAN)
+        )
+
+        // 포맷된 문자열 반환
+        return kstTimeStr
     }
 
     fun saveGpsDataToFile(context: Context, gpsData: String, fileName: String) {
