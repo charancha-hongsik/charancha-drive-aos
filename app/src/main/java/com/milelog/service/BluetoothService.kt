@@ -297,11 +297,115 @@ class BluetoothService : Service() {
 
     inner class DetectCarConnectedReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            if (ContextCompat.checkSelfPermission(
-                    this@BluetoothService,
-                    Manifest.permission.BLUETOOTH_CONNECT
-                ) == PackageManager.PERMISSION_GRANTED
-            ) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
+                if (ContextCompat.checkSelfPermission(
+                        this@BluetoothService,
+                        Manifest.permission.BLUETOOTH_CONNECT
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    when (intent?.action) {
+                        BluetoothDevice.ACTION_ACL_CONNECTED -> {
+                            // 무언가 Connected 된 상황
+                            val bluetoothManager: BluetoothManager =
+                                getSystemService(BluetoothManager::class.java)
+                            val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
+
+                            val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
+
+                            if (drivingMyCarsEntity == null) {
+                                // L2로 주행중이 아닌 상황
+                                pairedDevices?.forEach { device ->
+                                    if (device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE && isBluetoothDeviceConnected(device)) {
+                                        // 핸즈프리 && 연결된 디바이스
+                                        val myCarsListOnDevice: MutableList<MyCarsEntity> =
+                                            mutableListOf()
+
+                                        PreferenceUtil.getPref(
+                                            this@BluetoothService,
+                                            PreferenceUtil.MY_CAR_ENTITIES,
+                                            ""
+                                        )?.let {
+                                            if (it != "") {
+                                                val type = object :
+                                                    TypeToken<MutableList<MyCarsEntity>>() {}.type
+                                                myCarsListOnDevice.addAll(
+                                                    GsonBuilder().serializeNulls().create()
+                                                        .fromJson(it, type)
+                                                )
+                                            }
+
+                                            drivingMyCarsEntity =
+                                                myCarsListOnDevice.find { it.bluetooth_mac_address == device.address }
+                                                    ?: MyCarsEntity(
+                                                        id = null,
+                                                        fullName = null,
+                                                        name = null,
+                                                        number = null,
+                                                        bluetooth_mac_address = device.address,
+                                                        bluetooth_name = device.name
+                                                    )
+
+
+                                            driveDatabase?.detectUserDao()?.insert(
+                                                DetectUserEntity(
+                                                    user_id = "",
+                                                    verification = "L2",
+                                                    start_stop = "Bluetooth(start)" + device.name,
+                                                    timestamp = System.currentTimeMillis()
+                                                        .toString(),
+                                                    sensor_state = fusedLocationClient != null
+                                                )
+                                            )
+
+                                            startSensor(L2)
+
+
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+
+                        BluetoothDevice.ACTION_ACL_DISCONNECTED -> {
+                            val bluetoothManager: BluetoothManager =
+                                getSystemService(BluetoothManager::class.java)
+                            val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
+
+
+                            val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
+                            pairedDevices?.forEach { device ->
+                                if (drivingMyCarsEntity != null) {
+                                    drivingMyCarsEntity?.let { drivingCar ->
+                                        if (device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE) {
+                                            if (!isBluetoothDeviceConnected(device)) {
+                                                if (drivingCar.bluetooth_mac_address.equals(device.address)) {
+                                                    driveDatabase?.detectUserDao()?.insert(
+                                                        DetectUserEntity(
+                                                            user_id = "",
+                                                            verification = "L2",
+                                                            start_stop = "Bluetooth(stop) " + device.name,
+                                                            timestamp = System.currentTimeMillis()
+                                                                .toString(),
+                                                            sensor_state = fusedLocationClient != null
+                                                        )
+                                                    )
+
+                                                    stopSensor(L2)
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        else -> {
+                            queryForState()
+                        }
+                    }
+                }
+            } else{
                 when (intent?.action) {
                     BluetoothDevice.ACTION_ACL_CONNECTED -> {
                         // 무언가 Connected 된 상황

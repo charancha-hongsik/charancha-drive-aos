@@ -1,11 +1,7 @@
 package com.milelog.activity
 
-import android.Manifest.permission.ACCESS_FINE_LOCATION
-import android.Manifest.permission.ACTIVITY_RECOGNITION
 import android.Manifest.permission.BLUETOOTH_CONNECT
-import android.Manifest.permission.POST_NOTIFICATIONS
 import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothClass.Device.AUDIO_VIDEO_HANDSFREE
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.content.Context
