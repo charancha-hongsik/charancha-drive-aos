@@ -364,7 +364,7 @@ class ExcelActivity:BaseRefreshActivity() {
 
     fun getLast24Months(): List<String> {
         val months = mutableListOf<String>()
-        val formatter = DateTimeFormatter.ofPattern("yyyy년 MM월")
+        val formatter = DateTimeFormatter.ofPattern("yyyy년 M월")
         var currentDate = LocalDate.now()
 
         repeat(24) {
