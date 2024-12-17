@@ -51,6 +51,7 @@
         android:layout_marginRight="20dp"
         android:scrollbars="none"
         android:clipToPadding="false"
+        android:overScrollMode="never"
         app:layout_constraintTop_toBottomOf="@+id/layout_topbar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

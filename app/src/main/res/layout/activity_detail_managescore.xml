@@ -47,6 +47,7 @@
         android:paddingLeft="20dp"
         android:background="@color/gray_50"
         android:scrollbars="none"
+        android:overScrollMode="never"
         android:clipToPadding="false"
         app:layout_constraintTop_toBottomOf="@+id/layout_topbar"
         app:layout_constraintLeft_toLeftOf="parent"
