@@ -616,6 +616,8 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                 holder.tvMore.setOnClickListener {
                     viewModel.getHistoriesMore(rewardResponse.meta.currentPage+1, startTimeForFilter, endTimeForFilter)
                 }
+
+                holder.tvLast.text = "마지막 당첨이에요"
             }
         }
 

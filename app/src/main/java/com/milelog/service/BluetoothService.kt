@@ -314,10 +314,7 @@ class BluetoothService : Service() {
                         if (drivingMyCarsEntity == null) {
                             // L2로 주행중이 아닌 상황
                             pairedDevices?.forEach { device ->
-                                if (device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE && isBluetoothDeviceConnected(
-                                        device
-                                    )
-                                ) {
+                                if (device.bluetoothClass.deviceClass == AUDIO_VIDEO_HANDSFREE && isBluetoothDeviceConnected(device)) {
                                     // 핸즈프리 && 연결된 디바이스
                                     val myCarsListOnDevice: MutableList<MyCarsEntity> =
                                         mutableListOf()
