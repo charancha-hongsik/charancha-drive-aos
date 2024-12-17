@@ -888,40 +888,18 @@
                         app:layout_constraintTop_toBottomOf="@+id/tv_tire_score"/>
 
 
-
-
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <TextView
-                android:id="@+id/tv_guide_subtitle"
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:textFontWeight="700"
-                android:text="@string/guidance"
-                android:textColor="@color/gray_800"
-                android:textAppearance="@style/B2B"
+                android:layout_height="64dp"
+                android:background="@color/gray_50"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/layout_summary_info2" />
-
-            <TextView
-                android:id="@+id/tv_guide"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:paddingBottom="60dp"
-                android:textFontWeight="400"
-                android:text="@string/the_driving_data_provided_by"
-                android:textAppearance="@style/C1R"
-                android:textColor="@color/gray_700"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_guide_subtitle" />
-
+                app:layout_constraintTop_toBottomOf="@+id/layout_summary_info2"/>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

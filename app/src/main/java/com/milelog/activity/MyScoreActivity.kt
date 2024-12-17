@@ -87,8 +87,6 @@ class MyScoreActivity : BaseRefreshActivity() {
     lateinit var tv_subtitle2:TextView
     lateinit var tv_recent_date:TextView
 
-    lateinit var tv_guide_subtitle:TextView
-
     lateinit var userCarId:String
     lateinit var btn_back:View
 
@@ -483,10 +481,6 @@ class MyScoreActivity : BaseRefreshActivity() {
         tv_recent_date = findViewById(R.id.tv_recent_date)
         tv_subtitle2 = findViewById(R.id.tv_subtitle2)
         tv_subtitle2.setOnClickListener {
-        }
-
-        tv_guide_subtitle = findViewById(R.id.tv_guide_subtitle)
-        tv_guide_subtitle.setOnClickListener {
             startActivity(Intent(this@MyScoreActivity, DetectedStatusActivity::class.java))
         }
 
