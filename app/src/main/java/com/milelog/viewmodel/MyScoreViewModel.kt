@@ -41,9 +41,6 @@ import java.util.concurrent.Executors
 class MyScoreViewModel: BaseViewModel() {
     lateinit var context: Context
 
-    private val _accountResult = MutableLiveData<Event<AccountState>>()
-    val accountResult: MutableLiveData<Event<AccountState>> get() = _accountResult
-
     private val _notSavedDataResult = MutableLiveData<Event<NotSavedDataState>>()
     val notSavedDataStateResult: MutableLiveData<Event<NotSavedDataState>> get() = _notSavedDataResult
 
@@ -67,32 +64,6 @@ class MyScoreViewModel: BaseViewModel() {
 
     fun init(context:Context){
         this.context = context
-    }
-
-    fun getAccount(){
-        apiService(context).getAccount("Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!).enqueue(object:
-            Callback<ResponseBody> {
-            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                when {
-
-                    response.code() == 200 || response.code() == 201 -> {
-                        val getAccountResponse = GsonBuilder().serializeNulls().create().fromJson(
-                            response.body()?.string(),
-                            GetAccountResponse::class.java
-                        )
-                        _accountResult.value = Event(AccountState.Success(getAccountResponse))
-                    }
-                    else -> {
-                        _accountResult.value = Event(AccountState.Error(response.code(), response.message()))
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-
-            }
-
-        })
     }
 
     fun getMyCarInfo(){

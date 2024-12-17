@@ -105,7 +105,6 @@ class MyScoreActivity : BaseRefreshActivity() {
         myScoreViewModel.init(applicationContext)
         setObserver()
 
-        myScoreViewModel.getAccount()
         myScoreViewModel.getMyCarInfo()
     }
 
@@ -144,30 +143,6 @@ class MyScoreActivity : BaseRefreshActivity() {
     }
 
     private fun setObserver(){
-        myScoreViewModel.accountResult.observe(this@MyScoreActivity, BaseViewModel.EventObserver{ state ->
-            when (state) {
-                is AccountState.Loading -> {
-
-                }
-                is AccountState.Success -> {
-                    val getAccountResponse = state.data
-                    PreferenceUtil.putPref(this@MyScoreActivity, PreferenceUtil.USER_ID, getAccountResponse.id)
-                }
-                is AccountState.Error -> {
-                    if(state.code == 401){
-                        logout()
-                    }
-                }
-                is AccountState.Empty -> {
-
-                }
-
-                else -> {
-
-                }
-            }
-        })
-
         myScoreViewModel.notSavedDataStateResult.observe(this@MyScoreActivity, BaseViewModel.EventObserver{ state ->
             when (state) {
                 is NotSavedDataState.Error -> {

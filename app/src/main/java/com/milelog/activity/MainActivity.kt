@@ -48,6 +48,7 @@ import com.milelog.room.entity.MyCarsEntity
 import com.milelog.service.BluetoothService
 import com.milelog.viewmodel.BaseViewModel
 import com.milelog.viewmodel.MainViewModel
+import com.milelog.viewmodel.state.AccountState
 import com.milelog.viewmodel.state.MyCarInfoState
 import com.milelog.viewmodel.state.NotSavedDataState
 import gun0912.tedimagepicker.builder.TedImagePicker
@@ -108,8 +109,6 @@ class MainActivity:BaseActivity() {
         init()
         setObserver()
         setResources()
-
-        Log.d("testestestestset","testsetsetestse :: " + PreferenceUtil.getPref(this,PreferenceUtil.ACCESS_TOKEN, "")!!)
     }
 
     override fun onResume() {
@@ -125,6 +124,30 @@ class MainActivity:BaseActivity() {
     }
 
     private fun setObserver(){
+        mainViewModel.accountResult.observe(this@MainActivity, BaseViewModel.EventObserver{ state ->
+            when (state) {
+                is AccountState.Loading -> {
+
+                }
+                is AccountState.Success -> {
+                    val getAccountResponse = state.data
+                    PreferenceUtil.putPref(this@MainActivity, PreferenceUtil.USER_ID, getAccountResponse.id)
+                }
+                is AccountState.Error -> {
+                    if(state.code == 401){
+                        logout()
+                    }
+                }
+                is AccountState.Empty -> {
+
+                }
+
+                else -> {
+
+                }
+            }
+        })
+
         mainViewModel.notSavedDataStateResult.observe(this@MainActivity, BaseViewModel.EventObserver{ state ->
             when (state) {
                 is NotSavedDataState.Error -> {
@@ -176,11 +199,14 @@ class MainActivity:BaseActivity() {
             }
         })
 
+
     }
 
     private fun init(){
         mainViewModel.init(applicationContext)
         firebaseAnalytics = FirebaseAnalytics.getInstance(this)
+        mainViewModel.getAccount()
+
     }
 
     fun setWebview(){
