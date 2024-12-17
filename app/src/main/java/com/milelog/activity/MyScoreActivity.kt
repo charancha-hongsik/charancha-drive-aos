@@ -1,40 +1,28 @@
 package com.milelog.activity
 
-import android.Manifest.permission.*
 import android.content.ActivityNotFoundException
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.PowerManager
-import android.provider.Settings
-import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-import android.util.Log
 import android.view.View
 import android.view.View.*
 import android.widget.*
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
-import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
-import com.milelog.CommonUtil
-import com.milelog.CustomDialog
 import com.milelog.PreferenceUtil
-import com.milelog.PreferenceUtil.HAVE_BEEN_HOME
 import com.milelog.R
 import com.milelog.room.entity.MyCarsEntity
-import com.milelog.service.BluetoothService
 import com.milelog.viewmodel.BaseViewModel
 import com.milelog.viewmodel.MyScoreViewModel
 import com.milelog.viewmodel.state.AccountState
@@ -409,6 +397,8 @@ class MyScoreActivity : BaseRefreshActivity() {
                             tv_recent_date.visibility = VISIBLE
                             tv_recent_date.text = formatDate(getManageScoreResponse.recentCriteriaAt.split("T").first())
 
+                            tv_recent_score.text =
+                                transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
                             tv_recent_score2.text =
                                 transferNumWithRounds(getManageScoreResponse.average.totalEngineScore).toString()
                             tv_engine_score.text =

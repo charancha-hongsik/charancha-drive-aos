@@ -477,7 +477,6 @@
                         android:textAppearance="@style/ST1M"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintLeft_toRightOf="@+id/tv_recent_score_title"
                         app:layout_constraintRight_toLeftOf="@+id/tv_score_unit"/>
 
                     <TextView
