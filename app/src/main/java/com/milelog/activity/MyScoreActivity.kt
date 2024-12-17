@@ -62,7 +62,6 @@ class MyScoreActivity : BaseRefreshActivity() {
     lateinit var btnHistory: ImageView
 
     lateinit var chart: PieChart
-    lateinit var button_edit_overlay:Button
     lateinit var layout_engine: ConstraintLayout
     lateinit var layout_average_distance:ConstraintLayout
     lateinit var layout_average_time:ConstraintLayout
@@ -70,7 +69,6 @@ class MyScoreActivity : BaseRefreshActivity() {
     lateinit var layout_recent_manage_score:ConstraintLayout
     lateinit var tv_car_name:TextView
     lateinit var tv_car_no:TextView
-    lateinit var tv_app_days2:TextView
     lateinit var tv_average_score:TextView
     lateinit var tv_increase:TextView
     lateinit var tv_average_distance_contents:TextView
@@ -98,13 +96,11 @@ class MyScoreActivity : BaseRefreshActivity() {
     lateinit var tv_engine_score:TextView
     lateinit var iv_home_banner:ImageView
     lateinit var tv_recent_driving_score:TextView
-    lateinit var btn_close_gift:ImageView
     lateinit var tv_subtitle2:TextView
     lateinit var tv_recent_date:TextView
 
     lateinit var tv_guide_subtitle:TextView
 
-    lateinit var layout_start_app:ConstraintLayout
     lateinit var userCarId:String
     lateinit var btn_back:View
 
@@ -167,11 +163,6 @@ class MyScoreActivity : BaseRefreshActivity() {
                 }
                 is AccountState.Success -> {
                     val getAccountResponse = state.data
-                    tv_app_days2.text = convertUtcToDaysSince(getAccountResponse.createdAt)
-                    if(convertUtcToDaysSinceForInt(getAccountResponse.createdAt) > 14){
-                        layout_start_app.visibility = GONE
-                    }
-
                     PreferenceUtil.putPref(this@MyScoreActivity, PreferenceUtil.USER_ID, getAccountResponse.id)
                 }
                 is AccountState.Error -> {
@@ -534,16 +525,6 @@ class MyScoreActivity : BaseRefreshActivity() {
             startActivity(Intent(this@MyScoreActivity, DetectedStatusActivity::class.java))
         }
 
-        button_edit_overlay = findViewById(R.id.button_edit_overlay)
-        button_edit_overlay.setOnClickListener(object: OnSingleClickListener(){
-            override fun onSingleClick(v: View?) {
-//                showBottomSheetForEditCar()
-                startActivity(Intent(this@MyScoreActivity, MyGarageActivity::class.java))
-
-            }
-
-        })
-
 
         tv_car_name = findViewById(R.id.tv_car_name)
         tv_car_no = findViewById(R.id.tv_car_no)
@@ -592,7 +573,6 @@ class MyScoreActivity : BaseRefreshActivity() {
 
         })
 
-        tv_app_days2 = findViewById(R.id.tv_app_days2)
         tv_average_score = findViewById(R.id.tv_average_score)
         tv_increase = findViewById(R.id.tv_increase)
         tv_average_distance_contents = findViewById(R.id.tv_average_distance_contents)
@@ -619,8 +599,6 @@ class MyScoreActivity : BaseRefreshActivity() {
         btn_one_month = findViewById(R.id.btn_one_month)
         btn_six_month = findViewById(R.id.btn_six_month)
         btn_one_year = findViewById(R.id.btn_one_year)
-        layout_start_app = findViewById(R.id.layout_start_app)
-        btn_close_gift = findViewById(R.id.btn_close_gift)
 
         btn_recent.isSelected = true
 
@@ -690,21 +668,6 @@ class MyScoreActivity : BaseRefreshActivity() {
 
         })
 
-        btn_close_gift.setOnClickListener(object: OnSingleClickListener(){
-            override fun onSingleClick(v: View?) {
-                PreferenceUtil.putBooleanPref(this@MyScoreActivity,
-                    PreferenceUtil.GIFT_EXPORTED, false)
-
-                layout_start_app.visibility = GONE
-            }
-
-        })
-
-        if(PreferenceUtil.getBooleanPref(this, PreferenceUtil.GIFT_EXPORTED, true)){
-            layout_start_app.visibility = VISIBLE
-        }else{
-            layout_start_app.visibility = GONE
-        }
     }
 
     private fun setPieChart(percent:Float) {
