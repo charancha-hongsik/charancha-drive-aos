@@ -201,6 +201,20 @@ class AlarmActivity: BaseRefreshActivity() {
                     }
                     }
                 }
+
+                if(!holder.isPaddingSet){
+                    holder.isPaddingSet = true
+                    // paddingTop 값을 dp로 변환
+                    val paddingTopInPx = dpToPx(context, 20f)
+
+// 기존 패딩 값을 유지하면서 paddingTop만 설정
+                    holder.btn_more.setPadding(
+                        holder.btn_more.paddingLeft, // 기존 paddingLeft
+                        paddingTopInPx,       // 설정할 paddingTop
+                        holder.btn_more.paddingRight, // 기존 paddingRight
+                        holder.btn_more.paddingBottom // 기존 paddingBottom
+                    )
+                }
             }
         }
 
@@ -212,10 +226,17 @@ class AlarmActivity: BaseRefreshActivity() {
             val tvMore: TextView = view.findViewById(R.id.tv_more)
             val btn_more:ConstraintLayout = view.findViewById(R.id.btn_more)
             val tvLast: TextView = view.findViewById(R.id.tv_last)
+
+            var isPaddingSet = false
         }
 
         interface DriveCallback {
             fun clickedMore(meta: Meta, histories: MutableList<AlarmEntity>)
+        }
+
+        // dpToPx 메서드 최적화
+        private fun dpToPx(context: Context, dp: Float): Int {
+            return (dp * context.resources.displayMetrics.density).toInt()
         }
     }
 

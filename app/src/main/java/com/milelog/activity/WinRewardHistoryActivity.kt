@@ -429,6 +429,8 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
             val tvMore: TextView = view.findViewById(R.id.tv_more)
             val tvLast: TextView = view.findViewById(R.id.tv_last)
             val btn_more:ConstraintLayout = view.findViewById(R.id.btn_more)
+
+            var isPaddingSet = false
         }
 
         companion object {
@@ -627,6 +629,21 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
                         }
 
                     })
+                }
+
+
+                if(!holder.isPaddingSet){
+                    holder.isPaddingSet = true
+                    // paddingTop 값을 dp로 변환
+                    val paddingTopInPx = dpToPx(context, 16f)
+
+// 기존 패딩 값을 유지하면서 paddingTop만 설정
+                    holder.btn_more.setPadding(
+                        holder.btn_more.paddingLeft, // 기존 paddingLeft
+                        paddingTopInPx,       // 설정할 paddingTop
+                        holder.btn_more.paddingRight, // 기존 paddingRight
+                        holder.btn_more.paddingBottom // 기존 paddingBottom
+                    )
                 }
 
 
