@@ -100,25 +100,33 @@ class FindBluetoothActivity: BaseRefreshActivity() {
 
     override fun onResume() {
         super.onResume()
-        if(permissionState){
-            if(ContextCompat.checkSelfPermission(this, BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED){
-                setList()
-                permissionState = false
-            }else{
-                setNoPermissionUI()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
+            if(permissionState){
+                if(ContextCompat.checkSelfPermission(this, BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED){
+                    setList()
+                    permissionState = false
+                }else{
+                    setNoPermissionUI()
+                }
             }
+        }else{
+            setList()
         }
     }
 
 
     private fun setList(){
-        if(ContextCompat.checkSelfPermission(this, BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED){
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                checkPermission(mutableListOf(
-                    BLUETOOTH_CONNECT
-                ).apply {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if(ContextCompat.checkSelfPermission(this, BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    checkPermission(mutableListOf(
+                        BLUETOOTH_CONNECT
+                    ).apply {
 
-                }.toTypedArray(),0)
+                    }.toTypedArray(),0)
+                }else{
+                    setHasPermissionUI()
+                }
             }else{
                 setHasPermissionUI()
             }
@@ -151,12 +159,48 @@ class FindBluetoothActivity: BaseRefreshActivity() {
     }
 
     private fun setBluetoothList(){
-        if (ActivityCompat.checkSelfPermission(
-                this@FindBluetoothActivity,
-                BLUETOOTH_CONNECT
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (ActivityCompat.checkSelfPermission(
+                    this@FindBluetoothActivity,
+                    BLUETOOTH_CONNECT
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
 
+                var myCarsList: List<MyCarsEntity> = listOf()
+
+                PreferenceUtil.getPref(this, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
+                    if(it != ""){
+                        val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
+                        myCarsList = GsonBuilder().serializeNulls().create().fromJson(it, type)
+                        myCarsList = myCarsList.filterNot { it.bluetooth_mac_address.isNullOrEmpty() }
+                    }
+
+
+                    val bluetoothManager: BluetoothManager = getSystemService(BluetoothManager::class.java)
+                    val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
+
+                    val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
+
+                    val devices:MutableList<FindBluetoothEntity> = mutableListOf()
+
+                    pairedDevices?.forEach { device ->
+
+                        val isDuplicate = myCarsList.any { car -> car.bluetooth_mac_address == device.address }
+
+                        if (!isDuplicate) {
+                            // 중복이 아니면 devices에 추가
+                            devices.add(FindBluetoothEntity(device.name, device.address, device.bluetoothClass.deviceClass))
+                        }
+                    }
+
+                    rv_find_bluetooth.adapter = DetectedStatusAdapter(context = this, findBluetoothEntity = devices)
+
+                    Toast.makeText(this, "등록 가능한 블루투스 기기를 불러왔어요.", Toast.LENGTH_SHORT).show()
+
+
+                }
+            }
+        }else{
             var myCarsList: List<MyCarsEntity> = listOf()
 
             PreferenceUtil.getPref(this, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
