@@ -55,8 +55,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="52dp"
+                android:layout_height="32dp"
                 android:src="@drawable/choose_toggle"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -98,8 +98,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="44dp"
+                android:layout_height="28dp"
                 android:src="@drawable/choose_toggle"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -125,8 +125,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="44dp"
+                android:layout_height="28dp"
                 android:src="@drawable/choose_toggle"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -153,8 +153,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="44dp"
+                android:layout_height="28dp"
                 android:src="@drawable/choose_toggle"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
