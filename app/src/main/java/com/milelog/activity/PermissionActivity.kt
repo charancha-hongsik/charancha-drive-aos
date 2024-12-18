@@ -264,27 +264,31 @@ class PermissionActivity: BaseActivity(){
                 call: Call<ResponseBody>,
                 response: Response<ResponseBody>
             ) {
-                if(response.code() == 200 || response.code() == 201){
-                    val jsonString = response.body()?.string()
+                try{
+                    if(response.code() == 200 || response.code() == 201){
+                        val jsonString = response.body()?.string()
 
-                    if(jsonString!!.toInt() > 0){
-                        PreferenceUtil.putBooleanPref(this@PermissionActivity, PreferenceUtil.PERMISSION_ALL_CHECKED, true)
+                        if(jsonString!!.toInt() > 0){
+                            PreferenceUtil.putBooleanPref(this@PermissionActivity, PreferenceUtil.PERMISSION_ALL_CHECKED, true)
 
-                        startActivity(Intent(this@PermissionActivity, MainActivity::class.java).addFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK))
-                        finish()
-                    }else{
+                            startActivity(Intent(this@PermissionActivity, MainActivity::class.java).addFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_CLEAR_TASK))
+                            finish()
+                        }else{
+                            PreferenceUtil.putBooleanPref(this@PermissionActivity, PreferenceUtil.PERMISSION_ALL_CHECKED, true)
+
+                            startActivity(Intent(this@PermissionActivity, OnBoardingActivity::class.java))
+                            finish()
+                        }
+                    }else if(response.code() == 401){
+                        logout()
+                    } else{
                         PreferenceUtil.putBooleanPref(this@PermissionActivity, PreferenceUtil.PERMISSION_ALL_CHECKED, true)
 
                         startActivity(Intent(this@PermissionActivity, OnBoardingActivity::class.java))
                         finish()
                     }
-                }else if(response.code() == 401){
-                    logout()
-                } else{
-                    PreferenceUtil.putBooleanPref(this@PermissionActivity, PreferenceUtil.PERMISSION_ALL_CHECKED, true)
+                }catch(e:Exception){
 
-                    startActivity(Intent(this@PermissionActivity, OnBoardingActivity::class.java))
-                    finish()
                 }
             }
 

@@ -356,56 +356,60 @@ class CarDetailActivity: BaseRefreshActivity() {
 
         apiService().getCharanchaCode("Bearer " + PreferenceUtil.getPref(this@CarDetailActivity, PreferenceUtil.ACCESS_TOKEN, "")!!, key, parentCode).enqueue(object:Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                try{
 
-                val jsonString = response.body()?.string()
+                    val jsonString = response.body()?.string()
 
-                val gson = Gson()
-                val type: Type = object : TypeToken<List<CarDetailResponse>>() {}.type
-                val carDetails:List<CarDetailResponse> = gson.fromJson(jsonString, type)
+                    val gson = Gson()
+                    val type: Type = object : TypeToken<List<CarDetailResponse>>() {}.type
+                    val carDetails:List<CarDetailResponse> = gson.fromJson(jsonString, type)
 
-                val itemList: MutableList<CarDetail> = ArrayList()
+                    val itemList: MutableList<CarDetail> = ArrayList()
 
-                when(key){
-                    MAKER -> {
-                        for(carDetail in carDetails)
-                            itemList.add(CarDetail(carDetail.makerCd, carDetail.makerNm))
+                    when(key){
+                        MAKER -> {
+                            for(carDetail in carDetails)
+                                itemList.add(CarDetail(carDetail.makerCd, carDetail.makerNm))
+                        }
+
+                        MODEL -> {
+                            for(carDetail in carDetails)
+                                itemList.add(CarDetail(carDetail.modelCd, carDetail.modelNm))
+                        }
+
+                        MODEL_DETAIL -> {
+                            for(carDetail in carDetails)
+                                itemList.add(CarDetail(carDetail.modelDetailCd, carDetail.modelDetailNm))
+
+                        }
+
+                        GRADE -> {
+                            for(carDetail in carDetails)
+                                itemList.add(CarDetail(carDetail.gradeCd, carDetail.gradeNm))
+
+                        }
+
+                        GRADE_DETAIL -> {
+                            for(carDetail in carDetails)
+                                itemList.add(CarDetail(carDetail.gradeDetailCd, carDetail.gradeDetailNm))
+                        }
+
+                        FUEL -> {
+                            for(carDetail in carDetails)
+                                itemList.add(CarDetail(carDetail.code, carDetail.codeNm))
+                        }
                     }
 
-                    MODEL -> {
-                        for(carDetail in carDetails)
-                            itemList.add(CarDetail(carDetail.modelCd, carDetail.modelNm))
-                    }
+                    // adapter 생성
+                    val adapter = CarDetailAdapter(this@CarDetailActivity, R.layout.edit_fuel_textview, itemList, key)
 
-                    MODEL_DETAIL -> {
-                        for(carDetail in carDetails)
-                            itemList.add(CarDetail(carDetail.modelDetailCd, carDetail.modelDetailNm))
+                    // listView에 adapter 연결
+                    listView.adapter = adapter
 
-                    }
+                    layout_select.visibility = VISIBLE
+                }catch(e:Exception){
 
-                    GRADE -> {
-                        for(carDetail in carDetails)
-                            itemList.add(CarDetail(carDetail.gradeCd, carDetail.gradeNm))
-
-                    }
-
-                    GRADE_DETAIL -> {
-                        for(carDetail in carDetails)
-                            itemList.add(CarDetail(carDetail.gradeDetailCd, carDetail.gradeDetailNm))
-                    }
-
-                    FUEL -> {
-                        for(carDetail in carDetails)
-                            itemList.add(CarDetail(carDetail.code, carDetail.codeNm))
-                    }
                 }
-
-                // adapter 생성
-                val adapter = CarDetailAdapter(this@CarDetailActivity, R.layout.edit_fuel_textview, itemList, key)
-
-                // listView에 adapter 연결
-                listView.adapter = adapter
-
-                layout_select.visibility = VISIBLE
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
@@ -650,71 +654,70 @@ class CarDetailActivity: BaseRefreshActivity() {
 
         apiService().getCharanchaCode("Bearer " + PreferenceUtil.getPref(this@CarDetailActivity, PreferenceUtil.ACCESS_TOKEN, "")!!, key, parentCode).enqueue(object:Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                try{
+                    val jsonString = response.body()?.string()
 
-                val jsonString = response.body()?.string()
+                    val gson = Gson()
+                    val type: Type = object : TypeToken<List<CarDetailResponse>>() {}.type
+                    val carDetails:List<CarDetailResponse> = gson.fromJson(jsonString, type)
 
-                val gson = Gson()
-                val type: Type = object : TypeToken<List<CarDetailResponse>>() {}.type
-                val carDetails:List<CarDetailResponse> = gson.fromJson(jsonString, type)
+                    val itemList: MutableList<CarDetail> = ArrayList()
 
-                val itemList: MutableList<CarDetail> = ArrayList()
-
-                when(key){
-                    MAKER -> {
-                        if(carDetails.size > 0){
-                            for(carDetail in carDetails)
-                                itemList.add(CarDetail(carDetail.makerCd, carDetail.makerNm))
-                        }
-                    }
-
-                    MODEL -> {
-                        if(carDetails.size > 0){
-                            setModelUI()
-
-                            for(carDetail in carDetails)
-                                itemList.add(CarDetail(carDetail.modelCd, carDetail.modelNm))
-                        }
-                    }
-
-                    MODEL_DETAIL -> {
-                        if(carDetails.size > 0){
-                            setModelDetailUI()
-
-                            for(carDetail in carDetails)
-                                itemList.add(CarDetail(carDetail.modelDetailCd, carDetail.modelDetailNm))
+                    when(key){
+                        MAKER -> {
+                            if(carDetails.size > 0){
+                                for(carDetail in carDetails)
+                                    itemList.add(CarDetail(carDetail.makerCd, carDetail.makerNm))
+                            }
                         }
 
-                    }
+                        MODEL -> {
+                            if(carDetails.size > 0){
+                                setModelUI()
 
-                    GRADE -> {
-                        if(carDetails.size > 0){
-                            setGradeUI()
-
-                            for(carDetail in carDetails)
-                                itemList.add(CarDetail(carDetail.gradeCd, carDetail.gradeNm))
+                                for(carDetail in carDetails)
+                                    itemList.add(CarDetail(carDetail.modelCd, carDetail.modelNm))
+                            }
                         }
 
+                        MODEL_DETAIL -> {
+                            if(carDetails.size > 0){
+                                setModelDetailUI()
 
-                    }
+                                for(carDetail in carDetails)
+                                    itemList.add(CarDetail(carDetail.modelDetailCd, carDetail.modelDetailNm))
+                            }
 
-                    GRADE_DETAIL -> {
-                        if(carDetails.size > 0){
-                            setGradeDetailUI()
+                        }
 
+                        GRADE -> {
+                            if(carDetails.size > 0){
+                                setGradeUI()
+
+                                for(carDetail in carDetails)
+                                    itemList.add(CarDetail(carDetail.gradeCd, carDetail.gradeNm))
+                            }
+
+
+                        }
+
+                        GRADE_DETAIL -> {
+                            if(carDetails.size > 0){
+                                setGradeDetailUI()
+
+                                for(carDetail in carDetails)
+                                    itemList.add(CarDetail(carDetail.gradeDetailCd, carDetail.gradeDetailNm))
+                            }
+                        }
+
+                        FUEL -> {
                             for(carDetail in carDetails)
-                                itemList.add(CarDetail(carDetail.gradeDetailCd, carDetail.gradeDetailNm))
+                                itemList.add(CarDetail(carDetail.code, carDetail.codeNm))
                         }
                     }
+                }catch(e:Exception){
 
-                    FUEL -> {
-                        for(carDetail in carDetails)
-                            itemList.add(CarDetail(carDetail.code, carDetail.codeNm))
-                    }
                 }
-
-
-
-
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {

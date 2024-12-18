@@ -52,10 +52,14 @@ class WithdrawalActivity: BaseRefreshActivity() {
                                     call: Call<ResponseBody>,
                                     response: Response<ResponseBody>
                                 ) {
-                                    if(response.code() == 200 || response.code() == 201){
-                                        logout()
-                                    }else if(response.code() == 401){
-                                        logout()
+                                    try{
+                                        if(response.code() == 200 || response.code() == 201){
+                                            logout()
+                                        }else if(response.code() == 401){
+                                            logout()
+                                        }
+                                    }catch(e:Exception){
+
                                     }
                                 }
 

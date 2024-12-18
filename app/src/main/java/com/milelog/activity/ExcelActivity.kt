@@ -304,17 +304,20 @@ class ExcelActivity:BaseRefreshActivity() {
                 isActive = isActiveForFilter,
                 userCarId = carIdForFilter).enqueue(object: Callback<ResponseBody> {
                 override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                    if(response.code() == 200 || response.code() == 201){
-                        val jsonString = response.body()?.string()
-                        val getDriveHistroyResponse = GsonBuilder().serializeNulls().create().fromJson(
-                            jsonString,
-                            GetDriveHistoryResponse::class.java
-                        )
+                    try{
+                        if(response.code() == 200 || response.code() == 201){
+                            val jsonString = response.body()?.string()
+                            val getDriveHistroyResponse = GsonBuilder().serializeNulls().create().fromJson(
+                                jsonString,
+                                GetDriveHistoryResponse::class.java
+                            )
 
-//                        createDrivingDataWithHeaders(getDrivingData(getDriveHistroyResponse))
-                        createDrivingDataWithHeaders2(getDrivingData(getDriveHistroyResponse), getDriveHistroyResponse.items)
+                            createDrivingDataWithHeaders2(getDrivingData(getDriveHistroyResponse), getDriveHistroyResponse.items)
 
-                    } else{
+                        } else{
+
+                        }
+                    }catch(e:Exception){
 
                     }
                 }

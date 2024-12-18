@@ -52,12 +52,16 @@ class TermsDetailActivity: BaseRefreshActivity() {
                     call: Call<ResponseBody>,
                     response: Response<ResponseBody>
                 ) {
-                    if(response.code() == 200 || response.code() == 201){
-                        val gson = GsonBuilder().serializeNulls().create()
-                        val termsDetailResponse = gson.fromJson(response.body()?.string(), TermDetailResponse::class.java)
-                        tvTermsContents.setText(termsDetailResponse.content)
-                    }else if(response.code() == 401){
-                        logout()
+                    try{
+                        if(response.code() == 200 || response.code() == 201){
+                            val gson = GsonBuilder().serializeNulls().create()
+                            val termsDetailResponse = gson.fromJson(response.body()?.string(), TermDetailResponse::class.java)
+                            tvTermsContents.setText(termsDetailResponse.content)
+                        }else if(response.code() == 401){
+                            logout()
+                        }
+                    }catch(e:Exception){
+
                     }
                 }
 

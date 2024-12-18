@@ -298,25 +298,28 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                 apiService().getCharanchaCode("Bearer " + PreferenceUtil.getPref(this@LoadCarMoreInfoActivity, PreferenceUtil.ACCESS_TOKEN, "")!!, FUEL, null).enqueue(object:
                     Callback<ResponseBody> {
                     override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                        try{
+                            val jsonString = response.body()?.string()
 
-                        val jsonString = response.body()?.string()
+                            val gson = Gson()
+                            val type: Type = object : TypeToken<List<CarDetailResponse>>() {}.type
+                            val carDetails:List<CarDetailResponse> = gson.fromJson(jsonString, type)
 
-                        val gson = Gson()
-                        val type: Type = object : TypeToken<List<CarDetailResponse>>() {}.type
-                        val carDetails:List<CarDetailResponse> = gson.fromJson(jsonString, type)
+                            val itemList: MutableList<CarDetail> = ArrayList()
 
-                        val itemList: MutableList<CarDetail> = ArrayList()
+                            for(carDetail in carDetails)
+                                itemList.add(CarDetail(carDetail.code, carDetail.codeNm))
 
-                        for(carDetail in carDetails)
-                            itemList.add(CarDetail(carDetail.code, carDetail.codeNm))
+                            // adapter 생성
+                            val adapter = CarDetailAdapter(this@LoadCarMoreInfoActivity, R.layout.edit_fuel_textview, itemList)
 
-                        // adapter 생성
-                        val adapter = CarDetailAdapter(this@LoadCarMoreInfoActivity, R.layout.edit_fuel_textview, itemList)
+                            // listView에 adapter 연결
+                            listView.adapter = adapter
 
-                        // listView에 adapter 연결
-                        listView.adapter = adapter
+                            layout_select.visibility = VISIBLE
+                        }catch(e:Exception){
 
-                        layout_select.visibility = VISIBLE
+                        }
                     }
 
                     override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
@@ -333,25 +336,29 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                 apiService().getCharanchaCode("Bearer " + PreferenceUtil.getPref(this@LoadCarMoreInfoActivity, PreferenceUtil.ACCESS_TOKEN, "")!!, FUEL, null).enqueue(object:
                     Callback<ResponseBody> {
                     override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                        try{
+                            val jsonString = response.body()?.string()
 
-                        val jsonString = response.body()?.string()
+                            val gson = Gson()
+                            val type: Type = object : TypeToken<List<CarDetailResponse>>() {}.type
+                            val carDetails:List<CarDetailResponse> = gson.fromJson(jsonString, type)
 
-                        val gson = Gson()
-                        val type: Type = object : TypeToken<List<CarDetailResponse>>() {}.type
-                        val carDetails:List<CarDetailResponse> = gson.fromJson(jsonString, type)
+                            val itemList: MutableList<CarDetail> = ArrayList()
 
-                        val itemList: MutableList<CarDetail> = ArrayList()
+                            for(carDetail in carDetails)
+                                itemList.add(CarDetail(carDetail.code, carDetail.codeNm))
 
-                        for(carDetail in carDetails)
-                            itemList.add(CarDetail(carDetail.code, carDetail.codeNm))
+                            // adapter 생성
+                            val adapter = CarDetailAdapter(this@LoadCarMoreInfoActivity, R.layout.edit_fuel_textview, itemList)
 
-                        // adapter 생성
-                        val adapter = CarDetailAdapter(this@LoadCarMoreInfoActivity, R.layout.edit_fuel_textview, itemList)
+                            // listView에 adapter 연결
+                            listView.adapter = adapter
 
-                        // listView에 adapter 연결
-                        listView.adapter = adapter
+                            layout_select.visibility = VISIBLE
+                        }catch(e:Exception){
 
-                        layout_select.visibility = VISIBLE
+                        }
+
                     }
 
                     override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
@@ -454,10 +461,14 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                                 call: Call<ResponseBody>,
                                 response: Response<ResponseBody>
                             ) {
-                                if(response.code() == 204){
-                                    finish()
-                                }else if(response.code() == 401){
-                                    logout()
+                                try{
+                                    if(response.code() == 204){
+                                        finish()
+                                    }else if(response.code() == 401){
+                                        logout()
+                                    }
+                                }catch(e:Exception){
+
                                 }
                             }
 

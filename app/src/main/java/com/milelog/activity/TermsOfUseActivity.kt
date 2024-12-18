@@ -66,18 +66,22 @@ class TermsOfUseActivity: BaseActivity() {
     private fun init(){
         apiService().getTerms("MILELOG_USAGE").enqueue(object : Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200 || response.code() == 201){
-                    val jsonString = response.body()?.string()
+                try{
+                    if(response.code() == 200 || response.code() == 201){
+                        val jsonString = response.body()?.string()
 
-                    val gson = GsonBuilder().serializeNulls().create()
-                    val type: Type = object : TypeToken<List<TermsSummaryResponse?>?>() {}.type
-                    termsSummaryResponse = gson.fromJson(jsonString, type)
+                        val gson = GsonBuilder().serializeNulls().create()
+                        val type: Type = object : TypeToken<List<TermsSummaryResponse?>?>() {}.type
+                        termsSummaryResponse = gson.fromJson(jsonString, type)
 
-                    setResource()
-                    setListener()
-                }else if(response.code() == 401){
-                    logout()
-                } else{
+                        setResource()
+                        setListener()
+                    }else if(response.code() == 401){
+                        logout()
+                    } else{
+
+                    }
+                }catch(e:Exception){
 
                 }
             }
@@ -230,56 +234,64 @@ class TermsOfUseActivity: BaseActivity() {
                         call: Call<ResponseBody>,
                         response: Response<ResponseBody>
                     ) {
-                        if(response.code() == 200 || response.code() == 201){
-                            if(PreferenceUtil.getBooleanPref(this@TermsOfUseActivity, PreferenceUtil.PERMISSION_ALL_CHECKED, false)){
-                                apiService().getMyCarCount("Bearer " + PreferenceUtil.getPref(this@TermsOfUseActivity, PreferenceUtil.ACCESS_TOKEN, "")).enqueue(object :Callback<ResponseBody>{
-                                    override fun onResponse(
-                                        call: Call<ResponseBody>,
-                                        response: Response<ResponseBody>
-                                    ) {
-                                        if(response.code() == 200 || response.code() == 201){
-                                            val jsonString = response.body()?.string()
+                        try{
+                            if(response.code() == 200 || response.code() == 201){
+                                if(PreferenceUtil.getBooleanPref(this@TermsOfUseActivity, PreferenceUtil.PERMISSION_ALL_CHECKED, false)){
+                                    apiService().getMyCarCount("Bearer " + PreferenceUtil.getPref(this@TermsOfUseActivity, PreferenceUtil.ACCESS_TOKEN, "")).enqueue(object :Callback<ResponseBody>{
+                                        override fun onResponse(
+                                            call: Call<ResponseBody>,
+                                            response: Response<ResponseBody>
+                                        ) {
+                                            try{
+                                                if(response.code() == 200 || response.code() == 201){
+                                                    val jsonString = response.body()?.string()
 
-                                            if(ibTerms5.isSelected){
-                                                showCustomToast(this@TermsOfUseActivity,getTodayFormattedDate() + " 마일로그 마케팅 정보 수신 동의되었습니다.")
-                                            }else{
-                                                showCustomToast(this@TermsOfUseActivity,getTodayFormattedDate() + " 마일로그 마케팅 정보 수신 거부되었습니다.")
+                                                    if(ibTerms5.isSelected){
+                                                        showCustomToast(this@TermsOfUseActivity,getTodayFormattedDate() + " 마일로그 마케팅 정보 수신 동의되었습니다.")
+                                                    }else{
+                                                        showCustomToast(this@TermsOfUseActivity,getTodayFormattedDate() + " 마일로그 마케팅 정보 수신 거부되었습니다.")
+
+                                                    }
+
+
+                                                    if(jsonString!!.toInt() > 0){
+                                                        startActivity(Intent(this@TermsOfUseActivity, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+
+                                                        finish()
+                                                    }else{
+                                                        startActivity(Intent(this@TermsOfUseActivity, OnBoardingActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+                                                        finish()
+                                                    }
+                                                }else if(response.code() == 401){
+                                                    logout()
+                                                } else{
+                                                    startActivity(Intent(this@TermsOfUseActivity, OnBoardingActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+                                                    finish()
+                                                }
+                                            }catch(e:Exception){
 
                                             }
+                                        }
 
-
-                                            if(jsonString!!.toInt() > 0){
-                                                startActivity(Intent(this@TermsOfUseActivity, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
-
-                                                finish()
-                                            }else{
-                                                startActivity(Intent(this@TermsOfUseActivity, OnBoardingActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
-                                                finish()
-                                            }
-                                        }else if(response.code() == 401){
-                                            logout()
-                                        } else{
+                                        override fun onFailure(
+                                            call: Call<ResponseBody>,
+                                            t: Throwable
+                                        ) {
                                             startActivity(Intent(this@TermsOfUseActivity, OnBoardingActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
                                             finish()
                                         }
-                                    }
+                                    })
+                                }else{
+                                    startActivity(Intent(this@TermsOfUseActivity, PermissionInfoActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
+                                    finish()
+                                }
+                            } else if(response.code() == 401){
+                                logout()
+                            } else{
+                                showCustomToast(this@TermsOfUseActivity,"통신 실패")
 
-                                    override fun onFailure(
-                                        call: Call<ResponseBody>,
-                                        t: Throwable
-                                    ) {
-                                        startActivity(Intent(this@TermsOfUseActivity, OnBoardingActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
-                                        finish()
-                                    }
-                                })
-                            }else{
-                                startActivity(Intent(this@TermsOfUseActivity, PermissionInfoActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
-                                finish()
                             }
-                        } else if(response.code() == 401){
-                            logout()
-                        } else{
-                            showCustomToast(this@TermsOfUseActivity,"통신 실패")
+                        }catch (e:Exception){
 
                         }
                     }

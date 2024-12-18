@@ -80,21 +80,24 @@ class LoadCarInfoActivity: BaseRefreshActivity() {
                                 call: Call<ResponseBody>,
                                 response: Response<ResponseBody>
                             ) {
-
-                                if(response.code() == 200 || response.code() == 201){
-                                    if(response.body()!!.string().toInt() > 0){
-                                        Toast.makeText(this@LoadCarInfoActivity, "동일한 차량이 이미 등록되어 있어요.",
-                                            Toast.LENGTH_SHORT).show()
-                                        finish()
-                                    }else{
-                                        val intent = Intent(this@LoadCarInfoActivity, LoadCarMoreInfoActivity::class.java)
-                                        intent.putExtra("carInfo", state.data)
-                                        intent.putExtra("add",add)
-                                        startActivity(intent)
-                                        finish()
+                                try{
+                                    if(response.code() == 200 || response.code() == 201){
+                                        if(response.body()!!.string().toInt() > 0){
+                                            Toast.makeText(this@LoadCarInfoActivity, "동일한 차량이 이미 등록되어 있어요.",
+                                                Toast.LENGTH_SHORT).show()
+                                            finish()
+                                        }else{
+                                            val intent = Intent(this@LoadCarInfoActivity, LoadCarMoreInfoActivity::class.java)
+                                            intent.putExtra("carInfo", state.data)
+                                            intent.putExtra("add",add)
+                                            startActivity(intent)
+                                            finish()
+                                        }
+                                    }else if(response.code() == 401){
+                                        logout()
                                     }
-                                }else if(response.code() == 401){
-                                    logout()
+                                }catch(e:Exception){
+
                                 }
                             }
 

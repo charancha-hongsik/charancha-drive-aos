@@ -242,28 +242,33 @@ class DetailManageScoreActivity: BaseRefreshActivity(){
                 PreferenceUtil.getPref(this@DetailManageScoreActivity, PreferenceUtil.USER_CARID, "")!!
             ).enqueue(object: Callback<ResponseBody>{
                 override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                    if(response.code() == 200 || response.code() == 201){
-                        val recentDrivingDistance = GsonBuilder().serializeNulls().create().fromJson(
-                            response.body()?.string(),
-                            GetRecentDrivingStatisticsResponse::class.java
-                        )
+                    try{
+                        if(response.code() == 200 || response.code() == 201){
+                            val recentDrivingDistance = GsonBuilder().serializeNulls().create().fromJson(
+                                response.body()?.string(),
+                                GetRecentDrivingStatisticsResponse::class.java
+                            )
 
-                        if(recentDrivingDistance.isRecent){
+                            if(recentDrivingDistance.isRecent){
 
-                            setInquireScope(convertDateFormat(recentDrivingDistance.recentStartTime))
-                            tv_engine_info_average_distance.text = transferDistanceWithUnit(recentDrivingDistance.perOneAverage.totalDistance)
+                                setInquireScope(convertDateFormat(recentDrivingDistance.recentStartTime))
+                                tv_engine_info_average_distance.text = transferDistanceWithUnit(recentDrivingDistance.perOneAverage.totalDistance)
 
-                            tv_engine_info_rapid_acc_de_count.text = transferNumWithRounds(recentDrivingDistance.total.totalRapidCount).toString() + "회"
-                            tv_engine_info_high_speed_driving.text = transferNumWithRounds(recentDrivingDistance.average.highSpeedDrivingDistancePercentage).toString() + "%"
-                            tv_engine_info_best_driving.text = transferNumWithRounds(recentDrivingDistance.average.optimalDrivingPercentage).toString() + "%"
-                            tv_engine_info_normal_driving.text = transferNumWithRounds(recentDrivingDistance.average.constantSpeedDrivingDistancePercentage).toString() + "%"
-                        }else{
-                            setInquireScope(getTodayFormattedDate())
-                            tv_engine_info_average_distance.text = transferDistanceWithUnit(0.0)
+                                tv_engine_info_rapid_acc_de_count.text = transferNumWithRounds(recentDrivingDistance.total.totalRapidCount).toString() + "회"
+                                tv_engine_info_high_speed_driving.text = transferNumWithRounds(recentDrivingDistance.average.highSpeedDrivingDistancePercentage).toString() + "%"
+                                tv_engine_info_best_driving.text = transferNumWithRounds(recentDrivingDistance.average.optimalDrivingPercentage).toString() + "%"
+                                tv_engine_info_normal_driving.text = transferNumWithRounds(recentDrivingDistance.average.constantSpeedDrivingDistancePercentage).toString() + "%"
+                            }else{
+                                setInquireScope(getTodayFormattedDate())
+                                tv_engine_info_average_distance.text = transferDistanceWithUnit(0.0)
+                            }
+                        }else if(response.code() == 401){
+                            logout()
                         }
-                    }else if(response.code() == 401){
-                        logout()
+                    }catch(e:Exception){
+
                     }
+
                 }
 
                 override fun onFailure(call: Call<ResponseBody>, t: Throwable) {

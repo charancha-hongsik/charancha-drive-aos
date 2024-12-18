@@ -128,17 +128,20 @@ open class BaseActivity: AppCompatActivity(){
                                         call: Call<ResponseBody>,
                                         response: Response<ResponseBody>
                                     ) {
-                                        if (response.code() == 200 || response.code() == 201){
-                                            val postConnectDeviceResponse = gson.fromJson(response.body()?.string(), PostConnectDeviceResponse::class.java)
+                                        try{
+                                            if (response.code() == 200 || response.code() == 201){
+                                                val postConnectDeviceResponse = gson.fromJson(response.body()?.string(), PostConnectDeviceResponse::class.java)
 
-                                            PreferenceUtil.putBooleanPref(this@BaseActivity, PreferenceUtil.POST_DEVICE_INFO_STATE, true)
-                                            PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.DEVICE_ID_FOR_FCM, postConnectDeviceResponse.id)
-                                        }else if(response.code() == 401){
-                                            logout()
+                                                PreferenceUtil.putBooleanPref(this@BaseActivity, PreferenceUtil.POST_DEVICE_INFO_STATE, true)
+                                                PreferenceUtil.putPref(this@BaseActivity, PreferenceUtil.DEVICE_ID_FOR_FCM, postConnectDeviceResponse.id)
+                                            }else if(response.code() == 401){
+                                                logout()
+                                            }
+
+                                            tokenProcessCallback.completeProcess()
+                                        }catch(e:Exception){
+
                                         }
-
-                                        tokenProcessCallback.completeProcess()
-
                                     }
 
                                     override fun onFailure(call: Call<ResponseBody>, t: Throwable) {

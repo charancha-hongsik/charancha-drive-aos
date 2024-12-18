@@ -113,83 +113,87 @@ class SettingActivity: BaseRefreshActivity(){
 
         apiService().getLatest("AOS","PHONE").enqueue(object:Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                if(response.code() == 200 || response.code() == 201) {
-                    val getLatestResponse = GsonBuilder().serializeNulls().create().fromJson(
-                        response.body()?.string(),
-                        GetLatestResponse::class.java
-                    )
+                try{
+                    if(response.code() == 200 || response.code() == 201) {
+                        val getLatestResponse = GsonBuilder().serializeNulls().create().fromJson(
+                            response.body()?.string(),
+                            GetLatestResponse::class.java
+                        )
 
-                    tv_version.text = "V " + BuildConfig.VERSION_NAME
+                        tv_version.text = "V " + BuildConfig.VERSION_NAME
 
 
-                    val currentAppVersion = BuildConfig.VERSION_NAME
-                    val majorFromApi =
-                        getLatestResponse.version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
+                        val currentAppVersion = BuildConfig.VERSION_NAME
+                        val majorFromApi =
+                            getLatestResponse.version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
+                                .toTypedArray()[0]
+                        val minorFromApi =
+                            getLatestResponse.version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
+                                .toTypedArray()[1]
+                        val patchFromApi =
+                            getLatestResponse.version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
+                                .toTypedArray()[2]
+                        val major = currentAppVersion.split("\\.".toRegex())
+                            .dropLastWhile { it.isEmpty() }
                             .toTypedArray()[0]
-                    val minorFromApi =
-                        getLatestResponse.version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
+                        val minor = currentAppVersion.split("\\.".toRegex())
+                            .dropLastWhile { it.isEmpty() }
                             .toTypedArray()[1]
-                    val patchFromApi =
-                        getLatestResponse.version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
+                        val patch = currentAppVersion.split("\\.".toRegex())
+                            .dropLastWhile { it.isEmpty() }
                             .toTypedArray()[2]
-                    val major = currentAppVersion.split("\\.".toRegex())
-                        .dropLastWhile { it.isEmpty() }
-                        .toTypedArray()[0]
-                    val minor = currentAppVersion.split("\\.".toRegex())
-                        .dropLastWhile { it.isEmpty() }
-                        .toTypedArray()[1]
-                    val patch = currentAppVersion.split("\\.".toRegex())
-                        .dropLastWhile { it.isEmpty() }
-                        .toTypedArray()[2]
 
-                    if (majorFromApi.toInt() > major.toInt()) {
+                        if (majorFromApi.toInt() > major.toInt()) {
+                            tv_latest.visibility = GONE
+                            btn_update.visibility = VISIBLE
+                            return
+                        }else if(majorFromApi.toInt() == major.toInt()){
+
+                        }else{
+                            tv_latest.visibility = VISIBLE
+                            btn_update.visibility = GONE
+                            return
+                        }
+
+                        if (minorFromApi.toInt() > minor.toInt()) {
+                            tv_latest.visibility = GONE
+                            btn_update.visibility = VISIBLE
+
+                            return
+                        }else if(minorFromApi.toInt() == minor.toInt()){
+
+                        }else{
+                            tv_latest.visibility = VISIBLE
+                            btn_update.visibility = GONE
+                            return
+                        }
+
+
+                        if (patchFromApi.toInt() > patch.toInt()) {
+                            tv_latest.visibility = GONE
+                            btn_update.visibility = VISIBLE
+
+                            return
+                        }
+
+
+
+
+
+
+                    }else if(response.code() == 401){
+                        logout()
+                    } else{
+                        tv_version.text = "V " + BuildConfig.VERSION_NAME
+
                         tv_latest.visibility = GONE
                         btn_update.visibility = VISIBLE
-                        return
-                    }else if(majorFromApi.toInt() == major.toInt()){
 
-                    }else{
-                        tv_latest.visibility = VISIBLE
-                        btn_update.visibility = GONE
-                        return
                     }
 
-                    if (minorFromApi.toInt() > minor.toInt()) {
-                        tv_latest.visibility = GONE
-                        btn_update.visibility = VISIBLE
-
-                        return
-                    }else if(minorFromApi.toInt() == minor.toInt()){
-
-                    }else{
-                        tv_latest.visibility = VISIBLE
-                        btn_update.visibility = GONE
-                        return
-                    }
-
-
-                    if (patchFromApi.toInt() > patch.toInt()) {
-                        tv_latest.visibility = GONE
-                        btn_update.visibility = VISIBLE
-
-                        return
-                    }
-
-
-
-
-
-
-                }else if(response.code() == 401){
-                    logout()
-                } else{
-                    tv_version.text = "V " + BuildConfig.VERSION_NAME
-
-                    tv_latest.visibility = GONE
-                    btn_update.visibility = VISIBLE
+                }catch(e:Exception){
 
                 }
-
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
