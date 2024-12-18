@@ -127,10 +127,10 @@
 
             <ImageView
                 android:id="@+id/ib_edit_nickname"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_marginRight="16dp"
-                android:src="@drawable/ic_edit_gray"
+                android:src="@drawable/ic_edit_filled_1x"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
