@@ -1,6 +1,7 @@
 package com.milelog.activity
 
 import android.Manifest.permission.BLUETOOTH_CONNECT
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
@@ -21,6 +22,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -49,7 +51,7 @@ class FindBluetoothActivity: BaseRefreshActivity() {
     lateinit var btn_back:ImageView
     var permissionState = false
     lateinit var btn_find_bluetooth2:TextView
-    lateinit var layout_no_find_bluetooth:LinearLayout
+    lateinit var layout_no_find_bluetooth:ConstraintLayout
     lateinit var view_divider:View
     lateinit var layout_connected_car:LinearLayout
 
@@ -154,82 +156,44 @@ class FindBluetoothActivity: BaseRefreshActivity() {
         }
     }
 
+    @SuppressLint("MissingPermission")
     private fun setBluetoothList(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            if (ActivityCompat.checkSelfPermission(
-                    this@FindBluetoothActivity,
-                    BLUETOOTH_CONNECT
-                ) == PackageManager.PERMISSION_GRANTED
-            ) {
+        var myCarsList: List<MyCarsEntity> = listOf()
 
-                var myCarsList: List<MyCarsEntity> = listOf()
+        PreferenceUtil.getPref(this, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
+            if(it != ""){
+                val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
+                myCarsList = GsonBuilder().serializeNulls().create().fromJson(it, type)
+                myCarsList = myCarsList.filterNot { it.bluetooth_mac_address.isNullOrEmpty() }
+            }
 
-                PreferenceUtil.getPref(this, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
-                    if(it != ""){
-                        val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
-                        myCarsList = GsonBuilder().serializeNulls().create().fromJson(it, type)
-                        myCarsList = myCarsList.filterNot { it.bluetooth_mac_address.isNullOrEmpty() }
-                    }
+            val bluetoothManager: BluetoothManager = getSystemService(BluetoothManager::class.java)
+            val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
 
+            val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
 
-                    val bluetoothManager: BluetoothManager = getSystemService(BluetoothManager::class.java)
-                    val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
+            val devices:MutableList<FindBluetoothEntity> = mutableListOf()
 
-                    val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
+            pairedDevices?.forEach { device ->
 
-                    val devices:MutableList<FindBluetoothEntity> = mutableListOf()
+                val isDuplicate = myCarsList.any { car -> car.bluetooth_mac_address == device.address }
 
-                    pairedDevices?.forEach { device ->
-
-                        val isDuplicate = myCarsList.any { car -> car.bluetooth_mac_address == device.address }
-
-                        if (!isDuplicate) {
-                            // 중복이 아니면 devices에 추가
-                            devices.add(FindBluetoothEntity(device.name, device.address, device.bluetoothClass.deviceClass))
-                        }
-                    }
-
-                    rv_find_bluetooth.adapter = DetectedStatusAdapter(context = this, findBluetoothEntity = devices)
-
-                    Toast.makeText(this, "등록 가능한 블루투스 기기를 불러왔어요.", Toast.LENGTH_SHORT).show()
-
-
+                if (!isDuplicate) {
+                    // 중복이 아니면 devices에 추가
+                    devices.add(FindBluetoothEntity(device.name, device.address, device.bluetoothClass.deviceClass))
                 }
             }
-        }else{
-            var myCarsList: List<MyCarsEntity> = listOf()
 
-            PreferenceUtil.getPref(this, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
-                if(it != ""){
-                    val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
-                    myCarsList = GsonBuilder().serializeNulls().create().fromJson(it, type)
-                    myCarsList = myCarsList.filterNot { it.bluetooth_mac_address.isNullOrEmpty() }
-                }
+            rv_find_bluetooth.adapter = DetectedStatusAdapter(context = this, findBluetoothEntity = devices)
 
+            if(devices.size == 0){
+                Log.d("testsetesset","testessetset :: " + devices.size)
 
-                val bluetoothManager: BluetoothManager = getSystemService(BluetoothManager::class.java)
-                val bluetoothAdapter: BluetoothAdapter? = bluetoothManager.adapter
-
-                val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
-
-                val devices:MutableList<FindBluetoothEntity> = mutableListOf()
-
-                pairedDevices?.forEach { device ->
-
-                    val isDuplicate = myCarsList.any { car -> car.bluetooth_mac_address == device.address }
-
-                    if (!isDuplicate) {
-                        // 중복이 아니면 devices에 추가
-                        devices.add(FindBluetoothEntity(device.name, device.address, device.bluetoothClass.deviceClass))
-                    }
-                }
-
-                rv_find_bluetooth.adapter = DetectedStatusAdapter(context = this, findBluetoothEntity = devices)
-
-                Toast.makeText(this, "등록 가능한 블루투스 기기를 불러왔어요.", Toast.LENGTH_SHORT).show()
-
-
+                rv_find_bluetooth.visibility = GONE
+                layout_no_find_bluetooth.visibility = VISIBLE
             }
+
+            Toast.makeText(this, "등록 가능한 블루투스 기기를 불러왔어요.", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -570,14 +534,13 @@ class FindBluetoothActivity: BaseRefreshActivity() {
     }
 
     private fun setHasPermissionUI(){
-        setConnectedCarList()
-
         layout_no_bluetooth.visibility = GONE
         layout_bluetooth.visibility = VISIBLE
         rv_find_bluetooth.visibility = VISIBLE
         layout_no_find_bluetooth.visibility = GONE
         btn_find_bluetooth2.visibility = VISIBLE
 
+        setConnectedCarList()
     }
 
 }

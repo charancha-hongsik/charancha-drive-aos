@@ -71,6 +71,7 @@
                     android:layout_marginTop="12dp"
                     android:paddingBottom="20dp"
                     android:scrollbars="none"
+                    android:overScrollMode="never"
                     android:nestedScrollingEnabled="false"
                     android:clipToPadding="false" />
 
@@ -89,7 +90,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp">
 
@@ -109,38 +109,51 @@
                     android:layout_marginTop="12dp"
                     android:paddingBottom="32dp"
                     android:scrollbars="none"
+                    android:overScrollMode="never"
                     android:nestedScrollingEnabled="false"
                     android:clipToPadding="false" />
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layout_no_find_bluetooth"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingTop="72dp"
                     android:paddingBottom="95dp"
-                    android:visibility="gone"
-                    android:scrollbars="none"
-                    android:orientation="vertical"
-                    android:clipToPadding="false"
-                    android:gravity="center">
+                    android:visibility="gone">
 
-                    <ImageView
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_error2" />
-
-                    <TextView
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="등록 가능한 블루투스 기기가 없어요."
-                        android:textAppearance="@style/B1R"
+                        android:orientation="vertical"
+                        android:scrollbars="none"
+                        android:clipToPadding="false"
                         android:gravity="center"
-                        android:layout_gravity="center"
-                        android:textFontWeight="400"
-                        android:layout_marginTop="20dp"
-                        android:textColor="@color/gray_500"/>
-                </LinearLayout>
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent">
+
+                        <ImageView
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_error2" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="등록 가능한 블루투스 기기가 없어요."
+                            android:textAppearance="@style/B1R"
+                            android:gravity="center"
+                            android:layout_gravity="center"
+                            android:textFontWeight="400"
+                            android:layout_marginTop="20dp"
+                            android:textColor="@color/gray_500"/>
+
+
+                    </LinearLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 

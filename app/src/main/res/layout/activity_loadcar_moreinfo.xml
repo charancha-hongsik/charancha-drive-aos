@@ -429,7 +429,8 @@
                     <ScrollView
                         android:id="@+id/sv_for_et"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:overScrollMode="never">
 
                         <LinearLayout
                             android:id="@+id/layout_corp"
