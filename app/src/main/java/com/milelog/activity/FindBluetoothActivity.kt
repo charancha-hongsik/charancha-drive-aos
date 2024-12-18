@@ -187,10 +187,13 @@ class FindBluetoothActivity: BaseRefreshActivity() {
             rv_find_bluetooth.adapter = DetectedStatusAdapter(context = this, findBluetoothEntity = devices)
 
             if(devices.size == 0){
-                Log.d("testsetesset","testessetset :: " + devices.size)
+                if(layout_connected_car.visibility == VISIBLE){
+                    rv_find_bluetooth.visibility = GONE
+                    layout_no_find_bluetooth.visibility = VISIBLE
+                }else{
+                    setNoPermissionUI()
 
-                rv_find_bluetooth.visibility = GONE
-                layout_no_find_bluetooth.visibility = VISIBLE
+                }
             }
 
             Toast.makeText(this, "등록 가능한 블루투스 기기를 불러왔어요.", Toast.LENGTH_SHORT).show()
@@ -238,8 +241,6 @@ class FindBluetoothActivity: BaseRefreshActivity() {
 
                     val type = object : TypeToken<MutableList<MyCarsEntity>>() {}.type
                     val myCarsList: MutableList<MyCarsEntity> = GsonBuilder().serializeNulls().create().fromJson(it, type)
-
-                    Log.d("testeststest","testestestes :: " + myCarsList.size)
 
 
                     if(myCarsList.size > 1){
