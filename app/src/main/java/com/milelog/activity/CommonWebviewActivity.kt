@@ -1,6 +1,5 @@
 package com.milelog.activity
 
-import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -8,6 +7,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.TextUtils
 import android.util.Log
 import android.view.View.VISIBLE
 import android.webkit.CookieManager
@@ -18,13 +18,16 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import com.google.gson.Gson
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.milelog.BuildConfig.BASE_TERMS_URL
 import com.milelog.PreferenceUtil
 import com.milelog.R
 import gun0912.tedimagepicker.builder.TedImagePicker
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
+
 
 class CommonWebviewActivity: BaseActivity() {
     lateinit var wv_common:WebView
@@ -143,6 +146,8 @@ class CommonWebviewActivity: BaseActivity() {
     }
 
     class MilelogPublicApi(val activity: CommonWebviewActivity) {
+        private val fa = FirebaseAnalytics.getInstance(activity)
+
         @JavascriptInterface
         fun openMyPage(){
             activity.startActivity(Intent(activity, MyPageActivity::class.java))
@@ -284,6 +289,49 @@ class CommonWebviewActivity: BaseActivity() {
                 activity.fileChooserCallback?.onReceiveValue(null)
                 activity.fileChooserCallback = null
             }
+        }
+
+        /**
+         * MilelogPublicApi.logEvent("page_view", "{\"page_location\":\"https://example.com\",\"page_referrer\":\"direct\"}")
+         */
+        @JavascriptInterface
+        fun logEvent(name: String, jsonParams: String) {
+            Log.d("testestestse","testestestestse logEvent name :: " + name)
+            Log.d("testestestse","testestestestse logEvent jsonParams :: " + jsonParams)
+
+            fa.logEvent(name, bundleFromJson(jsonParams))
+        }
+
+        private fun bundleFromJson(json: String): Bundle {
+            // [START_EXCLUDE]
+            if (TextUtils.isEmpty(json)) {
+                return Bundle()
+            }
+
+            val result = Bundle()
+            try {
+                val jsonObject = JSONObject(json)
+                val keys = jsonObject.keys()
+
+                while (keys.hasNext()) {
+                    val key = keys.next()
+                    val value = jsonObject[key]
+
+                    if (value is String) {
+                        result.putString(key, value )
+                    } else if (value is Int) {
+                        result.putInt(key, (value ))
+                    } else if (value is Double) {
+                        result.putDouble(key, (value))
+                    } else {
+                    }
+                }
+            } catch (e: JSONException) {
+                return Bundle()
+            }
+
+            return result
+            // [END_EXCLUDE]
         }
     }
 

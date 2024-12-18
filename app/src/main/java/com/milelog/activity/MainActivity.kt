@@ -17,6 +17,7 @@ import android.os.PowerManager
 import android.provider.MediaStore
 import android.provider.Settings
 import android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+import android.text.TextUtils
 import android.util.Log
 import android.view.View.VISIBLE
 import android.webkit.CookieManager
@@ -52,6 +53,8 @@ import com.milelog.viewmodel.state.AccountState
 import com.milelog.viewmodel.state.MyCarInfoState
 import com.milelog.viewmodel.state.NotSavedDataState
 import gun0912.tedimagepicker.builder.TedImagePicker
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
 
@@ -496,6 +499,8 @@ class MainActivity:BaseActivity() {
     }
 
     class MilelogPublicApi(val activity: MainActivity) {
+        private val fa = FirebaseAnalytics.getInstance(activity)
+
         @JavascriptInterface
         fun openMyPage(){
             activity.startActivity(Intent(activity, MyPageActivity::class.java))
@@ -632,6 +637,50 @@ class MainActivity:BaseActivity() {
                 activity.fileChooserCallback = null
             }
         }
+
+        /**
+         * MilelogPublicApi.logEvent("page_view", "{\"page_location\":\"https://example.com\",\"page_referrer\":\"direct\"}")
+         */
+        @JavascriptInterface
+        fun logEvent(name: String, jsonParams: String) {
+            Log.d("testestestse","testestestestse logEvent name :: " + name)
+            Log.d("testestestse","testestestestse logEvent jsonParams :: " + jsonParams)
+
+            fa.logEvent(name, bundleFromJson(jsonParams))
+        }
+
+        private fun bundleFromJson(json: String): Bundle {
+            // [START_EXCLUDE]
+            if (TextUtils.isEmpty(json)) {
+                return Bundle()
+            }
+
+            val result = Bundle()
+            try {
+                val jsonObject = JSONObject(json)
+                val keys = jsonObject.keys()
+
+                while (keys.hasNext()) {
+                    val key = keys.next()
+                    val value = jsonObject[key]
+
+                    if (value is String) {
+                        result.putString(key, value as String)
+                    } else if (value is Int) {
+                        result.putInt(key, (value as Int)!!)
+                    } else if (value is Double) {
+                        result.putDouble(key, (value as Double)!!)
+                    } else {
+                    }
+                }
+            } catch (e: JSONException) {
+                return Bundle()
+            }
+
+            return result
+            // [END_EXCLUDE]
+        }
+
     }
 
     override fun onBackPressed() {
