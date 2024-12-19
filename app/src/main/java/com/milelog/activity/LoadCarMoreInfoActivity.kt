@@ -372,7 +372,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
 
         btn_next.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                CustomDialog(this@LoadCarMoreInfoActivity, "차량을 등록할까요?", "법인 또는 개인은 차량 등록 이후에\n변경할 수 없어요. 등록할까요?", "등록","취소",  object : CustomDialog.DialogCallback{
+                CustomDialog(this@LoadCarMoreInfoActivity, "차량을 등록할까요?", "법인 또는 개인은 차량 등록 이후에 변경할 수 없어요. 등록할까요?", "등록","취소",  object : CustomDialog.DialogCallback{
                     override fun onConfirm() {
                         var type:String = PERSONAL
                         var data:Data? = null
