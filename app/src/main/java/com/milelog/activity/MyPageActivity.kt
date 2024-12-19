@@ -150,8 +150,8 @@ class MyPageActivity: BaseRefreshActivity() {
             override fun onSingleClick(v: View?) {
                 CustomDialog(
                     this@MyPageActivity,
-                    null,
-                    "로그아웃 하시겠습니까?",
+                    "로그아웃할까요?",
+                    "로그아웃하면 주행이 기록되지 않아요. 그래도 로그아웃할까요?",
                     "로그아웃",
                     "취소",
                     object : CustomDialog.DialogCallback {
