@@ -126,9 +126,12 @@ class CarDetailActivity: BaseRefreshActivity() {
     }
 
     private fun setListener(){
-        btn_maker.setOnClickListener {
-            setSelector(MAKER)
-        }
+        btn_maker.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                setSelector(MAKER)
+            }
+
+        })
 
         btn_maker.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {

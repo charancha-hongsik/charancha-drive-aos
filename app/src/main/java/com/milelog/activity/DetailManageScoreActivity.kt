@@ -520,140 +520,162 @@ class DetailManageScoreActivity: BaseRefreshActivity(){
     }
 
     fun setListener(){
-        btn_back.setOnClickListener { finish() }
+        btn_back.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                finish()
+            }
 
-        btn_choose_date.setOnClickListener {
-            layout_choose_date.visibility = VISIBLE
-            layout_select_main.visibility = VISIBLE
-            btn_inquire_date.visibility = VISIBLE
-            layout_date_own.visibility = GONE
-            listView_choose_date_own.visibility = GONE
-            btn_select_date_from_list.visibility = GONE
+        })
 
-            btn_a_month.isSelected = true
-            btn_six_month.isSelected = false
-            btn_each_month.isSelected = false
+        btn_choose_date.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                layout_choose_date.visibility = VISIBLE
+                layout_select_main.visibility = VISIBLE
+                btn_inquire_date.visibility = VISIBLE
+                layout_date_own.visibility = GONE
+                listView_choose_date_own.visibility = GONE
+                btn_select_date_from_list.visibility = GONE
 
-            val itemList = getDateList()
+                btn_a_month.isSelected = true
+                btn_six_month.isSelected = false
+                btn_each_month.isSelected = false
 
-            selectedDate = itemList.get(0).date
-            tv_selected_date.text = selectedDate
+                val itemList = getDateList()
 
-            // adapter 생성
-            val dateAdapter = DateAdapter(
-                this,
-                itemList,
-                object : DateAdapter.DateCallback {
-                    override fun chosenDate(date: String) {
-                        selectedDate = date
+                selectedDate = itemList.get(0).date
+                tv_selected_date.text = selectedDate
 
-                        for (list in itemList) {
-                            list.selected = false
-                            if (list.date == date) {
-                                list.selected = true
+                // adapter 생성
+                val dateAdapter = DateAdapter(
+                    this@DetailManageScoreActivity,
+                    itemList,
+                    object : DateAdapter.DateCallback {
+                        override fun chosenDate(date: String) {
+                            selectedDate = date
+
+                            for (list in itemList) {
+                                list.selected = false
+                                if (list.date == date) {
+                                    list.selected = true
+                                }
                             }
+                            (listView_choose_date_own.adapter as DateAdapter).notifyDataSetChanged()
+
+                            listView_choose_date_own.visibility = GONE
+                            layout_select_main.visibility = VISIBLE
+                            btn_inquire_date.visibility = VISIBLE
+
+                            tv_selected_date.text = selectedDate
+
                         }
-                        (listView_choose_date_own.adapter as DateAdapter).notifyDataSetChanged()
+                    })
 
-                        listView_choose_date_own.visibility = GONE
-                        layout_select_main.visibility = VISIBLE
-                        btn_inquire_date.visibility = VISIBLE
+                // listView에 adapter 연결
+                listView_choose_date_own.adapter = dateAdapter
 
-                        tv_selected_date.text = selectedDate
+                TextViewCompat.setTextAppearance(btn_a_month, R.style.B1SBweight600)
+                TextViewCompat.setTextAppearance(btn_six_month, R.style.B1Mweight500)
+                TextViewCompat.setTextAppearance(btn_each_month, R.style.B1Mweight500)
+            }
+
+        })
+
+        layout_choose_date.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                if(layout_select_main.visibility == VISIBLE)
+                    layout_choose_date.visibility = GONE
+                else {
+                    btn_inquire_date.performClick()
+                }
+            }
+
+        })
+
+        btn_close_select_date.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                layout_choose_date.visibility = GONE
+            }
+
+        })
+
+        btn_inquire_date.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                if(layout_select_main.visibility == GONE){
+
+                    listView_choose_date_own.visibility = GONE
+                    layout_select_main.visibility = GONE
+                    layout_choose_date.visibility = GONE
+
+                    tv_selected_date.text = selectedDate
+                }else{
+                    if(btn_a_month.isSelected){
+                        setInquireScope(getLastMonthRangeString())
+                        setData(getCurrentAndPastTimeForISO(29).second, getCurrentAndPastTimeForISO(29).first)
+                    }else if(btn_six_month.isSelected){
+                        setInquireScope(getLastSixMonthsRangeString())
+                        setData(getCurrentAndPastTimeForISO(SIX_MONTH).second, getCurrentAndPastTimeForISO(SIX_MONTH).first)
+
+                    }else if(btn_each_month.isSelected){
+                        setInquireScope(getDateRangeString(selectedDate))
+                        setData(getDateRange(selectedDate).second,getDateRange(selectedDate).first)
 
                     }
-                })
+                    layout_choose_date.visibility = GONE
 
-            // listView에 adapter 연결
-            listView_choose_date_own.adapter = dateAdapter
+                }            }
 
-            TextViewCompat.setTextAppearance(btn_a_month, R.style.B1SBweight600)
-            TextViewCompat.setTextAppearance(btn_six_month, R.style.B1Mweight500)
-            TextViewCompat.setTextAppearance(btn_each_month, R.style.B1Mweight500)
-        }
+        })
 
-        layout_choose_date.setOnClickListener {
-            if(layout_select_main.visibility == VISIBLE)
-                layout_choose_date.visibility = GONE
-            else {
-                btn_inquire_date.performClick()
-            }
-        }
-
-        btn_close_select_date.setOnClickListener {
-            layout_choose_date.visibility = GONE
-        }
-
-        btn_inquire_date.setOnClickListener {
-            if(layout_select_main.visibility == GONE){
-
-                listView_choose_date_own.visibility = GONE
+        btn_select_date_from_list.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                listView_choose_date_own.visibility = VISIBLE
                 layout_select_main.visibility = GONE
-                layout_choose_date.visibility = GONE
+                btn_inquire_date.visibility = GONE            }
 
-                tv_selected_date.text = selectedDate
-            }else{
-                if(btn_a_month.isSelected){
-                    setInquireScope(getLastMonthRangeString())
-                    setData(getCurrentAndPastTimeForISO(29).second, getCurrentAndPastTimeForISO(29).first)
-                }else if(btn_six_month.isSelected){
-                    setInquireScope(getLastSixMonthsRangeString())
-                    setData(getCurrentAndPastTimeForISO(SIX_MONTH).second, getCurrentAndPastTimeForISO(SIX_MONTH).first)
+        })
 
-                }else if(btn_each_month.isSelected){
-                    setInquireScope(getDateRangeString(selectedDate))
-                    setData(getDateRange(selectedDate).second,getDateRange(selectedDate).first)
+        btn_a_month.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                btn_a_month.isSelected = true
+                btn_six_month.isSelected = false
+                btn_each_month.isSelected = false
 
-                }
-                layout_choose_date.visibility = GONE
+                TextViewCompat.setTextAppearance(btn_a_month, R.style.B1SBweight600)
+                TextViewCompat.setTextAppearance(btn_six_month, R.style.B1Mweight500)
+                TextViewCompat.setTextAppearance(btn_each_month, R.style.B1Mweight500)
 
-            }
-        }
+                btn_select_date_from_list.visibility = GONE            }
 
-        btn_select_date_from_list.setOnClickListener {
-            listView_choose_date_own.visibility = VISIBLE
-            layout_select_main.visibility = GONE
-            btn_inquire_date.visibility = GONE
-        }
+        })
 
-        btn_a_month.setOnClickListener {
-            btn_a_month.isSelected = true
-            btn_six_month.isSelected = false
-            btn_each_month.isSelected = false
+        btn_six_month.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                btn_a_month.isSelected = false
+                btn_six_month.isSelected = true
+                btn_each_month.isSelected = false
 
-            TextViewCompat.setTextAppearance(btn_a_month, R.style.B1SBweight600)
-            TextViewCompat.setTextAppearance(btn_six_month, R.style.B1Mweight500)
-            TextViewCompat.setTextAppearance(btn_each_month, R.style.B1Mweight500)
+                TextViewCompat.setTextAppearance(btn_a_month, R.style.B1Mweight500)
+                TextViewCompat.setTextAppearance(btn_six_month, R.style.B1SBweight600)
+                TextViewCompat.setTextAppearance(btn_each_month, R.style.B1Mweight500)
 
-            btn_select_date_from_list.visibility = GONE
+                btn_select_date_from_list.visibility = GONE
+                layout_date_own.visibility = GONE            }
 
-        }
+        })
 
-        btn_six_month.setOnClickListener {
-            btn_a_month.isSelected = false
-            btn_six_month.isSelected = true
-            btn_each_month.isSelected = false
+        btn_each_month.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                btn_a_month.isSelected = false
+                btn_six_month.isSelected = false
+                btn_each_month.isSelected = true
 
-            TextViewCompat.setTextAppearance(btn_a_month, R.style.B1Mweight500)
-            TextViewCompat.setTextAppearance(btn_six_month, R.style.B1SBweight600)
-            TextViewCompat.setTextAppearance(btn_each_month, R.style.B1Mweight500)
+                TextViewCompat.setTextAppearance(btn_a_month, R.style.B1Mweight500)
+                TextViewCompat.setTextAppearance(btn_six_month, R.style.B1Mweight500)
+                TextViewCompat.setTextAppearance(btn_each_month, R.style.B1SBweight600)
 
-            btn_select_date_from_list.visibility = GONE
-            layout_date_own.visibility = GONE
+                btn_select_date_from_list.visibility = VISIBLE            }
 
-        }
-
-        btn_each_month.setOnClickListener {
-            btn_a_month.isSelected = false
-            btn_six_month.isSelected = false
-            btn_each_month.isSelected = true
-
-            TextViewCompat.setTextAppearance(btn_a_month, R.style.B1Mweight500)
-            TextViewCompat.setTextAppearance(btn_six_month, R.style.B1Mweight500)
-            TextViewCompat.setTextAppearance(btn_each_month, R.style.B1SBweight600)
-
-            btn_select_date_from_list.visibility = VISIBLE
-        }
+        })
     }
 
     private fun persistentBottomSheetEvent() {
@@ -715,11 +737,12 @@ class DetailManageScoreActivity: BaseRefreshActivity(){
                 }
             }
 
-            tvName.setOnClickListener {
-                callback.chosenDate(tvName.text.toString())
-            }
+            tvName.setOnClickListener(object:OnSingleClickListener(){
+                override fun onSingleClick(v: View?) {
+                    callback.chosenDate(tvName.text.toString())
+                }
 
-
+            })
 
             return listItemView
         }

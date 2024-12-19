@@ -5,6 +5,7 @@ import android.content.Intent.*
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -41,9 +42,12 @@ class OnBoardingActivity: BaseRefreshActivity() {
         IvIndicator = findViewById(R.id.iv_indicator)
 
         layoutNext = findViewById(R.id.layout_next)
-        layoutNext.setOnClickListener {
-            startActivity(Intent(this, RegisterCarActivity::class.java))
-        }
+        layoutNext.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                startActivity(Intent(this@OnBoardingActivity, RegisterCarActivity::class.java))
+            }
+
+        })
 
 
         viewpagerOnbaording = findViewById(R.id.viewpager_onboarding)

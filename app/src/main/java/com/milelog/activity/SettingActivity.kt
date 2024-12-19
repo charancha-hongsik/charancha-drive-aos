@@ -62,35 +62,46 @@ class SettingActivity: BaseRefreshActivity(){
 
         })
 
-        btn_open_set_distance_unit.setOnClickListener {
-            layout_select_distance_unit.visibility = VISIBLE
-        }
+        btn_open_set_distance_unit.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                layout_select_distance_unit.visibility = VISIBLE
+            }
 
-        layout_select_distance_unit.setOnClickListener {
-            layout_select_distance_unit.visibility = GONE
-        }
+        })
 
-        btn_km.setOnClickListener {
-            btn_km.isSelected = true
-            btn_mile.isSelected = false
+        layout_select_distance_unit.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                layout_select_distance_unit.visibility = GONE
+            }
 
-            tv_unit.text = "km"
+        })
 
-            PreferenceUtil.putPref(this@SettingActivity, PreferenceUtil.KM_MILE, "km")
+        btn_km.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                btn_km.isSelected = true
+                btn_mile.isSelected = false
 
-            layout_select_distance_unit.visibility = GONE
-        }
+                tv_unit.text = "km"
 
-        btn_mile.setOnClickListener {
-            btn_km.isSelected = false
-            btn_mile.isSelected = true
+                PreferenceUtil.putPref(this@SettingActivity, PreferenceUtil.KM_MILE, "km")
 
-            tv_unit.text = "mile"
+                layout_select_distance_unit.visibility = GONE
+            }
 
-            PreferenceUtil.putPref(this@SettingActivity, PreferenceUtil.KM_MILE,"mile")
+        })
 
-            layout_select_distance_unit.visibility = GONE
-        }
+        btn_mile.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                btn_km.isSelected = false
+                btn_mile.isSelected = true
+
+                tv_unit.text = "mile"
+
+                PreferenceUtil.putPref(this@SettingActivity, PreferenceUtil.KM_MILE,"mile")
+
+                layout_select_distance_unit.visibility = GONE            }
+
+        })
 
         persistentBottomSheetEvent()
 
@@ -107,9 +118,12 @@ class SettingActivity: BaseRefreshActivity(){
 
         }
 
-        btn_back.setOnClickListener {
-            finish()
-        }
+        btn_back.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                finish()
+            }
+
+        })
 
         apiService().getLatest("AOS","PHONE").enqueue(object:Callback<ResponseBody>{
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {

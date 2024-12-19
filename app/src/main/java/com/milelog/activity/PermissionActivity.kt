@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -80,128 +81,131 @@ class PermissionActivity: BaseActivity(){
     }
 
     private fun setListener(){
-        btnPermission.setOnClickListener {
-            when(permissionNo){
-                /**
-                 * OS 28 이상
-                 */
-                PERMISSION_ACCESS_FINE_LOCATION -> {
-                    when {
-                        ContextCompat.checkSelfPermission(
-                            this,
-                            ACCESS_FINE_LOCATION
-                        ) == PackageManager.PERMISSION_GRANTED -> {
-                            setNextOfFineLocationPermission()
-                        }
-
-                        ActivityCompat.shouldShowRequestPermissionRationale(
-                            this,
-                            ACCESS_FINE_LOCATION
-                        ) -> {
-                            checkPermission(mutableListOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION).toTypedArray(), PERMISSION_ACCESS_FINE_LOCATION)
-                            PreferenceUtil.putBooleanPref(this@PermissionActivity, PERMISSION_ACCESS_FINE_LOCATION_THREE_TIMES, true)
-                        }
-
-                        else -> {
-                            if(!PreferenceUtil.getBooleanPref(this, PERMISSION_ACCESS_FINE_LOCATION_THREE_TIMES, false)){
-                                checkPermission(mutableListOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION).toTypedArray(), PERMISSION_ACCESS_FINE_LOCATION)
-                            }else{
-                                val openSettingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                                    val uri: Uri = Uri.fromParts("package", packageName, null)
-                                    data = uri
-                                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                }
-                                startActivity(openSettingsIntent)
+        btnPermission.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                when(permissionNo){
+                    /**
+                     * OS 28 이상
+                     */
+                    PERMISSION_ACCESS_FINE_LOCATION -> {
+                        when {
+                            ContextCompat.checkSelfPermission(
+                                this@PermissionActivity,
+                                ACCESS_FINE_LOCATION
+                            ) == PackageManager.PERMISSION_GRANTED -> {
                                 setNextOfFineLocationPermission()
+                            }
+
+                            ActivityCompat.shouldShowRequestPermissionRationale(
+                                this@PermissionActivity,
+                                ACCESS_FINE_LOCATION
+                            ) -> {
+                                checkPermission(mutableListOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION).toTypedArray(), PERMISSION_ACCESS_FINE_LOCATION)
+                                PreferenceUtil.putBooleanPref(this@PermissionActivity, PERMISSION_ACCESS_FINE_LOCATION_THREE_TIMES, true)
+                            }
+
+                            else -> {
+                                if(!PreferenceUtil.getBooleanPref(this@PermissionActivity, PERMISSION_ACCESS_FINE_LOCATION_THREE_TIMES, false)){
+                                    checkPermission(mutableListOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION).toTypedArray(), PERMISSION_ACCESS_FINE_LOCATION)
+                                }else{
+                                    val openSettingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                        val uri: Uri = Uri.fromParts("package", packageName, null)
+                                        data = uri
+                                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                    }
+                                    startActivity(openSettingsIntent)
+                                    setNextOfFineLocationPermission()
+                                }
                             }
                         }
                     }
-                }
 
-                /**
-                 * OS 29 이상
-                 */
-                PERMISSION_ACCESS_BACKGROUND_LOCATION -> {
-                    when {
-                        ContextCompat.checkSelfPermission(
-                            this,
-                            ACCESS_BACKGROUND_LOCATION
-                        ) == PackageManager.PERMISSION_GRANTED -> {
-                            setNextOfBackgroundLocationPermission()
-                        }
-
-                        ActivityCompat.shouldShowRequestPermissionRationale(
-                            this,
-                            ACCESS_BACKGROUND_LOCATION
-                        ) -> {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                checkPermission(mutableListOf(ACCESS_BACKGROUND_LOCATION).toTypedArray(), PERMISSION_ACCESS_BACKGROUND_LOCATION)
-                                PreferenceUtil.putBooleanPref(this@PermissionActivity, PERMISSION_ACCESS_BACKGROUND_LOCATION_THREE_TIMES, true)
-
-                            }
-                        }
-
-                        else -> {
-                            if(!PreferenceUtil.getBooleanPref(this, PERMISSION_ACCESS_BACKGROUND_LOCATION_THREE_TIMES, false)){
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                    checkPermission(mutableListOf(ACCESS_BACKGROUND_LOCATION).toTypedArray(), PERMISSION_ACCESS_BACKGROUND_LOCATION)
-                                }
-                            }else{
-                                val openSettingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                                    val uri: Uri = Uri.fromParts("package", packageName, null)
-                                    data = uri
-                                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                }
-                                startActivity(openSettingsIntent)
+                    /**
+                     * OS 29 이상
+                     */
+                    PERMISSION_ACCESS_BACKGROUND_LOCATION -> {
+                        when {
+                            ContextCompat.checkSelfPermission(
+                                this@PermissionActivity,
+                                ACCESS_BACKGROUND_LOCATION
+                            ) == PackageManager.PERMISSION_GRANTED -> {
                                 setNextOfBackgroundLocationPermission()
                             }
 
-                        }
-                    }
-                }
+                            ActivityCompat.shouldShowRequestPermissionRationale(
+                                this@PermissionActivity,
+                                ACCESS_BACKGROUND_LOCATION
+                            ) -> {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                    checkPermission(mutableListOf(ACCESS_BACKGROUND_LOCATION).toTypedArray(), PERMISSION_ACCESS_BACKGROUND_LOCATION)
+                                    PreferenceUtil.putBooleanPref(this@PermissionActivity, PERMISSION_ACCESS_BACKGROUND_LOCATION_THREE_TIMES, true)
 
-                /**
-                 * OS 29 이상
-                 */
-                PERMISSION_ACTIVITY_RECOGNITION -> {
-                    when {
-                        ContextCompat.checkSelfPermission(
-                            this,
-                            ACTIVITY_RECOGNITION
-                        ) == PackageManager.PERMISSION_GRANTED -> {
-                            setNextOfActivityRecognition()
-                        }
+                                }
+                            }
 
-                        ActivityCompat.shouldShowRequestPermissionRationale(
-                            this,
-                            ACTIVITY_RECOGNITION
-                        ) -> {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                checkPermission(mutableListOf(ACTIVITY_RECOGNITION).toTypedArray(), PERMISSION_ACTIVITY_RECOGNITION)
-                                PreferenceUtil.putBooleanPref(this@PermissionActivity, PERMISSION_ACTIVITY_RECOGNITION_THREE_TIMES, true)
+                            else -> {
+                                if(!PreferenceUtil.getBooleanPref(this@PermissionActivity, PERMISSION_ACCESS_BACKGROUND_LOCATION_THREE_TIMES, false)){
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                        checkPermission(mutableListOf(ACCESS_BACKGROUND_LOCATION).toTypedArray(), PERMISSION_ACCESS_BACKGROUND_LOCATION)
+                                    }
+                                }else{
+                                    val openSettingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                        val uri: Uri = Uri.fromParts("package", packageName, null)
+                                        data = uri
+                                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                    }
+                                    startActivity(openSettingsIntent)
+                                    setNextOfBackgroundLocationPermission()
+                                }
 
                             }
                         }
+                    }
 
-                        else -> {
-                            if(!PreferenceUtil.getBooleanPref(this, PERMISSION_ACTIVITY_RECOGNITION_THREE_TIMES, false)){
+                    /**
+                     * OS 29 이상
+                     */
+                    PERMISSION_ACTIVITY_RECOGNITION -> {
+                        when {
+                            ContextCompat.checkSelfPermission(
+                                this@PermissionActivity,
+                                ACTIVITY_RECOGNITION
+                            ) == PackageManager.PERMISSION_GRANTED -> {
+                                setNextOfActivityRecognition()
+                            }
+
+                            ActivityCompat.shouldShowRequestPermissionRationale(
+                                this@PermissionActivity,
+                                ACTIVITY_RECOGNITION
+                            ) -> {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                                     checkPermission(mutableListOf(ACTIVITY_RECOGNITION).toTypedArray(), PERMISSION_ACTIVITY_RECOGNITION)
+                                    PreferenceUtil.putBooleanPref(this@PermissionActivity, PERMISSION_ACTIVITY_RECOGNITION_THREE_TIMES, true)
+
                                 }
-                            }else{
-                                val openSettingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                                    val uri: Uri = Uri.fromParts("package", packageName, null)
-                                    data = uri
-                                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            }
+
+                            else -> {
+                                if(!PreferenceUtil.getBooleanPref(this@PermissionActivity, PERMISSION_ACTIVITY_RECOGNITION_THREE_TIMES, false)){
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                        checkPermission(mutableListOf(ACTIVITY_RECOGNITION).toTypedArray(), PERMISSION_ACTIVITY_RECOGNITION)
+                                    }
+                                }else{
+                                    val openSettingsIntent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                        val uri: Uri = Uri.fromParts("package", packageName, null)
+                                        data = uri
+                                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                    }
+                                    startActivity(openSettingsIntent)
+                                    settingState = true
                                 }
-                                startActivity(openSettingsIntent)
-                                settingState = true
                             }
                         }
                     }
                 }
             }
-        }
+
+        })
     }
 
     private fun setNextOfFineLocationPermission(){

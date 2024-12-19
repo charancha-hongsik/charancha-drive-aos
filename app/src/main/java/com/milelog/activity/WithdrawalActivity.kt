@@ -84,13 +84,19 @@ class WithdrawalActivity: BaseRefreshActivity() {
         })
 
 
-        tv_cancel_withdrawal.setOnClickListener {
-            finish()
-        }
+        tv_cancel_withdrawal.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                finish()
+            }
 
-        btn_back.setOnClickListener {
-            finish()
-        }
+        })
+
+        btn_back.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                finish()
+            }
+
+        })
     }
 
 }

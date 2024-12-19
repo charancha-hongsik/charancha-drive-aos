@@ -650,19 +650,26 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
 
         })
 
-        layout_choose_date.setOnClickListener {
-            layout_choose_date.visibility = GONE
-        }
+        layout_choose_date.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                layout_choose_date.visibility = GONE
+            }
 
-        btn_close_select_date.setOnClickListener {
-            layout_choose_date.visibility = GONE
-        }
+        })
 
-        btn_inquire_date.setOnClickListener {
-            layout_choose_date.visibility = GONE
-        }
+        btn_close_select_date.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                layout_choose_date.visibility = GONE
+            }
 
+        })
 
+        btn_inquire_date.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                layout_choose_date.visibility = GONE
+            }
+
+        })
 
         btn_close_tooltip.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
@@ -948,14 +955,15 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                         }
                     )
                 }
+                holder.btnDriveHistory.setOnClickListener(object:OnSingleClickListener(){
+                    override fun onSingleClick(v: View?) {
+                        (context as MyDriveHistoryActivity).resultLauncher.launch(
+                            Intent(context, DetailDriveHistoryActivity::class.java).apply {
+                                putExtra("trackingId", driveItem.id)
+                            }
+                        )                    }
 
-                holder.btnDriveHistory.setOnClickListener {
-                    (context as MyDriveHistoryActivity).resultLauncher.launch(
-                        Intent(context, DetailDriveHistoryActivity::class.java).apply {
-                            putExtra("trackingId", driveItem.id)
-                        }
-                    )
-                }
+                })
 
                 // Start Address 설정
                 driveItem.startAddress?.let { startAddress ->
