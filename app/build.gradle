@@ -43,21 +43,21 @@ android {
     buildTypes {
 
         debug {
-            buildConfigField "String", "BASE_INTRO_URL", '"https://dev.milelog.charancha.com/"'
-            buildConfigField "String", "BASE_API_URL", '"https://dev.milelog.charancha.com/"'
-            buildConfigField "String", "BASE_LOGIN_URL", '"https://dev.milelog.charancha.com/login"'
-            buildConfigField "String", "BASE_TERMS_URL", '"https://dev.milelog.charancha.com/terms-privacy/"'
-            applicationIdSuffix '.dev'
-            buildConfigField "String", "BUILD_TYPE", "\"debug\""
-            manifestPlaceholders = [appName: "마일로그 dev", enableCrashReporting:"false"]
-
-//            buildConfigField "String", "BASE_INTRO_URL", '"https://staging.milelog.charancha.com/"'
-//            buildConfigField "String", "BASE_API_URL", '"https://staging.milelog.charancha.com/"'
-//            buildConfigField "String", "BASE_LOGIN_URL", '"https://staging.milelog.charancha.com/login"'
-//            buildConfigField "String", "BASE_TERMS_URL", '"https://staging.milelog.charancha.com/terms-privacy/"'
-//            applicationIdSuffix '.staging'
+//            buildConfigField "String", "BASE_INTRO_URL", '"https://dev.milelog.charancha.com/"'
+//            buildConfigField "String", "BASE_API_URL", '"https://dev.milelog.charancha.com/"'
+//            buildConfigField "String", "BASE_LOGIN_URL", '"https://dev.milelog.charancha.com/login"'
+//            buildConfigField "String", "BASE_TERMS_URL", '"https://dev.milelog.charancha.com/terms-privacy/"'
+//            applicationIdSuffix '.dev'
 //            buildConfigField "String", "BUILD_TYPE", "\"debug\""
-//            manifestPlaceholders = [appName: "마일로그 staging", enableCrashReporting:"false"]
+//            manifestPlaceholders = [appName: "마일로그 dev", enableCrashReporting:"false"]
+
+            buildConfigField "String", "BASE_INTRO_URL", '"https://staging.milelog.charancha.com/"'
+            buildConfigField "String", "BASE_API_URL", '"https://staging.milelog.charancha.com/"'
+            buildConfigField "String", "BASE_LOGIN_URL", '"https://staging.milelog.charancha.com/login"'
+            buildConfigField "String", "BASE_TERMS_URL", '"https://staging.milelog.charancha.com/terms-privacy/"'
+            applicationIdSuffix '.staging'
+            buildConfigField "String", "BUILD_TYPE", "\"debug\""
+            manifestPlaceholders = [appName: "마일로그 staging", enableCrashReporting:"false"]
 
 //            buildConfigField "String", "BASE_INTRO_URL", '"http://172.16.10.70:8080/"'
 //            buildConfigField "String", "BASE_API_URL", '"http://172.16.10.70:8080/"'
