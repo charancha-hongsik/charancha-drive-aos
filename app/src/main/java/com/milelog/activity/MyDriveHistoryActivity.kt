@@ -856,7 +856,13 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         val tv_car:TextView = view.findViewById(R.id.tv_car)
         val layout_corp:LinearLayout = view.findViewById(R.id.layout_corp)
         val iv_corp:ImageView = view.findViewById(R.id.iv_corp)
-
+        val tv_car_title:TextView = view.findViewById(R.id.tv_car_title)
+        val ic_start_dot:ImageView = view.findViewById(R.id.ic_start_dot)
+        val ic_depart_dot:ImageView = view.findViewById(R.id.ic_depart_dot)
+        val ic_dot1:View = view.findViewById(R.id.ic_dot1)
+        val ic_dot2:View = view.findViewById(R.id.ic_dot2)
+        val ic_dot3:View = view.findViewById(R.id.ic_dot3)
+        val ic_dot4:View = view.findViewById(R.id.ic_dot4)
     }
 
     class DriveHistoryAdapter(
@@ -887,7 +893,7 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                     val isCorporate = userCar.type.equals(CORPORATE)
                     holder.layout_corp.visibility = if (isCorporate) VISIBLE else GONE
                     holder.iv_corp.visibility = if (isCorporate) VISIBLE else GONE
-                    holder.tv_car.text = userCar.makerNm + " " + userCar.modelNm
+                    holder.tv_car2.text = userCar.makerNm + " " + userCar.modelNm
                 }
 
                 // Distance and Time 설정 최적화
@@ -911,10 +917,35 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
                     holder.layoutActive.visibility = VISIBLE
                     holder.btnDriveHistory.isClickable = false
                 } else {
+                    if(driveItem.isActive){
+                        // 미확정
+                        holder.tvDistance.setTextColor(context.resources.getColor(R.color.gray_950))
+                        holder.tv_start_address.setTextColor(context.resources.getColor(R.color.gray_600))
+                        holder.tv_end_address.setTextColor(context.resources.getColor(R.color.gray_600))
+                        holder.tvStartTime.setTextColor(context.resources.getColor(R.color.gray_400))
+                        holder.tvEndTime.setTextColor(context.resources.getColor(R.color.gray_400))
+                        holder.tv_car_title.setTextColor(context.resources.getColor(R.color.gray_500))
+                        holder.tv_car.setTextColor(context.resources.getColor(R.color.gray_500))
+                        holder.ic_start_dot.setImageDrawable(context.resources.getDrawable(R.drawable.ic_start))
+                        holder.ic_depart_dot.setImageDrawable(context.resources.getDrawable(R.drawable.ic_depart))
+                        holder.ic_dot1.background = context.resources.getDrawable(R.drawable.radius999_blue300)
+                        holder.ic_dot2.background = context.resources.getDrawable(R.drawable.radius999_blue300)
+                        holder.ic_dot3.background = context.resources.getDrawable(R.drawable.radius999_blue300)
+                        holder.ic_dot4.background = context.resources.getDrawable(R.drawable.radius999_blue300)
+
+                    }else{
+                        // 내 차가 아니에요
+                    }
                     holder.layoutNotActive.visibility = VISIBLE
                     holder.layoutActive.visibility = GONE
-                    holder.tv_car2.text = context.getString(
-                        if (driveItem.isActive) R.string.pending else R.string.not_my_car
+                    holder.tv_car.text = context.getString(
+                        if (driveItem.isActive){
+                            // 미확정
+                            R.string.pending
+                        } else{
+                            // 내 차가 아니에요
+                            R.string.not_my_car
+                        }
                     )
                 }
 
