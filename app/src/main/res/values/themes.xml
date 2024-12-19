@@ -13,9 +13,9 @@
     <!-- Base application theme. -->
     <style name="Theme.Charanchadrivesplash" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">@color/black_op_100</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="android:navigationBarColor">@color/black_op_100</item>
+        <item name="android:statusBarColor">@color/white_op_95</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:navigationBarColor">@color/white_op_95</item>
 
 
         <!-- no action bar -->
