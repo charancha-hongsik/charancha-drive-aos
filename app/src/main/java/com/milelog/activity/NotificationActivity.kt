@@ -121,10 +121,12 @@ class NotificationActivity: BaseRefreshActivity() {
 
         })
 
+        btn_back.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                finish()
+            }
 
-        btn_back.setOnClickListener {
-            finish()
-        }
+        })
 
         getMyTerms()
         getNotificationLists()

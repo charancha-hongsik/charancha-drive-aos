@@ -307,28 +307,31 @@ class MyGarageActivity:BaseRefreshActivity() {
 
             }
 
-
-            holder.btn_edit_car.setOnClickListener {
-                (context as MyGarageActivity).apiService().getCarInfoinquiryByCarId("Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!, car.id).enqueue(object:Callback<ResponseBody>{
-                    override fun onResponse(
-                        call: Call<ResponseBody>,
-                        response: Response<ResponseBody>
-                    ) {
-                        if(response.code() == 200 || response.code() == 201){
-                            val intent = Intent(context, LoadCarMoreInfoActivity::class.java)
-                            intent.putExtra("carInfo",response.body()?.string())
-                            intent.putExtra("edit",true)
-                            intent.putExtra("carId",car.id)
-                            context.startActivity(intent)
+            holder.btn_edit_car.setOnClickListener(object:OnSingleClickListener(){
+                override fun onSingleClick(v: View?) {
+                    (context as MyGarageActivity).apiService().getCarInfoinquiryByCarId("Bearer " + PreferenceUtil.getPref(context,  PreferenceUtil.ACCESS_TOKEN, "")!!, car.id).enqueue(object:Callback<ResponseBody>{
+                        override fun onResponse(
+                            call: Call<ResponseBody>,
+                            response: Response<ResponseBody>
+                        ) {
+                            if(response.code() == 200 || response.code() == 201){
+                                val intent = Intent(context, LoadCarMoreInfoActivity::class.java)
+                                intent.putExtra("carInfo",response.body()?.string())
+                                intent.putExtra("edit",true)
+                                intent.putExtra("carId",car.id)
+                                context.startActivity(intent)
+                            }
                         }
-                    }
 
-                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
 
-                    }
+                        }
 
-                })
-            }
+                    })
+                }
+
+            })
+
 
             if(car.type == PERSONAL){
                 holder.view_personal_badge.visibility = VISIBLE

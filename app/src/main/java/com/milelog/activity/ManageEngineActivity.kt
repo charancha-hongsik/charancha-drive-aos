@@ -74,9 +74,12 @@ class ManageEngineActivity: BaseRefreshActivity() {
 
     fun setResources(){
         btn_back = findViewById(R.id.btn_back)
-        btn_back.setOnClickListener {
-            finish()
-        }
+        btn_back.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                finish()
+            }
+
+        })
 
         button_tooltip_perone_average_overlay = findViewById(R.id.button_tooltip_perone_average_overlay)
         button_tooltip_perone_average_overlay.setOnClickListener(object: OnSingleClickListener(){

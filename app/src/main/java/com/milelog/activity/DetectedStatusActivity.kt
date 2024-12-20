@@ -67,24 +67,33 @@ class DetectedStatusActivity: BaseRefreshActivity() {
                 holder.tv_detected3.text = userEntity.start_stop
                 holder.tv_detected4.text = userEntity.sensor_state.toString()
 
-                holder.tv_detected1.setOnClickListener {
-                    Toast.makeText(context,holder.tv_detected1.text , Toast.LENGTH_SHORT).show()
-                }
+                holder.tv_detected1.setOnClickListener(object:OnSingleClickListener(){
+                    override fun onSingleClick(v: View?) {
+                        Toast.makeText(context,holder.tv_detected1.text , Toast.LENGTH_SHORT).show()
+                    }
 
-                holder.tv_detected2.setOnClickListener {
-                    Toast.makeText(context,holder.tv_detected2.text , Toast.LENGTH_SHORT).show()
+                })
 
-                }
+                holder.tv_detected2.setOnClickListener(object:OnSingleClickListener(){
+                    override fun onSingleClick(v: View?) {
+                        Toast.makeText(context,holder.tv_detected2.text , Toast.LENGTH_SHORT).show()
+                    }
 
-                holder.tv_detected3.setOnClickListener {
-                    Toast.makeText(context,holder.tv_detected3.text , Toast.LENGTH_SHORT).show()
+                })
 
-                }
+                holder.tv_detected3.setOnClickListener(object:OnSingleClickListener(){
+                    override fun onSingleClick(v: View?) {
+                        Toast.makeText(context,holder.tv_detected3.text , Toast.LENGTH_SHORT).show()
+                    }
 
-                holder.tv_detected4.setOnClickListener {
-                    Toast.makeText(context,holder.tv_detected4.text , Toast.LENGTH_SHORT).show()
+                })
 
-                }
+                holder.tv_detected4.setOnClickListener(object:OnSingleClickListener(){
+                    override fun onSingleClick(v: View?) {
+                        Toast.makeText(context,holder.tv_detected4.text , Toast.LENGTH_SHORT).show()
+                    }
+
+                })
             }
         }
 

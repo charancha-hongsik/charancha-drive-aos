@@ -44,7 +44,7 @@ class WithdrawalActivity: BaseRefreshActivity() {
         tv_confirm_withdrawal.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
                 if(ib_terms1.isSelected){
-                    CustomDialog(this@WithdrawalActivity, "정말로 떠나시나요?", "탈퇴하시면 지금까지의 주행 기록과 선물 박스를 모두 복구할 수 없어요.\n그래도 탈퇴하시겠어요?", "확인","취소",  object : CustomDialog.DialogCallback{
+                    CustomDialog(this@WithdrawalActivity, "정말로 떠나시나요?", "탈퇴하시면 지금까지의 주행 기록과 선물 박스를 모두 복구할 수 없어요.\n그래도 탈퇴하시겠어요?", "탈퇴","취소",  object : CustomDialog.DialogCallback{
                         override fun onConfirm() {
                             apiService().deleteAccount("Bearer " + PreferenceUtil.getPref(this@WithdrawalActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!).enqueue(object:
                                 Callback<ResponseBody> {
@@ -84,13 +84,19 @@ class WithdrawalActivity: BaseRefreshActivity() {
         })
 
 
-        tv_cancel_withdrawal.setOnClickListener {
-            finish()
-        }
+        tv_cancel_withdrawal.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                finish()
+            }
 
-        btn_back.setOnClickListener {
-            finish()
-        }
+        })
+
+        btn_back.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                finish()
+            }
+
+        })
     }
 
 }

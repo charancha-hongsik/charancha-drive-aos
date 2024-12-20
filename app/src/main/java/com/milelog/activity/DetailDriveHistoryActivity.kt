@@ -1334,7 +1334,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                 holder.layout_car.setOnClickListener(object:OnSingleClickListener(){
                     override fun onSingleClick(v: View?) {
                         if(userCarId != null){
-                            CustomDialog(context, "이동수단 변경", "이동 수단을 법인차로 저장하면 더이상\n변경할 수 없습니다. 변경하시겠습니까?", "변경","취소",  object : CustomDialog.DialogCallback{
+                            CustomDialog(context, "이동 수단을 변경할까요?", "이동 수단을 법인차로 저장하면 더 이상 변경할 수 없어요. 변경할까요?", "변경","취소",  object : CustomDialog.DialogCallback{
                                 override fun onConfirm() {
                                     viewModel.patchCorpType(userCarId, true, getNameFromDescription(corp), tracking_id = tracking_id)
                                     bottomSheetDialog.dismiss()

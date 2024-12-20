@@ -372,7 +372,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
 
         btn_next.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                CustomDialog(this@LoadCarMoreInfoActivity, "차량 등록", "법인 또는 개인은 차량 등록 이후에\n변경할 수 없어요. 등록할까요?", "등록","취소",  object : CustomDialog.DialogCallback{
+                CustomDialog(this@LoadCarMoreInfoActivity, "차량을 등록할까요?", "법인 또는 개인은 차량 등록 이후에 변경할 수 없어요. 등록할까요?", "등록","취소",  object : CustomDialog.DialogCallback{
                     override fun onConfirm() {
                         var type:String = PERSONAL
                         var data:Data? = null
@@ -453,7 +453,7 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
 
         btn_delete.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                CustomDialog(this@LoadCarMoreInfoActivity, "자동차 정보 삭제", "자동차 정보를 삭제하면 기존 데이터는 삭제됩니다. 삭제하시겠습니까?", "삭제","취소",  object : CustomDialog.DialogCallback{
+                CustomDialog(this@LoadCarMoreInfoActivity, "차량을 삭제할까요?", "자동차를 삭제하면 등록된 모든 데이터는 삭제돼요. 삭제할까요?", "삭제","취소",  object : CustomDialog.DialogCallback{
                     override fun onConfirm() {
                         apiService().deleteMyCarByCarId("Bearer " + PreferenceUtil.getPref(this@LoadCarMoreInfoActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!, intent.getStringExtra("carId")!!).enqueue(object :
                             Callback<ResponseBody> {

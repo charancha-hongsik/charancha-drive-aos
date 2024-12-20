@@ -330,7 +330,7 @@ class FindBluetoothActivity: BaseRefreshActivity() {
 
                 holder.layout_car.setOnClickListener {
 
-                    CustomDialog(context, "블루투스 변경", "등록된 블루투스 기기를 \n변경하시겠습니까?", "변경","취소",  object : CustomDialog.DialogCallback{
+                    CustomDialog(context, "블루투스를 변경할까요?", "등록된 블루투스 기기를 변경할까요?", "변경","취소",  object : CustomDialog.DialogCallback{
                         override fun onConfirm() {
                             PreferenceUtil.getPref(context, PreferenceUtil.MY_CAR_ENTITIES,"")?.let {
                                 if (it != "") {
@@ -412,7 +412,7 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                 holder.tv_car_bluetooth_name.text = myCarsEntity.bluetooth_name
 
                 holder.btn_delete.setOnClickListener {
-                    CustomDialog(context, "블루투스 삭제", "등록된 블루투스 기기를 \n삭제하시겠습니까?", "삭제","취소",  object : CustomDialog.DialogCallback{
+                    CustomDialog(context, "블루투스를 삭제할까요?", "등록된 블루투스 기기를 삭제할까요?", "삭제","취소",  object : CustomDialog.DialogCallback{
                         override fun onConfirm() {
                             PreferenceUtil.getPref(context, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
                                 if(it != ""){
@@ -480,8 +480,8 @@ class FindBluetoothActivity: BaseRefreshActivity() {
         } else {
             CustomDialog(
                 this,
-                "블루투스 권한",
-                "블루투스 서비스를 사용할 수 없습니다. 기기의 ‘마일로그 > 권한 > 근처기기’에서 근처 기기를 “허용\"으로 켜주세요",
+                "블루투스 권한을 허용해 주세요",
+                "블루투스 서비스를 사용할 수 없어요. 기기의 ‘마일로그 > 권한 > 근처기기’에서 근처 기기를 “허용\"으로 켜주세요.",
                 "설정으로 이동",
                 "취소",
                 object : CustomDialog.DialogCallback {

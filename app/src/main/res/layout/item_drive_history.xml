@@ -65,7 +65,7 @@
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/tv_distance"
+                    android:id="@+id/tv_distance2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=""
@@ -168,17 +168,17 @@
                     android:textAppearance="@style/B2M"
                     android:textFontWeight="500"
                     android:includeFontPadding="false"
-                    android:textColor="@color/gray_900"
+                    android:textColor="@color/gray_600"
                     android:text="데이터 검토 중이에요"/>
 
                 <TextView
-                    android:id="@+id/tv_start_time"
+                    android:id="@+id/tv_start_time2"
                     android:layout_width="wrap_content"
                     android:layout_height="18dp"
                     android:layout_marginTop="2dp"
                     android:textAppearance="@style/C1R"
                     android:textFontWeight="400"
-                    android:textColor="@color/gray_600"
+                    android:textColor="@color/gray_400"
                     android:text="18:26"/>
 
                 <TextView
@@ -189,17 +189,17 @@
                     android:textAppearance="@style/B2M"
                     android:includeFontPadding="false"
                     android:textFontWeight="500"
-                    android:textColor="@color/gray_900"
+                    android:textColor="@color/gray_600"
                     android:text="데이터 검토 중이에요"/>
 
                 <TextView
-                    android:id="@+id/tv_end_time"
+                    android:id="@+id/tv_end_time2"
                     android:layout_width="wrap_content"
                     android:layout_height="18dp"
                     android:layout_marginTop="2dp"
                     android:textAppearance="@style/C1R"
                     android:textFontWeight="400"
-                    android:textColor="@color/gray_600"
+                    android:textColor="@color/gray_400"
                     android:text="18:26"/>
 
 
@@ -218,19 +218,19 @@
             android:layout_marginTop="12dp">
 
             <TextView
-                android:id="@+id/tv_car_title"
+                android:id="@+id/tv_car_title2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="이동 수단"
                 android:textAppearance="@style/C1R"
                 android:textFontWeight="400"
-                android:textColor="@color/gray_600"
+                android:textColor="@color/gray_500"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" />
 
             <TextView
-                android:id="@+id/tv_car"
+                android:id="@+id/tv_car2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/C1R"
@@ -238,14 +238,14 @@
                 android:maxLines="1"
                 android:maxWidth="200dp"
                 android:ellipsize="end"
-                android:textColor="@color/gray_600"
+                android:textColor="@color/gray_500"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="3dp"
                 android:gravity="right"
                 android:text="BMW"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@+id/tv_car_title"
+                app:layout_constraintLeft_toRightOf="@+id/tv_car_title2"
                 app:layout_constraintRight_toLeftOf="@+id/iv_corp"/>
 
             <ImageView
@@ -307,7 +307,7 @@
 
 
                 <TextView
-                    android:id="@+id/tv_distance2"
+                    android:id="@+id/tv_distance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=""
@@ -351,6 +351,7 @@
                 android:layout_marginTop="2dp">
 
                 <ImageView
+                    android:id="@+id/ic_start_dot"
                     android:layout_width="8dp"
                     android:layout_height="8dp"
                     android:layout_gravity="center_horizontal"
@@ -358,6 +359,7 @@
                     android:src="@drawable/ic_start2"/>
 
                 <View
+                    android:id="@+id/ic_dot1"
                     android:layout_width="3dp"
                     android:layout_height="3dp"
                     android:layout_gravity="center_horizontal"
@@ -365,6 +367,7 @@
                     android:layout_marginTop="10dp"/>
 
                 <View
+                    android:id="@+id/ic_dot2"
                     android:layout_width="3dp"
                     android:layout_height="3dp"
                     android:layout_gravity="center_horizontal"
@@ -373,6 +376,7 @@
 
 
                 <View
+                    android:id="@+id/ic_dot3"
                     android:layout_width="3dp"
                     android:layout_height="3dp"
                     android:layout_gravity="center_horizontal"
@@ -380,6 +384,7 @@
                     android:layout_marginTop="4dp"/>
 
                 <View
+                    android:id="@+id/ic_dot4"
                     android:layout_width="3dp"
                     android:layout_height="3dp"
                     android:layout_gravity="center_horizontal"
@@ -387,6 +392,7 @@
                     android:layout_marginTop="4dp"/>
 
                 <ImageView
+                    android:id="@+id/ic_depart_dot"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:src="@drawable/ic_depart2"
@@ -414,7 +420,7 @@
                     android:text="데이터 검토 중이에요"/>
 
                 <TextView
-                    android:id="@+id/tv_start_time2"
+                    android:id="@+id/tv_start_time"
                     android:layout_width="wrap_content"
                     android:layout_height="18dp"
                     android:layout_marginTop="2dp"
@@ -435,7 +441,7 @@
                     android:text="데이터 검토 중이에요"/>
 
                 <TextView
-                    android:id="@+id/tv_end_time2"
+                    android:id="@+id/tv_end_time"
                     android:layout_width="wrap_content"
                     android:layout_height="18dp"
                     android:layout_marginTop="2dp"
@@ -460,7 +466,7 @@
             android:layout_marginTop="12dp">
 
             <TextView
-                android:id="@+id/tv_car_title2"
+                android:id="@+id/tv_car_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="이동 수단"
@@ -482,10 +488,10 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@+id/tv_car_title2">
+                app:layout_constraintLeft_toRightOf="@+id/tv_car_title">
 
                 <TextView
-                    android:id="@+id/tv_car2"
+                    android:id="@+id/tv_car"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="@style/C1R"

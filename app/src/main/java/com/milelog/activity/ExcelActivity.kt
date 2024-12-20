@@ -142,63 +142,62 @@ class ExcelActivity:BaseRefreshActivity() {
                         TextViewCompat.setTextAppearance(tv_car_name, R.style.car_filter_selected)
                     }
 
-                    (tv_car_name.parent as LinearLayout).setOnClickListener {
+                    (tv_car_name.parent as LinearLayout).setOnClickListener(object:OnSingleClickListener(){
+                        override fun onSingleClick(v: View?) {
 
-                        val matchingFilter = filterList.find { it.name == tv_car_name.text }
-                        carIdForFilter = matchingFilter?.id
-                        if(tv_car_name.text.toString().equals("전체")){
-                            isActiveForFilter = null
-                            carIdForFilter = null
-                            isTaxRequired = false
-                        }
-                        else if(tv_car_name.text.toString().equals(getString(R.string.pending))){
-                            isActiveForFilter = true
-                            carIdForFilter = "null"
-                            isTaxRequired = true
-                        }else if(tv_car_name.text.toString().equals(getString(R.string.not_my_car))){
-                            isActiveForFilter = false
-                            carIdForFilter = "null"
-                            isTaxRequired = true
-                        }else{
-                            isActiveForFilter = true
-                            isTaxRequired = true
-                        }
+                            val matchingFilter = filterList.find { it.name == tv_car_name.text }
+                            carIdForFilter = matchingFilter?.id
+                            if(tv_car_name.text.toString().equals("전체")){
+                                isActiveForFilter = null
+                                carIdForFilter = null
+                                isTaxRequired = false
+                            }
+                            else if(tv_car_name.text.toString().equals(getString(R.string.pending))){
+                                isActiveForFilter = true
+                                carIdForFilter = "null"
+                                isTaxRequired = true
+                            }else if(tv_car_name.text.toString().equals(getString(R.string.not_my_car))){
+                                isActiveForFilter = false
+                                carIdForFilter = "null"
+                                isTaxRequired = true
+                            }else{
+                                isActiveForFilter = true
+                                isTaxRequired = true
+                            }
 
 
-                        // Iterate over the list and update the background of all TextViews
-                        for (view in carViews) {
-                            if (view.tv_car_name == tv_car_name) {
-                                // Change background of the clicked TextView
-                                view.view_parent.isSelected = true
+                            // Iterate over the list and update the background of all TextViews
+                            for (view in carViews) {
+                                if (view.tv_car_name == tv_car_name) {
+                                    // Change background of the clicked TextView
+                                    view.view_parent.isSelected = true
 
-                                TextViewCompat.setTextAppearance(
-                                    view.tv_car_name,
-                                    R.style.car_filter_selected
-                                )
+                                    TextViewCompat.setTextAppearance(
+                                        view.tv_car_name,
+                                        R.style.car_filter_selected
+                                    )
 
-                                TextViewCompat.setTextAppearance(
-                                    view.tv_car_num,
-                                    R.style.car_filter_selected
-                                )
+                                    TextViewCompat.setTextAppearance(
+                                        view.tv_car_num,
+                                        R.style.car_filter_selected
+                                    )
+                                } else {
+                                    // Reset the background of other TextViews
+                                    view.view_parent.isSelected = false
+                                    TextViewCompat.setTextAppearance(
+                                        view.tv_car_name,
+                                        R.style.car_filter_unselected
+                                    )
 
-                                val matchingFilter = filterList.find { it.name == tv_car_name.text }
-
-                            } else {
-                                // Reset the background of other TextViews
-                                view.view_parent.isSelected = false
-                                TextViewCompat.setTextAppearance(
-                                    view.tv_car_name,
-                                    R.style.car_filter_unselected
-                                )
-
-                                TextViewCompat.setTextAppearance(
-                                    view.tv_car_num,
-                                    R.style.car_filter_unselected
-                                )
+                                    TextViewCompat.setTextAppearance(
+                                        view.tv_car_num,
+                                        R.style.car_filter_unselected
+                                    )
+                                }
                             }
                         }
-                    }
 
+                    })
 
                     // Add the inflated view to the parent layout
                     layout_flow.addView(constraintLayoutView)
@@ -291,51 +290,59 @@ class ExcelActivity:BaseRefreshActivity() {
 
     fun setClickListener(){
 
-        btn_save_excel.setOnClickListener {
-            apiService().getDrivingDetailHistories(
-                token = "Bearer " + PreferenceUtil.getPref(this,  PreferenceUtil.ACCESS_TOKEN, "")!!,
-                size = 200,
-                order = "DESC",
-                afterCursor =  null,
-                beforeCursor = null,
-                key = "startTime",
-                startTime = getDateRange(selectedDate).second,
-                endTime = getDateRange(selectedDate).first,
-                isActive = isActiveForFilter,
-                userCarId = carIdForFilter).enqueue(object: Callback<ResponseBody> {
-                override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                    try{
-                        if(response.code() == 200 || response.code() == 201){
-                            val jsonString = response.body()?.string()
-                            val getDriveHistroyResponse = GsonBuilder().serializeNulls().create().fromJson(
-                                jsonString,
-                                GetDriveHistoryResponse::class.java
-                            )
+        btn_save_excel.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                apiService().getDrivingDetailHistories(
+                    token = "Bearer " + PreferenceUtil.getPref(this@ExcelActivity,  PreferenceUtil.ACCESS_TOKEN, "")!!,
+                    size = 200,
+                    order = "DESC",
+                    afterCursor =  null,
+                    beforeCursor = null,
+                    key = "startTime",
+                    startTime = getDateRange(selectedDate).second,
+                    endTime = getDateRange(selectedDate).first,
+                    isActive = isActiveForFilter,
+                    userCarId = carIdForFilter).enqueue(object: Callback<ResponseBody> {
+                    override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                        try{
+                            if(response.code() == 200 || response.code() == 201){
+                                val jsonString = response.body()?.string()
+                                val getDriveHistroyResponse = GsonBuilder().serializeNulls().create().fromJson(
+                                    jsonString,
+                                    GetDriveHistoryResponse::class.java
+                                )
 
-                            createDrivingDataWithHeaders2(getDrivingData(getDriveHistroyResponse), getDriveHistroyResponse.items)
+                                createDrivingDataWithHeaders2(getDrivingData(getDriveHistroyResponse), getDriveHistroyResponse.items)
 
-                        } else{
+                            } else{
+
+                            }
+                        }catch(e:Exception){
 
                         }
-                    }catch(e:Exception){
+                    }
+
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
 
                     }
-                }
 
-                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                })            }
 
-                }
+        })
 
-            })
-        }
+        btn_choose_date.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                showBottomSheetForChooseDate()
+            }
 
-        btn_choose_date.setOnClickListener {
-            showBottomSheetForChooseDate()
-        }
+        })
 
-        btn_back.setOnClickListener {
-            finish()
-        }
+        btn_back.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                finish()
+            }
+
+        })
     }
 
     fun showBottomSheetForChooseDate() {
@@ -419,10 +426,13 @@ class ExcelActivity:BaseRefreshActivity() {
                     TextViewCompat.setTextAppearance(holder.tv_date, R.style.date_unselected)
                 }
 
-                holder.layout_date.setOnClickListener {
-                    callback.onClicked(corp)
-                    bottomSheetDialog.dismiss()
-                }
+                holder.layout_date.setOnClickListener(object:OnSingleClickListener(){
+                    override fun onSingleClick(v: View?) {
+                        callback.onClicked(corp)
+                        bottomSheetDialog.dismiss()
+                    }
+
+                })
             }
         }
 

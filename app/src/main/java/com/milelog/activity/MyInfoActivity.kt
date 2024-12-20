@@ -131,9 +131,12 @@ class MyInfoActivity: BaseRefreshActivity() {
     }
 
     fun setListener(){
-        btn_back.setOnClickListener {
-            finish()
-        }
+        btn_back.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                finish()
+            }
+
+        })
 
         tv_withdrawal.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
@@ -180,21 +183,22 @@ class MyInfoActivity: BaseRefreshActivity() {
 
         })
 
-// iv_circle 클릭 리스너에 분기 처리 추가
-        iv_circle.setOnClickListener {
-            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) { // API 29 이하
-                // 권한 체크
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                    startCrop() // 권한이 있으면 크롭 시작
+        iv_circle.setOnClickListener(object:OnSingleClickListener(){
+            override fun onSingleClick(v: View?) {
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) { // API 29 이하
+                    // 권한 체크
+                    if (ContextCompat.checkSelfPermission(this@MyInfoActivity, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                        startCrop() // 권한이 있으면 크롭 시작
+                    } else {
+                        // 권한이 없으면 요청
+                        ActivityCompat.requestPermissions(this@MyInfoActivity, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_READ_EXTERNAL_STORAGE)
+                    }
                 } else {
-                    // 권한이 없으면 요청
-                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_READ_EXTERNAL_STORAGE)
-                }
-            } else {
-                // API 30 이상은 권한 체크 없이 바로 크롭 시작
-                startCrop()
-            }
-        }
+                    // API 30 이상은 권한 체크 없이 바로 크롭 시작
+                    startCrop()
+                }            }
+
+        })
     }
 
     fun setResources(){
