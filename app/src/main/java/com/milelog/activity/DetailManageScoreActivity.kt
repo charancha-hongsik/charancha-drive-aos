@@ -448,7 +448,7 @@ class DetailManageScoreActivity: BaseRefreshActivity(){
         val dateList = mutableListOf<String>()
 
         // 36개월 동안의 날짜를 역순으로 추가합니다.
-        for (i in 0 until 36) {
+        for (i in 0 until 12) {
             val date = currentDate.minusMonths(i.toLong())
             val formattedDate = date.format(formatter)
             dateList.add(formattedDate)
@@ -456,7 +456,7 @@ class DetailManageScoreActivity: BaseRefreshActivity(){
 
         val choseDateList = mutableListOf<ChosenDate>()
 
-        for (i in 0 until 36) {
+        for (i in 0 until 12) {
             if( i == 0){
                 choseDateList.add(ChosenDate(dateList.get(i),true))
             }else{
