@@ -425,8 +425,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" >
+                        app:layout_constraintTop_toTopOf="parent">
 
                         <TextView
                             android:id="@+id/tv_start_address_title"
@@ -483,8 +482,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" >
+                        app:layout_constraintTop_toTopOf="parent">
 
                         <TextView
                             android:id="@+id/tv_end_address_title"
@@ -542,8 +540,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" >
+                        app:layout_constraintTop_toTopOf="parent">
 
 
                         <TextView
