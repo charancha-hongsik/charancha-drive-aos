@@ -437,11 +437,15 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     tv_type.text = CorpType.valueOf(state.data.type).description
                     btn_choose_corp.visibility = VISIBLE
 
-                    tv_mycar.text = state.data.userCar.carName
+                    tv_mycar.text = state.data.userCar.makerNm + " " +state.data.userCar.modelNm
                     iv_corp.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_star1))
                     iv_corp.visibility = VISIBLE
 
                     btn_choose_mycar.isClickable = false
+
+                    tv_scope_date_mycar.visibility = VISIBLE
+                    tv_scope_date_mycar.text = "법인차는 변경이 불가능해요."
+                    view_edit_arrow.visibility = GONE
                 }
                 is PatchCorpTypeState.Error -> {
 
@@ -485,7 +489,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
                     if(state.data.isActive){
                         if(!state.data.userCarId.isNullOrEmpty()){
-                            tv_mycar.text = userCar?.carName
+                            tv_mycar.text = userCar?.makerNm + " " + userCar?.modelNm
                             iv_corp.visibility = VISIBLE
 
                             if(userCar?.type == PERSONAL){
@@ -608,7 +612,7 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
                     isActive = getDrivingInfoResponse.isActive
                     userCarId = getDrivingInfoResponse.userCarId
                     getDrivingInfoResponse.userCar?.let{
-                        tv_mycar.text = it.carName
+                        tv_mycar.text = it.makerNm + " " + it.modelNm
                     }
 
                     if(isActive){

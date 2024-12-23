@@ -112,6 +112,7 @@ class MainActivity:BaseActivity() {
         init()
         setObserver()
         setResources()
+        setIgnoreBattery()
     }
 
     override fun onResume() {
