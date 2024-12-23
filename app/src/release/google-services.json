@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "503123841855",
     "project_id": "milelog-prod",
-    "storage_bucket": "milelog-prod.appspot.com"
+    "storage_bucket": "milelog-prod.firebasestorage.app"
   },
   "client": [
     {
@@ -45,6 +45,13 @@
             {
               "client_id": "503123841855-4nm88cc24hpeufhiafcour5kd17ucqbq.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "503123841855-uh2cdkhgjcf7vg63dsqo0c3msv5trai9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.milelog"
+              }
             }
           ]
         }
