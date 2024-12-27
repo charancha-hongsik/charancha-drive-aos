@@ -67,13 +67,10 @@ interface ApiServiceInterface {
         @Part images: List<MultipartBody.Part>?
     ): Call<ResponseBody>
 
-    @POST("api/v1/auth/signup")
-    fun postSignUp(@Body body: RequestBody): Call<ResponseBody>
+    @POST("api/v1/auth/tokens")
+    fun postTokens(@Body body: RequestBody): Call<ResponseBody>
 
-    @POST("api/v1/auth/signin")
-    fun postSignIn(@Body body: RequestBody): Call<ResponseBody>
-
-    @POST("api/v1/auth/token/reissue")
+    @POST("api/v1/auth/tokens/reissue")
     fun postReissue(@Header("refresh_token") token: String): Call<ResponseBody>
 
     @GET("api/v1/terms")
