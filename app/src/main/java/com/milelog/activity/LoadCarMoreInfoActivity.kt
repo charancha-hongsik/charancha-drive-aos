@@ -493,8 +493,14 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                 Log.d("testestestset","testestestestset :: btn_save.setOnClickListener" )
 
                 var typeInput: TypeInput? = null
-                if(postMyCarResponse.type.equals(CORPORATE)){
-                    typeInput = TypeInput(CORPORATE,Data(et_corp_name.text.toString(), et_corp_department.text.toString()))
+                if(intent.getBooleanExtra("edit",false)){
+                    if(postMyCarResponse.type.equals(CORPORATE)){
+                        typeInput = TypeInput(CORPORATE,Data(et_corp_name.text.toString(), et_corp_department.text.toString()))
+                    }
+                }else{
+                    if(iv_corp.isSelected){
+                        typeInput = TypeInput(CORPORATE,Data(et_corp_name.text.toString(), et_corp_department.text.toString()))
+                    }
                 }
 
                 val gson = GsonBuilder().serializeNulls().create()
@@ -733,33 +739,65 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
                     layout_select.visibility = GONE
 
 
-                    if(postMyCarResponse.type.equals(CORPORATE)){
-                        if(!et_corp_name.text.toString().isNullOrEmpty() && !et_corp_name.text.toString().isNullOrEmpty() && !et_corp_department.text.toString().isNullOrEmpty() && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
-                            btn_next.isSelected = true
-                            btn_next.isClickable = true
+                    if(intent.getBooleanExtra("edit",false)) {
+                        if(postMyCarResponse.type.equals(CORPORATE)){
+                            if(!et_corp_name.text.toString().isNullOrEmpty() && !et_corp_name.text.toString().isNullOrEmpty() && !et_corp_department.text.toString().isNullOrEmpty() && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
+                                btn_next.isSelected = true
+                                btn_next.isClickable = true
 
-                            btn_save.isSelected = true
-                            btn_save.isClickable = true
+                                btn_save.isSelected = true
+                                btn_save.isClickable = true
+                            }else{
+                                btn_next.isSelected = false
+                                btn_next.isClickable = false
+
+                                btn_save.isSelected = false
+                                btn_save.isClickable = false
+                            }
                         }else{
-                            btn_next.isSelected = false
-                            btn_next.isClickable = false
+                            if(!tv_fuel.text.toString().equals("선택해 주세요") && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
+                                btn_next.isSelected = true
+                                btn_next.isClickable = true
 
-                            btn_save.isSelected = false
-                            btn_save.isClickable = false
+                                btn_save.isSelected = true
+                                btn_save.isClickable = true
+                            }else{
+                                btn_next.isSelected = false
+                                btn_next.isClickable = false
+
+                                btn_save.isSelected = false
+                                btn_save.isClickable = false
+                            }
                         }
                     }else{
-                        if(!tv_fuel.text.toString().equals("선택해 주세요") && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
-                            btn_next.isSelected = true
-                            btn_next.isClickable = true
+                        if (iv_corp.isSelected) {
+                            if(!et_corp_name.text.toString().isNullOrEmpty() && !et_corp_name.text.toString().isNullOrEmpty() && !et_corp_department.text.toString().isNullOrEmpty() && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
+                                btn_next.isSelected = true
+                                btn_next.isClickable = true
 
-                            btn_save.isSelected = true
-                            btn_save.isClickable = true
+                                btn_save.isSelected = true
+                                btn_save.isClickable = true
+                            }else{
+                                btn_next.isSelected = false
+                                btn_next.isClickable = false
+
+                                btn_save.isSelected = false
+                                btn_save.isClickable = false
+                            }
                         }else{
-                            btn_next.isSelected = false
-                            btn_next.isClickable = false
+                            if(!tv_fuel.text.toString().equals("선택해 주세요") && !postMyCarResponse.makerCd.isNullOrEmpty() && !postMyCarResponse.modelCd.isNullOrEmpty()){
+                                btn_next.isSelected = true
+                                btn_next.isClickable = true
 
-                            btn_save.isSelected = false
-                            btn_save.isClickable = false
+                                btn_save.isSelected = true
+                                btn_save.isClickable = true
+                            }else{
+                                btn_next.isSelected = false
+                                btn_next.isClickable = false
+
+                                btn_save.isSelected = false
+                                btn_save.isClickable = false
+                            }
                         }
                     }
 

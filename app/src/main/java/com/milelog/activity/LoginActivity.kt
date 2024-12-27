@@ -239,7 +239,7 @@ class LoginActivity: BaseActivity() {
 
 
 
-            apiService().postSignUp(jsonParam.toRequestBody("application/json".toMediaTypeOrNull()))
+            apiService().postTokens(jsonParam.toRequestBody("application/json".toMediaTypeOrNull()))
                 .enqueue(object :
                     Callback<ResponseBody> {
                     override fun onResponse(
@@ -249,92 +249,71 @@ class LoginActivity: BaseActivity() {
                         Log.d("testsetsetse","testestsetseset call url :: " + call.request().url)
                         Log.d("testsetsetse","testestsetseset response code :: " + response.code())
 
-                        if (response.code() == 201 || response.code() == 409) {
+                        if (response.code() == 201) {
                             val gson = GsonBuilder().serializeNulls().create()
-                            val jsonParam =
-                                gson.toJson(SignInRequest(idToken, "string", oauthProvider))
 
-                            apiService().postSignIn(jsonParam.toRequestBody("application/json".toMediaTypeOrNull()))
-                                .enqueue(object : Callback<ResponseBody> {
+                            val signInResponse = gson.fromJson(
+                                response.body()?.string(),
+                                SignInResponse::class.java
+                            )
+
+                            PreferenceUtil.putPref(
+                                this@LoginActivity,
+                                PreferenceUtil.ACCESS_TOKEN,
+                                signInResponse.access_token
+                            )
+                            PreferenceUtil.putPref(
+                                this@LoginActivity,
+                                PreferenceUtil.REFRESH_TOKEN,
+                                signInResponse.refresh_token
+                            )
+                            PreferenceUtil.putPref(
+                                this@LoginActivity,
+                                PreferenceUtil.EXPIRES_IN,
+                                signInResponse.expires_in
+                            )
+                            PreferenceUtil.putPref(
+                                this@LoginActivity,
+                                PreferenceUtil.REFRESH_EXPIRES_IN,
+                                signInResponse.refresh_expires_in
+                            )
+                            PreferenceUtil.putPref(
+                                this@LoginActivity,
+                                PreferenceUtil.TOKEN_TYPE,
+                                signInResponse.token_type
+                            )
+
+                            PreferenceUtil.getPref(this@LoginActivity, PreferenceUtil.DEVICE_ID_FOR_FCM, "")?.let{
+
+                                val gson = GsonBuilder().serializeNulls().create()
+                                val jsonParam =
+                                    gson.toJson(PostConnectDeviceRequest(it))
+
+
+                                apiService().postConnectDevice("Bearer " + signInResponse.access_token, makeRequestBody(jsonParam)).enqueue(object:Callback<ResponseBody>{
                                     override fun onResponse(
                                         call: Call<ResponseBody>,
                                         response: Response<ResponseBody>
                                     ) {
+                                        if(response.code() == 200 || response.code() == 201){
 
-                                        if (response.code() == 201) {
-                                            val signInResponse = gson.fromJson(
-                                                response.body()?.string(),
-                                                SignInResponse::class.java
-                                            )
-
-                                            PreferenceUtil.putPref(
-                                                this@LoginActivity,
-                                                PreferenceUtil.ACCESS_TOKEN,
-                                                signInResponse.access_token
-                                            )
-                                            PreferenceUtil.putPref(
-                                                this@LoginActivity,
-                                                PreferenceUtil.REFRESH_TOKEN,
-                                                signInResponse.refresh_token
-                                            )
-                                            PreferenceUtil.putPref(
-                                                this@LoginActivity,
-                                                PreferenceUtil.EXPIRES_IN,
-                                                signInResponse.expires_in
-                                            )
-                                            PreferenceUtil.putPref(
-                                                this@LoginActivity,
-                                                PreferenceUtil.REFRESH_EXPIRES_IN,
-                                                signInResponse.refresh_expires_in
-                                            )
-                                            PreferenceUtil.putPref(
-                                                this@LoginActivity,
-                                                PreferenceUtil.TOKEN_TYPE,
-                                                signInResponse.token_type
-                                            )
-
-                                            PreferenceUtil.getPref(this@LoginActivity, PreferenceUtil.DEVICE_ID_FOR_FCM, "")?.let{
-
-                                                val gson = GsonBuilder().serializeNulls().create()
-                                                val jsonParam =
-                                                    gson.toJson(PostConnectDeviceRequest(it))
-
-
-                                                apiService().postConnectDevice("Bearer " + signInResponse.access_token, makeRequestBody(jsonParam)).enqueue(object:Callback<ResponseBody>{
-                                                    override fun onResponse(
-                                                        call: Call<ResponseBody>,
-                                                        response: Response<ResponseBody>
-                                                    ) {
-                                                        if(response.code() == 200 || response.code() == 201){
-
-                                                        }
-                                                        handleAfterSuccessLogin(signInResponse = signInResponse)
-                                                    }
-
-                                                    override fun onFailure(
-                                                        call: Call<ResponseBody>,
-                                                        t: Throwable
-                                                    ) {
-                                                        handleAfterSuccessLogin(signInResponse = signInResponse)
-                                                    }
-
-                                                })
-                                            }?:{
-                                                handleAfterSuccessLogin(signInResponse = signInResponse)
-                                            }
                                         }
+                                        handleAfterSuccessLogin(signInResponse = signInResponse)
                                     }
 
                                     override fun onFailure(
                                         call: Call<ResponseBody>,
                                         t: Throwable
                                     ) {
-                                        Log.d("testsetsetse","testestsetseset fail :: " + call.request().url)
-                                        Log.d("testsetsetse","testestsetseset t :: " + t.toString())
-
+                                        handleAfterSuccessLogin(signInResponse = signInResponse)
                                     }
 
                                 })
+                            }?:{
+                                handleAfterSuccessLogin(signInResponse = signInResponse)
+                            }
+
+
 
                         }else{
 
