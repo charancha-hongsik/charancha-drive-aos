@@ -10,8 +10,6 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <queries>
         <intent>
@@ -28,6 +26,7 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-permission
         android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED"
@@ -42,6 +41,7 @@
     <!-- API 버전 29 (OS 10) 이상 -->
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <!-- API 버전 29 (OS 11) 이상 -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <!-- API 버전 32 (OS 12)  이상 -->
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
@@ -80,10 +80,10 @@
             android:exported="false"
             android:grantUriPermissions="true"
             tools:replace="android:authorities">
-        <meta-data
-            android:name="android.support.FILE_PROVIDER_PATHS"
-            android:resource="@xml/file_paths"
-            tools:replace="android:resource"/>
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"
+                tools:replace="android:resource"/>
         </provider>
 
 
@@ -91,13 +91,13 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDvhAX3KfrDG8Xi9U_OhmHhpwXWGL5af7M"/>
 
-<!--        <meta-data-->
-<!--            android:name="google_analytics_automatic_screen_reporting_enabled"-->
-<!--            android:value="true" />-->
+        <!--        <meta-data-->
+        <!--            android:name="google_analytics_automatic_screen_reporting_enabled"-->
+        <!--            android:value="true" />-->
 
-<!--        <meta-data-->
-<!--            android:name="google_analytics_adid_collection_enabled"-->
-<!--            android:value="false" />-->
+        <!--        <meta-data-->
+        <!--            android:name="google_analytics_adid_collection_enabled"-->
+        <!--            android:value="false" />-->
 
 
         <activity
