@@ -274,7 +274,7 @@ open class BaseActivity: AppCompatActivity(){
         if(past == SIX_MONTH){
             // Instant를 LocalDate로 변환합니다.
             val zoneId = ZoneId.systemDefault()
-            val localDate = previousDate.atZone(zoneId).toLocalDate().minusMonths(6)
+            val localDate = previousDate.atZone(zoneId).toLocalDate().minusMonths(6).plusDays(1)
 
 
             // 월의 첫 번째 날을 구합니다.
@@ -293,7 +293,7 @@ open class BaseActivity: AppCompatActivity(){
         if(past == YEAR){
             // Instant를 LocalDate로 변환합니다.
             val zoneId = ZoneId.systemDefault()
-            val localDate = previousDate.atZone(zoneId).toLocalDate().minusMonths(12)
+            val localDate = previousDate.atZone(zoneId).toLocalDate().minusMonths(12).plusDays(1)
 
 
             // 월의 첫 번째 날을 구합니다.
