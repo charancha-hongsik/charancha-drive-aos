@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.View.*
 import android.widget.*
@@ -121,22 +122,33 @@ class MyScoreActivity : BaseRefreshActivity() {
         myCarsListOnServer: MutableList<MyCarsEntity>,
         myCarsListOnDevice: MutableList<MyCarsEntity>
     ): MutableList<MyCarsEntity> {
-        // 1. 유지할 리스트: 서버에 있는 차량만 남기고 type과 name 동기화
-        val retainedCars = myCarsListOnDevice.mapNotNull { deviceCar ->
-            myCarsListOnServer.find { serverCar -> serverCar.id == deviceCar.id }?.let { serverCar ->
-                deviceCar.copy(name = serverCar.name, type = serverCar.type, isActive = serverCar.isActive) // type과 name을 서버의 값으로 동기화
+        for(car in myCarsListOnServer){
+            Log.d("testsetestest","testsetesestse myCarsListOnServer :: " + car.name)
+        }
+
+        for(car in myCarsListOnDevice){
+            Log.d("testsetestest","testsetesestse myCarsListOnDevice :: " + car.name)
+        }
+        // 1. 유지할 리스트: 서버 리스트를 순회하면서 동기화
+        val retainedCars = myCarsListOnServer.map { serverCar ->
+            // 장치의 동일 ID 차량을 찾음
+            val deviceCar = myCarsListOnDevice.find { it.id == serverCar.id }
+
+            if (deviceCar != null) {
+                // 서버 데이터로 업데이트 (name, fullName, type, isActive는 서버 값 사용)
+                deviceCar.copy(
+                    name = serverCar.name,
+                    fullName = serverCar.fullName,
+                    type = serverCar.type,
+                    isActive = serverCar.isActive
+                )
+            } else {
+                // 장치에 없는 서버 차량을 그대로 사용
+                serverCar
             }
         }.toMutableList()
 
-        // 2. 추가할 차량: 서버에 있는데 장치에 없는 차량 추가
-        val newCarsToAdd = myCarsListOnServer.filterNot { serverCar ->
-            myCarsListOnDevice.any { deviceCar -> deviceCar.id == serverCar.id }
-        }
-
-        // 3. 새 차량을 유지된 차량 리스트에 추가
-        retainedCars.addAll(newCarsToAdd)
-
-        // 업데이트된 리스트 반환
+        // 2. 업데이트된 리스트 반환
         return retainedCars
     }
 
