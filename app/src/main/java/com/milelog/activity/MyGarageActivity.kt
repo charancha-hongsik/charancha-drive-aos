@@ -203,7 +203,15 @@ class MyGarageActivity:BaseRefreshActivity() {
                         }
 
                         for(car in getMyCarInfoResponses.items){
-                            myCarsListOnServer.add(MyCarsEntity(car.id, name = car.makerNm + " " + car.modelNm, fullName = car.carName, car.licensePlateNumber, null,null))
+                            val carName = listOfNotNull(
+                                car.makerNm,
+                                if (car.modelDetailNm.isNullOrEmpty()) car.modelNm else null, // modelDetailNm이 없을 때만 modelNm 추가
+                                car.modelDetailNm,
+                                car.gradeNm,
+                                car.gradeDetailNm
+                            ).filterNot { it.isNullOrEmpty() } // null이나 빈 문자열을 필터링
+                                .joinToString(" ")
+                            myCarsListOnServer.add(MyCarsEntity(car.id, name = car.makerNm + " " + car.modelNm, fullName = carName, car.licensePlateNumber, null,null))
                         }
 
                         PreferenceUtil.putPref(this@MyGarageActivity, PreferenceUtil.MY_CAR_ENTITIES, GsonBuilder().serializeNulls().create().toJson(updateMyCarList(myCarsListOnServer, myCarsListOnDevice)))
@@ -274,7 +282,17 @@ class MyGarageActivity:BaseRefreshActivity() {
             val car = cars[position]
 
             (holder as GarageViewHolder).tv_car_no.text = car.licensePlateNumber
-            holder.tv_car_name.text = car.makerNm + " " + car.modelNm
+            val carName = listOfNotNull(
+                car.makerNm,
+                if (car.modelDetailNm.isNullOrEmpty()) car.modelNm else null, // modelDetailNm이 없을 때만 modelNm 추가
+                car.modelDetailNm,
+                car.gradeNm,
+                car.gradeDetailNm
+            ).filterNot { it.isNullOrEmpty() } // null이나 빈 문자열을 필터링
+                .joinToString(" ")
+
+            holder.tv_car_name.text = carName
+
 
             if(formatToYear(car.releaseDt).equals(car.modelYear)){
                 holder.tv_car_info.text = formatToYearMonth(car.releaseDt) + " · " + car.fuelNm

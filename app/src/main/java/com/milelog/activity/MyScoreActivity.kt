@@ -173,7 +173,15 @@ class MyScoreActivity : BaseRefreshActivity() {
                         myScoreViewModel.getCarInfoinquiryByCarId(userCarId)
 
                         for(car in getMyCarInfoResponses.items){
-                            myCarsListOnServer.add(MyCarsEntity(car.id, name = car.makerNm + " " + car.modelNm, fullName = car.carName, car.licensePlateNumber, null,null, type = car.type))
+                            val carName = listOfNotNull(
+                                car.makerNm,
+                                if (car.modelDetailNm.isNullOrEmpty()) car.modelNm else null, // modelDetailNm이 없을 때만 modelNm 추가
+                                car.modelDetailNm,
+                                car.gradeNm,
+                                car.gradeDetailNm
+                            ).filterNot { it.isNullOrEmpty() } // null이나 빈 문자열을 필터링
+                                .joinToString(" ")
+                            myCarsListOnServer.add(MyCarsEntity(car.id, name = car.makerNm + " " + car.modelNm, fullName = carName, car.licensePlateNumber, null,null, type = car.type))
                         }
 
                         PreferenceUtil.putPref(this@MyScoreActivity, PreferenceUtil.MY_CAR_ENTITIES, GsonBuilder().serializeNulls().create().toJson(updateMyCarList(myCarsListOnServer, myCarsListOnDevice)))
@@ -201,7 +209,15 @@ class MyScoreActivity : BaseRefreshActivity() {
                 }
                 is CarInfoInquiryByCarIdState.Success -> {
                     val getMyCarInfoResponse = state.data
-                    tv_car_name.setText(getMyCarInfoResponse.makerNm + " " + getMyCarInfoResponse.modelNm)
+                    val carName = listOfNotNull(
+                        getMyCarInfoResponse.makerNm,
+                        if (getMyCarInfoResponse.modelDetailNm.isNullOrEmpty()) getMyCarInfoResponse.modelNm else null, // modelDetailNm이 없을 때만 modelNm 추가
+                        getMyCarInfoResponse.modelDetailNm,
+                        getMyCarInfoResponse.gradeNm,
+                        getMyCarInfoResponse.gradeDetailNm
+                    ).filterNot { it.isNullOrEmpty() } // null이나 빈 문자열을 필터링
+                        .joinToString(" ")
+                    tv_car_name.setText(carName)
                     tv_car_no.setText(getMyCarInfoResponse.licensePlateNumber)
 
                     myScoreViewModel.getManageScoreForAMonth(userCarId)
