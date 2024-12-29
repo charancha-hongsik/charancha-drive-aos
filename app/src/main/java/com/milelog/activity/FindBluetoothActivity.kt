@@ -316,7 +316,7 @@ class FindBluetoothActivity: BaseRefreshActivity() {
                 val myCarsEntity = mycarEntities[position]
 
                 holder.tv_no_mycar.visibility = GONE
-                holder.tv_car_name.text = myCarsEntity.fullName
+                holder.tv_car_name.text = myCarsEntity.name
                 holder.tv_car_no.text = myCarsEntity.number
 
                 myCarsEntity.type?.let{
@@ -407,7 +407,7 @@ class FindBluetoothActivity: BaseRefreshActivity() {
             if (holder is ConnectedCarHolder) {
                 val myCarsEntity = mycarEntities[position]
 
-                holder.tv_car_name.text = myCarsEntity.fullName
+                holder.tv_car_name.text = myCarsEntity.name
                 holder.tv_car_number.text = myCarsEntity.number
                 holder.tv_car_bluetooth_name.text = myCarsEntity.bluetooth_name
 
