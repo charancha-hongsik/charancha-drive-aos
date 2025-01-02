@@ -4,59 +4,49 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#F7F7FA">
+    android:layout_height="wrap_content"
+    android:background="@drawable/radius8_white"
+    android:padding="24dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="300dp"
-        android:layout_height="208dp"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/radius8_white"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <TextView
             android:id="@+id/tv_dialog_title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
             android:text="자동차 정보 변경"
+            android:gravity="center_horizontal"
             android:textColor="@color/gray_950"
             android:textAppearance="@style/ST1B"
-            android:textFontWeight="700"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textFontWeight="700" />
 
         <TextView
             android:id="@+id/tv_dialog_contents"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
             android:text="자동차 정보를 변경하면 기존 데이터는\n초기화 됩니다. 변경 하시겠습니까?"
             android:gravity="center_horizontal"
             android:layout_marginTop="12dp"
             android:textAppearance="@style/B1R"
             android:textFontWeight="400"
-            android:textColor="@color/gray_600"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_dialog_title"/>
+            android:textColor="@color/gray_600" />
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layout_confirm"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="@drawable/radius6_gray950"
-            android:layout_marginBottom="24dp"
-            android:layout_marginRight="24dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginLeft="24dp"
-            app:layout_constraintTop_toBottomOf="@+id/tv_dialog_contents"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent">
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:background="@drawable/radius5_blue800"
+            android:layout_marginTop="24dp">
 
             <TextView
                 android:id="@+id/tv_comfirm"
@@ -79,6 +69,6 @@
 
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

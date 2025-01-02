@@ -2,6 +2,10 @@ package com.milelog.activity
 
 
 import android.content.Intent
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -14,6 +18,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.gson.Gson
+import com.milelog.CustomDialogNoCancel
 import com.milelog.GaScreenName
 import com.milelog.PreferenceUtil
 import com.milelog.R
@@ -89,9 +94,16 @@ class LoadCarInfoActivity: BaseRefreshActivity() {
                                 try{
                                     if(response.code() == 200 || response.code() == 201){
                                         if(response.body()!!.string().toInt() > 0){
-                                            Toast.makeText(this@LoadCarInfoActivity, "동일한 차량이 이미 등록되어 있어요.",
-                                                Toast.LENGTH_SHORT).show()
-                                            finish()
+                                            CustomDialogNoCancel(
+                                                this@LoadCarInfoActivity,
+                                                "차량 등록 불가",
+                                                "동일한 차량이 이미 등록되어 있어요.",
+                                                "닫기",
+                                                object : CustomDialogNoCancel.DialogCallback {
+                                                    override fun onConfirm() {
+                                                        finish()
+                                                    }
+                                                }).show()
                                         }else{
                                             val intent = Intent(this@LoadCarInfoActivity, LoadCarMoreInfoActivity::class.java)
                                             intent.putExtra("carInfo", state.data)
@@ -120,8 +132,16 @@ class LoadCarInfoActivity: BaseRefreshActivity() {
                         if (state.code == 401) {
                             logout()
                         }else{
-                            showCustomToast(this@LoadCarInfoActivity,"차량 번호 또는 소유자명이 일치하지 않습니다.")
-                            finish()
+                            CustomDialogNoCancel(
+                                this,
+                                "차량 조회 실패",
+                                "차량 번호 또는 소유자명이 일치하지 않습니다.\n" + "다시 확인해 주세요.",
+                                "닫기",
+                                object : CustomDialogNoCancel.DialogCallback {
+                                    override fun onConfirm() {
+                                        finish()
+                                    }
+                                }).show()
                         }
                     }
 
