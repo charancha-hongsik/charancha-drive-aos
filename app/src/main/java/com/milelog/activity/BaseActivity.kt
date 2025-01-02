@@ -19,6 +19,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.FirebaseAnalytics.Event.SCREEN_VIEW
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -928,6 +930,16 @@ open class BaseActivity: AppCompatActivity(){
         return "${year}년 ${month}월 ${day}일"
     }
 
+    fun logScreenView(screenName: String, screenClass: String) {
+//        val bundle = Bundle().apply {
+//            putString(FirebaseAnalytics.Param.SCREEN_NAME, screenName)
+//        }
+//        FirebaseAnalytics.getInstance(this).logEvent(SCREEN_VIEW, bundle)
 
+        val bun = Bundle()
+        bun.putString(FirebaseAnalytics.Param.SCREEN_NAME, screenName)
+        bun.putString(FirebaseAnalytics.Param.SCREEN_CLASS, screenClass)
 
+        FirebaseAnalytics.getInstance(this).logEvent(SCREEN_VIEW, bun)
+    }
 }

@@ -19,7 +19,10 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.gson.Gson
 import com.milelog.BuildConfig.BASE_TERMS_URL
+import com.milelog.GaScreenName
+import com.milelog.PageViewParam
 import com.milelog.PreferenceUtil
 import com.milelog.R
 import gun0912.tedimagepicker.builder.TedImagePicker
@@ -32,6 +35,7 @@ import java.io.FileOutputStream
 class CommonWebviewActivity: BaseActivity() {
     lateinit var wv_common:WebView
     var url:String = BASE_TERMS_URL
+    var firstState = true
     /**
      * firebase
      */
@@ -69,6 +73,16 @@ class CommonWebviewActivity: BaseActivity() {
 
         init()
         setWebview()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if(firstState){
+            firstState = !firstState
+        }else{
+            wv_common.evaluateJavascript("javascript:logPageViewEvent()", null)
+        }
     }
 
     private fun init(){
@@ -254,6 +268,11 @@ class CommonWebviewActivity: BaseActivity() {
         @JavascriptInterface
         fun openImagePicker(currentCount:Int, maxCount:Int){
             try {
+                if(maxCount == 1){
+                    activity.logScreenView(GaScreenName.SCREEN_SELECT_PICTURE_SINGULAR, activity::class.java.simpleName)
+                }else{
+                    activity.logScreenView(GaScreenName.SCREEN_SELECT_PICTURE_PLURAL, activity::class.java.simpleName)
+                }
                 // Use TedImagePicker for selecting multiple images
                 TedImagePicker.with(activity)
                     .max(maxCount-currentCount, "최대 " + maxCount + "개까지 등록할 수 있습니다." )
@@ -296,9 +315,6 @@ class CommonWebviewActivity: BaseActivity() {
          */
         @JavascriptInterface
         fun logEvent(name: String, jsonParams: String) {
-            Log.d("testestestse","testestestestse logEvent name :: " + name)
-            Log.d("testestestse","testestestestse logEvent jsonParams :: " + jsonParams)
-
             fa.logEvent(name, bundleFromJson(jsonParams))
         }
 

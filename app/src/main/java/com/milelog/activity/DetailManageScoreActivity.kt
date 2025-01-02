@@ -84,6 +84,15 @@ class DetailManageScoreActivity: BaseRefreshActivity(){
         setInitData()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if(tv_detail_managescroe_title.text.contains("최근 관리 점수")){
+            logScreenView(GaScreenName.SCREEN_RECENT_SCORE, this::class.java.simpleName)
+        }else{
+            logScreenView(GaScreenName.SCREEN_AVERAGE_SCORE, this::class.java.simpleName)
+        }
+    }
+
     fun init(){
         tv_detail_managescroe_title = findViewById(R.id.tv_detail_managescroe_title)
         btn_back = findViewById(R.id.btn_back)

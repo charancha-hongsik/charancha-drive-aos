@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.milelog.GaScreenName
 import com.milelog.R
 
 class PermissionInfoActivity: BaseActivity(){
@@ -15,6 +16,12 @@ class PermissionInfoActivity: BaseActivity(){
 
         setResource()
         setListener()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        logScreenView(GaScreenName.SCREEN_PERMISSION_LIST, this::class.java.simpleName)
+
     }
 
     fun setResource(){

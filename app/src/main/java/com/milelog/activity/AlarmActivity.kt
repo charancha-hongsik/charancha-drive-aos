@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.milelog.CommonUtil
 import com.milelog.DividerItemDecoration
+import com.milelog.GaScreenName
 import com.milelog.R
 import com.milelog.retrofit.response.Meta
 import com.milelog.room.entity.AlarmEntity
@@ -48,6 +49,7 @@ class AlarmActivity: BaseRefreshActivity() {
         alarmViewModel.getAlarms(0)
         alarmViewModel.setAllAlarm.observe(this@AlarmActivity, BaseViewModel.EventObserver {
             it?.let{
+                notifications = it.toMutableList()
 
                 if(notifications.size > 0){
                     layout_no_data.visibility = GONE
@@ -90,6 +92,12 @@ class AlarmActivity: BaseRefreshActivity() {
             (rv_alarm.adapter as NotificationAdapter).notifyDataSetChanged()
         })
     }
+
+    override fun onResume() {
+        super.onResume()
+        logScreenView(GaScreenName.SCREEN_ALARM, this::class.java.simpleName)
+    }
+
 
     private fun init(){
         alarmViewModel.init(this)

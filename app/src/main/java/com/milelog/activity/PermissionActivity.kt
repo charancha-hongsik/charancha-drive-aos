@@ -9,12 +9,14 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.milelog.GaScreenName
 import com.milelog.PreferenceUtil
 import com.milelog.PreferenceUtil.PERMISSION_ACCESS_BACKGROUND_LOCATION_THREE_TIMES
 import com.milelog.PreferenceUtil.PERMISSION_ACCESS_FINE_LOCATION_THREE_TIMES
@@ -88,6 +90,7 @@ class PermissionActivity: BaseActivity(){
                      * OS 28 이상
                      */
                     PERMISSION_ACCESS_FINE_LOCATION -> {
+
                         when {
                             ContextCompat.checkSelfPermission(
                                 this@PermissionActivity,
@@ -312,6 +315,14 @@ class PermissionActivity: BaseActivity(){
         super.onResume()
         if(settingState){
             setNextOfActivityRecognition()
+        }
+
+        if(ivPermission.drawable.constantState == resources.getDrawable(R.drawable.permission_location).constantState){
+            logScreenView(GaScreenName.SCREEN_SET_LOCATION_PERMISSION, this::class.java.simpleName)
+        } else if(ivPermission.drawable.constantState == resources.getDrawable(R.drawable.permission_background_location).constantState){
+            logScreenView(GaScreenName.SCREEN_SET_LOCATION_ALWAYS_PERMISSION, this::class.java.simpleName)
+        } else{
+            logScreenView(GaScreenName.SCREEN_SET_ACTIVITY_PERMISSION, this::class.java.simpleName)
         }
     }
 

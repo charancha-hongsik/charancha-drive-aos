@@ -34,6 +34,7 @@ import com.milelog.CustomDialog
 import com.milelog.DividerItemDecoration
 import com.milelog.R
 import com.milelog.FindBluetoothEntity
+import com.milelog.GaScreenName
 import com.milelog.PreferenceUtil
 import com.milelog.activity.LoadCarMoreInfoActivity.Companion.CORPORATE
 import com.milelog.retrofit.response.GetMyCarInfoResponse
@@ -98,6 +99,8 @@ class FindBluetoothActivity: BaseRefreshActivity() {
 
     override fun onResume() {
         super.onResume()
+        logScreenView(GaScreenName.SCREEN_SET_BLUETOOTH, this::class.java.simpleName)
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
             if(permissionState){
                 if(ContextCompat.checkSelfPermission(this, BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED){
@@ -200,7 +203,7 @@ class FindBluetoothActivity: BaseRefreshActivity() {
         }
     }
 
-    class DetectedStatusAdapter(
+    private class DetectedStatusAdapter(
         private val context: Context,
         private val findBluetoothEntity: MutableList<FindBluetoothEntity>,
     ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -236,6 +239,8 @@ class FindBluetoothActivity: BaseRefreshActivity() {
         }
 
         fun showBottomSheetForEditCar(macAddress: String, bluetoothName:String) {
+            (context as FindBluetoothActivity).logScreenView(GaScreenName.SCREEN_REGISTER_BLUETOOTH, this::class.java.simpleName)
+
             PreferenceUtil.getPref(context as FindBluetoothActivity, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
                 if(it != ""){
 

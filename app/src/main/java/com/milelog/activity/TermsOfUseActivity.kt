@@ -16,6 +16,7 @@ import com.milelog.retrofit.request.Agreements
 import com.milelog.retrofit.response.TermsSummaryResponse
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import com.milelog.GaScreenName
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
@@ -61,6 +62,7 @@ class TermsOfUseActivity: BaseActivity() {
 
     override fun onResume() {
         super.onResume()
+        logScreenView(GaScreenName.SCREEN_TERMS_AGREEMENTS, this::class.java.simpleName)
     }
 
     private fun init(){
@@ -403,7 +405,7 @@ class TermsOfUseActivity: BaseActivity() {
                 for(term in termsSummaryResponse){
                     if(tvTermsTitle3.text.contains(term.title)){
                         if(term.isRequired)
-                            startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
+                            startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title + " (필수)"))
                     }
                 }
             }
@@ -414,7 +416,7 @@ class TermsOfUseActivity: BaseActivity() {
                 for(term in termsSummaryResponse){
                     if(tvTermsTitle4.text.contains(term.title)){
                         if(!term.isRequired)
-                            startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
+                            startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title  + " (선택)"))
                     }
                 }
             }
@@ -425,7 +427,7 @@ class TermsOfUseActivity: BaseActivity() {
             override fun onSingleClick(v: View?) {
                 for(term in termsSummaryResponse){
                     if(tvTermsTitle5.text.contains(term.title)){
-                        startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
+                        startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title + " (선택)"))
                     }
                 }
             }
@@ -435,7 +437,7 @@ class TermsOfUseActivity: BaseActivity() {
             override fun onSingleClick(v: View?) {
                 for(term in termsSummaryResponse){
                     if(tvTermsTitle6.text.contains(term.title)){
-                        startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title))
+                        startActivity(Intent(this@TermsOfUseActivity, TermsDetailActivity::class.java).putExtra("id",term.id).putExtra("title",term.title + " (필수)"))
                     }
                 }
             }

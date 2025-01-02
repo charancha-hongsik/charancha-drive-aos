@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.milelog.CustomDialog
+import com.milelog.GaScreenName
 import com.milelog.PreferenceUtil
 import com.milelog.R
 import okhttp3.ResponseBody
@@ -27,6 +28,11 @@ class WithdrawalActivity: BaseRefreshActivity() {
 
         init()
         setListener()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        logScreenView(GaScreenName.SCREEN_WITHDRAWAL, this::class.java.simpleName)
     }
 
     fun init(){

@@ -32,6 +32,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.milelog.DividerItemDecoration
+import com.milelog.GaScreenName
 import com.milelog.PreferenceUtil
 import com.milelog.R
 import com.milelog.activity.LoadCarMoreInfoActivity.Companion.CORPORATE
@@ -64,8 +65,11 @@ class MyGarageActivity:BaseRefreshActivity() {
 
     }
 
+
     override fun onResume() {
         super.onResume()
+        logScreenView(GaScreenName.SCREEN_MY_GARAGE, this::class.java.simpleName)
+
         setMyCarInfo()
     }
 

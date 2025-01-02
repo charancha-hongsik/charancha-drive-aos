@@ -10,6 +10,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.activity.viewModels
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.milelog.*
 import com.milelog.CustomDialogNoCancel
 import com.milelog.PreferenceUtil
@@ -45,6 +46,8 @@ class SplashActivity: BaseActivity() {
 
     override fun onResume() {
         super.onResume()
+
+        logScreenView(GaScreenName.SCREEN_SPLASH, this::class.java.simpleName)
 
         // 구글 스토어에 이동 후 마일로그 앱에 재진입 시 다시 체크하기 위해 onResume에 정의
     }

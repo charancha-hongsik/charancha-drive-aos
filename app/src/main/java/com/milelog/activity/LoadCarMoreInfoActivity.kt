@@ -37,6 +37,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.milelog.CarDetail
 import com.milelog.CustomDialog
+import com.milelog.GaScreenName
 import com.milelog.PreferenceUtil
 import com.milelog.R
 import com.milelog.activity.CarDetailActivity.Companion.FUEL
@@ -105,6 +106,19 @@ class LoadCarMoreInfoActivity: BaseRefreshActivity() {
         init()
         setListener()
         setInfo()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(intent.getBooleanExtra("edit",false)){
+            if(postMyCarResponse.type.equals(CORPORATE)){
+                logScreenView(GaScreenName.SCREEN_EDIT_CAR_INFO_CORP, this::class.java.simpleName)
+            }else{
+                logScreenView(GaScreenName.SCREEN_EDIT_CAR_INFO_PERSONAL, this::class.java.simpleName)
+            }
+        }else{
+            logScreenView(GaScreenName.SCREEN_CHECK_MY_CAR_INFO, this::class.java.simpleName)
+        }
     }
 
     override fun onBackPressed() {

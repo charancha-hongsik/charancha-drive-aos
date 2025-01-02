@@ -17,7 +17,6 @@
         </intent>
     </queries>
 
-
     <!-- API 버전 28 이하 -->
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
     <!-- API 버전 28 (OS 9) 이상 -->
@@ -73,6 +72,10 @@
         android:screenOrientation="portrait"
         tools:targetApi="31"
         android:networkSecurityConfig="@xml/network_security_config">
+
+        <meta-data
+            android:name="google_analytics_automatic_screen_reporting_enabled"
+            android:value="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

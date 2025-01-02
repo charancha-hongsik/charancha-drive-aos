@@ -18,6 +18,7 @@ import com.milelog.retrofit.response.GetLatestResponse
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.milelog.GaScreenName
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -44,6 +45,11 @@ class SettingActivity: BaseRefreshActivity(){
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        logScreenView(GaScreenName.SCREEN_SET_CONFI, this::class.java.simpleName)
+    }
+
     fun init(){
         layout_select_distance_unit = findViewById(R.id.layout_select_distance_unit)
         persistent_bottom_sheet_distance = findViewById(R.id.persistent_bottom_sheet_distance)
@@ -64,7 +70,7 @@ class SettingActivity: BaseRefreshActivity(){
 
         btn_open_set_distance_unit.setOnClickListener(object:OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
-                layout_select_distance_unit.visibility = VISIBLE
+                openUnitBottomSheet()
             }
 
         })
@@ -99,7 +105,8 @@ class SettingActivity: BaseRefreshActivity(){
 
                 PreferenceUtil.putPref(this@SettingActivity, PreferenceUtil.KM_MILE,"mile")
 
-                layout_select_distance_unit.visibility = GONE            }
+                layout_select_distance_unit.visibility = GONE
+            }
 
         })
 
@@ -218,6 +225,11 @@ class SettingActivity: BaseRefreshActivity(){
             }
 
         })
+    }
+
+    private fun openUnitBottomSheet(){
+        logScreenView(GaScreenName.SCREEN_SET_UNIT, this::class.java.simpleName)
+        layout_select_distance_unit.visibility = VISIBLE
     }
 
     private fun persistentBottomSheetEvent() {

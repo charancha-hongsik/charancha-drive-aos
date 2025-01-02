@@ -15,6 +15,7 @@ import com.milelog.retrofit.response.TermsSummaryResponse
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import com.milelog.GaScreenName
 import com.milelog.retrofit.request.PostConnectDeviceRequest
 import com.milelog.retrofit.request.PutNotificationAgreements
 import com.milelog.retrofit.response.GetMyNotificationAgreedItem
@@ -49,6 +50,13 @@ class NotificationActivity: BaseRefreshActivity() {
 
         init()
     }
+
+
+    override fun onResume() {
+        super.onResume()
+        logScreenView(GaScreenName.SCREEN_SET_NOTI, this::class.java.simpleName)
+    }
+
 
     fun init(){
         btn_all_noti = findViewById(R.id.btn_all_noti)

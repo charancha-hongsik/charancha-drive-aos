@@ -10,6 +10,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.milelog.GaScreenName
 import com.milelog.R
 
 
@@ -36,6 +37,15 @@ class RegisterCarActivity: BaseActivity() {
         setContentView(R.layout.activity_register_car)
 
         init()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(no == 0){
+            logScreenView(GaScreenName.SCREEN_INPUT_CAR_NUM, this::class.java.simpleName)
+        }else{
+            logScreenView(GaScreenName.SCREEN_INPUT_CAR_OWNER, this::class.java.simpleName)
+        }
     }
 
     fun init(){
@@ -192,6 +202,8 @@ class RegisterCarActivity: BaseActivity() {
      * 2. 화면 진입 시 input에 focus
      */
     fun setCarOwnerPage(){
+        logScreenView(GaScreenName.SCREEN_INPUT_CAR_OWNER, this::class.java.simpleName)
+
         tv_register_car.text = resources.getString(R.string.register_car_owner_title)
         tv_register_car_caution.text = resources.getString(R.string.register_car_owner_errormessage)
         et_register_car.text = null

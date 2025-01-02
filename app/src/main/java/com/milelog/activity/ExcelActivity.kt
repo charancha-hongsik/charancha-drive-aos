@@ -26,6 +26,7 @@ import com.google.gson.reflect.TypeToken
 import com.milelog.CarListFilter
 import com.milelog.CarViews
 import com.milelog.DividerItemDecoration
+import com.milelog.GaScreenName
 import com.milelog.PreferenceUtil
 import com.milelog.R
 import com.milelog.activity.DetailDriveHistoryActivity.CorpType
@@ -79,6 +80,11 @@ class ExcelActivity:BaseRefreshActivity() {
 
         init()
         setClickListener()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        logScreenView(GaScreenName.SCREEN_SAVING_DRIVE_HISTORY, this::class.java.simpleName)
     }
 
     fun init(){
@@ -346,6 +352,8 @@ class ExcelActivity:BaseRefreshActivity() {
     }
 
     fun showBottomSheetForChooseDate() {
+        logScreenView(GaScreenName.SCREEN_SAVING_DRIVE_HISTORY_MONTH_PICKER, this::class.java.simpleName)
+
         val bottomSheetDialog = BottomSheetDialog(this, R.style.CustomBottomSheetDialog)
 
         // Inflate the layout

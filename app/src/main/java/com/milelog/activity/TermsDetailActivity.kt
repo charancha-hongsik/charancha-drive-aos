@@ -8,6 +8,7 @@ import com.milelog.R
 import com.milelog.retrofit.response.TermDetailResponse
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.milelog.GaScreenName
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -31,6 +32,17 @@ class TermsDetailActivity: BaseRefreshActivity() {
         setContents()
         setListener()
     }
+
+    override fun onResume() {
+        super.onResume()
+
+        var title = intent.getStringExtra("title")
+        if(!title!!.contains("동의")){
+            title = title + " 동의"
+        }
+
+        logScreenView(title, this::class.java.simpleName)
+    }
     
     fun setResources(){
         tvTermsTitle = findViewById(R.id.tv_terms_title)
@@ -41,8 +53,8 @@ class TermsDetailActivity: BaseRefreshActivity() {
         if(!title!!.contains("동의")){
             title = title + " 동의"
         }
-        tvTermsTitle.setText(title)
 
+        tvTermsTitle.setText(title)
     }
     
     fun setContents(){

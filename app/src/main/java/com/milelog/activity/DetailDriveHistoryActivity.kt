@@ -58,6 +58,7 @@ import com.google.gson.reflect.TypeToken
 import com.milelog.CustomDialog
 import com.milelog.DividerItemDecoration
 import com.milelog.EditHistoryEntity
+import com.milelog.GaScreenName
 import com.milelog.PreferenceUtil
 import com.milelog.activity.FindBluetoothActivity.MyCarEntitiesAdapter
 import com.milelog.activity.LoadCarMoreInfoActivity.Companion.CORPORATE
@@ -199,6 +200,11 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
         setResources()
     }
 
+    override fun onResume() {
+        super.onResume()
+        logScreenView(GaScreenName.SCREEN_DETAIL_DRIVE_HISTORY, this::class.java.simpleName)
+    }
+
     private fun init(){
         tracking_id = intent.getStringExtra("trackingId").toString()
 
@@ -300,6 +306,9 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
 
     fun showBottomSheetForEditHistory(editHistoryEntities:MutableList<EditHistoryEntity>) {
         // Create a BottomSheetDialog
+
+        logScreenView(GaScreenName.SCREEN_BOTTOM_SHEET_EDIT_LIST, this::class.java.simpleName)
+
         val bottomSheetDialog = BottomSheetDialog(this, R.style.CustomBottomSheetDialog)
 
         // Inflate the layout
@@ -1096,6 +1105,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     }
 
     fun showBottomSheetForEditCar() {
+        logScreenView(GaScreenName.SCREEN_BOTTOM_SHEET_CHANGE_VEHICLE, this::class.java.simpleName)
+
         PreferenceUtil.getPref(this, PreferenceUtil.MY_CAR_ENTITIES,"")?.let{
             if(it != ""){
                 // Create a BottomSheetDialog
@@ -1147,6 +1158,8 @@ class DetailDriveHistoryActivity: BaseRefreshActivity() {
     }
 
     fun showBottomSheetForChooseCorp(userCarId: String) {
+        logScreenView(GaScreenName.SCREEN_BOTTOM_SHEET_DRIVING_GOAL, this::class.java.simpleName)
+
         val bottomSheetDialog = BottomSheetDialog(this, R.style.CustomBottomSheetDialog)
 
         // Inflate the layout

@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.milelog.CustomSpeedLinearSmoothScroller
+import com.milelog.GaScreenName
 import com.milelog.ImageSliderAdapter
 import com.milelog.R
 
@@ -46,7 +47,6 @@ class OnBoardingActivity: BaseRefreshActivity() {
             override fun onSingleClick(v: View?) {
                 startActivity(Intent(this@OnBoardingActivity, RegisterCarActivity::class.java))
             }
-
         })
 
 
@@ -132,6 +132,7 @@ class OnBoardingActivity: BaseRefreshActivity() {
 
     override fun onResume() {
         super.onResume()
+        logScreenView(GaScreenName.SCREEN_ONBOARDING, this::class.java.simpleName)
     }
 
     override fun onDestroy() {

@@ -30,14 +30,12 @@ import com.canhub.cropper.options
 import com.milelog.CustomDialogForEditText
 import com.milelog.PreferenceUtil
 import com.milelog.R
-import com.milelog.retrofit.request.PatchProfilesRequest
-import com.google.gson.Gson
+import com.milelog.GaScreenName
 import de.hdodenhof.circleimageview.CircleImageView
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -69,6 +67,11 @@ class MyInfoActivity: BaseRefreshActivity() {
 
         init()
         setListener()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        logScreenView(GaScreenName.SCREEN_MY_INFO, this::class.java.simpleName)
     }
 
     fun init(){
@@ -147,6 +150,8 @@ class MyInfoActivity: BaseRefreshActivity() {
 
         btn_edit_nickname.setOnClickListener(object: OnSingleClickListener(){
             override fun onSingleClick(v: View?) {
+                setEditNickNameLog()
+
                 CustomDialogForEditText(this@MyInfoActivity, "내 정보", "별명", nickName,"저장","취소",  object : CustomDialogForEditText.DialogCallback{
                     override fun onConfirm(contents:String) {
                         val nickNameRequestBody = RequestBody.create(MultipartBody.FORM, contents)
@@ -196,7 +201,8 @@ class MyInfoActivity: BaseRefreshActivity() {
                 } else {
                     // API 30 이상은 권한 체크 없이 바로 크롭 시작
                     startCrop()
-                }            }
+                }
+            }
 
         })
     }
@@ -206,6 +212,8 @@ class MyInfoActivity: BaseRefreshActivity() {
     }
 
     private fun startCrop() {
+        logScreenView(GaScreenName.SCREEN_SELECT_PICTURE_SINGULAR, this::class.java.simpleName)
+
         cropImage.launch(
             options {
                 setGuidelines(CropImageView.Guidelines.ON)
@@ -217,6 +225,14 @@ class MyInfoActivity: BaseRefreshActivity() {
                 setImageSource(includeGallery = true, includeCamera = false)
             }
         )
+    }
+
+    private fun setCropLog(){
+        logScreenView(GaScreenName.SCREEN_CROP_PROFILE_PICTURE, this::class.java.simpleName)
+    }
+
+    private fun setEditNickNameLog(){
+        logScreenView(GaScreenName.SCREEN_EDIT_NICKNAME, this::class.java.simpleName)
     }
 
     private val cropImage = registerForActivityResult(CropImageContract()) { result ->
@@ -251,6 +267,8 @@ class MyInfoActivity: BaseRefreshActivity() {
                 ) {
                     if(response.code() == 200 || response.code() == 201){
                         showCustomToast(this@MyInfoActivity, "저장되었습니다.")
+
+                        setCropLog()
 
                         iv_circle.setImageBitmap(bitmap)
 

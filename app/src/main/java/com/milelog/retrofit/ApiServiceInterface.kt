@@ -255,7 +255,6 @@ interface ApiServiceInterface {
     @GET("api/v1/cars/-/user-cars/{userCarId}/score/-/statistics/recent")
     fun getRecentManageScoreStatistics(@Header("Authorization") token: String,
                                  @Path("userCarId") userCarId: String): Call<ResponseBody>
-
     // 강업 버전 조회
     @GET("api/v1/apps/-/latest")
     fun getLatest(@Query("os") os: String, @Query("deviceType") deviceType: String): Call<ResponseBody>

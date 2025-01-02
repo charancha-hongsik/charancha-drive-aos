@@ -35,6 +35,7 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.milelog.BuildConfig.BASE_API_URL
@@ -42,6 +43,8 @@ import com.milelog.CommonUtil
 import com.milelog.CustomDialog
 import com.milelog.Endpoints.HOME
 import com.milelog.Endpoints.REWARD
+import com.milelog.GaScreenName
+import com.milelog.PageViewParam
 import com.milelog.PreferenceUtil
 import com.milelog.PreferenceUtil.HAVE_BEEN_HOME
 import com.milelog.R
@@ -70,6 +73,7 @@ class MainActivity:BaseActivity() {
     private val mainViewModel: MainViewModel by viewModels()
 
     lateinit var wv_main:WebView
+    var firstState = true
 
     /**
      * for permission
@@ -113,6 +117,9 @@ class MainActivity:BaseActivity() {
         setObserver()
         setResources()
         setIgnoreBattery()
+        Log.d("testestestest","testsetestsetset userid :: " + PreferenceUtil.getPref(this, PreferenceUtil.USER_ID, "")!!)
+
+        Log.d("testestestest","testestestestse ACCESS_TOKEN :: " + PreferenceUtil.getPref(this,  PreferenceUtil.ACCESS_TOKEN, "")!!)
     }
 
     override fun onResume() {
@@ -125,6 +132,12 @@ class MainActivity:BaseActivity() {
         setNextPermissionProcess()
         setBluetoothService()
         mainViewModel.postDrivingInfoNotSavedData()
+
+        if(firstState){
+            firstState = !firstState
+        }else{
+            wv_main.evaluateJavascript("javascript:logPageViewEvent()", null)
+        }
     }
 
     private fun setObserver(){
@@ -610,6 +623,11 @@ class MainActivity:BaseActivity() {
         @JavascriptInterface
         fun openImagePicker(currentCount:Int, maxCount:Int){
             try {
+                if(maxCount == 1){
+                    activity.logScreenView(GaScreenName.SCREEN_SELECT_PICTURE_SINGULAR, activity::class.java.simpleName)
+                }else{
+                    activity.logScreenView(GaScreenName.SCREEN_SELECT_PICTURE_PLURAL, activity::class.java.simpleName)
+                }
                 // Use TedImagePicker for selecting multiple images
                 TedImagePicker.with(activity)
                     .max(maxCount-currentCount, "최대 " + maxCount + "개까지 등록할 수 있습니다." )
@@ -652,9 +670,6 @@ class MainActivity:BaseActivity() {
          */
         @JavascriptInterface
         fun logEvent(name: String, jsonParams: String) {
-            Log.d("testestestse","testestestestse logEvent name :: " + name)
-            Log.d("testestestse","testestestestse logEvent jsonParams :: " + jsonParams)
-
             fa.logEvent(name, bundleFromJson(jsonParams))
         }
 

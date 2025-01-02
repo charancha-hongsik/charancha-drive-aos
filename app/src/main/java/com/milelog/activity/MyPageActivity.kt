@@ -23,6 +23,7 @@ import com.milelog.CustomDialog
 import com.milelog.Endpoints.FAQ
 import com.milelog.Endpoints.HOME
 import com.milelog.Endpoints.INQUIRY
+import com.milelog.GaScreenName
 import de.hdodenhof.circleimageview.CircleImageView
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
@@ -195,7 +196,6 @@ class MyPageActivity: BaseRefreshActivity() {
             override fun onSingleClick(v: View?) {
                 startActivity(Intent(this@MyPageActivity, MyInfoActivity::class.java).putExtra("nickname",getAccountProfilesResponse.nickName).putExtra("email", getAccountProfilesResponse.user.email).putExtra("provider",getAccountProfilesResponse.user.provider.text.en).putExtra("url",getAccountProfilesResponse.imageUrl))
             }
-
         })
 
         btn_setting_bluetooth.setOnClickListener(object:OnSingleClickListener(){
@@ -216,6 +216,8 @@ class MyPageActivity: BaseRefreshActivity() {
 
     override fun onResume() {
         super.onResume()
+        logScreenView(GaScreenName.SCREEN_MY_PAGE, this::class.java.simpleName)
+
         setResources()
     }
 

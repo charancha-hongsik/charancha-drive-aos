@@ -22,6 +22,7 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.milelog.GaScreenName
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -71,6 +72,11 @@ class DrivenTimeActivity: BaseRefreshActivity() {
         setResources()
 
         setRecentDrivingTime()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        logScreenView(GaScreenName.SCREEN_DRIVING_TIME, this::class.java.simpleName)
     }
 
     private fun init(){

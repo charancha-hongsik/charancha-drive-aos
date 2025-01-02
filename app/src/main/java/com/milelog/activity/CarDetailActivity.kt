@@ -23,6 +23,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.milelog.CarDetail
+import com.milelog.GaScreenName
 import com.milelog.PreferenceUtil
 import com.milelog.R
 import com.milelog.activity.MyDriveHistoryActivity.DriveHistoryAdapter
@@ -96,6 +97,12 @@ class CarDetailActivity: BaseRefreshActivity() {
         init()
         setListener()
         setInfo()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        logScreenView(GaScreenName.SCREEN_EDIT_CAR_INFO_DETAIL, this::class.java.simpleName)
+
     }
 
     private fun init(){

@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.gson.Gson
+import com.milelog.GaScreenName
 import com.milelog.PreferenceUtil
 import com.milelog.R
 import com.milelog.retrofit.response.PostMyCarResponse
@@ -47,6 +48,11 @@ class LoadCarInfoActivity: BaseRefreshActivity() {
         setContentView(R.layout.activity_load_car)
 
         init()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        logScreenView(GaScreenName.SCREEN_LOAD_CAR_INFO, this::class.java.simpleName)
     }
 
     private fun init(){

@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import android.view.View.VISIBLE
 import android.webkit.CookieManager
@@ -17,10 +18,13 @@ import android.webkit.WebViewClient
 import androidx.browser.customtabs.CustomTabsIntent
 import com.google.android.datatransport.runtime.scheduling.persistence.EventStoreModule_PackageNameFactory.packageName
 import com.google.android.gms.common.wrappers.Wrappers.packageManager
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.milelog.BuildConfig
 import com.milelog.CustomDialogNoCancel
+import com.milelog.PageViewParam
 import com.milelog.PreferenceUtil
 import com.milelog.R
 import com.milelog.retrofit.request.PostConnectDeviceRequest
@@ -32,6 +36,8 @@ import com.milelog.retrofit.response.TermsAgreeStatusResponse
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.ResponseBody
+import org.json.JSONException
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -49,6 +55,7 @@ class LoginActivity: BaseActivity() {
     lateinit var wv_login:WebView
 
     val loginUrl = BuildConfig.BASE_LOGIN_URL
+    var firstState = true
 
     /**
      * 구글 로그인 관련
@@ -66,6 +73,15 @@ class LoginActivity: BaseActivity() {
         })
 
         setWebview()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(firstState){
+            firstState = !firstState
+        }else{
+            wv_login.evaluateJavascript("javascript:logPageViewEvent()", null)
+        }
     }
 
     /**
@@ -193,6 +209,8 @@ class LoginActivity: BaseActivity() {
     }
 
     class MilelogPublicApi(val activity: LoginActivity) {
+        private val fa = FirebaseAnalytics.getInstance(activity)
+
         @JavascriptInterface
         fun startLogin(url:String){
             val builder = CustomTabsIntent.Builder()
@@ -223,6 +241,43 @@ class LoginActivity: BaseActivity() {
             }
 
             customTabsIntent.launchUrl(activity, Uri.parse(url))
+        }
+
+        @JavascriptInterface
+        fun logEvent(name: String, jsonParams: String) {
+            fa.logEvent(name, bundleFromJson(jsonParams))
+        }
+
+        private fun bundleFromJson(json: String): Bundle {
+            // [START_EXCLUDE]
+            if (TextUtils.isEmpty(json)) {
+                return Bundle()
+            }
+
+            val result = Bundle()
+            try {
+                val jsonObject = JSONObject(json)
+                val keys = jsonObject.keys()
+
+                while (keys.hasNext()) {
+                    val key = keys.next()
+                    val value = jsonObject[key]
+
+                    if (value is String) {
+                        result.putString(key, value )
+                    } else if (value is Int) {
+                        result.putInt(key, (value ))
+                    } else if (value is Double) {
+                        result.putDouble(key, (value))
+                    } else {
+                    }
+                }
+            } catch (e: JSONException) {
+                return Bundle()
+            }
+
+            return result
+            // [END_EXCLUDE]
         }
     }
 

@@ -20,6 +20,7 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.milelog.GaScreenName
 import com.milelog.retrofit.response.GetDrivingGraphDataResponse
 import com.milelog.retrofit.response.GetDrivingStatisticsResponse
 import com.milelog.retrofit.response.GetRecentDrivingStatisticsResponse
@@ -73,6 +74,13 @@ class DrivenDistanceActivity: BaseRefreshActivity() {
 
         setRecentDrivingDistance()
     }
+
+
+    override fun onResume() {
+        super.onResume()
+        logScreenView(GaScreenName.SCREEN_DRIVING_DISTANCE, this::class.java.simpleName)
+    }
+
 
     private fun init(){
         btn_back = findViewById(R.id.btn_back)

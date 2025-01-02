@@ -14,6 +14,7 @@ import com.milelog.retrofit.response.GetDrivingStatisticsResponse
 import com.milelog.retrofit.response.GetManageScoreResponse
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.milelog.GaScreenName
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -67,6 +68,12 @@ class ManageEngineActivity: BaseRefreshActivity() {
         init()
         setRecentAllForEngine()
     }
+
+    override fun onResume() {
+        super.onResume()
+        logScreenView(GaScreenName.SCREEN_ENGINE_SCORE, this::class.java.simpleName)
+    }
+
 
     fun init(){
         setResources()

@@ -147,6 +147,14 @@ class SplashViewModel: BaseViewModel() {
                         response.body()?.string(),
                         GetLatestResponse::class.java
                     )
+                    Log.d("testestestsetest","testestestset version:: " + getLatestResponse.version)
+                    Log.d("testestestsetest","testestestset forceUpdate:: " + getLatestResponse.forceUpdate)
+                    Log.d("testestestsetest","testestestset os:: " + getLatestResponse.os)
+                    Log.d("testestestsetest","testestestset deviceType:: " + getLatestResponse.deviceType)
+                    Log.d("testestestsetest","testestestset serviceName:: " + getLatestResponse.serviceName)
+
+
+
 
                     try {
                         if(getLatestResponse.forceUpdate){

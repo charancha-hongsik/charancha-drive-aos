@@ -17,6 +17,7 @@ import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.milelog.GaScreenName
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -65,6 +66,13 @@ class AverageDrivenDistanceActivity: BaseRefreshActivity() {
 
         setRecentDrivingDistance()
     }
+
+    override fun onResume() {
+        super.onResume()
+        logScreenView(GaScreenName.SCREEN_AVERAGE_DRIVING_DISTANCE_PER, this::class.java.simpleName)
+    }
+
+
 
     private fun init(){
         btn_back = findViewById(R.id.btn_back)

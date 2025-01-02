@@ -37,6 +37,9 @@ import com.milelog.retrofit.request.PostDeviceInfoRequest
 import com.milelog.retrofit.response.PostConnectDeviceResponse
 import com.milelog.room.database.DriveDatabase
 import com.milelog.room.entity.AlarmEntity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -60,19 +63,25 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             if (remoteMessage.data.isNotEmpty()) {
                 // deeplink 없으면 메인 화면
 
+                Log.d("testsetesestset","testsetestsetset :: " + remoteMessage.data.toString())
+                Log.d("testestestest","testsetestsetset userid :: " + PreferenceUtil.getPref(this, PreferenceUtil.USER_ID, "")!!)
+
+
                 if(remoteMessage.data["imageUrl"].toString().isNotEmpty()){
-                    DriveDatabase.getDatabase(applicationContext).alarmDao().insert(
-                        AlarmEntity(
-                            user_id = PreferenceUtil.getPref(this, PreferenceUtil.USER_ID, "")!!,
-                            title = remoteMessage.data["title"].toString(),
-                            body = remoteMessage.data["body"].toString(),
-                            deepLink = remoteMessage.data["deepLink"].toString(),
-                            timestamp = remoteMessage.data["timestamp"].toString(),
-                            imageUrl = remoteMessage.data["imageUrl"].toString(),
-                            type = remoteMessage.data["type"].toString(),
-                            isRequired = true
+                    CoroutineScope(Dispatchers.IO).launch {
+                        DriveDatabase.getDatabase(applicationContext).alarmDao().insert(
+                            AlarmEntity(
+                                user_id = PreferenceUtil.getPref(this@MyFirebaseMessagingService, PreferenceUtil.USER_ID, "")!!,
+                                title = remoteMessage.data["title"].toString(),
+                                body = remoteMessage.data["body"].toString(),
+                                deepLink = remoteMessage.data["deepLink"].toString(),
+                                timestamp = remoteMessage.data["timestamp"].toString(),
+                                imageUrl = remoteMessage.data["imageUrl"].toString(),
+                                type = remoteMessage.data["type"].toString(),
+                                isRequired = true
+                            )
                         )
-                    )
+                    }
 
                     getBitmapFromGlide(
                         title = remoteMessage.data["title"].toString(),
@@ -83,18 +92,20 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                         type = remoteMessage.data["type"].toString()
                     )
                 } else{
-                    DriveDatabase.getDatabase(applicationContext).alarmDao().insert(
-                        AlarmEntity(
-                            user_id = PreferenceUtil.getPref(this, PreferenceUtil.USER_ID, "")!!,
-                            title = remoteMessage.data["title"].toString(),
-                            body = remoteMessage.data["body"].toString(),
-                            deepLink = remoteMessage.data["deepLink"].toString(),
-                            timestamp = remoteMessage.data["timestamp"].toString(),
-                            imageUrl = remoteMessage.data["imageUrl"].toString(),
-                            type = remoteMessage.data["type"].toString(),
-                            isRequired = true
+                    CoroutineScope(Dispatchers.IO).launch {
+                        DriveDatabase.getDatabase(applicationContext).alarmDao().insert(
+                            AlarmEntity(
+                                user_id = PreferenceUtil.getPref(this@MyFirebaseMessagingService, PreferenceUtil.USER_ID, "")!!,
+                                title = remoteMessage.data["title"].toString(),
+                                body = remoteMessage.data["body"].toString(),
+                                deepLink = remoteMessage.data["deepLink"].toString(),
+                                timestamp = remoteMessage.data["timestamp"].toString(),
+                                imageUrl = remoteMessage.data["imageUrl"].toString(),
+                                type = remoteMessage.data["type"].toString(),
+                                isRequired = true
+                            )
                         )
-                    )
+                    }
 
                     sendNotification(
                         title = remoteMessage.data["title"].toString(),

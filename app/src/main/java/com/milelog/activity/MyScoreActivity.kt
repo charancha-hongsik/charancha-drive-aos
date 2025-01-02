@@ -21,6 +21,7 @@ import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.*
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import com.milelog.GaScreenName
 import com.milelog.PreferenceUtil
 import com.milelog.R
 import com.milelog.room.entity.MyCarsEntity
@@ -105,6 +106,12 @@ class MyScoreActivity : BaseRefreshActivity() {
         setObserver()
 
         myScoreViewModel.getMyCarInfo()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        logScreenView(GaScreenName.SCREEN_DRIVING_SCORE, this::class.java.simpleName)
+
     }
 
     private fun init(){

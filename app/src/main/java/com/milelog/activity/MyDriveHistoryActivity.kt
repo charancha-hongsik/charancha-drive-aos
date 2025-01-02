@@ -32,6 +32,7 @@ import com.google.gson.reflect.TypeToken
 import com.milelog.CarListFilter
 import com.milelog.CarViews
 import com.milelog.DividerItemDecoration
+import com.milelog.GaScreenName
 import com.milelog.activity.LoadCarMoreInfoActivity.Companion.CORPORATE
 import com.milelog.retrofit.response.DriveItem
 import com.milelog.retrofit.response.Meta
@@ -118,6 +119,11 @@ class MyDriveHistoryActivity: BaseRefreshActivity() {
         lv_date.addItemDecoration(dividerItemDecoration)
 
         setTopBarAnimation()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        logScreenView(GaScreenName.SCREEN_DRIVE_HISTORY, this::class.java.simpleName)
     }
 
     private fun setTopBarAnimation() {

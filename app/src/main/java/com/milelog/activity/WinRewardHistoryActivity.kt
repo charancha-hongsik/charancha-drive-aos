@@ -34,6 +34,7 @@ import com.milelog.ChosenDate
 import com.milelog.DividerItemDecoration
 import com.milelog.Endpoints.FAQ
 import com.milelog.Endpoints.REWARD_INPUT
+import com.milelog.GaScreenName
 import com.milelog.R
 import com.milelog.retrofit.response.PostMyCarResponse
 import com.milelog.viewmodel.BaseViewModel
@@ -84,6 +85,12 @@ class WinRewardHistoryActivity:BaseRefreshActivity() {
         init()
         setListener()
         setObserver()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        logScreenView(GaScreenName.SCREEN_WIN_REWARD, this::class.java.simpleName)
+
     }
 
     private fun init(){
