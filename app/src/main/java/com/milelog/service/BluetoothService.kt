@@ -1153,7 +1153,7 @@ class BluetoothService : Service() {
         try {
             val workRequest = PeriodicWorkRequest.Builder(
                 WalkingDetectWorker::class.java,
-                15, TimeUnit.MINUTES
+                12, TimeUnit.HOURS
             ).build()
 
             WorkManager.getInstance(this).enqueueUniquePeriodicWork(
@@ -1208,9 +1208,9 @@ class BluetoothService : Service() {
             val intent = Intent(TRANSITIONS_RECEIVER_ACTION)
             intent.setPackage(applicationContext.packageName)
 
-            var flag = FLAG_UPDATE_CURRENT
+            var flag = FLAG_CANCEL_CURRENT
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                flag = FLAG_UPDATE_CURRENT or FLAG_MUTABLE
+                flag = FLAG_CANCEL_CURRENT or FLAG_MUTABLE
             }
 
             val pendingIntent = getBroadcast(
