@@ -215,7 +215,7 @@ class RegisterCarActivity: BaseActivity() {
 
         showKeyboard(et_register_car)
 
-        et_register_car.filters = arrayOf(InputFilter.LengthFilter(17))
+        et_register_car.filters = arrayOf(InputFilter.LengthFilter(50))
 
         et_register_car.addTextChangedListener(object :TextWatcher{
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
