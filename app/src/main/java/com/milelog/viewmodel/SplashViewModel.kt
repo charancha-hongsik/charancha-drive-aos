@@ -180,17 +180,26 @@ class SplashViewModel: BaseViewModel() {
 
 
                             if (patchFromApi.toInt() > patch.toInt()) {
-                                _checkForceUpdate.value = Event(CheckForceUpdateState.Success(true))
-                                return
+                                if (minorFromApi.toInt() >= minor.toInt()) {
+                                    if (majorFromApi.toInt() >= major.toInt()) {
+                                        _checkForceUpdate.value = Event(CheckForceUpdateState.Success(true))
+                                        return
+                                    }
+                                }
                             }
+
                             if (minorFromApi.toInt() > minor.toInt()) {
-                                _checkForceUpdate.value = Event(CheckForceUpdateState.Success(true))
-                                return
+                                if (majorFromApi.toInt() >= major.toInt()) {
+                                    _checkForceUpdate.value = Event(CheckForceUpdateState.Success(true))
+                                    return
+                                }
                             }
+
                             if (majorFromApi.toInt() > major.toInt()) {
                                 _checkForceUpdate.value = Event(CheckForceUpdateState.Success(true))
                                 return
                             }
+
                             _checkForceUpdate.value = Event(CheckForceUpdateState.Success(false))
                         }else{
                             _checkForceUpdate.value = Event(CheckForceUpdateState.Success(false))

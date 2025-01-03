@@ -19,6 +19,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.milelog.GaScreenName
+import com.milelog.viewmodel.BaseViewModel.Event
+import com.milelog.viewmodel.state.CheckForceUpdateState
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -141,6 +143,10 @@ class SettingActivity: BaseRefreshActivity(){
                             GetLatestResponse::class.java
                         )
 
+                        Log.d("testestestset","testsetestsest version :: " + getLatestResponse.version)
+                        Log.d("testestestset","testsetestsest forceUpdate :: " + getLatestResponse.forceUpdate)
+
+
                         tv_version.text = "V " + BuildConfig.VERSION_NAME
 
 
@@ -164,42 +170,35 @@ class SettingActivity: BaseRefreshActivity(){
                             .dropLastWhile { it.isEmpty() }
                             .toTypedArray()[2]
 
+                        // app 2.0.1
+                        // api 1.0.2
+
+                        if (patchFromApi.toInt() > patch.toInt()) {
+                            if (minorFromApi.toInt() >= minor.toInt()) {
+                                if (majorFromApi.toInt() >= major.toInt()) {
+                                    tv_latest.visibility = GONE
+                                    btn_update.visibility = VISIBLE
+                                    return
+                                }
+                            }
+                        }
+
+                        if (minorFromApi.toInt() > minor.toInt()) {
+                            if (majorFromApi.toInt() >= major.toInt()) {
+                                tv_latest.visibility = GONE
+                                btn_update.visibility = VISIBLE
+                                return
+                            }
+                        }
+
                         if (majorFromApi.toInt() > major.toInt()) {
                             tv_latest.visibility = GONE
                             btn_update.visibility = VISIBLE
                             return
-                        }else if(majorFromApi.toInt() == major.toInt()){
-
-                        }else{
-                            tv_latest.visibility = VISIBLE
-                            btn_update.visibility = GONE
-                            return
                         }
 
-                        if (minorFromApi.toInt() > minor.toInt()) {
-                            tv_latest.visibility = GONE
-                            btn_update.visibility = VISIBLE
-
-                            return
-                        }else if(minorFromApi.toInt() == minor.toInt()){
-
-                        }else{
-                            tv_latest.visibility = VISIBLE
-                            btn_update.visibility = GONE
-                            return
-                        }
-
-
-                        if (patchFromApi.toInt() > patch.toInt()) {
-                            tv_latest.visibility = GONE
-                            btn_update.visibility = VISIBLE
-
-                            return
-                        }
-
-
-
-
+                        tv_latest.visibility = VISIBLE
+                        btn_update.visibility = GONE
 
 
                     }else if(response.code() == 401){
