@@ -80,7 +80,7 @@
     <string name="register_car_no_title">차량 번호를\n입력해주세요</string>
     <string name="register_car_no_errormessage">입력시 차량 정보를 간편하게 불러올 수 있어요 :)</string>
 
-    <string name="register_car_owner_title">차량 소유자\n이름을 입력해주세요</string>
+    <string name="register_car_owner_title">등록증 상의 차량 소유자\n이름을 입력해 주세요</string>
     <string name="register_car_owner_errormessage">입력시 차량 정보를 간편하게 불러올 수 있어요 :)</string>
 
     <string name="confirm_register_my_car_title">내 차량 정보를\n불러왔어요</string>
