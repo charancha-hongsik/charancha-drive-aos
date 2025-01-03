@@ -26,6 +26,7 @@ class RegisterCarActivity: BaseActivity() {
     lateinit var et_register_car:EditText
     lateinit var btn_register_car:ConstraintLayout
     lateinit var tv_releaseDt:TextView
+    lateinit var layout_info:LinearLayout
 
     var no = 0
 
@@ -56,6 +57,7 @@ class RegisterCarActivity: BaseActivity() {
         view_register_percent1 = findViewById(R.id.view_register_percent1)
         view_register_percent2 = findViewById(R.id.view_register_percent2)
         tv_register_car_hint = findViewById(R.id.tv_register_car_hint)
+        layout_info = findViewById(R.id.layout_info)
 
         ib_arrow_register_car = findViewById(R.id.ib_arrow_register_car)
 
@@ -158,6 +160,7 @@ class RegisterCarActivity: BaseActivity() {
      * 3.
      */
     fun setCarNoPage(){
+        layout_info.visibility = GONE
         tv_register_car.text = resources.getString(R.string.register_car_no_title)
         tv_register_car_caution.text = resources.getString(R.string.register_car_no_errormessage)
         et_register_car.text = null
@@ -202,6 +205,7 @@ class RegisterCarActivity: BaseActivity() {
      * 2. 화면 진입 시 input에 focus
      */
     fun setCarOwnerPage(){
+        layout_info.visibility = VISIBLE
         logScreenView(GaScreenName.SCREEN_INPUT_CAR_OWNER, this::class.java.simpleName)
 
         tv_register_car.text = resources.getString(R.string.register_car_owner_title)
